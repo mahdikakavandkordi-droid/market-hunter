@@ -210,7 +210,11 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const state={data:null,history:[],tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
-function toggleWatch(symbol){state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);persistWatch();renderHunter();renderWatchlist()}
+function toggleWatch(symbol){
+  state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);
+  persistWatch();
+  renderTop5();renderHunter();renderWatchlist();
+}
 function tradingViewSymbol(symbol){
   const clean=symbol.replace(/\.(TO|V)$/,'');
   return (symbol.endsWith('.V')?'TSXV:':'TSX:')+clean;
@@ -366,7 +370,11 @@ function unavailableWatchCard(x){
 }
 function bindCardActions(root=''){
   document.querySelectorAll(root+' .card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
-  document.querySelectorAll(root+' .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
+  document.querySelectorAll(root+' .heart').forEach(el=>{
+    const act=e=>{e.preventDefault();e.stopPropagation();toggleWatch(el.dataset.watch)};
+    el.addEventListener('click',act);
+    el.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();toggleWatch(el.dataset.watch)},{passive:false});
+  });
   document.querySelectorAll(root+' .tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
   document.querySelectorAll(root+' .watchlist .card').forEach(el=>{
     let startX=null;
