@@ -167,8 +167,15 @@ function metrics(data,benchmarkData,sectorRet20){
     max5RvolAgo=last5Volumes.length-1-idx;
   }
   const unusual5d=Number.isFinite(max5Rvol)&&max5Rvol>=1.4;
+  const spikeIndex=Number.isFinite(max5RvolAgo)?r.length-1-max5RvolAgo:null;
+  const spikeRow=Number.isInteger(spikeIndex)?r[spikeIndex]:null;
+  const spikePrev=Number.isInteger(spikeIndex)&&spikeIndex>0?r[spikeIndex-1]:null;
+  const spikeReturn=spikeRow&&spikePrev?pct(spikeRow.close,spikePrev.close):null;
+  // Direction is deliberately simple: what did price do on the abnormal-volume session?
+  const unusual5dDirection=!unusual5d||!Number.isFinite(spikeReturn)?'none':spikeReturn>=0.5?'positive':spikeReturn<=-0.5?'negative':'mixed';
+  const unusualPrefix=unusual5dDirection==='positive'?'Positive':unusual5dDirection==='negative'?'Negative':unusual5dDirection==='mixed'?'Mixed':'';
   const unusual5dLabel=!Number.isFinite(max5Rvol)?'—':unusual5d
-    ? `${round(max5Rvol,1)}× volume ${max5RvolAgo===0?'today':max5RvolAgo===1?'1 day ago':max5RvolAgo+' days ago'}`
+    ? `${unusualPrefix} ${round(max5Rvol,1)}× volume · ${max5RvolAgo===0?'today':max5RvolAgo===1?'1 day ago':max5RvolAgo+' days ago'}`
     : `No unusual volume · max ${round(max5Rvol,1)}×`;
 
   const recentDown=downVolumeAverage(r,r.length-5,r.length);
@@ -178,7 +185,8 @@ function metrics(data,benchmarkData,sectorRet20){
   let trendScore=(weeklyUp?15:(last>ma50?8:2))+(dailyUp?15:(last>ma20?8:2));
   let momentumScore=clamp(10+(Number.isFinite(ret5)?ret5:0)*1.2+(Number.isFinite(ret20)?ret20:0)*0.4+(momentumImproving?5:0),0,25);
   const recentVolumeBoost=Number.isFinite(max5Rvol)?Math.max(0,max5Rvol-1):0;
-  let volumeScore=clamp(7+recentVolumeBoost*7+(sellingPressureFading?2:0),0,15);
+  const directionalVolumeBoost=unusual5dDirection==='positive'?recentVolumeBoost:unusual5dDirection==='mixed'?recentVolumeBoost*0.35:0;
+  let volumeScore=clamp(7+directionalVolumeBoost*7+(sellingPressureFading?2:0),0,15);
   let relativeScore=Number.isFinite(rs20)?clamp(7.5+rs20*0.8,0,15):null;
   let structureScore=2;
   if(pullback<=-2&&pullback>=-12) structureScore+=7;
@@ -190,7 +198,7 @@ function metrics(data,benchmarkData,sectorRet20){
   let stage=null;
   const established=weeklyUp&&dailyUp&&Number.isFinite(ret20)&&Number.isFinite(ret60)&&Number.isFinite(rs20)&&(ret20>=10||ret60>=20)&&rs20>2;
   const attractive=weeklyUp&&Number.isFinite(ret5)&&Number.isFinite(ret20)&&Number.isFinite(rs20)&&(dailyUp||(last>ma50&&ret5>0))&&ret20>0&&rs20>-3;
-  const recovery=momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)&&ret5>0&&pullback<=-1&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8&&((Number.isFinite(max5Rvol)&&max5Rvol>=0.75)||sellingPressureFading);
+  const recovery=momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)&&ret5>0&&pullback<=-1&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8&&((Number.isFinite(max5Rvol)&&max5Rvol>=0.75&&unusual5dDirection!=='negative')||sellingPressureFading);
 
   if(established) stage='Established Move';
   else if(attractive) stage='Attractive Growth';
@@ -211,7 +219,7 @@ function metrics(data,benchmarkData,sectorRet20){
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
     prev5:round(prev5,1),momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
-    unusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,unusual5dLabel,
+    unusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,spikeReturn:round(spikeReturn,1),unusual5dDirection,unusual5dLabel,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
