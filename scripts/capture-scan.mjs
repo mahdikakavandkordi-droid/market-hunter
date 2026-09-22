@@ -26,6 +26,8 @@ if(!Array.isArray(history.snapshots)) history.snapshots=[];
 const snapshot={
   at:scan.asOf || new Date().toISOString(),
   minDollar:scan.minDollar,
+  marketAsOf:scan.marketAsOf,
+  version:scan.version,
   breadth:{
     percentAbove50:scan.breadth?.percentAbove50 ?? null,
     trend:scan.breadth?.trend ?? null,
@@ -42,6 +44,9 @@ const snapshot={
 };
 
 const compact=x=>JSON.stringify({
+  marketAsOf:x?.marketAsOf,
+  version:x?.version,
+  minDollar:x?.minDollar,
   breadth:x?.breadth,
   indexes:x?.indexes,
   items:(x?.items||[]).map(i=>[
@@ -59,3 +64,4 @@ history.snapshots.push(snapshot);
 history.snapshots=history.snapshots.slice(-60);
 await fs.writeFile(historyPath,JSON.stringify(history,null,2)+'\n');
 console.log(`Stored snapshot ${snapshot.at} with ${snapshot.items.length} candidates.`);
+

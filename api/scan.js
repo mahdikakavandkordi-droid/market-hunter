@@ -49,7 +49,7 @@ const CDR_BENCHMARK = {
 
 const SECTOR_PROXY = {
   Financials:'XFN.TO', Energy:'XEG.TO', Materials:'XMA.TO', Industrials:'XGI.TO',
-  Technology:'XIT.TO', Communication:'XTL.TO', Utilities:'XUT.TO', Consumer:'XST.TO', 'Real Estate':'XRE.TO', 'Health Care':'XHC.TO', CDR:'^GSPC'
+  Technology:'XIT.TO', Communication:null, Utilities:'XUT.TO', Consumer:null, 'Real Estate':'XRE.TO', 'Health Care':null, CDR:null
 };
 
 function avg(a){const v=a.filter(Number.isFinite);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null}
@@ -58,9 +58,11 @@ function alignedReturn(rows,benchmarkRows,lookback){
   if(!Array.isArray(rows)||!Array.isArray(benchmarkRows)) return null;
   const stock=new Map(rows.map(x=>[dayKey(x.t),x.close]));
   const bench=new Map(benchmarkRows.map(x=>[dayKey(x.t),x.close]));
-  const dates=[...stock.keys()].filter(d=>bench.has(d)).sort();
+  const dates=[...bench.keys()].sort();
   if(dates.length<lookback+1) return null;
-  const end=dates.at(-1),start=dates.at(-(lookback+1));
+  const window=dates.slice(-(lookback+1));
+  if(window.some(d=>!stock.has(d))) return null;
+  const end=window.at(-1),start=window[0];
   return {stock:pct(stock.get(end),stock.get(start)),benchmark:pct(bench.get(end),bench.get(start)),start,end};
 }
 function ageDays(t){return Number.isFinite(t)?(Date.now()-t*1000)/86400000:null}
@@ -82,7 +84,7 @@ function rsi(values,period=14){
     avgGain=((avgGain*(period-1))+gain)/period;
     avgLoss=((avgLoss*(period-1))+loss)/period;
   }
-  if(avgLoss===0) return 100;
+  if(avgLoss===0) return avgGain===0?50:100;
   const rs=avgGain/avgLoss;
   return 100-(100/(1+rs));
 }
@@ -90,12 +92,13 @@ function breadthLabel(n){return !Number.isFinite(n)?'Unavailable':n>=60?'Strong'
 function direction(delta){return !Number.isFinite(delta)?'Flat':delta>=3?'Improving':delta<=-3?'Weakening':'Stable'}
 
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
-async function chart(symbol,range='6mo',interval='1d'){
+async function chart(symbol,range='6mo',interval='1d',deadline=Date.now()+24000){
   const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}&includePrePost=false&events=div%2Csplits`;
   let lastError=null;
   for(let attempt=0;attempt<2;attempt++){
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),8000);
+    if(Date.now()>=deadline) throw new Error('scan_deadline');
+    const timer=setTimeout(()=>controller.abort(),Math.max(1,Math.min(8000,deadline-Date.now())));
     try{
       const r=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Mozilla/5.0 MarketHunter/1.0'}});
       if(!r.ok){
@@ -108,14 +111,17 @@ async function chart(symbol,range='6mo',interval='1d'){
       if(!res) throw new Error(`${symbol} unavailable`);
       const q=res.indicators?.quote?.[0]||{};
       const adj=res.indicators?.adjclose?.[0]?.adjclose||q.close||[];
+      const sessionEnd=res.meta?.currentTradingPeriod?.regular?.end;
+      const currentSession=sessionEnd?dayKey(sessionEnd):null;
       const rows=(res.timestamp||[]).map((t,i)=>({
-        t,close:adj[i]??q.close?.[i],high:q.high?.[i],low:q.low?.[i],volume:q.volume?.[i]
-      })).filter(x=>Number.isFinite(x.close));
+        t,close:adj[i],rawClose:q.close?.[i],high:q.high?.[i],low:q.low?.[i],volume:q.volume?.[i]
+      })).filter(x=>Number.isFinite(x.close)&&x.close>0&&Number.isFinite(x.rawClose)&&x.rawClose>0)
+        .filter(x=>dayKey(x.t)!==currentSession||Date.now()>=sessionEnd*1000);
       return {symbol,rows,currency:res.meta?.currency||null};
     }catch(e){
       lastError=e;
       const retryable=e?.name==='AbortError'||e?.status===429||e?.status>=500;
-      if(!retryable||attempt===1) throw e;
+      if(!retryable||attempt===1||Date.now()+300>=deadline) throw e;
       await sleep(250*(attempt+1));
     }finally{
       clearTimeout(timer);
@@ -164,19 +170,19 @@ function downVolumeAverage(rows,start,end){
   return avg(a);
 }
 
-function metrics(data,benchmarkData,sectorData){
-  const r=data.rows,c=r.map(x=>x.close),v=r.map(x=>x.volume||0);
+export function metrics(data,benchmarkData,sectorData){
+  const r=data.rows,c=r.map(x=>x.close),v=r.map(x=>x.volume);
   if(c.length<65) return null;
 
   const last=c.at(-1),ma20=sma(c,20),ma50=sma(c,50),rsi14=rsi(c,14);
-  const prev5=c.at(-6);
+  const pricePrev5=c.at(-6);
   const prev50=c.length>=55?avg(c.slice(-55,-5)):null;
   const above50Now=Number.isFinite(ma50)?last>ma50:null;
-  const above50Prev5=Number.isFinite(prev50)?prev5>prev50:null;
+  const above50Prev5=Number.isFinite(prev50)?pricePrev5>prev50:null;
 
-  const vol20=avg(v.slice(-20,-1));
+  const vol20=avg(v.slice(-21,-1));
   const rvol=vol20?v.at(-1)/vol20:null;
-  const dollar20=avg(r.slice(-20).map(x=>x.close*(x.volume||0)));
+  const dollar20=avg(r.slice(-20).map(x=>x.rawClose*x.volume));
   const ret5=pct(last,c.at(-6)),ret20=pct(last,c.at(-21)),ret60=pct(last,c.at(-61));
   const high60=Math.max(...c.slice(-60)),pullback=pct(last,high60);
   const w=weeklyCloses(r),w10=sma(w,10),wPrev=w.length>=14?avg(w.slice(-14,-4)):null;
@@ -194,14 +200,12 @@ function metrics(data,benchmarkData,sectorData){
     const volumeVsAvg=Number.isFinite(rvol)?(rvol-1)*100:null;
   const trendState=dailyUp&&weeklyUp?'Daily + Weekly aligned':weeklyUp?'Weekly up · Daily mixed':dailyUp?'Daily up · Weekly mixed':'Trend mixed';
 
-  const last5Volumes=v.slice(-5);
-  const prior20Vol=avg(v.slice(-25,-5));
   let max5Rvol=null,max5RvolAgo=null;
-  if(Number.isFinite(prior20Vol)&&prior20Vol>0&&last5Volumes.length){
-    let max=-Infinity,idx=-1;
-    last5Volumes.forEach((vol,i)=>{const ratio=vol/prior20Vol;if(ratio>max){max=ratio;idx=i}});
-    max5Rvol=max;
-    max5RvolAgo=last5Volumes.length-1-idx;
+  for(let i=r.length-5;i<r.length;i++){
+    const baseline=avg(v.slice(i-20,i));
+    if(!Number.isFinite(baseline)||baseline<=0||!Number.isFinite(v[i])) continue;
+    const ratio=v[i]/baseline;
+    if(max5Rvol===null||ratio>=max5Rvol){max5Rvol=ratio;max5RvolAgo=r.length-1-i;}
   }
   const unusual5d=Number.isFinite(max5Rvol)&&max5Rvol>=1.4;
   const spikeIndex=Number.isFinite(max5RvolAgo)?r.length-1-max5RvolAgo:null;
@@ -217,13 +221,14 @@ function metrics(data,benchmarkData,sectorData){
 
   const recentDown=downVolumeAverage(r,r.length-5,r.length);
   const priorDown=downVolumeAverage(r,r.length-15,r.length-5);
-  const sellingPressureFading=Number.isFinite(recentDown)&&Number.isFinite(priorDown)&&recentDown<priorDown*0.82;
+  const downCount=(start,end)=>r.slice(start,end).filter((x,j)=>start+j>0&&x.close<r[start+j-1].close&&Number.isFinite(x.volume)).length;
+  const sellingPressureFading=downCount(r.length-5,r.length)>=2&&downCount(r.length-15,r.length-5)>=3&&Number.isFinite(recentDown)&&Number.isFinite(priorDown)&&recentDown<priorDown*0.82;
 
   let trendScore=(weeklyUp?15:(last>ma50?8:2))+(dailyUp?15:(last>ma20?8:2));
   let momentumScore=clamp(10+(Number.isFinite(ret5)?ret5:0)*1.2+(Number.isFinite(ret20)?ret20:0)*0.4+(momentumImproving?5:0),0,25);
   const recentVolumeBoost=Number.isFinite(max5Rvol)?Math.max(0,max5Rvol-1):0;
   const directionalVolumeBoost=unusual5dDirection==='positive'?recentVolumeBoost:unusual5dDirection==='mixed'?recentVolumeBoost*0.35:0;
-  let volumeScore=clamp(7+directionalVolumeBoost*7+(sellingPressureFading?2:0),0,15);
+  let volumeScore=clamp(7+directionalVolumeBoost*7+(sellingPressureFading?2:0)-(unusual5dDirection==='negative'?2:0),0,15);
   let relativeScore=Number.isFinite(rs20)?clamp(6+rs20*0.55,0,12):null;
   // Sector RS is intentionally modest: useful tie-breaker, not a reason to hide an early Recovery.
   let sectorScore=Number.isFinite(sectorRs)?clamp(4+sectorRs*0.45,0,8):null;
@@ -232,7 +237,8 @@ function metrics(data,benchmarkData,sectorData){
   if(Number.isFinite(dist20)&&dist20>=-3&&dist20<=5) structureScore+=3;
   if(Number.isFinite(dist50)&&dist50>-4) structureScore+=4;
   structureScore=clamp(structureScore,0,15);
-  const score=clamp(trendScore+momentumScore+volumeScore+(Number.isFinite(relativeScore)?relativeScore:6)+(Number.isFinite(sectorScore)?sectorScore:4)+structureScore,0,100);
+  // Preserve ordering without clipping distinct raw totals above 100.
+  const score=(trendScore+momentumScore+volumeScore+(Number.isFinite(relativeScore)?relativeScore:6)+(Number.isFinite(sectorScore)?sectorScore:4)+structureScore)/105*100;
 
   let stage=null;
   // Stages describe chart maturity, not buy/sell quality.
@@ -244,10 +250,10 @@ function metrics(data,benchmarkData,sectorData){
     && (dailyUp||(last>ma50&&ret5>0))&&ret20>0&&rs20>-3&&pullback>-15;
   // Recovery needs an actual prior soft patch plus a visible recent improvement; this prevents
   // ordinary strong uptrends with a tiny dip from being mislabeled as early recovery.
-  const priorWeakness=Number.isFinite(prev5)&&prev5<=0;
+  const priorMa20=sma(c.slice(0,-5),20);
+  const priorWeakness=(Number.isFinite(prev5)&&prev5<=0)||(Number.isFinite(priorMa20)&&pricePrev5<priorMa20);
   const recovery=priorWeakness&&momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)
-    && ret5>=1&&pullback<=-2&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8
-    && ((Number.isFinite(max5Rvol)&&max5Rvol>=0.75&&unusual5dDirection!=='negative')||sellingPressureFading);
+    && ret5>=1&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8;
 
   if(established) stage='Established Move';
   else if(attractive) stage='Attractive Growth';
@@ -265,8 +271,9 @@ function metrics(data,benchmarkData,sectorData){
   if(!why.length) why.push('structure moved into the scan threshold');
 
   return {
-    price:round(last,2),ret5:round(ret5),ret20:round(ret20),ret60:round(ret60),rvol:round(rvol,2),\n    lastSession:dayKey(r.at(-1).t),dataAgeDays:round(ageDays(r.at(-1).t),1),
-    avgDollarVol:round(dollar20,0),pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
+    price:round(last,2),ret5:round(ret5),ret20:round(ret20),ret60:round(ret60),rvol:round(rvol,2),
+    lastSession:dayKey(r.at(-1).t),dataAgeDays:round(ageDays(r.at(-1).t),1),
+    avgDollarVol:dollar20,pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
     prev5:round(prev5,1),momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
@@ -303,36 +310,41 @@ function sectorSummary(liquid){
   }).sort((a,b)=>(b.ret20??-999)-(a.ret20??-999));
 }
 
+export function validateData(data,referenceDates){
+  if(data.currency!=='CAD') return 'non_cad_instrument';
+  const r=data.rows;
+  if(referenceDates.length<61||r.length<65) return 'insufficient_history';
+  if(dayKey(r.at(-1).t)!==referenceDates.at(-1)) return 'stale_data';
+  const dates=new Set(r.map(x=>dayKey(x.t)));
+  if(referenceDates.some(d=>!dates.has(d))) return 'missing_sessions';
+  if(r.slice(-61).some(x=>!Number.isFinite(x.volume)||x.volume<=0)) return 'missing_or_zero_volume';
+  return null;
+}
+
 export default async function handler(req,res){
   res.setHeader('Cache-Control','s-maxage=900, stale-while-revalidate=1800');
-  const minDollar=Math.max(1000000,Number(req.query.minDollar||5000000));
+  const minDollar=Number(req.query?.minDollar??5000000);
+  if(![2000000,5000000,10000000,25000000].includes(minDollar)) return res.status(400).json({error:'invalid_liquidity'});
 
   try{
-    const idxResults=await mapLimit(INDEXES,4,([s])=>chart(s));
+    const deadline=Date.now()+24000;
+    const symbols=[...new Set([...INDEXES.map(x=>x[0]),...Object.values(SECTOR_PROXY).filter(Boolean),...UNIQUE_UNIVERSE.map(x=>x[0])])];
+    const fetched=await mapLimit(symbols,16,s=>chart(s,'6mo','1d',deadline));
+    const bySymbol=Object.fromEntries(symbols.map((s,i)=>[s,fetched[i]]));
+    const benchmarkBySymbol=Object.fromEntries(symbols.filter(s=>bySymbol[s].status==='fulfilled').map(s=>[s,bySymbol[s].value]));
     const idx={};
-    idxResults.forEach((x,i)=>{
-      const [,name,region]=INDEXES[i];
-      if(x.status==='fulfilled'){
-        const c=x.value.rows.map(r=>r.close);
-        idx[name]={
-          symbol:INDEXES[i][0],region,price:round(c.at(-1),2),
-          ret5:round(pct(c.at(-1),c.at(-6))),ret20:round(pct(c.at(-1),c.at(-21)))
-        };
-      }
+    INDEXES.forEach(([symbol,name,region])=>{
+      const data=benchmarkBySymbol[symbol];if(!data) return;
+      const c=data.rows.map(r=>r.close);
+      idx[name]={symbol,region,price:round(c.at(-1)),ret5:round(pct(c.at(-1),c.at(-6))),ret20:round(pct(c.at(-1),c.at(-21)))};
     });
-    const benchmarkBySymbol={};
-    idxResults.forEach((x,i)=>{if(x.status==='fulfilled') benchmarkBySymbol[INDEXES[i][0]]=x.value});
     const tsxBenchmark=benchmarkBySymbol['^GSPTSE']||null;
-
-    const sectorSymbols=[...new Set(Object.values(SECTOR_PROXY))];
-    const sectorSettled=await mapLimit(sectorSymbols,5,s=>chart(s));
-    const sectorMap={};
-    sectorSettled.forEach((x,i)=>{
-      if(x.status==='fulfilled') sectorMap[sectorSymbols[i]]=x.value;
-    });
-
-    const settled=await mapLimit(UNIQUE_UNIVERSE,8,([s])=>chart(s));
-    const liquid=[],candidates=[],unavailable=[],failureDetails=[],rejectedLiquidity=[];
+    if(!tsxBenchmark?.rows?.length||ageDays(tsxBenchmark.rows.at(-1).t)>5) throw new Error('reference_market_unavailable');
+    const referenceDates=tsxBenchmark.rows.slice(-61).map(x=>dayKey(x.t));
+    const marketAsOf=referenceDates.at(-1);
+    const sectorMap=benchmarkBySymbol;
+    const settled=UNIQUE_UNIVERSE.map(([s])=>bySymbol[s]);
+    const liquid=[],contextLiquid=[],candidates=[],unavailable=[],failureDetails=[],rejectedLiquidity=[];
 
     settled.forEach((x,i)=>{
       const [symbol,company,sector]=UNIQUE_UNIVERSE[i];
@@ -341,12 +353,15 @@ export default async function handler(req,res){
         failureDetails.push({symbol,reason:x.reason?.name==='AbortError'?'timeout':String(x.reason?.message||'fetch_failed')});
         return;
       }
-      const benchmark=sector==='CDR'?(benchmarkBySymbol[CDR_BENCHMARK[symbol]]||benchmarkBySymbol['^GSPC']||null):tsxBenchmark;
+      const qualityError=validateData(x.value,referenceDates);
+      if(qualityError){unavailable.push(symbol);failureDetails.push({symbol,reason:qualityError});return;}
+      const benchmark=sector==='CDR'?(benchmarkBySymbol[CDR_BENCHMARK[symbol]]||null):tsxBenchmark;
       const m=metrics(x.value,benchmark,sectorMap[SECTOR_PROXY[sector]]);
       if(!m){unavailable.push(symbol);failureDetails.push({symbol,reason:'insufficient_history'});return}
       if(Number.isFinite(m.dataAgeDays)&&m.dataAgeDays>5){unavailable.push(symbol);failureDetails.push({symbol,reason:'stale_data'});return}
       if(!Number.isFinite(m.price)||!Number.isFinite(m.avgDollarVol)){unavailable.push(symbol);failureDetails.push({symbol,reason:'missing_price_or_volume'});return}
-      if(m.price<2 || m.avgDollarVol<minDollar){
+      if(x.value.rows.at(-1).rawClose>=2&&m.avgDollarVol>=2000000&&sector!=='CDR') contextLiquid.push({symbol,company,sector,...m});
+      if(x.value.rows.at(-1).rawClose<2 || m.avgDollarVol<minDollar){
         rejectedLiquidity.push({symbol,price:m.price,avgDollarVol:m.avgDollarVol});
         return;
       }
@@ -358,7 +373,7 @@ export default async function handler(req,res){
       if(m.stage) candidates.push(item);
     });
 
-    const canadianLiquid=liquid.filter(x=>x.sector!=='CDR');
+    const canadianLiquid=contextLiquid;
     const above50=canadianLiquid.filter(x=>x.above50Now===true).length;
     const above50Prev=canadianLiquid.filter(x=>x.above50Prev5===true).length;
     const eligibleNow=canadianLiquid.filter(x=>x.above50Now!==null).length;
@@ -382,8 +397,8 @@ export default async function handler(req,res){
     const strongest=sectors[0]||null;
     const weakest=sectors.at(-1)||null;
 
-    const canada20=avg([idx.TSX?.ret20,idx['TSX Venture']?.ret20]);
-    const usa20=avg([idx['S&P 500']?.ret20,idx.Nasdaq?.ret20,idx['Dow Jones']?.ret20,idx['Russell 2000']?.ret20]);
+    const canada20=idx.TSX?.ret20??null;
+    const usa20=idx['S&P 500']?.ret20??null;
     const marketContext={
       canada20:round(canada20,1),
       usa20:round(usa20,1),
@@ -410,8 +425,10 @@ export default async function handler(req,res){
       stageCounts
     };
 
+    const partial=unavailable.length>0;
+    if(partial) res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
     res.status(200).json({
-      asOf:new Date().toISOString(),minDollar,indexes:idx,breadth,sectors,marketContext,
+      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.1',partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
       items:candidates,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){

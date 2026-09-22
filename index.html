@@ -177,7 +177,7 @@ const pct=n=>Number.isFinite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'—';
 const cls=n=>n>0?'up':n<0?'down':'flat';
 const statusClass=s=>s==='Strong'?'strong':s==='Weak'?'weak':'neutral';
 function previousSnapshot(){
-  const snaps=state.history?.snapshots||[];
+  const snaps=(state.history?.snapshots||[]).filter(s=>s.version===state.data?.version&&s.minDollar===state.data?.minDollar&&s.marketAsOf&&s.marketAsOf<state.data?.marketAsOf);
   return snaps.length?snaps[snaps.length-1]:null;
 }
 function historyNote(x){
@@ -187,10 +187,8 @@ function historyNote(x){
   if(!prev) return '<span class="history-note up">New candidate</span>';
   const parts=[];
   if(prev.stage&&prev.stage!==x.stage) parts.push(`${prev.stage} → ${x.stage}`);
-  const delta=Number.isFinite(prev.score)&&Number.isFinite(x.score)?x.score-prev.score:null;
-  if(Number.isFinite(delta)&&Math.abs(delta)>=0.5) parts.push(`Hunter ${delta>0?'+':''}${delta.toFixed(1)}`);
   if(!parts.length) return '';
-  return `<span class="history-note ${delta>0?'up':delta<0?'down':'flat'}">${parts.join(' · ')}</span>`;
+  return `<span class="history-note flat">${parts.join(' · ')}</span>`;
 }
 
 function indexCard(name,obj){
@@ -231,7 +229,7 @@ function renderMarket(){
     <div class="market-grid">
       <div class="market-card">
         <h3>Market Breadth</h3>
-        <div class="hint">% of liquid names above their 50-day moving average</div>
+        <div class="hint">Canadian names above MA50 · fixed C$2M liquidity universe</div>
         <div class="breadth-main">
           <div class="breadth-number">${b.percentAbove50??'—'}%</div>
           <span class="status-pill ${statusClass(b.status)}">${b.status}</span>
@@ -242,7 +240,7 @@ function renderMarket(){
         </div>
         <div class="trend-line">
           <span class="trend-name">Breadth trend</span>
-          <span class="trend-value ${trendCls}">${trendArrow} ${b.trend} ${Number.isFinite(b.change5d)?'('+pct(b.change5d)+')':''}</span>
+          <span class="trend-value ${trendCls}">${trendArrow} ${b.trend} ${Number.isFinite(b.change5d)?'('+b.change5d+' pp)' :''}</span>
         </div>
       </div>
 
@@ -315,7 +313,7 @@ function card(x,kind,fa){
         <div class="mini"><div class="k">vs ${x.benchmarkLabel||"TSX"}</div><div class="v">${q(x.rs20)}</div></div>
       </div>
       <div class="why"><strong>Surfaced because</strong>${x.why.join(' · ')}</div>
-      <div class="score"><div class="bar"><div class="fill" style="width:${Math.max(4,Math.min(100,x.score))}%"></div></div><small>tap details</small></div>
+      <div class="score"><small>tap details</small></div>
       <div class="detail"><div class="detail-grid">
         <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
         <div class="pill">Pullback<b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
@@ -336,7 +334,7 @@ function render(){
   renderMarket();renderHunter();
   const d=state.data;
   document.querySelector('#status').innerHTML=
-    `<span class="dot"></span>${d.breadth.scanned}/${d.universeSize} liquid · ${d.breadth.candidates??d.items.length} candidates · ${new Date(d.asOf).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+    `<span class="dot"></span>${d.diagnostics?.liquid??d.breadth.scanned}/${d.universeSize} liquid · ${d.items.length} candidates · ${d.unavailable.length} unavailable${d.partial?" · Partial scan":""} · ${d.marketAsOf||""} · ${new Date(d.asOf).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
 }
 
 async function load(){
