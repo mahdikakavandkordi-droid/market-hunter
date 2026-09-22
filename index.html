@@ -72,6 +72,10 @@ button{border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 
 .sector-name{font-weight:750}
 .sector-status{font-size:9px;padding:4px 6px;border-radius:999px;width:max-content;font-weight:800}
 
+.regime-brief{margin:0 0 18px;padding:17px 18px;border:1px solid #2b3948;border-radius:17px;background:linear-gradient(135deg,rgba(103,168,255,.09),rgba(93,214,158,.045));box-shadow:var(--shadow)}
+.regime-brief-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:9px}.regime-brief h2{margin:0;font-size:16px}.regime-date{font-size:10px;color:var(--muted2)}
+.regime-sentence{font-size:13px;line-height:1.65;color:#dce5ed;max-width:920px}
+.regime-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:13px}.regime-chip{padding:9px 10px;border:1px solid rgba(37,48,60,.85);border-radius:11px;background:rgba(11,15,20,.38)}.regime-chip .name{font-size:9px;color:var(--muted2);text-transform:uppercase}.regime-chip .state{font-size:12px;font-weight:800;margin-top:4px}
 .takeaway{margin-top:12px;background:linear-gradient(135deg,rgba(103,168,255,.08),rgba(93,214,158,.045));border:1px solid #293746;border-radius:16px;padding:16px}
 .takeaway h3{margin:0 0 10px;font-size:14px}
 .takeaway-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -136,7 +140,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   .tabs{width:100%;display:grid;grid-template-columns:repeat(4,1fr);position:sticky;top:6px;z-index:20;backdrop-filter:blur(14px)}.tab{width:100%;padding:8px 5px;font-size:10px}
   .index-grid{grid-template-columns:1fr 1fr;gap:9px}.metric{padding:12px}.metric .v{font-size:19px}.metric .sub{font-size:10px}
   .market-grid{grid-template-columns:1fr}.sector-row{grid-template-columns:1.2fr .7fr .7fr .9fr}.sector-row>*:nth-child(4){display:none}.sector-row.head>*:nth-child(4){display:none}
-  .takeaway-grid{grid-template-columns:1fr 1fr}
+  .takeaway-grid{grid-template-columns:1fr 1fr}.regime-strip{grid-template-columns:1fr 1fr}.regime-brief{padding:14px}.regime-sentence{font-size:12px}
   .grid{grid-template-columns:1fr}.stage{margin-top:20px}.stage-head{grid-template-columns:1fr auto;align-items:center;gap:8px}
   .stage-main{align-items:flex-start;gap:8px}.stage-copy h2{font-size:16px}.stage-copy p{font-size:10px;white-space:normal}
   .badge{font-size:9px;padding:4px 7px;margin-top:1px}.card{padding:14px}.row{grid-template-columns:repeat(5,1fr)}
@@ -252,7 +256,16 @@ function renderMarket(){
   `).join('');
 
   const mc=d.marketContext||{};
+  const regimes=d.marketRegimes||{};
+  const regimeNames=['TSX','Nasdaq','S&P 500','TSX Venture'];
+  const regimeClass=r=>r==='Strong'||r==='Improving'?'up':r==='Weak'||r==='Weakening'?'down':'flat';
   document.querySelector('#marketContent').innerHTML=`
+    <div class="regime-brief">
+      <div class="regime-brief-top"><h2>Today's Market Read</h2><span class="regime-date">Market data · ${d.marketAsOf||'—'}</span></div>
+      <div class="regime-sentence">${mc.narrative||'Market summary is not available yet.'}</div>
+      <div class="regime-strip">${regimeNames.map(name=>`<div class="regime-chip"><div class="name">${name}</div><div class="state ${regimeClass(regimes[name]?.regime)}">${regimes[name]?.regime||'—'}</div></div>`).join('')}</div>
+    </div>
+
     <div class="region">
       <div class="section-title"><div><h2>Canada</h2><p>Major Canadian equity indexes</p></div></div>
       <div class="index-grid">${canada.map(n=>indexCard(n,d.indexes[n])).join('')}</div>
