@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import handler,{metrics,validateData} from '../api/scan.js';
+import handler,{metrics,validateData,dailyStructure} from '../api/scan.js';
 
 const dates=[];
 for(let t=Date.UTC(2025,0,1)/1000;dates.length<126;t+=86400){
@@ -37,6 +37,30 @@ await handler({query:{minDollar:'bad'}},{setHeader(){},status(n){status=n;return
 assert.equal(status,400);assert.equal(payload.error,'invalid_liquidity');
 console.log('PASS: RSI, 20-session RVOL, missing/stale/zero data, aligned RS, recovery after negative volume, all five spike ages, invalid liquidity');
 
+// Daily structure is informational only: wick-through is not a close breakout,
+// and a prior close breakout that falls back under the pivot is a failed break.
+const structureRows=Array.from({length:15},(_,i)=>({t:dates[i],close:100,rawClose:100,high:104,low:96,volume:100000}));
+structureRows[8]={...structureRows[8],high:110,low:95};
+structureRows[9]={...structureRows[9],high:106,low:97};
+structureRows[10]={...structureRows[10],high:105,low:98};
+structureRows[14]={...structureRows[14],high:111,low:96,close:109,rawClose:109};
+let ds=dailyStructure(structureRows);
+assert.equal(ds.localHigh,110);
+assert.equal(ds.localLow,95);
+assert.equal(ds.highState,'failed_high_break','wick above a local high must not count as a close breakout');
+assert.equal(ds.lowState,'local_low_held');
+structureRows[14]={...structureRows[14],close:111,rawClose:111};
+assert.equal(dailyStructure(structureRows).highState,'local_high_broken');
+structureRows[13]={...structureRows[13],close:111,rawClose:111};
+structureRows[14]={...structureRows[14],close:109,rawClose:109,high:109};
+assert.equal(dailyStructure(structureRows).highState,'failed_high_break','re-entry below a prior close breakout must be marked failed');
+structureRows[14]={...structureRows[14],low:94,close:96,rawClose:96};
+assert.equal(dailyStructure(structureRows).lowState,'failed_low_break','wick below a local low that closes back above must be a failed break');
+structureRows[14]={...structureRows[14],close:94,rawClose:94};
+assert.equal(dailyStructure(structureRows).lowState,'local_low_broken');
+console.log('PASS: daily local high/low, close-vs-wick breakout and failed-break detection');
+
+
 // End-to-end fetch fixtures: recover a real missing bar, retain unresolved gaps,
 // never admit a USD CDR, and apply dollar-volume boundaries without rounding.
 const {UNIVERSE}=await import('../lib/universe.js');
@@ -73,16 +97,21 @@ try{
     scans.push(output);
   }
   assert(scans.every(x=>JSON.stringify(x.breadth)===JSON.stringify(scans[0].breadth)));
+  // Valid names remain retrievable for a saved watchlist even when the active
+  // liquidity threshold excludes them; unavailable data keeps its failure reason.
+  assert(scans.at(-1).availableItems.some(x=>x.symbol==='RY.TO'));
+  assert(!scans.at(-1).items.some(x=>x.symbol==='RY.TO'));
+  assert(scans.at(-1).failureDetails.some(x=>x.symbol==='AEM.TO'&&x.reason==='missing_sessions'));
   assert(!requests.some(([s,h])=>s==='AAPL.TO'&&h.startsWith('query2')));
 }finally{globalThis.fetch=originalFetch}
 console.log('PASS: expanded universe, alternate fetch recovery, unresolved gap isolation, CAD enforcement, all liquidity boundaries and fixed breadth');
 
 const {isEarlyWatch}=await import('../api/scan.js');
-const early={stage:null,ret20:-8,ret5:-1,momentumImproving:true,meaningfulWeakness:true,advancedNearHigh:false,positiveUnusual5d:true,sellingPressureFading:false};
+const early={stage:null,ret20:-8,ret5:-1,momentumImproving:true,meaningfulWeakness:true,advancedNearHigh:false,nearRecentLow:true,volumeShockNearLow:true,spikeReturn:0,positiveUnusual5d:true,sellingPressureFading:false,downsideSlowing:true};
 assert.equal(isEarlyWatch(early),true,'slowing decline with positive volume may be watched');
 assert.equal(isEarlyWatch({...early,ret5:2}),true);
 assert.equal(isEarlyWatch({...early,positiveUnusual5d:false,sellingPressureFading:true}),true);
-for(const change of [{stage:'Recovery'},{ret20:3},{momentumImproving:false},{positiveUnusual5d:false},{ret20:null},{ret5:null},{meaningfulWeakness:false},{advancedNearHigh:true}]){
+for(const change of [{stage:'Recovery'},{ret20:3},{nearRecentLow:false},{volumeShockNearLow:false,downsideSlowing:false,spikeReturn:-4},{ret20:null},{meaningfulWeakness:false},{advancedNearHigh:true}]){
  assert.equal(isEarlyWatch({...early,...change}),false,JSON.stringify(change));
 }
 // A mature advance with a brief dip must never become an early recovery.
