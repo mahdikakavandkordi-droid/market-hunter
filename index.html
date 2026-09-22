@@ -446,7 +446,7 @@ function previousCandidateMap(){
 }
 function changeReasons(x,prev){
   const reasons=[];
-  if(!prev){reasons.push('NEW · surfaced today');return reasons}
+  if(!prev) return reasons; // merely entering the candidate list is not a suspicious event
   if(prev.stage&&prev.stage!==x.stage) reasons.push(`STAGE · ${prev.stage} → ${x.stage}`);
   if(Number.isFinite(prev.momentumShift)&&Number.isFinite(x.momentumShift)){
     const d=x.momentumShift-prev.momentumShift;
@@ -456,7 +456,7 @@ function changeReasons(x,prev){
   if(prev.highState!==x.highState&&x.highState==='local_high_broken') reasons.push('Local high broken');
   if(prev.lowState!==x.lowState&&x.lowState==='failed_low_break') reasons.push('Local low reclaimed');
   if(prev.lowState!==x.lowState&&x.lowState==='local_low_broken') reasons.push('Local low broken');
-  if(Number.isFinite(x.rvol)&&x.rvol>=1.4&&(!Number.isFinite(prev.rvol)||prev.rvol<1.4)) reasons.push(`Volume elevated · ${x.rvol.toFixed(1)}×`);
+  if(Number.isFinite(x.rvol)&&x.rvol>=1.4&&(!Number.isFinite(prev.rvol)||prev.rvol<1.4)) reasons.push(`Unusual volume appeared · ${x.rvol.toFixed(1)}×`);
   return reasons;
 }
 function renderTop5(){
@@ -489,11 +489,10 @@ function renderChanges(){
   const prevItems=prev?[...(prev.items||[]),...(prev.earlyWatch||[])]:[];
   const prevMap=new Map(prevItems.map(x=>[x.symbol,x]));
   const changed=current.map(x=>({...x,_reasons:changeReasons(x,prevMap.get(x.symbol))})).filter(x=>x._reasons.length);
-  const dropped=prevItems.filter(x=>!currentMap.has(x.symbol)).map(x=>({...x,_reasons:['EXITED · no longer passes the current Hunter setup'],_dropped:true}));
-  const rows=[...changed,...dropped];
+  const rows=changed;
   document.querySelector('#changesContent').innerHTML=`
     <section class="stage">
-      <div class="stage-head"><div class="stage-main"><div class="stage-copy"><h2>Changes</h2><p>What materially changed since the previous saved market session — including names that dropped out.</p></div></div><span class="shown">${rows.length}</span></div>
+      <div class="stage-head"><div class="stage-main"><div class="stage-copy"><h2>Changes</h2><p>Only unusual behavior changes since the previous saved session: stage shifts, momentum turns, structure breaks/reclaims, or newly unusual volume.</p></div></div><span class="shown">${rows.length}</span></div>
       <div class="change-list">${rows.length?rows.map(x=>`<div class="change-item ${x._dropped?'dropped':''}"><div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage||'Exited'}</span></div><p>${x._reasons.join(' · ')}</p><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button></div>`).join(''):'<div class="empty">No material changes detected versus the previous saved session.</div>'}</div>
     </section>`;
   document.querySelectorAll('#changesContent .tv-link').forEach(el=>el.addEventListener('click',()=>openTradingView(el.dataset.tv)));
