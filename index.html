@@ -86,6 +86,14 @@ button{border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
 .card{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow);cursor:pointer;transition:border-color .16s ease,transform .16s ease}
 .card:hover{border-color:#3a4858;transform:translateY(-1px)}
+.card-actions{display:flex;align-items:center;gap:6px}
+.heart{background:transparent;color:var(--muted);padding:3px 5px;min-height:auto;font-size:20px;line-height:1}
+.heart.saved{color:var(--red)}
+.tv-link{display:inline-flex;align-items:center;justify-content:center;color:var(--blue);font-size:10px;font-weight:800;text-decoration:none;border:1px solid #2b3c50;border-radius:8px;padding:5px 7px}
+.watchlist{margin:0 0 22px}.watchlist .grid{margin-top:10px}
+.watch-empty{color:var(--muted);font-size:11px;padding:14px;border:1px dashed var(--line);border-radius:12px}
+.remove-hint{display:none;color:var(--muted2);font-size:9px;margin-top:7px}
+.watchlist .remove-hint{display:block}
 .top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .ticker-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ticker{font-size:21px;font-weight:850;letter-spacing:-.025em}
 .company{font-size:12px;color:var(--muted);margin-top:3px}.sector{font-size:10px;color:var(--muted2);margin-top:3px}
@@ -171,7 +179,14 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 </div>
 
 <script>
-const state={data:null,history:[],tab:'market',expanded:new Set()};
+const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
+const state={data:null,history:[],tab:'market',expanded:new Set(),watchlist:savedWatch()};
+function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
+function toggleWatch(symbol){state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);persistWatch();renderHunter()}
+function tradingViewUrl(symbol){
+  const clean=symbol.replace(/\.TO$/,'');
+  return 'https://www.tradingview.com/chart/?symbol=TSX%3A'+encodeURIComponent(clean);
+}
 const fmt=n=>Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
 const pct=n=>Number.isFinite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'—';
 const cls=n=>n>0?'up':n<0?'down':'flat';
@@ -269,6 +284,15 @@ function renderMarket(){
 function renderHunter(){
   const d=state.data;if(!d)return;
   const top=+document.querySelector('#topN').value;
+  const universe=[...(d.items||[]),...(d.watchItems||[])];
+  const bySymbol=new Map(universe.map(x=>[x.symbol,x]));
+  const watched=[...state.watchlist].map(s=>bySymbol.get(s)).filter(Boolean);
+  const watchHtml=`
+    <section class="watchlist">
+      <div class="section-title"><div><h2>♥ Watchlist</h2><p>Saved on this device · swipe left on mobile to remove</p></div><span class="shown">${watched.length}</span></div>
+      <div class="grid">${watched.length?watched.map(x=>card(x,(x.stage==='Established Move'?'established':x.stage==='Attractive Growth'?'attractive':'recovery'),x.stage||'Early Watch',true)).join(''):'<div class="watch-empty">Tap the heart on any candidate to keep it here.</div>'}</div>
+    </section>`;
+
   const defs=[
     ['Recovery','recovery','مشکوک به تغییر / ریکاوری','Rebounding after a meaningful decline, with price back at or above MA20.'],
     ['Attractive Growth','attractive','در حال رشد ولی جذاب','Trend is constructive and still worth a chart check.'],
@@ -276,7 +300,7 @@ function renderHunter(){
     ['Early Watch','recovery','زیر نظر برای بهبود','Still weak over 20 days; momentum improving with volume support. 5D may remain negative. Reversal is unconfirmed.']
   ];
 
-  document.querySelector('#stages').innerHTML=defs.map(([name,kind,fa,sub])=>{
+  document.querySelector('#stages').innerHTML=watchHtml+defs.map(([name,kind,fa,sub])=>{
     const all=name==='Early Watch'?(d.watchItems||[]):d.items.filter(x=>x.stage===name);
     const expanded=state.expanded.has(name);
     const xs=expanded?all:all.slice(0,top);
@@ -301,9 +325,24 @@ function renderHunter(){
   }));
 
   document.querySelectorAll('.card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
+  document.querySelectorAll('.heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
+  document.querySelectorAll('.tv-link').forEach(el=>el.addEventListener('click',e=>e.stopPropagation()));
+  document.querySelectorAll('.watchlist .card').forEach(el=>{
+    let startX=null;
+    el.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});
+    el.addEventListener('touchend',e=>{
+      if(startX===null)return;
+      const dx=e.changedTouches[0].clientX-startX;
+      startX=null;
+      if(dx<-55){
+        const symbol=el.querySelector('.heart')?.dataset.watch;
+        if(symbol){state.watchlist.delete(symbol);persistWatch();renderHunter()}
+      }
+    },{passive:true});
+  });
 }
 
-function card(x,kind,fa){
+function card(x,kind,fa,inWatch=false){
   const q=n=>`<span class="${cls(n)}">${pct(n)}</span>`;
   const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
   return `
@@ -313,16 +352,23 @@ function card(x,kind,fa){
           <div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge ${kind}">${fa}</span></div>
           <div class="company">${x.company}</div><div class="sector">${x.sector}</div>${historyNote(x)}
         </div>
-        <div class="price">${fmt(x.price)}</div>
+        <div>
+          <div class="card-actions">
+            <button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}" title="Watchlist">${state.watchlist.has(x.symbol)?'♥':'♡'}</button>
+            <a class="tv-link" href="${tradingViewUrl(x.symbol)}" target="_blank" rel="noopener" title="Open chart">Chart ↗</a>
+          </div>
+          <div class="price">${fmt(x.price)}</div>
+        </div>
       </div>
       <div class="row">
         <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
         <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
         <div class="mini"><div class="k">RVOL</div><div class="v">${fmt(x.rvol)}×</div></div>
-        <div class="mini"><div class="k">vs ${x.benchmarkLabel||"TSX"}</div><div class="v">${q(x.rs20)}</div></div>
+        <div class="mini"><div class="k">RSI 14</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
       </div>
       <div class="why"><strong>Surfaced because</strong>${x.why.join(' · ')}</div>
       <div class="score"><small>tap details</small></div>
+      ${inWatch?'<div class="remove-hint">Swipe left to remove</div>':''}
       <div class="detail"><div class="detail-grid">
         <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
         <div class="pill">Pullback<b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
