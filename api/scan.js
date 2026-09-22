@@ -134,6 +134,20 @@ function metrics(data,tsxRet20,sectorRet20){
   const volumeVsAvg=Number.isFinite(rvol)?(rvol-1)*100:null;
   const trendState=dailyUp&&weeklyUp?'Daily + Weekly aligned':weeklyUp?'Weekly up · Daily mixed':dailyUp?'Daily up · Weekly mixed':'Trend mixed';
 
+  const last5Volumes=v.slice(-5);
+  const prior20Vol=avg(v.slice(-25,-5));
+  let max5Rvol=null,max5RvolAgo=null;
+  if(Number.isFinite(prior20Vol)&&prior20Vol>0&&last5Volumes.length){
+    let max=-Infinity,idx=-1;
+    last5Volumes.forEach((vol,i)=>{const ratio=vol/prior20Vol;if(ratio>max){max=ratio;idx=i}});
+    max5Rvol=max;
+    max5RvolAgo=last5Volumes.length-1-idx;
+  }
+  const unusual5d=Number.isFinite(max5Rvol)&&max5Rvol>=1.4;
+  const unusual5dLabel=!Number.isFinite(max5Rvol)?'—':unusual5d
+    ? `${round(max5Rvol,1)}× volume ${max5RvolAgo===0?'today':max5RvolAgo===1?'1 day ago':max5RvolAgo+' days ago'}`
+    : `No unusual volume · max ${round(max5Rvol,1)}×`;
+
   const recentDown=downVolumeAverage(r,r.length-5,r.length);
   const priorDown=downVolumeAverage(r,r.length-15,r.length-5);
   const sellingPressureFading=Number.isFinite(recentDown)&&Number.isFinite(priorDown)&&recentDown<priorDown*0.82;
@@ -173,6 +187,7 @@ function metrics(data,tsxRet20,sectorRet20){
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
     momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
+    unusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,unusual5dLabel,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
