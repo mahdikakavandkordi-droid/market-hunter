@@ -316,14 +316,19 @@ export function validateData(data,referenceDates){
 // Supplemental observation list, not a fourth discovery stage or a reversal signal.
 export function isEarlyWatch(m){
   if(m.stage!==null||m.meaningfulWeakness!==true||m.advancedNearHigh===true) return false;
-  if(!Number.isFinite(m.ret20)||m.ret20>=0) return false;
-  // Two explainable paths:
-  // 1) the existing momentum-turn path;
-  // 2) a TELUS-like exhaustion path: abnormal volume near a recent low while
-  //    downside momentum is slowing or selling volume is fading.
-  const momentumTurn=m.momentumImproving===true&&(m.positiveUnusual5d===true||m.sellingPressureFading===true);
-  const exhaustion=m.volumeShockNearLow===true&&(m.downsideSlowing===true||m.sellingPressureFading===true);
-  return momentumTurn||exhaustion;
+  if(!Number.isFinite(m.ret20)||m.ret20>=-3) return false;
+  // Early Watch is a selective pre-reversal hunt, not a bucket for every weak stock.
+  // Every name must still be close to a recent low; then it needs either:
+  // A) abnormal participation/absorption near that low, or
+  // B) fading sell volume plus a clear momentum improvement.
+  if(m.nearRecentLow!==true) return false;
+  const absorption=m.volumeShockNearLow===true&&(
+    m.downsideSlowing===true||
+    m.sellingPressureFading===true||
+    (Number.isFinite(m.spikeReturn)&&m.spikeReturn>=-2.5)
+  );
+  const controlledTurn=m.sellingPressureFading===true&&m.momentumImproving===true;
+  return absorption||controlledTurn;
 }
 
 export default async function handler(req,res){
@@ -394,11 +399,14 @@ export default async function handler(req,res){
       if(sector==='CDR'&&Array.isArray(item.why)) item.why=item.why.map(w=>w==='outperforming TSX'?`outperforming ${benchmarkLabel}`:w);
       liquid.push(item);
       if(m.stage) candidates.push(item);
-      else if(isEarlyWatch(m)) watchItems.push({...item,why:[
-        'prior decline; 20D still negative',
-        m.ret5>0?'5D positive; momentum improving':'5D still non-positive; decline slowing',
-        m.positiveUnusual5d?'positive unusual-volume session within last 5 sessions':'selling volume fading'
-      ]});
+      else if(isEarlyWatch(m)){
+        const earlyWhy=['meaningful decline; still near recent low'];
+        if(m.volumeShockNearLow) earlyWhy.push(`volume shock near low · ${m.max5Rvol??'—'}×`);
+        if(m.downsideSlowing) earlyWhy.push('downside momentum slowing');
+        else if(m.sellingPressureFading) earlyWhy.push('selling volume fading');
+        else if(Number.isFinite(m.spikeReturn)&&m.spikeReturn>=-2.5) earlyWhy.push('high-volume session held relatively firm');
+        watchItems.push({...item,why:earlyWhy.slice(0,3)});
+      }
     });
 
     const canadianLiquid=contextLiquid;
