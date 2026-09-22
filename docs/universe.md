@@ -48,3 +48,19 @@ fixed C$2M Canadian sample; expanding membership can change breadth and sector
 results even without price changes. Version `hunter-1.2` prevents comparisons
 with history from the previous universe version. Historical membership must be
 archived separately before any future backtest.
+
+## Shortlists and early observation
+
+The default is now three results per list, selectable to five. Each list has an
+independent Show all / Show top toggle. Existing technical scores order charts
+for review, not expected returns; weights have not been optimized or validated
+as predictive probabilities.
+
+`watchItems` is a supplemental Early Watch list, not a fourth stage. It contains
+only otherwise unclassified, validated, liquid instruments with negative 20D
+returns, positive 5D returns, the existing momentum-improvement flag, and either
+price at/above MA20 or the existing fading-selling-volume flag. It shares the
+existing technical ordering and never duplicates the three classified lists.
+It does not assert a bottom or confirmed reversal. Stocks merely falling more
+slowly still fail the positive-5D requirement. No indicator or ranking weight
+was added. Existing stage/history semantics are unchanged.

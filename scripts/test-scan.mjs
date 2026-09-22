@@ -76,3 +76,12 @@ try{
   assert(!requests.some(([s,h])=>s==='AAPL.TO'&&h.startsWith('query2')));
 }finally{globalThis.fetch=originalFetch}
 console.log('PASS: expanded universe, alternate fetch recovery, unresolved gap isolation, CAD enforcement, all liquidity boundaries and fixed breadth');
+
+const {isEarlyWatch}=await import('../api/scan.js');
+const early={stage:null,ret20:-8,ret5:2,momentumImproving:true,dist20:1,sellingPressureFading:false};
+assert.equal(isEarlyWatch(early),true);
+assert.equal(isEarlyWatch({...early,dist20:-3,sellingPressureFading:true}),true);
+for(const change of [{stage:'Recovery'},{ret20:3},{ret5:-1},{momentumImproving:false},{dist20:-3},{ret20:null},{ret5:null}]){
+  assert.equal(isEarlyWatch({...early,...change}),false,JSON.stringify(change));
+}
+console.log('PASS: early watch requires weakness and improvement, excludes continuing declines and classified candidates');

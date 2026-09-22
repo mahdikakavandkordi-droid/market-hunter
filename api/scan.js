@@ -290,6 +290,13 @@ export function validateData(data,referenceDates){
   return null;
 }
 
+// Supplemental observation list, not a fourth discovery stage or a reversal signal.
+export function isEarlyWatch(m){
+  return m.stage===null&&Number.isFinite(m.ret20)&&m.ret20<0
+    &&Number.isFinite(m.ret5)&&m.ret5>0&&m.momentumImproving===true
+    &&((Number.isFinite(m.dist20)&&m.dist20>=0)||m.sellingPressureFading===true);
+}
+
 export default async function handler(req,res){
   res.setHeader('Cache-Control','s-maxage=900, stale-while-revalidate=1800');
   const minDollar=Number(req.query?.minDollar??5000000);
@@ -331,7 +338,7 @@ export default async function handler(req,res){
     });
     const sectorMap=benchmarkBySymbol;
     const settled=UNIQUE_UNIVERSE.map(([s])=>bySymbol[s]);
-    const liquid=[],contextLiquid=[],candidates=[],unavailable=[],failureDetails=[],rejectedLiquidity=[];
+    const liquid=[],contextLiquid=[],candidates=[],watchItems=[],unavailable=[],failureDetails=[],rejectedLiquidity=[];
 
     settled.forEach((x,i)=>{
       const [symbol,company,sector]=UNIQUE_UNIVERSE[i];
@@ -358,6 +365,11 @@ export default async function handler(req,res){
       if(sector==='CDR'&&Array.isArray(item.why)) item.why=item.why.map(w=>w==='outperforming TSX'?`outperforming ${benchmarkLabel}`:w);
       liquid.push(item);
       if(m.stage) candidates.push(item);
+      else if(isEarlyWatch(m)) watchItems.push({...item,why:[
+        '20D remains negative; 5D has turned positive',
+        'momentum improving',
+        m.dist20>=0?'price at or above MA20':'selling volume fading'
+      ]});
     });
 
     const canadianLiquid=contextLiquid;
@@ -395,7 +407,9 @@ export default async function handler(req,res){
       weakestSector:weakest?.sector||null
     };
 
-    candidates.sort((a,b)=>b.score-a.score);
+    const priority=(a,b)=>b.score-a.score||a.symbol.localeCompare(b.symbol);
+    candidates.sort(priority);
+    watchItems.sort(priority);
 
     const stageCounts={
       Recovery:candidates.filter(x=>x.stage==='Recovery').length,
@@ -409,6 +423,7 @@ export default async function handler(req,res){
       liquidityRejected:rejectedLiquidity.length,
       liquid:liquid.length,
       candidates:candidates.length,
+      earlyWatch:watchItems.length,
       recoveryAttempted:retrySymbols.length,
       recovered,
       elapsedMs:Date.now()-started,
@@ -419,7 +434,7 @@ export default async function handler(req,res){
     if(partial) res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
     res.status(200).json({
       asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.2',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
-      items:candidates,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
+      items:candidates,watchItems,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){
     res.status(500).json({error:'scan_failed',message:e?.message||'Unknown error'});

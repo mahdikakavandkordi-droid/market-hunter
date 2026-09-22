@@ -144,7 +144,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   </div>
   <div class="toolbar">
     <div class="controls">
-      <label class="control"><span>Show</span><strong>Top</strong><select id="topN"><option>3</option><option selected>5</option><option>10</option></select></label>
+      <label class="control"><span>Show</span><strong>Top</strong><select id="topN"><option selected>3</option><option>5</option></select></label>
       <label class="control"><span>Min $ volume</span><strong>Liquidity</strong><select id="liq"><option value="2000000">$2M</option><option value="5000000" selected>$5M</option><option value="10000000">$10M</option><option value="25000000">$25M</option></select></label>
       <button id="refresh">Refresh</button>
     </div>
@@ -171,7 +171,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 </div>
 
 <script>
-const state={data:null,history:[],tab:'market'};
+const state={data:null,history:[],tab:'market',expanded:new Set()};
 const fmt=n=>Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
 const pct=n=>Number.isFinite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'—';
 const cls=n=>n>0?'up':n<0?'down':'flat';
@@ -272,24 +272,33 @@ function renderHunter(){
   const defs=[
     ['Recovery','recovery','مشکوک به تغییر / ریکاوری','Weakness is stabilizing; early improvement is showing.'],
     ['Attractive Growth','attractive','در حال رشد ولی جذاب','Trend is constructive and still worth a chart check.'],
-    ['Established Move','established','رشد کرده','A clearer, more mature move that remains on radar.']
+    ['Established Move','established','رشد کرده','A clearer, more mature move that remains on radar.'],
+    ['Early Watch','recovery','زیر نظر برای بهبود','Still weak over 20 days, with early improvement. Not yet a Recovery candidate; reversal is unconfirmed.']
   ];
 
   document.querySelector('#stages').innerHTML=defs.map(([name,kind,fa,sub])=>{
-    const all=d.items.filter(x=>x.stage===name);
-    const xs=all.slice(0,top);
+    const all=name==='Early Watch'?(d.watchItems||[]):d.items.filter(x=>x.stage===name);
+    const expanded=state.expanded.has(name);
+    const xs=expanded?all:all.slice(0,top);
     return `
       <section class="stage">
         <div class="stage-head">
           <div class="stage-main">
             <span class="badge ${kind}">${fa}</span>
-            <div class="stage-copy"><h2>${name}</h2><p>${sub}</p></div>
+            <div class="stage-copy"><h2>${name}</h2><p>${sub}</p><p>Ordered for chart review using technical conditions; not a probability of gain.</p></div>
           </div>
           <span class="shown">${xs.length} of ${all.length}</span>
         </div>
         <div class="grid">${xs.length?xs.map(x=>card(x,kind,fa)).join(''):'<div class="empty">No names passed this stage at the current liquidity threshold.</div>'}</div>
+        ${all.length>top?`<button class="show-more" data-stage="${name}" aria-expanded="${expanded}">${expanded?'Show top '+top:'Show all '+all.length}</button>`:''}
       </section>`;
   }).join('');
+
+  document.querySelectorAll('.show-more').forEach(el=>el.addEventListener('click',()=>{
+    const name=el.dataset.stage;
+    if(state.expanded.has(name)) state.expanded.delete(name);else state.expanded.add(name);
+    renderHunter();
+  }));
 
   document.querySelectorAll('.card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
 }
@@ -339,6 +348,7 @@ function render(){
 }
 
 async function load(){
+  state.expanded.clear();
   const app=document.querySelector('#app'),err=document.querySelector('#error');
   app.classList.add('loading');err.style.display='none';
   try{
@@ -371,7 +381,7 @@ document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>
 }));
 document.querySelector('#refresh').addEventListener('click',load);
 document.querySelector('#liq').addEventListener('change',load);
-document.querySelector('#topN').addEventListener('change',renderHunter);
+document.querySelector('#topN').addEventListener('change',()=>{state.expanded.clear();renderHunter()});
 load();
 </script>
 </body>
