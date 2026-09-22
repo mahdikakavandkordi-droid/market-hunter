@@ -1,21 +1,24 @@
 const UNIVERSE = [
-  // Canadian financials
   ['RY.TO','Royal Bank of Canada','Financials'],['TD.TO','Toronto-Dominion Bank','Financials'],['BMO.TO','Bank of Montreal','Financials'],['BNS.TO','Bank of Nova Scotia','Financials'],['CM.TO','CIBC','Financials'],['NA.TO','National Bank of Canada','Financials'],['MFC.TO','Manulife Financial','Financials'],['SLF.TO','Sun Life Financial','Financials'],['IFC.TO','Intact Financial','Financials'],
-  // Energy
   ['CNQ.TO','Canadian Natural Resources','Energy'],['SU.TO','Suncor Energy','Energy'],['CVE.TO','Cenovus Energy','Energy'],['IMO.TO','Imperial Oil','Energy'],['TOU.TO','Tourmaline Oil','Energy'],['ARX.TO','ARC Resources','Energy'],['ENB.TO','Enbridge','Energy'],['TRP.TO','TC Energy','Energy'],
-  // Materials / mining
   ['ABX.TO','Barrick Mining','Materials'],['AEM.TO','Agnico Eagle Mines','Materials'],['WPM.TO','Wheaton Precious Metals','Materials'],['NTR.TO','Nutrien','Materials'],['TECK-B.TO','Teck Resources','Materials'],['FM.TO','First Quantum Minerals','Materials'],
-  // Industrials
   ['CNR.TO','Canadian National Railway','Industrials'],['CP.TO','Canadian Pacific Kansas City','Industrials'],['WSP.TO','WSP Global','Industrials'],['TFII.TO','TFI International','Industrials'],['ATRL.TO','AtkinsRéalis','Industrials'],
-  // Technology
   ['SHOP.TO','Shopify','Technology'],['CSU.TO','Constellation Software','Technology'],['OTEX.TO','OpenText','Technology'],['KXS.TO','Kinaxis','Technology'],['DSG.TO','Descartes Systems','Technology'],
-  // Telecom / utilities / consumer
-  ['BCE.TO','BCE','Communication'],['T.TO','TELUS','Communication'],['RCI-B.TO','Rogers Communications','Communication'],['FTS.TO','Fortis','Utilities'],['EMA.TO','Emera','Utilities'],['L.TO','Loblaw Companies','Consumer'],['ATD.TO','Alimentation Couche-Tard','Consumer'],['DOL.TO','Dollarama','Consumer'],['QSR.TO','Restaurant Brands International','Consumer'],['MG.TO','Magna International','Consumer'],
-  // Canadian-traded CDRs. Yahoo Finance uses the .NE suffix for these Canadian listings.
+  ['BCE.TO','BCE','Communication'],['T.TO','TELUS','Communication'],['RCI-B.TO','Rogers Communications','Communication'],
+  ['FTS.TO','Fortis','Utilities'],['EMA.TO','Emera','Utilities'],
+  ['L.TO','Loblaw Companies','Consumer'],['ATD.TO','Alimentation Couche-Tard','Consumer'],['DOL.TO','Dollarama','Consumer'],['QSR.TO','Restaurant Brands International','Consumer'],['MG.TO','Magna International','Consumer'],
   ['AAPL.NE','Apple CDR','CDR'],['MSFT.NE','Microsoft CDR','CDR'],['NVDA.NE','Nvidia CDR','CDR'],['AMZN.NE','Amazon CDR','CDR'],['GOOG.NE','Alphabet CDR','CDR'],['META.NE','Meta CDR','CDR'],['TSLA.NE','Tesla CDR','CDR'],['AMD.NE','AMD CDR','CDR'],['COST.NE','Costco CDR','CDR']
 ];
 
-const INDEXES = [['^GSPTSE','TSX'],['^GSPC','S&P 500'],['^IXIC','Nasdaq']];
+const INDEXES = [
+  ['^GSPTSE','TSX','Canada'],
+  ['^SPCDNX','TSX Venture','Canada'],
+  ['^GSPC','S&P 500','USA'],
+  ['^IXIC','Nasdaq','USA'],
+  ['^DJI','Dow Jones','USA'],
+  ['^RUT','Russell 2000','USA']
+];
+
 const SECTOR_PROXY = {
   Financials:'XFN.TO', Energy:'XEG.TO', Materials:'XMA.TO', Industrials:'XGI.TO',
   Technology:'XIT.TO', Communication:'XTL.TO', Utilities:'XUT.TO', Consumer:'XST.TO', CDR:'^GSPC'
@@ -26,6 +29,8 @@ function sma(a,n){return a.length>=n?avg(a.slice(-n)):null}
 function pct(a,b){return Number.isFinite(a)&&Number.isFinite(b)&&b!==0?(a/b-1)*100:null}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
 function round(x,d=2){return Number.isFinite(x)?Number(x.toFixed(d)):null}
+function breadthLabel(n){return !Number.isFinite(n)?'Unavailable':n>=60?'Strong':n<40?'Weak':'Neutral'}
+function direction(delta){return !Number.isFinite(delta)?'Flat':delta>=3?'Improving':delta<=-3?'Weakening':'Stable'}
 
 async function chart(symbol,range='6mo',interval='1d'){
   const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}&includePrePost=false&events=div%2Csplits`;
@@ -90,6 +95,11 @@ function metrics(data,tsxRet20,sectorRet20){
   if(c.length<65) return null;
 
   const last=c.at(-1),ma20=sma(c,20),ma50=sma(c,50);
+  const prev5=c.at(-6);
+  const prev50=c.length>=55?avg(c.slice(-55,-5)):null;
+  const above50Now=Number.isFinite(ma50)?last>ma50:null;
+  const above50Prev5=Number.isFinite(prev50)?prev5>prev50:null;
+
   const vol20=avg(v.slice(-20,-1));
   const rvol=vol20?v.at(-1)/vol20:null;
   const dollar20=avg(r.slice(-20).map(x=>x.close*(x.volume||0)));
@@ -140,7 +150,7 @@ function metrics(data,tsxRet20,sectorRet20){
     price:round(last,2),ret5:round(ret5),ret20:round(ret20),ret60:round(ret60),rvol:round(rvol,2),
     avgDollarVol:round(dollar20,0),pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),
-    weeklyUp,dailyUp,momentumImproving,sellingPressureFading,
+    weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
@@ -149,18 +159,43 @@ function metrics(data,tsxRet20,sectorRet20){
   };
 }
 
+function sectorSummary(liquid){
+  const groups={};
+  for(const item of liquid){
+    (groups[item.sector]??=[]).push(item);
+  }
+  return Object.entries(groups).map(([sector,items])=>{
+    const now=items.filter(x=>x.above50Now===true).length;
+    const prev=items.filter(x=>x.above50Prev5===true).length;
+    const eligibleNow=items.filter(x=>x.above50Now!==null).length;
+    const eligiblePrev=items.filter(x=>x.above50Prev5!==null).length;
+    const breadth=eligibleNow?now/eligibleNow*100:null;
+    const breadthPrev=eligiblePrev?prev/eligiblePrev*100:null;
+    const breadthDelta=Number.isFinite(breadth)&&Number.isFinite(breadthPrev)?breadth-breadthPrev:null;
+    const avg5=avg(items.map(x=>x.ret5));
+    const avg20=avg(items.map(x=>x.ret20));
+    return {
+      sector,count:items.length,
+      breadth:round(breadth,0),breadthPrev5:round(breadthPrev,0),breadthDelta:round(breadthDelta,0),
+      breadthStatus:breadthLabel(breadth),trend:direction(breadthDelta),
+      ret5:round(avg5,1),ret20:round(avg20,1)
+    };
+  }).sort((a,b)=>(b.ret20??-999)-(a.ret20??-999));
+}
+
 export default async function handler(req,res){
   res.setHeader('Cache-Control','s-maxage=900, stale-while-revalidate=1800');
   const minDollar=Math.max(1000000,Number(req.query.minDollar||5000000));
 
   try{
-    const idxResults=await mapLimit(INDEXES,3,([s])=>chart(s));
+    const idxResults=await mapLimit(INDEXES,4,([s])=>chart(s));
     const idx={};
     idxResults.forEach((x,i)=>{
+      const [,name,region]=INDEXES[i];
       if(x.status==='fulfilled'){
         const c=x.value.rows.map(r=>r.close);
-        idx[INDEXES[i][1]]={
-          symbol:INDEXES[i][0],price:round(c.at(-1),2),
+        idx[name]={
+          symbol:INDEXES[i][0],region,price:round(c.at(-1),2),
           ret5:round(pct(c.at(-1),c.at(-6))),ret20:round(pct(c.at(-1),c.at(-21)))
         };
       }
@@ -192,18 +227,44 @@ export default async function handler(req,res){
       if(m.stage) candidates.push(item);
     });
 
-    const above50=liquid.filter(x=>x.price>x.ma50).length;
+    const above50=liquid.filter(x=>x.above50Now===true).length;
+    const above50Prev=liquid.filter(x=>x.above50Prev5===true).length;
+    const eligibleNow=liquid.filter(x=>x.above50Now!==null).length;
+    const eligiblePrev=liquid.filter(x=>x.above50Prev5!==null).length;
+    const percentAbove50=eligibleNow?above50/eligibleNow*100:null;
+    const percentAbove50Prev5=eligiblePrev?above50Prev/eligiblePrev*100:null;
+    const breadthDelta=Number.isFinite(percentAbove50)&&Number.isFinite(percentAbove50Prev5)?percentAbove50-percentAbove50Prev5:null;
     const adv=liquid.filter(x=>(x.ret5||0)>0).length;
     const dec=liquid.filter(x=>(x.ret5||0)<0).length;
+
     const breadth={
-      percentAbove50:liquid.length?round(above50/liquid.length*100,0):null,
+      percentAbove50:round(percentAbove50,0),
+      percentAbove50Prev5:round(percentAbove50Prev5,0),
+      change5d:round(breadthDelta,0),
+      status:breadthLabel(percentAbove50),
+      trend:direction(breadthDelta),
       advancers5d:adv,decliners5d:dec,scanned:liquid.length,candidates:candidates.length
+    };
+
+    const sectors=sectorSummary(liquid);
+    const strongest=sectors[0]||null;
+    const weakest=sectors.at(-1)||null;
+
+    const canada20=avg([idx.TSX?.ret20,idx['TSX Venture']?.ret20]);
+    const usa20=avg([idx['S&P 500']?.ret20,idx.Nasdaq?.ret20,idx['Dow Jones']?.ret20,idx['Russell 2000']?.ret20]);
+    const marketContext={
+      canada20:round(canada20,1),
+      usa20:round(usa20,1),
+      breadthStatus:breadth.status,
+      breadthTrend:breadth.trend,
+      strongestSector:strongest?.sector||null,
+      weakestSector:weakest?.sector||null
     };
 
     candidates.sort((a,b)=>b.score-a.score);
 
     res.status(200).json({
-      asOf:new Date().toISOString(),minDollar,indexes:idx,breadth,
+      asOf:new Date().toISOString(),minDollar,indexes:idx,breadth,sectors,marketContext,
       items:candidates,unavailable,universeSize:UNIVERSE.length
     });
   }catch(e){
