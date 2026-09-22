@@ -1,12 +1,23 @@
 const UNIVERSE = [
-  ['RY.TO','Royal Bank of Canada','Financials'],['TD.TO','Toronto-Dominion Bank','Financials'],['BMO.TO','Bank of Montreal','Financials'],['BNS.TO','Bank of Nova Scotia','Financials'],['CM.TO','CIBC','Financials'],['NA.TO','National Bank of Canada','Financials'],['MFC.TO','Manulife Financial','Financials'],['SLF.TO','Sun Life Financial','Financials'],['IFC.TO','Intact Financial','Financials'],
-  ['CNQ.TO','Canadian Natural Resources','Energy'],['SU.TO','Suncor Energy','Energy'],['CVE.TO','Cenovus Energy','Energy'],['IMO.TO','Imperial Oil','Energy'],['TOU.TO','Tourmaline Oil','Energy'],['ARX.TO','ARC Resources','Energy'],['ENB.TO','Enbridge','Energy'],['TRP.TO','TC Energy','Energy'],
-  ['ABX.TO','Barrick Mining','Materials'],['AEM.TO','Agnico Eagle Mines','Materials'],['WPM.TO','Wheaton Precious Metals','Materials'],['NTR.TO','Nutrien','Materials'],['TECK-B.TO','Teck Resources','Materials'],['FM.TO','First Quantum Minerals','Materials'],
-  ['CNR.TO','Canadian National Railway','Industrials'],['CP.TO','Canadian Pacific Kansas City','Industrials'],['WSP.TO','WSP Global','Industrials'],['TFII.TO','TFI International','Industrials'],['ATRL.TO','AtkinsRéalis','Industrials'],
-  ['SHOP.TO','Shopify','Technology'],['CSU.TO','Constellation Software','Technology'],['OTEX.TO','OpenText','Technology'],['KXS.TO','Kinaxis','Technology'],['DSG.TO','Descartes Systems','Technology'],
-  ['BCE.TO','BCE','Communication'],['T.TO','TELUS','Communication'],['RCI-B.TO','Rogers Communications','Communication'],
-  ['FTS.TO','Fortis','Utilities'],['EMA.TO','Emera','Utilities'],
-  ['L.TO','Loblaw Companies','Consumer'],['ATD.TO','Alimentation Couche-Tard','Consumer'],['DOL.TO','Dollarama','Consumer'],['QSR.TO','Restaurant Brands International','Consumer'],['MG.TO','Magna International','Consumer'],
+  // Financials
+  ['RY.TO','Royal Bank of Canada','Financials'],['TD.TO','Toronto-Dominion Bank','Financials'],['BMO.TO','Bank of Montreal','Financials'],['BNS.TO','Bank of Nova Scotia','Financials'],['CM.TO','CIBC','Financials'],['NA.TO','National Bank of Canada','Financials'],['MFC.TO','Manulife Financial','Financials'],['SLF.TO','Sun Life Financial','Financials'],['IFC.TO','Intact Financial','Financials'],['GWO.TO','Great-West Lifeco','Financials'],['POW.TO','Power Corporation of Canada','Financials'],['FFH.TO','Fairfax Financial','Financials'],['EQB.TO','EQB','Financials'],['IAG.TO','iA Financial','Financials'],['ONEX.TO','Onex','Financials'],
+  // Energy
+  ['CNQ.TO','Canadian Natural Resources','Energy'],['SU.TO','Suncor Energy','Energy'],['CVE.TO','Cenovus Energy','Energy'],['IMO.TO','Imperial Oil','Energy'],['TOU.TO','Tourmaline Oil','Energy'],['ARX.TO','ARC Resources','Energy'],['ENB.TO','Enbridge','Energy'],['TRP.TO','TC Energy','Energy'],['PPL.TO','Pembina Pipeline','Energy'],['KEY.TO','Keyera','Energy'],['MEG.TO','MEG Energy','Energy'],['WCP.TO','Whitecap Resources','Energy'],['BIR.TO','Birchcliff Energy','Energy'],['VET.TO','Vermilion Energy','Energy'],['CPG.TO','Crescent Point Energy','Energy'],
+  // Materials
+  ['ABX.TO','Barrick Mining','Materials'],['AEM.TO','Agnico Eagle Mines','Materials'],['WPM.TO','Wheaton Precious Metals','Materials'],['NTR.TO','Nutrien','Materials'],['TECK-B.TO','Teck Resources','Materials'],['FM.TO','First Quantum Minerals','Materials'],['K.TO','Kinross Gold','Materials'],['LUG.TO','Lundin Gold','Materials'],['AGI.TO','Alamos Gold','Materials'],['PAAS.TO','Pan American Silver','Materials'],['CCO.TO','Cameco','Materials'],['HBM.TO','Hudbay Minerals','Materials'],['ERO.TO','Ero Copper','Materials'],['LUN.TO','Lundin Mining','Materials'],['IVN.TO','Ivanhoe Mines','Materials'],
+  // Industrials
+  ['CNR.TO','Canadian National Railway','Industrials'],['CP.TO','Canadian Pacific Kansas City','Industrials'],['WSP.TO','WSP Global','Industrials'],['TFII.TO','TFI International','Industrials'],['ATRL.TO','AtkinsRéalis','Industrials'],['CAE.TO','CAE','Industrials'],['GFL.TO','GFL Environmental','Industrials'],['STN.TO','Stantec','Industrials'],['TIH.TO','Toromont Industries','Industrials'],['WCN.TO','Waste Connections','Industrials'],['BDGI.TO','Badger Infrastructure Solutions','Industrials'],['AC.TO','Air Canada','Industrials'],
+  // Technology
+  ['SHOP.TO','Shopify','Technology'],['CSU.TO','Constellation Software','Technology'],['OTEX.TO','OpenText','Technology'],['KXS.TO','Kinaxis','Technology'],['DSG.TO','Descartes Systems','Technology'],['CLS.TO','Celestica','Technology'],['GIB-A.TO','CGI','Technology'],['LSPD.TO','Lightspeed Commerce','Technology'],['BB.TO','BlackBerry','Technology'],['DCBO.TO','Docebo','Technology'],['ENGH.TO','Enghouse Systems','Technology'],['HPS-A.TO','Hammond Power Solutions','Technology'],
+  // Communication
+  ['BCE.TO','BCE','Communication'],['T.TO','TELUS','Communication'],['RCI-B.TO','Rogers Communications','Communication'],['QBR-B.TO','Quebecor','Communication'],['CCA.TO','Cogeco Communications','Communication'],
+  // Utilities
+  ['FTS.TO','Fortis','Utilities'],['EMA.TO','Emera','Utilities'],['AQN.TO','Algonquin Power & Utilities','Utilities'],['CPX.TO','Capital Power','Utilities'],['NPI.TO','Northland Power','Utilities'],['CU.TO','Canadian Utilities','Utilities'],['H.TO','Hydro One','Utilities'],
+  // Consumer
+  ['L.TO','Loblaw Companies','Consumer'],['ATD.TO','Alimentation Couche-Tard','Consumer'],['DOL.TO','Dollarama','Consumer'],['QSR.TO','Restaurant Brands International','Consumer'],['MG.TO','Magna International','Consumer'],['CTC-A.TO','Canadian Tire','Consumer'],['MRU.TO','Metro','Consumer'],['WN.TO','George Weston','Consumer'],['SAP.TO','Saputo','Consumer'],['DOO.TO','BRP','Consumer'],['GOOS.TO','Canada Goose','Consumer'],['GIL.TO','Gildan Activewear','Consumer'],
+  // Real estate / health
+  ['CAR-UN.TO','Canadian Apartment Properties REIT','Real Estate'],['REI-UN.TO','RioCan REIT','Real Estate'],['SRU-UN.TO','SmartCentres REIT','Real Estate'],['DIR-UN.TO','Dream Industrial REIT','Real Estate'],['CSH-UN.TO','Chartwell Retirement Residences','Health Care'],
+  // CAD-traded CDRs
   ['AAPL.TO','Apple CDR','CDR'],['MSFT.TO','Microsoft CDR','CDR'],['NVDA.TO','Nvidia CDR','CDR'],['AMZN.TO','Amazon CDR','CDR'],['GOOG.TO','Alphabet CDR','CDR'],['META.TO','Meta CDR','CDR'],['TSLA.TO','Tesla CDR','CDR'],['AMD.TO','AMD CDR','CDR'],['COST.TO','Costco CDR','CDR']
 ];
 
@@ -27,7 +38,7 @@ const CDR_BENCHMARK = {
 
 const SECTOR_PROXY = {
   Financials:'XFN.TO', Energy:'XEG.TO', Materials:'XMA.TO', Industrials:'XGI.TO',
-  Technology:'XIT.TO', Communication:'XTL.TO', Utilities:'XUT.TO', Consumer:'XST.TO', CDR:'^GSPC'
+  Technology:'XIT.TO', Communication:'XTL.TO', Utilities:'XUT.TO', Consumer:'XST.TO', 'Real Estate':'XRE.TO', 'Health Care':'XHC.TO', CDR:'^GSPC'
 };
 
 function avg(a){const v=a.filter(Number.isFinite);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null}
