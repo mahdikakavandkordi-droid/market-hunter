@@ -263,12 +263,9 @@ function renderMarket(){
   `).join('');
 
   const mc=d.marketContext||{};
-  const mc=d.marketContext||{};
   const regimes=d.marketRegimes||{};
   const regimeNames=['TSX','Nasdaq','S&P 500','TSX Venture'];
   const regimeClass=r=>r==='Strong'||r==='Improving'?'up':r==='Weak'||r==='Weakening'?'down':'flat';
-  const regimes=d.marketRegimes||{};
-  const regimeNames=['TSX','Nasdaq','S&P 500','TSX Venture'];
   const regimeCards=regimeNames.map(name=>{
     const r=regimes[name];
     if(!r) return `<div class="regime-card"><div class="regime-name">${name}</div><div class="regime-state Mixed">—</div><div class="regime-meta">Unavailable</div></div>`;
