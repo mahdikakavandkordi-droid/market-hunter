@@ -24,7 +24,7 @@ const UNIVERSE = [
   ['MDA.TO','MDA Space','Industrials'],['ATS.TO','ATS Corporation','Industrials'],['NFI.TO','NFI Group','Industrials'],['BBD-B.TO','Bombardier','Industrials'],['EIF.TO','Exchange Income','Industrials'],['RUS.TO','Russel Metals','Industrials'],['SJ.TO','Stella-Jones','Industrials'],
   ['TOI.TO','Topicus.com','Technology'],['LMN.TO','Lumine Group','Technology'],['TIXT.TO','TELUS International','Technology'],['CMG.TO','Computer Modelling Group','Technology'],['REAL.TO','Real Matters','Technology'],
   ['PKI.TO','Parkland','Consumer'],['MFI.TO','Maple Leaf Foods','Consumer'],['EMP-A.TO','Empire Company','Consumer'],['PET.TO','Pet Valu','Consumer'],['GIB-A.TO','CGI','Technology'],
-  ['BEPC.TO','Brookfield Renewable','Utilities'],['BEP-UN.TO','Brookfield Renewable Partners','Utilities'],['RNW.TO','TransAlta Renewables','Utilities'],['TA.TO','TransAlta','Utilities'],
+  ['BEPC.TO','Brookfield Renewable','Utilities'],['BEP-UN.TO','Brookfield Renewable Partners','Utilities'],['TA.TO','TransAlta','Utilities'],
   ['AP-UN.TO','Allied Properties REIT','Real Estate'],['GRT-UN.TO','Granite REIT','Real Estate'],['HR-UN.TO','H&R REIT','Real Estate'],['CRT-UN.TO','CT REIT','Real Estate'],['CHP-UN.TO','Choice Properties REIT','Real Estate'],
   ['WELL.TO','WELL Health Technologies','Health Care'],['SIA.TO','Sienna Senior Living','Health Care'],
   // CAD-traded CDRs
@@ -89,25 +89,39 @@ function rsi(values,period=14){
 function breadthLabel(n){return !Number.isFinite(n)?'Unavailable':n>=60?'Strong':n<40?'Weak':'Neutral'}
 function direction(delta){return !Number.isFinite(delta)?'Flat':delta>=3?'Improving':delta<=-3?'Weakening':'Stable'}
 
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 async function chart(symbol,range='6mo',interval='1d'){
   const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}&includePrePost=false&events=div%2Csplits`;
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),8000);
-  try{
-    const r=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Mozilla/5.0 MarketHunter/1.0'}});
-    if(!r.ok) throw new Error(`${symbol} ${r.status}`);
-    const j=await r.json();
-    const res=j?.chart?.result?.[0];
-    if(!res) throw new Error(`${symbol} unavailable`);
-    const q=res.indicators?.quote?.[0]||{};
-    const adj=res.indicators?.adjclose?.[0]?.adjclose||q.close||[];
-    const rows=(res.timestamp||[]).map((t,i)=>({
-      t,close:adj[i]??q.close?.[i],high:q.high?.[i],low:q.low?.[i],volume:q.volume?.[i]
-    })).filter(x=>Number.isFinite(x.close));
-    return {symbol,rows,currency:res.meta?.currency||null};
-  } finally {
-    clearTimeout(timer);
+  let lastError=null;
+  for(let attempt=0;attempt<2;attempt++){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),8000);
+    try{
+      const r=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Mozilla/5.0 MarketHunter/1.0'}});
+      if(!r.ok){
+        const err=new Error(`${symbol} ${r.status}`);
+        err.status=r.status;
+        throw err;
+      }
+      const j=await r.json();
+      const res=j?.chart?.result?.[0];
+      if(!res) throw new Error(`${symbol} unavailable`);
+      const q=res.indicators?.quote?.[0]||{};
+      const adj=res.indicators?.adjclose?.[0]?.adjclose||q.close||[];
+      const rows=(res.timestamp||[]).map((t,i)=>({
+        t,close:adj[i]??q.close?.[i],high:q.high?.[i],low:q.low?.[i],volume:q.volume?.[i]
+      })).filter(x=>Number.isFinite(x.close));
+      return {symbol,rows,currency:res.meta?.currency||null};
+    }catch(e){
+      lastError=e;
+      const retryable=e?.name==='AbortError'||e?.status===429||e?.status>=500;
+      if(!retryable||attempt===1) throw e;
+      await sleep(250*(attempt+1));
+    }finally{
+      clearTimeout(timer);
+    }
   }
+  throw lastError||new Error(`${symbol} unavailable`);
 }
 
 async function mapLimit(values,limit,worker){
@@ -310,16 +324,20 @@ export default async function handler(req,res){
     });
 
     const settled=await mapLimit(UNIQUE_UNIVERSE,8,([s])=>chart(s));
-    const liquid=[],candidates=[],unavailable=[],rejectedLiquidity=[];
+    const liquid=[],candidates=[],unavailable=[],failureDetails=[],rejectedLiquidity=[];
 
     settled.forEach((x,i)=>{
       const [symbol,company,sector]=UNIQUE_UNIVERSE[i];
-      if(x.status!=='fulfilled'){unavailable.push(symbol);return}
+      if(x.status!=='fulfilled'){
+        unavailable.push(symbol);
+        failureDetails.push({symbol,reason:x.reason?.name==='AbortError'?'timeout':String(x.reason?.message||'fetch_failed')});
+        return;
+      }
       const benchmark=sector==='CDR'?(benchmarkBySymbol[CDR_BENCHMARK[symbol]]||benchmarkBySymbol['^GSPC']||null):tsxBenchmark;
       const m=metrics(x.value,benchmark,sectorMap[SECTOR_PROXY[sector]]);
-      if(!m){unavailable.push(symbol);return}
-      if(Number.isFinite(m.dataAgeDays)&&m.dataAgeDays>5){unavailable.push(symbol);return}
-      if(!Number.isFinite(m.price)||!Number.isFinite(m.avgDollarVol)){unavailable.push(symbol);return}
+      if(!m){unavailable.push(symbol);failureDetails.push({symbol,reason:'insufficient_history'});return}
+      if(Number.isFinite(m.dataAgeDays)&&m.dataAgeDays>5){unavailable.push(symbol);failureDetails.push({symbol,reason:'stale_data'});return}
+      if(!Number.isFinite(m.price)||!Number.isFinite(m.avgDollarVol)){unavailable.push(symbol);failureDetails.push({symbol,reason:'missing_price_or_volume'});return}
       if(m.price<2 || m.avgDollarVol<minDollar){
         rejectedLiquidity.push({symbol,price:m.price,avgDollarVol:m.avgDollarVol});
         return;
@@ -385,7 +403,7 @@ export default async function handler(req,res){
 
     res.status(200).json({
       asOf:new Date().toISOString(),minDollar,indexes:idx,breadth,sectors,marketContext,
-      items:candidates,unavailable,universeSize:UNIQUE_UNIVERSE.length,diagnostics
+      items:candidates,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){
     res.status(500).json({error:'scan_failed',message:e?.message||'Unknown error'});
