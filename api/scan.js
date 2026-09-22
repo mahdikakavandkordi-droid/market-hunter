@@ -364,6 +364,34 @@ export function isEarlyWatch(m){
   return absorption||controlledTurn;
 }
 
+export function crossStageScore(x){
+  // Objective cross-stage chart-review quality. Never uses clicks, watchlist or user feedback.
+  let score=0,parts=0;
+  const add=(v,w=1)=>{if(Number.isFinite(v)){score+=clamp(v,0,100)*w;parts+=w}};
+  add(Number.isFinite(x.rs20)?50+x.rs20*2:null,1.2);
+  add(Number.isFinite(x.momentumShift)?50+x.momentumShift*3:null,1.1);
+  add(Number.isFinite(x.rvol)?35+(x.rvol-1)*35:null,.7);
+  add(Number.isFinite(x.ret20)?50+x.ret20*2:null,.8);
+  add(Number.isFinite(x.dist50)?55+x.dist50*2:null,.8);
+  if(Number.isFinite(x.pullback)) add(x.pullback>-3?62:x.pullback>=-12?78:x.pullback>=-20?60:35,1);
+  if(x.dailyUp===true) add(78,.8); else if(x.dailyUp===false) add(35,.8);
+  if(x.weeklyUp===true) add(82,1); else if(x.weeklyUp===false) add(35,1);
+  if(x.unusual5dDirection==='positive') add(82,.6);
+  else if(x.unusual5dDirection==='negative') add(35,.6);
+  else add(55,.6);
+  return parts?round(score/parts,1):null;
+}
+
+function top5SnapshotItem(x,rank){
+  return {
+    rank,symbol:x.symbol,company:x.company,stage:x.stage,crossStageScore:x.crossStageScore,
+    entryPrice:x.price,rsi14:x.rsi14,ret5:x.ret5,ret20:x.ret20,ret60:x.ret60,
+    momentumShift:x.momentumShift,rvol:x.rvol,rs20:x.rs20,sectorRs:x.sectorRs,
+    pullback:x.pullback,dist20:x.dist20,dist50:x.dist50,
+    highState:x.highState,lowState:x.lowState,localHigh:x.localHigh,localLow:x.localLow
+  };
+}
+
 export default async function handler(req,res){
   res.setHeader('Cache-Control','s-maxage=900, stale-while-revalidate=1800');
   const minDollar=Number(req.query?.minDollar??5000000);
@@ -485,6 +513,15 @@ export default async function handler(req,res){
     candidates.sort(priority);
     watchItems.sort(priority);
 
+    // Build Top 5 in the backend so the exact daily selection and entry metrics can be
+    // preserved in historical snapshots and evaluated later without subjective feedback.
+    const top5Pool=[
+      ...candidates,
+      ...watchItems.map(x=>({...x,stage:'Early Watch'}))
+    ].map(x=>({...x,crossStageScore:crossStageScore(x)}))
+      .sort((a,b)=>(b.crossStageScore??-Infinity)-(a.crossStageScore??-Infinity)||a.symbol.localeCompare(b.symbol));
+    const top5=top5Pool.slice(0,5).map((x,i)=>top5SnapshotItem(x,i+1));
+
     const stageCounts={
       Recovery:candidates.filter(x=>x.stage==='Recovery').length,
       AttractiveGrowth:candidates.filter(x=>x.stage==='Attractive Growth').length,
@@ -508,7 +545,7 @@ export default async function handler(req,res){
     if(partial) res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
     res.status(200).json({
       asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.3',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
-      items:candidates,watchItems,availableItems,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
+      items:candidates,watchItems,top5,availableItems,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){
     res.status(500).json({error:'scan_failed',message:e?.message||'Unknown error'});
