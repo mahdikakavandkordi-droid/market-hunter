@@ -127,7 +127,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   .toolbar{align-items:stretch;margin-top:12px;gap:7px}.controls{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}
   .control{padding:7px 9px;min-height:36px}.control span{display:none}button{padding:8px 11px;min-height:36px;font-size:12px}
   .status{align-self:flex-start;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tabs{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.tab{width:100%}
+  .tabs{width:100%;display:grid;grid-template-columns:repeat(4,1fr)}.tab{width:100%}
   .index-grid{grid-template-columns:1fr 1fr;gap:9px}.metric{padding:12px}.metric .v{font-size:19px}.metric .sub{font-size:10px}
   .market-grid{grid-template-columns:1fr}.sector-row{grid-template-columns:1.2fr .7fr .7fr .9fr}.sector-row>*:nth-child(4){display:none}.sector-row.head>*:nth-child(4){display:none}
   .takeaway-grid{grid-template-columns:1fr 1fr}
@@ -165,6 +165,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   <button class="tab active" data-tab="market">Market</button>
   <button class="tab" data-tab="hunter">Hunter Picks</button>
   <button class="tab" data-tab="watchlist">Watchlist</button>
+  <button class="tab" data-tab="evaluation">Evaluation</button>
 </div>
 
 <div class="error" id="error"></div>
@@ -179,13 +180,17 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <section id="watchlistView" class="view">
   <div id="watchlistContent"></div>
 </section>
+<section id="evaluationView" class="view">
+  <div id="evaluationContent"></div>
+</section>
 
 <footer>Discovery dashboard only — not a buy/sell signal. Market context and candidate stages are designed to reduce what you need to inspect manually.</footer>
 </div>
 
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
-const state={data:null,history:[],tab:'market',expanded:new Set(),watchlist:savedWatch()};
+const savedEval=()=>{try{return JSON.parse(localStorage.getItem('marketHunterEvaluation')||'{}')}catch{return {}}};
+const state={data:null,history:[],tab:'market',expanded:new Set(),watchlist:savedWatch(),evaluation:savedEval()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function toggleWatch(symbol){state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);persistWatch();renderHunter();renderWatchlist()}
 function tradingViewSymbol(symbol){
@@ -291,6 +296,50 @@ function renderMarket(){
   `;
 }
 
+function evalKey(x){return `${state.data?.marketAsOf||'unknown'}|${x.stage||'Early Watch'}|${x.symbol}`}
+function saveEvaluation(key,field,value){
+  state.evaluation[key]={...(state.evaluation[key]||{}),[field]:value};
+  localStorage.setItem('marketHunterEvaluation',JSON.stringify(state.evaluation));
+  renderEvaluation();
+}
+function evaluationCandidateRows(){
+  const d=state.data;if(!d)return [];
+  const stages=['Early Watch','Recovery','Attractive Growth','Established Move'];
+  return stages.flatMap(stage=>{
+    const all=stage==='Early Watch'?(d.watchItems||[]):d.items.filter(x=>x.stage===stage);
+    const top=all.slice(0,3).map((x,i)=>({...x,evalStage:stage,sampleType:'Top '+(i+1)}));
+    const lower=all.length>3?[{...all[Math.min(4,all.length-1)],evalStage:stage,sampleType:'Lower sample'}]:[];
+    return [...top,...lower];
+  });
+}
+function renderEvaluation(){
+  const root=document.querySelector('#evaluationContent');if(!root||!state.data)return;
+  const rows=evaluationCandidateRows();
+  const session=state.data.marketAsOf||'—';
+  const answered=rows.filter(x=>Object.keys(state.evaluation[evalKey({...x,stage:x.evalStage})]||{}).length===3).length;
+  root.innerHTML=`
+    <section class="watchlist">
+      <div class="section-title"><div><h2>10-session Evaluation</h2><p>Session ${session} · rules and ranking stay frozen while we judge chart-discovery quality.</p></div><span class="shown">${answered}/${rows.length} reviewed</span></div>
+      <div class="grid">${rows.map(x=>evaluationCard(x)).join('')}</div>
+    </section>`;
+  root.querySelectorAll('[data-eval]').forEach(btn=>btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    saveEvaluation(btn.dataset.eval,btn.dataset.field,btn.dataset.value);
+  }));
+  root.querySelectorAll('.tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
+}
+function evaluationCard(x){
+  const key=evalKey({...x,stage:x.evalStage}),a=state.evaluation[key]||{};
+  const choice=(field,value,label)=>`<button class="show-more" style="padding:7px 9px;opacity:${a[field]===value?1:.55}" data-eval="${key}" data-field="${field}" data-value="${value}">${label}</button>`;
+  return `<article class="card">
+    <div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\.(TO|NE|V)$/,'')}</div><span class="badge recovery">${x.evalStage}</span></div><div class="company">${x.company}</div><div class="sector">${x.sampleType}</div></div>
+    <div><button class="tv-link" type="button" data-tv="${x.symbol}">Chart ↗</button></div></div>
+    <div class="row"><div class="mini"><div class="k">5D</div><div class="v">${pct(x.ret5)}</div></div><div class="mini"><div class="k">20D</div><div class="v">${pct(x.ret20)}</div></div><div class="mini"><div class="k">RVOL</div><div class="v">${fmt(x.rvol)}×</div></div><div class="mini"><div class="k">RSI</div><div class="v">${fmt(x.rsi14)}</div></div><div class="mini"><div class="k">Momentum</div><div class="v">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1):'—'}</div></div></div>
+    <div class="why"><strong>ارزش بازکردن نمودار داشت؟</strong>${choice('worth','yes','بله')} ${choice('worth','no','نه')}</div>
+    <div class="why"><strong>برچسبش درست بود؟</strong>${choice('label','yes','بله')} ${choice('label','no','نه')}</div>
+    <div class="why"><strong>حرکت قبلاً زیادی پیش رفته بود؟</strong>${choice('late','yes','بله')} ${choice('late','no','نه')}</div>
+  </article>`;
+}
 function renderWatchlist(){
   const d=state.data;if(!d)return;
   const current=[...(d.items||[]),...(d.watchItems||[])];
@@ -417,7 +466,7 @@ function card(x,kind,fa,inWatch=false){
 
 function render(){
   if(!state.data)return;
-  renderMarket();renderHunter();renderWatchlist();
+  renderMarket();renderHunter();renderWatchlist();renderEvaluation();
   const d=state.data;
   document.querySelector('#status').title=(d.failureDetails||[]).map(x=>`${x.symbol}: ${x.reason}`).join('\n');
   document.querySelector('#status').innerHTML=
@@ -456,6 +505,7 @@ document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>
   document.querySelector('#marketView').classList.toggle('active',state.tab==='market');
   document.querySelector('#hunterView').classList.toggle('active',state.tab==='hunter');
   document.querySelector('#watchlistView').classList.toggle('active',state.tab==='watchlist');
+  document.querySelector('#evaluationView').classList.toggle('active',state.tab==='evaluation');
 }));
 document.querySelector('#refresh').addEventListener('click',load);
 document.querySelector('#liq').addEventListener('change',load);
