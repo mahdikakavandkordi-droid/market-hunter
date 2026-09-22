@@ -17,9 +17,20 @@ const UNIVERSE = [
   ['L.TO','Loblaw Companies','Consumer'],['ATD.TO','Alimentation Couche-Tard','Consumer'],['DOL.TO','Dollarama','Consumer'],['QSR.TO','Restaurant Brands International','Consumer'],['MG.TO','Magna International','Consumer'],['CTC-A.TO','Canadian Tire','Consumer'],['MRU.TO','Metro','Consumer'],['WN.TO','George Weston','Consumer'],['SAP.TO','Saputo','Consumer'],['DOO.TO','BRP','Consumer'],['GOOS.TO','Canada Goose','Consumer'],['GIL.TO','Gildan Activewear','Consumer'],
   // Real estate / health
   ['CAR-UN.TO','Canadian Apartment Properties REIT','Real Estate'],['REI-UN.TO','RioCan REIT','Real Estate'],['SRU-UN.TO','SmartCentres REIT','Real Estate'],['DIR-UN.TO','Dream Industrial REIT','Real Estate'],['CSH-UN.TO','Chartwell Retirement Residences','Health Care'],
+  // Additional liquid Canadian hunting names
+  ['BAM.TO','Brookfield Asset Management','Financials'],['BN.TO','Brookfield Corporation','Financials'],['FSV.TO','FirstService','Real Estate'],['CIX.TO','CI Financial','Financials'],['LB.TO','Laurentian Bank','Financials'],
+  ['ATH.TO','Athabasca Oil','Energy'],['PEY.TO','Peyto Exploration & Development','Energy'],['TVE.TO','Tamarack Valley Energy','Energy'],['KEL.TO','Kelt Exploration','Energy'],['HWX.TO','Headwater Exploration','Energy'],['PSK.TO','PrairieSky Royalty','Energy'],
+  ['OR.TO','Osisko Gold Royalties','Materials'],['IMG.TO','IAMGOLD','Materials'],['BTO.TO','B2Gold','Materials'],['NGD.TO','New Gold','Materials'],['EQX.TO','Equinox Gold','Materials'],['SSL.TO','Sandstorm Gold','Materials'],['CS.TO','Capstone Copper','Materials'],['DPM.TO','Dundee Precious Metals','Materials'],['AYA.TO','Aya Gold & Silver','Materials'],['ERO.TO','Ero Copper','Materials'],
+  ['MDA.TO','MDA Space','Industrials'],['ATS.TO','ATS Corporation','Industrials'],['NFI.TO','NFI Group','Industrials'],['BBD-B.TO','Bombardier','Industrials'],['EIF.TO','Exchange Income','Industrials'],['RUS.TO','Russel Metals','Industrials'],['SJ.TO','Stella-Jones','Industrials'],
+  ['TOI.TO','Topicus.com','Technology'],['LMN.TO','Lumine Group','Technology'],['TIXT.TO','TELUS International','Technology'],['CMG.TO','Computer Modelling Group','Technology'],['REAL.TO','Real Matters','Technology'],
+  ['PKI.TO','Parkland','Consumer'],['MFI.TO','Maple Leaf Foods','Consumer'],['EMP-A.TO','Empire Company','Consumer'],['PET.TO','Pet Valu','Consumer'],['GIB-A.TO','CGI','Technology'],
+  ['BEPC.TO','Brookfield Renewable','Utilities'],['BEP-UN.TO','Brookfield Renewable Partners','Utilities'],['RNW.TO','TransAlta Renewables','Utilities'],['TA.TO','TransAlta','Utilities'],
+  ['AP-UN.TO','Allied Properties REIT','Real Estate'],['GRT-UN.TO','Granite REIT','Real Estate'],['HR-UN.TO','H&R REIT','Real Estate'],['CRT-UN.TO','CT REIT','Real Estate'],['CHP-UN.TO','Choice Properties REIT','Real Estate'],
+  ['WELL.TO','WELL Health Technologies','Health Care'],['SIA.TO','Sienna Senior Living','Health Care'],
   // CAD-traded CDRs
   ['AAPL.TO','Apple CDR','CDR'],['MSFT.TO','Microsoft CDR','CDR'],['NVDA.TO','Nvidia CDR','CDR'],['AMZN.TO','Amazon CDR','CDR'],['GOOG.TO','Alphabet CDR','CDR'],['META.TO','Meta CDR','CDR'],['TSLA.TO','Tesla CDR','CDR'],['AMD.TO','AMD CDR','CDR'],['COST.TO','Costco CDR','CDR']
 ];
+const UNIQUE_UNIVERSE=[...new Map(UNIVERSE.map(x=>[x[0],x])).values()];
 
 const INDEXES = [
   ['^GSPTSE','TSX','Canada'],
@@ -298,11 +309,11 @@ export default async function handler(req,res){
       }
     });
 
-    const settled=await mapLimit(UNIVERSE,8,([s])=>chart(s));
+    const settled=await mapLimit(UNIQUE_UNIVERSE,8,([s])=>chart(s));
     const liquid=[],candidates=[],unavailable=[],rejectedLiquidity=[];
 
     settled.forEach((x,i)=>{
-      const [symbol,company,sector]=UNIVERSE[i];
+      const [symbol,company,sector]=UNIQUE_UNIVERSE[i];
       if(x.status!=='fulfilled'){unavailable.push(symbol);return}
       const benchmark=sector==='CDR'?(benchmarkBySymbol[CDR_BENCHMARK[symbol]]||benchmarkBySymbol['^GSPC']||null):tsxBenchmark;
       const m=metrics(x.value,benchmark,sectorMap[SECTOR_PROXY[sector]]);
@@ -363,7 +374,7 @@ export default async function handler(req,res){
       EstablishedMove:candidates.filter(x=>x.stage==='Established Move').length
     };
     const diagnostics={
-      universe:UNIVERSE.length,
+      universe:UNIQUE_UNIVERSE.length,
       fetched:settled.filter(x=>x.status==='fulfilled').length,
       unavailable:unavailable.length,
       liquidityRejected:rejectedLiquidity.length,
@@ -374,7 +385,7 @@ export default async function handler(req,res){
 
     res.status(200).json({
       asOf:new Date().toISOString(),minDollar,indexes:idx,breadth,sectors,marketContext,
-      items:candidates,unavailable,universeSize:UNIVERSE.length,diagnostics
+      items:candidates,unavailable,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){
     res.status(500).json({error:'scan_failed',message:e?.message||'Unknown error'});
