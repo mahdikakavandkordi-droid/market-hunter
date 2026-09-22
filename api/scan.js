@@ -139,11 +139,43 @@ function downVolumeAverage(rows,start,end){
   return avg(a);
 }
 
+export function dailyStructure(rows){
+  if(!Array.isArray(rows)||rows.length<12) return {localHigh:null,localLow:null,highState:'unavailable',lowState:'unavailable'};
+  const pivotsHigh=[],pivotsLow=[];
+  // Two bars on each side confirm a local pivot. The latest two sessions are
+  // intentionally excluded from pivot discovery so today's move cannot redefine
+  // the level it is being compared with.
+  for(let i=2;i<=rows.length-3;i++){
+    const hi=rows[i].high,lo=rows[i].low;
+    if(Number.isFinite(hi)&&hi>rows[i-1].high&&hi>=rows[i-2].high&&hi>rows[i+1].high&&hi>=rows[i+2].high) pivotsHigh.push(i);
+    if(Number.isFinite(lo)&&lo<rows[i-1].low&&lo<=rows[i-2].low&&lo<rows[i+1].low&&lo<=rows[i+2].low) pivotsLow.push(i);
+  }
+  const hiIndex=pivotsHigh.at(-1),loIndex=pivotsLow.at(-1);
+  const localHigh=Number.isInteger(hiIndex)?rows[hiIndex].high:null;
+  const localLow=Number.isInteger(loIndex)?rows[loIndex].low:null;
+  const last=rows.at(-1);
+  const beforeLast=rows.slice(0,-1);
+  const priorHighBreak=Number.isFinite(localHigh)&&Number.isInteger(hiIndex)
+    ? beforeLast.slice(hiIndex+1).some(x=>Number.isFinite(x.close)&&x.close>localHigh):false;
+  const priorLowBreak=Number.isFinite(localLow)&&Number.isInteger(loIndex)
+    ? beforeLast.slice(loIndex+1).some(x=>Number.isFinite(x.close)&&x.close<localLow):false;
+  const highState=!Number.isFinite(localHigh)?'unavailable'
+    : last.close>localHigh?'local_high_broken'
+    : (last.high>localHigh||priorHighBreak)?'failed_high_break'
+    :'local_high_intact';
+  const lowState=!Number.isFinite(localLow)?'unavailable'
+    : last.close<localLow?'local_low_broken'
+    : (last.low<localLow||priorLowBreak)?'failed_low_break'
+    :'local_low_held';
+  return {localHigh:round(localHigh,2),localLow:round(localLow,2),highState,lowState};
+}
+
 export function metrics(data,benchmarkData,sectorData){
   const r=data.rows,c=r.map(x=>x.close),v=r.map(x=>x.volume);
   if(c.length<65) return null;
 
   const last=c.at(-1),ma20=sma(c,20),ma50=sma(c,50),rsi14=rsi(c,14);
+  const structure=dailyStructure(r);
   const pricePrev5=c.at(-6);
   const prev50=c.length>=55?avg(c.slice(-55,-5)):null;
   const above50Now=Number.isFinite(ma50)?last>ma50:null;
@@ -270,6 +302,7 @@ export function metrics(data,benchmarkData,sectorData){
     prev5:round(prev5,1),momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
     unusual5d,positiveUnusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,spikeReturn:round(spikeReturn,1),unusual5dDirection,unusual5dLabel,
     nearRecentLow,downsideSlowing,volumeShockNearLow,latestDayReturn:round(latestDayReturn,1),
+    ...structure,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
@@ -372,7 +405,7 @@ export default async function handler(req,res){
     });
     const sectorMap=benchmarkBySymbol;
     const settled=UNIQUE_UNIVERSE.map(([s])=>bySymbol[s]);
-    const liquid=[],contextLiquid=[],candidates=[],watchItems=[],unavailable=[],failureDetails=[],rejectedLiquidity=[];
+    const liquid=[],contextLiquid=[],candidates=[],watchItems=[],availableItems=[],unavailable=[],failureDetails=[],rejectedLiquidity=[];
 
     settled.forEach((x,i)=>{
       const [symbol,company,sector]=UNIQUE_UNIVERSE[i];
@@ -388,14 +421,18 @@ export default async function handler(req,res){
       if(!m){unavailable.push(symbol);failureDetails.push({symbol,reason:'insufficient_history'});return}
       if(Number.isFinite(m.dataAgeDays)&&m.dataAgeDays>5){unavailable.push(symbol);failureDetails.push({symbol,reason:'stale_data'});return}
       if(!Number.isFinite(m.price)||!Number.isFinite(m.avgDollarVol)){unavailable.push(symbol);failureDetails.push({symbol,reason:'missing_price_or_volume'});return}
+      const benchmarkLabel=sector==='CDR'?(CDR_BENCHMARK[symbol]==='^IXIC'?'Nasdaq':'S&P 500'):'TSX';
+      const item={symbol,company,sector,benchmarkLabel,...m};
+      // Keep valid metrics available to a personal watchlist even when the name
+      // is outside the current liquidity/stage shortlist. This does not affect ranking.
+      availableItems.push(item);
       if(x.value.rows.at(-1).rawClose>=2&&m.avgDollarVol>=2000000&&sector!=='CDR') contextLiquid.push({symbol,company,sector,...m});
       if(x.value.rows.at(-1).rawClose<2 || m.avgDollarVol<minDollar){
         rejectedLiquidity.push({symbol,price:m.price,avgDollarVol:m.avgDollarVol});
         return;
       }
 
-      const benchmarkLabel=sector==='CDR'?(CDR_BENCHMARK[symbol]==='^IXIC'?'Nasdaq':'S&P 500'):'TSX';
-      const item={symbol,company,sector,benchmarkLabel,...m};
+
       if(sector==='CDR'&&Array.isArray(item.why)) item.why=item.why.map(w=>w==='outperforming TSX'?`outperforming ${benchmarkLabel}`:w);
       liquid.push(item);
       if(m.stage) candidates.push(item);
@@ -471,7 +508,7 @@ export default async function handler(req,res){
     if(partial) res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
     res.status(200).json({
       asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.3',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
-      items:candidates,watchItems,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
+      items:candidates,watchItems,availableItems,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){
     res.status(500).json({error:'scan_failed',message:e?.message||'Unknown error'});
