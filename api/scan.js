@@ -130,6 +130,9 @@ function metrics(data,tsxRet20,sectorRet20){
   const rs20=Number.isFinite(tsxRet20)&&Number.isFinite(ret20)?ret20-tsxRet20:null;
   const sectorRs=Number.isFinite(sectorRet20)&&Number.isFinite(ret20)?ret20-sectorRet20:null;
   const dist20=pct(last,ma20),dist50=pct(last,ma50);
+  const momentumShift=Number.isFinite(ret5)&&Number.isFinite(ret20)?ret5-(ret20/4):null;
+  const volumeVsAvg=Number.isFinite(rvol)?(rvol-1)*100:null;
+  const trendState=dailyUp&&weeklyUp?'Daily + Weekly aligned':weeklyUp?'Weekly up · Daily mixed':dailyUp?'Daily up · Weekly mixed':'Trend mixed';
 
   const recentDown=downVolumeAverage(r,r.length-5,r.length);
   const priorDown=downVolumeAverage(r,r.length-15,r.length-5);
@@ -169,6 +172,7 @@ function metrics(data,tsxRet20,sectorRet20){
     avgDollarVol:round(dollar20,0),pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
+    momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
