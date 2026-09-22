@@ -455,8 +455,7 @@ function card(x,kind,fa,inWatch=false){
             <button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}" title="Watchlist">${state.watchlist.has(x.symbol)?'♥':'♡'}</button>
             <button class="tv-link" type="button" data-tv="${x.symbol}" title="Open in TradingView">Chart ↗</button>
           </div>
-          <div class="price">${fmt(x.price)}</div>
-          ${Number.isFinite(x.localLow)&&Number.isFinite(x.price)&&Number.isFinite(x.localHigh)?`<div class="price-structure"><span>${fmt(x.localLow)}</span><span class="sep">&lt;</span><strong>${fmt(x.price)}</strong><span class="sep">&lt;</span><span>${fmt(x.localHigh)}</span><small>Low · Current · High</small></div>`:''}
+          ${Number.isFinite(x.localLow)&&Number.isFinite(x.price)&&Number.isFinite(x.localHigh)?`<div class="price-structure"><span>${fmt(x.localLow)}</span><span class="sep">&lt;</span><strong>${fmt(x.price)}</strong><span class="sep">&lt;</span><span>${fmt(x.localHigh)}</span><small>Low · Current · High</small></div>`:`<div class="price">${fmt(x.price)}</div>`}
         </div>
       </div>
       <div class="row">
