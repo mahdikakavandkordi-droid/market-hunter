@@ -311,6 +311,18 @@ export function metrics(data,benchmarkData,sectorData){
   };
 }
 
+function sectorStrength(x){
+  if(!x) return null;
+  let points=0,parts=0;
+  const vote=(cond)=>{if(cond===null||cond===undefined)return;parts++;points+=cond?1:-1};
+  vote(Number.isFinite(x.ret20)?x.ret20>=0:null);
+  vote(Number.isFinite(x.ret5)?x.ret5>=0:null);
+  vote(Number.isFinite(x.breadth)?x.breadth>=50:null);
+  vote(Number.isFinite(x.breadthDelta)?x.breadthDelta>=0:null);
+  if(!parts) return null;
+  return points>=2?'Strong':points<=-2?'Weak':'Neutral';
+}
+
 function sectorSummary(liquid){
   const groups={};
   for(const item of liquid){
@@ -330,7 +342,8 @@ function sectorSummary(liquid){
       sector,count:items.length,
       breadth:round(breadth,0),breadthPrev5:round(breadthPrev,0),breadthDelta:round(breadthDelta,0),
       breadthStatus:breadthLabel(breadth),trend:direction(breadthDelta),
-      ret5:round(avg5,1),ret20:round(avg20,1)
+      ret5:round(avg5,1),ret20:round(avg20,1),
+      strength:sectorStrength({ret5:avg5,ret20:avg20,breadth,breadthDelta})
     };
   }).sort((a,b)=>(b.ret20??-999)-(a.ret20??-999));
 }
@@ -527,6 +540,15 @@ export default async function handler(req,res){
     };
 
     const sectors=sectorSummary(canadianLiquid);
+    const sectorByName=new Map(sectors.map(x=>[x.sector,x]));
+    for(const item of [...candidates,...watchItems,...availableItems]){
+      const sx=sectorByName.get(item.sector);
+      item.sectorStrength=sx?.strength??null;
+      item.sectorBreadth=sx?.breadth??null;
+      item.sectorBreadthTrend=sx?.trend??null;
+      item.sectorRet5=sx?.ret5??null;
+      item.sectorRet20=sx?.ret20??null;
+    }
     const strongest=sectors[0]||null;
     const weakest=sectors.at(-1)||null;
 
