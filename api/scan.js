@@ -164,7 +164,7 @@ function downVolumeAverage(rows,start,end){
   return avg(a);
 }
 
-function metrics(data,benchmarkData,sectorRet20){
+function metrics(data,benchmarkData,sectorData){
   const r=data.rows,c=r.map(x=>x.close),v=r.map(x=>x.volume||0);
   if(c.length<65) return null;
 
@@ -188,7 +188,8 @@ function metrics(data,benchmarkData,sectorRet20){
   const momentumImproving=Number.isFinite(momentumShift)&&momentumShift>=2;
   const aligned20=alignedReturn(r,benchmarkData?.rows,20);
   const rs20=aligned20?aligned20.stock-aligned20.benchmark:null;
-  const sectorRs=Number.isFinite(sectorRet20)&&Number.isFinite(ret20)?ret20-sectorRet20:null;
+  const alignedSector20=alignedReturn(r,sectorData?.rows,20);
+  const sectorRs=alignedSector20?alignedSector20.stock-alignedSector20.benchmark:null;
   const dist20=pct(last,ma20),dist50=pct(last,ma50);
     const volumeVsAvg=Number.isFinite(rvol)?(rvol-1)*100:null;
   const trendState=dailyUp&&weeklyUp?'Daily + Weekly aligned':weeklyUp?'Weekly up · Daily mixed':dailyUp?'Daily up · Weekly mixed':'Trend mixed';
@@ -317,10 +318,7 @@ export default async function handler(req,res){
     const sectorSettled=await mapLimit(sectorSymbols,5,s=>chart(s));
     const sectorMap={};
     sectorSettled.forEach((x,i)=>{
-      if(x.status==='fulfilled'){
-        const c=x.value.rows.map(r=>r.close);
-        sectorMap[sectorSymbols[i]]=pct(c.at(-1),c.at(-21));
-      }
+      if(x.status==='fulfilled') sectorMap[sectorSymbols[i]]=x.value;
     });
 
     const settled=await mapLimit(UNIQUE_UNIVERSE,8,([s])=>chart(s));
@@ -350,15 +348,16 @@ export default async function handler(req,res){
       if(m.stage) candidates.push(item);
     });
 
-    const above50=liquid.filter(x=>x.above50Now===true).length;
-    const above50Prev=liquid.filter(x=>x.above50Prev5===true).length;
-    const eligibleNow=liquid.filter(x=>x.above50Now!==null).length;
-    const eligiblePrev=liquid.filter(x=>x.above50Prev5!==null).length;
+    const canadianLiquid=liquid.filter(x=>x.sector!=='CDR');
+    const above50=canadianLiquid.filter(x=>x.above50Now===true).length;
+    const above50Prev=canadianLiquid.filter(x=>x.above50Prev5===true).length;
+    const eligibleNow=canadianLiquid.filter(x=>x.above50Now!==null).length;
+    const eligiblePrev=canadianLiquid.filter(x=>x.above50Prev5!==null).length;
     const percentAbove50=eligibleNow?above50/eligibleNow*100:null;
     const percentAbove50Prev5=eligiblePrev?above50Prev/eligiblePrev*100:null;
     const breadthDelta=Number.isFinite(percentAbove50)&&Number.isFinite(percentAbove50Prev5)?percentAbove50-percentAbove50Prev5:null;
-    const adv=liquid.filter(x=>(x.ret5||0)>0).length;
-    const dec=liquid.filter(x=>(x.ret5||0)<0).length;
+    const adv=canadianLiquid.filter(x=>Number.isFinite(x.ret5)&&x.ret5>0).length;
+    const dec=canadianLiquid.filter(x=>Number.isFinite(x.ret5)&&x.ret5<0).length;
 
     const breadth={
       percentAbove50:round(percentAbove50,0),
@@ -366,10 +365,10 @@ export default async function handler(req,res){
       change5d:round(breadthDelta,0),
       status:breadthLabel(percentAbove50),
       trend:direction(breadthDelta),
-      advancers5d:adv,decliners5d:dec,scanned:liquid.length,candidates:candidates.length
+      advancers5d:adv,decliners5d:dec,scanned:canadianLiquid.length,candidates:candidates.filter(x=>x.sector!=='CDR').length
     };
 
-    const sectors=sectorSummary(liquid);
+    const sectors=sectorSummary(canadianLiquid);
     const strongest=sectors[0]||null;
     const weakest=sectors.at(-1)||null;
 
