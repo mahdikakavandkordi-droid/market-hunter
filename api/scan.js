@@ -235,9 +235,19 @@ function metrics(data,benchmarkData,sectorData){
   const score=clamp(trendScore+momentumScore+volumeScore+(Number.isFinite(relativeScore)?relativeScore:6)+(Number.isFinite(sectorScore)?sectorScore:4)+structureScore,0,100);
 
   let stage=null;
-  const established=weeklyUp&&dailyUp&&Number.isFinite(ret20)&&Number.isFinite(ret60)&&Number.isFinite(rs20)&&(ret20>=10||ret60>=20)&&rs20>2;
-  const attractive=weeklyUp&&Number.isFinite(ret5)&&Number.isFinite(ret20)&&Number.isFinite(rs20)&&(dailyUp||(last>ma50&&ret5>0))&&ret20>0&&rs20>-3;
-  const recovery=momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)&&ret5>0&&pullback<=-1&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8&&((Number.isFinite(max5Rvol)&&max5Rvol>=0.75&&unusual5dDirection!=='negative')||sellingPressureFading);
+  // Stages describe chart maturity, not buy/sell quality.
+  // Established requires a mature multi-week move and avoids labeling a fresh rebound as established.
+  const established=weeklyUp&&dailyUp&&Number.isFinite(ret20)&&Number.isFinite(ret60)&&Number.isFinite(rs20)
+    && ret20>=8&&ret60>=15&&rs20>2&&pullback>-10;
+  // Attractive is constructive trend continuation that has not yet met the mature-move test.
+  const attractive=weeklyUp&&Number.isFinite(ret5)&&Number.isFinite(ret20)&&Number.isFinite(rs20)
+    && (dailyUp||(last>ma50&&ret5>0))&&ret20>0&&rs20>-3&&pullback>-15;
+  // Recovery needs an actual prior soft patch plus a visible recent improvement; this prevents
+  // ordinary strong uptrends with a tiny dip from being mislabeled as early recovery.
+  const priorWeakness=Number.isFinite(prev5)&&prev5<=0;
+  const recovery=priorWeakness&&momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)
+    && ret5>=1&&pullback<=-2&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8
+    && ((Number.isFinite(max5Rvol)&&max5Rvol>=0.75&&unusual5dDirection!=='negative')||sellingPressureFading);
 
   if(established) stage='Established Move';
   else if(attractive) stage='Attractive Growth';
