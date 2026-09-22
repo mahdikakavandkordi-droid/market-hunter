@@ -33,6 +33,10 @@ button{border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 
 .tab{background:transparent;color:var(--muted);padding:8px 14px;min-height:auto;border-radius:9px;font-size:12px}
 .tab.active{background:#edf2f7;color:#0c1117}
 .view{display:none}.view.active{display:block}
+.hunter-subtabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;margin-bottom:4px;scrollbar-width:none}
+.hunter-subtabs::-webkit-scrollbar{display:none}
+.hunter-subtab{flex:0 0 auto;background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:7px 11px;min-height:auto;border-radius:999px;font-size:11px}
+.hunter-subtab.active{background:#edf2f7;color:#0c1117;border-color:#edf2f7}
 
 .section-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 0 10px}
 .section-title h2{margin:0;font-size:16px;letter-spacing:-.02em}
@@ -163,6 +167,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 <div class="tabs">
   <button class="tab active" data-tab="market">Market</button>
+  <button class="tab" data-tab="top5">Top 5</button>
   <button class="tab" data-tab="hunter">Hunter Picks</button>
   <button class="tab" data-tab="watchlist">Watchlist</button>
 </div>
@@ -173,7 +178,11 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   <div id="marketContent"></div>
 </section>
 
+<section id="top5View" class="view">
+  <div id="top5Content"></div>
+</section>
 <section id="hunterView" class="view">
+  <div class="hunter-subtabs" id="hunterSubtabs"></div>
   <div id="stages"></div>
 </section>
 <section id="watchlistView" class="view">
@@ -186,7 +195,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
-const state={data:null,history:[],tab:'market',expanded:new Set(),watchlist:savedWatch()};
+const state={data:null,history:[],tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function toggleWatch(symbol){state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);persistWatch();renderHunter();renderWatchlist()}
 function tradingViewSymbol(symbol){
@@ -333,41 +342,72 @@ function bindCardActions(root=''){
     },{passive:true});
   });
 }
+function crossStageScore(x){
+  // Cross-stage chart-review quality only. It does not change scanner eligibility, stage or stage ranking.
+  // Deliberately uses broad, reproducible technical dimensions rather than user clicks/watchlist/feedback.
+  let score=0,parts=0;
+  const add=(v,w=1)=>{if(Number.isFinite(v)){score+=Math.max(0,Math.min(100,v))*w;parts+=w}};
+  add(Number.isFinite(x.rs20)?50+x.rs20*2:NaN,1.2);
+  add(Number.isFinite(x.momentumShift)?50+x.momentumShift*3:NaN,1.1);
+  add(Number.isFinite(x.rvol)?35+(x.rvol-1)*35:NaN,.7);
+  add(Number.isFinite(x.ret20)?50+x.ret20*2:NaN,.8);
+  add(Number.isFinite(x.dist50)?55+x.dist50*2:NaN,.8);
+  // Reward a constructive location without blindly rewarding maximum extension.
+  if(Number.isFinite(x.pullback)) add(x.pullback>-3?62:x.pullback>=-12?78:x.pullback>=-20?60:35,1);
+  if(x.dailyUp===true) add(78,.8); else if(x.dailyUp===false) add(35,.8);
+  if(x.weeklyUp===true) add(82,1); else if(x.weeklyUp===false) add(35,1);
+  if(x.unusual5dDirection==='positive') add(82,.6);
+  else if(x.unusual5dDirection==='negative') add(35,.6);
+  else add(55,.6);
+  return parts?score/parts:0;
+}
+function stageKind(x){return x.stage==='Established Move'?'established':x.stage==='Attractive Growth'?'attractive':'recovery'}
+function allHunterCandidates(){
+  const d=state.data;if(!d)return [];
+  return [...(d.items||[]),...(d.watchItems||[]).map(x=>({...x,stage:'Early Watch'}))];
+}
+function renderTop5(){
+  const d=state.data;if(!d)return;
+  const xs=allHunterCandidates().map(x=>({...x,crossStageScore:crossStageScore(x)}))
+    .sort((a,b)=>b.crossStageScore-a.crossStageScore).slice(0,5);
+  document.querySelector('#top5Content').innerHTML=`
+    <section class="stage">
+      <div class="stage-head"><div class="stage-main"><div class="stage-copy">
+        <h2>Hunter Top 5</h2>
+        <p>Five charts to inspect first across all stages. Ranked by cross-stage technical quality — not a BUY signal.</p>
+      </div></div><span class="shown">${xs.length}</span></div>
+      <div class="grid">${xs.length?xs.map(x=>card(x,stageKind(x),x.stage)).join(''):'<div class="empty">No candidates available at the current liquidity threshold.</div>'}</div>
+    </section>`;
+  bindCardActions('#top5Content');
+}
+
 function renderHunter(){
   const d=state.data;if(!d)return;
   const top=+document.querySelector('#topN').value;
-
   const defs=[
+    ['Early Watch','recovery','شکار قبل از برگشت','Still weak, but Hunter sees an early change. Reversal is not confirmed.'],
     ['Recovery','recovery','مشکوک به تغییر / ریکاوری','Rebounding after a meaningful decline, with price back at or above MA20.'],
     ['Attractive Growth','attractive','در حال رشد ولی جذاب','Trend is constructive and still worth a chart check.'],
-    ['Established Move','established','رشد کرده','A clearer, more mature move that remains on radar.'],
-    ['Early Watch','recovery','شکار قبل از برگشت','Still weak, but Hunter sees an early change: volume shock near a low, fading selling pressure, or improving momentum. Reversal is not confirmed.']
+    ['Established Move','established','رشد کرده','A clearer, more mature move that remains on radar.']
   ];
-
-  document.querySelector('#stages').innerHTML=defs.map(([name,kind,fa,sub])=>{
-    const all=name==='Early Watch'?(d.watchItems||[]):d.items.filter(x=>x.stage===name);
-    const expanded=state.expanded.has(name);
-    const xs=expanded?all:all.slice(0,top);
-    return `
-      <section class="stage">
-        <div class="stage-head">
-          <div class="stage-main">
-            <span class="badge ${kind}">${fa}</span>
-            <div class="stage-copy"><h2>${name}</h2><p>${sub}</p><p>Ordered for chart review using technical conditions; not a probability of gain.</p></div>
-          </div>
-          <span class="shown">${xs.length} of ${all.length}</span>
-        </div>
-        <div class="grid">${xs.length?xs.map(x=>card(x,kind,fa)).join(''):'<div class="empty">No names passed this stage at the current liquidity threshold.</div>'}</div>
-        ${all.length>top?`<button class="show-more" data-stage="${name}" aria-expanded="${expanded}">${expanded?'Show top '+top:'Show all '+all.length}</button>`:''}
-      </section>`;
-  }).join('');
-
-  document.querySelectorAll('.show-more').forEach(el=>el.addEventListener('click',()=>{
-    const name=el.dataset.stage;
-    if(state.expanded.has(name)) state.expanded.delete(name);else state.expanded.add(name);
-    renderHunter();
-  }));
-
+  document.querySelector('#hunterSubtabs').innerHTML=defs.map(([name])=>`<button class="hunter-subtab ${state.hunterStage===name?'active':''}" data-stage-tab="${name}">${name}</button>`).join('');
+  const def=defs.find(x=>x[0]===state.hunterStage)||defs[0];
+  const [name,kind,fa,sub]=def;
+  const all=name==='Early Watch'?(d.watchItems||[]):d.items.filter(x=>x.stage===name);
+  const expanded=state.expanded.has(name);
+  const xs=expanded?all:all.slice(0,top);
+  document.querySelector('#stages').innerHTML=`
+    <section class="stage">
+      <div class="stage-head">
+        <div class="stage-main"><span class="badge ${kind}">${fa}</span>
+          <div class="stage-copy"><h2>${name}</h2><p>${sub}</p><p>Ordered for chart review using technical conditions; not a probability of gain.</p></div>
+        </div><span class="shown">${xs.length} of ${all.length}</span>
+      </div>
+      <div class="grid">${xs.length?xs.map(x=>card(x,kind,fa)).join(''):'<div class="empty">No names passed this stage at the current liquidity threshold.</div>'}</div>
+      ${all.length>top?`<button class="show-more" data-stage="${name}" aria-expanded="${expanded}">${expanded?'Show top '+top:'Show all '+all.length}</button>`:''}
+    </section>`;
+  document.querySelectorAll('.hunter-subtab').forEach(el=>el.addEventListener('click',()=>{state.hunterStage=el.dataset.stageTab;state.expanded.clear();renderHunter()}));
+  document.querySelectorAll('.show-more').forEach(el=>el.addEventListener('click',()=>{const n=el.dataset.stage;if(state.expanded.has(n))state.expanded.delete(n);else state.expanded.add(n);renderHunter()}));
   bindCardActions('#stages');
 }
 
@@ -418,7 +458,7 @@ function card(x,kind,fa,inWatch=false){
 
 function render(){
   if(!state.data)return;
-  renderMarket();renderHunter();renderWatchlist();
+  renderMarket();renderTop5();renderHunter();renderWatchlist();
   const d=state.data;
   document.querySelector('#status').title=(d.failureDetails||[]).map(x=>`${x.symbol}: ${x.reason}`).join('\n');
   document.querySelector('#status').innerHTML=
@@ -455,6 +495,7 @@ document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>
   state.tab=btn.dataset.tab;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
   document.querySelector('#marketView').classList.toggle('active',state.tab==='market');
+  document.querySelector('#top5View').classList.toggle('active',state.tab==='top5');
   document.querySelector('#hunterView').classList.toggle('active',state.tab==='hunter');
   document.querySelector('#watchlistView').classList.toggle('active',state.tab==='watchlist');
 }));
