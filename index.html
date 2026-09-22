@@ -292,15 +292,30 @@ function renderMarket(){
 
 function renderWatchlist(){
   const d=state.data;if(!d)return;
-  const universe=[...(d.items||[]),...(d.watchItems||[])];
-  const bySymbol=new Map(universe.map(x=>[x.symbol,x]));
-  const watched=[...state.watchlist].map(s=>bySymbol.get(s)).filter(Boolean);
+  const current=[...(d.items||[]),...(d.watchItems||[])];
+  const currentSymbols=new Set(current.map(x=>x.symbol));
+  const bySymbol=new Map([...(d.availableItems||[]),...current].map(x=>[x.symbol,x]));
+  const failures=new Map((d.failureDetails||[]).map(x=>[x.symbol,x.reason]));
+  const watched=[...state.watchlist].map(symbol=>{
+    const item=bySymbol.get(symbol);
+    if(item) return {...item,watchStatus:currentSymbols.has(symbol)?null:'خارج از فهرست فعلی'};
+    return {symbol,company:symbol,sector:'Saved chart',watchStatus:'داده فعلاً در دسترس نیست',unavailableReason:failures.get(symbol)||'not_in_current_scan'};
+  });
   document.querySelector('#watchlistContent').innerHTML=`
     <section class="watchlist">
-      <div class="section-title"><div><h2>♥ Watchlist</h2><p>Your saved charts · swipe left on mobile to remove</p></div><span class="shown">${watched.length}</span></div>
-      <div class="grid">${watched.length?watched.map(x=>card(x,(x.stage==='Established Move'?'established':x.stage==='Attractive Growth'?'attractive':'recovery'),x.stage||'Early Watch',true)).join(''):'<div class="watch-empty">No saved names yet. Tap ♡ on a Hunter candidate to add it.</div>'}</div>
+      <div class="section-title"><div><h2>♥ Watchlist</h2><p>Your saved charts stay here even when they leave the current scan · swipe left on mobile to remove</p></div><span class="shown">${watched.length}</span></div>
+      <div class="grid">${watched.length?watched.map(x=>x.unavailableReason?unavailableWatchCard(x):card(x,(x.stage==='Established Move'?'established':x.stage==='Attractive Growth'?'attractive':'recovery'),x.stage||'Watchlist',true)).join(''):'<div class="watch-empty">No saved names yet. Tap ♡ on a Hunter candidate to add it.</div>'}</div>
     </section>`;
   bindCardActions('#watchlistContent');
+}
+function unavailableWatchCard(x){
+  const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
+  return `<article class="card">
+    <div class="top"><div><div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge recovery">Watchlist</span></div><div class="company">${x.company}</div><div class="sector">داده فعلاً در دسترس نیست · ${x.unavailableReason}</div></div>
+    <div class="card-actions"><button class="heart saved" data-watch="${x.symbol}" title="Watchlist">♥</button><button class="tv-link" type="button" data-tv="${x.symbol}" title="Open in TradingView">Chart ↗</button></div></div>
+    <div class="why"><strong>Saved status</strong>نماد ذخیره‌شده باقی مانده و با برگشت داده دوباره کامل نمایش داده می‌شود.</div>
+    <div class="remove-hint">Swipe left to remove</div>
+  </article>`;
 }
 function bindCardActions(root=''){
   document.querySelectorAll(root+' .card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
@@ -362,7 +377,7 @@ function card(x,kind,fa,inWatch=false){
       <div class="top">
         <div>
           <div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge ${kind}">${fa}</span></div>
-          <div class="company">${x.company}</div><div class="sector">${x.sector}</div>${historyNote(x)}
+          <div class="company">${x.company}</div><div class="sector">${x.sector}</div>${x.watchStatus?`<span class="history-note flat">${x.watchStatus}</span>`:''}${historyNote(x)}
         </div>
         <div>
           <div class="card-actions">
@@ -378,7 +393,7 @@ function card(x,kind,fa,inWatch=false){
         <div class="mini"><div class="k">RVOL</div><div class="v">${fmt(x.rvol)}×</div></div>
         <div class="mini"><div class="k">RSI 14</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
       </div>
-      <div class="why"><strong>Surfaced because</strong>${x.why.join(' · ')}</div>
+      <div class="why"><strong>${x.watchStatus?'Current status':'Surfaced because'}</strong>${x.watchStatus?x.watchStatus:((x.why||[]).join(' · ')||'Saved chart')}</div>
       <div class="score"><small>tap details</small></div>
       ${inWatch?'<div class="remove-hint">Swipe left to remove</div>':''}
       <div class="detail"><div class="detail-grid">
@@ -392,6 +407,8 @@ function card(x,kind,fa,inWatch=false){
         <div class="signal">5D unusual activity<b class="${x.unusual5dDirection==='positive'?'up':x.unusual5dDirection==='negative'?'down':'flat'}">${x.unusual5dLabel||'—'}</b></div>
         <div class="signal">Relative vs ${x.benchmarkLabel||"TSX"}<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="signal">Relative vs sector<b class="${cls(x.sectorRs)}">${pct(x.sectorRs)}</b></div>
         <div class="signal">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></div>
+        <div class="signal">Daily local high<b>${x.highState==='local_high_broken'?'Broken by close':x.highState==='failed_high_break'?'Failed / rejected break':x.highState==='local_high_intact'?'Intact':'—'}${Number.isFinite(x.localHigh)?' · '+fmt(x.localHigh):''}</b></div>
+        <div class="signal">Daily local low<b>${x.lowState==='local_low_held'?'Held':x.lowState==='failed_low_break'?'Failed break · reclaimed':x.lowState==='local_low_broken'?'Broken by close':'—'}${Number.isFinite(x.localLow)?' · '+fmt(x.localLow):''}</b></div>
       </div></div>
     </article>`;
 }
