@@ -183,9 +183,21 @@ const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('market
 const state={data:null,history:[],tab:'market',expanded:new Set(),watchlist:savedWatch()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function toggleWatch(symbol){state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);persistWatch();renderHunter()}
-function tradingViewUrl(symbol){
-  const clean=symbol.replace(/\.TO$/,'');
-  return 'https://www.tradingview.com/chart/?symbol=TSX%3A'+encodeURIComponent(clean);
+function tradingViewSymbol(symbol){
+  const clean=symbol.replace(/\.(TO|V)$/,'');
+  return (symbol.endsWith('.V')?'TSXV:':'TSX:')+clean;
+}
+function openTradingView(symbol){
+  const tvSymbol=tradingViewSymbol(symbol);
+  const web='https://www.tradingview.com/chart/?symbol='+encodeURIComponent(tvSymbol);
+  const app='tradingview://chart?symbol='+encodeURIComponent(tvSymbol);
+  if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){
+    const started=Date.now();
+    window.location.href=app;
+    setTimeout(()=>{if(Date.now()-started<1800) window.location.href=web},1100);
+  }else{
+    window.open(web,'_blank','noopener');
+  }
 }
 const fmt=n=>Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
 const pct=n=>Number.isFinite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'—';
@@ -326,7 +338,7 @@ function renderHunter(){
 
   document.querySelectorAll('.card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
   document.querySelectorAll('.heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
-  document.querySelectorAll('.tv-link').forEach(el=>el.addEventListener('click',e=>e.stopPropagation()));
+  document.querySelectorAll('.tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
   document.querySelectorAll('.watchlist .card').forEach(el=>{
     let startX=null;
     el.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});
@@ -355,7 +367,7 @@ function card(x,kind,fa,inWatch=false){
         <div>
           <div class="card-actions">
             <button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}" title="Watchlist">${state.watchlist.has(x.symbol)?'♥':'♡'}</button>
-            <a class="tv-link" href="${tradingViewUrl(x.symbol)}" target="_blank" rel="noopener" title="Open chart">Chart ↗</a>
+            <button class="tv-link" type="button" data-tv="${x.symbol}" title="Open in TradingView">Chart ↗</button>
           </div>
           <div class="price">${fmt(x.price)}</div>
         </div>
