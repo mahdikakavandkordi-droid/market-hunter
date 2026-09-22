@@ -127,7 +127,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   .toolbar{align-items:stretch;margin-top:12px;gap:7px}.controls{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}
   .control{padding:7px 9px;min-height:36px}.control span{display:none}button{padding:8px 11px;min-height:36px;font-size:12px}
   .status{align-self:flex-start;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tabs{width:100%;display:grid;grid-template-columns:1fr 1fr}.tab{width:100%}
+  .tabs{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.tab{width:100%}
   .index-grid{grid-template-columns:1fr 1fr;gap:9px}.metric{padding:12px}.metric .v{font-size:19px}.metric .sub{font-size:10px}
   .market-grid{grid-template-columns:1fr}.sector-row{grid-template-columns:1.2fr .7fr .7fr .9fr}.sector-row>*:nth-child(4){display:none}.sector-row.head>*:nth-child(4){display:none}
   .takeaway-grid{grid-template-columns:1fr 1fr}
@@ -163,6 +163,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <div class="tabs">
   <button class="tab active" data-tab="market">Market</button>
   <button class="tab" data-tab="hunter">Hunter Picks</button>
+  <button class="tab" data-tab="watchlist">Watchlist</button>
 </div>
 
 <div class="error" id="error"></div>
@@ -174,6 +175,9 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <section id="hunterView" class="view">
   <div id="stages"></div>
 </section>
+<section id="watchlistView" class="view">
+  <div id="watchlistContent"></div>
+</section>
 
 <footer>Discovery dashboard only — not a buy/sell signal. Market context and candidate stages are designed to reduce what you need to inspect manually.</footer>
 </div>
@@ -182,7 +186,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const state={data:null,history:[],tab:'market',expanded:new Set(),watchlist:savedWatch()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
-function toggleWatch(symbol){state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);persistWatch();renderHunter()}
+function toggleWatch(symbol){state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);persistWatch();renderHunter();renderWatchlist()}
 function tradingViewSymbol(symbol){
   const clean=symbol.replace(/\.(TO|V)$/,'');
   return (symbol.endsWith('.V')?'TSXV:':'TSX:')+clean;
@@ -286,17 +290,35 @@ function renderMarket(){
   `;
 }
 
-function renderHunter(){
+function renderWatchlist(){
   const d=state.data;if(!d)return;
-  const top=+document.querySelector('#topN').value;
   const universe=[...(d.items||[]),...(d.watchItems||[])];
   const bySymbol=new Map(universe.map(x=>[x.symbol,x]));
   const watched=[...state.watchlist].map(s=>bySymbol.get(s)).filter(Boolean);
-  const watchHtml=`
+  document.querySelector('#watchlistContent').innerHTML=`
     <section class="watchlist">
-      <div class="section-title"><div><h2>♥ Watchlist</h2><p>Saved on this device · swipe left on mobile to remove</p></div><span class="shown">${watched.length}</span></div>
-      <div class="grid">${watched.length?watched.map(x=>card(x,(x.stage==='Established Move'?'established':x.stage==='Attractive Growth'?'attractive':'recovery'),x.stage||'Early Watch',true)).join(''):'<div class="watch-empty">Tap the heart on any candidate to keep it here.</div>'}</div>
+      <div class="section-title"><div><h2>♥ Watchlist</h2><p>Your saved charts · swipe left on mobile to remove</p></div><span class="shown">${watched.length}</span></div>
+      <div class="grid">${watched.length?watched.map(x=>card(x,(x.stage==='Established Move'?'established':x.stage==='Attractive Growth'?'attractive':'recovery'),x.stage||'Early Watch',true)).join(''):'<div class="watch-empty">No saved names yet. Tap ♡ on a Hunter candidate to add it.</div>'}</div>
     </section>`;
+  bindCardActions('#watchlistContent');
+}
+function bindCardActions(root=''){
+  document.querySelectorAll(root+' .card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
+  document.querySelectorAll(root+' .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
+  document.querySelectorAll(root+' .tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
+  document.querySelectorAll(root+' .watchlist .card').forEach(el=>{
+    let startX=null;
+    el.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});
+    el.addEventListener('touchend',e=>{
+      if(startX===null)return;
+      const dx=e.changedTouches[0].clientX-startX;startX=null;
+      if(dx<-55){const symbol=el.querySelector('.heart')?.dataset.watch;if(symbol){state.watchlist.delete(symbol);persistWatch();renderHunter();renderWatchlist()}}
+    },{passive:true});
+  });
+}
+function renderHunter(){
+  const d=state.data;if(!d)return;
+  const top=+document.querySelector('#topN').value;
 
   const defs=[
     ['Recovery','recovery','مشکوک به تغییر / ریکاوری','Rebounding after a meaningful decline, with price back at or above MA20.'],
@@ -305,7 +327,7 @@ function renderHunter(){
     ['Early Watch','recovery','زیر نظر برای بهبود','Still weak over 20 days; momentum improving with volume support. 5D may remain negative. Reversal is unconfirmed.']
   ];
 
-  document.querySelector('#stages').innerHTML=watchHtml+defs.map(([name,kind,fa,sub])=>{
+  document.querySelector('#stages').innerHTML=defs.map(([name,kind,fa,sub])=>{
     const all=name==='Early Watch'?(d.watchItems||[]):d.items.filter(x=>x.stage===name);
     const expanded=state.expanded.has(name);
     const xs=expanded?all:all.slice(0,top);
@@ -329,22 +351,7 @@ function renderHunter(){
     renderHunter();
   }));
 
-  document.querySelectorAll('.card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
-  document.querySelectorAll('.heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
-  document.querySelectorAll('.tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
-  document.querySelectorAll('.watchlist .card').forEach(el=>{
-    let startX=null;
-    el.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});
-    el.addEventListener('touchend',e=>{
-      if(startX===null)return;
-      const dx=e.changedTouches[0].clientX-startX;
-      startX=null;
-      if(dx<-55){
-        const symbol=el.querySelector('.heart')?.dataset.watch;
-        if(symbol){state.watchlist.delete(symbol);persistWatch();renderHunter()}
-      }
-    },{passive:true});
-  });
+  bindCardActions('#stages');
 }
 
 function card(x,kind,fa,inWatch=false){
@@ -391,7 +398,7 @@ function card(x,kind,fa,inWatch=false){
 
 function render(){
   if(!state.data)return;
-  renderMarket();renderHunter();
+  renderMarket();renderHunter();renderWatchlist();
   const d=state.data;
   document.querySelector('#status').title=(d.failureDetails||[]).map(x=>`${x.symbol}: ${x.reason}`).join('\n');
   document.querySelector('#status').innerHTML=
@@ -429,6 +436,7 @@ document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
   document.querySelector('#marketView').classList.toggle('active',state.tab==='market');
   document.querySelector('#hunterView').classList.toggle('active',state.tab==='hunter');
+  document.querySelector('#watchlistView').classList.toggle('active',state.tab==='watchlist');
 }));
 document.querySelector('#refresh').addEventListener('click',load);
 document.querySelector('#liq').addEventListener('change',load);
