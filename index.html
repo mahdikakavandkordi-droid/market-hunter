@@ -13,141 +13,122 @@
 }
 *{box-sizing:border-box}
 body{
-  margin:0;background:
-  radial-gradient(circle at 15% 0%,rgba(103,168,255,.06),transparent 28%),
-  linear-gradient(180deg,#090d12,#0d131b 50%,#090d12);
+  margin:0;background:radial-gradient(circle at 15% 0%,rgba(103,168,255,.06),transparent 28%),linear-gradient(180deg,#090d12,#0d131b 50%,#090d12);
   color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh
 }
 .wrap{max-width:1180px;margin:auto;padding:22px}
-header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:14px}
 .brand h1{margin:0;font-size:29px;letter-spacing:-.045em}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
 .toolbar{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.control{
-  display:flex;align-items:center;gap:7px;background:rgba(17,24,33,.82);
-  border:1px solid var(--line);border-radius:10px;padding:7px 10px;color:var(--muted);
-  font-size:12px;min-height:38px
-}
+.control{display:flex;align-items:center;gap:7px;background:rgba(17,24,33,.82);border:1px solid var(--line);border-radius:10px;padding:7px 10px;color:var(--muted);font-size:12px;min-height:38px}
 .control strong{color:var(--text);font-weight:700}
-select,input{background:transparent;color:var(--text);border:0;outline:0;font:inherit;font-weight:700}
-button{
-  border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 12px;
-  min-height:38px;font-weight:800;cursor:pointer
-}
-.status{
-  display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);
-  padding:5px 8px;border-radius:999px;background:rgba(17,24,33,.64);border:1px solid rgba(37,48,60,.75)
-}
+select{background:transparent;color:var(--text);border:0;outline:0;font:inherit;font-weight:700}
+button{border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 12px;min-height:38px;font-weight:800;cursor:pointer}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);padding:5px 8px;border-radius:999px;background:rgba(17,24,33,.64);border:1px solid rgba(37,48,60,.75)}
 .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(93,214,158,.07)}
 
-.pulse{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
-.metric{
-  background:linear-gradient(180deg,rgba(21,30,41,.9),rgba(17,24,33,.9));
-  border:1px solid var(--line);border-radius:15px;padding:14px;box-shadow:var(--shadow)
-}
-.metric .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.tabs{display:flex;gap:6px;margin:8px 0 18px;padding:4px;background:#0d141c;border:1px solid var(--line);border-radius:12px;width:max-content}
+.tab{background:transparent;color:var(--muted);padding:8px 14px;min-height:auto;border-radius:9px;font-size:12px}
+.tab.active{background:#edf2f7;color:#0c1117}
+.view{display:none}.view.active{display:block}
+
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 0 10px}
+.section-title h2{margin:0;font-size:16px;letter-spacing:-.02em}
+.section-title p{margin:3px 0 0;color:var(--muted);font-size:11px}
+.region{margin-bottom:20px}
+.index-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.metric{background:linear-gradient(180deg,rgba(21,30,41,.9),rgba(17,24,33,.9));border:1px solid var(--line);border-radius:15px;padding:14px;box-shadow:var(--shadow)}
+.metric .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
 .metric .v{font-size:23px;font-weight:800;margin-top:7px;letter-spacing:-.035em}
 .metric .sub{font-size:11px;margin-top:6px;line-height:1.35}
 .up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--muted)}
 
+.market-grid{display:grid;grid-template-columns:1.05fr 1.95fr;gap:12px;margin-top:22px}
+.market-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.market-card h3{font-size:14px;margin:0 0 4px}
+.market-card .hint{color:var(--muted);font-size:10px;margin-bottom:14px}
+.breadth-main{display:flex;align-items:flex-end;gap:11px}
+.breadth-number{font-size:38px;font-weight:850;letter-spacing:-.05em}
+.status-pill{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800;margin-bottom:6px}
+.strong{background:rgba(93,214,158,.12);color:var(--green)}
+.neutral{background:rgba(241,199,91,.12);color:var(--amber)}
+.weak{background:rgba(242,123,129,.12);color:var(--red)}
+.breadth-sub{margin-top:10px;font-size:11px;color:var(--muted);line-height:1.55}
+.trend-line{margin-top:13px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.trend-name{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.trend-value{font-size:12px;font-weight:800}
+
+.sector-list{display:grid;gap:7px}
+.sector-row{display:grid;grid-template-columns:1.25fr .7fr .7fr .85fr .8fr;gap:8px;align-items:center;padding:9px 10px;background:var(--panel3);border:1px solid #202b36;border-radius:10px;font-size:11px}
+.sector-row.head{background:transparent;border:0;padding:0 10px 5px;color:var(--muted2);font-size:9px;text-transform:uppercase;letter-spacing:.05em}
+.sector-name{font-weight:750}
+.sector-status{font-size:9px;padding:4px 6px;border-radius:999px;width:max-content;font-weight:800}
+
+.takeaway{margin-top:12px;background:linear-gradient(135deg,rgba(103,168,255,.08),rgba(93,214,158,.045));border:1px solid #293746;border-radius:16px;padding:16px}
+.takeaway h3{margin:0 0 10px;font-size:14px}
+.takeaway-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.take{background:rgba(11,15,20,.45);border:1px solid rgba(37,48,60,.75);border-radius:10px;padding:10px}
+.take .k{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em}
+.take .v{font-size:12px;font-weight:800;margin-top:4px}
+
 .stage{margin-top:22px}
-.stage-head{
-  display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px;
-  padding:0 2px 10px;border-bottom:1px solid rgba(37,48,60,.7);margin-bottom:11px
-}
+.stage-head{display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px;padding:0 2px 10px;border-bottom:1px solid rgba(37,48,60,.7);margin-bottom:11px}
 .stage-main{display:flex;align-items:center;gap:10px;min-width:0}
-.stage-copy{min-width:0}
-.stage-copy h2{margin:0;font-size:17px;letter-spacing:-.02em}
+.stage-copy{min-width:0}.stage-copy h2{margin:0;font-size:17px;letter-spacing:-.02em}
 .stage-copy p{margin:3px 0 0;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .badge{padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}
 .recovery{background:rgba(241,199,91,.12);color:var(--amber)}
 .attractive{background:rgba(93,214,158,.12);color:var(--green)}
 .established{background:rgba(103,168,255,.12);color:var(--blue)}
 .shown{color:var(--muted2);font-size:11px;white-space:nowrap}
-
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
-.card{
-  position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));
-  border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow);
-  cursor:pointer;transition:border-color .16s ease,transform .16s ease
-}
+.card{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow);cursor:pointer;transition:border-color .16s ease,transform .16s ease}
 .card:hover{border-color:#3a4858;transform:translateY(-1px)}
 .top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
-.ticker-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ticker{font-size:21px;font-weight:850;letter-spacing:-.025em}
-.company{font-size:12px;color:var(--muted);margin-top:3px}
-.sector{font-size:10px;color:var(--muted2);margin-top:3px}
+.ticker-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ticker{font-size:21px;font-weight:850;letter-spacing:-.025em}
+.company{font-size:12px;color:var(--muted);margin-top:3px}.sector{font-size:10px;color:var(--muted2);margin-top:3px}
 .price{text-align:right;font-size:18px;font-weight:800}
-.score-pill{
-  display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:4px 7px;border-radius:999px;
-  background:#0d141c;border:1px solid #22303d;color:var(--muted);font-size:10px;font-weight:700
-}
+.score-pill{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:4px 7px;border-radius:999px;background:#0d141c;border:1px solid #22303d;color:var(--muted);font-size:10px;font-weight:700}
 .score-pill b{color:var(--text)}
-
 .row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}
 .mini{background:var(--panel3);border:1px solid #202b36;border-radius:10px;padding:8px}
-.mini .k{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em}
-.mini .v{font-size:13px;font-weight:780;margin-top:3px}
-
-.why{
-  margin-top:11px;padding:10px 11px;border-radius:11px;background:rgba(255,255,255,.025);
-  border:1px solid rgba(37,48,60,.72);color:#d8e0e8;font-size:11.5px;line-height:1.45
-}
+.mini .k{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em}.mini .v{font-size:13px;font-weight:780;margin-top:3px}
+.why{margin-top:11px;padding:10px 11px;border-radius:11px;background:rgba(255,255,255,.025);border:1px solid rgba(37,48,60,.72);color:#d8e0e8;font-size:11.5px;line-height:1.45}
 .why strong{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.06em;margin-right:5px}
-.score{margin-top:10px;display:flex;align-items:center;gap:8px}
-.bar{height:5px;background:#202a34;border-radius:999px;overflow:hidden;flex:1}
-.fill{height:100%;background:linear-gradient(90deg,#7186a0,#dce6f2)}
-.score small{color:var(--muted2);font-size:10px}
-
-.detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
-.card.open .detail{display:block}
-.detail-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.pill{border:1px solid var(--line);border-radius:9px;padding:7px;text-align:center;font-size:9px;color:var(--muted)}
-.pill b{display:block;margin-top:3px;font-size:11px;color:var(--text)}
+.score{margin-top:10px;display:flex;align-items:center;gap:8px}.bar{height:5px;background:#202a34;border-radius:999px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,#7186a0,#dce6f2)}.score small{color:var(--muted2);font-size:10px}
+.detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.card.open .detail{display:block}
+.detail-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.pill{border:1px solid var(--line);border-radius:9px;padding:7px;text-align:center;font-size:9px;color:var(--muted)}.pill b{display:block;margin-top:3px;font-size:11px;color:var(--text)}
 .empty{grid-column:1/-1;border:1px dashed var(--line);border-radius:14px;padding:24px;text-align:center;color:var(--muted)}
-
 footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
-.loading{opacity:.65;pointer-events:none}
-.error{background:rgba(242,123,129,.08);border:1px solid rgba(242,123,129,.3);color:#ffc5c8;padding:12px;border-radius:12px;margin-bottom:14px;display:none}
+.loading{opacity:.65;pointer-events:none}.error{background:rgba(242,123,129,.08);border:1px solid rgba(242,123,129,.3);color:#ffc5c8;padding:12px;border-radius:12px;margin-bottom:14px;display:none}
 
 @media(max-width:900px){
-  .pulse{grid-template-columns:repeat(2,1fr)}
+  .index-grid{grid-template-columns:repeat(2,1fr)}
+  .market-grid{grid-template-columns:1fr}
   .grid{grid-template-columns:1fr 1fr}
+  .takeaway-grid{grid-template-columns:repeat(2,1fr)}
   .row{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:620px){
-  .wrap{padding:16px}
-  header{display:block;margin-bottom:14px}
-  .brand h1{font-size:27px}
-  .brand p{font-size:12px;max-width:340px}
-  .toolbar{align-items:stretch;margin-top:12px;gap:7px}
-  .controls{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}
-  .control{padding:7px 9px;min-height:36px}
-  .control span{display:none}
-  button{padding:8px 11px;min-height:36px;font-size:12px}
+  .wrap{padding:16px}header{display:block;margin-bottom:12px}.brand h1{font-size:27px}.brand p{font-size:12px;max-width:340px}
+  .toolbar{align-items:stretch;margin-top:12px;gap:7px}.controls{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}
+  .control{padding:7px 9px;min-height:36px}.control span{display:none}button{padding:8px 11px;min-height:36px;font-size:12px}
   .status{align-self:flex-start;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .pulse{grid-template-columns:1fr 1fr;gap:9px}
-  .metric{padding:12px}
-  .metric .v{font-size:20px}
-  .metric .sub{font-size:10px}
-  .grid{grid-template-columns:1fr}
-  .stage{margin-top:20px}
-  .stage-head{grid-template-columns:1fr auto;align-items:center;gap:8px}
-  .stage-main{align-items:flex-start;gap:8px}
-  .stage-copy h2{font-size:16px}
-  .stage-copy p{font-size:10px;white-space:normal}
-  .badge{font-size:9px;padding:4px 7px;margin-top:1px}
-  .card{padding:14px}
-  .row{grid-template-columns:repeat(4,1fr)}
-  .mini{padding:7px 6px}
-  .mini .v{font-size:12px}
-  .detail-grid{grid-template-columns:repeat(2,1fr)}
+  .tabs{width:100%;display:grid;grid-template-columns:1fr 1fr}.tab{width:100%}
+  .index-grid{grid-template-columns:1fr 1fr;gap:9px}.metric{padding:12px}.metric .v{font-size:19px}.metric .sub{font-size:10px}
+  .market-grid{grid-template-columns:1fr}.sector-row{grid-template-columns:1.2fr .7fr .7fr .9fr}.sector-row>*:nth-child(4){display:none}.sector-row.head>*:nth-child(4){display:none}
+  .takeaway-grid{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:1fr}.stage{margin-top:20px}.stage-head{grid-template-columns:1fr auto;align-items:center;gap:8px}
+  .stage-main{align-items:flex-start;gap:8px}.stage-copy h2{font-size:16px}.stage-copy p{font-size:10px;white-space:normal}
+  .badge{font-size:9px;padding:4px 7px;margin-top:1px}.card{padding:14px}.row{grid-template-columns:repeat(4,1fr)}
+  .mini{padding:7px 6px}.mini .v{font-size:12px}.detail-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:390px){
-  .controls{grid-template-columns:1fr 1fr}
-  #refresh{grid-column:1/-1}
+  .controls{grid-template-columns:1fr 1fr}#refresh{grid-column:1/-1}
   .row{grid-template-columns:repeat(2,1fr)}
+  .sector-row{grid-template-columns:1.1fr .65fr .7fr}.sector-row>*:nth-child(5){display:none}.sector-row.head>*:nth-child(5){display:none}
 }
 </style>
 </head>
@@ -156,7 +137,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <header>
   <div class="brand">
     <h1>Market Hunter</h1>
-    <p>Small list. Better charts. Canadian equities + selected CDRs.</p>
+    <p>Market context first. Then a short list of charts worth opening.</p>
   </div>
   <div class="toolbar">
     <div class="controls">
@@ -168,34 +149,108 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   </div>
 </header>
 
-<div class="error" id="error"></div>
-<section class="pulse" id="pulse"></section>
-<div id="stages"></div>
+<div class="tabs">
+  <button class="tab active" data-tab="market">Market</button>
+  <button class="tab" data-tab="hunter">Hunter Picks</button>
+</div>
 
-<footer>
-  Discovery dashboard only — not a buy/sell signal. Hunter reduces the market to a small chart-review list; Weekly / Daily / 4H judgment stays manual.
-</footer>
+<div class="error" id="error"></div>
+
+<section id="marketView" class="view active">
+  <div id="marketContent"></div>
+</section>
+
+<section id="hunterView" class="view">
+  <div id="stages"></div>
+</section>
+
+<footer>Discovery dashboard only — not a buy/sell signal. Market context and candidate stages are designed to reduce what you need to inspect manually.</footer>
 </div>
 
 <script>
-const state={data:null};
+const state={data:null,tab:'market'};
 const fmt=n=>Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
 const pct=n=>Number.isFinite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'—';
 const cls=n=>n>0?'up':n<0?'down':'flat';
+const statusClass=s=>s==='Strong'?'strong':s==='Weak'?'weak':'neutral';
 
-function pulseCard(name,obj){
+function indexCard(name,obj){
   if(!obj)return `<div class="metric"><div class="k">${name}</div><div class="v">—</div><div class="sub flat">Unavailable</div></div>`;
   return `<div class="metric"><div class="k">${name}</div><div class="v">${fmt(obj.price)}</div><div class="sub ${cls(obj.ret5)}">5D ${pct(obj.ret5)} · 20D ${pct(obj.ret20)}</div></div>`;
 }
 
-function render(){
+function renderMarket(){
   const d=state.data;if(!d)return;
-  document.querySelector('#pulse').innerHTML=
-    pulseCard('TSX',d.indexes.TSX)+
-    pulseCard('S&P 500',d.indexes['S&P 500'])+
-    pulseCard('Nasdaq',d.indexes.Nasdaq)+
-    `<div class="metric"><div class="k">Breadth</div><div class="v">${d.breadth.percentAbove50??'—'}%</div><div class="sub ${d.breadth.advancers5d>=d.breadth.decliners5d?'up':'down'}">Above 50D MA · ${d.breadth.advancers5d} up / ${d.breadth.decliners5d} down</div></div>`;
+  const canada=['TSX','TSX Venture'];
+  const usa=['S&P 500','Nasdaq','Dow Jones','Russell 2000'];
+  const b=d.breadth;
+  const trendArrow=b.trend==='Improving'?'↑':b.trend==='Weakening'?'↓':'→';
+  const trendCls=b.trend==='Improving'?'up':b.trend==='Weakening'?'down':'flat';
 
+  const sectors=(d.sectors||[]).map(s=>`
+    <div class="sector-row">
+      <div class="sector-name">${s.sector}</div>
+      <div class="${cls(s.ret5)}">${pct(s.ret5)}</div>
+      <div class="${cls(s.ret20)}">${pct(s.ret20)}</div>
+      <div>${s.breadth??'—'}%</div>
+      <div><span class="sector-status ${statusClass(s.breadthStatus)}">${s.trend}</span></div>
+    </div>
+  `).join('');
+
+  const mc=d.marketContext||{};
+  document.querySelector('#marketContent').innerHTML=`
+    <div class="region">
+      <div class="section-title"><div><h2>Canada</h2><p>Major Canadian equity indexes</p></div></div>
+      <div class="index-grid">${canada.map(n=>indexCard(n,d.indexes[n])).join('')}</div>
+    </div>
+
+    <div class="region">
+      <div class="section-title"><div><h2>United States</h2><p>Large-cap, technology and broader market indexes</p></div></div>
+      <div class="index-grid">${usa.map(n=>indexCard(n,d.indexes[n])).join('')}</div>
+    </div>
+
+    <div class="market-grid">
+      <div class="market-card">
+        <h3>Market Breadth</h3>
+        <div class="hint">% of liquid names above their 50-day moving average</div>
+        <div class="breadth-main">
+          <div class="breadth-number">${b.percentAbove50??'—'}%</div>
+          <span class="status-pill ${statusClass(b.status)}">${b.status}</span>
+        </div>
+        <div class="breadth-sub">
+          5 days ago: <b>${b.percentAbove50Prev5??'—'}%</b><br>
+          Advancers / Decliners (5D): <b>${b.advancers5d} / ${b.decliners5d}</b>
+        </div>
+        <div class="trend-line">
+          <span class="trend-name">Breadth trend</span>
+          <span class="trend-value ${trendCls}">${trendArrow} ${b.trend} ${Number.isFinite(b.change5d)?'('+pct(b.change5d)+')':''}</span>
+        </div>
+      </div>
+
+      <div class="market-card">
+        <h3>Sector Snapshot</h3>
+        <div class="hint">Based on the liquid names currently inside Hunter's Canadian universe</div>
+        <div class="sector-list">
+          <div class="sector-row head"><div>Sector</div><div>5D</div><div>20D</div><div>Breadth</div><div>Trend</div></div>
+          ${sectors}
+        </div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <h3>Market Takeaway</h3>
+      <div class="takeaway-grid">
+        <div class="take"><div class="k">Canada 20D</div><div class="v ${cls(mc.canada20)}">${pct(mc.canada20)}</div></div>
+        <div class="take"><div class="k">USA 20D</div><div class="v ${cls(mc.usa20)}">${pct(mc.usa20)}</div></div>
+        <div class="take"><div class="k">Breadth</div><div class="v">${mc.breadthStatus||'—'} · ${mc.breadthTrend||'—'}</div></div>
+        <div class="take"><div class="k">Leading sector</div><div class="v">${mc.strongestSector||'—'}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderHunter(){
+  const d=state.data;if(!d)return;
   const top=+document.querySelector('#topN').value;
   const defs=[
     ['Recovery','recovery','مشکوک به تغییر / ریکاوری','Weakness is stabilizing; early improvement is showing.'],
@@ -211,22 +266,15 @@ function render(){
         <div class="stage-head">
           <div class="stage-main">
             <span class="badge ${kind}">${fa}</span>
-            <div class="stage-copy">
-              <h2>${name}</h2>
-              <p>${sub}</p>
-            </div>
+            <div class="stage-copy"><h2>${name}</h2><p>${sub}</p></div>
           </div>
           <span class="shown">${xs.length} of ${all.length}</span>
         </div>
-        <div class="grid">
-          ${xs.length?xs.map(x=>card(x,kind,fa)).join(''):'<div class="empty">No names passed this stage at the current liquidity threshold.</div>'}
-        </div>
+        <div class="grid">${xs.length?xs.map(x=>card(x,kind,fa)).join(''):'<div class="empty">No names passed this stage at the current liquidity threshold.</div>'}</div>
       </section>`;
   }).join('');
 
   document.querySelectorAll('.card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
-  document.querySelector('#status').innerHTML=
-    `<span class="dot"></span>${d.breadth.scanned}/${d.universeSize} liquid · ${d.breadth.candidates??d.items.length} candidates · ${new Date(d.asOf).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
 }
 
 function card(x,kind,fa){
@@ -236,48 +284,40 @@ function card(x,kind,fa){
     <article class="card">
       <div class="top">
         <div>
-          <div class="ticker-line">
-            <div class="ticker">${ticker}</div>
-            <span class="badge ${kind}">${fa}</span>
-          </div>
-          <div class="company">${x.company}</div>
-          <div class="sector">${x.sector}</div>
+          <div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge ${kind}">${fa}</span></div>
+          <div class="company">${x.company}</div><div class="sector">${x.sector}</div>
         </div>
-        <div class="price">
-          $${fmt(x.price)}
-          <div class="score-pill">Hunter <b>${fmt(x.score)}</b></div>
-        </div>
+        <div class="price">$${fmt(x.price)}<div class="score-pill">Hunter <b>${fmt(x.score)}</b></div></div>
       </div>
-
       <div class="row">
         <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
         <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
         <div class="mini"><div class="k">RVOL</div><div class="v">${fmt(x.rvol)}×</div></div>
         <div class="mini"><div class="k">vs TSX</div><div class="v">${q(x.rs20)}</div></div>
       </div>
-
       <div class="why"><strong>Surfaced because</strong>${x.why.join(' · ')}</div>
-
-      <div class="score">
-        <div class="bar"><div class="fill" style="width:${Math.max(4,Math.min(100,x.score))}%"></div></div>
-        <small>tap details</small>
-      </div>
-
-      <div class="detail">
-        <div class="detail-grid">
-          <div class="pill">60D<b>${pct(x.ret60)}</b></div>
-          <div class="pill">Pullback<b>${pct(x.pullback)}</b></div>
-          <div class="pill">Avg $ Vol<b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
-          <div class="pill">vs 20D MA<b>${pct(x.dist20)}</b></div>
-          <div class="pill">vs 50D MA<b>${pct(x.dist50)}</b></div>
-          <div class="pill">Trend score<b>${fmt(x.components.trend)}</b></div>
-          <div class="pill">Momentum<b>${fmt(x.components.momentum)}</b></div>
-          <div class="pill">Volume<b>${fmt(x.components.volume)}</b></div>
-          <div class="pill">Relative<b>${fmt(x.components.relative)}</b></div>
-          <div class="pill">Structure<b>${fmt(x.components.structure)}</b></div>
-        </div>
-      </div>
+      <div class="score"><div class="bar"><div class="fill" style="width:${Math.max(4,Math.min(100,x.score))}%"></div></div><small>tap details</small></div>
+      <div class="detail"><div class="detail-grid">
+        <div class="pill">60D<b>${pct(x.ret60)}</b></div>
+        <div class="pill">Pullback<b>${pct(x.pullback)}</b></div>
+        <div class="pill">Avg $ Vol<b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
+        <div class="pill">vs 20D MA<b>${pct(x.dist20)}</b></div>
+        <div class="pill">vs 50D MA<b>${pct(x.dist50)}</b></div>
+        <div class="pill">Trend score<b>${fmt(x.components.trend)}</b></div>
+        <div class="pill">Momentum<b>${fmt(x.components.momentum)}</b></div>
+        <div class="pill">Volume<b>${fmt(x.components.volume)}</b></div>
+        <div class="pill">Relative<b>${fmt(x.components.relative)}</b></div>
+        <div class="pill">Structure<b>${fmt(x.components.structure)}</b></div>
+      </div></div>
     </article>`;
+}
+
+function render(){
+  if(!state.data)return;
+  renderMarket();renderHunter();
+  const d=state.data;
+  document.querySelector('#status').innerHTML=
+    `<span class="dot"></span>${d.breadth.scanned}/${d.universeSize} liquid · ${d.breadth.candidates??d.items.length} candidates · ${new Date(d.asOf).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
 }
 
 async function load(){
@@ -293,13 +333,18 @@ async function load(){
     err.textContent=`Could not complete scan: ${e.message}`;
     err.style.display='block';
     document.querySelector('#status').textContent='Scan unavailable';
-  }finally{
-    app.classList.remove('loading');
-  }
+  }finally{app.classList.remove('loading')}
 }
+
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+  state.tab=btn.dataset.tab;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
+  document.querySelector('#marketView').classList.toggle('active',state.tab==='market');
+  document.querySelector('#hunterView').classList.toggle('active',state.tab==='hunter');
+}));
 document.querySelector('#refresh').addEventListener('click',load);
 document.querySelector('#liq').addEventListener('change',load);
-document.querySelector('#topN').addEventListener('change',render);
+document.querySelector('#topN').addEventListener('change',renderHunter);
 load();
 </script>
 </body>
