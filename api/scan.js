@@ -29,6 +29,24 @@ function sma(a,n){return a.length>=n?avg(a.slice(-n)):null}
 function pct(a,b){return Number.isFinite(a)&&Number.isFinite(b)&&b!==0?(a/b-1)*100:null}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
 function round(x,d=2){return Number.isFinite(x)?Number(x.toFixed(d)):null}
+function rsi(values,period=14){
+  if(!Array.isArray(values)||values.length<period+1) return null;
+  let gains=0,losses=0;
+  for(let i=1;i<=period;i++){
+    const diff=values[i]-values[i-1];
+    if(diff>=0) gains+=diff; else losses-=diff;
+  }
+  let avgGain=gains/period,avgLoss=losses/period;
+  for(let i=period+1;i<values.length;i++){
+    const diff=values[i]-values[i-1];
+    const gain=diff>0?diff:0,loss=diff<0?-diff:0;
+    avgGain=((avgGain*(period-1))+gain)/period;
+    avgLoss=((avgLoss*(period-1))+loss)/period;
+  }
+  if(avgLoss===0) return 100;
+  const rs=avgGain/avgLoss;
+  return 100-(100/(1+rs));
+}
 function breadthLabel(n){return !Number.isFinite(n)?'Unavailable':n>=60?'Strong':n<40?'Weak':'Neutral'}
 function direction(delta){return !Number.isFinite(delta)?'Flat':delta>=3?'Improving':delta<=-3?'Weakening':'Stable'}
 
@@ -94,7 +112,7 @@ function metrics(data,tsxRet20,sectorRet20){
   const r=data.rows,c=r.map(x=>x.close),v=r.map(x=>x.volume||0);
   if(c.length<65) return null;
 
-  const last=c.at(-1),ma20=sma(c,20),ma50=sma(c,50);
+  const last=c.at(-1),ma20=sma(c,20),ma50=sma(c,50),rsi14=rsi(c,14);
   const prev5=c.at(-6);
   const prev50=c.length>=55?avg(c.slice(-55,-5)):null;
   const above50Now=Number.isFinite(ma50)?last>ma50:null;
@@ -149,7 +167,7 @@ function metrics(data,tsxRet20,sectorRet20){
   return {
     price:round(last,2),ret5:round(ret5),ret20:round(ret20),ret60:round(ret60),rvol:round(rvol,2),
     avgDollarVol:round(dollar20,0),pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
-    ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),
+    ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
