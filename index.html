@@ -167,6 +167,19 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .sector.sector-strong{color:var(--accent2,#75e0b0)}
 .sector.sector-neutral{color:var(--muted)}
 .sector.sector-weak{color:#ff7b7b}
+
+.sector-toggle{width:100%;border:0;background:transparent;color:inherit;font:inherit;text-align:inherit;cursor:pointer}
+.sector-name{display:flex;align-items:center;gap:6px}
+.sector-count{font-size:10px;min-width:18px;padding:2px 5px;border-radius:999px;background:rgba(255,255,255,.07);color:var(--muted);text-align:center}
+.sector-candidates{display:none;padding:4px 10px 10px 14px;border-left:1px solid rgba(255,255,255,.08);margin-left:8px}
+.sector-candidates.open{display:block}
+.sector-candidate{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 4px;border-top:1px solid rgba(255,255,255,.055)}
+.sector-symbol{display:flex;align-items:center;gap:8px;border:0;background:none;color:var(--text);padding:0;cursor:pointer}
+.sector-symbol span{font-size:10px;color:var(--muted)}
+.sector-quick{display:flex;align-items:center;gap:9px;font-size:10px;color:var(--muted)}
+.sector-quick .heart{font-size:17px}
+.sector-empty{padding:9px 4px;color:var(--muted);font-size:11px}
+@media(max-width:650px){.sector-candidate{align-items:flex-start;flex-direction:column}.sector-quick{width:100%;justify-content:space-between}}
 </style>
 </head>
 <body>
@@ -264,15 +277,26 @@ function renderMarket(){
   const trendArrow=b.trend==='Improving'?'↑':b.trend==='Weakening'?'↓':'→';
   const trendCls=b.trend==='Improving'?'up':b.trend==='Weakening'?'down':'flat';
 
-  const sectors=(d.sectors||[]).map(s=>`
-    <div class="sector-row">
-      <div class="sector-name">${s.sector}</div>
-      <div class="${cls(s.ret5)}">${pct(s.ret5)}</div>
-      <div class="${cls(s.ret20)}">${pct(s.ret20)}</div>
-      <div>${s.breadth??'—'}%</div>
-      <div><span class="sector-status ${statusClass(s.breadthStatus)}">${s.trend}</span></div>
-    </div>
-  `).join('');
+  const currentSectorCandidates=[
+    ...(d.items||[]),
+    ...(d.watchItems||[]).map(x=>({...x,stage:'Early Watch'}))
+  ];
+  const sectors=(d.sectors||[]).map(sec=>{
+    const names=currentSectorCandidates.filter(x=>x.sector===sec.sector);
+    return `
+      <div class="sector-block">
+        <button class="sector-row sector-toggle" type="button" data-sector="${sec.sector}">
+          <div class="sector-name">${sec.sector}<span class="sector-count">${names.length}</span></div>
+          <div class="${cls(sec.ret5)}">${pct(sec.ret5)}</div>
+          <div class="${cls(sec.ret20)}">${pct(sec.ret20)}</div>
+          <div>${sec.breadth??'—'}%</div>
+          <div><span class="sector-status ${statusClass(sec.breadthStatus)}">${sec.trend}</span></div>
+        </button>
+        <div class="sector-candidates" data-sector-list="${sec.sector}">
+          ${names.length?names.map(x=>`<div class="sector-candidate"><button type="button" class="sector-symbol" data-tv="${x.symbol}"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span></button><div class="sector-quick"><span class="${cls(x.ret5)}">5D ${pct(x.ret5)}</span><span>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</span><span>RVOL ${fmt(x.rvol)}×</span><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div></div>`).join(''):`<div class="sector-empty">No current Hunter candidates in this sector.</div>`}
+        </div>
+      </div>`;
+  }).join('');
 
   const mc=d.marketContext||{};
   const regimes=d.marketRegimes||{};
@@ -347,6 +371,12 @@ function renderMarket(){
       </div>
     </div>
   `;
+  document.querySelectorAll('#marketContent .sector-toggle').forEach(el=>el.addEventListener('click',()=>{
+    const list=document.querySelector('#marketContent [data-sector-list="'+el.dataset.sector+'"]');
+    if(list) list.classList.toggle('open');
+  }));
+  document.querySelectorAll('#marketContent .sector-candidates .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
+  document.querySelectorAll('#marketContent .sector-symbol').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
 }
 
 function renderWatchlist(){
