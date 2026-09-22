@@ -7,7 +7,7 @@ const UNIVERSE = [
   ['BCE.TO','BCE','Communication'],['T.TO','TELUS','Communication'],['RCI-B.TO','Rogers Communications','Communication'],
   ['FTS.TO','Fortis','Utilities'],['EMA.TO','Emera','Utilities'],
   ['L.TO','Loblaw Companies','Consumer'],['ATD.TO','Alimentation Couche-Tard','Consumer'],['DOL.TO','Dollarama','Consumer'],['QSR.TO','Restaurant Brands International','Consumer'],['MG.TO','Magna International','Consumer'],
-  ['AAPL.NE','Apple CDR','CDR'],['MSFT.NE','Microsoft CDR','CDR'],['NVDA.NE','Nvidia CDR','CDR'],['AMZN.NE','Amazon CDR','CDR'],['GOOG.NE','Alphabet CDR','CDR'],['META.NE','Meta CDR','CDR'],['TSLA.NE','Tesla CDR','CDR'],['AMD.NE','AMD CDR','CDR'],['COST.NE','Costco CDR','CDR']
+  ['AAPL.TO','Apple CDR','CDR'],['MSFT.TO','Microsoft CDR','CDR'],['NVDA.TO','Nvidia CDR','CDR'],['AMZN.TO','Amazon CDR','CDR'],['GOOG.TO','Alphabet CDR','CDR'],['META.TO','Meta CDR','CDR'],['TSLA.TO','Tesla CDR','CDR'],['AMD.TO','AMD CDR','CDR'],['COST.TO','Costco CDR','CDR']
 ];
 
 const INDEXES = [
@@ -18,6 +18,12 @@ const INDEXES = [
   ['^DJI','Dow Jones','USA'],
   ['^RUT','Russell 2000','USA']
 ];
+
+const CDR_BENCHMARK = {
+  'AAPL.TO':'^IXIC','MSFT.TO':'^IXIC','NVDA.TO':'^IXIC','AMZN.TO':'^IXIC',
+  'GOOG.TO':'^IXIC','META.TO':'^IXIC','TSLA.TO':'^IXIC','AMD.TO':'^IXIC',
+  'COST.TO':'^GSPC'
+};
 
 const SECTOR_PROXY = {
   Financials:'XFN.TO', Energy:'XEG.TO', Materials:'XMA.TO', Industrials:'XGI.TO',
@@ -252,8 +258,9 @@ export default async function handler(req,res){
         };
       }
     });
-    const tsxBenchmarkResult=idxResults[0];
-    const tsxBenchmark=tsxBenchmarkResult?.status==='fulfilled'?tsxBenchmarkResult.value:null;
+    const benchmarkBySymbol={};
+    idxResults.forEach((x,i)=>{if(x.status==='fulfilled') benchmarkBySymbol[INDEXES[i][0]]=x.value});
+    const tsxBenchmark=benchmarkBySymbol['^GSPTSE']||null;
 
     const sectorSymbols=[...new Set(Object.values(SECTOR_PROXY))];
     const sectorSettled=await mapLimit(sectorSymbols,5,s=>chart(s));
@@ -271,11 +278,14 @@ export default async function handler(req,res){
     settled.forEach((x,i)=>{
       const [symbol,company,sector]=UNIVERSE[i];
       if(x.status!=='fulfilled'){unavailable.push(symbol);return}
-      const m=metrics(x.value,tsxBenchmark,sectorMap[SECTOR_PROXY[sector]]);
+      const benchmark=sector==='CDR'?(benchmarkBySymbol[CDR_BENCHMARK[symbol]]||benchmarkBySymbol['^GSPC']||null):tsxBenchmark;
+      const m=metrics(x.value,benchmark,sectorMap[SECTOR_PROXY[sector]]);
       if(!m){unavailable.push(symbol);return}
       if((m.price||0)<2 || (m.avgDollarVol||0)<minDollar) return;
 
-      const item={symbol,company,sector,...m};
+      const benchmarkLabel=sector==='CDR'?(CDR_BENCHMARK[symbol]==='^IXIC'?'Nasdaq':'S&P 500'):'TSX';
+      const item={symbol,company,sector,benchmarkLabel,...m};
+      if(sector==='CDR'&&Array.isArray(item.why)) item.why=item.why.map(w=>w==='outperforming TSX'?`outperforming ${benchmarkLabel}`:w);
       liquid.push(item);
       if(m.stage) candidates.push(item);
     });
