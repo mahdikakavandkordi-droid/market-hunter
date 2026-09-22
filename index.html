@@ -159,6 +159,10 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   .mini{padding:6px 3px}.mini .k{font-size:8px}.mini .v{font-size:10px}
   .sector-row{grid-template-columns:1.1fr .65fr .7fr}.sector-row>*:nth-child(5){display:none}.sector-row.head>*:nth-child(5){display:none}
 }
+
+.price-structure{margin-top:5px;text-align:right;font-size:11px;white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
+.price-structure strong{color:var(--text);font-size:12px}.price-structure .sep{margin:0 3px;opacity:.6}
+.price-structure small{display:block;margin-top:2px;font-size:8px;letter-spacing:.04em;opacity:.7}
 </style>
 </head>
 <body>
@@ -452,6 +456,7 @@ function card(x,kind,fa,inWatch=false){
             <button class="tv-link" type="button" data-tv="${x.symbol}" title="Open in TradingView">Chart ↗</button>
           </div>
           <div class="price">${fmt(x.price)}</div>
+          ${Number.isFinite(x.localLow)&&Number.isFinite(x.price)&&Number.isFinite(x.localHigh)?`<div class="price-structure"><span>${fmt(x.localLow)}</span><span class="sep">&lt;</span><strong>${fmt(x.price)}</strong><span class="sep">&lt;</span><span>${fmt(x.localHigh)}</span><small>Low · Current · High</small></div>`:''}
         </div>
       </div>
       <div class="row">
