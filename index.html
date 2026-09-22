@@ -312,7 +312,7 @@ function card(x,kind,fa){
         <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
         <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
         <div class="mini"><div class="k">RVOL</div><div class="v">${fmt(x.rvol)}×</div></div>
-        <div class="mini"><div class="k">vs TSX</div><div class="v">${q(x.rs20)}</div></div>
+        <div class="mini"><div class="k">vs ${x.benchmarkLabel||"TSX"}</div><div class="v">${q(x.rs20)}</div></div>
       </div>
       <div class="why"><strong>Surfaced because</strong>${x.why.join(' · ')}</div>
       <div class="score"><div class="bar"><div class="fill" style="width:${Math.max(4,Math.min(100,x.score))}%"></div></div><small>tap details</small></div>
@@ -325,7 +325,7 @@ function card(x,kind,fa){
         <div class="signal">Trend<b>${x.trendState||'—'}</b></div>
         <div class="signal">Momentum shift<b class="${cls(x.momentumShift)}">${pct(x.momentumShift)}</b></div>
         <div class="signal">5D unusual activity<b class="${x.unusual5d?'up':'flat'}">${x.unusual5dLabel||'—'}</b></div>
-        <div class="signal">Relative vs TSX<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div>
+        <div class="signal">Relative vs ${x.benchmarkLabel||"TSX"}<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div>
         <div class="signal">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></div>
       </div></div>
     </article>`;
