@@ -1,0 +1,62 @@
+name: Daily Hunter Snapshot
+
+on:
+  schedule:
+    # 22:30 UTC is after the regular Canadian/US close year-round.
+    - cron: '30 22 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-hunter-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch completed-market scan
+        id: scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://market-hunter-five.vercel.app/api/scan?minDollar=5000000"
+          for attempt in 1 2 3; do
+            if curl --fail --silent --show-error --retry 2 --retry-delay 5 --max-time 90 "$URL" -o /tmp/scan.json; then
+              break
+            fi
+            if [ "$attempt" = 3 ]; then exit 1; fi
+            sleep 20
+          done
+          node - <<'NODE'
+          const fs=require('fs');
+          const scan=JSON.parse(fs.readFileSync('/tmp/scan.json','utf8'));
+          if(!scan.marketAsOf || !Array.isArray(scan.top5) || scan.top5.length===0) throw new Error('scan missing marketAsOf/top5');
+          if(scan.partial) console.log('warning: scan is partial; snapshot still preserves exact surfaced cohort');
+          console.log('marketAsOf',scan.marketAsOf,'top5',scan.top5.map(x=>x.symbol).join(','));
+          NODE
+
+      - name: Append immutable daily snapshot and update forward outcomes
+        shell: bash
+        run: |
+          node scripts/update-history.mjs /tmp/scan.json data/history.json
+
+      - name: Commit snapshot when changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/history.json; then
+            echo "No new completed market session to save."
+            exit 0
+          fi
+          MARKET_DATE=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/scan.json','utf8')).marketAsOf)")
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/history.json
+          git commit -m "snapshot: Hunter results $MARKET_DATE"
+          git push
