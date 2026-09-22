@@ -299,7 +299,7 @@ export default async function handler(req,res){
     });
 
     const settled=await mapLimit(UNIVERSE,8,([s])=>chart(s));
-    const liquid=[],candidates=[],unavailable=[];
+    const liquid=[],candidates=[],unavailable=[],rejectedLiquidity=[];
 
     settled.forEach((x,i)=>{
       const [symbol,company,sector]=UNIVERSE[i];
@@ -309,7 +309,10 @@ export default async function handler(req,res){
       if(!m){unavailable.push(symbol);return}
       if(Number.isFinite(m.dataAgeDays)&&m.dataAgeDays>5){unavailable.push(symbol);return}
       if(!Number.isFinite(m.price)||!Number.isFinite(m.avgDollarVol)){unavailable.push(symbol);return}
-      if(m.price<2 || m.avgDollarVol<minDollar) return;
+      if(m.price<2 || m.avgDollarVol<minDollar){
+        rejectedLiquidity.push({symbol,price:m.price,avgDollarVol:m.avgDollarVol});
+        return;
+      }
 
       const benchmarkLabel=sector==='CDR'?(CDR_BENCHMARK[symbol]==='^IXIC'?'Nasdaq':'S&P 500'):'TSX';
       const item={symbol,company,sector,benchmarkLabel,...m};
@@ -354,9 +357,24 @@ export default async function handler(req,res){
 
     candidates.sort((a,b)=>b.score-a.score);
 
+    const stageCounts={
+      Recovery:candidates.filter(x=>x.stage==='Recovery').length,
+      AttractiveGrowth:candidates.filter(x=>x.stage==='Attractive Growth').length,
+      EstablishedMove:candidates.filter(x=>x.stage==='Established Move').length
+    };
+    const diagnostics={
+      universe:UNIVERSE.length,
+      fetched:settled.filter(x=>x.status==='fulfilled').length,
+      unavailable:unavailable.length,
+      liquidityRejected:rejectedLiquidity.length,
+      liquid:liquid.length,
+      candidates:candidates.length,
+      stageCounts
+    };
+
     res.status(200).json({
       asOf:new Date().toISOString(),minDollar,indexes:idx,breadth,sectors,marketContext,
-      items:candidates,unavailable,universeSize:UNIVERSE.length
+      items:candidates,unavailable,universeSize:UNIVERSE.length,diagnostics
     });
   }catch(e){
     res.status(500).json({error:'scan_failed',message:e?.message||'Unknown error'});
