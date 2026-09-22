@@ -189,6 +189,17 @@ export function metrics(data,benchmarkData,sectorData){
     ? `${unusualPrefix} ${round(max5Rvol,1)}× volume · ${max5RvolAgo===0?'today':max5RvolAgo===1?'1 day ago':max5RvolAgo+' days ago'}`
     : `No unusual volume · max ${round(max5Rvol,1)}×`;
 
+  // Early Watch is intentionally allowed to fire BEFORE a confirmed reversal.
+  // Look for a meaningful decline followed by abnormal participation near the low
+  // and evidence that downside momentum is losing force.
+  const recentLow10=Math.min(...r.slice(-10).map(x=>x.low).filter(Number.isFinite));
+  const nearRecentLow=Number.isFinite(recentLow10)&&Number.isFinite(last)?pct(last,recentLow10)<=4:null;
+  const recentDailyReturns=r.slice(-6).map((x,j,a)=>j===0?null:pct(x.close,a[j-1].close)).filter(Number.isFinite);
+  const worstPrior4=recentDailyReturns.length>=2?Math.min(...recentDailyReturns.slice(0,-1)):null;
+  const latestDayReturn=recentDailyReturns.at(-1);
+  const downsideSlowing=Number.isFinite(worstPrior4)&&Number.isFinite(latestDayReturn)&&worstPrior4<=-1.5&&latestDayReturn>worstPrior4+1;
+  const volumeShockNearLow=unusual5d===true&&nearRecentLow===true;
+
   const recentDown=downVolumeAverage(r,r.length-5,r.length);
   const priorDown=downVolumeAverage(r,r.length-15,r.length-5);
   const downCount=(start,end)=>r.slice(start,end).filter((x,j)=>start+j>0&&x.close<r[start+j-1].close&&Number.isFinite(x.volume)).length;
@@ -237,6 +248,8 @@ export function metrics(data,benchmarkData,sectorData){
 
   const why=[];
   if(stage==='Recovery') why.push('rebounding after a meaningful prior decline');
+  if(stage===null&&volumeShockNearLow) why.push('volume shock near recent low');
+  if(stage===null&&downsideSlowing) why.push('selling momentum slowing');
   if(sellingPressureFading) why.push('selling volume fading');
   if(momentumImproving) why.push('momentum improving');
   if(unusual5d) why.push(unusual5dLabel);
@@ -256,6 +269,7 @@ export function metrics(data,benchmarkData,sectorData){
     meaningfulWeakness,advancedNearHigh,priorRet20:round(priorRet20),priorPullback:round(priorPullback),
     prev5:round(prev5,1),momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
     unusual5d,positiveUnusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,spikeReturn:round(spikeReturn,1),unusual5dDirection,unusual5dLabel,
+    nearRecentLow,downsideSlowing,volumeShockNearLow,latestDayReturn:round(latestDayReturn,1),
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
@@ -301,10 +315,15 @@ export function validateData(data,referenceDates){
 
 // Supplemental observation list, not a fourth discovery stage or a reversal signal.
 export function isEarlyWatch(m){
-  return m.stage===null&&m.meaningfulWeakness===true&&m.advancedNearHigh===false
-    &&Number.isFinite(m.ret20)&&m.ret20<0&&Number.isFinite(m.ret5)
-    &&m.momentumImproving===true
-    &&(m.positiveUnusual5d===true||m.sellingPressureFading===true);
+  if(m.stage!==null||m.meaningfulWeakness!==true||m.advancedNearHigh===true) return false;
+  if(!Number.isFinite(m.ret20)||m.ret20>=0) return false;
+  // Two explainable paths:
+  // 1) the existing momentum-turn path;
+  // 2) a TELUS-like exhaustion path: abnormal volume near a recent low while
+  //    downside momentum is slowing or selling volume is fading.
+  const momentumTurn=m.momentumImproving===true&&(m.positiveUnusual5d===true||m.sellingPressureFading===true);
+  const exhaustion=m.volumeShockNearLow===true&&(m.downsideSlowing===true||m.sellingPressureFading===true);
+  return momentumTurn||exhaustion;
 }
 
 export default async function handler(req,res){
