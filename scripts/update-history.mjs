@@ -14,11 +14,6 @@ const allNow=new Map([...(scan.availableItems||[]),...(scan.items||[]),...(scan.
 const stageNow=new Map((scan.items||[]).map(x=>[x.symbol,x.stage]));
 for(const x of scan.watchItems||[]) stageNow.set(x.symbol,'Early Watch');
 
-function tradingSessionsBetween(a,b){
-  // We use saved market snapshots rather than calendar days, so the index distance
-  // below is the authoritative session count for evaluation.
-  return null;
-}
 function median(a){
   const v=a.filter(Number.isFinite).sort((x,y)=>x-y);
   if(!v.length)return null;
@@ -96,6 +91,7 @@ for(const snap of history.snapshots){
   }
 }
 
-fs.mkdirSync(new URL('.', 'file://'+process.cwd()+'/'+historyPath).pathname,{recursive:true});
+const dir=historyPath.includes('/')?historyPath.slice(0,historyPath.lastIndexOf('/')):'.';
+fs.mkdirSync(dir,{recursive:true});
 fs.writeFileSync(historyPath,JSON.stringify(history,null,2)+'\n');
 console.log('history snapshots:',history.snapshots.length,'marketAsOf:',scan.marketAsOf);
