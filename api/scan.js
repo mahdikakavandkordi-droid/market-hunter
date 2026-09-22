@@ -187,13 +187,15 @@ function metrics(data,benchmarkData,sectorRet20){
   const recentVolumeBoost=Number.isFinite(max5Rvol)?Math.max(0,max5Rvol-1):0;
   const directionalVolumeBoost=unusual5dDirection==='positive'?recentVolumeBoost:unusual5dDirection==='mixed'?recentVolumeBoost*0.35:0;
   let volumeScore=clamp(7+directionalVolumeBoost*7+(sellingPressureFading?2:0),0,15);
-  let relativeScore=Number.isFinite(rs20)?clamp(7.5+rs20*0.8,0,15):null;
+  let relativeScore=Number.isFinite(rs20)?clamp(6+rs20*0.55,0,12):null;
+  // Sector RS is intentionally modest: useful tie-breaker, not a reason to hide an early Recovery.
+  let sectorScore=Number.isFinite(sectorRs)?clamp(4+sectorRs*0.45,0,8):null;
   let structureScore=2;
   if(pullback<=-2&&pullback>=-12) structureScore+=7;
   if(Number.isFinite(dist20)&&dist20>=-3&&dist20<=5) structureScore+=3;
   if(Number.isFinite(dist50)&&dist50>-4) structureScore+=4;
   structureScore=clamp(structureScore,0,15);
-  const score=clamp(trendScore+momentumScore+volumeScore+(Number.isFinite(relativeScore)?relativeScore:7.5)+structureScore,0,100);
+  const score=clamp(trendScore+momentumScore+volumeScore+(Number.isFinite(relativeScore)?relativeScore:6)+(Number.isFinite(sectorScore)?sectorScore:4)+structureScore,0,100);
 
   let stage=null;
   const established=weeklyUp&&dailyUp&&Number.isFinite(ret20)&&Number.isFinite(ret60)&&Number.isFinite(rs20)&&(ret20>=10||ret60>=20)&&rs20>2;
@@ -209,6 +211,8 @@ function metrics(data,benchmarkData,sectorRet20){
   if(momentumImproving) why.push('momentum improving');
   if(unusual5d) why.push(unusual5dLabel);
   if((rs20||0)>2) why.push('outperforming TSX');
+  if(Number.isFinite(sectorRs)&&sectorRs>=3) why.push(`+${round(sectorRs,1)}% vs sector`);
+  if(Number.isFinite(sectorRs)&&sectorRs<=-5) why.push(`${round(sectorRs,1)}% vs sector`);
   if(pullback<=-2&&pullback>=-12) why.push(`${Math.abs(round(pullback,1))}% off recent high`);
   if(dailyUp&&weeklyUp) why.push('daily + weekly trend aligned');
   if(!why.length) why.push('structure moved into the scan threshold');
@@ -223,7 +227,7 @@ function metrics(data,benchmarkData,sectorRet20){
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
-      relative:Number.isFinite(relativeScore)?round(relativeScore,1):null,structure:round(structureScore,1)
+      relative:Number.isFinite(relativeScore)?round(relativeScore,1):null,sector:Number.isFinite(sectorScore)?round(sectorScore,1):null,structure:round(structureScore,1)
     }
   };
 }
@@ -292,7 +296,9 @@ export default async function handler(req,res){
       const benchmark=sector==='CDR'?(benchmarkBySymbol[CDR_BENCHMARK[symbol]]||benchmarkBySymbol['^GSPC']||null):tsxBenchmark;
       const m=metrics(x.value,benchmark,sectorMap[SECTOR_PROXY[sector]]);
       if(!m){unavailable.push(symbol);return}
-      if((m.price||0)<2 || (m.avgDollarVol||0)<minDollar) return;
+      if(Number.isFinite(m.dataAgeDays)&&m.dataAgeDays>5){unavailable.push(symbol);return}
+      if(!Number.isFinite(m.price)||!Number.isFinite(m.avgDollarVol)){unavailable.push(symbol);return}
+      if(m.price<2 || m.avgDollarVol<minDollar) return;
 
       const benchmarkLabel=sector==='CDR'?(CDR_BENCHMARK[symbol]==='^IXIC'?'Nasdaq':'S&P 500'):'TSX';
       const item={symbol,company,sector,benchmarkLabel,...m};
