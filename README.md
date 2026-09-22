@@ -50,6 +50,10 @@ Score داخلی فقط برای رتبه‌بندی کاندیداهای هر �
 حداقل خروجی مورد انتظار برای هر candidate snapshot:
 
 - stage و rank/score داخلی در روز انتخاب
+- برای Hunter Top 5: رتبه 1–5، Cross-Stage Score و تمام entry metrics باید دقیقاً از خروجی backend همان جلسه ذخیره شوند
+- Top 5 باید به‌عنوان cohort مستقل ارزیابی شود: forward return هر عضو و همچنین median/average cohort در 1 / 3 / 5 / 10 جلسه
+- علاوه بر بازده، باید بررسی شود هر عضو بعداً در چه Stageای قرار گرفته و Momentum/Structure آن نسبت به entry چه تغییری کرده
+- Top 5 روز انتخاب بعداً بازنویسی نشود؛ ارزیابی باید روی انتخاب واقعی همان روز انجام شود تا survivorship/hindsight bias وارد نشود
 - قیمت/metricهای همان روز
 - forward return در 1 / 3 / 5 / 10 جلسه معاملاتی
 - تغییر stage در جلسات بعد
