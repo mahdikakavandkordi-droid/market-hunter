@@ -78,10 +78,24 @@ try{
 console.log('PASS: expanded universe, alternate fetch recovery, unresolved gap isolation, CAD enforcement, all liquidity boundaries and fixed breadth');
 
 const {isEarlyWatch}=await import('../api/scan.js');
-const early={stage:null,ret20:-8,ret5:2,momentumImproving:true,dist20:1,sellingPressureFading:false};
-assert.equal(isEarlyWatch(early),true);
-assert.equal(isEarlyWatch({...early,dist20:-3,sellingPressureFading:true}),true);
-for(const change of [{stage:'Recovery'},{ret20:3},{ret5:-1},{momentumImproving:false},{dist20:-3},{ret20:null},{ret5:null}]){
-  assert.equal(isEarlyWatch({...early,...change}),false,JSON.stringify(change));
+const early={stage:null,ret20:-8,ret5:-1,momentumImproving:true,meaningfulWeakness:true,advancedNearHigh:false,positiveUnusual5d:true,sellingPressureFading:false};
+assert.equal(isEarlyWatch(early),true,'slowing decline with positive volume may be watched');
+assert.equal(isEarlyWatch({...early,ret5:2}),true);
+assert.equal(isEarlyWatch({...early,positiveUnusual5d:false,sellingPressureFading:true}),true);
+for(const change of [{stage:'Recovery'},{ret20:3},{momentumImproving:false},{positiveUnusual5d:false},{ret20:null},{ret5:null},{meaningfulWeakness:false},{advancedNearHigh:true}]){
+ assert.equal(isEarlyWatch({...early,...change}),false,JSON.stringify(change));
 }
-console.log('PASS: early watch requires weakness and improvement, excludes continuing declines and classified candidates');
+// A mature advance with a brief dip must never become an early recovery.
+const mature=make(dates.map((_,i)=>100+i*0.5));
+const peak=mature.rows.at(-11).close;
+[.99,.98,.97,.96,.95,.96,.98,1,1.01,1.02].forEach((v,i)=>{mature.rows.at(-10+i).close=peak*v});
+const matureMetrics=metrics(mature,make(),null);
+assert.equal(matureMetrics.advancedNearHigh,true);
+assert.notEqual(matureMetrics.stage,'Recovery');
+assert.equal(isEarlyWatch(matureMetrics),false);
+// Detect a positive spike even if the biggest spike was on a negative day.
+const mixed=make();mixed.rows.at(-4).volume=400000;mixed.rows.at(-4).close=99;
+mixed.rows.at(-2).volume=300000;mixed.rows.at(-2).close=101;
+assert.equal(metrics(mixed,make(),null).unusual5dDirection,'negative');
+assert.equal(metrics(mixed,make(),null).positiveUnusual5d,true);
+console.log('PASS: mature advance exclusion, slowing-decline watch, volume confirmation, all-session positive spike detection');

@@ -169,11 +169,12 @@ export function metrics(data,benchmarkData,sectorData){
     const volumeVsAvg=Number.isFinite(rvol)?(rvol-1)*100:null;
   const trendState=dailyUp&&weeklyUp?'Daily + Weekly aligned':weeklyUp?'Weekly up · Daily mixed':dailyUp?'Daily up · Weekly mixed':'Trend mixed';
 
-  let max5Rvol=null,max5RvolAgo=null;
+  let max5Rvol=null,max5RvolAgo=null,positiveUnusual5d=false;
   for(let i=r.length-5;i<r.length;i++){
     const baseline=avg(v.slice(i-20,i));
     if(!Number.isFinite(baseline)||baseline<=0||!Number.isFinite(v[i])) continue;
     const ratio=v[i]/baseline;
+    if(ratio>=1.4&&i>0&&pct(r[i].close,r[i-1].close)>=0.5) positiveUnusual5d=true;
     if(max5Rvol===null||ratio>=max5Rvol){max5Rvol=ratio;max5RvolAgo=r.length-1-i;}
   }
   const unusual5d=Number.isFinite(max5Rvol)&&max5Rvol>=1.4;
@@ -219,16 +220,23 @@ export function metrics(data,benchmarkData,sectorData){
     && (dailyUp||(last>ma50&&ret5>0))&&ret20>0&&rs20>-3&&pullback>-15;
   // Recovery needs an actual prior soft patch plus a visible recent improvement; this prevents
   // ordinary strong uptrends with a tiny dip from being mislabeled as early recovery.
+  // Assess weakness BEFORE the latest five sessions, so a rebound cannot erase it.
   const priorMa20=sma(c.slice(0,-5),20);
-  const priorWeakness=(Number.isFinite(prev5)&&prev5<=0)||(Number.isFinite(priorMa20)&&pricePrev5<priorMa20);
-  const recovery=priorWeakness&&momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)
-    && ret5>=1&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8;
+  const priorRet20=pct(pricePrev5,c.at(-26));
+  const priorPullback=pct(pricePrev5,Math.max(...c.slice(-65,-5)));
+  const meaningfulWeakness=priorRet20<=-3||(priorPullback<=-8&&pricePrev5<priorMa20);
+  // A large 60-session advance near its high is not an early reversal, even
+  // when it misses one of the established-trend gates. Leave it unclassified.
+  const advancedNearHigh=ret60>=15&&pullback>-10;
+  const recovery=meaningfulWeakness&&!advancedNearHigh&&momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)
+    && ret5>=1&&last>=ma20&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8;
 
   if(established) stage='Established Move';
   else if(attractive) stage='Attractive Growth';
   else if(recovery) stage='Recovery';
 
   const why=[];
+  if(stage==='Recovery') why.push('rebounding after a meaningful prior decline');
   if(sellingPressureFading) why.push('selling volume fading');
   if(momentumImproving) why.push('momentum improving');
   if(unusual5d) why.push(unusual5dLabel);
@@ -245,8 +253,9 @@ export function metrics(data,benchmarkData,sectorData){
     avgDollarVol:dollar20,pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
+    meaningfulWeakness,advancedNearHigh,priorRet20:round(priorRet20),priorPullback:round(priorPullback),
     prev5:round(prev5,1),momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
-    unusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,spikeReturn:round(spikeReturn,1),unusual5dDirection,unusual5dLabel,
+    unusual5d,positiveUnusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,spikeReturn:round(spikeReturn,1),unusual5dDirection,unusual5dLabel,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
@@ -292,9 +301,10 @@ export function validateData(data,referenceDates){
 
 // Supplemental observation list, not a fourth discovery stage or a reversal signal.
 export function isEarlyWatch(m){
-  return m.stage===null&&Number.isFinite(m.ret20)&&m.ret20<0
-    &&Number.isFinite(m.ret5)&&m.ret5>0&&m.momentumImproving===true
-    &&((Number.isFinite(m.dist20)&&m.dist20>=0)||m.sellingPressureFading===true);
+  return m.stage===null&&m.meaningfulWeakness===true&&m.advancedNearHigh===false
+    &&Number.isFinite(m.ret20)&&m.ret20<0&&Number.isFinite(m.ret5)
+    &&m.momentumImproving===true
+    &&(m.positiveUnusual5d===true||m.sellingPressureFading===true);
 }
 
 export default async function handler(req,res){
@@ -366,9 +376,9 @@ export default async function handler(req,res){
       liquid.push(item);
       if(m.stage) candidates.push(item);
       else if(isEarlyWatch(m)) watchItems.push({...item,why:[
-        '20D remains negative; 5D has turned positive',
-        'momentum improving',
-        m.dist20>=0?'price at or above MA20':'selling volume fading'
+        'prior decline; 20D still negative',
+        m.ret5>0?'5D positive; momentum improving':'5D still non-positive; decline slowing',
+        m.positiveUnusual5d?'positive unusual-volume session within last 5 sessions':'selling volume fading'
       ]});
     });
 
@@ -433,7 +443,7 @@ export default async function handler(req,res){
     const partial=unavailable.length>0;
     if(partial) res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
     res.status(200).json({
-      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.2',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
+      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.3',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
       items:candidates,watchItems,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){

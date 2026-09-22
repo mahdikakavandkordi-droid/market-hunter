@@ -56,11 +56,35 @@ independent Show all / Show top toggle. Existing technical scores order charts
 for review, not expected returns; weights have not been optimized or validated
 as predictive probabilities.
 
-`watchItems` is a supplemental Early Watch list, not a fourth stage. It contains
-only otherwise unclassified, validated, liquid instruments with negative 20D
-returns, positive 5D returns, the existing momentum-improvement flag, and either
-price at/above MA20 or the existing fading-selling-volume flag. It shares the
-existing technical ordering and never duplicates the three classified lists.
-It does not assert a bottom or confirmed reversal. Stocks merely falling more
-slowly still fail the positive-5D requirement. No indicator or ranking weight
-was added. Existing stage/history semantics are unchanged.
+`watchItems` is a supplemental Early Watch list, not a fourth stage. It never
+duplicates classified lists and shares the existing technical ordering.
+
+## Classification revision — hunter-1.3
+
+Weakness is measured five sessions before the scan endpoint, before the latest
+bounce: either the preceding 20-session return is at most -3%, or the drawdown
+from the preceding 60-session closing high is at least 8% and price is below its
+then-current MA20. All windows end at that historical observation; no future
+bars enter the calculation.
+
+A 60-session gain of at least 15% with current drawdown less than 10% is treated
+as an advanced move near its high. It cannot enter Recovery or Early Watch.
+It enters another stage only if that stage's original conditions actually pass;
+otherwise it is not surfaced. This avoids forcing every liquid stock into a label.
+
+Recovery additionally requires price at/above MA20; its existing positive 5D,
+momentum-improvement, MA50-distance, relative-strength and drawdown gates remain.
+Early Watch requires meaningful prior weakness, current negative 20D return,
+and the existing momentum improvement of at least two percentage points. Its
+5D return may remain negative. Volume confirmation is required: either the
+existing fading selling-volume condition, or at least one of the latest five
+sessions with volume >=1.4 times its preceding 20-session mean and a closing-price
+rise >=0.5%. This checks every session, not only the largest volume spike.
+No RSI threshold, new oscillator, ranking weight or liquidity rule was added.
+RSI remains context; low RSI alone does not identify a reversal.
+
+These are explainable discovery heuristics, not statistically optimized or
+validated return forecasts. Thresholds may exclude shallow pullbacks, and volume
+confirmation may miss quiet early recoveries. Review charts across multiple
+sessions before changing them further. Versioning prevents interpreting changes
+from the previous rule set as actual market-driven stage transitions.
