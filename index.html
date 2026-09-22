@@ -180,6 +180,12 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .sector-quick .heart{font-size:17px}
 .sector-empty{padding:9px 4px;color:var(--muted);font-size:11px}
 @media(max-width:650px){.sector-candidate{align-items:flex-start;flex-direction:column}.sector-quick{width:100%;justify-content:space-between}}
+
+.change-list{display:grid;gap:8px}
+.change-item{display:grid;grid-template-columns:minmax(110px,.7fr) 2fr auto;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
+.change-item>div{display:flex;gap:8px;align-items:center}.change-item>div span{font-size:10px;color:var(--muted)}
+.change-item p{margin:0;font-size:12px;color:var(--muted)}.change-item.dropped{border-color:rgba(255,123,123,.2)}
+@media(max-width:650px){.change-item{grid-template-columns:1fr auto}.change-item p{grid-column:1/-1;grid-row:2}.tabs .tab{font-size:10px;padding-left:7px;padding-right:7px}}
 </style>
 </head>
 <body>
@@ -201,7 +207,8 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 <div class="tabs">
   <button class="tab active" data-tab="market">Market</button>
-  <button class="tab" data-tab="top5">Top 5 <span style="opacity:.55">★</span></button>
+  <button class="tab" data-tab="top5">Daily 10 <span style="opacity:.55">★</span></button>
+  <button class="tab" data-tab="changes">Changes</button>
   <button class="tab" data-tab="hunter">Hunter Picks</button>
   <button class="tab" data-tab="watchlist">Watchlist</button>
 </div>
@@ -215,6 +222,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <section id="top5View" class="view">
   <div id="top5Content"></div>
 </section>
+<section id="changesView" class="view"><div id="changesContent"></div></section>
 <section id="hunterView" class="view">
   <div class="hunter-subtabs" id="hunterSubtabs"></div>
   <div id="stages"></div>
@@ -429,19 +437,66 @@ function allHunterCandidates(){
   const d=state.data;if(!d)return [];
   return [...(d.items||[]),...(d.watchItems||[]).map(x=>({...x,stage:'Early Watch'}))];
 }
+function previousCandidateMap(){
+  const snap=previousSnapshot();
+  const map=new Map();
+  if(!snap)return map;
+  for(const x of [...(snap.items||[]),...(snap.earlyWatch||[])]) map.set(x.symbol,x);
+  return map;
+}
+function changeReasons(x,prev){
+  const reasons=[];
+  if(!prev){reasons.push('NEW · surfaced today');return reasons}
+  if(prev.stage&&prev.stage!==x.stage) reasons.push(`STAGE · ${prev.stage} → ${x.stage}`);
+  if(Number.isFinite(prev.momentumShift)&&Number.isFinite(x.momentumShift)){
+    const d=x.momentumShift-prev.momentumShift;
+    if(d>=3) reasons.push(`Momentum improved ${d.toFixed(1)}pp`);
+    else if(d<=-3) reasons.push(`Momentum weakened ${Math.abs(d).toFixed(1)}pp`);
+  }
+  if(prev.highState!==x.highState&&x.highState==='local_high_broken') reasons.push('Local high broken');
+  if(prev.lowState!==x.lowState&&x.lowState==='failed_low_break') reasons.push('Local low reclaimed');
+  if(prev.lowState!==x.lowState&&x.lowState==='local_low_broken') reasons.push('Local low broken');
+  if(Number.isFinite(x.rvol)&&x.rvol>=1.4&&(!Number.isFinite(prev.rvol)||prev.rvol<1.4)) reasons.push(`Volume elevated · ${x.rvol.toFixed(1)}×`);
+  return reasons;
+}
 function renderTop5(){
   const d=state.data;if(!d)return;
-  const bySymbol=new Map(allHunterCandidates().map(x=>[x.symbol,x]));
-  const xs=(d.top5||[]).map(t=>({...bySymbol.get(t.symbol),...t,price:t.entryPrice})).filter(x=>x.symbol);
+  const prevMap=previousCandidateMap();
+  const pool=allHunterCandidates().map(x=>({...x,crossStageScore:Number.isFinite(x.crossStageScore)?x.crossStageScore:null}));
+  const backendRank=new Map((d.top5||[]).map(x=>[x.symbol,x.crossStageScore]));
+  pool.forEach(x=>{if(backendRank.has(x.symbol))x.crossStageScore=backendRank.get(x.symbol)});
+  const xs=pool.map(x=>({...x,_reasons:changeReasons(x,prevMap.get(x.symbol))}))
+    .sort((a,b)=>{
+      const ac=a._reasons.length?1:0,bc=b._reasons.length?1:0;
+      if(ac!==bc)return bc-ac;
+      return (b.score??-Infinity)-(a.score??-Infinity)||a.symbol.localeCompare(b.symbol);
+    }).slice(0,10);
   document.querySelector('#top5Content').innerHTML=`
     <section class="stage">
       <div class="stage-head"><div class="stage-main"><div class="stage-copy">
-        <h2>Hunter Top 5</h2>
-        <p>Start here · strongest cross-stage technical setups worth opening first. Discovery only, not a BUY signal.</p>
+        <h2>Daily 10</h2>
+        <p>Ten charts to review first today. Fresh technical changes are prioritized; this is not a BUY signal.</p>
       </div></div><span class="shown">${xs.length}</span></div>
-      <div class="grid">${xs.length?xs.map(x=>card(x,stageKind(x),x.stage)).join(''):'<div class="empty">No candidates available at the current liquidity threshold.</div>'}</div>
+      <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[])},stageKind(x),x.stage)).join(''):'<div class="empty">No candidates available.</div>'}</div>
     </section>`;
   bindCardActions('#top5Content');
+}
+function renderChanges(){
+  const d=state.data;if(!d)return;
+  const prev=previousSnapshot();
+  const current=allHunterCandidates();
+  const currentMap=new Map(current.map(x=>[x.symbol,x]));
+  const prevItems=prev?[...(prev.items||[]),...(prev.earlyWatch||[])]:[];
+  const prevMap=new Map(prevItems.map(x=>[x.symbol,x]));
+  const changed=current.map(x=>({...x,_reasons:changeReasons(x,prevMap.get(x.symbol))})).filter(x=>x._reasons.length);
+  const dropped=prevItems.filter(x=>!currentMap.has(x.symbol)).map(x=>({...x,_reasons:['EXITED · no longer passes the current Hunter setup'],_dropped:true}));
+  const rows=[...changed,...dropped];
+  document.querySelector('#changesContent').innerHTML=`
+    <section class="stage">
+      <div class="stage-head"><div class="stage-main"><div class="stage-copy"><h2>Changes</h2><p>What materially changed since the previous saved market session — including names that dropped out.</p></div></div><span class="shown">${rows.length}</span></div>
+      <div class="change-list">${rows.length?rows.map(x=>`<div class="change-item ${x._dropped?'dropped':''}"><div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage||'Exited'}</span></div><p>${x._reasons.join(' · ')}</p><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button></div>`).join(''):'<div class="empty">No material changes detected versus the previous saved session.</div>'}</div>
+    </section>`;
+  document.querySelectorAll('#changesContent .tv-link').forEach(el=>el.addEventListener('click',()=>openTradingView(el.dataset.tv)));
 }
 
 function renderHunter(){
@@ -522,7 +577,7 @@ function card(x,kind,fa,inWatch=false){
 
 function render(){
   if(!state.data)return;
-  renderMarket();renderTop5();renderHunter();renderWatchlist();
+  renderMarket();renderTop5();renderChanges();renderHunter();renderWatchlist();
   const d=state.data;
   document.querySelector('#status').title=(d.failureDetails||[]).map(x=>`${x.symbol}: ${x.reason}`).join('\n');
   document.querySelector('#status').innerHTML=
@@ -560,6 +615,7 @@ document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
   document.querySelector('#marketView').classList.toggle('active',state.tab==='market');
   document.querySelector('#top5View').classList.toggle('active',state.tab==='top5');
+  document.querySelector('#changesView').classList.toggle('active',state.tab==='changes');
   document.querySelector('#hunterView').classList.toggle('active',state.tab==='hunter');
   document.querySelector('#watchlistView').classList.toggle('active',state.tab==='watchlist');
 }));
