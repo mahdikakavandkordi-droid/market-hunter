@@ -324,7 +324,7 @@ function card(x,kind,fa){
         <div class="pill">vs 50D MA<b class="${cls(x.dist50)}">${pct(x.dist50)}</b></div>
         <div class="signal">Trend<b>${x.trendState||'—'}</b></div>
         <div class="signal">Momentum change<b class="${cls(x.momentumShift)}">${Number.isFinite(x.prev5)?`${pct(x.prev5)} → ${pct(x.ret5)}`:pct(x.momentumShift)}</b></div>
-        <div class="signal">5D unusual activity<b class="${x.unusual5d?'up':'flat'}">${x.unusual5dLabel||'—'}</b></div>
+        <div class="signal">5D unusual activity<b class="${x.unusual5dDirection==='positive'?'up':x.unusual5dDirection==='negative'?'down':'flat'}">${x.unusual5dLabel||'—'}</b></div>
         <div class="signal">Relative vs ${x.benchmarkLabel||"TSX"}<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div>
         <div class="signal">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></div>
       </div></div>
