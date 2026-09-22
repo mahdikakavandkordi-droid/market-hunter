@@ -317,11 +317,11 @@ function card(x,kind,fa){
       <div class="why"><strong>Surfaced because</strong>${x.why.join(' · ')}</div>
       <div class="score"><div class="bar"><div class="fill" style="width:${Math.max(4,Math.min(100,x.score))}%"></div></div><small>tap details</small></div>
       <div class="detail"><div class="detail-grid">
-        <div class="pill">60D<b>${pct(x.ret60)}</b></div>
-        <div class="pill">Pullback<b>${pct(x.pullback)}</b></div>
+        <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
+        <div class="pill">Pullback<b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
         <div class="pill">Avg $ Vol<b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
-        <div class="pill">vs 20D MA<b>${pct(x.dist20)}</b></div>
-        <div class="pill">vs 50D MA<b>${pct(x.dist50)}</b></div><div class="pill">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):"—"}</b></div>
+        <div class="pill">vs 20D MA<b class="${cls(x.dist20)}">${pct(x.dist20)}</b></div>
+        <div class="pill">vs 50D MA<b class="${cls(x.dist50)}">${pct(x.dist50)}</b></div>
         <div class="signal">Trend<b>${x.trendState||'—'}</b></div>
         <div class="signal">Momentum shift<b class="${cls(x.momentumShift)}">${pct(x.momentumShift)}</b></div>
         <div class="signal">Volume vs 20D avg<b class="${cls(x.volumeVsAvg)}">${pct(x.volumeVsAvg)}</b></div>
