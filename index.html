@@ -133,12 +133,13 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   .takeaway-grid{grid-template-columns:1fr 1fr}
   .grid{grid-template-columns:1fr}.stage{margin-top:20px}.stage-head{grid-template-columns:1fr auto;align-items:center;gap:8px}
   .stage-main{align-items:flex-start;gap:8px}.stage-copy h2{font-size:16px}.stage-copy p{font-size:10px;white-space:normal}
-  .badge{font-size:9px;padding:4px 7px;margin-top:1px}.card{padding:14px}.row{grid-template-columns:repeat(4,1fr)}
+  .badge{font-size:9px;padding:4px 7px;margin-top:1px}.card{padding:14px}.row{grid-template-columns:repeat(5,1fr)}
   .mini{padding:7px 6px}.mini .v{font-size:12px}.detail-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:390px){
   .controls{grid-template-columns:1fr 1fr}#refresh{grid-column:1/-1}
-  .row{grid-template-columns:repeat(2,1fr)}
+  .row{grid-template-columns:repeat(5,1fr)}
+  .mini{padding:6px 3px}.mini .k{font-size:8px}.mini .v{font-size:10px}
   .sector-row{grid-template-columns:1.1fr .65fr .7fr}.sector-row>*:nth-child(5){display:none}.sector-row.head>*:nth-child(5){display:none}
 }
 </style>
@@ -392,6 +393,7 @@ function card(x,kind,fa,inWatch=false){
         <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
         <div class="mini"><div class="k">RVOL</div><div class="v">${fmt(x.rvol)}×</div></div>
         <div class="mini"><div class="k">RSI 14</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
+        <div class="mini"><div class="k">Momentum</div><div class="v ${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</div></div>
       </div>
       <div class="why"><strong>${x.watchStatus?'Current status':'Surfaced because'}</strong>${x.watchStatus?x.watchStatus:((x.why||[]).join(' · ')||'Saved chart')}</div>
       <div class="score"><small>tap details</small></div>
