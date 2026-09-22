@@ -100,6 +100,9 @@ button{border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 
 .score{margin-top:10px;display:flex;align-items:center;gap:8px}.bar{height:5px;background:#202a34;border-radius:999px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,#7186a0,#dce6f2)}.score small{color:var(--muted2);font-size:10px}
 .detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.card.open .detail{display:block}
 .detail-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.pill{border:1px solid var(--line);border-radius:9px;padding:7px;text-align:center;font-size:9px;color:var(--muted)}.pill b{display:block;margin-top:3px;font-size:11px;color:var(--text)}
+.signal{border:1px solid var(--line);border-radius:9px;padding:8px 9px;font-size:9px;color:var(--muted);text-align:left}
+.signal b{display:block;margin-top:3px;font-size:11px;color:var(--text);line-height:1.3}
+.history-note{display:inline-flex;margin-top:8px;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.035);border:1px solid rgba(37,48,60,.8);font-size:9px;font-weight:800}
 .empty{grid-column:1/-1;border:1px dashed var(--line);border-radius:14px;padding:24px;text-align:center;color:var(--muted)}
 footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .loading{opacity:.65;pointer-events:none}.error{background:rgba(242,123,129,.08);border:1px solid rgba(242,123,129,.3);color:#ffc5c8;padding:12px;border-radius:12px;margin-bottom:14px;display:none}
@@ -168,11 +171,27 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 </div>
 
 <script>
-const state={data:null,tab:'market'};
+const state={data:null,history:[],tab:'market'};
 const fmt=n=>Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
 const pct=n=>Number.isFinite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'—';
 const cls=n=>n>0?'up':n<0?'down':'flat';
 const statusClass=s=>s==='Strong'?'strong':s==='Weak'?'weak':'neutral';
+function previousSnapshot(){
+  const snaps=state.history?.snapshots||[];
+  return snaps.length?snaps[snaps.length-1]:null;
+}
+function historyNote(x){
+  const snap=previousSnapshot();
+  if(!snap) return '';
+  const prev=(snap.items||[]).find(i=>i.symbol===x.symbol);
+  if(!prev) return '<span class="history-note up">New candidate</span>';
+  const parts=[];
+  if(prev.stage&&prev.stage!==x.stage) parts.push(`${prev.stage} → ${x.stage}`);
+  const delta=Number.isFinite(prev.score)&&Number.isFinite(x.score)?x.score-prev.score:null;
+  if(Number.isFinite(delta)&&Math.abs(delta)>=0.5) parts.push(`Hunter ${delta>0?'+':''}${delta.toFixed(1)}`);
+  if(!parts.length) return '';
+  return `<span class="history-note ${delta>0?'up':delta<0?'down':'flat'}">${parts.join(' · ')}</span>`;
+}
 
 function indexCard(name,obj){
   if(!obj)return `<div class="metric"><div class="k">${name}</div><div class="v">—</div><div class="sub flat">Unavailable</div></div>`;
@@ -285,7 +304,7 @@ function card(x,kind,fa){
       <div class="top">
         <div>
           <div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge ${kind}">${fa}</span></div>
-          <div class="company">${x.company}</div><div class="sector">${x.sector}</div>
+          <div class="company">${x.company}</div><div class="sector">${x.sector}</div>${historyNote(x)}
         </div>
         <div class="price">$${fmt(x.price)}<div class="score-pill">Hunter <b>${fmt(x.score)}</b></div></div>
       </div>
@@ -303,11 +322,11 @@ function card(x,kind,fa){
         <div class="pill">Avg $ Vol<b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
         <div class="pill">vs 20D MA<b>${pct(x.dist20)}</b></div>
         <div class="pill">vs 50D MA<b>${pct(x.dist50)}</b></div><div class="pill">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):"—"}</b></div>
-        <div class="pill">Trend score<b>${fmt(x.components.trend)}</b></div>
-        <div class="pill">Momentum<b>${fmt(x.components.momentum)}</b></div>
-        <div class="pill">Volume<b>${fmt(x.components.volume)}</b></div>
-        <div class="pill">Relative<b>${fmt(x.components.relative)}</b></div>
-        <div class="pill">Structure<b>${fmt(x.components.structure)}</b></div>
+        <div class="signal">Trend<b>${x.trendState||'—'}</b></div>
+        <div class="signal">Momentum shift<b class="${cls(x.momentumShift)}">${pct(x.momentumShift)}</b></div>
+        <div class="signal">Volume vs 20D avg<b class="${cls(x.volumeVsAvg)}">${pct(x.volumeVsAvg)}</b></div>
+        <div class="signal">Relative vs TSX<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div>
+        <div class="signal">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></div>
       </div></div>
     </article>`;
 }
@@ -325,10 +344,19 @@ async function load(){
   app.classList.add('loading');err.style.display='none';
   try{
     const min=document.querySelector('#liq').value;
-    const r=await fetch(`/api/scan?minDollar=${min}`,{cache:'no-store'});
+    const [scanRes,historyRes]=await Promise.allSettled([
+      fetch(`/api/scan?minDollar=${min}`,{cache:'no-store'}),
+      fetch('/data/history.json',{cache:'no-store'})
+    ]);
+    if(scanRes.status!=='fulfilled') throw scanRes.reason;
+    const r=scanRes.value;
     const j=await r.json();
     if(!r.ok)throw new Error(j.message||'Scan failed');
-    state.data=j;render();
+    state.data=j;
+    if(historyRes.status==='fulfilled'&&historyRes.value.ok){
+      try{state.history=await historyRes.value.json()}catch{state.history={snapshots:[]}}
+    } else state.history={snapshots:[]};
+    render();
   }catch(e){
     err.textContent=`Could not complete scan: ${e.message}`;
     err.style.display='block';
