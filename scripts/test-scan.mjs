@@ -59,6 +59,15 @@ assert.equal(dailyStructure(structureRows).lowState,'failed_low_break','wick bel
 structureRows[14]={...structureRows[14],close:94,rawClose:94};
 assert.equal(dailyStructure(structureRows).lowState,'local_low_broken');
 console.log('PASS: daily local high/low, close-vs-wick breakout and failed-break detection');
+const samePrices=dates.map((_,i)=>100+i*0.05);
+const structureA=make(samePrices),structureB=make(samePrices);
+structureA.rows.forEach(x=>{x.high=x.close+1;x.low=x.close-1});
+structureB.rows.forEach((x,i)=>{x.high=x.close+(i%7===0?5:1);x.low=x.close-(i%9===0?5:1)});
+const unchangedA=metrics(structureA,make(),null),unchangedB=metrics(structureB,make(),null);
+assert.equal(unchangedA.score,unchangedB.score,'daily structure must not change ranking score');
+assert.equal(unchangedA.stage,unchangedB.stage,'daily structure must not change stage classification');
+console.log('PASS: daily structure remains informational and does not alter score/stage');
+
 
 
 // End-to-end fetch fixtures: recover a real missing bar, retain unresolved gaps,
