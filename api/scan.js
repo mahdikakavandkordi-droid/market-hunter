@@ -25,6 +25,17 @@ const SECTOR_PROXY = {
 };
 
 function avg(a){const v=a.filter(Number.isFinite);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null}
+function dayKey(t){return new Date(t*1000).toISOString().slice(0,10)}
+function alignedReturn(rows,benchmarkRows,lookback){
+  if(!Array.isArray(rows)||!Array.isArray(benchmarkRows)) return null;
+  const stock=new Map(rows.map(x=>[dayKey(x.t),x.close]));
+  const bench=new Map(benchmarkRows.map(x=>[dayKey(x.t),x.close]));
+  const dates=[...stock.keys()].filter(d=>bench.has(d)).sort();
+  if(dates.length<lookback+1) return null;
+  const end=dates.at(-1),start=dates.at(-(lookback+1));
+  return {stock:pct(stock.get(end),stock.get(start)),benchmark:pct(bench.get(end),bench.get(start)),start,end};
+}
+function ageDays(t){return Number.isFinite(t)?(Date.now()-t*1000)/86400000:null}
 function sma(a,n){return a.length>=n?avg(a.slice(-n)):null}
 function pct(a,b){return Number.isFinite(a)&&Number.isFinite(b)&&b!==0?(a/b-1)*100:null}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
@@ -87,17 +98,20 @@ async function mapLimit(values,limit,worker){
 }
 
 function weeklyCloses(rows){
-  const out=[]; let key=null,last=null;
+  const buckets=[]; let key=null,last=null;
   for(const r of rows){
     const d=new Date(r.t*1000);
     const day=(d.getUTCDay()+6)%7;
     const monday=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()-day));
     const k=monday.toISOString().slice(0,10);
-    if(k!==key&&last) out.push(last.close);
+    if(k!==key&&last) buckets.push({key,close:last.close});
     key=k; last=r;
   }
-  if(last) out.push(last.close);
-  return out;
+  if(last) buckets.push({key,close:last.close});
+  const now=new Date();
+  const todayDay=(now.getUTCDay()+6)%7;
+  const currentMonday=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-todayDay)).toISOString().slice(0,10);
+  return buckets.filter(x=>x.key!==currentMonday).map(x=>x.close);
 }
 
 function downVolumeAverage(rows,start,end){
@@ -108,7 +122,7 @@ function downVolumeAverage(rows,start,end){
   return avg(a);
 }
 
-function metrics(data,tsxRet20,sectorRet20){
+function metrics(data,benchmarkData,sectorRet20){
   const r=data.rows,c=r.map(x=>x.close),v=r.map(x=>x.volume||0);
   if(c.length<65) return null;
 
@@ -127,7 +141,8 @@ function metrics(data,tsxRet20,sectorRet20){
   const weeklyUp=Number.isFinite(w10)&&Number.isFinite(wPrev)&&last>w10&&w10>wPrev;
   const dailyUp=Number.isFinite(ma20)&&Number.isFinite(ma50)&&last>ma20&&ma20>ma50;
   const momentumImproving=Number.isFinite(ret5)&&Number.isFinite(ret20)?ret5>ret20/4:false;
-  const rs20=Number.isFinite(tsxRet20)&&Number.isFinite(ret20)?ret20-tsxRet20:null;
+  const aligned20=alignedReturn(r,benchmarkData?.rows,20);
+  const rs20=aligned20?aligned20.stock-aligned20.benchmark:null;
   const sectorRs=Number.isFinite(sectorRet20)&&Number.isFinite(ret20)?ret20-sectorRet20:null;
   const dist20=pct(last,ma20),dist50=pct(last,ma50);
   const momentumShift=Number.isFinite(ret5)&&Number.isFinite(ret20)?ret5-(ret20/4):null;
@@ -153,20 +168,20 @@ function metrics(data,tsxRet20,sectorRet20){
   const sellingPressureFading=Number.isFinite(recentDown)&&Number.isFinite(priorDown)&&recentDown<priorDown*0.82;
 
   let trendScore=(weeklyUp?15:(last>ma50?8:2))+(dailyUp?15:(last>ma20?8:2));
-  let momentumScore=clamp(10+(ret5||0)*1.2+(ret20||0)*0.4+(momentumImproving?5:0),0,25);
-  let volumeScore=clamp(7+((rvol||1)-1)*10+(sellingPressureFading?2:0),0,15);
-  let relativeScore=clamp(7.5+(rs20||0)*0.8,0,15);
+  let momentumScore=clamp(10+(Number.isFinite(ret5)?ret5:0)*1.2+(Number.isFinite(ret20)?ret20:0)*0.4+(momentumImproving?5:0),0,25);
+  let volumeScore=clamp(7+((Number.isFinite(rvol)?rvol:1)-1)*10+(sellingPressureFading?2:0),0,15);
+  let relativeScore=Number.isFinite(rs20)?clamp(7.5+rs20*0.8,0,15):null;
   let structureScore=2;
   if(pullback<=-2&&pullback>=-12) structureScore+=7;
   if(Number.isFinite(dist20)&&dist20>=-3&&dist20<=5) structureScore+=3;
   if(Number.isFinite(dist50)&&dist50>-4) structureScore+=4;
   structureScore=clamp(structureScore,0,15);
-  const score=clamp(trendScore+momentumScore+volumeScore+relativeScore+structureScore,0,100);
+  const score=clamp(trendScore+momentumScore+volumeScore+(Number.isFinite(relativeScore)?relativeScore:7.5)+structureScore,0,100);
 
   let stage=null;
-  const established=weeklyUp&&dailyUp&&((ret20||0)>=10||(ret60||0)>=20)&&(rs20||0)>2;
-  const attractive=weeklyUp&&(dailyUp||(last>ma50&&(ret5||0)>0))&&(ret20||0)>0&&(rs20||0)>-3;
-  const recovery=momentumImproving&&(ret5||0)>0&&pullback<=-1&&pullback>=-18&&(last>ma50||(dist50||-99)>-4)&&(rs20||0)>-8&&((rvol||1)>=0.75||sellingPressureFading);
+  const established=weeklyUp&&dailyUp&&Number.isFinite(ret20)&&Number.isFinite(ret60)&&Number.isFinite(rs20)&&(ret20>=10||ret60>=20)&&rs20>2;
+  const attractive=weeklyUp&&Number.isFinite(ret5)&&Number.isFinite(ret20)&&Number.isFinite(rs20)&&(dailyUp||(last>ma50&&ret5>0))&&ret20>0&&rs20>-3;
+  const recovery=momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)&&ret5>0&&pullback<=-1&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8&&((Number.isFinite(rvol)&&rvol>=0.75)||sellingPressureFading);
 
   if(established) stage='Established Move';
   else if(attractive) stage='Attractive Growth';
@@ -182,7 +197,7 @@ function metrics(data,tsxRet20,sectorRet20){
   if(!why.length) why.push('structure moved into the scan threshold');
 
   return {
-    price:round(last,2),ret5:round(ret5),ret20:round(ret20),ret60:round(ret60),rvol:round(rvol,2),
+    price:round(last,2),ret5:round(ret5),ret20:round(ret20),ret60:round(ret60),rvol:round(rvol,2),\n    lastSession:dayKey(r.at(-1).t),dataAgeDays:round(ageDays(r.at(-1).t),1),
     avgDollarVol:round(dollar20,0),pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
@@ -191,7 +206,7 @@ function metrics(data,tsxRet20,sectorRet20){
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
-      relative:round(relativeScore,1),structure:round(structureScore,1)
+      relative:Number.isFinite(relativeScore)?round(relativeScore,1):null,structure:round(structureScore,1)
     }
   };
 }
@@ -237,7 +252,8 @@ export default async function handler(req,res){
         };
       }
     });
-    const tsxRet20=idx.TSX?.ret20??0;
+    const tsxBenchmarkResult=idxResults[0];
+    const tsxBenchmark=tsxBenchmarkResult?.status==='fulfilled'?tsxBenchmarkResult.value:null;
 
     const sectorSymbols=[...new Set(Object.values(SECTOR_PROXY))];
     const sectorSettled=await mapLimit(sectorSymbols,5,s=>chart(s));
@@ -255,7 +271,7 @@ export default async function handler(req,res){
     settled.forEach((x,i)=>{
       const [symbol,company,sector]=UNIVERSE[i];
       if(x.status!=='fulfilled'){unavailable.push(symbol);return}
-      const m=metrics(x.value,tsxRet20,sectorMap[SECTOR_PROXY[sector]]);
+      const m=metrics(x.value,tsxBenchmark,sectorMap[SECTOR_PROXY[sector]]);
       if(!m){unavailable.push(symbol);return}
       if((m.price||0)<2 || (m.avgDollarVol||0)<minDollar) return;
 
