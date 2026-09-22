@@ -296,7 +296,7 @@ function renderHunter(){
 
 function card(x,kind,fa){
   const q=n=>`<span class="${cls(n)}">${pct(n)}</span>`;
-  const ticker=x.symbol.replace(/\.(TO|NE)$/,'');
+  const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
   return `
     <article class="card">
       <div class="top">
@@ -333,6 +333,7 @@ function render(){
   if(!state.data)return;
   renderMarket();renderHunter();
   const d=state.data;
+  document.querySelector('#status').title=(d.failureDetails||[]).map(x=>`${x.symbol}: ${x.reason}`).join('\n');
   document.querySelector('#status').innerHTML=
     `<span class="dot"></span>${d.diagnostics?.liquid??d.breadth.scanned}/${d.universeSize} liquid · ${d.items.length} candidates · ${d.unavailable.length} unavailable${d.partial?" · Partial scan":""} · ${d.marketAsOf||""} · ${new Date(d.asOf).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
 }

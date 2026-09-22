@@ -1,35 +1,4 @@
-const UNIVERSE = [
-  // Financials
-  ['RY.TO','Royal Bank of Canada','Financials'],['TD.TO','Toronto-Dominion Bank','Financials'],['BMO.TO','Bank of Montreal','Financials'],['BNS.TO','Bank of Nova Scotia','Financials'],['CM.TO','CIBC','Financials'],['NA.TO','National Bank of Canada','Financials'],['MFC.TO','Manulife Financial','Financials'],['SLF.TO','Sun Life Financial','Financials'],['IFC.TO','Intact Financial','Financials'],['GWO.TO','Great-West Lifeco','Financials'],['POW.TO','Power Corporation of Canada','Financials'],['FFH.TO','Fairfax Financial','Financials'],['EQB.TO','EQB','Financials'],['IAG.TO','iA Financial','Financials'],['ONEX.TO','Onex','Financials'],
-  // Energy
-  ['CNQ.TO','Canadian Natural Resources','Energy'],['SU.TO','Suncor Energy','Energy'],['CVE.TO','Cenovus Energy','Energy'],['IMO.TO','Imperial Oil','Energy'],['TOU.TO','Tourmaline Oil','Energy'],['ARX.TO','ARC Resources','Energy'],['ENB.TO','Enbridge','Energy'],['TRP.TO','TC Energy','Energy'],['PPL.TO','Pembina Pipeline','Energy'],['KEY.TO','Keyera','Energy'],['MEG.TO','MEG Energy','Energy'],['WCP.TO','Whitecap Resources','Energy'],['BIR.TO','Birchcliff Energy','Energy'],['VET.TO','Vermilion Energy','Energy'],['CPG.TO','Crescent Point Energy','Energy'],
-  // Materials
-  ['ABX.TO','Barrick Mining','Materials'],['AEM.TO','Agnico Eagle Mines','Materials'],['WPM.TO','Wheaton Precious Metals','Materials'],['NTR.TO','Nutrien','Materials'],['TECK-B.TO','Teck Resources','Materials'],['FM.TO','First Quantum Minerals','Materials'],['K.TO','Kinross Gold','Materials'],['LUG.TO','Lundin Gold','Materials'],['AGI.TO','Alamos Gold','Materials'],['PAAS.TO','Pan American Silver','Materials'],['CCO.TO','Cameco','Materials'],['HBM.TO','Hudbay Minerals','Materials'],['ERO.TO','Ero Copper','Materials'],['LUN.TO','Lundin Mining','Materials'],['IVN.TO','Ivanhoe Mines','Materials'],
-  // Industrials
-  ['CNR.TO','Canadian National Railway','Industrials'],['CP.TO','Canadian Pacific Kansas City','Industrials'],['WSP.TO','WSP Global','Industrials'],['TFII.TO','TFI International','Industrials'],['ATRL.TO','AtkinsRéalis','Industrials'],['CAE.TO','CAE','Industrials'],['GFL.TO','GFL Environmental','Industrials'],['STN.TO','Stantec','Industrials'],['TIH.TO','Toromont Industries','Industrials'],['WCN.TO','Waste Connections','Industrials'],['BDGI.TO','Badger Infrastructure Solutions','Industrials'],['AC.TO','Air Canada','Industrials'],
-  // Technology
-  ['SHOP.TO','Shopify','Technology'],['CSU.TO','Constellation Software','Technology'],['OTEX.TO','OpenText','Technology'],['KXS.TO','Kinaxis','Technology'],['DSG.TO','Descartes Systems','Technology'],['CLS.TO','Celestica','Technology'],['GIB-A.TO','CGI','Technology'],['LSPD.TO','Lightspeed Commerce','Technology'],['BB.TO','BlackBerry','Technology'],['DCBO.TO','Docebo','Technology'],['ENGH.TO','Enghouse Systems','Technology'],['HPS-A.TO','Hammond Power Solutions','Technology'],
-  // Communication
-  ['BCE.TO','BCE','Communication'],['T.TO','TELUS','Communication'],['RCI-B.TO','Rogers Communications','Communication'],['QBR-B.TO','Quebecor','Communication'],['CCA.TO','Cogeco Communications','Communication'],
-  // Utilities
-  ['FTS.TO','Fortis','Utilities'],['EMA.TO','Emera','Utilities'],['AQN.TO','Algonquin Power & Utilities','Utilities'],['CPX.TO','Capital Power','Utilities'],['NPI.TO','Northland Power','Utilities'],['CU.TO','Canadian Utilities','Utilities'],['H.TO','Hydro One','Utilities'],
-  // Consumer
-  ['L.TO','Loblaw Companies','Consumer'],['ATD.TO','Alimentation Couche-Tard','Consumer'],['DOL.TO','Dollarama','Consumer'],['QSR.TO','Restaurant Brands International','Consumer'],['MG.TO','Magna International','Consumer'],['CTC-A.TO','Canadian Tire','Consumer'],['MRU.TO','Metro','Consumer'],['WN.TO','George Weston','Consumer'],['SAP.TO','Saputo','Consumer'],['DOO.TO','BRP','Consumer'],['GOOS.TO','Canada Goose','Consumer'],['GIL.TO','Gildan Activewear','Consumer'],
-  // Real estate / health
-  ['CAR-UN.TO','Canadian Apartment Properties REIT','Real Estate'],['REI-UN.TO','RioCan REIT','Real Estate'],['SRU-UN.TO','SmartCentres REIT','Real Estate'],['DIR-UN.TO','Dream Industrial REIT','Real Estate'],['CSH-UN.TO','Chartwell Retirement Residences','Health Care'],
-  // Additional liquid Canadian hunting names
-  ['BAM.TO','Brookfield Asset Management','Financials'],['BN.TO','Brookfield Corporation','Financials'],['FSV.TO','FirstService','Real Estate'],['CIX.TO','CI Financial','Financials'],['LB.TO','Laurentian Bank','Financials'],
-  ['ATH.TO','Athabasca Oil','Energy'],['PEY.TO','Peyto Exploration & Development','Energy'],['TVE.TO','Tamarack Valley Energy','Energy'],['KEL.TO','Kelt Exploration','Energy'],['HWX.TO','Headwater Exploration','Energy'],['PSK.TO','PrairieSky Royalty','Energy'],
-  ['OR.TO','Osisko Gold Royalties','Materials'],['IMG.TO','IAMGOLD','Materials'],['BTO.TO','B2Gold','Materials'],['NGD.TO','New Gold','Materials'],['EQX.TO','Equinox Gold','Materials'],['SSL.TO','Sandstorm Gold','Materials'],['CS.TO','Capstone Copper','Materials'],['DPM.TO','Dundee Precious Metals','Materials'],['AYA.TO','Aya Gold & Silver','Materials'],['ERO.TO','Ero Copper','Materials'],
-  ['MDA.TO','MDA Space','Industrials'],['ATS.TO','ATS Corporation','Industrials'],['NFI.TO','NFI Group','Industrials'],['BBD-B.TO','Bombardier','Industrials'],['EIF.TO','Exchange Income','Industrials'],['RUS.TO','Russel Metals','Industrials'],['SJ.TO','Stella-Jones','Industrials'],
-  ['TOI.TO','Topicus.com','Technology'],['LMN.TO','Lumine Group','Technology'],['TIXT.TO','TELUS International','Technology'],['CMG.TO','Computer Modelling Group','Technology'],['REAL.TO','Real Matters','Technology'],
-  ['PKI.TO','Parkland','Consumer'],['MFI.TO','Maple Leaf Foods','Consumer'],['EMP-A.TO','Empire Company','Consumer'],['PET.TO','Pet Valu','Consumer'],['GIB-A.TO','CGI','Technology'],
-  ['BEPC.TO','Brookfield Renewable','Utilities'],['BEP-UN.TO','Brookfield Renewable Partners','Utilities'],['TA.TO','TransAlta','Utilities'],
-  ['AP-UN.TO','Allied Properties REIT','Real Estate'],['GRT-UN.TO','Granite REIT','Real Estate'],['HR-UN.TO','H&R REIT','Real Estate'],['CRT-UN.TO','CT REIT','Real Estate'],['CHP-UN.TO','Choice Properties REIT','Real Estate'],
-  ['WELL.TO','WELL Health Technologies','Health Care'],['SIA.TO','Sienna Senior Living','Health Care'],
-  // CAD-traded CDRs
-  ['AAPL.TO','Apple CDR','CDR'],['MSFT.TO','Microsoft CDR','CDR'],['NVDA.TO','Nvidia CDR','CDR'],['AMZN.TO','Amazon CDR','CDR'],['GOOG.TO','Alphabet CDR','CDR'],['META.TO','Meta CDR','CDR'],['TSLA.TO','Tesla CDR','CDR'],['AMD.TO','AMD CDR','CDR'],['COST.TO','Costco CDR','CDR']
-];
+import {UNIVERSE,UNIVERSE_SOURCE} from '../lib/universe.js';
 const UNIQUE_UNIVERSE=[...new Map(UNIVERSE.map(x=>[x[0],x])).values()];
 
 const INDEXES = [
@@ -92,8 +61,8 @@ function breadthLabel(n){return !Number.isFinite(n)?'Unavailable':n>=60?'Strong'
 function direction(delta){return !Number.isFinite(delta)?'Flat':delta>=3?'Improving':delta<=-3?'Weakening':'Stable'}
 
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
-async function chart(symbol,range='6mo',interval='1d',deadline=Date.now()+24000){
-  const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}&includePrePost=false&events=div%2Csplits`;
+async function chart(symbol,range='6mo',interval='1d',deadline=Date.now()+24000,host='query1'){
+  const url=`https://${host}.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}&includePrePost=false&events=div%2Csplits`;
   let lastError=null;
   for(let attempt=0;attempt<2;attempt++){
     const controller=new AbortController();
@@ -327,9 +296,11 @@ export default async function handler(req,res){
   if(![2000000,5000000,10000000,25000000].includes(minDollar)) return res.status(400).json({error:'invalid_liquidity'});
 
   try{
+    const started=Date.now();
     const deadline=Date.now()+24000;
     const symbols=[...new Set([...INDEXES.map(x=>x[0]),...Object.values(SECTOR_PROXY).filter(Boolean),...UNIQUE_UNIVERSE.map(x=>x[0])])];
-    const fetched=await mapLimit(symbols,16,s=>chart(s,'6mo','1d',deadline));
+    // Reserve time for a bounded second fetch of incomplete vendor responses.
+    const fetched=await mapLimit(symbols,16,s=>chart(s,'6mo','1d',deadline-6000));
     const bySymbol=Object.fromEntries(symbols.map((s,i)=>[s,fetched[i]]));
     const benchmarkBySymbol=Object.fromEntries(symbols.filter(s=>bySymbol[s].status==='fulfilled').map(s=>[s,bySymbol[s].value]));
     const idx={};
@@ -342,6 +313,22 @@ export default async function handler(req,res){
     if(!tsxBenchmark?.rows?.length||ageDays(tsxBenchmark.rows.at(-1).t)>5) throw new Error('reference_market_unavailable');
     const referenceDates=tsxBenchmark.rows.slice(-61).map(x=>dayKey(x.t));
     const marketAsOf=referenceDates.at(-1);
+    const retryableQuality=new Set(['missing_sessions','stale_data','missing_or_zero_volume','insufficient_history']);
+    const retrySymbols=UNIQUE_UNIVERSE.map(x=>x[0]).filter(s=>{
+      const result=bySymbol[s];
+      return result.status==='fulfilled'?retryableQuality.has(validateData(result.value,referenceDates)):
+        result.reason?.status!==404;
+    });
+    let recovered=0;
+    await mapLimit(retrySymbols,8,async symbol=>{
+      const data=await chart(symbol,'1y','1d',deadline,'query2');
+      const historyStart=dayKey(tsxBenchmark.rows[0].t);
+      data.rows=data.rows.filter(row=>dayKey(row.t)>=historyStart);
+      if(validateData(data,referenceDates)===null){
+        // Replace the entire series: never mix adjustment scales or invent missing bars.
+        bySymbol[symbol]={status:'fulfilled',value:data};recovered++;
+      }
+    });
     const sectorMap=benchmarkBySymbol;
     const settled=UNIQUE_UNIVERSE.map(([s])=>bySymbol[s]);
     const liquid=[],contextLiquid=[],candidates=[],unavailable=[],failureDetails=[],rejectedLiquidity=[];
@@ -422,13 +409,16 @@ export default async function handler(req,res){
       liquidityRejected:rejectedLiquidity.length,
       liquid:liquid.length,
       candidates:candidates.length,
+      recoveryAttempted:retrySymbols.length,
+      recovered,
+      elapsedMs:Date.now()-started,
       stageCounts
     };
 
     const partial=unavailable.length>0;
     if(partial) res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
     res.status(200).json({
-      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.1',partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
+      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.2',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
       items:candidates,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){
