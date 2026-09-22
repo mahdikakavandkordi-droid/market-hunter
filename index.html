@@ -474,6 +474,7 @@ function card(x,kind,fa,inWatch=false){
         <div class="signal">Momentum change<b class="${cls(x.momentumShift)}">${Number.isFinite(x.prev5)?`${pct(x.prev5)} → ${pct(x.ret5)}`:pct(x.momentumShift)}</b></div>
         <div class="signal">5D unusual activity<b class="${x.unusual5dDirection==='positive'?'up':x.unusual5dDirection==='negative'?'down':'flat'}">${x.unusual5dLabel||'—'}</b></div>
         <div class="signal">Relative vs ${x.benchmarkLabel||"TSX"}<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="signal">Relative vs sector<b class="${cls(x.sectorRs)}">${pct(x.sectorRs)}</b></div>
+        <div class="signal">Sector strength<b class="${x.sectorStrength==='Strong'?'up':x.sectorStrength==='Weak'?'down':'flat'}">${x.sector||'—'} · ${x.sectorStrength||'—'}${Number.isFinite(x.sectorBreadth)?' · '+x.sectorBreadth+'% breadth':''}</b></div>
         <div class="signal">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></div>
         <div class="signal">Daily local high<b>${x.highState==='local_high_broken'?'Broken by close':x.highState==='failed_high_break'?'Failed / rejected break':x.highState==='local_high_intact'?'Intact':'—'}${Number.isFinite(x.localHigh)?' · '+fmt(x.localHigh):''}</b></div>
         <div class="signal">Daily local low<b>${x.lowState==='local_low_held'?'Held':x.lowState==='failed_low_break'?'Failed break · reclaimed':x.lowState==='local_low_broken'?'Broken by close':'—'}${Number.isFinite(x.localLow)?' · '+fmt(x.localLow):''}</b></div>
