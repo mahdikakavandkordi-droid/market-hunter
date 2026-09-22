@@ -382,6 +382,38 @@ export function crossStageScore(x){
   return parts?round(score/parts,1):null;
 }
 
+function indexRegime(data){
+  if(!data?.rows?.length) return null;
+  const c=data.rows.map(r=>r.close).filter(Number.isFinite);
+  if(c.length<55) return null;
+  const last=c.at(-1),ma20=sma(c,20),ma50=sma(c,50),ma20Prev=sma(c.slice(0,-5),20);
+  const ret5=pct(last,c.at(-6)),ret20=pct(last,c.at(-21));
+  const above20=last>ma20,above50=last>ma50,ma20Rising=Number.isFinite(ma20Prev)&&ma20>ma20Prev;
+  let points=(above20?1:-1)+(above50?1:-1)+(ma20Rising?1:-1);
+  if(Number.isFinite(ret5)) points+=ret5>=1?1:ret5<=-1?-1:0;
+  if(Number.isFinite(ret20)) points+=ret20>=3?1:ret20<=-3?-1:0;
+  const regime=points>=4?'Strong':points>=1?'Improving':points<=-4?'Weak':points<=-1?'Weakening':'Mixed';
+  return {regime,points,ret5:round(ret5,1),ret20:round(ret20,1),above20,above50,ma20Rising};
+}
+function marketNarrative(regimes,breadth,sectors){
+  const tsx=regimes.TSX, nasdaq=regimes.Nasdaq, sp=regimes['S&P 500'];
+  const parts=[];
+  if(tsx){
+    const move=breadth?.trend==='Improving'?'breadth is expanding':breadth?.trend==='Weakening'?'breadth is narrowing':'breadth is stable';
+    parts.push(`Canada is ${tsx.regime.toLowerCase()}; ${move}${Number.isFinite(breadth?.percentAbove50)?` with ${breadth.percentAbove50}% of the liquid Hunter universe above MA50`:''}.`);
+  }
+  if(nasdaq&&sp){
+    if(nasdaq.regime===sp.regime) parts.push(`U.S. large-cap and technology conditions are both ${nasdaq.regime.toLowerCase()}.`);
+    else parts.push(`U.S. conditions are split: Nasdaq is ${nasdaq.regime.toLowerCase()} while the S&P 500 is ${sp.regime.toLowerCase()}.`);
+  }
+  const improving=(sectors||[]).filter(x=>x.trend==='Improving').length;
+  const weakening=(sectors||[]).filter(x=>x.trend==='Weakening').length;
+  if(improving>weakening) parts.push('Sector participation is broadening.');
+  else if(weakening>improving) parts.push('Sector participation is narrowing.');
+  else parts.push('Sector participation is mixed.');
+  return parts.join(' ');
+}
+
 function top5SnapshotItem(x,rank){
   return {
     rank,symbol:x.symbol,company:x.company,stage:x.stage,crossStageScore:x.crossStageScore,
@@ -500,13 +532,19 @@ export default async function handler(req,res){
 
     const canada20=idx.TSX?.ret20??null;
     const usa20=idx['S&P 500']?.ret20??null;
+    const marketRegimes={};
+    for(const [symbol,name] of INDEXES){
+      const data=benchmarkBySymbol[symbol];
+      if(data) marketRegimes[name]=indexRegime(data);
+    }
     const marketContext={
       canada20:round(canada20,1),
       usa20:round(usa20,1),
       breadthStatus:breadth.status,
       breadthTrend:breadth.trend,
       strongestSector:strongest?.sector||null,
-      weakestSector:weakest?.sector||null
+      weakestSector:weakest?.sector||null,
+      narrative:marketNarrative(marketRegimes,breadth,sectors)
     };
 
     const priority=(a,b)=>b.score-a.score||a.symbol.localeCompare(b.symbol);
@@ -544,7 +582,7 @@ export default async function handler(req,res){
     const partial=unavailable.length>0;
     if(partial) res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
     res.status(200).json({
-      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.3',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,
+      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.3',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,marketRegimes,
       items:candidates,watchItems,top5,availableItems,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){
