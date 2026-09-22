@@ -146,13 +146,15 @@ function metrics(data,benchmarkData,sectorRet20){
   const w=weeklyCloses(r),w10=sma(w,10),wPrev=w.length>=14?avg(w.slice(-14,-4)):null;
   const weeklyUp=Number.isFinite(w10)&&Number.isFinite(wPrev)&&last>w10&&w10>wPrev;
   const dailyUp=Number.isFinite(ma20)&&Number.isFinite(ma50)&&last>ma20&&ma20>ma50;
-  const momentumImproving=Number.isFinite(ret5)&&Number.isFinite(ret20)?ret5>ret20/4:false;
+  const prev5=c.length>=11?pct(c.at(-6),c.at(-11)):null;
+  const momentumShift=Number.isFinite(ret5)&&Number.isFinite(prev5)?ret5-prev5:null;
+  // Require a visible change rather than treating tiny noise as a recovery signal.
+  const momentumImproving=Number.isFinite(momentumShift)&&momentumShift>=2;
   const aligned20=alignedReturn(r,benchmarkData?.rows,20);
   const rs20=aligned20?aligned20.stock-aligned20.benchmark:null;
   const sectorRs=Number.isFinite(sectorRet20)&&Number.isFinite(ret20)?ret20-sectorRet20:null;
   const dist20=pct(last,ma20),dist50=pct(last,ma50);
-  const momentumShift=Number.isFinite(ret5)&&Number.isFinite(ret20)?ret5-(ret20/4):null;
-  const volumeVsAvg=Number.isFinite(rvol)?(rvol-1)*100:null;
+    const volumeVsAvg=Number.isFinite(rvol)?(rvol-1)*100:null;
   const trendState=dailyUp&&weeklyUp?'Daily + Weekly aligned':weeklyUp?'Weekly up · Daily mixed':dailyUp?'Daily up · Weekly mixed':'Trend mixed';
 
   const last5Volumes=v.slice(-5);
@@ -175,7 +177,8 @@ function metrics(data,benchmarkData,sectorRet20){
 
   let trendScore=(weeklyUp?15:(last>ma50?8:2))+(dailyUp?15:(last>ma20?8:2));
   let momentumScore=clamp(10+(Number.isFinite(ret5)?ret5:0)*1.2+(Number.isFinite(ret20)?ret20:0)*0.4+(momentumImproving?5:0),0,25);
-  let volumeScore=clamp(7+((Number.isFinite(rvol)?rvol:1)-1)*10+(sellingPressureFading?2:0),0,15);
+  const recentVolumeBoost=Number.isFinite(max5Rvol)?Math.max(0,max5Rvol-1):0;
+  let volumeScore=clamp(7+recentVolumeBoost*7+(sellingPressureFading?2:0),0,15);
   let relativeScore=Number.isFinite(rs20)?clamp(7.5+rs20*0.8,0,15):null;
   let structureScore=2;
   if(pullback<=-2&&pullback>=-12) structureScore+=7;
@@ -187,7 +190,7 @@ function metrics(data,benchmarkData,sectorRet20){
   let stage=null;
   const established=weeklyUp&&dailyUp&&Number.isFinite(ret20)&&Number.isFinite(ret60)&&Number.isFinite(rs20)&&(ret20>=10||ret60>=20)&&rs20>2;
   const attractive=weeklyUp&&Number.isFinite(ret5)&&Number.isFinite(ret20)&&Number.isFinite(rs20)&&(dailyUp||(last>ma50&&ret5>0))&&ret20>0&&rs20>-3;
-  const recovery=momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)&&ret5>0&&pullback<=-1&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8&&((Number.isFinite(rvol)&&rvol>=0.75)||sellingPressureFading);
+  const recovery=momentumImproving&&Number.isFinite(ret5)&&Number.isFinite(dist50)&&Number.isFinite(rs20)&&ret5>0&&pullback<=-1&&pullback>=-18&&(last>ma50||dist50>-4)&&rs20>-8&&((Number.isFinite(max5Rvol)&&max5Rvol>=0.75)||sellingPressureFading);
 
   if(established) stage='Established Move';
   else if(attractive) stage='Attractive Growth';
@@ -196,7 +199,7 @@ function metrics(data,benchmarkData,sectorRet20){
   const why=[];
   if(sellingPressureFading) why.push('selling volume fading');
   if(momentumImproving) why.push('momentum improving');
-  if((rvol||0)>=1.4) why.push(`volume ${round(rvol,1)}× normal`);
+  if(unusual5d) why.push(unusual5dLabel);
   if((rs20||0)>2) why.push('outperforming TSX');
   if(pullback<=-2&&pullback>=-12) why.push(`${Math.abs(round(pullback,1))}% off recent high`);
   if(dailyUp&&weeklyUp) why.push('daily + weekly trend aligned');
@@ -207,7 +210,7 @@ function metrics(data,benchmarkData,sectorRet20){
     avgDollarVol:round(dollar20,0),pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
-    momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
+    prev5:round(prev5,1),momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
     unusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,unusual5dLabel,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
