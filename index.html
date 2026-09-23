@@ -267,6 +267,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   <button class="tab" data-tab="top5">Daily 10 <span style="opacity:.55">★</span></button>
   <button class="tab" data-tab="changes">Changes</button>
   <button class="tab" data-tab="watchlist">Watchlist</button>
+  <button class="tab" data-tab="positions">Positions</button>
 </div>
 
 <div class="error" id="error"></div>
@@ -286,6 +287,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <section id="watchlistView" class="view">
   <div id="watchlistContent"></div>
 </section>
+<section id="positionsView" class="view"><div id="positionsContent"></div></section>
 
 
 <div id="compareDock" class="compare-dock"></div>
@@ -295,8 +297,42 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
-const state={data:null,history:[],tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),compare:new Set()};
+const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
+const state={data:null,history:[],tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
+function persistPositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
+function markBought(symbol){
+  const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);if(!x)return;
+  if(state.positions.has(symbol)){state.positions.delete(symbol)}else state.positions.set(symbol,{symbol,boughtAt:new Date().toISOString(),entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance});
+  persistPositions();render();
+}
+function positionHealth(x,p){
+  const warnings=[],watch=[],healthy=[];
+  if(x.lowState==='local_low_broken') warnings.push('Daily local low broken by close');
+  if(Number.isFinite(x.support)&&Number.isFinite(x.price)&&x.price<x.support) warnings.push('Price below detected support');
+  if(x.swingTrend==='Lower highs + lower lows') warnings.push('Lower-high / lower-low structure');
+  if(Number.isFinite(x.momentumShift)&&x.momentumShift<=-3) watch.push('Momentum weakening');
+  if(Number.isFinite(x.rs20)&&x.rs20<0) watch.push('Relative strength below benchmark');
+  if(x.weeklyUp===false&&x.dailyUp===false) warnings.push('Weekly + daily trend weak');
+  if(x.lowState==='local_low_held'||x.lowState==='failed_low_break') healthy.push('Latest local low holding/reclaimed');
+  if(x.weeklyUp===true&&x.dailyUp===true) healthy.push('Weekly + daily trend aligned');
+  if(x.swingTrend==='Higher highs + higher lows') healthy.push('Higher-high / higher-low structure');
+  const status=warnings.length?'Structure Warning':watch.length>=2?'Watch Closely':'Trend Healthy';
+  return {status,warnings,watch,healthy};
+}
+function renderPositions(){
+  const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
+  const current=allHunterCandidates(),by=new Map([...(state.data.availableItems||[]),...current].map(x=>[x.symbol,x]));
+  const rows=[...state.positions.values()].map(p=>({p,x:by.get(p.symbol)}));
+  root.innerHTML=`<section class="watchlist"><div class="section-title"><div><h2>Positions</h2><p>Post-purchase monitoring. Hunter reports trend health and warnings; it does not issue hold/sell orders.</p></div><span class="shown">${rows.length}</span></div><div class="grid">${rows.length?rows.map(({p,x})=>{
+    if(!x)return `<article class="card"><div class="ticker">${p.symbol}</div><div class="why"><strong>Position monitor</strong>Current market data unavailable.</div><button class="position-btn" data-position="${p.symbol}">Remove</button></article>`;
+    const h=positionHealth(x,p),ret=Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null;
+    const tone=h.status==='Structure Warning'?'down':h.status==='Watch Closely'?'flat':'up';
+    return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${x.company}</div><div class="sector">Bought ${new Date(p.boughtAt).toLocaleDateString()} · Entry ${fmt(p.entryPrice)}</div></div><div><div class="price">${fmt(x.price)}</div><div class="${cls(ret)}">Since entry ${pct(ret)}</div></div></div><div class="why"><strong>Monitor says</strong>${h.warnings.concat(h.watch,h.healthy).slice(0,4).join(' · ')||'No material structural change detected.'}</div><div class="detail open"><div class="detail-grid"><div class="pill">Entry stage<b>${p.entryStage}</b></div><div class="pill">Current stage<b>${x.stage||'Outside active candidate stages'}</b></div><div class="pill">RS20<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="pill">Momentum<b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div><div class="pill">Support<b>${fmt(x.support)}</b></div><div class="pill">Resistance<b>${fmt(x.resistance)}</b></div></div></div><div class="card-actions"><button class="tv-link" data-tv="${x.symbol}">Chart ↗</button><button class="position-btn" data-position="${x.symbol}">Close / remove</button></div></article>`;
+  }).join(''):'<div class="watch-empty">No positions yet. On a Hunter card tap “Bought” after you actually purchase it.</div>'}</div></section>`;
+  root.querySelectorAll('.position-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();markBought(b.dataset.position)}));
+  root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openTradingView(b.dataset.tv)}));
+}
 function toggleWatch(symbol){
   state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);
   persistWatch();
@@ -600,7 +636,8 @@ function unavailableWatchCard(x){
   const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
   return `<article class="card">
     <div class="top"><div><div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge recovery">Watchlist</span></div><div class="company">${x.company}</div><div class="sector">داده فعلاً در دسترس نیست · ${x.unavailableReason}</div></div>
-    <div class="card-actions"><button class="heart saved" data-watch="${x.symbol}" title="Watchlist">♥</button><button class="tv-link" type="button" data-tv="${x.symbol}" title="Open in TradingView">Chart ↗</button></div></div>
+    <div class="card-actions"><button class="heart saved" data-watch="${x.symbol}" title="Watchlist">♥</button><button class="position-btn" type="button" data-position="${x.symbol}" title="Mark as purchased">${state.positions.has(x.symbol)?'✓ Bought':'Bought'}</button>
+            <button class="tv-link" type="button" data-tv="${x.symbol}" title="Open in TradingView">Chart ↗</button></div></div>
     <div class="why"><strong>Saved status</strong>نماد ذخیره‌شده باقی مانده و با برگشت داده دوباره کامل نمایش داده می‌شود.</div>
     <div class="remove-hint">Swipe left to remove</div>
   </article>`;
@@ -612,6 +649,7 @@ function bindCardActions(root=''){
     el.addEventListener('click',act);
     el.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();toggleWatch(el.dataset.watch)},{passive:false});
   });
+  document.querySelectorAll(root+' .position-btn').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();markBought(el.dataset.position)}));
   document.querySelectorAll(root+' .tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
   document.querySelectorAll(root+' .watchlist .card').forEach(el=>{
     let startX=null;
@@ -955,7 +993,7 @@ function card(x,kind,fa,inWatch=false){
 
 function render(){
   if(!state.data)return;
-  renderMarket();renderTop5();renderChanges();renderHunter();renderWatchlist();renderCompareDock();
+  renderMarket();renderTop5();renderChanges();renderHunter();renderWatchlist();renderPositions();renderCompareDock();
   const d=state.data;
   document.querySelector('#status').title=(d.failureDetails||[]).map(x=>`${x.symbol}: ${x.reason}`).join('\n');
   document.querySelector('#status').innerHTML=
@@ -996,6 +1034,7 @@ document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>
   document.querySelector('#changesView').classList.toggle('active',state.tab==='changes');
   document.querySelector('#hunterView').classList.toggle('active',state.tab==='hunter');
   document.querySelector('#watchlistView').classList.toggle('active',state.tab==='watchlist');
+  document.querySelector('#positionsView').classList.toggle('active',state.tab==='positions');
 }));
 document.querySelector('#refresh').addEventListener('click',load);
 document.querySelector('#liq').addEventListener('change',load);
