@@ -37,11 +37,21 @@ if(!history.snapshots.some(s=>s.marketAsOf===scan.marketAsOf&&s.version===scan.v
     top5:(scan.top5||[]).map(x=>({...x,outcomes:{}})),
     items:(scan.items||[]).map(x=>({
       symbol:x.symbol,stage:x.stage,score:x.score,price:x.price,rsi14:x.rsi14,
-      ret5:x.ret5,ret20:x.ret20,rvol:x.rvol,rs20:x.rs20,momentumShift:x.momentumShift
+      ret5:x.ret5,ret20:x.ret20,ret60:x.ret60,rvol:x.rvol,max5Rvol:x.max5Rvol,
+      rs20:x.rs20,sectorRs:x.sectorRs,momentumShift:x.momentumShift,prev5:x.prev5,
+      trendState:x.trendState,pullback:x.pullback,dist20:x.dist20,dist50:x.dist50,
+      unusual5dDirection:x.unusual5dDirection,unusual5dLabel:x.unusual5dLabel,
+      highState:x.highState,lowState:x.lowState,localHigh:x.localHigh,localLow:x.localLow,
+      sector:x.sector,sectorStrength:x.sectorStrength,sectorBreadth:x.sectorBreadth
     })),
     earlyWatch:(scan.watchItems||[]).map(x=>({
       symbol:x.symbol,stage:'Early Watch',score:x.score,price:x.price,rsi14:x.rsi14,
-      ret5:x.ret5,ret20:x.ret20,rvol:x.rvol,rs20:x.rs20,momentumShift:x.momentumShift
+      ret5:x.ret5,ret20:x.ret20,ret60:x.ret60,rvol:x.rvol,max5Rvol:x.max5Rvol,
+      rs20:x.rs20,sectorRs:x.sectorRs,momentumShift:x.momentumShift,prev5:x.prev5,
+      trendState:x.trendState,pullback:x.pullback,dist20:x.dist20,dist50:x.dist50,
+      unusual5dDirection:x.unusual5dDirection,unusual5dLabel:x.unusual5dLabel,
+      highState:x.highState,lowState:x.lowState,localHigh:x.localHigh,localLow:x.localLow,
+      sector:x.sector,sectorStrength:x.sectorStrength,sectorBreadth:x.sectorBreadth
     }))
   });
 }
