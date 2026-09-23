@@ -204,7 +204,7 @@ const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
   version:'stage-evidence-candidate-v2-2026-09-23',
   status:'frozen-diagnostic',
   live:false,
-  rationale:'Only Recovery met the current cross-horizon holdout and time-slice robustness bar. Early Watch, Attractive Growth and Established Move remain research-only.',
+  rationale:'Recovery remains the frozen forward-evaluation candidate, but concentration diagnostics require additional shadow evidence before any Live promotion. Early Watch, Attractive Growth and Established Move remain research-only.',
   recovery:Object.freeze({
     requireStructuralTurn:true,
     requireRs20NonNegative:true,
@@ -256,8 +256,8 @@ function candidateEngineV2DiagnosticReport(a){
   }));
   const readiness=Object.fromEntries(Object.keys(rules).map(stage=>{
     const r=stageRobustness[stage], h=period(picked.filter(e=>e.stage===stage&&cut&&e.date>=cut)).overall;
-    const robustHorizonsHint=stage==='Recovery';
-    return [stage,{status:robustHorizonsHint&&r.stability==='promising'&&h.n>=15?'candidate-ready':'research-only',holdout:h}];
+    const frozenForwardCandidate=stage==='Recovery';
+    return [stage,{status:frozenForwardCandidate&&r.stability==='promising'&&h.n>=15?'frozen-awaiting-forward-evidence':'research-only',holdout:h}];
   }));
   return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness,symbolConcentration,timeSlices,stageRobustness,stageHoldoutDiagnostics,readiness};
 }
