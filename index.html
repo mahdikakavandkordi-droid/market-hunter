@@ -841,10 +841,21 @@ function hunterPriority(x){return stageAwareEvidence(x)}
 function selectHunterShortlist(pool){
   const ranked=pool.map(x=>({...x,hunterPriority:stageAwareEvidence(x)}))
     .sort((a,b)=>(b.hunterPriority??-Infinity)-(a.hunterPriority??-Infinity)||(b.score??-Infinity)-(a.score??-Infinity)||a.symbol.localeCompare(b.symbol));
-  // Frozen V1 threshold validated independently on history ending 2024-08-31.
-  // No quota and no forced stage representation.
-  const review=ranked.filter(x=>x.hunterPriority>=5);
-  const watch=ranked.filter(x=>x.hunterPriority>=3&&x.hunterPriority<5);
+  // Stage-aware V1 remains the eligibility model, but Review Now must be exceptional
+  // evidence rather than every eligible name. No fixed count and no forced stage quota.
+  const eligible=ranked.filter(x=>x.hunterPriority>=5);
+  const byStage=new Map();
+  for(const x of eligible){
+    const a=byStage.get(x.stage)||[];a.push(x);byStage.set(x.stage,a);
+  }
+  const review=eligible.filter(x=>{
+    const peers=byStage.get(x.stage)||[];
+    const scores=peers.map(v=>v.hunterPriority).sort((a,b)=>b-a);
+    const stageCut=scores.length?Math.max(6,scores[Math.max(0,Math.ceil(scores.length*.25)-1)]):Infinity;
+    return x.hunterPriority>=stageCut;
+  });
+  const reviewSymbols=new Set(review.map(x=>x.symbol));
+  const watch=ranked.filter(x=>!reviewSymbols.has(x.symbol)&&x.hunterPriority>=3);
   return {review,watch};
 }
 function daily10SelectionReasons(x){
