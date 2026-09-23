@@ -76,6 +76,32 @@ function stageAwareShortlistReport(a){
   return out;
 }
 // Backend-only workload diagnostics. Threshold variants are diagnostic only; none changes Live.
+function featureLiftReport(a){
+  const defs={
+    rsPositive:e=>Number.isFinite(e.rs20)&&e.rs20>=0,
+    rsStrong:e=>Number.isFinite(e.rs20)&&e.rs20>=4,
+    momentumPositive:e=>Number.isFinite(e.momentumShift)&&e.momentumShift>0,
+    momentumStrong:e=>Number.isFinite(e.momentumShift)&&e.momentumShift>=3,
+    constructiveStructure:e=>e.swingTrend==='Structure improving'||e.swingTrend==='Higher highs + higher lows',
+    healthyVolume:e=>Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
+    strongUpVolume:e=>Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.2,
+    room7:e=>Number.isFinite(e.roomToResistance)&&e.roomToResistance>=7,
+    failedBreakdown:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim'),
+    higherLow:e=>(e.setups||[]).includes('Higher-Low Turn'),
+    localBreakout:e=>(e.setups||[]).includes('Local Breakout'),
+    sellingExhaustion:e=>(e.setups||[]).includes('Selling Exhaustion')
+  };
+  const stages=['Early Watch','Recovery','Attractive Growth','Established Move'],out={};
+  const delta=(x,y,k)=>Number.isFinite(x?.[k])&&Number.isFinite(y?.[k])?round(x[k]-y[k],2):null;
+  for(const stage of stages){
+    const base=a.filter(e=>e.stage===stage);out[stage]={};
+    for(const [name,test] of Object.entries(defs)){
+      const yes=base.filter(test),no=base.filter(e=>!test(e)),ys=summary(yes),ns=summary(no);
+      out[stage][name]={present:ys,absent:ns,lift:{positiveRate:delta(ys,ns,'positiveRate'),meanReturn:delta(ys,ns,'mean'),benchmarkBeatRate:delta(ys,ns,'benchmarkBeatRate'),meanExcessReturn:delta(ys,ns,'meanExcessReturn')}};
+    }
+  }
+  return out;
+}
 function stageSelectionLiftReport(a){
   const stages=['Early Watch','Recovery','Attractive Growth','Established Move'],out={};
   const delta=(x,y,k)=>Number.isFinite(x?.[k])&&Number.isFinite(y?.[k])?round(x[k]-y[k],2):null;
@@ -386,5 +412,5 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),stageSelectionLift:stageSelectionLiftReport(he),frozenStageAwareValidation:frozenStageAwareValidation(he),dailyReviewLoad:{t5:dailyReviewLoad(he,5),t6:dailyReviewLoad(he,6),t7:dailyReviewLoad(he,7)},topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),stageSelectionLift:stageSelectionLiftReport(he),featureLift:featureLiftReport(he),frozenStageAwareValidation:frozenStageAwareValidation(he),dailyReviewLoad:{t5:dailyReviewLoad(he,5),t6:dailyReviewLoad(he,6),t7:dailyReviewLoad(he,7)},topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),range,holdoutEnd:holdoutEnd||null,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};fs.mkdirSync('data',{recursive:true});const compact={...result,events:undefined};fs.writeFileSync('data/backtest.json',JSON.stringify(compact,null,2)+'\n');console.log('\nBACKTEST',JSON.stringify(compact));
