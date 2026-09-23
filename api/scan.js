@@ -139,6 +139,45 @@ function downVolumeAverage(rows,start,end){
   return avg(a);
 }
 
+function atrPercent(rows,period=14){
+  if(!Array.isArray(rows)||rows.length<period+1) return null;
+  const tr=[];
+  for(let i=1;i<rows.length;i++){
+    const h=rows[i].high,l=rows[i].low,pc=rows[i-1].close;
+    if(![h,l,pc].every(Number.isFinite)) continue;
+    tr.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));
+  }
+  const a=avg(tr.slice(-period)),last=rows.at(-1)?.close;
+  return Number.isFinite(a)&&Number.isFinite(last)&&last>0?a/last*100:null;
+}
+function directionalVolume(rows,lookback=20){
+  const slice=rows.slice(-lookback);
+  let upVol=0,downVol=0,upDays=0,downDays=0;
+  for(let i=Math.max(1,rows.length-lookback);i<rows.length;i++){
+    const cur=rows[i],prev=rows[i-1];
+    if(!Number.isFinite(cur.volume)||!Number.isFinite(cur.close)||!Number.isFinite(prev.close)) continue;
+    if(cur.close>prev.close){upVol+=cur.volume;upDays++}
+    else if(cur.close<prev.close){downVol+=cur.volume;downDays++}
+  }
+  const upAvg=upDays?upVol/upDays:null,downAvg=downDays?downVol/downDays:null;
+  return {upDownVolumeRatio:Number.isFinite(upAvg)&&Number.isFinite(downAvg)&&downAvg>0?upAvg/downAvg:null};
+}
+function swingStructure(rows){
+  if(!Array.isArray(rows)||rows.length<20) return {swingTrend:'Unknown',higherLow:null,higherHigh:null};
+  const highs=[],lows=[];
+  for(let i=2;i<=rows.length-3;i++){
+    if(Number.isFinite(rows[i].high)&&rows[i].high>rows[i-1].high&&rows[i].high>=rows[i-2].high&&rows[i].high>rows[i+1].high&&rows[i].high>=rows[i+2].high) highs.push(rows[i].high);
+    if(Number.isFinite(rows[i].low)&&rows[i].low<rows[i-1].low&&rows[i].low<=rows[i-2].low&&rows[i].low<rows[i+1].low&&rows[i].low<=rows[i+2].low) lows.push(rows[i].low);
+  }
+  const higherHigh=highs.length>=2?highs.at(-1)>highs.at(-2):null;
+  const higherLow=lows.length>=2?lows.at(-1)>lows.at(-2):null;
+  const swingTrend=higherHigh===true&&higherLow===true?'Higher highs + higher lows'
+    :higherHigh===false&&higherLow===false?'Lower highs + lower lows'
+    :higherHigh===true||higherLow===true?'Structure improving'
+    :higherHigh===false||higherLow===false?'Structure weakening':'Insufficient pivots';
+  return {swingTrend,higherLow,higherHigh};
+}
+
 export function dailyStructure(rows){
   if(!Array.isArray(rows)||rows.length<12) return {localHigh:null,localLow:null,highState:'unavailable',lowState:'unavailable'};
   const pivotsHigh=[],pivotsLow=[];
@@ -176,6 +215,9 @@ export function metrics(data,benchmarkData,sectorData){
 
   const last=c.at(-1),ma20=sma(c,20),ma50=sma(c,50),rsi14=rsi(c,14);
   const structure=dailyStructure(r);
+  const swing=swingStructure(r);
+  const atr14Pct=atrPercent(r,14);
+  const volBehavior=directionalVolume(r,20);
   const pricePrev5=c.at(-6);
   const prev50=c.length>=55?avg(c.slice(-55,-5)):null;
   const above50Now=Number.isFinite(ma50)?last>ma50:null;
@@ -297,6 +339,8 @@ export function metrics(data,benchmarkData,sectorData){
     lastSession:dayKey(r.at(-1).t),dataAgeDays:round(ageDays(r.at(-1).t),1),
     avgDollarVol:dollar20,pullback:round(pullback),rs20:round(rs20),sectorRs:round(sectorRs),
     ma20:round(ma20),ma50:round(ma50),dist20:round(dist20),dist50:round(dist50),rsi14:round(rsi14,1),
+    atr14Pct:round(atr14Pct,2),upDownVolumeRatio:round(volBehavior.upDownVolumeRatio,2),
+    swingTrend:swing.swingTrend,higherHigh:swing.higherHigh,higherLow:swing.higherLow,
     weeklyUp,dailyUp,momentumImproving,sellingPressureFading,above50Now,above50Prev5,
     meaningfulWeakness,advancedNearHigh,priorRet20:round(priorRet20),priorPullback:round(priorPullback),
     prev5:round(prev5,1),momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
@@ -359,7 +403,7 @@ export function validateData(data,referenceDates){
   return null;
 }
 
-// Supplemental observation list, not a fourth discovery stage or a reversal signal.
+// Early Watch is stage 1 of the four-stage discovery continuum; it is pre-reversal, not a reversal signal.
 export function isEarlyWatch(m){
   if(m.stage!==null||m.meaningfulWeakness!==true||m.advancedNearHigh===true) return false;
   if(!Number.isFinite(m.ret20)||m.ret20>=-3) return false;
