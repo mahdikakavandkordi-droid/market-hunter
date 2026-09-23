@@ -385,8 +385,9 @@ function behaviorSummary(symbol){
   if(stages.length>1) changes.push(stages.join(' → '));
   if(Number.isFinite(first.momentumShift)&&Number.isFinite(last.momentumShift)) changes.push(`MOM ${first.momentumShift>0?'+':''}${first.momentumShift.toFixed(1)} → ${last.momentumShift>0?'+':''}${last.momentumShift.toFixed(1)}pp`);
   if(Number.isFinite(first.rs20)&&Number.isFinite(last.rs20)) changes.push(`RS ${pct(first.rs20)} → ${pct(last.rs20)}`);
-  if(first.lowState&&last.lowState&&first.lowState!==last.lowState) changes.push(`Low: ${first.lowState.replaceAll('_',' ')} → ${last.lowState.replaceAll('_',' ')}`);
-  if(first.highState&&last.highState&&first.highState!==last.highState) changes.push(`High: ${first.highState.replaceAll('_',' ')} → ${last.highState.replaceAll('_',' ')}`);
+  const structureLabel=v=>({local_high_broken:'High broken',failed_high_break:'High break rejected',local_high_intact:'High intact',local_high_held:'High held',failed_low_break:'Low reclaimed',local_low_broken:'Low broken',local_low_held:'Low held'}[v]||'Structure unavailable');
+  if(first.lowState&&last.lowState&&first.lowState!==last.lowState) changes.push(`Low: ${structureLabel(first.lowState)} → ${structureLabel(last.lowState)}`);
+  if(first.highState&&last.highState&&first.highState!==last.highState) changes.push(`High: ${structureLabel(first.highState)} → ${structureLabel(last.highState)}`);
   return {count:recent.length,text:changes.length?changes.join(' · '):`${recent.length} saved session${recent.length===1?'':'s'} · no material recorded change yet`,rows:recent};
 }
 
@@ -678,8 +679,30 @@ function pathEvidenceBlock(x){
   return `<div class="path-evidence"><div class="path-title">Path evidence <span>evidence, not probability</span></div>${row('Continuation',e.continuation)}${row('Positive turn',e.turn)}${row('Weakness',e.weakness)}</div>`;
 }
 
+function detectSetups(x){
+  const setups=[];
+  const add=(id,label,confidence,evidence)=>setups.push({id,label,confidence,evidence:evidence.filter(Boolean)});
+  if(x.nearRecentLow===true&&(x.sellingPressureFading===true||x.downsideSlowing===true)&&x.ret20<0)
+    add('selling_exhaustion','Selling Exhaustion','developing',[x.sellingPressureFading&&'Sell volume fading',x.downsideSlowing&&'Downside slowing',x.nearRecentLow&&'Near recent low']);
+  if(x.stage==='Recovery')
+    add('recovery','Recovery','active',[x.momentumImproving&&'Momentum improving',x.lowState==='failed_low_break'&&'Low reclaimed',x.price>x.ma20&&'Above MA20']);
+  if(x.higherLow===true&&Number.isFinite(x.momentumShift)&&x.momentumShift>0)
+    add('higher_low_turn','Higher-Low Turn','active',['Higher low',x.momentumShift>=2&&'Momentum improving',x.rs20>0&&'Positive RS']);
+  if(x.highState==='local_high_broken')
+    add('breakout','Local Breakout',x.unusual5dDirection==='positive'?'confirmed':'active',['High broken by close',x.unusual5dDirection==='positive'&&'Positive unusual volume',x.rs20>0&&'Positive RS']);
+  if(x.weeklyUp===true&&x.dailyUp===true&&Number.isFinite(x.pullback)&&x.pullback<=-2&&x.pullback>=-12)
+    add('trend_pullback','Pullback in Uptrend','active',['Weekly + daily trend aligned',`Pullback ${pct(x.pullback)}`,x.upDownVolumeRatio>=1&&'Up-day volume holding']);
+  if(x.lowState==='failed_low_break')
+    add('failed_breakdown','Failed Breakdown / Reclaim','active',['Local low reclaimed',x.momentumShift>0&&'Momentum improving']);
+  return setups.sort((a,b)=>({confirmed:3,active:2,developing:1}[b.confidence]-({confirmed:3,active:2,developing:1}[a.confidence])));
+}
+function setupSummary(x){
+  const setups=detectSetups(x);
+  return setups.length?setups.map(s=>`${s.label} · ${s.confidence}`).join(' | '):'No defined setup detected';
+}
+
 function hunterBrief(x){
-  const e=pathEvidence(x),history=behaviorSummary(x.symbol);
+  const e=pathEvidence(x),history=behaviorSummary(x.symbol),setups=detectSetups(x);
   const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
   let stateLine='';
   if(x.stage==='Early Watch') stateLine='Weak setup showing early behavioral change; reversal is not confirmed.';
@@ -705,19 +728,20 @@ function hunterBrief(x){
     positive:positives.length?positives.slice(0,4).join(' · '):'No strong positive evidence.',
     risk:risks.length?risks.slice(0,4).join(' · '):'No strong weakness evidence.',
     history:hist,
+    setup:setups.length?setups.map(s=>`${s.label} · ${s.confidence}`).join(' | '):'No defined setup detected',
     check:chartCheck
   };
 }
 function hunterBriefBlock(x){
   const b=hunterBrief(x);
-  return `<div class="hunter-brief"><div class="brief-title">${b.title}<span>scanner synthesis</span></div><p>${b.state}</p><div class="brief-row"><small>Supporting evidence</small><b>${b.positive}</b></div><div class="brief-row"><small>Risk / contradiction</small><b>${b.risk}</b></div><div class="brief-row"><small>Behavior</small><b>${b.history}</b></div><div class="brief-check"><small>Your chart check</small><b>${b.check}</b></div></div>`;
+  return `<div class="hunter-brief"><div class="brief-title">${b.title}<span>scanner synthesis</span></div><p>${b.state}</p><div class="brief-row"><small>Detected setup</small><b>${b.setup}</b></div><div class="brief-row"><small>Supporting evidence</small><b>${b.positive}</b></div><div class="brief-row"><small>Risk / contradiction</small><b>${b.risk}</b></div><div class="brief-row"><small>Behavior</small><b>${b.history}</b></div><div class="brief-check"><small>Your chart check</small><b>${b.check}</b></div></div>`;
 }
 
 function hunterPriority(x,reasons=[]){
   // Daily 10 review priority, not a buy/sell score. It combines independent evidence
   // and freshness while keeping stage diversity. Scanner eligibility remains unchanged.
   let p=0;
-  const e=pathEvidence(x);
+  const e=pathEvidence(x),setups=detectSetups(x);
   const stageBase={EarlyWatch:42,Recovery:58,AttractiveGrowth:54,EstablishedMove:46};
   const key=(x.stage||'').replaceAll(' ','');
   p+=stageBase[key]??40;
@@ -730,6 +754,7 @@ function hunterPriority(x,reasons=[]){
   // Independent confirmation. Cap contributions so one hot metric cannot dominate.
   p+=Math.min(12,e.continuation.length*3);
   p+=Math.min(14,e.turn.length*3.5);
+  p+=Math.min(10,setups.filter(v=>v.confidence==='confirmed').length*6+setups.filter(v=>v.confidence==='active').length*3);
   p-=Math.min(18,e.weakness.length*4.5);
   if(Number.isFinite(x.momentumShift)) p+=clamp(x.momentumShift,-5,7);
   if(Number.isFinite(x.rs20)) p+=clamp(x.rs20/2,-6,6);
@@ -753,7 +778,8 @@ function selectHunterShortlist(pool){
 function daily10SelectionReasons(x){
   const out=[];
   if(x._reasons?.length) out.push(...x._reasons);
-  const e=pathEvidence(x);
+  const e=pathEvidence(x),setups=detectSetups(x);
+  if(setups.length) out.push(`Setup: ${setups[0].label}`);
   if(e.turn.length) out.push(e.turn[0]);
   if(e.continuation.length) out.push(e.continuation[0]);
   if(x.stage) out.push(`${x.stage} setup`);
