@@ -441,6 +441,16 @@ export function isEarlyWatch(m){
   return absorption||controlledTurn;
 }
 
+// Frozen Candidate V2 gate. This is intentionally narrow: only Recovery
+// passed the current cross-horizon holdout robustness bar. It uses objective
+// chart evidence only; clicks/watchlists/user feedback never enter the gate.
+export function recoveryCandidateV2(m){
+  if(m?.stage!=='Recovery'||!Number.isFinite(m.rs20)||m.rs20<0) return false;
+  const higherLowTurn=m.higherLow===true;
+  const failedBreakdownReclaim=m.lowState==='failed_low_break';
+  return higherLowTurn||failedBreakdownReclaim;
+}
+
 export function crossStageScore(x){
   // Objective cross-stage chart-review quality. Never uses clicks, watchlist or user feedback.
   let score=0,parts=0;
@@ -559,7 +569,7 @@ export default async function handler(req,res){
       if(Number.isFinite(m.dataAgeDays)&&m.dataAgeDays>5){unavailable.push(symbol);failureDetails.push({symbol,reason:'stale_data'});return}
       if(!Number.isFinite(m.price)||!Number.isFinite(m.avgDollarVol)){unavailable.push(symbol);failureDetails.push({symbol,reason:'missing_price_or_volume'});return}
       const benchmarkLabel=sector==='CDR'?(CDR_BENCHMARK[symbol]==='^IXIC'?'Nasdaq':'S&P 500'):'TSX';
-      const item={symbol,company,sector,benchmarkLabel,...m};
+      const item={symbol,company,sector,benchmarkLabel,...m,candidateV2:m.stage==='Recovery'?recoveryCandidateV2(m):false};
       // Keep valid metrics available to a personal watchlist even when the name
       // is outside the current liquidity/stage shortlist. This does not affect ranking.
       availableItems.push(item);
@@ -668,8 +678,8 @@ export default async function handler(req,res){
     const partial=unavailable.length>0;
     if(partial) res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
     res.status(200).json({
-      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.3',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,marketRegimes,
-      items:candidates,watchItems,top5,availableItems,unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
+      asOf:new Date().toISOString(),marketAsOf,version:'hunter-1.4-candidate-v2-shadow',universeSource:UNIVERSE_SOURCE,partial,breadthMinDollar:2000000,minDollar,indexes:idx,breadth,sectors,marketContext,marketRegimes,
+      items:candidates,watchItems,top5,availableItems,candidateV2Items:candidates.filter(x=>x.candidateV2===true),unavailable,failureDetails,universeSize:UNIQUE_UNIVERSE.length,diagnostics
     });
   }catch(e){
     res.status(500).json({error:'scan_failed',message:e?.message||'Unknown error'});
