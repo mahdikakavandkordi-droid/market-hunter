@@ -446,7 +446,9 @@ export function isEarlyWatch(m){
 // chart evidence only; clicks/watchlists/user feedback never enter the gate.
 export function recoveryCandidateV2(m){
   if(m?.stage!=='Recovery'||!Number.isFinite(m.rs20)||m.rs20<0) return false;
-  const higherLowTurn=m.higherLow===true;
+  // Match the frozen historical predicate exactly:
+  // setups() labels Higher-Low Turn only when higherLow && momentumShift > 0.
+  const higherLowTurn=m.higherLow===true&&Number.isFinite(m.momentumShift)&&m.momentumShift>0;
   const failedBreakdownReclaim=m.lowState==='failed_low_break';
   return higherLowTurn||failedBreakdownReclaim;
 }
