@@ -411,6 +411,8 @@ function renderMarket(){
   <div class="sector-detail">
     <div><small>60D</small><b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
     <div><small>Pullback</small><b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
+    <div><small>Next resistance</small><b>${Number.isFinite(x.resistance)?fmt(x.resistance)+(Number.isFinite(x.roomToResistance)?' · +'+x.roomToResistance.toFixed(1)+'%':''):'—'}</b></div>
+    <div><small>Nearest support</small><b>${Number.isFinite(x.support)?fmt(x.support):'—'}</b></div>
     <div><small>Avg $ Vol</small><b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
     <div><small>vs MA20</small><b class="${cls(x.dist20)}">${pct(x.dist20)}</b></div>
     <div><small>vs MA50</small><b class="${cls(x.dist50)}">${pct(x.dist50)}</b></div>
@@ -689,7 +691,7 @@ function detectSetups(x){
   if(x.higherLow===true&&Number.isFinite(x.momentumShift)&&x.momentumShift>0)
     add('higher_low_turn','Higher-Low Turn','active',['Higher low',x.momentumShift>=2&&'Momentum improving',x.rs20>0&&'Positive RS']);
   if(x.highState==='local_high_broken')
-    add('breakout','Local Breakout',x.unusual5dDirection==='positive'?'confirmed':'active',['High broken by close',x.unusual5dDirection==='positive'&&'Positive unusual volume',x.rs20>0&&'Positive RS']);
+    add('breakout','Local Breakout',x.unusual5dDirection==='positive'?'confirmed':'active',['High broken by close',x.unusual5dDirection==='positive'&&'Positive unusual volume',x.rs20>0&&'Positive RS',Number.isFinite(x.roomToResistance)&&`Next resistance +${x.roomToResistance.toFixed(1)}%`]);
   if(x.weeklyUp===true&&x.dailyUp===true&&Number.isFinite(x.pullback)&&x.pullback<=-2&&x.pullback>=-12)
     add('trend_pullback','Pullback in Uptrend','active',['Weekly + daily trend aligned',`Pullback ${pct(x.pullback)}`,x.upDownVolumeRatio>=1&&'Up-day volume holding']);
   if(x.lowState==='failed_low_break')
@@ -702,7 +704,7 @@ function setupSummary(x){
 }
 
 function hunterBrief(x){
-  const e=pathEvidence(x),history=behaviorSummary(x.symbol),setups=detectSetups(x);
+  const e=pathEvidence(x),history=behaviorSummary(x.symbol),setups=detectSetups(x),triggers=triggerLabels(x);
   const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
   let stateLine='';
   if(x.stage==='Early Watch') stateLine='Weak setup showing early behavioral change; reversal is not confirmed.';
@@ -720,6 +722,8 @@ function hunterBrief(x){
   else if(x.stage==='Established Move') chartCheck='Check for extension near resistance, loss of the latest higher low, or weakening volume before treating the trend as intact.';
   if(x.highState==='local_high_broken') chartCheck+=' Local high is already broken by close; verify the breakout is holding.';
   if(x.lowState==='local_low_broken') chartCheck+=' Local low is broken by close; treat that as a structural warning.';
+  if(Number.isFinite(x.roomToResistance)) chartCheck+=` Next detected resistance is about ${x.roomToResistance.toFixed(1)}% above.`;
+  if(Number.isFinite(x.support)) chartCheck+=` Nearest detected support: ${fmt(x.support)}.`;
 
   const hist=history.count?history.text:'History is still being collected.';
   return {
@@ -729,25 +733,45 @@ function hunterBrief(x){
     risk:risks.length?risks.slice(0,4).join(' · '):'No strong weakness evidence.',
     history:hist,
     setup:setups.length?setups.map(s=>`${s.label} · ${s.confidence}`).join(' | '):'No defined setup detected',
+    trigger:triggers.length?triggers.map(t=>t.label).join(' · '):'No new material trigger',
     check:chartCheck
   };
 }
 function hunterBriefBlock(x){
   const b=hunterBrief(x);
-  return `<div class="hunter-brief"><div class="brief-title">${b.title}<span>scanner synthesis</span></div><p>${b.state}</p><div class="brief-row"><small>Detected setup</small><b>${b.setup}</b></div><div class="brief-row"><small>Supporting evidence</small><b>${b.positive}</b></div><div class="brief-row"><small>Risk / contradiction</small><b>${b.risk}</b></div><div class="brief-row"><small>Behavior</small><b>${b.history}</b></div><div class="brief-check"><small>Your chart check</small><b>${b.check}</b></div></div>`;
+  return `<div class="hunter-brief"><div class="brief-title">${b.title}<span>scanner synthesis</span></div><p>${b.state}</p><div class="brief-row"><small>Detected setup</small><b>${b.setup}</b></div><div class="brief-row"><small>New trigger</small><b>${b.trigger}</b></div><div class="brief-row"><small>Supporting evidence</small><b>${b.positive}</b></div><div class="brief-row"><small>Risk / contradiction</small><b>${b.risk}</b></div><div class="brief-row"><small>Behavior</small><b>${b.history}</b></div><div class="brief-check"><small>Your chart check</small><b>${b.check}</b></div></div>`;
+}
+
+function hunterTriggers(x,prev){
+  const out=[];
+  if(!prev) return out;
+  if(prev.stage!==x.stage) out.push({type:'stage',label:`${prev.stage||'Unstaged'} → ${x.stage||'Unstaged'}`});
+  if(prev.lowState!==x.lowState&&x.lowState==='failed_low_break') out.push({type:'upgrade',label:'Low reclaimed'});
+  if(prev.highState!==x.highState&&x.highState==='local_high_broken') out.push({type:'upgrade',label:'Resistance/local high broken'});
+  if(Number.isFinite(prev.momentumShift)&&Number.isFinite(x.momentumShift)&&prev.momentumShift<2&&x.momentumShift>=2) out.push({type:'upgrade',label:'Momentum turned positive'});
+  if(Number.isFinite(prev.rs20)&&Number.isFinite(x.rs20)&&prev.rs20<=0&&x.rs20>0) out.push({type:'upgrade',label:'Relative strength turned positive'});
+  if(prev.unusual5dDirection!=='positive'&&x.unusual5dDirection==='positive') out.push({type:'upgrade',label:'Positive unusual volume appeared'});
+  if(prev.lowState!==x.lowState&&x.lowState==='local_low_broken') out.push({type:'warning',label:'Local low broken'});
+  return out;
+}
+function triggerLabels(x){
+  const prev=previousCandidateMap().get(x.symbol);
+  return hunterTriggers(x,prev);
 }
 
 function hunterPriority(x,reasons=[]){
   // Daily 10 review priority, not a buy/sell score. It combines independent evidence
   // and freshness while keeping stage diversity. Scanner eligibility remains unchanged.
   let p=0;
-  const e=pathEvidence(x),setups=detectSetups(x);
+  const e=pathEvidence(x),setups=detectSetups(x),triggers=triggerLabels(x);
   const stageBase={EarlyWatch:42,Recovery:58,AttractiveGrowth:54,EstablishedMove:46};
   const key=(x.stage||'').replaceAll(' ','');
   p+=stageBase[key]??40;
 
   // Fresh behavior deserves attention because the purpose of Daily 10 is "what changed?"
   p+=Math.min(24,reasons.length*8);
+  p+=Math.min(18,triggers.filter(t=>t.type==='upgrade').length*6);
+  p-=Math.min(12,triggers.filter(t=>t.type==='warning').length*8);
   if(reasons.some(r=>r.startsWith('STAGE'))) p+=8;
   if(reasons.some(r=>r.includes('Local high broken')||r.includes('Local low reclaimed'))) p+=6;
 
@@ -763,6 +787,7 @@ function hunterPriority(x,reasons=[]){
   else if(x.swingTrend==='Structure improving') p+=4;
   else if(x.swingTrend==='Lower highs + lower lows') p-=6;
   if(Number.isFinite(x.atr14Pct)&&x.atr14Pct>8) p-=3; // very high noise gets a small review penalty
+  if(Number.isFinite(x.roomToResistance)){ if(x.roomToResistance<3) p-=7; else if(x.roomToResistance>=7) p+=4; }
   return Math.round(p*10)/10;
 }
 function selectHunterShortlist(pool){
@@ -908,6 +933,8 @@ function card(x,kind,fa,inWatch=false){
         ${pathEvidenceBlock(x)}
         <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
         <div class="pill">Pullback<b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
+        <div class="pill">Next resistance<b>${Number.isFinite(x.resistance)?fmt(x.resistance)+(Number.isFinite(x.roomToResistance)?' · +'+x.roomToResistance.toFixed(1)+'%':''):'—'}</b></div>
+        <div class="pill">Nearest support<b>${Number.isFinite(x.support)?fmt(x.support):'—'}</b></div>
         <div class="pill">Avg $ Vol<b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
         <div class="pill">vs 20D MA<b class="${cls(x.dist20)}">${pct(x.dist20)}</b></div>
         <div class="pill">vs 50D MA<b class="${cls(x.dist50)}">${pct(x.dist50)}</b></div>
