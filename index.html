@@ -324,7 +324,7 @@ function renderCompareModal(){
   const metrics=[
     ['Stage',x=>x.stage,''],['5D',x=>pct(x.ret5),x=>cls(x.ret5)],['20D',x=>pct(x.ret20),x=>cls(x.ret20)],
     ['60D',x=>pct(x.ret60),x=>cls(x.ret60)],['Momentum',x=>Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—',x=>cls(x.momentumShift)],
-    ['RSI 14',x=>Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—',''],['RVOL',x=>Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—',''],
+    ['RSI 14',x=>Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—',''],['VOL 5D',x=>Number.isFinite(x.max5Rvol)?fmt(x.max5Rvol)+'×':'—',''],['RVOL Today',x=>Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—',''],
     ['Relative 20D',x=>pct(x.rs20),x=>cls(x.rs20)],['Sector',x=>(x.sectorStrength||'—')+(Number.isFinite(x.sectorBreadth)?' · '+x.sectorBreadth+'%':''),''],
     ['Pullback',x=>pct(x.pullback),x=>cls(x.pullback)],['vs MA20',x=>pct(x.dist20),x=>cls(x.dist20)],['vs MA50',x=>pct(x.dist50),x=>cls(x.dist50)],
     ['Local high',x=>(Number.isFinite(x.localHigh)?fmt(x.localHigh)+' · ':'')+(x.highState||'—'),''],['Local low',x=>(Number.isFinite(x.localLow)?fmt(x.localLow)+' · ':'')+(x.lowState||'—'),'']
@@ -635,9 +635,9 @@ function card(x,kind,fa,inWatch=false){
       <div class="row">
         <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
         <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
-        <div class="mini"><div class="k">RVOL</div><div class="v">${fmt(x.rvol)}×</div></div>
-        <div class="mini"><div class="k">RSI 14</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
-        <div class="mini"><div class="k">Momentum</div><div class="v ${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</div></div>
+        <div class="mini"><div class="k">MOM</div><div class="v ${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</div></div>
+        <div class="mini"><div class="k">RSI</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
+        <div class="mini"><div class="k">VOL 5D</div><div class="v">${Number.isFinite(x.max5Rvol)?fmt(x.max5Rvol)+'×':'—'}</div></div>
       </div>
       <div class="why"><strong>${x.watchStatus?'Current status':'Surfaced because'}</strong>${x.watchStatus?x.watchStatus:((x.why||[]).join(' · ')||'Saved chart')}</div>
       <div class="score"><small>tap details</small></div>
