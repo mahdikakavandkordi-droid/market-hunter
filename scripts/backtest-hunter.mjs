@@ -288,6 +288,15 @@ function researchV21Report(a){
     'Early Watch':{
       exhaustionOrReclaim:e=>(e.setups||[]).includes('Selling Exhaustion')||(e.setups||[]).includes('Failed Breakdown / Reclaim'),
       reclaimOnly:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim'),
+      // Reclaim ablations: isolate which confirmations add robustness without
+      // changing the frozen live/forward candidate.
+      reclaimMomentum:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0,
+      reclaimVolume:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
+      reclaimRs:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.rs20)&&e.rs20>=0,
+      reclaimMomentumVolume:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
+      reclaimMomentumRs:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0&&Number.isFinite(e.rs20)&&e.rs20>=0,
+      reclaimVolumeRs:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&Number.isFinite(e.rs20)&&e.rs20>=0,
+      reclaimFull:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&Number.isFinite(e.rs20)&&e.rs20>=0,
       exhaustionPlusRs:e=>(e.setups||[]).includes('Selling Exhaustion')&&Number.isFinite(e.rs20)&&e.rs20>=0
     },
     'Attractive Growth':{
