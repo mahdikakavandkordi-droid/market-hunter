@@ -226,7 +226,12 @@ function candidateEngineV2DiagnosticReport(a){
     const positiveSlices=adequate.filter(x=>x.meanExcessReturn>0&&x.positiveRate>=50).length;
     return [stage,{timeSlices:slices,regimes:regimeRows,adequateTimeSlices:adequate.length,positiveTimeSlices:positiveSlices,stability:adequate.length>=2&&positiveSlices/adequate.length>=.67?'promising':'unstable'}];
   }));
-  return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness,timeSlices,stageRobustness};
+  const readiness=Object.fromEntries(Object.keys(rules).map(stage=>{
+    const r=stageRobustness[stage], h=period(picked.filter(e=>e.stage===stage&&cut&&e.date>=cut)).overall;
+    const robustHorizonsHint=stage==='Recovery'||stage==='Established Move';
+    return [stage,{status:robustHorizonsHint&&r.stability==='promising'&&h.n>=15?'candidate-ready':'research-only',holdout:h}];
+  }));
+  return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness,timeSlices,stageRobustness,readiness};
 }
 function dailyReviewLoad(a,threshold=5){
   const rows=a.filter(e=>stageAwareEvidence(e)>=threshold),days=[...new Set(a.map(e=>e.date))].sort();
