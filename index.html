@@ -740,20 +740,15 @@ function hunterPriority(x,reasons=[]){
   if(Number.isFinite(x.atr14Pct)&&x.atr14Pct>8) p-=3; // very high noise gets a small review penalty
   return Math.round(p*10)/10;
 }
-function selectDaily10(pool){
+function selectHunterShortlist(pool){
   const ranked=pool.map(x=>({...x,hunterPriority:hunterPriority(x,x._reasons||[])}))
     .sort((a,b)=>(b.hunterPriority??-Infinity)-(a.hunterPriority??-Infinity)||(b.score??-Infinity)-(a.score??-Infinity)||a.symbol.localeCompare(b.symbol));
-  const selected=[];
-  // First pass: preserve stage diversity so Daily 10 is not ten versions of the same setup.
-  for(const stage of ['Early Watch','Recovery','Attractive Growth','Established Move']){
-    const pick=ranked.find(x=>x.stage===stage&&!selected.some(y=>y.symbol===x.symbol));
-    if(pick) selected.push(pick);
-  }
-  for(const x of ranked){
-    if(selected.length>=10) break;
-    if(!selected.some(y=>y.symbol===x.symbol)) selected.push(x);
-  }
-  return selected.sort((a,b)=>(b.hunterPriority??-Infinity)-(a.hunterPriority??-Infinity));
+  // No quota and no forced stage representation. A quiet day can legitimately return zero.
+  // Review = enough independent evidence to justify opening the chart.
+  // Watch = interesting but not yet strong enough for the primary shortlist.
+  const review=ranked.filter(x=>x.hunterPriority>=70);
+  const watch=ranked.filter(x=>x.hunterPriority>=58&&x.hunterPriority<70);
+  return {review,watch};
 }
 function daily10SelectionReasons(x){
   const out=[];
@@ -790,14 +785,18 @@ function renderTop5(){
   const backendRank=new Map((d.top5||[]).map(x=>[x.symbol,x.crossStageScore]));
   pool.forEach(x=>{if(backendRank.has(x.symbol))x.crossStageScore=backendRank.get(x.symbol)});
   const enriched=pool.map(x=>({...x,_reasons:changeReasons(x,prevMap.get(x.symbol))}));
-  const xs=selectDaily10(enriched);
+  const shortlist=selectHunterShortlist(enriched);
+  const xs=shortlist.review;
+  const watch=shortlist.watch;
   document.querySelector('#top5Content').innerHTML=`
     <section class="stage">
       <div class="stage-head"><div class="stage-main"><div class="stage-copy">
-        <h2>Daily 10</h2>
-        <p>Ten charts the Hunter Engine prioritizes for review today using fresh behavior, structure, momentum, relative strength and volume. This is not a BUY signal.</p>
+        <h2>Hunter Shortlist</h2>
+        <p>Only charts that clear today's evidence threshold. The list can be empty; there is no quota and this is not a BUY signal.</p>
       </div></div><span class="shown">${xs.length}</span></div>
-      <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">No candidates available.</div>'}</div>
+      <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">No chart clears the review threshold today. Doing nothing is a valid output.</div>'}</div>
+      <div class="stage-head watch-head"><div class="stage-main"><div class="stage-copy"><h2>Watch More</h2><p>Interesting behavior, but not enough evidence yet for the primary shortlist.</p></div></div><span class="shown">${watch.length}</span></div>
+      <div class="grid">${watch.length?watch.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">Nothing additional needs watching today.</div>'}</div>
     </section>`;
   bindCardActions('#top5Content');
 }
@@ -878,7 +877,7 @@ function card(x,kind,fa,inWatch=false){
       <div class="score"><small>tap details</small></div>
       ${inWatch?'<div class="remove-hint">Swipe left to remove</div>':''}
       <div class="detail"><div class="detail-grid">
-        ${x.selectionExplanation?explainBlock('Why Daily 10',x.selectionExplanation):''}
+        ${x.selectionExplanation?explainBlock('Why Shortlist',x.selectionExplanation):''}
         ${hunterBriefBlock(x)}
         ${pathEvidenceBlock(x)}
         <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
