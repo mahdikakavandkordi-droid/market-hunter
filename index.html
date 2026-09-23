@@ -238,6 +238,11 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 .path-evidence{grid-column:1/-1;padding:9px 10px;border:1px solid rgba(241,199,91,.14);border-radius:10px;background:rgba(241,199,91,.025)}
 .path-title{font-size:9px;font-weight:800;margin-bottom:6px}.path-title span{font-weight:500;color:var(--muted);margin-left:5px}.path-row{display:grid;grid-template-columns:86px 1fr;gap:7px;padding:4px 0;border-top:1px solid rgba(255,255,255,.04)}.path-row:first-of-type{border-top:0}.path-row small{font-size:8px;color:var(--muted)}.path-row b{font-size:9px;line-height:1.4;font-weight:600}
+
+.hunter-brief{grid-column:1/-1;padding:11px;border:1px solid rgba(103,168,255,.2);border-radius:11px;background:rgba(103,168,255,.045)}
+.brief-title{font-size:11px;font-weight:800;margin-bottom:5px}.brief-title span{font-size:8px;font-weight:500;color:var(--muted);margin-left:6px}.hunter-brief>p{font-size:10px;line-height:1.5;margin:0 0 7px;color:var(--text)}
+.brief-row{display:grid;grid-template-columns:105px 1fr;gap:7px;padding:4px 0;border-top:1px solid rgba(255,255,255,.045)}.brief-row small,.brief-check small{font-size:8px;color:var(--muted)}.brief-row b,.brief-check b{font-size:9px;line-height:1.45;font-weight:600}
+.brief-check{margin-top:7px;padding:8px;border-radius:8px;background:rgba(255,255,255,.035)}.brief-check small{display:block;margin-bottom:3px}.brief-check b{display:block}
 </style>
 </head>
 <body>
@@ -418,6 +423,7 @@ function renderMarket(){
     <div><small>RVOL Today</small><b>${Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—'}</b></div>
     <div><small>Daily local high</small><b>${x.highState==='local_high_broken'?'Broken by close':x.highState==='failed_high_break'?'Rejected break':x.highState==='local_high_intact'?'Intact':x.highState==='local_high_held'?'Held':'—'}${Number.isFinite(x.localHigh)?' · '+fmt(x.localHigh):''}</b></div>
     <div><small>Daily local low</small><b>${x.lowState==='local_low_held'?'Held':x.lowState==='failed_low_break'?'Reclaimed':x.lowState==='local_low_broken'?'Broken by close':'—'}${Number.isFinite(x.localLow)?' · '+fmt(x.localLow):''}</b></div>
+    ${hunterBriefBlock(x)}
     ${pathEvidenceBlock(x)}
     <div class="behavior-track"><small>Behavior history</small><b>${behaviorSummary(x.symbol).text}</b><span>${behaviorSummary(x.symbol).count?behaviorSummary(x.symbol).count+' compatible saved sessions':'Collecting from daily snapshots'}</span></div>
     <button type="button" class="sector-chart" data-tv="${x.symbol}">Chart ↗</button>
@@ -672,6 +678,41 @@ function pathEvidenceBlock(x){
   return `<div class="path-evidence"><div class="path-title">Path evidence <span>evidence, not probability</span></div>${row('Continuation',e.continuation)}${row('Positive turn',e.turn)}${row('Weakness',e.weakness)}</div>`;
 }
 
+function hunterBrief(x){
+  const e=pathEvidence(x),history=behaviorSummary(x.symbol);
+  const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
+  let stateLine='';
+  if(x.stage==='Early Watch') stateLine='Weak setup showing early behavioral change; reversal is not confirmed.';
+  else if(x.stage==='Recovery') stateLine='A prior weak phase is recovering, but confirmation still matters.';
+  else if(x.stage==='Attractive Growth') stateLine='Trend is constructive and the move is still in a reviewable phase.';
+  else if(x.stage==='Established Move') stateLine='Trend is established; focus on whether structure still supports continuation.';
+  else stateLine='Scanner context is mixed; use the evidence below rather than a directional assumption.';
+
+  const positives=[...e.continuation,...e.turn];
+  const risks=[...e.weakness];
+  let chartCheck='Check Daily structure first, then Weekly context.';
+  if(x.stage==='Early Watch') chartCheck='Check whether the recent low is holding and whether selling is visibly losing control; do not assume a reversal.';
+  else if(x.stage==='Recovery') chartCheck='Check whether price can hold the reclaimed area/MA20 and form a higher low before chasing the rebound.';
+  else if(x.stage==='Attractive Growth') chartCheck='Check the latest higher low, distance to resistance, and whether volume confirms the next push.';
+  else if(x.stage==='Established Move') chartCheck='Check for extension near resistance, loss of the latest higher low, or weakening volume before treating the trend as intact.';
+  if(x.highState==='local_high_broken') chartCheck+=' Local high is already broken by close; verify the breakout is holding.';
+  if(x.lowState==='local_low_broken') chartCheck+=' Local low is broken by close; treat that as a structural warning.';
+
+  const hist=history.count?history.text:'History is still being collected.';
+  return {
+    title:`${ticker} · Hunter brief`,
+    state:stateLine,
+    positive:positives.length?positives.slice(0,4).join(' · '):'No strong positive evidence.',
+    risk:risks.length?risks.slice(0,4).join(' · '):'No strong weakness evidence.',
+    history:hist,
+    check:chartCheck
+  };
+}
+function hunterBriefBlock(x){
+  const b=hunterBrief(x);
+  return `<div class="hunter-brief"><div class="brief-title">${b.title}<span>scanner synthesis</span></div><p>${b.state}</p><div class="brief-row"><small>Supporting evidence</small><b>${b.positive}</b></div><div class="brief-row"><small>Risk / contradiction</small><b>${b.risk}</b></div><div class="brief-row"><small>Behavior</small><b>${b.history}</b></div><div class="brief-check"><small>Your chart check</small><b>${b.check}</b></div></div>`;
+}
+
 function daily10Reasons(x,reasons=[]){
   const out=[...reasons];
   if(!out.length){
@@ -723,7 +764,7 @@ function renderChanges(){
   document.querySelector('#changesContent').innerHTML=`
     <section class="stage">
       <div class="stage-head"><div class="stage-main"><div class="stage-copy"><h2>Changes</h2><p>Only unusual behavior changes since the previous saved session: stage shifts, momentum turns, structure breaks/reclaims, or newly unusual volume.</p></div></div><span class="shown">${rows.length}</span></div>
-      <div class="change-list">${rows.length?rows.map(x=>`<div class="change-item change-expand ${x._dropped?'dropped':''}"><div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage||'Exited'}</span></div><p>${x._reasons.join(' · ')}</p><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button><div class="change-detail">${explainBlock('Why Changes',x._reasons)}${explainBlock('Current context',daily10Reasons(x,[]))}${pathEvidenceBlock(x)}</div></div>`).join(''):'<div class="empty">No material changes detected versus the previous saved session.</div>'}</div>
+      <div class="change-list">${rows.length?rows.map(x=>`<div class="change-item change-expand ${x._dropped?'dropped':''}"><div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage||'Exited'}</span></div><p>${x._reasons.join(' · ')}</p><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button><div class="change-detail">${explainBlock('Why Changes',x._reasons)}${explainBlock('Current context',daily10Reasons(x,[]))}${hunterBriefBlock(x)}${pathEvidenceBlock(x)}</div></div>`).join(''):'<div class="empty">No material changes detected versus the previous saved session.</div>'}</div>
     </section>`;
   document.querySelectorAll('#changesContent .tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
   document.querySelectorAll('#changesContent .change-expand').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('expanded')));
@@ -789,6 +830,7 @@ function card(x,kind,fa,inWatch=false){
       ${inWatch?'<div class="remove-hint">Swipe left to remove</div>':''}
       <div class="detail"><div class="detail-grid">
         ${x.selectionExplanation?explainBlock('Why Daily 10',x.selectionExplanation):''}
+        ${hunterBriefBlock(x)}
         ${pathEvidenceBlock(x)}
         <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
         <div class="pill">Pullback<b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
