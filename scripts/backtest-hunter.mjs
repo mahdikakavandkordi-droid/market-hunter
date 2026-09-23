@@ -281,7 +281,10 @@ function researchV21Report(a){
     out.stages[stage]={};
     for(const [name,test] of Object.entries(variants)){
       const picked=a.filter(e=>e.stage===stage&&test(e));
-      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(picked.filter(e=>cut&&e.date>=cut))};
+      const thirds=[0,.333,.667,1].map(p=>dates[Math.min(dates.length-1,Math.floor((dates.length-1)*p))]);
+      const timeSlices=[0,1,2].map(i=>summary(picked.filter(e=>e.date>=thirds[i]&&(i===2?e.date<=thirds[i+1]:e.date<thirds[i+1]))));
+      const regimes=Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(picked.filter(e=>(e.regime||'Unknown')===r))]));
+      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(picked.filter(e=>cut&&e.date>=cut)),timeSlices,regimes};
     }
   }
   return out;
