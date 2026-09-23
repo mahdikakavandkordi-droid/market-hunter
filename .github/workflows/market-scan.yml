@@ -40,6 +40,7 @@ jobs:
         run: echo "Skipping history write until production serves hunter-1.4-candidate-v2-shadow."
 
       - name: Save history if changed
+        if: steps.shadow.outcome == 'success'
         run: |
           if git diff --quiet -- data/history.json; then
             echo "No history change to commit."
