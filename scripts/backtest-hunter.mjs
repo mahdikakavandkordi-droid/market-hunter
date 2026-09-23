@@ -75,7 +75,8 @@ function stageAwareShortlistReport(a){
   }
   return out;
 }
-// Backend-only workload diagnostics. Threshold variants are diagnostic only; none changes Live.\nfunction dailyReviewLoad(a,threshold=5){
+// Backend-only workload diagnostics. Threshold variants are diagnostic only; none changes Live.
+function dailyReviewLoad(a,threshold=5){
   const rows=a.filter(e=>stageAwareEvidence(e)>=threshold),days=[...new Set(a.map(e=>e.date))].sort();
   const counts=days.map(date=>rows.filter(e=>e.date===date).length).sort((x,y)=>x-y);
   const q=p=>counts.length?counts[Math.min(counts.length-1,Math.floor((counts.length-1)*p))]:0;
