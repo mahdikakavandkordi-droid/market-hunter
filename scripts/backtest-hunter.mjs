@@ -211,7 +211,13 @@ function candidateEngineV2DiagnosticReport(a){
   for(const stage of Object.keys(rules)){const base=a.filter(e=>e.stage===stage),yes=base.filter(rules[stage]);byStage[stage]={baseline:summary(base),candidate:summary(yes),tradeability:stageTradeabilityReport(yes)}}
   const dates=[...new Set(a.map(e=>e.date))].sort(),cut=dates[Math.floor(dates.length*.7)]||null;
   const period=rows=>({overall:summary(rows),byStage:Object.fromEntries(Object.keys(rules).map(stage=>[stage,summary(rows.filter(e=>e.stage===stage))]))});
-  return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))}};
+  const regime=e=>e.marketRegime||e.regime||e.benchmarkRegime||'Unknown';
+  const regimes=[...new Set(a.map(regime))].sort();
+  const regimeRobustness=Object.fromEntries(regimes.map(r=>[r,period(picked.filter(e=>regime(e)===r))]));
+  const symbolRows={};
+  for(const e of picked)(symbolRows[e.symbol]??=[]).push(e);
+  const symbolRobustness=Object.entries(symbolRows).map(([symbol,rows])=>({symbol,...summary(rows)})).sort((x,y)=>y.n-x.n);
+  return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness};
 }
 function dailyReviewLoad(a,threshold=5){
   const rows=a.filter(e=>stageAwareEvidence(e)>=threshold),days=[...new Set(a.map(e=>e.date))].sort();
