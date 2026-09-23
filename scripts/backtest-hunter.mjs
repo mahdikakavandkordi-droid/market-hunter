@@ -124,7 +124,7 @@ function tradeabilityReport(a){
     mae:[-3,-5,-7,-10].map(t=>({threshold:t,pct:summarize(x)['maeBelow'+Math.abs(t)]??round(100*x.filter(e=>e.mae<=t).length/Math.max(1,x.length))})),
     mfe:[3,5,7,10,15].map(t=>({threshold:t,pct:round(100*x.filter(e=>e.mfe>=t).length/Math.max(1,x.length))}))
   });
-  return {overall:summarize(q),byPath:Object.fromEntries(paths.map(p=>[p,summarize(q.filter(e=>has(e,p))])),exclusive:Object.fromEntries(Object.entries(exclusive).map(([k,x])=>[k,{...summarize(x),distribution:distribution(x)}]))};
+  return {overall:summarize(q),byPath:Object.fromEntries(paths.map(p=>[p,summarize(q.filter(e=>has(e,p)))])),exclusive:Object.fromEntries(Object.entries(exclusive).map(([k,x])=>[k,{...summarize(x),distribution:distribution(x)}]))};
 }
 function replayReport(a){
   const dates=[...new Set(a.map(e=>e.date))].sort();
