@@ -293,6 +293,10 @@ function researchV21Report(a){
       reclaimMomentum:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0,
       // Volume threshold sweep for Early Watch reclaim: find the quality/sample-size balance.
       reclaimVolume070:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70,
+      // Separate the incremental 0.70-0.85 band from confirmed >=0.85 volume.
+      // This avoids comparing nested cohorts and shows whether the extra confirmation
+      // itself adds value.
+      reclaimVolume070to085:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85,
       reclaimVolume:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
       reclaimVolume100:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.00,
       reclaimVolume120:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.20,
