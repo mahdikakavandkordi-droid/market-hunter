@@ -189,6 +189,8 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 .sector-sortbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:8px 4px 6px;color:var(--muted);font-size:10px}
 .sector-sort{max-width:190px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.035);color:var(--text);padding:7px 28px 7px 9px;font-size:11px}
+
+@media(max-width:650px){.sector-quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:7px 10px;align-items:center}.sector-quick .heart{grid-column:4;grid-row:1/3;align-self:center}}
 </style>
 </head>
 <body>
@@ -292,7 +294,7 @@ function renderMarket(){
     ...(d.items||[]),
     ...(d.watchItems||[]).map(x=>({...x,stage:'Early Watch'}))
   ];
-  const sectorCandidateRow=x=>`<div class="sector-candidate"><button type="button" class="sector-symbol" data-tv="${x.symbol}"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span></button><div class="sector-quick"><span class="${cls(x.ret5)}">5D ${pct(x.ret5)}</span><span>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</span><span>RVOL ${fmt(x.rvol)}×</span><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div></div>`;
+  const sectorCandidateRow=x=>`<div class="sector-candidate"><button type="button" class="sector-symbol" data-tv="${x.symbol}"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span></button><div class="sector-quick"><span class="${cls(x.ret5)}">5D ${pct(x.ret5)}</span><span class="${cls(x.ret20)}">20D ${pct(x.ret20)}</span><span class="${cls(x.momentumShift)}">MOM ${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</span><span>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</span><span>RVOL ${fmt(x.rvol)}×</span><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div></div>`;
   const sectors=(d.sectors||[]).map(sec=>{
     const names=currentSectorCandidates.filter(x=>x.sector===sec.sector);
     const key=encodeURIComponent(sec.sector);
