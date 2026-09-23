@@ -18,6 +18,10 @@ async function getScan(){
 }
 
 const scan=await getScan();
+const expectedShadowVersion='hunter-1.4-candidate-v2-shadow';
+if(scan.version!==expectedShadowVersion){
+  throw new Error(`Shadow capture refused: expected ${expectedShadowVersion}, got ${scan.version||'unknown'}. Production is not serving the frozen Candidate V2 shadow build yet.`);
+}
 const historyPath='data/history.json';
 let history={snapshots:[]};
 try{history=JSON.parse(await fs.readFile(historyPath,'utf8'))}catch{}
