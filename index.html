@@ -220,6 +220,9 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .sector-candidate.expanded .sector-detail{display:grid}
 .sector-detail>div{min-width:0}.sector-detail small{display:block;font-size:8px;color:var(--muted);margin-bottom:2px}.sector-detail b{font-size:10px;font-weight:600;overflow-wrap:anywhere}
 @media(max-width:650px){.sector-candidate-main{display:block}.sector-detail{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px 7px}}
+
+.expand-cue{font-size:13px!important;color:var(--muted)!important;transition:transform .15s}.sector-candidate.expanded .expand-cue{transform:rotate(180deg)}
+.sector-chart{border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--text);border-radius:8px;padding:6px 9px;font-size:10px;justify-self:start}
 </style>
 </head>
 <body>
@@ -362,7 +365,7 @@ function renderMarket(){
   ];
   const sectorCandidateRow=x=>`<div class="sector-candidate" data-sector-card="${x.symbol}">
   <div class="sector-candidate-main">
-    <button type="button" class="sector-symbol" data-tv="${x.symbol}"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span><strong class="session-move ${cls(x.latestDayReturn)}">${Number.isFinite(x.latestDayReturn)?(x.latestDayReturn>0?'+':'')+x.latestDayReturn.toFixed(1)+'%':'—'}</strong></button>
+    <div class="sector-symbol"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span><strong class="session-move ${cls(x.latestDayReturn)}">${Number.isFinite(x.latestDayReturn)?(x.latestDayReturn>0?'+':'')+x.latestDayReturn.toFixed(1)+'%':'—'}</strong><span class="expand-cue">⌄</span></div>
     <div class="sector-quick"><span class="mini-metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></span><span class="mini-metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></span><span class="mini-metric"><small>MOM</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</b></span><span class="mini-metric"><small>RSI</small><b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></span><span class="mini-metric"><small>VOL 5D</small><b>${Number.isFinite(x.max5Rvol)?fmt(x.max5Rvol)+'×':'—'}</b></span><button class="compare-pick ${state.compare.has(x.symbol)?'selected':''}" data-compare="${x.symbol}" title="Compare">${state.compare.has(x.symbol)?'✓':'＋'}</button><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div>
   </div>
   <div class="sector-detail">
@@ -377,6 +380,7 @@ function renderMarket(){
     <div><small>Volume day</small><b>${x.unusual5dDirection||'—'}</b></div>
     <div><small>Local High</small><b>${Number.isFinite(x.localHigh)?fmt(x.localHigh):'—'} · ${x.highState||'—'}</b></div>
     <div><small>Local Low</small><b>${Number.isFinite(x.localLow)?fmt(x.localLow):'—'} · ${x.lowState||'—'}</b></div>
+    <button type="button" class="sector-chart" data-tv="${x.symbol}">Chart ↗</button>
   </div>
 </div>`;
   const sectors=(d.sectors||[]).map(sec=>{
@@ -510,15 +514,19 @@ function renderMarket(){
     rows.innerHTML=names.map(sectorCandidateRow).join('');
     document.querySelectorAll('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"] .compare-pick').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleCompare(el.dataset.compare)}));
     document.querySelectorAll('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"] .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
-    document.querySelectorAll('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"] .sector-symbol').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
+    
   }));
   document.querySelectorAll('#marketContent .sector-candidates .compare-pick').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleCompare(el.dataset.compare)}));
   document.querySelectorAll('#marketContent .sector-candidates .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
-  document.querySelectorAll('#marketContent .sector-symbol').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
-  document.querySelectorAll('#marketContent .sector-candidate').forEach(card=>card.addEventListener('click',e=>{
-    if(e.target.closest('.sector-symbol,.compare-pick,.heart'))return;
-    card.classList.toggle('expanded');
-  }));
+  document.querySelector('#marketContent').onclick=e=>{
+    const chart=e.target.closest('.sector-chart');
+    if(chart){e.stopPropagation();openTradingView(chart.dataset.tv);return}
+    if(e.target.closest('.compare-pick,.heart,.sector-sort,.sector-toggle'))return;
+    const card=e.target.closest('.sector-candidate');
+    if(card) card.classList.toggle('expanded');
+  };
+  
+
 }
 
 function renderWatchlist(){
