@@ -142,6 +142,28 @@ function tradeabilityReport(a){
   });
   return {overall:summarize(q),byPath:Object.fromEntries(paths.map(p=>[p,summarize(q.filter(e=>has(e,p)))])),exclusive:Object.fromEntries(Object.entries(exclusive).map(([k,x])=>[k,{...summarize(x),distribution:distribution(x)}]))};
 }
+function sequentialCapital100Report(a,horizon){
+  // Real cash ledger: one position at a time, C$100 initial capital, no leverage and no overlapping trades.
+  // Failed Breakdown enters on signal day. Higher-Low enters only on its first frozen Confirmation V1 day (1..3).
+  const all=a.filter(e=>v2Candidate(e)).sort((x,y)=>x.date.localeCompare(y.date)||x.symbol.localeCompare(y.symbol));
+  const dates=[...new Set(all.map(e=>e.date))].sort(),trades=[];let cash=100,freeSession=-1;
+  const candidates=[];
+  for(const e of all){
+    const hl=e.strategyPass?.includes('Higher-Low Turn'),fb=e.strategyPass?.includes('Failed Breakdown / Reclaim');
+    let delay=0,path='Failed Breakdown / Reclaim';
+    if(hl){const d=[1,2,3].find(k=>e.confirmation?.[k]);if(!d&&!fb)continue;if(d){delay=d;path='Confirmed Higher-Low';}}
+    const start=e.sessionIndex+delay,end=start+horizon,perf=delay?e.confirmation[delay]:e.delay?.[0];
+    if(!perf||!Number.isFinite(perf.ret))continue;
+    candidates.push({...e,entrySession:start,exitSession:end,entryDelay:delay,tradeReturn:perf.ret,tradePath:path});
+  }
+  candidates.sort((x,y)=>x.entrySession-y.entrySession||x.date.localeCompare(y.date)||x.symbol.localeCompare(y.symbol));
+  for(const e of candidates){
+    if(e.entrySession<=freeSession)continue;
+    const before=cash;cash*=1+e.tradeReturn/100;trades.push({symbol:e.symbol,signalDate:e.date,path:e.tradePath,regime:e.regime,entryDelay:e.entryDelay,return:round(e.tradeReturn),capitalBefore:round(before),capitalAfter:round(cash)});freeSession=e.exitSession;
+  }
+  let peak=100,maxDrawdown=0;for(const t of trades){peak=Math.max(peak,t.capitalAfter);maxDrawdown=Math.min(maxDrawdown,(t.capitalAfter/peak-1)*100)}
+  return {mode:'sequential-cash-ledger',startCapital:100,endCapital:round(cash),totalReturn:round((cash/100-1)*100),trades:trades.length,maxClosedTradeDrawdown:round(maxDrawdown),holdingSessions:horizon,entryRules:'Failed Breakdown on signal; Higher-Low only after frozen Confirmation V1; one position at a time; first eligible event; no leverage.',ledger:trades};
+}
 function capital100Report(a){
   // Opportunity-engine test only: no sell signal. Each qualified event gets an equal sleeve;
   // capital is marked at a fixed horizon so entry selection is isolated from exit design.
@@ -216,5 +238,5 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),range,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};fs.mkdirSync('data',{recursive:true});fs.writeFileSync('data/backtest.json',JSON.stringify(result,null,2)+'\n');console.log('\nBACKTEST',JSON.stringify({...result,events:undefined},null,2));
