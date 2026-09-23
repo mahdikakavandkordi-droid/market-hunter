@@ -238,12 +238,24 @@ function candidateEngineV2DiagnosticReport(a){
     const positiveSlices=adequate.filter(x=>x.meanExcessReturn>0&&x.positiveRate>=50).length;
     return [stage,{timeSlices:slices,regimes:regimeRows,adequateTimeSlices:adequate.length,positiveTimeSlices:positiveSlices,stability:adequate.length>=2&&positiveSlices/adequate.length>=.67?'promising':'unstable'}];
   }));
+  const symbolConcentration=(()=>{
+    const total=picked.length;
+    const ranked=symbolRobustness.slice().sort((a,b)=>b.n-a.n);
+    const share=k=>total?round(ranked.slice(0,k).reduce((s,x)=>s+x.n,0)/total*100,1):0;
+    const eligible=ranked.filter(x=>x.n>=5&&Number.isFinite(x.meanExcessReturn));
+    const positive=eligible.filter(x=>x.meanExcessReturn>0);
+    const excess=eligible.map(x=>x.meanExcessReturn).sort((a,b)=>a-b);
+    const median=excess.length?round(excess.length%2?excess[(excess.length-1)/2]:(excess[excess.length/2-1]+excess[excess.length/2])/2):null;
+    const topContributors=ranked.filter(x=>Number.isFinite(x.meanExcessReturn)).sort((a,b)=>(b.n*b.meanExcessReturn)-(a.n*a.meanExcessReturn)).slice(0,5).map(x=>x.symbol);
+    const leaveTopOut=period(picked.filter(e=>!topContributors.includes(e.symbol)));
+    return {uniqueSymbols:ranked.length,top1SampleSharePct:share(1),top5SampleSharePct:share(5),top10SampleSharePct:share(10),symbolsWithN5:eligible.length,positiveMeanExcessSharePct:eligible.length?round(positive.length/eligible.length*100,1):null,medianSymbolMeanExcessReturn:median,topContributors,leaveTop5ContributorsOut:leaveTopOut};
+  })();
   const readiness=Object.fromEntries(Object.keys(rules).map(stage=>{
     const r=stageRobustness[stage], h=period(picked.filter(e=>e.stage===stage&&cut&&e.date>=cut)).overall;
     const robustHorizonsHint=stage==='Recovery';
     return [stage,{status:robustHorizonsHint&&r.stability==='promising'&&h.n>=15?'candidate-ready':'research-only',holdout:h}];
   }));
-  return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness,timeSlices,stageRobustness,readiness};
+  return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness,symbolConcentration,timeSlices,stageRobustness,readiness};
 }
 function dailyReviewLoad(a,threshold=5){
   const rows=a.filter(e=>stageAwareEvidence(e)>=threshold),days=[...new Set(a.map(e=>e.date))].sort();
