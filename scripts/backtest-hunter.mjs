@@ -212,7 +212,7 @@ function failedBreakdownQualityDiagnostics(rows){
   const groups={winners:rows.filter(e=>Number.isFinite(e.return)&&e.return>0),losers:rows.filter(e=>Number.isFinite(e.return)&&e.return<=0),bigWinners:rows.filter(e=>Number.isFinite(e.return)&&e.return>=7),bigLosers:rows.filter(e=>Number.isFinite(e.return)&&e.return<=-7)};
   const fields=['rs20','momentumShift','atr14Pct','upDownVolumeRatio','roomToResistance','ret5','ret20','pullback'];
   const avg=(a,k)=>{const v=a.map(x=>x[k]).filter(Number.isFinite);return v.length?Math.round(v.reduce((p,c)=>p+c,0)/v.length*100)/100:null};
-  const profile=a=>({n:a.length,meanReturn:summary(a).mean,positiveRate:summary(a).positiveRate,averages:Object.fromEntries(fields.map(k=>[k,avg(a,k)])),regimes:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,a.filter(e=>e.regime===r).length])),structures:Object.fromEntries([...new Set(a.map(e=>e.swingTrend||'Unknown'))].sort().map(k=>[k,a.filter(e=>(e.swingTrend||'Unknown')===k).length]))});
+  const profile=a=>{const sm=summary(a)||{};return {n:a.length,meanReturn:sm.mean??null,positiveRate:sm.positiveRate??null,averages:Object.fromEntries(fields.map(k=>[k,avg(a,k)])),regimes:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,a.filter(e=>e.regime===r).length])),structures:Object.fromEntries([...new Set(a.map(e=>e.swingTrend||'Unknown'))].sort().map(k=>[k,a.filter(e=>(e.swingTrend||'Unknown')===k).length]))};};
   return Object.fromEntries(Object.entries(groups).map(([k,v])=>[k,profile(v)]));
 }
 function failedBreakdownOnlyReport(a,horizon){
