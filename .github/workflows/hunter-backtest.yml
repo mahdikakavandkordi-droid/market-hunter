@@ -1,6 +1,10 @@
 name: Hunter Historical Backtest
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/backtest-hunter.mjs'
+      - '.github/workflows/hunter-backtest.yml'
   push:
     paths:
       - 'scripts/backtest-hunter.mjs'
@@ -23,6 +27,9 @@ on:
         default: '5,10,20'
 permissions:
   contents: write
+
+# PR runs validate research output without pushing generated files back.
+
 jobs:
   backtest:
     runs-on: ubuntu-latest
@@ -37,6 +44,7 @@ jobs:
           BACKTEST_HOLDOUT_END: ${{ inputs.holdout_end == 'NONE' && '' || inputs.holdout_end }}
         run: node scripts/backtest-hunter.mjs
       - name: Commit report
+        if: github.event_name != 'pull_request'
         run: |
           git config user.name "market-hunter-bot"
           git config user.email "market-hunter-bot@users.noreply.github.com"
