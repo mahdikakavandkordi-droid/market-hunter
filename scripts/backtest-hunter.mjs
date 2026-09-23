@@ -168,7 +168,7 @@ function sequentialCapital100Report(a,horizon){
   for(const e of all){
     const hl=e.strategyPass?.includes('Higher-Low Turn'),fb=e.strategyPass?.includes('Failed Breakdown / Reclaim');
     let delay=0,path='Failed Breakdown / Reclaim';
-    if(hl){const d=[1,2,3].find(k=>e.confirmation?.[k]);if(!d&&!fb)continue;if(d){delay=d;path='Confirmed Higher-Low';}}
+    if(hl&&!fb){const d=[1,2,3].find(k=>e.confirmation?.[k]);if(!d)continue;delay=d;path='Confirmed Higher-Low';}
     const start=e.sessionIndex+delay,end=start+horizon,perf=delay?e.confirmation[delay]:e.delay?.[0];
     if(!perf||!Number.isFinite(perf.ret))continue;
     candidates.push({...e,entrySession:start,exitSession:end,entryDelay:delay,tradeReturn:perf.ret,tradePath:path});
