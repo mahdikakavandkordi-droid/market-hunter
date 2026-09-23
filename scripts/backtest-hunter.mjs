@@ -142,6 +142,22 @@ function tradeabilityReport(a){
   });
   return {overall:summarize(q),byPath:Object.fromEntries(paths.map(p=>[p,summarize(q.filter(e=>has(e,p)))])),exclusive:Object.fromEntries(Object.entries(exclusive).map(([k,x])=>[k,{...summarize(x),distribution:distribution(x)}]))};
 }
+function capital100Report(a){
+  // Opportunity-engine test only: no sell signal. Each qualified event gets an equal sleeve;
+  // capital is marked at a fixed horizon so entry selection is isolated from exit design.
+  const q=a.filter(e=>v2Candidate(e)).sort((x,y)=>x.date.localeCompare(y.date)||x.symbol.localeCompare(y.symbol));
+  const byRegime={};
+  for(const regime of ['Strong','Positive','Mixed','Weak','Unknown']){
+    const rows=q.filter(e=>e.regime===regime),n=rows.length;
+    if(!n){byRegime[regime]={n:0,startCapital:100,endCapital:100,totalReturn:0};continue}
+    // Equal-weight independent opportunity sleeves. This intentionally avoids inventing portfolio sizing/exits.
+    const gross=rows.map(e=>1+e.forwardReturn/100).filter(Number.isFinite);
+    const avgGross=gross.reduce((z,v)=>z+v,0)/gross.length;
+    byRegime[regime]={n,startCapital:100,endCapital:round(100*avgGross),totalReturn:round((avgGross-1)*100),note:'Equal-weight opportunity cohort; fixed-horizon mark, not sequential trading.'};
+  }
+  const gross=q.map(e=>1+e.forwardReturn/100).filter(Number.isFinite),avgGross=gross.length?gross.reduce((z,v)=>z+v,0)/gross.length:1;
+  return {mode:'opportunity-engine-only',startCapital:100,endCapital:round(100*avgGross),totalReturn:round((avgGross-1)*100),positions:q.length,holdingRule:'Fixed horizon only; no Hunter sell rule',byRegime};
+}
 function replayReport(a){
   const dates=[...new Set(a.map(e=>e.date))].sort();
   if(!dates.length)return {dates:[]};
@@ -200,5 +216,5 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),range,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};fs.mkdirSync('data',{recursive:true});fs.writeFileSync('data/backtest.json',JSON.stringify(result,null,2)+'\n');console.log('\nBACKTEST',JSON.stringify({...result,events:undefined},null,2));
