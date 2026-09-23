@@ -1,6 +1,13 @@
 name: Market Hunter Scan
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/scan.js'
+      - 'scripts/capture-scan.mjs'
+      - 'scripts/test-scan.mjs'
+      - '.github/workflows/market-scan.yml'
   schedule:
     - cron: "0 */4 * * 1-5"
   workflow_dispatch:
