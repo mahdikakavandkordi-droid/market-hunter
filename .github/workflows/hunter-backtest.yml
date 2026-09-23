@@ -5,15 +5,15 @@ on:
       symbols:
         description: 'Comma-separated Yahoo symbols'
         required: false
-        default: 'RY.TO,SHOP.TO,LUN.TO,CNQ.TO,CNR.TO,T.TO,AAPL.TO'
+        default: 'RY.TO,TD.TO,BMO.TO,BNS.TO,CM.TO,NA.TO,SHOP.TO,CSU.TO,OTEX.TO,LUN.TO,ABX.TO,AEM.TO,CNQ.TO,SU.TO,CVE.TO,IMO.TO,CNR.TO,CP.TO,WCN.TO,FTS.TO,EMA.TO,T.TO,BCE.TO,TRP.TO,ENB.TO,ATD.TO,DOL.TO,L.TO,MRU.TO,QSR.TO,CCO.TO,NTR.TO,POW.TO,MFC.TO,SLF.TO,GWO.TO,BN.TO,BAM.TO,WSP.TO,STN.TO,TFII.TO,MG.TO,GIB-A.TO,AAPL.TO,MSFT.TO,NVDA.TO,AMZN.TO,GOOG.TO,META.TO,TSLA.TO'
       range:
         description: 'Yahoo history range'
         required: false
         default: '2y'
-      horizon:
+      horizons:
         description: 'Forward trading sessions'
         required: false
-        default: '10'
+        default: '5,10,20'
 permissions:
   contents: write
 jobs:
@@ -26,7 +26,7 @@ jobs:
         env:
           BACKTEST_SYMBOLS: ${{ inputs.symbols }}
           BACKTEST_RANGE: ${{ inputs.range }}
-          BACKTEST_HORIZON: ${{ inputs.horizon }}
+          BACKTEST_HORIZONS: ${{ inputs.horizons }}
         run: node scripts/backtest-hunter.mjs
       - name: Commit report
         run: |
