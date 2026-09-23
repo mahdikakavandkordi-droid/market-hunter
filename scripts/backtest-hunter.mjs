@@ -291,7 +291,11 @@ function researchV21Report(a){
       // Reclaim ablations: isolate which confirmations add robustness without
       // changing the frozen live/forward candidate.
       reclaimMomentum:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0,
+      // Volume threshold sweep for Early Watch reclaim: find the quality/sample-size balance.
+      reclaimVolume070:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70,
       reclaimVolume:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
+      reclaimVolume100:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.00,
+      reclaimVolume120:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.20,
       // Early Watch should be allowed to recover before relative strength turns
       // fully positive. Test softer RS floors alone and with volume support.
       reclaimRsNeg8:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.rs20)&&e.rs20>=-8,
