@@ -30,8 +30,14 @@ jobs:
       - name: Run scanner tests
         run: node scripts/test-scan.mjs
 
-      - name: Capture market scan
+      - name: Verify deployed shadow version
+        id: shadow
+        continue-on-error: true
         run: node scripts/capture-scan.mjs
+
+      - name: Shadow build not deployed yet
+        if: steps.shadow.outcome == 'failure'
+        run: echo "Skipping history write until production serves hunter-1.4-candidate-v2-shadow."
 
       - name: Save history if changed
         run: |
