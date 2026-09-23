@@ -713,6 +713,59 @@ function hunterBriefBlock(x){
   return `<div class="hunter-brief"><div class="brief-title">${b.title}<span>scanner synthesis</span></div><p>${b.state}</p><div class="brief-row"><small>Supporting evidence</small><b>${b.positive}</b></div><div class="brief-row"><small>Risk / contradiction</small><b>${b.risk}</b></div><div class="brief-row"><small>Behavior</small><b>${b.history}</b></div><div class="brief-check"><small>Your chart check</small><b>${b.check}</b></div></div>`;
 }
 
+function hunterPriority(x,reasons=[]){
+  // Daily 10 review priority, not a buy/sell score. It combines independent evidence
+  // and freshness while keeping stage diversity. Scanner eligibility remains unchanged.
+  let p=0;
+  const e=pathEvidence(x);
+  const stageBase={EarlyWatch:42,Recovery:58,AttractiveGrowth:54,EstablishedMove:46};
+  const key=(x.stage||'').replaceAll(' ','');
+  p+=stageBase[key]??40;
+
+  // Fresh behavior deserves attention because the purpose of Daily 10 is "what changed?"
+  p+=Math.min(24,reasons.length*8);
+  if(reasons.some(r=>r.startsWith('STAGE'))) p+=8;
+  if(reasons.some(r=>r.includes('Local high broken')||r.includes('Local low reclaimed'))) p+=6;
+
+  // Independent confirmation. Cap contributions so one hot metric cannot dominate.
+  p+=Math.min(12,e.continuation.length*3);
+  p+=Math.min(14,e.turn.length*3.5);
+  p-=Math.min(18,e.weakness.length*4.5);
+  if(Number.isFinite(x.momentumShift)) p+=clamp(x.momentumShift,-5,7);
+  if(Number.isFinite(x.rs20)) p+=clamp(x.rs20/2,-6,6);
+  if(Number.isFinite(x.upDownVolumeRatio)) p+=clamp((x.upDownVolumeRatio-1)*10,-4,4);
+  if(x.swingTrend==='Higher highs + higher lows') p+=5;
+  else if(x.swingTrend==='Structure improving') p+=4;
+  else if(x.swingTrend==='Lower highs + lower lows') p-=6;
+  if(Number.isFinite(x.atr14Pct)&&x.atr14Pct>8) p-=3; // very high noise gets a small review penalty
+  return Math.round(p*10)/10;
+}
+function selectDaily10(pool){
+  const ranked=pool.map(x=>({...x,hunterPriority:hunterPriority(x,x._reasons||[])}))
+    .sort((a,b)=>(b.hunterPriority??-Infinity)-(a.hunterPriority??-Infinity)||(b.score??-Infinity)-(a.score??-Infinity)||a.symbol.localeCompare(b.symbol));
+  const selected=[];
+  // First pass: preserve stage diversity so Daily 10 is not ten versions of the same setup.
+  for(const stage of ['Early Watch','Recovery','Attractive Growth','Established Move']){
+    const pick=ranked.find(x=>x.stage===stage&&!selected.some(y=>y.symbol===x.symbol));
+    if(pick) selected.push(pick);
+  }
+  for(const x of ranked){
+    if(selected.length>=10) break;
+    if(!selected.some(y=>y.symbol===x.symbol)) selected.push(x);
+  }
+  return selected.sort((a,b)=>(b.hunterPriority??-Infinity)-(a.hunterPriority??-Infinity));
+}
+function daily10SelectionReasons(x){
+  const out=[];
+  if(x._reasons?.length) out.push(...x._reasons);
+  const e=pathEvidence(x);
+  if(e.turn.length) out.push(e.turn[0]);
+  if(e.continuation.length) out.push(e.continuation[0]);
+  if(x.stage) out.push(`${x.stage} setup`);
+  if(Number.isFinite(x.hunterPriority)) out.push(`Review priority ${x.hunterPriority.toFixed(1)}`);
+  return [...new Set(out)].slice(0,4);
+}
+
 function daily10Reasons(x,reasons=[]){
   const out=[...reasons];
   if(!out.length){
@@ -736,19 +789,15 @@ function renderTop5(){
   const pool=allHunterCandidates().map(x=>({...x,crossStageScore:Number.isFinite(x.crossStageScore)?x.crossStageScore:null}));
   const backendRank=new Map((d.top5||[]).map(x=>[x.symbol,x.crossStageScore]));
   pool.forEach(x=>{if(backendRank.has(x.symbol))x.crossStageScore=backendRank.get(x.symbol)});
-  const xs=pool.map(x=>({...x,_reasons:changeReasons(x,prevMap.get(x.symbol))}))
-    .sort((a,b)=>{
-      const ac=a._reasons.length?1:0,bc=b._reasons.length?1:0;
-      if(ac!==bc)return bc-ac;
-      return (b.score??-Infinity)-(a.score??-Infinity)||a.symbol.localeCompare(b.symbol);
-    }).slice(0,10);
+  const enriched=pool.map(x=>({...x,_reasons:changeReasons(x,prevMap.get(x.symbol))}));
+  const xs=selectDaily10(enriched);
   document.querySelector('#top5Content').innerHTML=`
     <section class="stage">
       <div class="stage-head"><div class="stage-main"><div class="stage-copy">
         <h2>Daily 10</h2>
-        <p>Ten charts to review first today. Fresh technical changes are prioritized; this is not a BUY signal.</p>
+        <p>Ten charts the Hunter Engine prioritizes for review today using fresh behavior, structure, momentum, relative strength and volume. This is not a BUY signal.</p>
       </div></div><span class="shown">${xs.length}</span></div>
-      <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10Reasons(x,x._reasons)},stageKind(x),x.stage)).join(''):'<div class="empty">No candidates available.</div>'}</div>
+      <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">No candidates available.</div>'}</div>
     </section>`;
   bindCardActions('#top5Content');
 }
