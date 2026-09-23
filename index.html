@@ -223,6 +223,8 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 .expand-cue{font-size:13px!important;color:var(--muted)!important;transition:transform .15s}.sector-candidate.expanded .expand-cue{transform:rotate(180deg)}
 .sector-chart{border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--text);border-radius:8px;padding:6px 9px;font-size:10px;justify-self:start}
+
+.sector-symbol .session-price{font-size:10px;font-weight:650;color:var(--text);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -365,7 +367,7 @@ function renderMarket(){
   ];
   const sectorCandidateRow=x=>`<div class="sector-candidate" data-sector-card="${x.symbol}">
   <div class="sector-candidate-main">
-    <div class="sector-symbol"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span><strong class="session-move ${cls(x.latestDayReturn)}">${Number.isFinite(x.latestDayReturn)?(x.latestDayReturn>0?'+':'')+x.latestDayReturn.toFixed(1)+'%':'—'}</strong><span class="expand-cue">⌄</span></div>
+    <div class="sector-symbol"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span><strong class="session-price">${Number.isFinite(x.price)?fmt(x.price):'—'}</strong><strong class="session-move ${cls(x.latestDayReturn)}">${Number.isFinite(x.latestDayReturn)?(x.latestDayReturn>0?'+':'')+x.latestDayReturn.toFixed(1)+'%':'—'}</strong><span class="expand-cue">⌄</span></div>
     <div class="sector-quick"><span class="mini-metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></span><span class="mini-metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></span><span class="mini-metric"><small>MOM</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</b></span><span class="mini-metric"><small>RSI</small><b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></span><span class="mini-metric"><small>VOL 5D</small><b>${Number.isFinite(x.max5Rvol)?fmt(x.max5Rvol)+'×':'—'}</b></span><button class="compare-pick ${state.compare.has(x.symbol)?'selected':''}" data-compare="${x.symbol}" title="Compare">${state.compare.has(x.symbol)?'✓':'＋'}</button><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div>
   </div>
   <div class="sector-detail">
