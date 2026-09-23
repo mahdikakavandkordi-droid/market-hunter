@@ -211,7 +211,13 @@ function replayReport(a){
 function failedBreakdownOnlyReport(a,horizon){
   const rows=dedupe(a.filter(e=>e.strategyPass?.includes('Failed Breakdown / Reclaim')&&v2Candidate(e)),horizon);
   const seq=sequentialCapital100Report(rows,horizon);
-  return {setup:'Failed Breakdown / Reclaim',frozenRules:true,summary:summary(rows),tradeability:tradeabilityReport(rows),sequentialCapital100:seq,portfolioStress:portfolioStressReport(rows,horizon),benchmarkComparison:benchmarkComparisonReport(rows,horizon),byRegime:regimeReport(rows)};
+  const byYear={};
+  for(const year of [...new Set(rows.map(e=>String(e.date).slice(0,4)))].sort()){
+    const yr=rows.filter(e=>String(e.date).startsWith(year+'-'));
+    byYear[year]={summary:summary(yr),tradeability:tradeabilityReport(yr),sequentialCapital100:sequentialCapital100Report(yr,horizon)};
+  }
+  const exclusive=rows.filter(e=>!e.strategyPass?.includes('Higher-Low Turn'));
+  return {setup:'Failed Breakdown / Reclaim',frozenRules:true,summary:summary(rows),tradeability:tradeabilityReport(rows),sequentialCapital100:seq,portfolioStress:portfolioStressReport(rows,horizon),benchmarkComparison:benchmarkComparisonReport(rows,horizon),byRegime:regimeReport(rows),byYear,exclusiveFailedBreakdown:{summary:summary(exclusive),tradeability:tradeabilityReport(exclusive),sequentialCapital100:sequentialCapital100Report(exclusive,horizon)}};
 }
 function regimeReport(a){const out={};for(const regime of ['Strong','Positive','Mixed','Weak','Unknown']){const rows=a.filter(e=>e.regime===regime),picked=rows.filter(v2Candidate);out[regime]={all:summary(rows),v2:summary(picked),higherLow:summary(picked.filter(e=>e.strategyPass?.includes('Higher-Low Turn'))),failedBreakdown:summary(picked.filter(e=>e.strategyPass?.includes('Failed Breakdown / Reclaim')))}}return out}
 function v2WalkForward(a){
