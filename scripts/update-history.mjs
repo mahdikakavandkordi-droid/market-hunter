@@ -63,6 +63,7 @@ function triggerFields(x,stage){
   return triggers;
 }
 const HUNTER_V2_FORWARD=Object.freeze({version:'hunter-v2-frozen-2026-09-23',frozenAt:'2026-09-23'});
+const HIGHER_LOW_CONFIRMATION=Object.freeze({version:'higher-low-confirmation-v1-frozen-2026-09-23',frozenAt:'2026-09-23',windowSessions:3,momentumShiftMin:1,rs20Min:0,requiresHeldLocalLow:true,requiresImprovingStructure:true});
 function hunterV2Forward(x,stage){
   const setups=intelligenceFields(x,stage).setups;
   const higherLow=setups.includes('Higher-Low Turn')&&Number.isFinite(x.momentumShift)&&x.momentumShift>=3&&Number.isFinite(x.upDownVolumeRatio)&&x.upDownVolumeRatio>=.85&&Number.isFinite(x.atr14Pct)&&x.atr14Pct>=3&&x.atr14Pct<6&&Number.isFinite(x.rs20)&&x.rs20>=0;
@@ -78,7 +79,7 @@ function snapshotItem(x,stage=x.stage){
     unusual5dDirection:x.unusual5dDirection,unusual5dLabel:x.unusual5dLabel,
     highState:x.highState,lowState:x.lowState,localHigh:x.localHigh,localLow:x.localLow,
     sector:x.sector,sectorStrength:x.sectorStrength,sectorBreadth:x.sectorBreadth,
-    ...intelligenceFields(x,stage),...hunterV2Forward(x,stage),triggers:triggerFields(x,stage)
+    ...intelligenceFields(x,stage),...hunterV2Forward(x,stage),confirmationVersion:HIGHER_LOW_CONFIRMATION.version,triggers:triggerFields(x,stage)
   };
 }
 
@@ -92,11 +93,20 @@ if(!history.snapshots.some(s=>s.marketAsOf===scan.marketAsOf&&s.version===scan.v
     breadth:scan.breadth,
     marketContext:scan.marketContext,
     hunterV2Spec:HUNTER_V2_FORWARD,
+    higherLowConfirmationSpec:HIGHER_LOW_CONFIRMATION,
     top5:(scan.top5||[]).map(x=>({...x,outcomes:{}})),
     items:(scan.items||[]).map(x=>snapshotItem(x,x.stage)),
     earlyWatch:(scan.watchItems||[]).map(x=>snapshotItem(x,'Early Watch'))
   });
 }
+
+// Prospectively track frozen Higher-Low Confirmation V1 across daily snapshots.
+// A signal is immutable once detected; later snapshots may only resolve it as confirmed or expired.
+history.confirmationCohorts??=[];
+const today=[...(scan.items||[]),...(scan.watchItems||[])].map(x=>({x,stage:stageNow.get(x.symbol)||x.stage||'Early Watch'}));
+for(const {x,stage} of today){const v=hunterV2Forward(x,stage);if(v.hunterV2Paths.includes('Higher-Low Turn')&&!history.confirmationCohorts.some(c=>c.version===HIGHER_LOW_CONFIRMATION.version&&c.symbol===x.symbol&&c.signalDate===scan.marketAsOf)){history.confirmationCohorts.push({version:HIGHER_LOW_CONFIRMATION.version,symbol:x.symbol,signalDate:scan.marketAsOf,signalPrice:x.price,status:'watching',resolvedDate:null,confirmationDay:null,confirmationPrice:null});}}
+const compatibleDates=history.snapshots.filter(z=>z.version===scan.version&&z.minDollar===scan.minDollar).map(z=>z.marketAsOf);
+for(const c of history.confirmationCohorts.filter(c=>c.version===HIGHER_LOW_CONFIRMATION.version&&c.status==='watching')){const signalPos=compatibleDates.indexOf(c.signalDate),nowPos=compatibleDates.indexOf(scan.marketAsOf),d=signalPos>=0&&nowPos>=0?nowPos-signalPos:null;if(!Number.isFinite(d)||d<1)continue;const x=allNow.get(c.symbol),stage=x?(stageNow.get(x.symbol)||x.stage||'Early Watch'):null;if(x&&d<=HIGHER_LOW_CONFIRMATION.windowSessions){const held=x.lowState!=='local_low_broken',mom=Number.isFinite(x.momentumShift)&&x.momentumShift>=HIGHER_LOW_CONFIRMATION.momentumShiftMin,rs=Number.isFinite(x.rs20)&&x.rs20>=HIGHER_LOW_CONFIRMATION.rs20Min,structure=x.higherLow===true||x.swingTrend==='HH+HL'||x.swingTrend==='Improving';if(held&&mom&&rs&&structure){Object.assign(c,{status:'confirmed',resolvedDate:scan.marketAsOf,confirmationDay:d,confirmationPrice:x.price});continue;}}if(d>=HIGHER_LOW_CONFIRMATION.windowSessions)Object.assign(c,{status:'expired',resolvedDate:scan.marketAsOf});}
 
 history.snapshots.sort((a,b)=>a.marketAsOf.localeCompare(b.marketAsOf));
 const currentIndex=history.snapshots.findIndex(s=>s.marketAsOf===scan.marketAsOf&&s.version===scan.version&&s.minDollar===scan.minDollar);
@@ -174,7 +184,7 @@ function summarize(rows){
   };
 }
 const observations=observationRows();
-history.validation={generatedAt:new Date().toISOString(),note:'Diagnostic historical outcomes only; no automatic rule or weight changes.',hunterV2Forward:{version:HUNTER_V2_FORWARD.version,byHorizon:{}},bySetup:{},byStage:{},byTrigger:{}};
+history.validation={generatedAt:new Date().toISOString(),note:'Diagnostic historical outcomes only; no automatic rule or weight changes.',higherLowConfirmationForward:{version:HIGHER_LOW_CONFIRMATION.version,watching:history.confirmationCohorts.filter(c=>c.version===HIGHER_LOW_CONFIRMATION.version&&c.status==='watching').length,confirmed:history.confirmationCohorts.filter(c=>c.version===HIGHER_LOW_CONFIRMATION.version&&c.status==='confirmed').length,expired:history.confirmationCohorts.filter(c=>c.version===HIGHER_LOW_CONFIRMATION.version&&c.status==='expired').length},hunterV2Forward:{version:HUNTER_V2_FORWARD.version,byHorizon:{}},bySetup:{},byStage:{},byTrigger:{}};
 for(const h of horizons){history.validation.hunterV2Forward.byHorizon[String(h)]=summarize(observations.filter(v=>v.h===h&&v.x.hunterV2Version===HUNTER_V2_FORWARD.version&&v.x.hunterV2Qualified===true));}
 for(const h of horizons){
   for(const row of observations.filter(v=>v.h===h)){
