@@ -87,6 +87,41 @@ function walkForwardReport(a){
   return {folds};
 }
 
+
+function v2Candidate(e){
+  // Candidate rules are intentionally simple and setup-specific; research only until forward validation.
+  if(e.strategyPass?.includes('Higher-Low Turn')){
+    return Number.isFinite(e.momentumShift)&&e.momentumShift>=3&&
+      Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&
+      Number.isFinite(e.atr14Pct)&&e.atr14Pct>=3&&e.atr14Pct<6&&
+      Number.isFinite(e.rs20)&&e.rs20>=0;
+  }
+  if(e.strategyPass?.includes('Failed Breakdown / Reclaim')){
+    return Number.isFinite(e.atr14Pct)&&e.atr14Pct<3&&
+      Number.isFinite(e.rs20)&&e.rs20>=0&&e.rs20<4&&
+      Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&e.upDownVolumeRatio<1.2;
+  }
+  return false;
+}
+function v2Report(a){
+  const picked=a.filter(v2Candidate),bySetup={};
+  for(const name of ['Higher-Low Turn','Failed Breakdown / Reclaim'])
+    bySetup[name]=summary(picked.filter(e=>e.strategyPass?.includes(name)));
+  return {picked:summary(picked),coverage:a.length?round(picked.length/a.length*100,1):0,bySetup};
+}
+function v2WalkForward(a){
+  const dates=[...new Set(a.map(e=>e.date))].sort(),folds=[];
+  if(dates.length<5)return {folds};
+  for(let fold=1;fold<=3;fold++){
+    const trainEnd=Math.floor(dates.length*(.4+fold*.1));
+    const testEnd=fold<3?Math.floor(dates.length*(.5+fold*.1)):dates.length;
+    const cut=dates[trainEnd],end=dates[Math.max(trainEnd,testEnd-1)];
+    const train=a.filter(e=>e.date<cut),test=a.filter(e=>e.date>=cut&&e.date<=end);
+    folds.push({fold,trainThrough:dates[trainEnd-1]||null,testFrom:cut||null,testThrough:end||null,
+      train:v2Report(train),test:v2Report(test)});
+  }
+  return {folds};
+}
 function featureBuckets(a){
   const defs={
     rs20:[[-Infinity,0],[0,4],[4,Infinity]],
@@ -120,5 +155,5 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{overall:v2Report(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),range,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};fs.mkdirSync('data',{recursive:true});fs.writeFileSync('data/backtest.json',JSON.stringify(result,null,2)+'\n');console.log('\nBACKTEST',JSON.stringify({...result,events:undefined},null,2));
