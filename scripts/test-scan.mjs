@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import handler,{metrics,validateData,dailyStructure} from '../api/scan.js';
+import handler,{metrics,validateData,dailyStructure,recoveryCandidateV2} from '../api/scan.js';
 
 const dates=[];
 for(let t=Date.UTC(2025,0,1)/1000;dates.length<126;t+=86400){
@@ -67,6 +67,11 @@ const unchangedA=metrics(structureA,make(),null),unchangedB=metrics(structureB,m
 assert.equal(unchangedA.score,unchangedB.score,'daily structure must not change ranking score');
 assert.equal(unchangedA.stage,unchangedB.stage,'daily structure must not change stage classification');
 console.log('PASS: daily structure remains informational and does not alter score/stage');
+assert.equal(recoveryCandidateV2({stage:'Recovery',rs20:1,higherLow:true,lowState:'local_low_held'}),true);
+assert.equal(recoveryCandidateV2({stage:'Recovery',rs20:0,higherLow:false,lowState:'failed_low_break'}),true);
+assert.equal(recoveryCandidateV2({stage:'Recovery',rs20:-0.1,higherLow:true,lowState:'failed_low_break'}),false);
+assert.equal(recoveryCandidateV2({stage:'Established Move',rs20:4,higherLow:true,lowState:'failed_low_break'}),false);
+console.log('PASS: frozen Recovery Candidate V2 shadow gate');
 
 
 
