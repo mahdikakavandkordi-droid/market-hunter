@@ -173,7 +173,7 @@ function sequentialCapital100Report(a,horizon){
     if(!perf||!Number.isFinite(perf.ret))continue;
     candidates.push({...e,entrySession:start,exitSession:end,entryDelay:delay,tradeReturn:perf.ret,tradePath:path});
   }
-  candidates.sort((x,y)=>x.entrySession-y.entrySession||x.date.localeCompare(y.date)||x.symbol.localeCompare(y.symbol));
+  candidates.sort((x,y)=>x.date.localeCompare(y.date)||x.entrySession-y.entrySession||x.symbol.localeCompare(y.symbol));
   for(const e of candidates){
     if(e.entrySession<=freeSession)continue;
     const before=cash;cash*=1+e.tradeReturn/100;trades.push({symbol:e.symbol,signalDate:e.date,path:e.tradePath,regime:e.regime,entryDelay:e.entryDelay,return:round(e.tradeReturn),capitalBefore:round(before),capitalAfter:round(cash)});freeSession=e.exitSession;
