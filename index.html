@@ -264,7 +264,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 <div class="tabs">
   <button class="tab active" data-tab="market">Market</button>
-  <button class="tab" data-tab="top5">Daily 10 <span style="opacity:.55">★</span></button>
+  <button class="tab" data-tab="top5">Shortlist <span style="opacity:.55">★</span></button>
   <button class="tab" data-tab="changes">Changes</button>
   <button class="tab" data-tab="watchlist">Watchlist</button>
   <button class="tab" data-tab="positions">Positions</button>
@@ -802,45 +802,49 @@ function triggerLabels(x){
   return hunterTriggers(x,prev);
 }
 
-function hunterPriority(x,reasons=[]){
-  // Daily 10 review priority, not a buy/sell score. It combines independent evidence
-  // and freshness while keeping stage diversity. Scanner eligibility remains unchanged.
+const STAGE_AWARE_SHORTLIST_VERSION='stage-aware-shortlist-v1-frozen-2026-09-23';
+function stageAwareEvidence(x){
   let p=0;
-  const e=pathEvidence(x),setups=detectSetups(x),triggers=triggerLabels(x);
-  const stageBase={EarlyWatch:42,Recovery:58,AttractiveGrowth:54,EstablishedMove:46};
-  const key=(x.stage||'').replaceAll(' ','');
-  p+=stageBase[key]??40;
-
-  // Fresh behavior deserves attention because the purpose of Daily 10 is "what changed?"
-  p+=Math.min(24,reasons.length*8);
-  p+=Math.min(18,triggers.filter(t=>t.type==='upgrade').length*6);
-  p-=Math.min(12,triggers.filter(t=>t.type==='warning').length*8);
-  if(reasons.some(r=>r.startsWith('STAGE'))) p+=8;
-  if(reasons.some(r=>r.includes('Local high broken')||r.includes('Local low reclaimed'))) p+=6;
-
-  // Independent confirmation. Cap contributions so one hot metric cannot dominate.
-  p+=Math.min(12,e.continuation.length*3);
-  p+=Math.min(14,e.turn.length*3.5);
-  p+=Math.min(10,setups.filter(v=>v.confidence==='confirmed').length*6+setups.filter(v=>v.confidence==='active').length*3);
-  p-=Math.min(18,e.weakness.length*4.5);
-  if(Number.isFinite(x.momentumShift)) p+=clamp(x.momentumShift,-5,7);
-  if(Number.isFinite(x.rs20)) p+=clamp(x.rs20/2,-6,6);
-  if(Number.isFinite(x.upDownVolumeRatio)) p+=clamp((x.upDownVolumeRatio-1)*10,-4,4);
-  if(x.swingTrend==='Higher highs + higher lows') p+=5;
-  else if(x.swingTrend==='Structure improving') p+=4;
-  else if(x.swingTrend==='Lower highs + lower lows') p-=6;
-  if(Number.isFinite(x.atr14Pct)&&x.atr14Pct>8) p-=3; // very high noise gets a small review penalty
-  if(Number.isFinite(x.roomToResistance)){ if(x.roomToResistance<3) p-=7; else if(x.roomToResistance>=7) p+=4; }
-  return Math.round(p*10)/10;
+  const rs=x.rs20,m=x.momentumShift,v=x.upDownVolumeRatio,room=x.roomToResistance,st=x.swingTrend;
+  const set=detectSetups(x).map(z=>z.label);
+  if(x.stage==='Early Watch'){
+    if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=2;else if(m<=-3)p-=2}
+    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
+    if(set.includes('Selling Exhaustion'))p+=2;
+    if(set.includes('Failed Breakdown / Reclaim'))p+=2;
+    if(st==='Structure improving')p+=2;
+    if(st==='Lower highs + lower lows')p-=1;
+  }else if(x.stage==='Recovery'){
+    if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=1;else p-=2}
+    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
+    if(set.includes('Recovery'))p+=2;
+    if(set.includes('Higher-Low Turn')||set.includes('Failed Breakdown / Reclaim'))p+=2;
+    if(st==='Structure improving'||st==='Higher highs + higher lows')p+=2;
+    if(Number.isFinite(v)&&v>=.85)p+=1;
+  }else if(x.stage==='Attractive Growth'){
+    if(Number.isFinite(rs)){if(rs>=4)p+=3;else if(rs>=0)p+=2;else p-=2}
+    if(Number.isFinite(m)){if(m>=1)p+=2;else if(m<=-3)p-=2}
+    if(st==='Higher highs + higher lows')p+=3;else if(st==='Structure improving')p+=2;else if(st==='Lower highs + lower lows')p-=3;
+    if(Number.isFinite(v)){if(v>=1.2)p+=2;else if(v<.85)p-=1}
+    if(Number.isFinite(room)){if(room>=7)p+=2;else if(room<3)p-=2}
+  }else if(x.stage==='Established Move'){
+    if(Number.isFinite(rs)){if(rs>=4)p+=2;else if(rs>=0)p+=1;else p-=2}
+    if(st==='Higher highs + higher lows')p+=2;else if(st==='Lower highs + lower lows')p-=3;
+    if(Number.isFinite(m)){if(m>=1)p+=1;else if(m<=-3)p-=2}
+    if(Number.isFinite(v)){if(v>=1.2)p+=1;else if(v<.85)p-=1}
+    if(Number.isFinite(room)){if(room>=7)p+=2;else if(room<3)p-=3}
+    if(set.includes('Pullback in Uptrend')||set.includes('Local Breakout'))p+=1;
+  }
+  return p;
 }
+function hunterPriority(x){return stageAwareEvidence(x)}
 function selectHunterShortlist(pool){
-  const ranked=pool.map(x=>({...x,hunterPriority:hunterPriority(x,x._reasons||[])}))
+  const ranked=pool.map(x=>({...x,hunterPriority:stageAwareEvidence(x)}))
     .sort((a,b)=>(b.hunterPriority??-Infinity)-(a.hunterPriority??-Infinity)||(b.score??-Infinity)-(a.score??-Infinity)||a.symbol.localeCompare(b.symbol));
-  // No quota and no forced stage representation. A quiet day can legitimately return zero.
-  // Review = enough independent evidence to justify opening the chart.
-  // Watch = interesting but not yet strong enough for the primary shortlist.
-  const review=ranked.filter(x=>x.hunterPriority>=70);
-  const watch=ranked.filter(x=>x.hunterPriority>=58&&x.hunterPriority<70);
+  // Frozen V1 threshold validated independently on history ending 2024-08-31.
+  // No quota and no forced stage representation.
+  const review=ranked.filter(x=>x.hunterPriority>=5);
+  const watch=ranked.filter(x=>x.hunterPriority>=3&&x.hunterPriority<5);
   return {review,watch};
 }
 function daily10SelectionReasons(x){
@@ -851,7 +855,7 @@ function daily10SelectionReasons(x){
   if(e.turn.length) out.push(e.turn[0]);
   if(e.continuation.length) out.push(e.continuation[0]);
   if(x.stage) out.push(`${x.stage} setup`);
-  if(Number.isFinite(x.hunterPriority)) out.push(`Review priority ${x.hunterPriority.toFixed(1)}`);
+  if(Number.isFinite(x.hunterPriority)) out.push(`Stage evidence ${x.hunterPriority.toFixed(1)}`);
   return [...new Set(out)].slice(0,4);
 }
 
