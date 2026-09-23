@@ -114,7 +114,17 @@ function tradeabilityReport(a){
   const q=a.filter(e=>v2Candidate(e));
   const summarize=x=>{const n=x.length;if(!n)return {n:0};const rate=fn=>round(100*x.filter(fn).length/n);const avg=k=>round(x.reduce((z,e)=>z+(Number.isFinite(e[k])?e[k]:0),0)/n);return {n,avgReturn:avg('forwardReturn'),avgMae:avg('mae'),avgMfe:avg('mfe'),maeBelow3:rate(e=>e.mae<=-3),maeBelow5:rate(e=>e.mae<=-5),maeBelow7:rate(e=>e.mae<=-7),hitPlus7:rate(e=>Number.isFinite(e.hitPlus7Day)),hitMinus7:rate(e=>Number.isFinite(e.hitMinus7Day)),plus7BeforeMinus7:rate(e=>Number.isFinite(e.hitPlus7Day)&&(!Number.isFinite(e.hitMinus7Day)||e.hitPlus7Day<e.hitMinus7Day)),minus7BeforePlus7:rate(e=>Number.isFinite(e.hitMinus7Day)&&(!Number.isFinite(e.hitPlus7Day)||e.hitMinus7Day<e.hitPlus7Day))};};
   const paths=['Higher-Low Turn','Failed Breakdown / Reclaim'];
-  return {overall:summarize(q),byPath:Object.fromEntries(paths.map(p=>[p,summarize(q.filter(e=>e.strategyPass?.includes(p)))]))};
+  const has=(e,p)=>e.strategyPass?.includes(p);
+  const exclusive={
+    higherLowOnly:q.filter(e=>has(e,'Higher-Low Turn')&&!has(e,'Failed Breakdown / Reclaim')),
+    failedBreakdownOnly:q.filter(e=>has(e,'Failed Breakdown / Reclaim')&&!has(e,'Higher-Low Turn')),
+    both:q.filter(e=>has(e,'Higher-Low Turn')&&has(e,'Failed Breakdown / Reclaim'))
+  };
+  const distribution=x=>({
+    mae:[-3,-5,-7,-10].map(t=>({threshold:t,pct:summarize(x)['maeBelow'+Math.abs(t)]??round(100*x.filter(e=>e.mae<=t).length/Math.max(1,x.length))})),
+    mfe:[3,5,7,10,15].map(t=>({threshold:t,pct:round(100*x.filter(e=>e.mfe>=t).length/Math.max(1,x.length))}))
+  });
+  return {overall:summarize(q),byPath:Object.fromEntries(paths.map(p=>[p,summarize(q.filter(e=>has(e,p))])),exclusive:Object.fromEntries(Object.entries(exclusive).map(([k,x])=>[k,{...summarize(x),distribution:distribution(x)}]))};
 }
 function replayReport(a){
   const dates=[...new Set(a.map(e=>e.date))].sort();
