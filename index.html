@@ -235,6 +235,9 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .selection-explain{grid-column:1/-1;padding:9px 10px;border:1px solid rgba(117,224,176,.16);border-radius:10px;background:rgba(117,224,176,.035)}
 .selection-explain small{display:block;color:var(--muted);font-size:8px;margin-bottom:3px}.selection-explain b{display:block;font-size:10px;line-height:1.5;font-weight:650}
 .change-expand{cursor:pointer}.change-detail{display:none;grid-column:1/-1;width:100%;margin-top:8px}.change-expand.expanded .change-detail{display:grid;gap:6px}
+
+.path-evidence{grid-column:1/-1;padding:9px 10px;border:1px solid rgba(241,199,91,.14);border-radius:10px;background:rgba(241,199,91,.025)}
+.path-title{font-size:9px;font-weight:800;margin-bottom:6px}.path-title span{font-weight:500;color:var(--muted);margin-left:5px}.path-row{display:grid;grid-template-columns:86px 1fr;gap:7px;padding:4px 0;border-top:1px solid rgba(255,255,255,.04)}.path-row:first-of-type{border-top:0}.path-row small{font-size:8px;color:var(--muted)}.path-row b{font-size:9px;line-height:1.4;font-weight:600}
 </style>
 </head>
 <body>
@@ -415,6 +418,7 @@ function renderMarket(){
     <div><small>RVOL Today</small><b>${Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—'}</b></div>
     <div><small>Daily local high</small><b>${x.highState==='local_high_broken'?'Broken by close':x.highState==='failed_high_break'?'Rejected break':x.highState==='local_high_intact'?'Intact':x.highState==='local_high_held'?'Held':'—'}${Number.isFinite(x.localHigh)?' · '+fmt(x.localHigh):''}</b></div>
     <div><small>Daily local low</small><b>${x.lowState==='local_low_held'?'Held':x.lowState==='failed_low_break'?'Reclaimed':x.lowState==='local_low_broken'?'Broken by close':'—'}${Number.isFinite(x.localLow)?' · '+fmt(x.localLow):''}</b></div>
+    ${pathEvidenceBlock(x)}
     <div class="behavior-track"><small>Behavior history</small><b>${behaviorSummary(x.symbol).text}</b><span>${behaviorSummary(x.symbol).count?behaviorSummary(x.symbol).count+' compatible saved sessions':'Collecting from daily snapshots'}</span></div>
     <button type="button" class="sector-chart" data-tv="${x.symbol}">Chart ↗</button>
   </div>
@@ -637,6 +641,30 @@ function changeReasons(x,prev){
   if(Number.isFinite(x.rvol)&&x.rvol>=1.4&&(!Number.isFinite(prev.rvol)||prev.rvol<1.4)) reasons.push(`Unusual volume appeared · ${x.rvol.toFixed(1)}×`);
   return reasons;
 }
+function pathEvidence(x){
+  const continuation=[],turn=[],weakness=[];
+  if(x.weeklyUp===true&&x.dailyUp===true) continuation.push('Weekly + daily trend aligned');
+  if(Number.isFinite(x.rs20)&&x.rs20>2) continuation.push(`RS +${x.rs20.toFixed(1)}%`);
+  if(x.highState==='local_high_broken') continuation.push('Local high broken');
+  if(x.unusual5dDirection==='positive') continuation.push('Positive unusual volume');
+  if(Number.isFinite(x.ret20)&&x.ret20<0&&Number.isFinite(x.momentumShift)&&x.momentumShift>=2) turn.push('Momentum improving after decline');
+  if(x.lowState==='failed_low_break') turn.push('Local low reclaimed');
+  if(x.sellingPressureFading===true) turn.push('Selling pressure fading');
+  if(x.downsideSlowing===true) turn.push('Downside slowing');
+  if(Number.isFinite(x.rs20)&&x.rs20<0&&Number.isFinite(x.momentumShift)&&x.momentumShift>0) turn.push('Momentum improving while RS still weak');
+  if(Number.isFinite(x.momentumShift)&&x.momentumShift<=-3) weakness.push(`Momentum weakening · ${x.momentumShift.toFixed(1)}pp`);
+  if(Number.isFinite(x.rs20)&&x.rs20<-3) weakness.push(`Weak relative strength · ${x.rs20.toFixed(1)}%`);
+  if(x.lowState==='local_low_broken') weakness.push('Local low broken');
+  if(x.unusual5dDirection==='negative') weakness.push('Negative unusual volume');
+  if(x.weeklyUp===false&&x.dailyUp===false) weakness.push('Weekly + daily trend weak');
+  return {continuation:continuation.slice(0,3),turn:turn.slice(0,3),weakness:weakness.slice(0,3)};
+}
+function pathEvidenceBlock(x){
+  const e=pathEvidence(x);
+  const row=(label,items)=>`<div class="path-row"><small>${label}</small><b>${items.length?items.join(' · '):'No strong evidence'}</b></div>`;
+  return `<div class="path-evidence"><div class="path-title">Path evidence <span>evidence, not probability</span></div>${row('Continuation',e.continuation)}${row('Positive turn',e.turn)}${row('Weakness',e.weakness)}</div>`;
+}
+
 function daily10Reasons(x,reasons=[]){
   const out=[...reasons];
   if(!out.length){
@@ -688,7 +716,7 @@ function renderChanges(){
   document.querySelector('#changesContent').innerHTML=`
     <section class="stage">
       <div class="stage-head"><div class="stage-main"><div class="stage-copy"><h2>Changes</h2><p>Only unusual behavior changes since the previous saved session: stage shifts, momentum turns, structure breaks/reclaims, or newly unusual volume.</p></div></div><span class="shown">${rows.length}</span></div>
-      <div class="change-list">${rows.length?rows.map(x=>`<div class="change-item change-expand ${x._dropped?'dropped':''}"><div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage||'Exited'}</span></div><p>${x._reasons.join(' · ')}</p><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button><div class="change-detail">${explainBlock('Why Changes',x._reasons)}${explainBlock('Current context',daily10Reasons(x,[]))}</div></div>`).join(''):'<div class="empty">No material changes detected versus the previous saved session.</div>'}</div>
+      <div class="change-list">${rows.length?rows.map(x=>`<div class="change-item change-expand ${x._dropped?'dropped':''}"><div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage||'Exited'}</span></div><p>${x._reasons.join(' · ')}</p><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button><div class="change-detail">${explainBlock('Why Changes',x._reasons)}${explainBlock('Current context',daily10Reasons(x,[]))}${pathEvidenceBlock(x)}</div></div>`).join(''):'<div class="empty">No material changes detected versus the previous saved session.</div>'}</div>
     </section>`;
   document.querySelectorAll('#changesContent .tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
   document.querySelectorAll('#changesContent .change-expand').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('expanded')));
@@ -754,6 +782,7 @@ function card(x,kind,fa,inWatch=false){
       ${inWatch?'<div class="remove-hint">Swipe left to remove</div>':''}
       <div class="detail"><div class="detail-grid">
         ${x.selectionExplanation?explainBlock('Why Daily 10',x.selectionExplanation):''}
+        ${pathEvidenceBlock(x)}
         <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
         <div class="pill">Pullback<b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
         <div class="pill">Avg $ Vol<b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
