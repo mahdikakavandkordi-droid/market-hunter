@@ -1,6 +1,9 @@
 name: Hunter Historical Backtest
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/backtest-hunter.mjs'
     inputs:
       symbols:
         description: 'Comma-separated Yahoo symbols'
