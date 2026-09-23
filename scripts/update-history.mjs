@@ -62,6 +62,13 @@ function triggerFields(x,stage){
   if(prev.lowState!==x.lowState&&x.lowState==='local_low_broken') triggers.push('Local low broken');
   return triggers;
 }
+const HUNTER_V2_FORWARD=Object.freeze({version:'hunter-v2-frozen-2026-09-23',frozenAt:'2026-09-23'});
+function hunterV2Forward(x,stage){
+  const setups=intelligenceFields(x,stage).setups;
+  const higherLow=setups.includes('Higher-Low Turn')&&Number.isFinite(x.momentumShift)&&x.momentumShift>=3&&Number.isFinite(x.upDownVolumeRatio)&&x.upDownVolumeRatio>=.85&&Number.isFinite(x.atr14Pct)&&x.atr14Pct>=3&&x.atr14Pct<6&&Number.isFinite(x.rs20)&&x.rs20>=0;
+  const failedBreakdown=setups.includes('Failed Breakdown / Reclaim')&&Number.isFinite(x.atr14Pct)&&x.atr14Pct<3&&Number.isFinite(x.rs20)&&x.rs20>=0&&x.rs20<4&&Number.isFinite(x.upDownVolumeRatio)&&x.upDownVolumeRatio>=.85&&x.upDownVolumeRatio<1.2;
+  return {hunterV2Version:HUNTER_V2_FORWARD.version,hunterV2Qualified:higherLow||failedBreakdown,hunterV2Paths:[...(higherLow?['Higher-Low Turn']:[]),...(failedBreakdown?['Failed Breakdown / Reclaim']:[])]};
+}
 function snapshotItem(x,stage=x.stage){
   return {
     symbol:x.symbol,stage,score:x.score,price:x.price,rsi14:x.rsi14,
@@ -71,7 +78,7 @@ function snapshotItem(x,stage=x.stage){
     unusual5dDirection:x.unusual5dDirection,unusual5dLabel:x.unusual5dLabel,
     highState:x.highState,lowState:x.lowState,localHigh:x.localHigh,localLow:x.localLow,
     sector:x.sector,sectorStrength:x.sectorStrength,sectorBreadth:x.sectorBreadth,
-    ...intelligenceFields(x,stage),triggers:triggerFields(x,stage)
+    ...intelligenceFields(x,stage),...hunterV2Forward(x,stage),triggers:triggerFields(x,stage)
   };
 }
 
@@ -84,6 +91,7 @@ if(!history.snapshots.some(s=>s.marketAsOf===scan.marketAsOf&&s.version===scan.v
     minDollar:scan.minDollar,
     breadth:scan.breadth,
     marketContext:scan.marketContext,
+    hunterV2Spec:HUNTER_V2_FORWARD,
     top5:(scan.top5||[]).map(x=>({...x,outcomes:{}})),
     items:(scan.items||[]).map(x=>snapshotItem(x,x.stage)),
     earlyWatch:(scan.watchItems||[]).map(x=>snapshotItem(x,'Early Watch'))
@@ -166,7 +174,8 @@ function summarize(rows){
   };
 }
 const observations=observationRows();
-history.validation={generatedAt:new Date().toISOString(),note:'Diagnostic historical outcomes only; no automatic rule or weight changes.',bySetup:{},byStage:{},byTrigger:{}};
+history.validation={generatedAt:new Date().toISOString(),note:'Diagnostic historical outcomes only; no automatic rule or weight changes.',hunterV2Forward:{version:HUNTER_V2_FORWARD.version,byHorizon:{}},bySetup:{},byStage:{},byTrigger:{}};
+for(const h of horizons){history.validation.hunterV2Forward.byHorizon[String(h)]=summarize(observations.filter(v=>v.h===h&&v.x.hunterV2Version===HUNTER_V2_FORWARD.version&&v.x.hunterV2Qualified===true));}
 for(const h of horizons){
   for(const row of observations.filter(v=>v.h===h)){
     for(const setup of row.x.setups||[]){
