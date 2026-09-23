@@ -802,60 +802,37 @@ function triggerLabels(x){
   return hunterTriggers(x,prev);
 }
 
-const STAGE_AWARE_SHORTLIST_VERSION='stage-aware-shortlist-v1-frozen-2026-09-23';
-function stageAwareEvidence(x){
+function hunterPriority(x,reasons=[]){
+  // Review priority only; not a buy/sell score or expected return.
   let p=0;
-  const rs=x.rs20,m=x.momentumShift,v=x.upDownVolumeRatio,room=x.roomToResistance,st=x.swingTrend;
-  const set=detectSetups(x).map(z=>z.label);
-  if(x.stage==='Early Watch'){
-    if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=2;else if(m<=-3)p-=2}
-    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
-    if(set.includes('Selling Exhaustion'))p+=2;
-    if(set.includes('Failed Breakdown / Reclaim'))p+=2;
-    if(st==='Structure improving')p+=2;
-    if(st==='Lower highs + lower lows')p-=1;
-  }else if(x.stage==='Recovery'){
-    if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=1;else p-=2}
-    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
-    if(set.includes('Recovery'))p+=2;
-    if(set.includes('Higher-Low Turn')||set.includes('Failed Breakdown / Reclaim'))p+=2;
-    if(st==='Structure improving'||st==='Higher highs + higher lows')p+=2;
-    if(Number.isFinite(v)&&v>=.85)p+=1;
-  }else if(x.stage==='Attractive Growth'){
-    if(Number.isFinite(rs)){if(rs>=4)p+=3;else if(rs>=0)p+=2;else p-=2}
-    if(Number.isFinite(m)){if(m>=1)p+=2;else if(m<=-3)p-=2}
-    if(st==='Higher highs + higher lows')p+=3;else if(st==='Structure improving')p+=2;else if(st==='Lower highs + lower lows')p-=3;
-    if(Number.isFinite(v)){if(v>=1.2)p+=2;else if(v<.85)p-=1}
-    if(Number.isFinite(room)){if(room>=7)p+=2;else if(room<3)p-=2}
-  }else if(x.stage==='Established Move'){
-    if(Number.isFinite(rs)){if(rs>=4)p+=2;else if(rs>=0)p+=1;else p-=2}
-    if(st==='Higher highs + higher lows')p+=2;else if(st==='Lower highs + lower lows')p-=3;
-    if(Number.isFinite(m)){if(m>=1)p+=1;else if(m<=-3)p-=2}
-    if(Number.isFinite(v)){if(v>=1.2)p+=1;else if(v<.85)p-=1}
-    if(Number.isFinite(room)){if(room>=7)p+=2;else if(room<3)p-=3}
-    if(set.includes('Pullback in Uptrend')||set.includes('Local Breakout'))p+=1;
-  }
-  return p;
+  const e=pathEvidence(x),setups=detectSetups(x),triggers=triggerLabels(x);
+  const stageBase={EarlyWatch:42,Recovery:58,AttractiveGrowth:54,EstablishedMove:46};
+  const key=(x.stage||'').replaceAll(' ','');
+  p+=stageBase[key]??40;
+  p+=Math.min(24,reasons.length*8);
+  p+=Math.min(18,triggers.filter(t=>t.type==='upgrade').length*6);
+  p-=Math.min(12,triggers.filter(t=>t.type==='warning').length*8);
+  if(reasons.some(r=>r.startsWith('STAGE'))) p+=8;
+  if(reasons.some(r=>r.includes('Local high broken')||r.includes('Local low reclaimed'))) p+=6;
+  p+=Math.min(12,e.continuation.length*3);
+  p+=Math.min(14,e.turn.length*3.5);
+  p+=Math.min(10,setups.filter(v=>v.confidence==='confirmed').length*6+setups.filter(v=>v.confidence==='active').length*3);
+  p-=Math.min(18,e.weakness.length*4.5);
+  if(Number.isFinite(x.momentumShift)) p+=clamp(x.momentumShift,-5,7);
+  if(Number.isFinite(x.rs20)) p+=clamp(x.rs20/2,-6,6);
+  if(Number.isFinite(x.upDownVolumeRatio)) p+=clamp((x.upDownVolumeRatio-1)*10,-4,4);
+  if(x.swingTrend==='Higher highs + higher lows') p+=5;
+  else if(x.swingTrend==='Structure improving') p+=4;
+  else if(x.swingTrend==='Lower highs + lower lows') p-=6;
+  if(Number.isFinite(x.atr14Pct)&&x.atr14Pct>8) p-=3;
+  if(Number.isFinite(x.roomToResistance)){if(x.roomToResistance<3)p-=7;else if(x.roomToResistance>=7)p+=4}
+  return Math.round(p*10)/10;
 }
-function hunterPriority(x){return stageAwareEvidence(x)}
 function selectHunterShortlist(pool){
-  const ranked=pool.map(x=>({...x,hunterPriority:stageAwareEvidence(x)}))
+  const ranked=pool.map(x=>({...x,hunterPriority:hunterPriority(x,x._reasons||[])}))
     .sort((a,b)=>(b.hunterPriority??-Infinity)-(a.hunterPriority??-Infinity)||(b.score??-Infinity)-(a.score??-Infinity)||a.symbol.localeCompare(b.symbol));
-  // Stage-aware V1 remains the eligibility model, but Review Now must be exceptional
-  // evidence rather than every eligible name. No fixed count and no forced stage quota.
-  const eligible=ranked.filter(x=>x.hunterPriority>=5);
-  const byStage=new Map();
-  for(const x of eligible){
-    const a=byStage.get(x.stage)||[];a.push(x);byStage.set(x.stage,a);
-  }
-  const review=eligible.filter(x=>{
-    const peers=byStage.get(x.stage)||[];
-    const scores=peers.map(v=>v.hunterPriority).sort((a,b)=>b-a);
-    const stageCut=scores.length?Math.max(6,scores[Math.max(0,Math.ceil(scores.length*.25)-1)]):Infinity;
-    return x.hunterPriority>=stageCut;
-  });
-  const reviewSymbols=new Set(review.map(x=>x.symbol));
-  const watch=ranked.filter(x=>!reviewSymbols.has(x.symbol)&&x.hunterPriority>=3);
+  const review=ranked.filter(x=>x.hunterPriority>=70);
+  const watch=ranked.filter(x=>x.hunterPriority>=58&&x.hunterPriority<70);
   return {review,watch};
 }
 function daily10SelectionReasons(x){
@@ -866,7 +843,7 @@ function daily10SelectionReasons(x){
   if(e.turn.length) out.push(e.turn[0]);
   if(e.continuation.length) out.push(e.continuation[0]);
   if(x.stage) out.push(`${x.stage} setup`);
-  if(Number.isFinite(x.hunterPriority)) out.push(`Stage evidence ${x.hunterPriority.toFixed(1)}`);
+  if(Number.isFinite(x.hunterPriority)) out.push(`Review priority ${x.hunterPriority.toFixed(1)}`);
   return [...new Set(out)].slice(0,4);
 }
 
@@ -904,11 +881,8 @@ function renderTop5(){
         <p>Only charts that clear today's evidence threshold. The list can be empty; there is no quota and this is not a BUY signal.</p>
       </div></div><span class="shown">${xs.length}</span></div>
       <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">No chart clears the review threshold today. Doing nothing is a valid output.</div>'}</div>
-      <details class="watch-more-collapse">
-        <summary>Watch / Developing <span class="shown">${watch.length}</span></summary>
-        <p>Secondary candidates only. Open this when you want to inspect developing setups; they are not part of today's Shortlist.</p>
-        <div class="grid">${watch.length?watch.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">Nothing additional needs watching today.</div>'}</div>
-      </details>
+      <div class="stage-head watch-head"><div class="stage-main"><div class="stage-copy"><h2>Watch More</h2><p>Interesting behavior, but not enough evidence yet for the primary shortlist.</p></div></div><span class="shown">${watch.length}</span></div>
+      <div class="grid">${watch.length?watch.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">Nothing additional needs watching today.</div>'}</div>
     </section>`;
   bindCardActions('#top5Content');
 }
