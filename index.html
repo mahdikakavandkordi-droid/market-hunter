@@ -186,6 +186,9 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .change-item>div{display:flex;gap:8px;align-items:center}.change-item>div span{font-size:10px;color:var(--muted)}
 .change-item p{margin:0;font-size:12px;color:var(--muted)}.change-item.dropped{border-color:rgba(255,123,123,.2)}
 @media(max-width:650px){.change-item{grid-template-columns:1fr auto}.change-item p{grid-column:1/-1;grid-row:2}.tabs .tab{font-size:10px;padding-left:7px;padding-right:7px}}
+
+.sector-sortbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:8px 4px 6px;color:var(--muted);font-size:10px}
+.sector-sort{max-width:190px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.035);color:var(--text);padding:7px 28px 7px 9px;font-size:11px}
 </style>
 </head>
 <body>
@@ -289,8 +292,10 @@ function renderMarket(){
     ...(d.items||[]),
     ...(d.watchItems||[]).map(x=>({...x,stage:'Early Watch'}))
   ];
+  const sectorCandidateRow=x=>`<div class="sector-candidate"><button type="button" class="sector-symbol" data-tv="${x.symbol}"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span></button><div class="sector-quick"><span class="${cls(x.ret5)}">5D ${pct(x.ret5)}</span><span>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</span><span>RVOL ${fmt(x.rvol)}×</span><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div></div>`;
   const sectors=(d.sectors||[]).map(sec=>{
     const names=currentSectorCandidates.filter(x=>x.sector===sec.sector);
+    const key=encodeURIComponent(sec.sector);
     return `
       <div class="sector-block">
         <button class="sector-row sector-toggle" type="button" data-sector="${sec.sector}">
@@ -301,7 +306,15 @@ function renderMarket(){
           <div><span class="sector-status ${statusClass(sec.breadthStatus)}">${sec.trend}</span></div>
         </button>
         <div class="sector-candidates" data-sector-list="${sec.sector}">
-          ${names.length?names.map(x=>`<div class="sector-candidate"><button type="button" class="sector-symbol" data-tv="${x.symbol}"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span></button><div class="sector-quick"><span class="${cls(x.ret5)}">5D ${pct(x.ret5)}</span><span>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</span><span>RVOL ${fmt(x.rvol)}×</span><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div></div>`).join(''):`<div class="sector-empty">No current Hunter candidates in this sector.</div>`}
+          ${names.length?`<div class="sector-sortbar"><span>Sort</span><select class="sector-sort" data-sector-key="${key}">
+            <option value="ret5:desc">5D · Highest</option><option value="ret5:asc">5D · Lowest</option>
+            <option value="ret20:desc">20D · Highest</option><option value="ret20:asc">20D · Lowest</option>
+            <option value="rvol:desc">RVOL · Highest</option><option value="rvol:asc">RVOL · Lowest</option>
+            <option value="rsi14:desc">RSI · Highest</option><option value="rsi14:asc">RSI · Lowest</option>
+            <option value="momentumShift:desc">Momentum · Highest</option><option value="momentumShift:asc">Momentum · Lowest</option>
+            <option value="rs20:desc">Relative Strength · Highest</option><option value="rs20:asc">Relative Strength · Lowest</option>
+            <option value="pullback:desc">Pullback · Nearest high</option><option value="pullback:asc">Pullback · Deepest</option>
+          </select></div><div class="sector-candidate-rows" data-sector-rows="${key}">${names.map(sectorCandidateRow).join('')}</div>`:`<div class="sector-empty">No current Hunter candidates in this sector.</div>`}
         </div>
       </div>`;
   }).join('');
@@ -382,6 +395,21 @@ function renderMarket(){
   document.querySelectorAll('#marketContent .sector-toggle').forEach(el=>el.addEventListener('click',()=>{
     const list=document.querySelector('#marketContent [data-sector-list="'+el.dataset.sector+'"]');
     if(list) list.classList.toggle('open');
+  }));
+  document.querySelectorAll('#marketContent .sector-sort').forEach(sel=>sel.addEventListener('change',()=>{
+    const [field,dir]=sel.value.split(':');
+    const sector=decodeURIComponent(sel.dataset.sectorKey);
+    const rows=document.querySelector('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"]');
+    if(!rows)return;
+    const names=currentSectorCandidates.filter(x=>x.sector===sector).sort((a,b)=>{
+      const av=a[field],bv=b[field];
+      if(!Number.isFinite(av)&&!Number.isFinite(bv))return a.symbol.localeCompare(b.symbol);
+      if(!Number.isFinite(av))return 1;if(!Number.isFinite(bv))return -1;
+      return dir==='asc'?av-bv:bv-av;
+    });
+    rows.innerHTML=names.map(sectorCandidateRow).join('');
+    document.querySelectorAll('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"] .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
+    document.querySelectorAll('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"] .sector-symbol').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
   }));
   document.querySelectorAll('#marketContent .sector-candidates .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
   document.querySelectorAll('#marketContent .sector-symbol').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
