@@ -10,6 +10,10 @@ on:
         description: 'Yahoo history range'
         required: false
         default: '2y'
+      holdout_end:
+        description: 'Optional last signal date (YYYY-MM-DD) for untouched historical holdout'
+        required: false
+        default: ''
       horizons:
         description: 'Forward trading sessions'
         required: false
@@ -27,6 +31,7 @@ jobs:
           BACKTEST_SYMBOLS: ${{ inputs.symbols }}
           BACKTEST_RANGE: ${{ inputs.range }}
           BACKTEST_HORIZONS: ${{ inputs.horizons }}
+          BACKTEST_HOLDOUT_END: ${{ inputs.holdout_end }}
         run: node scripts/backtest-hunter.mjs
       - name: Commit report
         run: |
