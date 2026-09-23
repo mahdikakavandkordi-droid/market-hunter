@@ -316,6 +316,16 @@ function researchV21Report(a){
       // This avoids comparing nested cohorts and shows whether the extra confirmation
       // itself adds value.
       reclaimVolume070to085:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85,
+      // Early Reclaim quality filters: keep the early 0.70-0.85 entry band, then test
+      // whether light-touch momentum / RS / volatility context removes weak signals
+      // without waiting for full volume confirmation.
+      earlyBandMomentumNonNegative:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.momentumShift)&&e.momentumShift>=0,
+      earlyBandMomentumPositive:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.momentumShift)&&e.momentumShift>0,
+      earlyBandRsNeg10:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.rs20)&&e.rs20>=-10,
+      earlyBandRsNeg8:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.rs20)&&e.rs20>=-8,
+      earlyBandMomentumRsNeg10:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.momentumShift)&&e.momentumShift>=0&&Number.isFinite(e.rs20)&&e.rs20>=-10,
+      earlyBandAtrLt6:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<6,
+      earlyBandAtr3to6:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct>=3&&e.atr14Pct<6,
       reclaimVolume:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
       reclaimVolume100:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.00,
       reclaimVolume120:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.20,
