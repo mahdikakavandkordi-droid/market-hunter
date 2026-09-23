@@ -178,6 +178,25 @@ function swingStructure(rows){
   return {swingTrend,higherLow,higherHigh};
 }
 
+function supportResistance(rows){
+  if(!Array.isArray(rows)||rows.length<25) return {support:null,resistance:null,roomToResistance:null,supportDistance:null,resistanceTouches:0,supportTouches:0};
+  const last=rows.at(-1).close,pivH=[],pivL=[];
+  for(let i=Math.max(2,rows.length-90);i<=rows.length-3;i++){
+    const x=rows[i];
+    if(Number.isFinite(x.high)&&x.high>rows[i-1].high&&x.high>=rows[i-2].high&&x.high>rows[i+1].high&&x.high>=rows[i+2].high) pivH.push(x.high);
+    if(Number.isFinite(x.low)&&x.low<rows[i-1].low&&x.low<=rows[i-2].low&&x.low<rows[i+1].low&&x.low<=rows[i+2].low) pivL.push(x.low);
+  }
+  const resistanceCandidates=pivH.filter(v=>v>last*1.002).sort((a,b)=>a-b);
+  const supportCandidates=pivL.filter(v=>v<last*.998).sort((a,b)=>b-a);
+  const resistance=resistanceCandidates[0]??null,support=supportCandidates[0]??null;
+  const touches=(vals,level)=>Number.isFinite(level)?vals.filter(v=>Math.abs(v/level-1)<=0.015).length:0;
+  return {
+    support:round(support,2),resistance:round(resistance,2),
+    roomToResistance:round(pct(resistance,last),1),supportDistance:round(pct(last,support),1),
+    resistanceTouches:touches(pivH,resistance),supportTouches:touches(pivL,support)
+  };
+}
+
 export function dailyStructure(rows){
   if(!Array.isArray(rows)||rows.length<12) return {localHigh:null,localLow:null,highState:'unavailable',lowState:'unavailable'};
   const pivotsHigh=[],pivotsLow=[];
@@ -215,6 +234,7 @@ export function metrics(data,benchmarkData,sectorData){
 
   const last=c.at(-1),ma20=sma(c,20),ma50=sma(c,50),rsi14=rsi(c,14);
   const structure=dailyStructure(r);
+  const levels=supportResistance(r);
   const swing=swingStructure(r);
   const atr14Pct=atrPercent(r,14);
   const volBehavior=directionalVolume(r,20);
@@ -346,7 +366,7 @@ export function metrics(data,benchmarkData,sectorData){
     prev5:round(prev5,1),momentumShift:round(momentumShift,1),volumeVsAvg:round(volumeVsAvg,1),trendState,
     unusual5d,positiveUnusual5d,max5Rvol:round(max5Rvol,2),max5RvolAgo,spikeReturn:round(spikeReturn,1),unusual5dDirection,unusual5dLabel,
     nearRecentLow,downsideSlowing,volumeShockNearLow,latestDayReturn:round(latestDayReturn,1),
-    ...structure,
+    ...structure,...levels,
     score:round(score,1),stage,why:why.slice(0,3),
     components:{
       trend:round(trendScore,1),momentum:round(momentumScore,1),volume:round(volumeScore,1),
