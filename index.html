@@ -904,8 +904,11 @@ function renderTop5(){
         <p>Only charts that clear today's evidence threshold. The list can be empty; there is no quota and this is not a BUY signal.</p>
       </div></div><span class="shown">${xs.length}</span></div>
       <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">No chart clears the review threshold today. Doing nothing is a valid output.</div>'}</div>
-      <div class="stage-head watch-head"><div class="stage-main"><div class="stage-copy"><h2>Watch More</h2><p>Interesting behavior, but not enough evidence yet for the primary shortlist.</p></div></div><span class="shown">${watch.length}</span></div>
-      <div class="grid">${watch.length?watch.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">Nothing additional needs watching today.</div>'}</div>
+      <details class="watch-more-collapse">
+        <summary>Watch / Developing <span class="shown">${watch.length}</span></summary>
+        <p>Secondary candidates only. Open this when you want to inspect developing setups; they are not part of today's Shortlist.</p>
+        <div class="grid">${watch.length?watch.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10SelectionReasons(x)},stageKind(x),x.stage)).join(''):'<div class="empty">Nothing additional needs watching today.</div>'}</div>
+      </details>
     </section>`;
   bindCardActions('#top5Content');
 }
