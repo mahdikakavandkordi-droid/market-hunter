@@ -89,19 +89,18 @@ function walkForwardReport(a){
 }
 
 
+const HUNTER_V2_SPEC=Object.freeze({
+  version:'hunter-v2-frozen-2026-09-23',
+  status:'forward-evaluation',
+  frozenAt:'2026-09-23',
+  note:'Do not tune from forward outcomes. Any rule change requires a new version and evaluation cohort.',
+  higherLow:{momentumShiftMin:3,upDownVolumeRatioMin:.85,atr14PctMin:3,atr14PctMaxExclusive:6,rs20Min:0,preferredRegimes:['Strong','Positive']},
+  failedBreakdown:{atr14PctMaxExclusive:3,rs20Min:0,rs20MaxExclusive:4,upDownVolumeRatioMin:.85,upDownVolumeRatioMaxExclusive:1.2}
+});
 function v2Candidate(e){
-  // Candidate rules are intentionally simple and setup-specific; research only until forward validation.
-  if(e.strategyPass?.includes('Higher-Low Turn')){
-    return Number.isFinite(e.momentumShift)&&e.momentumShift>=3&&
-      Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&
-      Number.isFinite(e.atr14Pct)&&e.atr14Pct>=3&&e.atr14Pct<6&&
-      Number.isFinite(e.rs20)&&e.rs20>=0;
-  }
-  if(e.strategyPass?.includes('Failed Breakdown / Reclaim')){
-    return Number.isFinite(e.atr14Pct)&&e.atr14Pct<3&&
-      Number.isFinite(e.rs20)&&e.rs20>=0&&e.rs20<4&&
-      Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&e.upDownVolumeRatio<1.2;
-  }
+  const h=HUNTER_V2_SPEC.higherLow,f=HUNTER_V2_SPEC.failedBreakdown;
+  if(e.strategyPass?.includes('Higher-Low Turn'))return Number.isFinite(e.momentumShift)&&e.momentumShift>=h.momentumShiftMin&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=h.upDownVolumeRatioMin&&Number.isFinite(e.atr14Pct)&&e.atr14Pct>=h.atr14PctMin&&e.atr14Pct<h.atr14PctMaxExclusive&&Number.isFinite(e.rs20)&&e.rs20>=h.rs20Min;
+  if(e.strategyPass?.includes('Failed Breakdown / Reclaim'))return Number.isFinite(e.atr14Pct)&&e.atr14Pct<f.atr14PctMaxExclusive&&Number.isFinite(e.rs20)&&e.rs20>=f.rs20Min&&e.rs20<f.rs20MaxExclusive&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=f.upDownVolumeRatioMin&&e.upDownVolumeRatio<f.upDownVolumeRatioMaxExclusive;
   return false;
 }
 function v2Report(a){
@@ -158,5 +157,5 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{overall:v2Report(he),byRegime:regimeReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),range,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};fs.mkdirSync('data',{recursive:true});fs.writeFileSync('data/backtest.json',JSON.stringify(result,null,2)+'\n');console.log('\nBACKTEST',JSON.stringify({...result,events:undefined},null,2));
