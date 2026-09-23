@@ -644,20 +644,27 @@ function changeReasons(x,prev){
 function pathEvidence(x){
   const continuation=[],turn=[],weakness=[];
   if(x.weeklyUp===true&&x.dailyUp===true) continuation.push('Weekly + daily trend aligned');
+  if(x.swingTrend==='Higher highs + higher lows') continuation.push('Higher highs + higher lows');
   if(Number.isFinite(x.rs20)&&x.rs20>2) continuation.push(`RS +${x.rs20.toFixed(1)}%`);
   if(x.highState==='local_high_broken') continuation.push('Local high broken');
+  if(Number.isFinite(x.upDownVolumeRatio)&&x.upDownVolumeRatio>=1.15) continuation.push(`Up-day volume stronger · ${x.upDownVolumeRatio.toFixed(2)}×`);
   if(x.unusual5dDirection==='positive') continuation.push('Positive unusual volume');
+
   if(Number.isFinite(x.ret20)&&x.ret20<0&&Number.isFinite(x.momentumShift)&&x.momentumShift>=2) turn.push('Momentum improving after decline');
   if(x.lowState==='failed_low_break') turn.push('Local low reclaimed');
   if(x.sellingPressureFading===true) turn.push('Selling pressure fading');
   if(x.downsideSlowing===true) turn.push('Downside slowing');
+  if(x.swingTrend==='Structure improving') turn.push('Swing structure improving');
   if(Number.isFinite(x.rs20)&&x.rs20<0&&Number.isFinite(x.momentumShift)&&x.momentumShift>0) turn.push('Momentum improving while RS still weak');
+
   if(Number.isFinite(x.momentumShift)&&x.momentumShift<=-3) weakness.push(`Momentum weakening · ${x.momentumShift.toFixed(1)}pp`);
   if(Number.isFinite(x.rs20)&&x.rs20<-3) weakness.push(`Weak relative strength · ${x.rs20.toFixed(1)}%`);
   if(x.lowState==='local_low_broken') weakness.push('Local low broken');
+  if(x.swingTrend==='Lower highs + lower lows'||x.swingTrend==='Structure weakening') weakness.push(x.swingTrend);
+  if(Number.isFinite(x.upDownVolumeRatio)&&x.upDownVolumeRatio<=0.85) weakness.push(`Down-day volume stronger · ${x.upDownVolumeRatio.toFixed(2)}×`);
   if(x.unusual5dDirection==='negative') weakness.push('Negative unusual volume');
   if(x.weeklyUp===false&&x.dailyUp===false) weakness.push('Weekly + daily trend weak');
-  return {continuation:continuation.slice(0,3),turn:turn.slice(0,3),weakness:weakness.slice(0,3)};
+  return {continuation:continuation.slice(0,4),turn:turn.slice(0,4),weakness:weakness.slice(0,4)};
 }
 function pathEvidenceBlock(x){
   const e=pathEvidence(x);
@@ -794,6 +801,9 @@ function card(x,kind,fa,inWatch=false){
         <div class="signal">Relative vs ${x.benchmarkLabel||"TSX"}<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="signal">Relative vs sector<b class="${cls(x.sectorRs)}">${pct(x.sectorRs)}</b></div>
         <div class="signal">Sector strength<b class="${x.sectorStrength==='Strong'?'up':x.sectorStrength==='Weak'?'down':'flat'}">${x.sector||'—'} · ${x.sectorStrength||'—'}${Number.isFinite(x.sectorBreadth)?' · '+x.sectorBreadth+'% breadth':''}</b></div>
         <div class="signal">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></div>
+        <div class="signal">ATR 14<b>${Number.isFinite(x.atr14Pct)?x.atr14Pct.toFixed(2)+'%':'—'}</b></div>
+        <div class="signal">Swing structure<b>${x.swingTrend||'—'}</b></div>
+        <div class="signal">Up / down volume<b>${Number.isFinite(x.upDownVolumeRatio)?x.upDownVolumeRatio.toFixed(2)+'×':'—'}</b></div>
         <div class="signal">Daily local high<b>${x.highState==='local_high_broken'?'Broken by close':x.highState==='failed_high_break'?'Failed / rejected break':x.highState==='local_high_intact'?'Intact':'—'}${Number.isFinite(x.localHigh)?' · '+fmt(x.localHigh):''}</b></div>
         <div class="signal">Daily local low<b>${x.lowState==='local_low_held'?'Held':x.lowState==='failed_low_break'?'Failed break · reclaimed':x.lowState==='local_low_broken'?'Broken by close':'—'}${Number.isFinite(x.localLow)?' · '+fmt(x.localLow):''}</b></div>
       </div></div>
