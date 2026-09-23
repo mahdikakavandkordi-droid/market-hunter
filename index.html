@@ -202,6 +202,11 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   .sector-quick .heart{grid-column:6;grid-row:1;align-self:center;justify-self:end}
   .mini-metric small{font-size:7px}.mini-metric b{font-size:10px}
 }
+
+.compare-pick{width:25px;height:25px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font-size:16px;line-height:1;cursor:pointer}.compare-pick.selected{color:var(--accent2);border-color:rgba(117,224,176,.45);background:rgba(117,224,176,.08)}
+.compare-dock{position:fixed;z-index:30;left:50%;bottom:18px;transform:translate(-50%,130%);width:min(520px,calc(100% - 28px));display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--line);border-radius:16px;background:#111b25;box-shadow:0 14px 45px rgba(0,0,0,.35);transition:.2s}.compare-dock.show{transform:translate(-50%,0)}.compare-dock>div{display:flex;flex-direction:column;gap:2px}.compare-dock span{font-size:10px;color:var(--muted)}.compare-dock button{border:0;border-radius:10px;padding:9px 13px;font-weight:700}.compare-dock button:disabled{opacity:.4}
+.compare-modal{display:none;position:fixed;z-index:50;inset:0;background:rgba(3,8,13,.72);padding:18px;overflow:auto}.compare-modal.show{display:flex;align-items:flex-start;justify-content:center}.compare-sheet{margin:auto;width:min(760px,100%);background:#111b25;border:1px solid var(--line);border-radius:18px;padding:16px}.compare-head{display:flex;justify-content:space-between;align-items:flex-start}.compare-head h2,.compare-head p{margin:0}.compare-head p{font-size:11px;color:var(--muted);margin-top:3px}.compare-head button{border:0;background:transparent;color:var(--text);font-size:28px}.compare-table{margin-top:14px;overflow-x:auto}.compare-row{display:grid;grid-template-columns:110px repeat(3,minmax(110px,1fr));border-top:1px solid var(--line);min-width:450px}.compare-row>div{padding:9px 7px;font-size:11px}.compare-row>div:first-child{color:var(--muted)}.compare-symbols{border-top:0}.compare-symbols small{display:block;color:var(--muted);font-size:8px;margin-top:2px}
+@media(max-width:650px){.sector-quick{grid-template-columns:repeat(5,minmax(0,1fr)) 26px 30px}.sector-quick .compare-pick{grid-column:6}.sector-quick .heart{grid-column:7}.compare-dock{bottom:76px}.compare-sheet{padding:12px}.compare-row{grid-template-columns:90px repeat(3,minmax(95px,1fr))}}
 </style>
 </head>
 <body>
@@ -248,12 +253,14 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 </section>
 
 
+<div id="compareDock" class="compare-dock"></div>
+<div id="compareModal" class="compare-modal"></div>
 <footer>Discovery dashboard only — not a buy/sell signal. Market context and candidate stages are designed to reduce what you need to inspect manually.</footer>
 </div>
 
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
-const state={data:null,history:[],tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch()};
+const state={data:null,history:[],tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),compare:new Set()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function toggleWatch(symbol){
   state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);
@@ -293,6 +300,42 @@ function indexCard(name,obj){
   return `<div class="metric"><div class="k">${name}</div><div class="v">${fmt(obj.price)}</div><div class="sub ${cls(obj.ret5)}">5D ${pct(obj.ret5)} · 20D ${pct(obj.ret20)}</div></div>`;
 }
 
+function toggleCompare(symbol){
+  if(state.compare.has(symbol)) state.compare.delete(symbol);
+  else{
+    if(state.compare.size>=3){alert('Compare supports up to 3 stocks.');return}
+    state.compare.add(symbol);
+  }
+  renderMarket();renderCompareDock();
+}
+function renderCompareDock(){
+  const dock=document.querySelector('#compareDock');if(!dock)return;
+  const xs=[...state.compare];
+  if(!xs.length){dock.classList.remove('show');dock.innerHTML='';return}
+  dock.classList.add('show');
+  dock.innerHTML=`<div><b>Compare</b><span>${xs.map(x=>x.replace(/\\.(TO|NE|V)$/,'')).join(' · ')}</span></div><button ${xs.length<2?'disabled':''} id="openCompare">Compare ${xs.length}</button>`;
+  document.querySelector('#openCompare')?.addEventListener('click',renderCompareModal);
+}
+function renderCompareModal(){
+  const modal=document.querySelector('#compareModal');
+  const by=new Map(allHunterCandidates().map(x=>[x.symbol,x]));
+  const xs=[...state.compare].map(x=>by.get(x)).filter(Boolean);
+  if(xs.length<2)return;
+  const metrics=[
+    ['Stage',x=>x.stage,''],['5D',x=>pct(x.ret5),x=>cls(x.ret5)],['20D',x=>pct(x.ret20),x=>cls(x.ret20)],
+    ['60D',x=>pct(x.ret60),x=>cls(x.ret60)],['Momentum',x=>Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—',x=>cls(x.momentumShift)],
+    ['RSI 14',x=>Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—',''],['RVOL',x=>Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—',''],
+    ['Relative 20D',x=>pct(x.rs20),x=>cls(x.rs20)],['Sector',x=>(x.sectorStrength||'—')+(Number.isFinite(x.sectorBreadth)?' · '+x.sectorBreadth+'%':''),''],
+    ['Pullback',x=>pct(x.pullback),x=>cls(x.pullback)],['vs MA20',x=>pct(x.dist20),x=>cls(x.dist20)],['vs MA50',x=>pct(x.dist50),x=>cls(x.dist50)],
+    ['Local high',x=>(Number.isFinite(x.localHigh)?fmt(x.localHigh)+' · ':'')+(x.highState||'—'),''],['Local low',x=>(Number.isFinite(x.localLow)?fmt(x.localLow)+' · ':'')+(x.lowState||'—'),'']
+  ];
+  modal.innerHTML=`<div class="compare-sheet"><div class="compare-head"><div><h2>Compare</h2><p>Side-by-side technical context · no winner score</p></div><button id="closeCompare">×</button></div>
+  <div class="compare-table"><div class="compare-row compare-symbols"><div>Metric</div>${xs.map(x=>`<div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><small>${x.sector}</small></div>`).join('')}</div>
+  ${metrics.map(([label,val,c])=>`<div class="compare-row"><div>${label}</div>${xs.map(x=>`<div class="${typeof c==='function'?c(x):''}">${val(x)}</div>`).join('')}</div>`).join('')}</div></div>`;
+  modal.classList.add('show');
+  document.querySelector('#closeCompare').addEventListener('click',()=>modal.classList.remove('show'));
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+}
 function renderMarket(){
   const d=state.data;if(!d)return;
   const canada=['TSX','TSX Venture'];
@@ -305,7 +348,7 @@ function renderMarket(){
     ...(d.items||[]),
     ...(d.watchItems||[]).map(x=>({...x,stage:'Early Watch'}))
   ];
-  const sectorCandidateRow=x=>`<div class="sector-candidate"><button type="button" class="sector-symbol" data-tv="${x.symbol}"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span></button><div class="sector-quick"><span class="mini-metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></span><span class="mini-metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></span><span class="mini-metric"><small>MOM</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</b></span><span class="mini-metric"><small>RSI</small><b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></span><span class="mini-metric"><small>RVOL</small><b>${Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—'}</b></span><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div></div>`;
+  const sectorCandidateRow=x=>`<div class="sector-candidate"><button type="button" class="sector-symbol" data-tv="${x.symbol}"><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage}</span></button><div class="sector-quick"><span class="mini-metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></span><span class="mini-metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></span><span class="mini-metric"><small>MOM</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</b></span><span class="mini-metric"><small>RSI</small><b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></span><span class="mini-metric"><small>RVOL</small><b>${Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—'}</b></span><button class="compare-pick ${state.compare.has(x.symbol)?'selected':''}" data-compare="${x.symbol}" title="Compare">${state.compare.has(x.symbol)?'✓':'＋'}</button><button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}">${state.watchlist.has(x.symbol)?'♥':'♡'}</button></div></div>`;
   const sectors=(d.sectors||[]).map(sec=>{
     const names=currentSectorCandidates.filter(x=>x.sector===sec.sector);
     const key=encodeURIComponent(sec.sector);
@@ -421,9 +464,11 @@ function renderMarket(){
       return dir==='asc'?av-bv:bv-av;
     });
     rows.innerHTML=names.map(sectorCandidateRow).join('');
+    document.querySelectorAll('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"] .compare-pick').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleCompare(el.dataset.compare)}));
     document.querySelectorAll('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"] .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
     document.querySelectorAll('#marketContent [data-sector-rows="'+sel.dataset.sectorKey+'"] .sector-symbol').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
   }));
+  document.querySelectorAll('#marketContent .sector-candidates .compare-pick').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleCompare(el.dataset.compare)}));
   document.querySelectorAll('#marketContent .sector-candidates .heart').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.watch)}));
   document.querySelectorAll('#marketContent .sector-symbol').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
 }
@@ -617,7 +662,7 @@ function card(x,kind,fa,inWatch=false){
 
 function render(){
   if(!state.data)return;
-  renderMarket();renderTop5();renderChanges();renderHunter();renderWatchlist();
+  renderMarket();renderTop5();renderChanges();renderHunter();renderWatchlist();renderCompareDock();
   const d=state.data;
   document.querySelector('#status').title=(d.failureDetails||[]).map(x=>`${x.symbol}: ${x.reason}`).join('\n');
   document.querySelector('#status').innerHTML=
