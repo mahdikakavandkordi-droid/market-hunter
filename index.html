@@ -383,8 +383,8 @@ function renderMarket(){
     <div><small>Sector</small><b>${x.sectorStrength||'—'}</b></div>
     <div><small>RVOL Today</small><b>${Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—'}</b></div>
     <div><small>Volume day</small><b>${x.unusual5dDirection||'—'}</b></div>
-    <div><small>Local High</small><b>${Number.isFinite(x.localHigh)?fmt(x.localHigh):'—'} · ${x.highState||'—'}</b></div>
-    <div><small>Local Low</small><b>${Number.isFinite(x.localLow)?fmt(x.localLow):'—'} · ${x.lowState||'—'}</b></div>
+    <div><small>Local High</small><b>${Number.isFinite(x.localHigh)?fmt(x.localHigh):'—'} · ${x.highState==='local_high_broken'?'Broken':x.highState==='failed_high_break'?'Rejected':x.highState==='local_high_held'?'Held':x.highState||'—'}</b></div>
+    <div><small>Local Low</small><b>${Number.isFinite(x.localLow)?fmt(x.localLow):'—'} · ${x.lowState==='failed_low_break'?'Reclaimed':x.lowState==='local_low_broken'?'Broken':x.lowState==='local_low_held'?'Held':x.lowState||'—'}</b></div>
     <button type="button" class="sector-chart" data-tv="${x.symbol}">Chart ↗</button>
   </div>
 </div>`;
