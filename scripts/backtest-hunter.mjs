@@ -24,6 +24,50 @@ function opportunityScore(m,stage,ss){
   if(stage==='Recovery')p-=6;
   return p;
 }
+// Experimental discovery selector: compare evidence within each stage instead of
+// forcing four different market states through one global priority scale.
+// Backtest-only until frozen/out-of-sample evaluation supports deployment.
+function stageAwareEvidence(e){
+  let p=0;
+  const rs=e.rs20,m=e.momentumShift,v=e.upDownVolumeRatio,room=e.roomToResistance,st=e.swingTrend,set=e.setups||[];
+  if(e.stage==='Early Watch'){
+    if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=2;else if(m<=-3)p-=2}
+    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
+    if(set.includes('Selling Exhaustion'))p+=2;
+    if(set.includes('Failed Breakdown / Reclaim'))p+=2;
+    if(st==='Structure improving')p+=2;
+    if(st==='Lower highs + lower lows')p-=1; // weakness is expected here, not a global veto
+  }else if(e.stage==='Recovery'){
+    if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=1;else p-=2}
+    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
+    if(set.includes('Recovery'))p+=2;
+    if(set.includes('Higher-Low Turn')||set.includes('Failed Breakdown / Reclaim'))p+=2;
+    if(st==='Structure improving'||st==='Higher highs + higher lows')p+=2;
+    if(Number.isFinite(v)&&v>=.85)p+=1;
+  }else if(e.stage==='Attractive Growth'){
+    if(Number.isFinite(rs)){if(rs>=4)p+=3;else if(rs>=0)p+=2;else p-=2}
+    if(Number.isFinite(m)){if(m>=1)p+=2;else if(m<=-3)p-=2}
+    if(st==='Higher highs + higher lows')p+=3;else if(st==='Structure improving')p+=2;else if(st==='Lower highs + lower lows')p-=3;
+    if(Number.isFinite(v)){if(v>=1.2)p+=2;else if(v<.85)p-=1}
+    if(Number.isFinite(room)){if(room>=7)p+=2;else if(room<3)p-=2}
+  }else if(e.stage==='Established Move'){
+    if(Number.isFinite(rs)){if(rs>=4)p+=2;else if(rs>=0)p+=1;else p-=2}
+    if(st==='Higher highs + higher lows')p+=2;else if(st==='Lower highs + lower lows')p-=3;
+    if(Number.isFinite(m)){if(m>=1)p+=1;else if(m<=-3)p-=2}
+    if(Number.isFinite(v)){if(v>=1.2)p+=1;else if(v<.85)p-=1}
+    if(Number.isFinite(room)){if(room>=7)p+=2;else if(room<3)p-=3}
+    if(set.includes('Pullback in Uptrend')||set.includes('Local Breakout'))p+=1;
+  }
+  return p;
+}
+function stageAwareShortlistReport(a){
+  const thresholds=[2,3,4,5,6,7],out={};
+  for(const t of thresholds){
+    const rows=a.filter(e=>stageAwareEvidence(e)>=t);
+    out[String(t)]={coveragePct:a.length?round(rows.length/a.length*100,1):0,summary:summary(rows),tradeability:stageTradeabilityReport(rows),byStage:Object.fromEntries(['Early Watch','Recovery','Attractive Growth','Established Move'].map(stage=>[stage,summary(rows.filter(e=>e.stage===stage))]))};
+  }
+  return out;
+}
 function dedupe(a,h){const out=[],last=new Map();for(const e of [...a].sort((x,y)=>x.date.localeCompare(y.date)||x.symbol.localeCompare(y.symbol))){const k=e.symbol+'|'+e.stage+'|'+e.primarySetup,prev=last.get(k);if(prev&&e.sessionIndex-prev<h)continue;out.push(e);last.set(k,e.sessionIndex)}return out}
 function setupStrategy(m,stage,ss){
   const pass=[];
@@ -297,5 +341,5 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),range,holdoutEnd:holdoutEnd||null,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};fs.mkdirSync('data',{recursive:true});const compact={...result,events:undefined};fs.writeFileSync('data/backtest.json',JSON.stringify(compact,null,2)+'\n');console.log('\nBACKTEST',JSON.stringify(compact));
