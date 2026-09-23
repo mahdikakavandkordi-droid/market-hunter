@@ -250,12 +250,16 @@ function candidateEngineV2DiagnosticReport(a){
     const leaveTopOut=period(picked.filter(e=>!topContributors.includes(e.symbol)));
     return {uniqueSymbols:ranked.length,top1SampleSharePct:share(1),top5SampleSharePct:share(5),top10SampleSharePct:share(10),symbolsWithN5:eligible.length,positiveMeanExcessSharePct:eligible.length?round(positive.length/eligible.length*100,1):null,medianSymbolMeanExcessReturn:median,topContributors,leaveTop5ContributorsOut:leaveTopOut};
   })();
+  const stageHoldoutDiagnostics=Object.fromEntries(Object.keys(rules).map(stage=>{
+    const rows=picked.filter(e=>e.stage===stage&&cut&&e.date>=cut);
+    return [stage,{summary:summary(rows),uncertainty:uncertaintyReport(rows),concentration:concentrationReport(rows)}];
+  }));
   const readiness=Object.fromEntries(Object.keys(rules).map(stage=>{
     const r=stageRobustness[stage], h=period(picked.filter(e=>e.stage===stage&&cut&&e.date>=cut)).overall;
     const robustHorizonsHint=stage==='Recovery';
     return [stage,{status:robustHorizonsHint&&r.stability==='promising'&&h.n>=15?'candidate-ready':'research-only',holdout:h}];
   }));
-  return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness,symbolConcentration,timeSlices,stageRobustness,readiness};
+  return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness,symbolConcentration,timeSlices,stageRobustness,stageHoldoutDiagnostics,readiness};
 }
 function seededBootstrapMeanCI(values,seed=1337,reps=1000){
   const v=values.filter(Number.isFinite); if(v.length<2)return null;
