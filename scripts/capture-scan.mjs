@@ -39,7 +39,14 @@ const snapshot={
   items:(scan.items||[]).map(x=>({
     symbol:x.symbol,stage:x.stage,score:x.score,rsi14:x.rsi14,
     ret5:x.ret5,ret20:x.ret20,rvol:x.rvol,rs20:x.rs20,
-    momentumShift:x.momentumShift,volumeVsAvg:x.volumeVsAvg
+    momentumShift:x.momentumShift,volumeVsAvg:x.volumeVsAvg,
+    candidateV2:x.candidateV2===true
+  })),
+  candidateV2Items:(scan.candidateV2Items||[]).map(x=>({
+    symbol:x.symbol,stage:x.stage,score:x.score,rsi14:x.rsi14,
+    ret5:x.ret5,ret20:x.ret20,rvol:x.rvol,rs20:x.rs20,
+    momentumShift:x.momentumShift,upDownVolumeRatio:x.upDownVolumeRatio,
+    higherLow:x.higherLow,lowState:x.lowState
   }))
 };
 
@@ -50,7 +57,10 @@ const compact=x=>JSON.stringify({
   breadth:x?.breadth,
   indexes:x?.indexes,
   items:(x?.items||[]).map(i=>[
-    i.symbol,i.stage,i.score,i.rsi14,i.ret5,i.ret20,i.rvol,i.rs20,i.momentumShift,i.volumeVsAvg
+    i.symbol,i.stage,i.score,i.rsi14,i.ret5,i.ret20,i.rvol,i.rs20,i.momentumShift,i.volumeVsAvg,i.candidateV2
+  ]),
+  candidateV2Items:(x?.candidateV2Items||[]).map(i=>[
+    i.symbol,i.stage,i.score,i.rsi14,i.ret5,i.ret20,i.rvol,i.rs20,i.momentumShift,i.upDownVolumeRatio,i.higherLow,i.lowState
   ])
 });
 
@@ -63,5 +73,5 @@ if(last && compact(last)===compact(snapshot)){
 history.snapshots.push(snapshot);
 history.snapshots=history.snapshots.slice(-60);
 await fs.writeFile(historyPath,JSON.stringify(history,null,2)+'\n');
-console.log(`Stored snapshot ${snapshot.at} with ${snapshot.items.length} candidates.`);
+console.log(`Stored snapshot ${snapshot.at} with ${snapshot.items.length} live candidates and ${snapshot.candidateV2Items.length} Candidate V2 shadow picks.`);
 
