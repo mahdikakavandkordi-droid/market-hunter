@@ -283,6 +283,25 @@ function concentrationReport(rows){
   const contributors=ranked.filter(x=>Number.isFinite(x.meanExcessReturn)).sort((a,b)=>(b.n*b.meanExcessReturn)-(a.n*a.meanExcessReturn)).slice(0,5).map(x=>x.symbol);
   return {uniqueSymbols:ranked.length,top1SampleSharePct:share(1),top5SampleSharePct:share(5),top10SampleSharePct:share(10),topContributors:contributors,leaveTop5Out:summary(rows.filter(e=>!contributors.includes(e.symbol)))};
 }
+function earlyWatchTimingReport(rows){
+  const finite=(x,k)=>x.map(e=>e[k]).filter(Number.isFinite);
+  const avg=v=>v.length?round(v.reduce((s,x)=>s+x,0)/v.length):null;
+  const rate=(x,fn)=>x.length?round(100*x.filter(fn).length/x.length,1):0;
+  const summarize=x=>({
+    n:x.length,
+    avgMomentumShift:avg(finite(x,'momentumShift')),
+    avgRs20:avg(finite(x,'rs20')),
+    avgRet5AtSignal:avg(finite(x,'ret5')),
+    avgRet20AtSignal:avg(finite(x,'ret20')),
+    avgMae:avg(finite(x,'mae')),
+    avgMfe:avg(finite(x,'mfe')),
+    hitPlus7:rate(x,e=>Number.isFinite(e.hitPlus7Day)),
+    hitMinus7:rate(x,e=>Number.isFinite(e.hitMinus7Day)),
+    plus7BeforeMinus7:rate(x,e=>Number.isFinite(e.hitPlus7Day)&&(!Number.isFinite(e.hitMinus7Day)||e.hitPlus7Day<e.hitMinus7Day)),
+    minus7BeforePlus7:rate(x,e=>Number.isFinite(e.hitMinus7Day)&&(!Number.isFinite(e.hitPlus7Day)||e.hitMinus7Day<e.hitPlus7Day))
+  });
+  return summarize(rows);
+}
 function researchV21Report(a){
   const rules={
     'Early Watch':{
@@ -336,7 +355,7 @@ function researchV21Report(a){
       const timeSlices=[0,1,2].map(i=>summary(picked.filter(e=>e.date>=thirds[i]&&(i===2?e.date<=thirds[i+1]:e.date<thirds[i+1]))));
       const regimes=Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(picked.filter(e=>(e.regime||'Unknown')===r))]));
       const holdRows=picked.filter(e=>cut&&e.date>=cut);
-      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),timeSlices,regimes};
+      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),timing:stage==='Early Watch'?earlyWatchTimingReport(picked):null,holdoutTiming:stage==='Early Watch'?earlyWatchTimingReport(holdRows):null,timeSlices,regimes};
     }
   }
   return out;
