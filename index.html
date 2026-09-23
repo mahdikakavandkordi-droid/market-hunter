@@ -376,15 +376,19 @@ function renderMarket(){
   <div class="sector-detail">
     <div><small>60D</small><b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
     <div><small>Pullback</small><b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
+    <div><small>Avg $ Vol</small><b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
     <div><small>vs MA20</small><b class="${cls(x.dist20)}">${pct(x.dist20)}</b></div>
     <div><small>vs MA50</small><b class="${cls(x.dist50)}">${pct(x.dist50)}</b></div>
-    <div><small>Relative 20D</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div>
-    <div><small>vs Sector</small><b class="${cls(x.sectorRelative20)}">${pct(x.sectorRelative20)}</b></div>
-    <div><small>Sector</small><b>${x.sectorStrength||'—'}</b></div>
+    <div><small>Trend</small><b>${x.trendState||'—'}</b></div>
+    <div><small>Momentum change</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.prev5)?pct(x.prev5)+' → '+pct(x.ret5):pct(x.momentumShift)}</b></div>
+    <div><small>5D unusual activity</small><b class="${x.unusual5dDirection==='positive'?'up':x.unusual5dDirection==='negative'?'down':'flat'}">${x.unusual5dLabel||'—'}</b></div>
+    <div><small>Relative vs ${x.benchmarkLabel||'TSX'}</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div>
+    <div><small>Relative vs sector</small><b class="${cls(x.sectorRs)}">${pct(x.sectorRs)}</b></div>
+    <div><small>Sector strength</small><b class="${x.sectorStrength==='Strong'?'up':x.sectorStrength==='Weak'?'down':'flat'}">${x.sector||'—'} · ${x.sectorStrength||'—'}${Number.isFinite(x.sectorBreadth)?' · '+x.sectorBreadth+'% breadth':''}</b></div>
+    <div><small>RSI 14</small><b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></div>
     <div><small>RVOL Today</small><b>${Number.isFinite(x.rvol)?fmt(x.rvol)+'×':'—'}</b></div>
-    <div><small>Volume day</small><b>${x.unusual5dDirection||'—'}</b></div>
-    <div><small>Local High</small><b>${Number.isFinite(x.localHigh)?fmt(x.localHigh):'—'} · ${x.highState==='local_high_broken'?'Broken':x.highState==='failed_high_break'?'Rejected':x.highState==='local_high_held'?'Held':x.highState||'—'}</b></div>
-    <div><small>Local Low</small><b>${Number.isFinite(x.localLow)?fmt(x.localLow):'—'} · ${x.lowState==='failed_low_break'?'Reclaimed':x.lowState==='local_low_broken'?'Broken':x.lowState==='local_low_held'?'Held':x.lowState||'—'}</b></div>
+    <div><small>Daily local high</small><b>${x.highState==='local_high_broken'?'Broken by close':x.highState==='failed_high_break'?'Rejected break':x.highState==='local_high_intact'?'Intact':x.highState==='local_high_held'?'Held':'—'}${Number.isFinite(x.localHigh)?' · '+fmt(x.localHigh):''}</b></div>
+    <div><small>Daily local low</small><b>${x.lowState==='local_low_held'?'Held':x.lowState==='failed_low_break'?'Reclaimed':x.lowState==='local_low_broken'?'Broken by close':'—'}${Number.isFinite(x.localLow)?' · '+fmt(x.localLow):''}</b></div>
     <button type="button" class="sector-chart" data-tv="${x.symbol}">Chart ↗</button>
   </div>
 </div>`;
