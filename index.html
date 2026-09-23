@@ -231,6 +231,10 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 .behavior-track{grid-column:1/-1;padding:8px 9px;border:1px solid rgba(103,168,255,.14);border-radius:9px;background:rgba(103,168,255,.035)}
 .behavior-track small{display:block;font-size:8px;color:var(--muted);margin-bottom:3px}.behavior-track b{display:block;font-size:10px;line-height:1.45;font-weight:650}.behavior-track span{display:block;margin-top:3px;font-size:8px;color:var(--muted2)}
+
+.selection-explain{grid-column:1/-1;padding:9px 10px;border:1px solid rgba(117,224,176,.16);border-radius:10px;background:rgba(117,224,176,.035)}
+.selection-explain small{display:block;color:var(--muted);font-size:8px;margin-bottom:3px}.selection-explain b{display:block;font-size:10px;line-height:1.5;font-weight:650}
+.change-expand{cursor:pointer}.change-detail{display:none;grid-column:1/-1;width:100%;margin-top:8px}.change-expand.expanded .change-detail{display:grid;gap:6px}
 </style>
 </head>
 <body>
@@ -633,6 +637,23 @@ function changeReasons(x,prev){
   if(Number.isFinite(x.rvol)&&x.rvol>=1.4&&(!Number.isFinite(prev.rvol)||prev.rvol<1.4)) reasons.push(`Unusual volume appeared · ${x.rvol.toFixed(1)}×`);
   return reasons;
 }
+function daily10Reasons(x,reasons=[]){
+  const out=[...reasons];
+  if(!out.length){
+    if(x.stage) out.push(`Stage: ${x.stage}`);
+    if(Number.isFinite(x.momentumShift)&&x.momentumShift>=2) out.push(`Momentum improving · +${x.momentumShift.toFixed(1)}pp`);
+    if(Number.isFinite(x.rs20)&&x.rs20>2) out.push(`Relative strength · ${pct(x.rs20)}`);
+    if(x.unusual5dDirection==='positive') out.push(`Positive unusual volume · ${Number.isFinite(x.max5Rvol)?fmt(x.max5Rvol)+'×':'recent'}`);
+    if(x.highState==='local_high_broken') out.push('Local high broken');
+    if(x.weeklyUp===true&&x.dailyUp===true) out.push('Weekly + daily trend aligned');
+    if(Number.isFinite(x.pullback)&&x.pullback>=-12&&x.pullback<=-2) out.push(`Constructive pullback · ${pct(x.pullback)}`);
+  }
+  return [...new Set(out)].slice(0,4);
+}
+function explainBlock(title,reasons){
+  return `<div class="selection-explain"><small>${title}</small><b>${reasons.length?reasons.join(' · '):'No additional material trigger recorded.'}</b></div>`;
+}
+
 function renderTop5(){
   const d=state.data;if(!d)return;
   const prevMap=previousCandidateMap();
@@ -651,7 +672,7 @@ function renderTop5(){
         <h2>Daily 10</h2>
         <p>Ten charts to review first today. Fresh technical changes are prioritized; this is not a BUY signal.</p>
       </div></div><span class="shown">${xs.length}</span></div>
-      <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[])},stageKind(x),x.stage)).join(''):'<div class="empty">No candidates available.</div>'}</div>
+      <div class="grid">${xs.length?xs.map(x=>card({...x,why:x._reasons.length?x._reasons:(x.why||[]),selectionExplanation:daily10Reasons(x,x._reasons)},stageKind(x),x.stage)).join(''):'<div class="empty">No candidates available.</div>'}</div>
     </section>`;
   bindCardActions('#top5Content');
 }
@@ -667,9 +688,10 @@ function renderChanges(){
   document.querySelector('#changesContent').innerHTML=`
     <section class="stage">
       <div class="stage-head"><div class="stage-main"><div class="stage-copy"><h2>Changes</h2><p>Only unusual behavior changes since the previous saved session: stage shifts, momentum turns, structure breaks/reclaims, or newly unusual volume.</p></div></div><span class="shown">${rows.length}</span></div>
-      <div class="change-list">${rows.length?rows.map(x=>`<div class="change-item ${x._dropped?'dropped':''}"><div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage||'Exited'}</span></div><p>${x._reasons.join(' · ')}</p><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button></div>`).join(''):'<div class="empty">No material changes detected versus the previous saved session.</div>'}</div>
+      <div class="change-list">${rows.length?rows.map(x=>`<div class="change-item change-expand ${x._dropped?'dropped':''}"><div><b>${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${x.stage||'Exited'}</span></div><p>${x._reasons.join(' · ')}</p><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button><div class="change-detail">${explainBlock('Why Changes',x._reasons)}${explainBlock('Current context',daily10Reasons(x,[]))}</div></div>`).join(''):'<div class="empty">No material changes detected versus the previous saved session.</div>'}</div>
     </section>`;
-  document.querySelectorAll('#changesContent .tv-link').forEach(el=>el.addEventListener('click',()=>openTradingView(el.dataset.tv)));
+  document.querySelectorAll('#changesContent .tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
+  document.querySelectorAll('#changesContent .change-expand').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('expanded')));
 }
 
 function renderHunter(){
@@ -731,6 +753,7 @@ function card(x,kind,fa,inWatch=false){
       <div class="score"><small>tap details</small></div>
       ${inWatch?'<div class="remove-hint">Swipe left to remove</div>':''}
       <div class="detail"><div class="detail-grid">
+        ${x.selectionExplanation?explainBlock('Why Daily 10',x.selectionExplanation):''}
         <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
         <div class="pill">Pullback<b class="${cls(x.pullback)}">${pct(x.pullback)}</b></div>
         <div class="pill">Avg $ Vol<b>$${Number.isFinite(x.avgDollarVol)?(x.avgDollarVol/1e6).toFixed(1)+'M':'—'}</b></div>
