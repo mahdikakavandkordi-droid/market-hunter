@@ -298,7 +298,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={data:null,history:[],tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
+const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function persistPositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
 function markBought(symbol){
@@ -741,8 +741,13 @@ function setupSummary(x){
   return setups.length?setups.map(s=>`${s.label} · ${s.confidence}`).join(' | '):'No defined setup detected';
 }
 
+function historicalStageContext(x){
+  const b=state.backtest?.byHorizon?.['20']?.byStageBehavior?.[x.stage];if(!b?.summary)return null;
+  const s=b.summary,t=b.tradeability||{};
+  return {text:`${s.n.toLocaleString()} historical 20-session observations · ${s.positiveRate}% positive · mean ${s.mean>0?'+':''}${s.mean}% · benchmark beat ${s.benchmarkBeatRate}%`,path:Number.isFinite(t.avgMae)&&Number.isFinite(t.avgMfe)?`Typical observed path: avg MAE ${t.avgMae}% · avg MFE +${t.avgMfe}%`:null};
+}
 function hunterBrief(x){
-  const e=pathEvidence(x),history=behaviorSummary(x.symbol),setups=detectSetups(x),triggers=triggerLabels(x);
+  const e=pathEvidence(x),history=behaviorSummary(x.symbol),setups=detectSetups(x),triggers=triggerLabels(x),historical=historicalStageContext(x);
   const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
   let stateLine='';
   if(x.stage==='Early Watch') stateLine='Weak setup showing early behavioral change; reversal is not confirmed.';
@@ -769,7 +774,7 @@ function hunterBrief(x){
     state:stateLine,
     positive:positives.length?positives.slice(0,4).join(' · '):'No strong positive evidence.',
     risk:risks.length?risks.slice(0,4).join(' · '):'No strong weakness evidence.',
-    history:hist,
+    history:hist+(historical?' · Historical stage: '+historical.text+(historical.path?' · '+historical.path:''):''),
     setup:setups.length?setups.map(s=>`${s.label} · ${s.confidence}`).join(' | '):'No defined setup detected',
     trigger:triggers.length?triggers.map(t=>t.label).join(' · '):'No new material trigger',
     check:chartCheck
@@ -1006,9 +1011,10 @@ async function load(){
   app.classList.add('loading');err.style.display='none';
   try{
     const min=document.querySelector('#liq').value;
-    const [scanRes,historyRes]=await Promise.allSettled([
+    const [scanRes,historyRes,backtestRes]=await Promise.allSettled([
       fetch(`/api/scan?minDollar=${min}`,{cache:'no-store'}),
-      fetch('/data/history.json',{cache:'no-store'})
+      fetch('/data/history.json',{cache:'no-store'}),
+      fetch('/data/backtest.json',{cache:'no-store'})
     ]);
     if(scanRes.status!=='fulfilled') throw scanRes.reason;
     const r=scanRes.value;
@@ -1018,6 +1024,7 @@ async function load(){
     if(historyRes.status==='fulfilled'&&historyRes.value.ok){
       try{state.history=await historyRes.value.json()}catch{state.history={snapshots:[]}}
     } else state.history={snapshots:[]};
+    if(backtestRes.status==='fulfilled'&&backtestRes.value.ok){try{state.backtest=await backtestRes.value.json()}catch{state.backtest=null}}else state.backtest=null;
     render();
   }catch(e){
     err.textContent=`Could not complete scan: ${e.message}`;
