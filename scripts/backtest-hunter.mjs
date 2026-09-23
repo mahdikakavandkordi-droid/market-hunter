@@ -257,6 +257,28 @@ function candidateEngineV2DiagnosticReport(a){
   }));
   return {status:'diagnostic-not-live',rules:'Pre-specified from stage evidence diagnostics; requires separate-period robustness before any Live use.',picked:summary(picked),tradeability:stageTradeabilityReport(picked),byStage,chronologicalValidation:{cutDate:cut,development:period(picked.filter(e=>!cut||e.date<cut)),holdout:period(picked.filter(e=>cut&&e.date>=cut))},regimeRobustness,symbolRobustness,symbolConcentration,timeSlices,stageRobustness,readiness};
 }
+function seededBootstrapMeanCI(values,seed=1337,reps=1000){
+  const v=values.filter(Number.isFinite); if(v.length<2)return null;
+  let s=seed>>>0; const rnd=()=>((s=(1664525*s+1013904223)>>>0)/4294967296);
+  const means=[]; for(let r=0;r<reps;r++){let sum=0;for(let i=0;i<v.length;i++)sum+=v[Math.floor(rnd()*v.length)];means.push(sum/v.length)}
+  means.sort((a,b)=>a-b); return {low:round(means[Math.floor(reps*.025)]),high:round(means[Math.floor(reps*.975)])};
+}
+function wilsonCI(success,n,z=1.96){
+  if(!n)return null; const p=success/n,den=1+z*z/n,mid=(p+z*z/(2*n))/den,half=z*Math.sqrt((p*(1-p)+z*z/(4*n))/n)/den;
+  return {low:round((mid-half)*100,1),high:round((mid+half)*100,1)};
+}
+function uncertaintyReport(rows){
+  if(!rows.length)return null;
+  const ex=rows.map(e=>e.excessReturn).filter(Number.isFinite),ret=rows.map(e=>e.forwardReturn).filter(Number.isFinite);
+  return {n:rows.length,positiveRateCI95:wilsonCI(ret.filter(x=>x>0).length,ret.length),meanReturnCI95:seededBootstrapMeanCI(ret,1337),meanExcessReturnCI95:seededBootstrapMeanCI(ex,7331)};
+}
+function concentrationReport(rows){
+  if(!rows.length)return null; const m={}; for(const e of rows)(m[e.symbol]??=[]).push(e);
+  const ranked=Object.entries(m).map(([symbol,x])=>({symbol,n:x.length,meanExcessReturn:summary(x)?.meanExcessReturn})).sort((a,b)=>b.n-a.n);
+  const share=k=>round(ranked.slice(0,k).reduce((s,x)=>s+x.n,0)/rows.length*100,1);
+  const contributors=ranked.filter(x=>Number.isFinite(x.meanExcessReturn)).sort((a,b)=>(b.n*b.meanExcessReturn)-(a.n*a.meanExcessReturn)).slice(0,5).map(x=>x.symbol);
+  return {uniqueSymbols:ranked.length,top1SampleSharePct:share(1),top5SampleSharePct:share(5),top10SampleSharePct:share(10),topContributors:contributors,leaveTop5Out:summary(rows.filter(e=>!contributors.includes(e.symbol)))};
+}
 function researchV21Report(a){
   const rules={
     'Early Watch':{
@@ -284,7 +306,8 @@ function researchV21Report(a){
       const thirds=[0,.333,.667,1].map(p=>dates[Math.min(dates.length-1,Math.floor((dates.length-1)*p))]);
       const timeSlices=[0,1,2].map(i=>summary(picked.filter(e=>e.date>=thirds[i]&&(i===2?e.date<=thirds[i+1]:e.date<thirds[i+1]))));
       const regimes=Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(picked.filter(e=>(e.regime||'Unknown')===r))]));
-      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(picked.filter(e=>cut&&e.date>=cut)),timeSlices,regimes};
+      const holdRows=picked.filter(e=>cut&&e.date>=cut);
+      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),timeSlices,regimes};
     }
   }
   return out;
