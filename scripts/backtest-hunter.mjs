@@ -292,6 +292,14 @@ function researchV21Report(a){
       // changing the frozen live/forward candidate.
       reclaimMomentum:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0,
       reclaimVolume:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
+      // Early Watch should be allowed to recover before relative strength turns
+      // fully positive. Test softer RS floors alone and with volume support.
+      reclaimRsNeg8:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.rs20)&&e.rs20>=-8,
+      reclaimRsNeg5:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.rs20)&&e.rs20>=-5,
+      reclaimRsNeg3:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.rs20)&&e.rs20>=-3,
+      reclaimVolumeRsNeg8:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&Number.isFinite(e.rs20)&&e.rs20>=-8,
+      reclaimVolumeRsNeg5:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&Number.isFinite(e.rs20)&&e.rs20>=-5,
+      reclaimVolumeRsNeg3:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&Number.isFinite(e.rs20)&&e.rs20>=-3,
       reclaimRs:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.rs20)&&e.rs20>=0,
       reclaimMomentumVolume:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
       reclaimMomentumRs:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.momentumShift)&&e.momentumShift>0&&Number.isFinite(e.rs20)&&e.rs20>=0,
