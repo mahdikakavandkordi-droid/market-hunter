@@ -118,6 +118,79 @@ for(let i=0;i<currentIndex;i++){
   }
 }
 
+// Mature objective outcomes for every surfaced candidate. These are diagnostics only:
+// they never auto-change scanner rules, stage thresholds, or Hunter weights.
+const horizons=[1,3,5,10,20];
+for(let i=0;i<currentIndex;i++){
+  const snap=history.snapshots[i];
+  if(snap.version!==scan.version||snap.minDollar!==scan.minDollar) continue;
+  const sameConfig=history.snapshots.filter(s=>s.version===snap.version&&s.minDollar===snap.minDollar);
+  const entryPos=sameConfig.findIndex(s=>s.marketAsOf===snap.marketAsOf);
+  const nowPos=sameConfig.findIndex(s=>s.marketAsOf===scan.marketAsOf);
+  const sessions=nowPos-entryPos;
+  if(!horizons.includes(sessions)) continue;
+  for(const entry of [...(snap.items||[]),...(snap.earlyWatch||[])]){
+    entry.outcomes??={};
+    if(entry.outcomes[String(sessions)]) continue;
+    const now=allNow.get(entry.symbol);
+    if(!now||!Number.isFinite(now.price)||!Number.isFinite(entry.price)) continue;
+    entry.outcomes[String(sessions)]={
+      price:now.price,forwardReturn:pct(now.price,entry.price),
+      stage:stageNow.get(entry.symbol)||'Unclassified',
+      momentumShift:now.momentumShift??null,rs20:now.rs20??null,
+      highState:now.highState??null,lowState:now.lowState??null
+    };
+  }
+}
+
+function observationRows(){
+  const rows=[];
+  for(const snap of history.snapshots){
+    for(const x of [...(snap.items||[]),...(snap.earlyWatch||[])]){
+      for(const h of horizons){
+        const r=x.outcomes?.[String(h)]?.forwardReturn;
+        if(Number.isFinite(r)) rows.push({snap,x,h,r});
+      }
+    }
+  }
+  return rows;
+}
+function summarize(rows){
+  const returns=rows.map(v=>v.r).filter(Number.isFinite);
+  if(!returns.length) return null;
+  return {
+    observed:returns.length,meanReturn:mean(returns),medianReturn:median(returns),
+    positiveRate:round(returns.filter(v=>v>0).length/returns.length*100,1),
+    gain7Rate:round(returns.filter(v=>v>=7).length/returns.length*100,1),
+    loss7Rate:round(returns.filter(v=>v<=-7).length/returns.length*100,1)
+  };
+}
+const observations=observationRows();
+history.validation={generatedAt:new Date().toISOString(),note:'Diagnostic historical outcomes only; no automatic rule or weight changes.',bySetup:{},byStage:{},byTrigger:{}};
+for(const h of horizons){
+  for(const row of observations.filter(v=>v.h===h)){
+    for(const setup of row.x.setups||[]){
+      history.validation.bySetup[setup]??={};
+      history.validation.bySetup[setup][String(h)]??=[];
+      history.validation.bySetup[setup][String(h)].push(row);
+    }
+    const stage=row.x.stage||'Unclassified';
+    history.validation.byStage[stage]??={};
+    history.validation.byStage[stage][String(h)]??=[];
+    history.validation.byStage[stage][String(h)].push(row);
+    for(const trigger of row.x.triggers||[]){
+      history.validation.byTrigger[trigger]??={};
+      history.validation.byTrigger[trigger][String(h)]??=[];
+      history.validation.byTrigger[trigger][String(h)].push(row);
+    }
+  }
+}
+for(const group of ['bySetup','byStage','byTrigger']){
+  for(const [name,hs] of Object.entries(history.validation[group])){
+    for(const [h,rows] of Object.entries(hs)) history.validation[group][name][h]=summarize(rows);
+  }
+}
+
 // Cohort summaries are derived only from recorded outcomes.
 for(const snap of history.snapshots){
   if(!Array.isArray(snap.top5)) continue;
