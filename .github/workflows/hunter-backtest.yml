@@ -11,7 +11,7 @@ on:
         required: false
         default: '5y'
       holdout_end:
-        description: 'Optional last signal date (YYYY-MM-DD) for untouched historical holdout'
+        description: 'Last signal date: YYYY-MM-DD, or NONE for full range'
         required: false
         default: '2024-12-31'
       horizons:
@@ -31,7 +31,7 @@ jobs:
           BACKTEST_SYMBOLS: ${{ inputs.symbols }}
           BACKTEST_RANGE: ${{ inputs.range }}
           BACKTEST_HORIZONS: ${{ inputs.horizons }}
-          BACKTEST_HOLDOUT_END: ${{ inputs.holdout_end }}
+          BACKTEST_HOLDOUT_END: ${{ inputs.holdout_end == 'NONE' && '' || inputs.holdout_end }}
         run: node scripts/backtest-hunter.mjs
       - name: Commit report
         run: |
