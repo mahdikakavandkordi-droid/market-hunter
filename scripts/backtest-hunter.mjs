@@ -208,6 +208,18 @@ function replayReport(a){
     return {date,picks:rows.map(e=>({symbol:e.symbol,stage:e.stage,setups:e.strategyPass,regime:e.regime,entry:e.entry,forwardReturn:e.forwardReturn,mae:e.mae,mfe:e.mfe,daysToMae:e.daysToMae,daysToMfe:e.daysToMfe,hitPlus7Day:e.hitPlus7Day,hitMinus7Day:e.hitMinus7Day,benchmarkReturn:e.benchmarkReturn,excessReturn:e.excessReturn,rs20:e.rs20,momentumShift:e.momentumShift,atr14Pct:e.atr14Pct,upDownVolumeRatio:e.upDownVolumeRatio}))};
   })};
 }
+function failedBreakdownRsValidation(rows){
+  const bins=[['0..2',0,2],['2..4',2,4],['4+',4,Infinity]];
+  const report=a=>Object.fromEntries(bins.map(([name,lo,hi])=>{
+    const x=a.filter(e=>Number.isFinite(e.rs20)&&e.rs20>=lo&&e.rs20<hi);
+    return [name,{...summary(x),tradeability:tradeabilityReport(x)}];
+  }));
+  const byYear={};
+  for(const year of [...new Set(rows.map(e=>String(e.date).slice(0,4)))].sort()){
+    byYear[year]=report(rows.filter(e=>String(e.date).startsWith(year+'-')));
+  }
+  return {preSpecifiedBins:'RS20: 0-2, 2-4, 4+',overall:report(rows),byYear};
+}
 function failedBreakdownQualityDiagnostics(rows){
   const groups={winners:rows.filter(e=>Number.isFinite(e.forwardReturn)&&e.forwardReturn>0),losers:rows.filter(e=>Number.isFinite(e.forwardReturn)&&e.forwardReturn<=0),bigWinners:rows.filter(e=>Number.isFinite(e.forwardReturn)&&e.forwardReturn>=7),bigLosers:rows.filter(e=>Number.isFinite(e.forwardReturn)&&e.forwardReturn<=-7)};
   const fields=['rs20','momentumShift','atr14Pct','upDownVolumeRatio','roomToResistance','ret5','ret20','pullback'];
@@ -224,7 +236,7 @@ function failedBreakdownOnlyReport(a,horizon){
     byYear[year]={summary:summary(yr),tradeability:tradeabilityReport(yr),sequentialCapital100:sequentialCapital100Report(yr,horizon)};
   }
   const exclusive=rows.filter(e=>!e.strategyPass?.includes('Higher-Low Turn'));
-  return {setup:'Failed Breakdown / Reclaim',frozenRules:true,summary:summary(rows),tradeability:tradeabilityReport(rows),sequentialCapital100:seq,portfolioStress:portfolioStressReport(rows,horizon),benchmarkComparison:benchmarkComparisonReport(rows,horizon),byRegime:regimeReport(rows),qualityDiagnostics:failedBreakdownQualityDiagnostics(rows),byYear,exclusiveFailedBreakdown:{summary:summary(exclusive),tradeability:tradeabilityReport(exclusive),sequentialCapital100:sequentialCapital100Report(exclusive,horizon)}};
+  return {setup:'Failed Breakdown / Reclaim',frozenRules:true,summary:summary(rows),tradeability:tradeabilityReport(rows),sequentialCapital100:seq,portfolioStress:portfolioStressReport(rows,horizon),benchmarkComparison:benchmarkComparisonReport(rows,horizon),byRegime:regimeReport(rows),qualityDiagnostics:failedBreakdownQualityDiagnostics(rows),rsValidation:failedBreakdownRsValidation(rows),byYear,exclusiveFailedBreakdown:{summary:summary(exclusive),tradeability:tradeabilityReport(exclusive),sequentialCapital100:sequentialCapital100Report(exclusive,horizon)}};
 }
 function regimeReport(a){const out={};for(const regime of ['Strong','Positive','Mixed','Weak','Unknown']){const rows=a.filter(e=>e.regime===regime),picked=rows.filter(v2Candidate);out[regime]={all:summary(rows),v2:summary(picked),higherLow:summary(picked.filter(e=>e.strategyPass?.includes('Higher-Low Turn'))),failedBreakdown:summary(picked.filter(e=>e.strategyPass?.includes('Failed Breakdown / Reclaim')))}}return out}
 function v2WalkForward(a){
