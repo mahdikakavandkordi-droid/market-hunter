@@ -270,6 +270,10 @@ function v2Candidate(e){
   if(e.strategyPass?.includes('Failed Breakdown / Reclaim'))return Number.isFinite(e.atr14Pct)&&e.atr14Pct<f.atr14PctMaxExclusive&&Number.isFinite(e.rs20)&&e.rs20>=f.rs20Min&&e.rs20<f.rs20MaxExclusive&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=f.upDownVolumeRatioMin&&e.upDownVolumeRatio<f.upDownVolumeRatioMaxExclusive;
   return false;
 }
+function failedBreakdownV2Candidate(e){
+  const f=HUNTER_V2_SPEC.failedBreakdown;
+  return e.strategyPass?.includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<f.atr14PctMaxExclusive&&Number.isFinite(e.rs20)&&e.rs20>=f.rs20Min&&e.rs20<f.rs20MaxExclusive&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=f.upDownVolumeRatioMin&&e.upDownVolumeRatio<f.upDownVolumeRatioMaxExclusive;
+}
 function v2Report(a){
   const picked=a.filter(v2Candidate),bySetup={};
   for(const name of ['Higher-Low Turn','Failed Breakdown / Reclaim'])
@@ -399,7 +403,9 @@ function failedBreakdownQualityDiagnostics(rows){
   return Object.fromEntries(Object.entries(groups).map(([k,v])=>[k,profile(v)]));
 }
 function failedBreakdownOnlyReport(a,horizon){
-  const rows=dedupe(a.filter(e=>e.strategyPass?.includes('Failed Breakdown / Reclaim')&&v2Candidate(e)),horizon);
+  const rows=dedupe(a.filter(failedBreakdownV2Candidate),horizon);
+  const contaminated=rows.filter(e=>Number.isFinite(e.rs20)&&e.rs20>=HUNTER_V2_SPEC.failedBreakdown.rs20MaxExclusive);
+  if(contaminated.length)throw new Error(`Failed Breakdown invariant violated: ${contaminated.length} dedicated events have RS20 >= ${HUNTER_V2_SPEC.failedBreakdown.rs20MaxExclusive}`);
   const seq=sequentialCapital100Report(rows,horizon);
   const byYear={};
   for(const year of [...new Set(rows.map(e=>String(e.date).slice(0,4)))].sort()){
