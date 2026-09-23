@@ -228,7 +228,7 @@ export function dailyStructure(rows){
   return {localHigh:round(localHigh,2),localLow:round(localLow,2),highState,lowState};
 }
 
-export export function metrics(data,benchmarkData,sectorData){
+export function metrics(data,benchmarkData,sectorData){
   const r=data.rows,c=r.map(x=>x.close),v=r.map(x=>x.volume);
   if(c.length<65) return null;
 
