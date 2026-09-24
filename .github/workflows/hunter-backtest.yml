@@ -44,7 +44,7 @@ jobs:
       - name: Run no-lookahead backtest
         env:
           BACKTEST_SYMBOLS: ${{ inputs.universe == 'canadian-core' && '' || inputs.symbols }}
-          BACKTEST_UNIVERSE: ${{ inputs.universe || 'default' }}
+          BACKTEST_UNIVERSE: ${{ github.ref == 'refs/heads/research/compact-stage-summary' && github.event_name == 'push' && 'canadian-core' || inputs.universe || 'default' }}
           BACKTEST_RANGE: ${{ inputs.range || '5y' }}
           BACKTEST_HORIZONS: ${{ inputs.horizons || '5,10,20' }}
           BACKTEST_HOLDOUT_END: ${{ github.event_name == 'workflow_dispatch' && inputs.holdout_end != 'NONE' && inputs.holdout_end || '' }}
