@@ -61,7 +61,7 @@ jobs:
         run: |
           git config user.name "market-hunter-bot"
           git config user.email "market-hunter-bot@users.noreply.github.com"
-          git add data/backtest-batch-${{ matrix.batch }}.json data/stage-research-summary-batch-${{ matrix.batch }}.json
+          git add data/backtest-batch-${{ matrix.batch }}.json data/stage-research-summary-batch-${{ matrix.batch }}.json data/early-reclaim-cases-batch-${{ matrix.batch }}.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "backtest: refresh Hunter historical validation batch ${{ matrix.batch }}"
           git pull --rebase origin research/compact-stage-summary
