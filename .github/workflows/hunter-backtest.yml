@@ -6,6 +6,10 @@ on:
         description: 'Comma-separated Yahoo symbols'
         required: false
         default: 'RY.TO,TD.TO,BMO.TO,BNS.TO,CM.TO,NA.TO,SHOP.TO,CSU.TO,OTEX.TO,LUN.TO,ABX.TO,AEM.TO,CNQ.TO,SU.TO,CVE.TO,IMO.TO,CNR.TO,CP.TO,WCN.TO,FTS.TO,EMA.TO,T.TO,BCE.TO,TRP.TO,ENB.TO,ATD.TO,DOL.TO,L.TO,MRU.TO,QSR.TO,CCO.TO,NTR.TO,POW.TO,MFC.TO,SLF.TO,GWO.TO,BN.TO,BAM.TO,WSP.TO,STN.TO,TFII.TO,MG.TO,GIB-A.TO,AAPL.TO,MSFT.TO,NVDA.TO,AMZN.TO,GOOG.TO,META.TO,TSLA.TO'
+      universe:
+        description: 'Universe preset: default or canadian-core'
+        required: false
+        default: 'default'
       range:
         description: 'Yahoo history range'
         required: false
@@ -39,7 +43,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run no-lookahead backtest
         env:
-          BACKTEST_SYMBOLS: ${{ inputs.symbols }}
+          BACKTEST_SYMBOLS: ${{ inputs.universe == 'canadian-core' && '' || inputs.symbols }}
+          BACKTEST_UNIVERSE: ${{ inputs.universe || 'default' }}
           BACKTEST_RANGE: ${{ inputs.range || '5y' }}
           BACKTEST_HORIZONS: ${{ inputs.horizons || '5,10,20' }}
           BACKTEST_HOLDOUT_END: ${{ github.event_name == 'workflow_dispatch' && inputs.holdout_end != 'NONE' && inputs.holdout_end || '' }}
