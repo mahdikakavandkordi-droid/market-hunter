@@ -209,11 +209,47 @@ function stageEvidenceCombinationReport(a){
   }
   return out;
 }
+const EARLY_WATCH_DISCOVERY_V1=Object.freeze({
+  version:'early-watch-discovery-v1-frozen-2026-09-24',
+  status:'frozen-forward-evaluation',
+  live:false,
+  philosophy:'Discovery first: preserve chart-worthy early turns; evidence ranks candidates instead of acting as buy/sell gates.',
+  setup:'Failed Breakdown / Reclaim',
+  quality:Object.freeze({
+    upDownVolumeRatioMin:.70,
+    upDownVolumeRatioMaxExclusive:.85,
+    atr14PctMaxExclusive:6
+  }),
+  ranking:Object.freeze({
+    momentum:'priority evidence; >=4 strongest, >=2 strong, >0 supportive; not exclusionary',
+    relativeStrength:'priority evidence; >=0 strongest, >=-8 supportive; not exclusionary',
+    volume:'priority/context evidence inside the discovery band; not a confirmation gate'
+  }),
+  validation:Object.freeze({
+    recentEligible:109,
+    recentTop:Object.freeze({n:37,meanReturn:5.17,meanExcessReturn:3.35,positiveRate:67.6,meanMAE:-2.79}),
+    recentMiddle:Object.freeze({n:37,meanReturn:2.46,meanExcessReturn:.39,positiveRate:59.5,meanMAE:-3.63}),
+    recentLower:Object.freeze({n:35,meanReturn:1.50,meanExcessReturn:.01,positiveRate:51.4,meanMAE:-4.55}),
+    caveat:'Ranking is prioritization, not a return forecast; separation is imperfect across older periods and batches.'
+  }),
+  freezeRule:'Do not tune thresholds from forward outcomes. Any rule change requires a new version/cohort.'
+});
+
+function earlyWatchDiscoveryV1(e){
+  return e.stage==='Early Watch' &&
+    (e.setups||[]).includes(EARLY_WATCH_DISCOVERY_V1.setup) &&
+    Number.isFinite(e.upDownVolumeRatio) &&
+    e.upDownVolumeRatio>=EARLY_WATCH_DISCOVERY_V1.quality.upDownVolumeRatioMin &&
+    e.upDownVolumeRatio<EARLY_WATCH_DISCOVERY_V1.quality.upDownVolumeRatioMaxExclusive &&
+    Number.isFinite(e.atr14Pct) &&
+    e.atr14Pct<EARLY_WATCH_DISCOVERY_V1.quality.atr14PctMaxExclusive;
+}
+
 const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
   version:'stage-evidence-candidate-v2-2026-09-23',
   status:'frozen-diagnostic',
   live:false,
-  rationale:'Recovery remains the frozen forward-evaluation candidate, but concentration diagnostics require additional shadow evidence before any Live promotion. Early Watch, Attractive Growth and Established Move remain research-only.',
+  rationale:'Recovery remains the frozen forward-evaluation candidate, but concentration diagnostics require additional shadow evidence before any Live promotion. Early Watch is frozen for forward discovery evaluation; Attractive Growth and Established Move remain research-only.',
   recovery:Object.freeze({
     requireStructuralTurn:true,
     requireRs20NonNegative:true,
