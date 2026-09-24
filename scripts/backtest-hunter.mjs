@@ -44,12 +44,15 @@ function stageAwareEvidence(e){
   let p=0;
   const rs=e.rs20,m=e.momentumShift,v=e.upDownVolumeRatio,room=e.roomToResistance,st=e.swingTrend,set=e.setups||[];
   if(e.stage==='Early Watch'){
-    if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=2;else if(m<=-3)p-=2}
-    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
+    // Discovery-first ranking: momentum/RS/volume improve priority, but are not hard gates.
+    // Only genuinely weak evidence is penalized so chart-worthy early turns remain visible.
+    if(Number.isFinite(m)){if(m>=4)p+=4;else if(m>=2)p+=3;else if(m>0)p+=2;else if(m<=-3)p-=2}
+    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>=-8)p+=1;else if(rs<-15)p-=2}
+    if(Number.isFinite(v)){if(v>=.85)p+=2;else if(v>=.70)p+=1;else if(v<.55)p-=1}
+    if(set.includes('Failed Breakdown / Reclaim'))p+=3;
     if(set.includes('Selling Exhaustion'))p+=2;
-    if(set.includes('Failed Breakdown / Reclaim'))p+=2;
     if(st==='Structure improving')p+=2;
-    if(st==='Lower highs + lower lows')p-=1; // weakness is expected here, not a global veto
+    if(st==='Lower highs + lower lows')p-=1; // expected in Early Watch; penalty, not exclusion
   }else if(e.stage==='Recovery'){
     if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=1;else p-=2}
     if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
