@@ -65,4 +65,8 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "backtest: refresh Hunter historical validation batch ${{ matrix.batch }}"
           git pull --rebase origin research/compact-stage-summary
-          git push
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin research/compact-stage-summary
+            git push && break
+            sleep $((attempt * 2))
+          done
