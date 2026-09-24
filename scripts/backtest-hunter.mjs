@@ -334,6 +334,44 @@ function attractiveGrowthRankValidationReport(a){
   };
 }
 
+const ATTRACTIVE_GROWTH_RESEARCH_V1=Object.freeze({
+  version:'attractive-growth-research-v1-frozen-2026-09-24',
+  status:'frozen-forward-research',
+  live:false,
+  stage:'Attractive Growth',
+  eligibility:'Stage classification only; no RS, momentum, volume, or room-to-resistance hard gate.',
+  rankingOnly:Object.freeze({
+    structure:'HH/HL strongest; Structure improving supportive; Lower highs + lower lows penalty',
+    relativeStrength:'RS20 >=4 strongest, >=0 supportive, negative values reduce priority but do not exclude',
+    momentum:'positive/improving momentum raises priority; sharp deterioration lowers priority but does not exclude',
+    volume:'up/down volume >=1.2 raises priority; weak volume lowers priority but does not exclude',
+    roomToResistance:'>=7 strongest, >=3 usable; <3 lowers priority but does not exclude'
+  }),
+  researchFinding:'Across four independent batches, single hard gates were unstable. HH/HL + volume showed promise in some batches but failed in others; HH/HL + RS was also inconsistent. Preserve breadth and use the evidence as ranking until forward data is accumulated.',
+  freezeRule:'Do not promote a historical winner into an exclusion rule. Any threshold/gate change requires a new version and forward cohort.'
+});
+function attractiveGrowthResearchRank(e){
+  if(e.stage!==ATTRACTIVE_GROWTH_RESEARCH_V1.stage)return null;
+  let p=0;
+  if(e.swingTrend==='Higher highs + higher lows')p+=4;
+  else if(e.swingTrend==='Structure improving')p+=2;
+  else if(e.swingTrend==='Lower highs + lower lows')p-=3;
+  if(Number.isFinite(e.rs20)){if(e.rs20>=4)p+=3;else if(e.rs20>=0)p+=2;else if(e.rs20<-5)p-=2;}
+  if(Number.isFinite(e.momentumShift)){if(e.momentumShift>=3)p+=3;else if(e.momentumShift>=1)p+=2;else if(e.momentumShift<=-3)p-=2;}
+  if(Number.isFinite(e.upDownVolumeRatio)){if(e.upDownVolumeRatio>=1.2)p+=3;else if(e.upDownVolumeRatio>=.85)p+=1;else p-=1;}
+  if(Number.isFinite(e.roomToResistance)){if(e.roomToResistance>=7)p+=2;else if(e.roomToResistance>=3)p+=1;else p-=2;}
+  return p;
+}
+function assertAttractiveGrowthResearchV1Regression(){
+  const base={stage:'Attractive Growth',swingTrend:'Structure improving'};
+  const weak={...base,rs20:-20,momentumShift:-5,upDownVolumeRatio:.4,roomToResistance:1};
+  const strong={...base,swingTrend:'Higher highs + higher lows',rs20:8,momentumShift:5,upDownVolumeRatio:1.5,roomToResistance:10};
+  if(attractiveGrowthResearchRank(weak)===null)throw new Error('Attractive Growth regression: ranking evidence became an eligibility gate');
+  if(!(attractiveGrowthResearchRank(strong)>attractiveGrowthResearchRank(weak)))throw new Error('Attractive Growth regression: stronger evidence must rank above weak evidence');
+  if(attractiveGrowthResearchRank({...strong,stage:'Recovery'})!==null)throw new Error('Attractive Growth regression: stage eligibility lost');
+}
+assertAttractiveGrowthResearchV1Regression();
+
 const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
   version:'stage-evidence-candidate-v2-2026-09-23',
   status:'frozen-diagnostic',
