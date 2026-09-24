@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T17:07:17.274Z",
+  "generatedAt": "2026-09-24T17:25:55.212Z",
   "range": "5y",
   "holdoutEnd": null,
   "horizons": [
@@ -5041,6 +5041,260 @@
         },
         "note": "Buckets validate prioritization only; they are not return forecasts or exclusion thresholds."
       },
+      "attractiveGrowthCohortAuditV1": {
+        "spec": {
+          "version": "attractive-growth-research-v1-frozen-2026-09-24",
+          "status": "frozen-forward-research",
+          "live": false,
+          "stage": "Attractive Growth",
+          "eligibility": "Stage classification only; no RS, momentum, volume, or room-to-resistance hard gate.",
+          "rankingOnly": {
+            "structure": "HH/HL strongest; Structure improving supportive; Lower highs + lower lows penalty",
+            "relativeStrength": "RS20 >=4 strongest, >=0 supportive, negative values reduce priority but do not exclude",
+            "momentum": "positive/improving momentum raises priority; sharp deterioration lowers priority but does not exclude",
+            "volume": "up/down volume >=1.2 raises priority; weak volume lowers priority but does not exclude",
+            "roomToResistance": ">=7 strongest, >=3 usable; <3 lowers priority but does not exclude"
+          },
+          "researchFinding": "Across four independent batches, single hard gates were unstable. HH/HL + volume showed promise in some batches but failed in others; HH/HL + RS was also inconsistent. Preserve breadth and use the evidence as ranking until forward data is accumulated.",
+          "freezeRule": "Do not promote a historical winner into an exclusion rule. Any threshold/gate change requires a new version and forward cohort."
+        },
+        "stageCohort": {
+          "summary": {
+            "n": 4575,
+            "positiveRate": 54.4,
+            "gain7Rate": 5.7,
+            "loss7Rate": 5.1,
+            "mean": 0.27,
+            "median": 0.37,
+            "benchmarkBeatRate": 50.3,
+            "meanExcessReturn": 0.09
+          },
+          "tradeability": {
+            "n": 4575,
+            "avgReturn": 0.27,
+            "avgMae": -1.82,
+            "avgMfe": 2.16,
+            "maeBelow3": 25.51,
+            "maeBelow5": 12.52,
+            "maeBelow7": 6.56,
+            "hitPlus7": 7.8,
+            "hitMinus7": 6.56,
+            "plus7BeforeMinus7": 7.72,
+            "minus7BeforePlus7": 6.54
+          }
+        },
+        "hhhlGateAudit": {
+          "accepted": {
+            "summary": {
+              "n": 2290,
+              "positiveRate": 53.6,
+              "gain7Rate": 5,
+              "loss7Rate": 5.3,
+              "mean": 0.13,
+              "median": 0.3,
+              "benchmarkBeatRate": 50.1,
+              "meanExcessReturn": 0.03
+            },
+            "tradeability": {
+              "n": 2290,
+              "avgReturn": 0.13,
+              "avgMae": -1.86,
+              "avgMfe": 2.02,
+              "maeBelow3": 25.15,
+              "maeBelow5": 12.71,
+              "maeBelow7": 6.55,
+              "hitPlus7": 7.03,
+              "hitMinus7": 6.55,
+              "plus7BeforeMinus7": 6.99,
+              "minus7BeforePlus7": 6.55
+            }
+          },
+          "rejected": {
+            "summary": {
+              "n": 2285,
+              "positiveRate": 55.3,
+              "gain7Rate": 6.4,
+              "loss7Rate": 4.9,
+              "mean": 0.42,
+              "median": 0.47,
+              "benchmarkBeatRate": 50.5,
+              "meanExcessReturn": 0.15
+            },
+            "tradeability": {
+              "n": 2285,
+              "avgReturn": 0.42,
+              "avgMae": -1.79,
+              "avgMfe": 2.3,
+              "maeBelow3": 25.86,
+              "maeBelow5": 12.34,
+              "maeBelow7": 6.56,
+              "hitPlus7": 8.58,
+              "hitMinus7": 6.56,
+              "plus7BeforeMinus7": 8.45,
+              "minus7BeforePlus7": 6.52
+            }
+          },
+          "byStructure": {
+            "Higher highs + higher lows": {
+              "summary": {
+                "n": 2290,
+                "positiveRate": 53.6,
+                "gain7Rate": 5,
+                "loss7Rate": 5.3,
+                "mean": 0.13,
+                "median": 0.3,
+                "benchmarkBeatRate": 50.1,
+                "meanExcessReturn": 0.03
+              },
+              "tradeability": {
+                "n": 2290,
+                "avgReturn": 0.13,
+                "avgMae": -1.86,
+                "avgMfe": 2.02,
+                "maeBelow3": 25.15,
+                "maeBelow5": 12.71,
+                "maeBelow7": 6.55,
+                "hitPlus7": 7.03,
+                "hitMinus7": 6.55,
+                "plus7BeforeMinus7": 6.99,
+                "minus7BeforePlus7": 6.55
+              }
+            },
+            "Structure improving": {
+              "summary": {
+                "n": 1665,
+                "positiveRate": 55.2,
+                "gain7Rate": 6.4,
+                "loss7Rate": 4.8,
+                "mean": 0.4,
+                "median": 0.38,
+                "benchmarkBeatRate": 49.5,
+                "meanExcessReturn": 0.14
+              },
+              "tradeability": {
+                "n": 1665,
+                "avgReturn": 0.4,
+                "avgMae": -1.79,
+                "avgMfe": 2.29,
+                "maeBelow3": 26.01,
+                "maeBelow5": 11.89,
+                "maeBelow7": 6.19,
+                "hitPlus7": 8.35,
+                "hitMinus7": 6.19,
+                "plus7BeforeMinus7": 8.23,
+                "minus7BeforePlus7": 6.13
+              }
+            },
+            "Lower highs + lower lows": {
+              "summary": {
+                "n": 620,
+                "positiveRate": 55.6,
+                "gain7Rate": 6.5,
+                "loss7Rate": 5.2,
+                "mean": 0.46,
+                "median": 0.67,
+                "benchmarkBeatRate": 53.1,
+                "meanExcessReturn": 0.2
+              },
+              "tradeability": {
+                "n": 620,
+                "avgReturn": 0.46,
+                "avgMae": -1.77,
+                "avgMfe": 2.35,
+                "maeBelow3": 25.48,
+                "maeBelow5": 13.55,
+                "maeBelow7": 7.58,
+                "hitPlus7": 9.19,
+                "hitMinus7": 7.58,
+                "plus7BeforeMinus7": 9.03,
+                "minus7BeforePlus7": 7.58
+              }
+            }
+          },
+          "note": "Accepted/rejected is a retrospective audit of the HH/HL gate, not a recommendation to hard-filter future candidates."
+        },
+        "rankingBuckets": {
+          "top": {
+            "summary": {
+              "n": 1525,
+              "positiveRate": 55.2,
+              "gain7Rate": 5.8,
+              "loss7Rate": 5.4,
+              "mean": 0.23,
+              "median": 0.35,
+              "benchmarkBeatRate": 51.6,
+              "meanExcessReturn": 0.09
+            },
+            "tradeability": {
+              "n": 1525,
+              "avgReturn": 0.23,
+              "avgMae": -1.91,
+              "avgMfe": 2.18,
+              "maeBelow3": 26.1,
+              "maeBelow5": 12.98,
+              "maeBelow7": 7.08,
+              "hitPlus7": 7.93,
+              "hitMinus7": 7.08,
+              "plus7BeforeMinus7": 7.74,
+              "minus7BeforePlus7": 7.08
+            },
+            "avgRankScore": 9.1
+          },
+          "middle": {
+            "summary": {
+              "n": 1525,
+              "positiveRate": 53.9,
+              "gain7Rate": 5.1,
+              "loss7Rate": 4.6,
+              "mean": 0.29,
+              "median": 0.34,
+              "benchmarkBeatRate": 48.4,
+              "meanExcessReturn": 0.11
+            },
+            "tradeability": {
+              "n": 1525,
+              "avgReturn": 0.29,
+              "avgMae": -1.71,
+              "avgMfe": 2.08,
+              "maeBelow3": 24.2,
+              "maeBelow5": 11.54,
+              "maeBelow7": 5.64,
+              "hitPlus7": 6.82,
+              "hitMinus7": 5.64,
+              "plus7BeforeMinus7": 6.82,
+              "minus7BeforePlus7": 5.57
+            },
+            "avgRankScore": 5.52
+          },
+          "lower": {
+            "summary": {
+              "n": 1525,
+              "positiveRate": 54.2,
+              "gain7Rate": 6.2,
+              "loss7Rate": 5.2,
+              "mean": 0.3,
+              "median": 0.4,
+              "benchmarkBeatRate": 51,
+              "meanExcessReturn": 0.07
+            },
+            "tradeability": {
+              "n": 1525,
+              "avgReturn": 0.3,
+              "avgMae": -1.84,
+              "avgMfe": 2.22,
+              "maeBelow3": 26.23,
+              "maeBelow5": 13.05,
+              "maeBelow7": 6.95,
+              "hitPlus7": 8.66,
+              "hitMinus7": 6.95,
+              "plus7BeforeMinus7": 8.59,
+              "minus7BeforePlus7": 6.95
+            },
+            "avgRankScore": 1.55
+          }
+        },
+        "note": "Audit whether the stage cohort itself is useful before tuning ranking. No Live/core behavior is changed."
+      },
       "researchV21": {
         "status": "research-only-v2.1",
         "cutDate": "2025-04-14",
@@ -5652,7 +5906,7 @@
               },
               "tradeConstruction": {
                 "n": 148,
-                "avgDaysToMfe": 3.07,
+                "avgDaysToMfe": 3.08,
                 "medianDaysToMfe": 3,
                 "avgDaysToMae": 2.81,
                 "medianDaysToMae": 3,
@@ -6054,7 +6308,7 @@
               },
               "tradeConstruction": {
                 "n": 114,
-                "avgDaysToMfe": 3.05,
+                "avgDaysToMfe": 3.06,
                 "medianDaysToMfe": 3,
                 "avgDaysToMae": 2.82,
                 "medianDaysToMae": 3,
@@ -6456,7 +6710,7 @@
               },
               "tradeConstruction": {
                 "n": 132,
-                "avgDaysToMfe": 3.14,
+                "avgDaysToMfe": 3.15,
                 "medianDaysToMfe": 3,
                 "avgDaysToMae": 2.8,
                 "medianDaysToMae": 3,
@@ -14128,7 +14382,7 @@
               },
               "tradeConstruction": {
                 "n": 95,
-                "avgDaysToMfe": 3.13,
+                "avgDaysToMfe": 3.14,
                 "medianDaysToMfe": 3,
                 "avgDaysToMae": 2.89,
                 "medianDaysToMae": 3,
@@ -14889,7 +15143,7 @@
               "timing": {
                 "n": 19,
                 "avgMomentumShift": 5.53,
-                "avgRs20": -10.18,
+                "avgRs20": -10.17,
                 "avgRet5AtSignal": 0.63,
                 "avgRet20AtSignal": -8.97,
                 "avgMae": -3.31,
@@ -15316,7 +15570,7 @@
               },
               "tradeConstruction": {
                 "n": 79,
-                "avgDaysToMfe": 3.11,
+                "avgDaysToMfe": 3.13,
                 "medianDaysToMfe": 3,
                 "avgDaysToMae": 2.7,
                 "medianDaysToMae": 2,
@@ -15709,7 +15963,7 @@
               },
               "tradeConstruction": {
                 "n": 43,
-                "avgDaysToMfe": 3.19,
+                "avgDaysToMfe": 3.21,
                 "medianDaysToMfe": 3,
                 "avgDaysToMae": 2.74,
                 "medianDaysToMae": 2,
@@ -16459,7 +16713,7 @@
               },
               "tradeConstruction": {
                 "n": 55,
-                "avgDaysToMfe": 3.18,
+                "avgDaysToMfe": 3.2,
                 "medianDaysToMfe": 3,
                 "avgDaysToMae": 2.89,
                 "medianDaysToMae": 3,
@@ -16843,7 +17097,7 @@
               },
               "tradeConstruction": {
                 "n": 28,
-                "avgDaysToMfe": 3.32,
+                "avgDaysToMfe": 3.36,
                 "medianDaysToMfe": 3.5,
                 "avgDaysToMae": 2.79,
                 "medianDaysToMae": 2,
@@ -17795,7 +18049,7 @@
               },
               "tradeConstruction": {
                 "n": 76,
-                "avgDaysToMfe": 3.08,
+                "avgDaysToMfe": 3.09,
                 "medianDaysToMfe": 3,
                 "avgDaysToMae": 2.86,
                 "medianDaysToMae": 3,
@@ -35938,6 +36192,260 @@
           }
         },
         "note": "Buckets validate prioritization only; they are not return forecasts or exclusion thresholds."
+      },
+      "attractiveGrowthCohortAuditV1": {
+        "spec": {
+          "version": "attractive-growth-research-v1-frozen-2026-09-24",
+          "status": "frozen-forward-research",
+          "live": false,
+          "stage": "Attractive Growth",
+          "eligibility": "Stage classification only; no RS, momentum, volume, or room-to-resistance hard gate.",
+          "rankingOnly": {
+            "structure": "HH/HL strongest; Structure improving supportive; Lower highs + lower lows penalty",
+            "relativeStrength": "RS20 >=4 strongest, >=0 supportive, negative values reduce priority but do not exclude",
+            "momentum": "positive/improving momentum raises priority; sharp deterioration lowers priority but does not exclude",
+            "volume": "up/down volume >=1.2 raises priority; weak volume lowers priority but does not exclude",
+            "roomToResistance": ">=7 strongest, >=3 usable; <3 lowers priority but does not exclude"
+          },
+          "researchFinding": "Across four independent batches, single hard gates were unstable. HH/HL + volume showed promise in some batches but failed in others; HH/HL + RS was also inconsistent. Preserve breadth and use the evidence as ranking until forward data is accumulated.",
+          "freezeRule": "Do not promote a historical winner into an exclusion rule. Any threshold/gate change requires a new version and forward cohort."
+        },
+        "stageCohort": {
+          "summary": {
+            "n": 3553,
+            "positiveRate": 54.9,
+            "gain7Rate": 12.2,
+            "loss7Rate": 9.5,
+            "mean": 0.57,
+            "median": 0.63,
+            "benchmarkBeatRate": 51.3,
+            "meanExcessReturn": 0.19
+          },
+          "tradeability": {
+            "n": 3553,
+            "avgReturn": 0.57,
+            "avgMae": -3.15,
+            "avgMfe": 3.82,
+            "maeBelow3": 40.25,
+            "maeBelow5": 24.26,
+            "maeBelow7": 14.49,
+            "hitPlus7": 17.93,
+            "hitMinus7": 14.49,
+            "plus7BeforeMinus7": 17.53,
+            "minus7BeforePlus7": 14.07
+          }
+        },
+        "hhhlGateAudit": {
+          "accepted": {
+            "summary": {
+              "n": 1816,
+              "positiveRate": 53.2,
+              "gain7Rate": 10.7,
+              "loss7Rate": 9.1,
+              "mean": 0.39,
+              "median": 0.51,
+              "benchmarkBeatRate": 50.7,
+              "meanExcessReturn": 0.12
+            },
+            "tradeability": {
+              "n": 1816,
+              "avgReturn": 0.39,
+              "avgMae": -3.17,
+              "avgMfe": 3.55,
+              "maeBelow3": 40.64,
+              "maeBelow5": 23.57,
+              "maeBelow7": 13.77,
+              "hitPlus7": 16.13,
+              "hitMinus7": 13.77,
+              "plus7BeforeMinus7": 15.86,
+              "minus7BeforePlus7": 13.44
+            }
+          },
+          "rejected": {
+            "summary": {
+              "n": 1737,
+              "positiveRate": 56.5,
+              "gain7Rate": 13.7,
+              "loss7Rate": 9.8,
+              "mean": 0.77,
+              "median": 0.78,
+              "benchmarkBeatRate": 52,
+              "meanExcessReturn": 0.27
+            },
+            "tradeability": {
+              "n": 1737,
+              "avgReturn": 0.77,
+              "avgMae": -3.13,
+              "avgMfe": 4.1,
+              "maeBelow3": 39.84,
+              "maeBelow5": 24.99,
+              "maeBelow7": 15.26,
+              "hitPlus7": 19.8,
+              "hitMinus7": 15.26,
+              "plus7BeforeMinus7": 19.29,
+              "minus7BeforePlus7": 14.74
+            }
+          },
+          "byStructure": {
+            "Higher highs + higher lows": {
+              "summary": {
+                "n": 1816,
+                "positiveRate": 53.2,
+                "gain7Rate": 10.7,
+                "loss7Rate": 9.1,
+                "mean": 0.39,
+                "median": 0.51,
+                "benchmarkBeatRate": 50.7,
+                "meanExcessReturn": 0.12
+              },
+              "tradeability": {
+                "n": 1816,
+                "avgReturn": 0.39,
+                "avgMae": -3.17,
+                "avgMfe": 3.55,
+                "maeBelow3": 40.64,
+                "maeBelow5": 23.57,
+                "maeBelow7": 13.77,
+                "hitPlus7": 16.13,
+                "hitMinus7": 13.77,
+                "plus7BeforeMinus7": 15.86,
+                "minus7BeforePlus7": 13.44
+              }
+            },
+            "Structure improving": {
+              "summary": {
+                "n": 1256,
+                "positiveRate": 55.1,
+                "gain7Rate": 13.5,
+                "loss7Rate": 10,
+                "mean": 0.68,
+                "median": 0.69,
+                "benchmarkBeatRate": 51.7,
+                "meanExcessReturn": 0.23
+              },
+              "tradeability": {
+                "n": 1256,
+                "avgReturn": 0.68,
+                "avgMae": -3.16,
+                "avgMfe": 4.06,
+                "maeBelow3": 40.05,
+                "maeBelow5": 24.76,
+                "maeBelow7": 14.89,
+                "hitPlus7": 19.43,
+                "hitMinus7": 14.89,
+                "plus7BeforeMinus7": 19.11,
+                "minus7BeforePlus7": 14.25
+              }
+            },
+            "Lower highs + lower lows": {
+              "summary": {
+                "n": 481,
+                "positiveRate": 60.3,
+                "gain7Rate": 14.1,
+                "loss7Rate": 9.4,
+                "mean": 0.99,
+                "median": 1.15,
+                "benchmarkBeatRate": 52.6,
+                "meanExcessReturn": 0.37
+              },
+              "tradeability": {
+                "n": 481,
+                "avgReturn": 0.99,
+                "avgMae": -3.06,
+                "avgMfe": 4.2,
+                "maeBelow3": 39.29,
+                "maeBelow5": 25.57,
+                "maeBelow7": 16.22,
+                "hitPlus7": 20.79,
+                "hitMinus7": 16.22,
+                "plus7BeforeMinus7": 19.75,
+                "minus7BeforePlus7": 16.01
+              }
+            }
+          },
+          "note": "Accepted/rejected is a retrospective audit of the HH/HL gate, not a recommendation to hard-filter future candidates."
+        },
+        "rankingBuckets": {
+          "top": {
+            "summary": {
+              "n": 1185,
+              "positiveRate": 53.8,
+              "gain7Rate": 11.3,
+              "loss7Rate": 9.8,
+              "mean": 0.4,
+              "median": 0.52,
+              "benchmarkBeatRate": 52.3,
+              "meanExcessReturn": 0.19
+            },
+            "tradeability": {
+              "n": 1185,
+              "avgReturn": 0.4,
+              "avgMae": -3.24,
+              "avgMfe": 3.81,
+              "maeBelow3": 40.76,
+              "maeBelow5": 24.14,
+              "maeBelow7": 14.77,
+              "hitPlus7": 17.72,
+              "hitMinus7": 14.77,
+              "plus7BeforeMinus7": 17.3,
+              "minus7BeforePlus7": 14.18
+            },
+            "avgRankScore": 9.18
+          },
+          "middle": {
+            "summary": {
+              "n": 1184,
+              "positiveRate": 55.8,
+              "gain7Rate": 12.2,
+              "loss7Rate": 8.4,
+              "mean": 0.75,
+              "median": 0.84,
+              "benchmarkBeatRate": 52.4,
+              "meanExcessReturn": 0.31
+            },
+            "tradeability": {
+              "n": 1184,
+              "avgReturn": 0.75,
+              "avgMae": -2.91,
+              "avgMfe": 3.73,
+              "maeBelow3": 38.51,
+              "maeBelow5": 22.13,
+              "maeBelow7": 12.16,
+              "hitPlus7": 17.65,
+              "hitMinus7": 12.16,
+              "plus7BeforeMinus7": 17.4,
+              "minus7BeforePlus7": 11.57
+            },
+            "avgRankScore": 5.57
+          },
+          "lower": {
+            "summary": {
+              "n": 1184,
+              "positiveRate": 55,
+              "gain7Rate": 13.1,
+              "loss7Rate": 10.2,
+              "mean": 0.56,
+              "median": 0.56,
+              "benchmarkBeatRate": 49.3,
+              "meanExcessReturn": 0.09
+            },
+            "tradeability": {
+              "n": 1184,
+              "avgReturn": 0.56,
+              "avgMae": -3.29,
+              "avgMfe": 3.91,
+              "maeBelow3": 41.47,
+              "maeBelow5": 26.52,
+              "maeBelow7": 16.55,
+              "hitPlus7": 18.41,
+              "hitMinus7": 16.55,
+              "plus7BeforeMinus7": 17.91,
+              "minus7BeforePlus7": 16.47
+            },
+            "avgRankScore": 1.71
+          }
+        },
+        "note": "Audit whether the stage cohort itself is useful before tuning ranking. No Live/core behavior is changed."
       },
       "researchV21": {
         "status": "research-only-v2.1",
@@ -54502,7 +55010,7 @@
             "Failed Breakdown / Reclaim": {
               "n": 29,
               "avgReturn": 3.84,
-              "avgMae": -1.82,
+              "avgMae": -1.81,
               "avgMfe": 6.73,
               "maeBelow3": 27.59,
               "maeBelow5": 6.9,
@@ -63219,7 +63727,7 @@
                 "gain7Rate": 24.8,
                 "loss7Rate": 13.6,
                 "mean": 2.18,
-                "median": 1.44,
+                "median": 1.45,
                 "benchmarkBeatRate": 49.4,
                 "meanExcessReturn": 0.67
               },
@@ -63874,7 +64382,7 @@
               "gain7Rate": 28.8,
               "loss7Rate": 20.3,
               "mean": 1.84,
-              "median": 1.44,
+              "median": 1.45,
               "benchmarkBeatRate": 44.8,
               "meanExcessReturn": 0.69
             },
@@ -66195,7 +66703,7 @@
               "mean": 0.84,
               "median": 1.15,
               "benchmarkBeatRate": 51.7,
-              "meanExcessReturn": 0.34
+              "meanExcessReturn": 0.35
             },
             "tradeability": {
               "n": 470,
@@ -66266,6 +66774,260 @@
           }
         },
         "note": "Buckets validate prioritization only; they are not return forecasts or exclusion thresholds."
+      },
+      "attractiveGrowthCohortAuditV1": {
+        "spec": {
+          "version": "attractive-growth-research-v1-frozen-2026-09-24",
+          "status": "frozen-forward-research",
+          "live": false,
+          "stage": "Attractive Growth",
+          "eligibility": "Stage classification only; no RS, momentum, volume, or room-to-resistance hard gate.",
+          "rankingOnly": {
+            "structure": "HH/HL strongest; Structure improving supportive; Lower highs + lower lows penalty",
+            "relativeStrength": "RS20 >=4 strongest, >=0 supportive, negative values reduce priority but do not exclude",
+            "momentum": "positive/improving momentum raises priority; sharp deterioration lowers priority but does not exclude",
+            "volume": "up/down volume >=1.2 raises priority; weak volume lowers priority but does not exclude",
+            "roomToResistance": ">=7 strongest, >=3 usable; <3 lowers priority but does not exclude"
+          },
+          "researchFinding": "Across four independent batches, single hard gates were unstable. HH/HL + volume showed promise in some batches but failed in others; HH/HL + RS was also inconsistent. Preserve breadth and use the evidence as ranking until forward data is accumulated.",
+          "freezeRule": "Do not promote a historical winner into an exclusion rule. Any threshold/gate change requires a new version and forward cohort."
+        },
+        "stageCohort": {
+          "summary": {
+            "n": 2729,
+            "positiveRate": 55.3,
+            "gain7Rate": 21,
+            "loss7Rate": 15.7,
+            "mean": 1.13,
+            "median": 0.98,
+            "benchmarkBeatRate": 49.9,
+            "meanExcessReturn": 0.33
+          },
+          "tradeability": {
+            "n": 2729,
+            "avgReturn": 1.13,
+            "avgMae": -5.06,
+            "avgMfe": 6.38,
+            "maeBelow3": 55.08,
+            "maeBelow5": 39.65,
+            "maeBelow7": 27.48,
+            "hitPlus7": 34.59,
+            "hitMinus7": 27.48,
+            "plus7BeforeMinus7": 33.2,
+            "minus7BeforePlus7": 25.17
+          }
+        },
+        "hhhlGateAudit": {
+          "accepted": {
+            "summary": {
+              "n": 1410,
+              "positiveRate": 55.2,
+              "gain7Rate": 19.6,
+              "loss7Rate": 16.1,
+              "mean": 0.9,
+              "median": 1.06,
+              "benchmarkBeatRate": 49.6,
+              "meanExcessReturn": 0.16
+            },
+            "tradeability": {
+              "n": 1410,
+              "avgReturn": 0.9,
+              "avgMae": -5.1,
+              "avgMfe": 6.03,
+              "maeBelow3": 56.81,
+              "maeBelow5": 39.57,
+              "maeBelow7": 26.81,
+              "hitPlus7": 31.77,
+              "hitMinus7": 26.81,
+              "plus7BeforeMinus7": 30.64,
+              "minus7BeforePlus7": 24.61
+            }
+          },
+          "rejected": {
+            "summary": {
+              "n": 1319,
+              "positiveRate": 55.3,
+              "gain7Rate": 22.5,
+              "loss7Rate": 15.3,
+              "mean": 1.38,
+              "median": 0.91,
+              "benchmarkBeatRate": 50.3,
+              "meanExcessReturn": 0.51
+            },
+            "tradeability": {
+              "n": 1319,
+              "avgReturn": 1.38,
+              "avgMae": -5.02,
+              "avgMfe": 6.76,
+              "maeBelow3": 53.22,
+              "maeBelow5": 39.73,
+              "maeBelow7": 28.2,
+              "hitPlus7": 37.6,
+              "hitMinus7": 28.2,
+              "plus7BeforeMinus7": 35.94,
+              "minus7BeforePlus7": 25.78
+            }
+          },
+          "byStructure": {
+            "Higher highs + higher lows": {
+              "summary": {
+                "n": 1410,
+                "positiveRate": 55.2,
+                "gain7Rate": 19.6,
+                "loss7Rate": 16.1,
+                "mean": 0.9,
+                "median": 1.06,
+                "benchmarkBeatRate": 49.6,
+                "meanExcessReturn": 0.16
+              },
+              "tradeability": {
+                "n": 1410,
+                "avgReturn": 0.9,
+                "avgMae": -5.1,
+                "avgMfe": 6.03,
+                "maeBelow3": 56.81,
+                "maeBelow5": 39.57,
+                "maeBelow7": 26.81,
+                "hitPlus7": 31.77,
+                "hitMinus7": 26.81,
+                "plus7BeforeMinus7": 30.64,
+                "minus7BeforePlus7": 24.61
+              }
+            },
+            "Structure improving": {
+              "summary": {
+                "n": 954,
+                "positiveRate": 55.7,
+                "gain7Rate": 21.4,
+                "loss7Rate": 14.9,
+                "mean": 1.33,
+                "median": 0.9,
+                "benchmarkBeatRate": 50.6,
+                "meanExcessReturn": 0.54
+              },
+              "tradeability": {
+                "n": 954,
+                "avgReturn": 1.33,
+                "avgMae": -5.06,
+                "avgMfe": 6.72,
+                "maeBelow3": 53.98,
+                "maeBelow5": 40.04,
+                "maeBelow7": 28.2,
+                "hitPlus7": 36.48,
+                "hitMinus7": 28.2,
+                "plus7BeforeMinus7": 35.01,
+                "minus7BeforePlus7": 25.68
+              }
+            },
+            "Lower highs + lower lows": {
+              "summary": {
+                "n": 365,
+                "positiveRate": 54.5,
+                "gain7Rate": 25.5,
+                "loss7Rate": 16.4,
+                "mean": 1.52,
+                "median": 0.98,
+                "benchmarkBeatRate": 49.3,
+                "meanExcessReturn": 0.44
+              },
+              "tradeability": {
+                "n": 365,
+                "avgReturn": 1.52,
+                "avgMae": -4.91,
+                "avgMfe": 6.87,
+                "maeBelow3": 51.23,
+                "maeBelow5": 38.9,
+                "maeBelow7": 28.22,
+                "hitPlus7": 40.55,
+                "hitMinus7": 28.22,
+                "plus7BeforeMinus7": 38.36,
+                "minus7BeforePlus7": 26.03
+              }
+            }
+          },
+          "note": "Accepted/rejected is a retrospective audit of the HH/HL gate, not a recommendation to hard-filter future candidates."
+        },
+        "rankingBuckets": {
+          "top": {
+            "summary": {
+              "n": 910,
+              "positiveRate": 55.2,
+              "gain7Rate": 18.5,
+              "loss7Rate": 16.4,
+              "mean": 0.84,
+              "median": 1,
+              "benchmarkBeatRate": 51.3,
+              "meanExcessReturn": 0.31
+            },
+            "tradeability": {
+              "n": 910,
+              "avgReturn": 0.84,
+              "avgMae": -5.34,
+              "avgMfe": 6.33,
+              "maeBelow3": 57.8,
+              "maeBelow5": 41.76,
+              "maeBelow7": 28.35,
+              "hitPlus7": 33.08,
+              "hitMinus7": 28.35,
+              "plus7BeforeMinus7": 31.98,
+              "minus7BeforePlus7": 25.93
+            },
+            "avgRankScore": 9.15
+          },
+          "middle": {
+            "summary": {
+              "n": 910,
+              "positiveRate": 56.9,
+              "gain7Rate": 21.5,
+              "loss7Rate": 14.9,
+              "mean": 1.33,
+              "median": 1.36,
+              "benchmarkBeatRate": 49,
+              "meanExcessReturn": 0.32
+            },
+            "tradeability": {
+              "n": 910,
+              "avgReturn": 1.33,
+              "avgMae": -4.7,
+              "avgMfe": 6.32,
+              "maeBelow3": 51.43,
+              "maeBelow5": 36.59,
+              "maeBelow7": 25.49,
+              "hitPlus7": 34.51,
+              "hitMinus7": 25.49,
+              "plus7BeforeMinus7": 33.74,
+              "minus7BeforePlus7": 22.64
+            },
+            "avgRankScore": 5.51
+          },
+          "lower": {
+            "summary": {
+              "n": 909,
+              "positiveRate": 53.7,
+              "gain7Rate": 23.1,
+              "loss7Rate": 15.8,
+              "mean": 1.23,
+              "median": 0.78,
+              "benchmarkBeatRate": 49.4,
+              "meanExcessReturn": 0.36
+            },
+            "tradeability": {
+              "n": 909,
+              "avgReturn": 1.23,
+              "avgMae": -5.14,
+              "avgMfe": 6.5,
+              "maeBelow3": 56,
+              "maeBelow5": 40.59,
+              "maeBelow7": 28.6,
+              "hitPlus7": 36.19,
+              "hitMinus7": 28.6,
+              "plus7BeforeMinus7": 33.88,
+              "minus7BeforePlus7": 26.95
+            },
+            "avgRankScore": 1.73
+          }
+        },
+        "note": "Audit whether the stage cohort itself is useful before tuning ranking. No Live/core behavior is changed."
       },
       "researchV21": {
         "status": "research-only-v2.1",
@@ -67016,7 +67778,7 @@
                   "positiveRate": 50,
                   "gain7Rate": 30.8,
                   "loss7Rate": 19.2,
-                  "mean": 0.91,
+                  "mean": 0.92,
                   "median": 0.27,
                   "benchmarkBeatRate": 48,
                   "meanExcessReturn": -0.44
@@ -67620,7 +68382,7 @@
                     "gain7Rate": 26.7,
                     "loss7Rate": 20,
                     "mean": 1.45,
-                    "median": 1.44,
+                    "median": 1.45,
                     "benchmarkBeatRate": 42.9,
                     "meanExcessReturn": 0.54
                   }
@@ -67886,7 +68648,7 @@
                 "positiveRate": 47.6,
                 "gain7Rate": 19,
                 "loss7Rate": 19,
-                "mean": 0.28,
+                "mean": 0.29,
                 "median": -1.8,
                 "benchmarkBeatRate": 33.3,
                 "meanExcessReturn": -0.97
@@ -68021,8 +68783,8 @@
                     "positiveRate": 66.7,
                     "gain7Rate": 33.3,
                     "loss7Rate": 0,
-                    "mean": 1.17,
-                    "median": 1.44,
+                    "mean": 1.18,
+                    "median": 1.45,
                     "benchmarkBeatRate": 66.7,
                     "meanExcessReturn": 1.87
                   }
@@ -68298,7 +69060,7 @@
                 "positiveRate": 42.9,
                 "gain7Rate": 14.3,
                 "loss7Rate": 14.3,
-                "mean": -1.6,
+                "mean": -1.59,
                 "median": -2.75,
                 "benchmarkBeatRate": 28.6,
                 "meanExcessReturn": -2.24
@@ -68396,8 +69158,8 @@
                     "positiveRate": 66.7,
                     "gain7Rate": 33.3,
                     "loss7Rate": 0,
-                    "mean": 1.17,
-                    "median": 1.44,
+                    "mean": 1.18,
+                    "median": 1.45,
                     "benchmarkBeatRate": 66.7,
                     "meanExcessReturn": 1.87
                   }
@@ -68588,7 +69350,7 @@
                   "positiveRate": 60,
                   "gain7Rate": 20,
                   "loss7Rate": 0,
-                  "mean": 0.11,
+                  "mean": 0.12,
                   "median": 1.2,
                   "benchmarkBeatRate": 40,
                   "meanExcessReturn": -0.91
@@ -68655,7 +69417,7 @@
                 "positiveRate": 42.9,
                 "gain7Rate": 14.3,
                 "loss7Rate": 14.3,
-                "mean": -1.6,
+                "mean": -1.59,
                 "median": -2.75,
                 "benchmarkBeatRate": 28.6,
                 "meanExcessReturn": -2.24
@@ -68753,8 +69515,8 @@
                     "positiveRate": 66.7,
                     "gain7Rate": 33.3,
                     "loss7Rate": 0,
-                    "mean": 1.17,
-                    "median": 1.44,
+                    "mean": 1.18,
+                    "median": 1.45,
                     "benchmarkBeatRate": 66.7,
                     "meanExcessReturn": 1.87
                   }
@@ -68945,7 +69707,7 @@
                   "positiveRate": 60,
                   "gain7Rate": 20,
                   "loss7Rate": 0,
-                  "mean": 0.11,
+                  "mean": 0.12,
                   "median": 1.2,
                   "benchmarkBeatRate": 40,
                   "meanExcessReturn": -0.91
@@ -69117,8 +69879,8 @@
                     "positiveRate": 66.7,
                     "gain7Rate": 33.3,
                     "loss7Rate": 0,
-                    "mean": 1.17,
-                    "median": 1.44,
+                    "mean": 1.18,
+                    "median": 1.45,
                     "benchmarkBeatRate": 66.7,
                     "meanExcessReturn": 1.87
                   }
@@ -69490,8 +70252,8 @@
                     "positiveRate": 66.7,
                     "gain7Rate": 33.3,
                     "loss7Rate": 0,
-                    "mean": 1.17,
-                    "median": 1.44,
+                    "mean": 1.18,
+                    "median": 1.45,
                     "benchmarkBeatRate": 66.7,
                     "meanExcessReturn": 1.87
                   }
@@ -69691,7 +70453,7 @@
                   "positiveRate": 60,
                   "gain7Rate": 20,
                   "loss7Rate": 0,
-                  "mean": 0.11,
+                  "mean": 0.12,
                   "median": 1.2,
                   "benchmarkBeatRate": 40,
                   "meanExcessReturn": -0.91
@@ -69854,8 +70616,8 @@
                     "positiveRate": 66.7,
                     "gain7Rate": 33.3,
                     "loss7Rate": 0,
-                    "mean": 1.17,
-                    "median": 1.44,
+                    "mean": 1.18,
+                    "median": 1.45,
                     "benchmarkBeatRate": 66.7,
                     "meanExcessReturn": 1.87
                   }
@@ -70046,7 +70808,7 @@
                   "positiveRate": 60,
                   "gain7Rate": 20,
                   "loss7Rate": 0,
-                  "mean": 0.11,
+                  "mean": 0.12,
                   "median": 1.2,
                   "benchmarkBeatRate": 40,
                   "meanExcessReturn": -0.91
@@ -70506,7 +71268,7 @@
                 "positiveRate": 25,
                 "gain7Rate": 0,
                 "loss7Rate": 25,
-                "mean": -4.51,
+                "mean": -4.5,
                 "median": -5.24,
                 "benchmarkBeatRate": 25,
                 "meanExcessReturn": -4.23
@@ -70829,7 +71591,7 @@
                   "positiveRate": 25,
                   "gain7Rate": 0,
                   "loss7Rate": 25,
-                  "mean": -4.51,
+                  "mean": -4.5,
                   "median": -5.24,
                   "benchmarkBeatRate": 25,
                   "meanExcessReturn": -4.23
@@ -70853,7 +71615,7 @@
                 "positiveRate": 25,
                 "gain7Rate": 0,
                 "loss7Rate": 25,
-                "mean": -4.51,
+                "mean": -4.5,
                 "median": -5.24,
                 "benchmarkBeatRate": 25,
                 "meanExcessReturn": -4.23
@@ -71176,7 +71938,7 @@
                   "positiveRate": 25,
                   "gain7Rate": 0,
                   "loss7Rate": 25,
-                  "mean": -4.51,
+                  "mean": -4.5,
                   "median": -5.24,
                   "benchmarkBeatRate": 25,
                   "meanExcessReturn": -4.23
@@ -71288,8 +72050,8 @@
                     "positiveRate": 100,
                     "gain7Rate": 0,
                     "loss7Rate": 0,
-                    "mean": 1.44,
-                    "median": 1.44,
+                    "mean": 1.45,
+                    "median": 1.45,
                     "benchmarkBeatRate": 100,
                     "meanExcessReturn": 1.89
                   }
@@ -71480,8 +72242,8 @@
                   "positiveRate": 50,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": -1.36,
-                  "median": -1.36,
+                  "mean": -1.35,
+                  "median": -1.35,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -3.34
                 },
@@ -71635,8 +72397,8 @@
                     "positiveRate": 100,
                     "gain7Rate": 0,
                     "loss7Rate": 0,
-                    "mean": 1.44,
-                    "median": 1.44,
+                    "mean": 1.45,
+                    "median": 1.45,
                     "benchmarkBeatRate": 100,
                     "meanExcessReturn": 1.89
                   }
@@ -71827,8 +72589,8 @@
                   "positiveRate": 50,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": -1.36,
-                  "median": -1.36,
+                  "mean": -1.35,
+                  "median": -1.35,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -3.34
                 },
@@ -71972,8 +72734,8 @@
                     "positiveRate": 100,
                     "gain7Rate": 0,
                     "loss7Rate": 0,
-                    "mean": 1.44,
-                    "median": 1.44,
+                    "mean": 1.45,
+                    "median": 1.45,
                     "benchmarkBeatRate": 100,
                     "meanExcessReturn": 1.89
                   }
@@ -72164,8 +72926,8 @@
                   "positiveRate": 50,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": -1.36,
-                  "median": -1.36,
+                  "mean": -1.35,
+                  "median": -1.35,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -3.34
                 },
@@ -72222,8 +72984,8 @@
                 "positiveRate": 50,
                 "gain7Rate": 0,
                 "loss7Rate": 50,
-                "mean": -3.78,
-                "median": -3.78,
+                "mean": -3.77,
+                "median": -3.77,
                 "benchmarkBeatRate": 50,
                 "meanExcessReturn": -3.19
               },
@@ -72299,8 +73061,8 @@
                     "positiveRate": 100,
                     "gain7Rate": 0,
                     "loss7Rate": 0,
-                    "mean": 1.44,
-                    "median": 1.44,
+                    "mean": 1.45,
+                    "median": 1.45,
                     "benchmarkBeatRate": 100,
                     "meanExcessReturn": 1.89
                   }
@@ -72491,8 +73253,8 @@
                   "positiveRate": 100,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": 1.44,
-                  "median": 1.44,
+                  "mean": 1.45,
+                  "median": 1.45,
                   "benchmarkBeatRate": 100,
                   "meanExcessReturn": 1.89
                 },
@@ -72525,8 +73287,8 @@
                   "positiveRate": 50,
                   "gain7Rate": 0,
                   "loss7Rate": 50,
-                  "mean": -3.78,
-                  "median": -3.78,
+                  "mean": -3.77,
+                  "median": -3.77,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -3.19
                 },
@@ -72549,8 +73311,8 @@
                 "positiveRate": 50,
                 "gain7Rate": 0,
                 "loss7Rate": 0,
-                "mean": -1.36,
-                "median": -1.36,
+                "mean": -1.35,
+                "median": -1.35,
                 "benchmarkBeatRate": 50,
                 "meanExcessReturn": -3.34
               },
@@ -72635,8 +73397,8 @@
                     "positiveRate": 100,
                     "gain7Rate": 0,
                     "loss7Rate": 0,
-                    "mean": 1.44,
-                    "median": 1.44,
+                    "mean": 1.45,
+                    "median": 1.45,
                     "benchmarkBeatRate": 100,
                     "meanExcessReturn": 1.89
                   }
@@ -72827,8 +73589,8 @@
                   "positiveRate": 50,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": -1.36,
-                  "median": -1.36,
+                  "mean": -1.35,
+                  "median": -1.35,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -3.34
                 },
@@ -72870,8 +73632,8 @@
                   "positiveRate": 50,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": -1.36,
-                  "median": -1.36,
+                  "mean": -1.35,
+                  "median": -1.35,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -3.34
                 },
@@ -72894,8 +73656,8 @@
                 "positiveRate": 50,
                 "gain7Rate": 0,
                 "loss7Rate": 0,
-                "mean": -1.36,
-                "median": -1.36,
+                "mean": -1.35,
+                "median": -1.35,
                 "benchmarkBeatRate": 50,
                 "meanExcessReturn": -3.34
               },
@@ -72980,8 +73742,8 @@
                     "positiveRate": 100,
                     "gain7Rate": 0,
                     "loss7Rate": 0,
-                    "mean": 1.44,
-                    "median": 1.44,
+                    "mean": 1.45,
+                    "median": 1.45,
                     "benchmarkBeatRate": 100,
                     "meanExcessReturn": 1.89
                   }
@@ -73172,8 +73934,8 @@
                   "positiveRate": 50,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": -1.36,
-                  "median": -1.36,
+                  "mean": -1.35,
+                  "median": -1.35,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -3.34
                 },
@@ -73215,8 +73977,8 @@
                   "positiveRate": 50,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": -1.36,
-                  "median": -1.36,
+                  "mean": -1.35,
+                  "median": -1.35,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -3.34
                 },
@@ -73240,7 +74002,7 @@
                 "gain7Rate": 33.3,
                 "loss7Rate": 0,
                 "mean": 1.9,
-                "median": 1.44,
+                "median": 1.45,
                 "benchmarkBeatRate": 66.7,
                 "meanExcessReturn": -0.33
               },
@@ -73528,7 +74290,7 @@
                   "gain7Rate": 33.3,
                   "loss7Rate": 0,
                   "mean": 1.9,
-                  "median": 1.44,
+                  "median": 1.45,
                   "benchmarkBeatRate": 66.7,
                   "meanExcessReturn": -0.33
                 },
@@ -73570,7 +74332,7 @@
                   "positiveRate": 66.7,
                   "gain7Rate": 0,
                   "loss7Rate": 0,
-                  "mean": -0.78,
+                  "mean": -0.77,
                   "median": 0.38,
                   "benchmarkBeatRate": 33.3,
                   "meanExcessReturn": -4.55
@@ -74432,8 +75194,8 @@
                     "positiveRate": 100,
                     "gain7Rate": 0,
                     "loss7Rate": 0,
-                    "mean": 1.44,
-                    "median": 1.44,
+                    "mean": 1.45,
+                    "median": 1.45,
                     "benchmarkBeatRate": 100,
                     "meanExcessReturn": 1.89
                   }
@@ -76206,7 +76968,7 @@
                   "gain7Rate": 31.6,
                   "loss7Rate": 15.8,
                   "mean": 2.24,
-                  "median": 1.44,
+                  "median": 1.45,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": 0.5
                 },
@@ -76258,7 +77020,7 @@
                   "gain7Rate": 22.2,
                   "loss7Rate": 11.1,
                   "mean": 2.82,
-                  "median": 2.06,
+                  "median": 2.07,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": 2.12
                 },
@@ -76589,8 +77351,8 @@
                   "positiveRate": 66.7,
                   "gain7Rate": 33.3,
                   "loss7Rate": 8.3,
-                  "mean": 4.21,
-                  "median": 3.86,
+                  "mean": 4.22,
+                  "median": 3.87,
                   "benchmarkBeatRate": 54.5,
                   "meanExcessReturn": 1.51
                 },
@@ -76945,7 +77707,7 @@
                   "gain7Rate": 14.3,
                   "loss7Rate": 0,
                   "mean": 2.61,
-                  "median": 1.44,
+                  "median": 1.45,
                   "benchmarkBeatRate": 50,
                   "meanExcessReturn": -0.34
                 },
@@ -79947,7 +80709,7 @@
                   "high": 3.21
                 },
                 "meanExcessReturnCI95": {
-                  "low": -0.82,
+                  "low": -0.81,
                   "high": 1.41
                 }
               },
@@ -79976,7 +80738,7 @@
               },
               "holdoutSymbolNeutral": {
                 "uniqueSymbols": 50,
-                "equalWeightMeanReturn": 1.3,
+                "equalWeightMeanReturn": 1.31,
                 "equalWeightPositiveRate": 58.3,
                 "equalWeightMeanExcessReturn": -0.51
               },
@@ -82315,7 +83077,7 @@
               "positiveRate": 57.7,
               "gain7Rate": 25.7,
               "loss7Rate": 16.1,
-              "mean": 1.49,
+              "mean": 1.5,
               "median": 1.29,
               "benchmarkBeatRate": 45.8,
               "meanExcessReturn": -0.09
@@ -82332,7 +83094,7 @@
             },
             "lift": {
               "positiveRate": 1.8,
-              "meanReturn": -0.56,
+              "meanReturn": -0.55,
               "benchmarkBeatRate": -2,
               "meanExcessReturn": -0.63
             }
@@ -82878,14 +83640,14 @@
               "positiveRate": 53.3,
               "gain7Rate": 20.1,
               "loss7Rate": 18.4,
-              "mean": 0.36,
+              "mean": 0.35,
               "median": 0.45,
               "benchmarkBeatRate": 46.1,
               "meanExcessReturn": -0.97
             },
             "lift": {
               "positiveRate": 0.4,
-              "meanReturn": -0.4,
+              "meanReturn": -0.39,
               "benchmarkBeatRate": 1.8,
               "meanExcessReturn": -0.06
             }
@@ -83041,7 +83803,7 @@
               "mean": 1.36,
               "median": 1.21,
               "benchmarkBeatRate": 50.8,
-              "meanExcessReturn": 0.53
+              "meanExcessReturn": 0.54
             },
             "absent": {
               "n": 577,
@@ -83057,7 +83819,7 @@
               "positiveRate": 4.1,
               "meanReturn": 1.06,
               "benchmarkBeatRate": 4.2,
-              "meanExcessReturn": 0.96
+              "meanExcessReturn": 0.97
             }
           },
           "strongUpVolume": {
@@ -83077,7 +83839,7 @@
               "gain7Rate": 21,
               "loss7Rate": 15.5,
               "mean": 1,
-              "median": 0.71,
+              "median": 0.72,
               "benchmarkBeatRate": 49.6,
               "meanExcessReturn": 0.32
             },
