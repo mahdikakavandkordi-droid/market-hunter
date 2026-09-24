@@ -325,6 +325,9 @@ function researchV21Report(a){
       earlyBandRsNeg8:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.rs20)&&e.rs20>=-8,
       earlyBandMomentumRsNeg10:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.momentumShift)&&e.momentumShift>=0&&Number.isFinite(e.rs20)&&e.rs20>=-10,
       earlyBandAtrLt6:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<6,
+      // Concentration/robustness probes: broad ATR caps and symbol-neutral validation.
+      earlyBandAtrLt4:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<4,
+      earlyBandAtrLt5:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<5,
       earlyBandAtr3to6:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct>=3&&e.atr14Pct<6,
       reclaimVolume:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85,
       reclaimVolume100:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.00,
@@ -365,7 +368,10 @@ function researchV21Report(a){
       const timeSlices=[0,1,2].map(i=>summary(picked.filter(e=>e.date>=thirds[i]&&(i===2?e.date<=thirds[i+1]:e.date<thirds[i+1]))));
       const regimes=Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(picked.filter(e=>(e.regime||'Unknown')===r))]));
       const holdRows=picked.filter(e=>cut&&e.date>=cut);
-      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),timing:stage==='Early Watch'?earlyWatchTimingReport(picked):null,holdoutTiming:stage==='Early Watch'?earlyWatchTimingReport(holdRows):null,timeSlices,regimes};
+      const bySymbol=Object.fromEntries(Object.entries(Object.groupBy?Object.groupBy(holdRows,e=>e.symbol):holdRows.reduce((m,e)=>((m[e.symbol]??=[]).push(e),m),{})).map(([symbol,rows])=>[symbol,summary(rows)]));
+      const symbolEqual=Object.values(bySymbol).filter(Boolean);
+      const symbolEqualMean=key=>symbolEqual.length?round(symbolEqual.map(x=>x[key]).filter(Number.isFinite).reduce((s,x)=>s+x,0)/Math.max(1,symbolEqual.filter(x=>Number.isFinite(x[key])).length)):null;
+      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),holdoutSymbolNeutral:{uniqueSymbols:symbolEqual.length,equalWeightMeanReturn:symbolEqualMean('mean'),equalWeightPositiveRate:symbolEqualMean('positiveRate'),equalWeightMeanExcessReturn:symbolEqualMean('meanExcessReturn')},timing:stage==='Early Watch'?earlyWatchTimingReport(picked):null,holdoutTiming:stage==='Early Watch'?earlyWatchTimingReport(holdRows):null,timeSlices,regimes};
     }
   }
   return out;
