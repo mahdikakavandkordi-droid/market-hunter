@@ -22,18 +22,20 @@ on:
         description: 'Forward trading sessions'
         required: false
         default: '5,10,20'
-  pull_request:
-    paths:
-      - 'scripts/backtest-hunter.mjs'
-      - '.github/workflows/hunter-backtest.yml'
   push:
+    branches:
+      - research/compact-stage-summary
     paths:
       - 'scripts/backtest-hunter.mjs'
       - '.github/workflows/hunter-backtest.yml'
 permissions:
   contents: write
 
-# PR runs validate research output without pushing generated files back.
+# Research workflow safety:
+# - Generated data commits do not match the push path filter, so they cannot recursively trigger this workflow.
+# - PR validation is intentionally disabled for this workflow because bot-generated research commits can cause
+#   GitHub to create action_required PR runs. Scanner CI remains separate.
+# - Research runs start from direct pushes to the research branch or manual dispatch only.
 
 jobs:
   backtest:
