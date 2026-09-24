@@ -356,6 +356,9 @@ function researchV21Report(a){
       // Diagnostic interaction ablation: test whether modest momentum + RS context
       // improves the broad Canadian holdout without turning Early Watch into a late entry.
       earlyBandAtr6Momentum1:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<6&&Number.isFinite(e.momentumShift)&&e.momentumShift>=1,
+      // Discovery-first candidate: reject obvious low-quality cases without turning the screener into a trade signal.
+      // It deliberately uses a softer momentum floor than the precision-oriented >=3 variant.
+      earlyDiscoveryBalanced:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<6&&Number.isFinite(e.momentumShift)&&e.momentumShift>=1,
       earlyBandAtr6Momentum2:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<6&&Number.isFinite(e.momentumShift)&&e.momentumShift>=2,
       earlyBandAtr6Momentum3:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<6&&Number.isFinite(e.momentumShift)&&e.momentumShift>=3,
       earlyBandAtr6Momentum4:e=>(e.setups||[]).includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.70&&e.upDownVolumeRatio<.85&&Number.isFinite(e.atr14Pct)&&e.atr14Pct<6&&Number.isFinite(e.momentumShift)&&e.momentumShift>=4,
