@@ -302,6 +302,14 @@ function earlyWatchTimingReport(rows){
   });
   return summarize(rows);
 }
+function earlyWatchTradeConstruction(rows){
+  const finite=(k)=>rows.map(e=>e[k]).filter(Number.isFinite);
+  const avg=(v)=>v.length?round(v.reduce((s,x)=>s+x,0)/v.length):null;
+  const med=(v)=>{if(!v.length)return null;const a=[...v].sort((x,y)=>x-y),m=Math.floor(a.length/2);return round(a.length%2?a[m]:(a[m-1]+a[m])/2)};
+  const rate=(fn)=>rows.length?round(100*rows.filter(fn).length/rows.length,1):0;
+  const mfeDays=finite('daysToMfe'),maeDays=finite('daysToMae'),plus7Days=finite('hitPlus7Day'),minus7Days=finite('hitMinus7Day');
+  return {n:rows.length,avgDaysToMfe:avg(mfeDays),medianDaysToMfe:med(mfeDays),avgDaysToMae:avg(maeDays),medianDaysToMae:med(maeDays),avgPlus7Day:avg(plus7Days),medianPlus7Day:med(plus7Days),avgMinus7Day:avg(minus7Days),medianMinus7Day:med(minus7Days),mfeByDay:{by5:rate(e=>Number.isFinite(e.daysToMfe)&&e.daysToMfe<=5),by10:rate(e=>Number.isFinite(e.daysToMfe)&&e.daysToMfe<=10),after10:rate(e=>Number.isFinite(e.daysToMfe)&&e.daysToMfe>10)},maeByDay:{by5:rate(e=>Number.isFinite(e.daysToMae)&&e.daysToMae<=5),by10:rate(e=>Number.isFinite(e.daysToMae)&&e.daysToMae<=10),after10:rate(e=>Number.isFinite(e.daysToMae)&&e.daysToMae>10)},plus7BeforeMinus7:rate(e=>Number.isFinite(e.hitPlus7Day)&&(!Number.isFinite(e.hitMinus7Day)||e.hitPlus7Day<e.hitMinus7Day)),minus7BeforePlus7:rate(e=>Number.isFinite(e.hitMinus7Day)&&(!Number.isFinite(e.hitPlus7Day)||e.hitMinus7Day<e.hitPlus7Day))};
+}
 function researchV21Report(a){
   const rules={
     'Early Watch':{
@@ -377,7 +385,7 @@ function researchV21Report(a){
       const bySymbol=Object.fromEntries(Object.entries(Object.groupBy?Object.groupBy(holdRows,e=>e.symbol):holdRows.reduce((m,e)=>((m[e.symbol]??=[]).push(e),m),{})).map(([symbol,rows])=>[symbol,summary(rows)]));
       const symbolEqual=Object.values(bySymbol).filter(Boolean);
       const symbolEqualMean=key=>symbolEqual.length?round(symbolEqual.map(x=>x[key]).filter(Number.isFinite).reduce((s,x)=>s+x,0)/Math.max(1,symbolEqual.filter(x=>Number.isFinite(x[key])).length)):null;
-      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),holdoutSymbolNeutral:{uniqueSymbols:symbolEqual.length,equalWeightMeanReturn:symbolEqualMean('mean'),equalWeightPositiveRate:symbolEqualMean('positiveRate'),equalWeightMeanExcessReturn:symbolEqualMean('meanExcessReturn')},holdoutRegimes,rollingWindows,timing:stage==='Early Watch'?earlyWatchTimingReport(picked):null,holdoutTiming:stage==='Early Watch'?earlyWatchTimingReport(holdRows):null,timeSlices,regimes};
+      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),holdoutSymbolNeutral:{uniqueSymbols:symbolEqual.length,equalWeightMeanReturn:symbolEqualMean('mean'),equalWeightPositiveRate:symbolEqualMean('positiveRate'),equalWeightMeanExcessReturn:symbolEqualMean('meanExcessReturn')},holdoutRegimes,rollingWindows,timing:stage==='Early Watch'?earlyWatchTimingReport(picked):null,holdoutTiming:stage==='Early Watch'?earlyWatchTimingReport(holdRows):null,tradeConstruction:stage==='Early Watch'?earlyWatchTradeConstruction(picked):null,holdoutTradeConstruction:stage==='Early Watch'?earlyWatchTradeConstruction(holdRows):null,timeSlices,regimes};
     }
   }
   return out;
