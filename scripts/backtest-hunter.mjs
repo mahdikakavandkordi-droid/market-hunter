@@ -36,7 +36,7 @@ const EARLY_WATCH_DISCOVERY_V1_SPEC=Object.freeze({
   live:false,
   frozenAt:'2026-09-24',
   setup:'Failed Breakdown / Reclaim',
-  qualityContext:{upDownVolumeBand:[.70,.85],atr14PctMaxExclusive:6},
+  contextOnly:{upDownVolumeBand:[.70,.85],atr14PctReferenceMaxExclusive:6},
   rankingOnly:{
     momentum:'>=4 strongest, >=2 strong, >0 supportive; <=-3 penalty',
     rs20:'>=0 strong, >=-8 supportive, <-15 penalty',
@@ -241,10 +241,10 @@ const EARLY_WATCH_DISCOVERY_V1=Object.freeze({
   live:false,
   philosophy:'Discovery first: preserve chart-worthy early turns; evidence ranks candidates instead of acting as buy/sell gates.',
   setup:'Failed Breakdown / Reclaim',
-  quality:Object.freeze({
-    upDownVolumeRatioMin:.70,
-    upDownVolumeRatioMaxExclusive:.85,
-    atr14PctMaxExclusive:6
+  context:Object.freeze({
+    upDownVolumeBand:[.70,.85],
+    atr14PctReferenceMaxExclusive:6,
+    note:'Volume and ATR are context/ranking evidence, not Early Watch exclusion gates.'
   }),
   ranking:Object.freeze({
     momentum:'priority evidence; >=4 strongest, >=2 strong, >0 supportive; not exclusionary',
@@ -262,14 +262,23 @@ const EARLY_WATCH_DISCOVERY_V1=Object.freeze({
 });
 
 function earlyWatchDiscoveryV1(e){
+  // Frozen discovery architecture: setup + stage establish eligibility.
+  // Momentum, RS, volume and ATR may change priority/context only; they must not exclude.
   return e.stage==='Early Watch' &&
-    (e.setups||[]).includes(EARLY_WATCH_DISCOVERY_V1.setup) &&
-    Number.isFinite(e.upDownVolumeRatio) &&
-    e.upDownVolumeRatio>=EARLY_WATCH_DISCOVERY_V1.quality.upDownVolumeRatioMin &&
-    e.upDownVolumeRatio<EARLY_WATCH_DISCOVERY_V1.quality.upDownVolumeRatioMaxExclusive &&
-    Number.isFinite(e.atr14Pct) &&
-    e.atr14Pct<EARLY_WATCH_DISCOVERY_V1.quality.atr14PctMaxExclusive;
+    (e.setups||[]).includes(EARLY_WATCH_DISCOVERY_V1.setup);
 }
+function assertEarlyWatchDiscoveryV1Regression(){
+  const base={stage:'Early Watch',setups:[EARLY_WATCH_DISCOVERY_V1.setup],swingTrend:'Structure improving'};
+  const variants=[
+    {...base,momentumShift:5,rs20:4,upDownVolumeRatio:1.3,atr14Pct:2},
+    {...base,momentumShift:-5,rs20:-20,upDownVolumeRatio:.4,atr14Pct:9},
+    {...base,momentumShift:null,rs20:null,upDownVolumeRatio:null,atr14Pct:null}
+  ];
+  if(variants.some(e=>!earlyWatchDiscoveryV1(e)))throw new Error('Early Watch regression: ranking/context evidence became an exclusion gate');
+  if(earlyWatchDiscoveryV1({...base,stage:'Recovery'}))throw new Error('Early Watch regression: stage gate lost');
+  if(earlyWatchDiscoveryV1({...base,setups:[]}))throw new Error('Early Watch regression: Failed Breakdown / Reclaim setup gate lost');
+}
+assertEarlyWatchDiscoveryV1Regression();
 
 const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
   version:'stage-evidence-candidate-v2-2026-09-23',
