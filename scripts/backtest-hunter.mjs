@@ -367,11 +367,17 @@ function researchV21Report(a){
       const thirds=[0,.333,.667,1].map(p=>dates[Math.min(dates.length-1,Math.floor((dates.length-1)*p))]);
       const timeSlices=[0,1,2].map(i=>summary(picked.filter(e=>e.date>=thirds[i]&&(i===2?e.date<=thirds[i+1]:e.date<thirds[i+1]))));
       const regimes=Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(picked.filter(e=>(e.regime||'Unknown')===r))]));
+      const holdoutRegimes=Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(picked.filter(e=>cut&&e.date>=cut&&(e.regime||'Unknown')===r))]));
+      const rollingWindows=dates.length?Array.from({length:4},(_,i)=>{
+        const startIdx=Math.floor((dates.length-1)*i/4),endIdx=Math.floor((dates.length-1)*(i+1)/4);
+        const start=dates[startIdx],end=dates[Math.min(dates.length-1,endIdx)];
+        return {start,end,summary:summary(picked.filter(e=>e.date>=start&&(i===3?e.date<=end:e.date<end)))};
+      }):[];
       const holdRows=picked.filter(e=>cut&&e.date>=cut);
       const bySymbol=Object.fromEntries(Object.entries(Object.groupBy?Object.groupBy(holdRows,e=>e.symbol):holdRows.reduce((m,e)=>((m[e.symbol]??=[]).push(e),m),{})).map(([symbol,rows])=>[symbol,summary(rows)]));
       const symbolEqual=Object.values(bySymbol).filter(Boolean);
       const symbolEqualMean=key=>symbolEqual.length?round(symbolEqual.map(x=>x[key]).filter(Number.isFinite).reduce((s,x)=>s+x,0)/Math.max(1,symbolEqual.filter(x=>Number.isFinite(x[key])).length)):null;
-      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),holdoutSymbolNeutral:{uniqueSymbols:symbolEqual.length,equalWeightMeanReturn:symbolEqualMean('mean'),equalWeightPositiveRate:symbolEqualMean('positiveRate'),equalWeightMeanExcessReturn:symbolEqualMean('meanExcessReturn')},timing:stage==='Early Watch'?earlyWatchTimingReport(picked):null,holdoutTiming:stage==='Early Watch'?earlyWatchTimingReport(holdRows):null,timeSlices,regimes};
+      out.stages[stage][name]={overall:summary(picked),development:summary(picked.filter(e=>!cut||e.date<cut)),holdout:summary(holdRows),holdoutUncertainty:uncertaintyReport(holdRows),holdoutConcentration:concentrationReport(holdRows),holdoutSymbolNeutral:{uniqueSymbols:symbolEqual.length,equalWeightMeanReturn:symbolEqualMean('mean'),equalWeightPositiveRate:symbolEqualMean('positiveRate'),equalWeightMeanExcessReturn:symbolEqualMean('meanExcessReturn')},holdoutRegimes,rollingWindows,timing:stage==='Early Watch'?earlyWatchTimingReport(picked):null,holdoutTiming:stage==='Early Watch'?earlyWatchTimingReport(holdRows):null,timeSlices,regimes};
     }
   }
   return out;
