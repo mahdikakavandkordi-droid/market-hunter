@@ -391,7 +391,13 @@ function researchV21Report(a){
     'Attractive Growth':{
       hhhlPlusVolume:e=>e.swingTrend==='Higher highs + higher lows'&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.2,
       hhhlPlusRs:e=>e.swingTrend==='Higher highs + higher lows'&&Number.isFinite(e.rs20)&&e.rs20>=4,
-      hhhlVolumeRs:e=>e.swingTrend==='Higher highs + higher lows'&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.2&&Number.isFinite(e.rs20)&&e.rs20>=4
+      hhhlVolumeRs:e=>e.swingTrend==='Higher highs + higher lows'&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.2&&Number.isFinite(e.rs20)&&e.rs20>=4,
+      // Discovery-oriented probes: preserve chart-worthy growth names while testing
+      // whether room-to-resistance / moderate volume context improves quality.
+      hhhlRoom5:e=>e.swingTrend==='Higher highs + higher lows'&&Number.isFinite(e.roomToResistance)&&e.roomToResistance>=5,
+      hhhlRoom7:e=>e.swingTrend==='Higher highs + higher lows'&&Number.isFinite(e.roomToResistance)&&e.roomToResistance>=7,
+      hhhlVolume085Room5:e=>e.swingTrend==='Higher highs + higher lows'&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=.85&&Number.isFinite(e.roomToResistance)&&e.roomToResistance>=5,
+      hhhlRs0Room5:e=>e.swingTrend==='Higher highs + higher lows'&&Number.isFinite(e.rs20)&&e.rs20>=0&&Number.isFinite(e.roomToResistance)&&e.roomToResistance>=5
     },
     'Established Move':{
       hhhlNoContinuation:e=>e.swingTrend==='Higher highs + higher lows'&&!(e.setups||[]).some(x=>x==='Pullback in Uptrend'||x==='Local Breakout'),
