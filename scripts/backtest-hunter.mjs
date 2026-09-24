@@ -30,6 +30,32 @@ function opportunityScore(m,stage,ss){
   if(stage==='Recovery')p-=6;
   return p;
 }
+const EARLY_WATCH_DISCOVERY_V1_SPEC=Object.freeze({
+  version:'early-watch-discovery-v1-frozen-2026-09-24',
+  status:'frozen-forward-evaluation',
+  live:false,
+  frozenAt:'2026-09-24',
+  setup:'Failed Breakdown / Reclaim',
+  qualityContext:{upDownVolumeBand:[.70,.85],atr14PctMaxExclusive:6},
+  rankingOnly:{
+    momentum:'>=4 strongest, >=2 strong, >0 supportive; <=-3 penalty',
+    rs20:'>=0 strong, >=-8 supportive, <-15 penalty',
+    volume:'>=.85 strong, .70-.85 supportive, <.55 penalty'
+  },
+  principle:'Momentum, RS and volume rank Early Watch candidates; they do not exclude otherwise chart-worthy candidates.',
+  validation:'Recent 109-event sample separated top/mid/lower; historical robustness supports ranking as priority, not return prediction. No further threshold tuning from these results.'
+});
+function earlyWatchDiscoveryRank(e){
+  let p=0,m=e.momentumShift,rs=e.rs20,v=e.upDownVolumeRatio,set=e.setups||[],st=e.swingTrend;
+  if(set.includes('Failed Breakdown / Reclaim'))p+=3;
+  if(set.includes('Selling Exhaustion'))p+=2;
+  if(Number.isFinite(m)){if(m>=4)p+=4;else if(m>=2)p+=3;else if(m>0)p+=2;else if(m<=-3)p-=2}
+  if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>=-8)p+=1;else if(rs<-15)p-=2}
+  if(Number.isFinite(v)){if(v>=.85)p+=2;else if(v>=.70)p+=1;else if(v<.55)p-=1}
+  if(st==='Structure improving')p+=2;
+  if(st==='Lower highs + lower lows')p-=1;
+  return p;
+}
 const STAGE_AWARE_V1_SPEC=Object.freeze({
   version:'stage-aware-shortlist-v1-frozen-2026-09-23',
   status:'validation-only',
