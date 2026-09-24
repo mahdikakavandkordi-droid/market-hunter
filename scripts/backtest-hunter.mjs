@@ -1,6 +1,10 @@
 import fs from 'node:fs';
 import {metrics,isEarlyWatch} from '../api/scan.js';
-const symbols=(process.env.BACKTEST_SYMBOLS||'RY.TO,TD.TO,BMO.TO,BNS.TO,CM.TO,NA.TO,SHOP.TO,CSU.TO,OTEX.TO,LUN.TO,ABX.TO,AEM.TO,CNQ.TO,SU.TO,CVE.TO,IMO.TO,CNR.TO,CP.TO,WCN.TO,FTS.TO,EMA.TO,T.TO,BCE.TO,TRP.TO,ENB.TO,ATD.TO,DOL.TO,L.TO,MRU.TO,QSR.TO,CCO.TO,NTR.TO,POW.TO,MFC.TO,SLF.TO,GWO.TO,BN.TO,BAM.TO,WSP.TO,STN.TO,TFII.TO,MG.TO,GIB-A.TO,AAPL.TO,MSFT.TO,NVDA.TO,AMZN.TO,GOOG.TO,META.TO,TSLA.TO').split(',').map(x=>x.trim()).filter(Boolean);
+import {UNIVERSE} from '../lib/universe.js';
+const DEFAULT_SYMBOLS='RY.TO,TD.TO,BMO.TO,BNS.TO,CM.TO,NA.TO,SHOP.TO,CSU.TO,OTEX.TO,LUN.TO,ABX.TO,AEM.TO,CNQ.TO,SU.TO,CVE.TO,IMO.TO,CNR.TO,CP.TO,WCN.TO,FTS.TO,EMA.TO,T.TO,BCE.TO,TRP.TO,ENB.TO,ATD.TO,DOL.TO,L.TO,MRU.TO,QSR.TO,CCO.TO,NTR.TO,POW.TO,MFC.TO,SLF.TO,GWO.TO,BN.TO,BAM.TO,WSP.TO,STN.TO,TFII.TO,MG.TO,GIB-A.TO,AAPL.TO,MSFT.TO,NVDA.TO,AMZN.TO,GOOG.TO,META.TO,TSLA.TO';
+const universePreset=process.env.BACKTEST_UNIVERSE||'default';
+const universeSymbols=universePreset==='canadian-core'?UNIVERSE.map(x=>x[0]).filter(s=>s.endsWith('.TO')):[];
+const symbols=(process.env.BACKTEST_SYMBOLS|| (universeSymbols.length?universeSymbols.join(','):DEFAULT_SYMBOLS)).split(',').map(x=>x.trim()).filter(Boolean);
 const range=process.env.BACKTEST_RANGE||'2y',holdoutEnd=process.env.BACKTEST_HOLDOUT_END||'',horizons=(process.env.BACKTEST_HORIZONS||process.env.BACKTEST_HORIZON||'5,10,20').split(',').map(Number).filter(x=>x>0),maxH=Math.max(...horizons),minDollar=Number(process.env.BACKTEST_MIN_DOLLAR||5000000),warmup=90;
 const CDR=new Set(['AAPL.TO','MSFT.TO','NVDA.TO','AMZN.TO','GOOG.TO','META.TO','TSLA.TO','AMD.TO']);
 const benchSymbol=s=>CDR.has(s)?'^IXIC':'^GSPTSE',dayKey=t=>new Date(t*1000).toISOString().slice(0,10);
