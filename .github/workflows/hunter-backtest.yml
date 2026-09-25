@@ -31,6 +31,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: hunter-historical-backtest-${{ github.ref }}
+  cancel-in-progress: true
+
 # Research workflow safety:
 # - Generated data commits do not match the push path filter, so they cannot recursively trigger this workflow.
 # - PR validation is intentionally disabled for this workflow because bot-generated research commits can cause
