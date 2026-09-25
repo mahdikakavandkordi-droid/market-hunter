@@ -555,10 +555,11 @@ assertAttractiveGrowthRankV3Candidate();
 const ATTRACTIVE_GROWTH_RANK_V4_CANDIDATE=Object.freeze({
   version:'attractive-growth-rank-v4-candidate-2026-09-25',
   live:false,
-  status:'historical-comparison',
+  status:'rejected-historical-candidate',
   philosophy:'Preserve V2 broad discovery and all existing evidence weights. Apply one small ranking-only penalty only when momentumShift >= 6 and price is >=6% above MA20.',
   evidence:'Across four batches at 20D, the extended momentum>=6 subgroup had lower mean and excess return plus worse MAE and hit-7 in all 4/4 batches. The same interaction was also more concentrated in V2 Top than Middle in all 4/4 batches.',
-  freezeRule:'Research candidate only. No eligibility gate and no Live/core change; require multi-horizon four-batch comparison before any forward freeze.'
+  finding:'Rejected as a ranking fix. Four-batch averages showed only modest Top downside improvement while Top/Middle return separation narrowed: 20D V2 1.40/1.29 vs V4 1.38/1.36; 10D V2 0.75/0.62 vs V4 0.72/0.69.',
+  freezeRule:'Rejected research candidate. Keep only as historical evidence; do not promote to Live/core.'
 });
 function attractiveGrowthRankV4Candidate(e){
   const base=attractiveGrowthRankV2Candidate(e);
@@ -583,6 +584,92 @@ function assertAttractiveGrowthRankV4Candidate(){
   if(attractiveGrowthRankV4Candidate({...hotExtended,stage:'Recovery'})!==null)throw new Error('AG V4 stage gate lost');
 }
 assertAttractiveGrowthRankV4Candidate();
+
+const ATTRACTIVE_GROWTH_RANK_BOUNDARY_DIAGNOSTIC_V1=Object.freeze({
+  version:'attractive-growth-rank-boundary-diagnostic-v1-2026-09-25',
+  live:false,
+  status:'diagnostic-only',
+  purpose:'Measure whether coarse integer scores and cutoff ties make Top/Middle membership unstable, and inspect which cohorts V4 actually swaps at the Top boundary.'
+});
+function attractiveGrowthRankBoundaryDiagnosticReport(a){
+  const rows=a.filter(e=>e.stage==='Attractive Growth');
+  const v2=e=>attractiveGrowthRankV2Candidate(e),v4=e=>attractiveGrowthRankV4Candidate(e);
+  const rankedV2=[...rows].sort((x,y)=>v2(y)-v2(x));
+  const rankedV4=[...rows].sort((x,y)=>v4(y)-v4(x));
+  const n=rows.length,c1=Math.ceil(n/3),c2=Math.ceil(n*2/3);
+  const avg=(xs,getter)=>{const vals=xs.map(getter).filter(Number.isFinite);return vals.length?round(vals.reduce((p,c)=>p+c,0)/vals.length):null};
+  const pctOf=(xs,test)=>xs.length?round(xs.filter(test).length/xs.length*100,1):0;
+  const hotExtended=e=>Number.isFinite(e.momentumShift)&&e.momentumShift>=6&&Number.isFinite(e.dist20)&&e.dist20>=6;
+  const profile=xs=>({
+    n:xs.length,
+    summary:summary(xs),
+    tradeability:stageTradeabilityReport(xs),
+    avgV2Score:avg(xs,v2),
+    avgV4Score:avg(xs,v4),
+    avgMomentumShift:avg(xs,e=>e.momentumShift),
+    avgDist20:avg(xs,e=>e.dist20),
+    avgRs20:avg(xs,e=>e.rs20),
+    avgUpDownVolumeRatio:avg(xs,e=>e.upDownVolumeRatio),
+    hotExtendedPct:pctOf(xs,hotExtended),
+    hhhlPct:pctOf(xs,e=>e.swingTrend==='Higher highs + higher lows'),
+    improvingStructurePct:pctOf(xs,e=>e.swingTrend==='Structure improving'),
+    pullbackPct:pctOf(xs,e=>(e.setups||[]).includes('Pullback in Uptrend')),
+    breakoutPct:pctOf(xs,e=>(e.setups||[]).includes('Local Breakout'))
+  });
+  const boundary=(ranked,scoreFn,cut)=>{
+    if(!ranked.length||cut<=0||cut>=ranked.length)return null;
+    const insideScore=scoreFn(ranked[cut-1]),outsideScore=scoreFn(ranked[cut]);
+    const tied=insideScore===outsideScore;
+    const tieRows=ranked.filter(e=>scoreFn(e)===insideScore);
+    const inBefore=ranked.slice(0,cut).filter(e=>scoreFn(e)===insideScore).length;
+    return {
+      cutoffIndex:cut,
+      insideScore,
+      outsideScore,
+      tiedAcrossBoundary:tied,
+      cutoffScoreGroupN:tieRows.length,
+      cutoffScoreGroupPct:n?round(tieRows.length/n*100,1):0,
+      cutoffScoreInsideN:inBefore,
+      cutoffScoreOutsideN:tieRows.length-inBefore
+    };
+  };
+  const distribution=scoreFn=>{
+    const m=new Map();
+    for(const e of rows){const sc=scoreFn(e);m.set(sc,(m.get(sc)||0)+1)}
+    return [...m.entries()].sort((x,y)=>y[0]-x[0]).map(([score,count])=>({score,n:count,pct:n?round(count/n*100,1):0}));
+  };
+  const v2Top=new Set(rankedV2.slice(0,c1)),v4Top=new Set(rankedV4.slice(0,c1));
+  const retained=rows.filter(e=>v2Top.has(e)&&v4Top.has(e));
+  const demoted=rows.filter(e=>v2Top.has(e)&&!v4Top.has(e));
+  const promoted=rows.filter(e=>!v2Top.has(e)&&v4Top.has(e));
+  return {
+    spec:ATTRACTIVE_GROWTH_RANK_BOUNDARY_DIAGNOSTIC_V1,
+    v2:{
+      uniqueScores:new Set(rows.map(v2)).size,
+      scoreDistribution:distribution(v2),
+      topBoundary:boundary(rankedV2,v2,c1),
+      middleBoundary:boundary(rankedV2,v2,c2),
+      top:profile(rankedV2.slice(0,c1)),
+      middle:profile(rankedV2.slice(c1,c2)),
+      lower:profile(rankedV2.slice(c2))
+    },
+    v4:{
+      uniqueScores:new Set(rows.map(v4)).size,
+      scoreDistribution:distribution(v4),
+      topBoundary:boundary(rankedV4,v4,c1),
+      middleBoundary:boundary(rankedV4,v4,c2),
+      top:profile(rankedV4.slice(0,c1)),
+      middle:profile(rankedV4.slice(c1,c2)),
+      lower:profile(rankedV4.slice(c2))
+    },
+    migration:{
+      retainedTop:profile(retained),
+      demotedFromTop:profile(demoted),
+      promotedIntoTop:profile(promoted)
+    },
+    note:'If a cutoff is tied, the current stable score sort inherits the existing deduped event order (date/symbol) within that score. Membership inside a large cutoff tie is therefore not further evidence-ranked.'
+  };
+}
 
 const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
   version:'stage-evidence-candidate-v2-2026-09-23',
@@ -1124,7 +1211,7 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),stageSelectionLift:stageSelectionLiftReport(he),stageEvidenceComponents:stageEvidenceComponentReport(he),stageEvidenceCombinations:stageEvidenceCombinationReport(he),candidateEngineV2Diagnostic:candidateEngineV2DiagnosticReport(he),attractiveGrowthDiscoveryV1:attractiveGrowthRankValidationReport(he),attractiveGrowthCohortAuditV1:attractiveGrowthCohortAuditReport(he),attractiveGrowthEntryContextV1:attractiveGrowthEntryContextReport(he),attractiveGrowthExtensionContextV1:attractiveGrowthExtensionContextReport(he),attractiveGrowthHeatExtensionInteractionV1:attractiveGrowthHeatExtensionInteractionReport(he),attractiveGrowthRankV2Candidate:attractiveGrowthRankV2Report(he),attractiveGrowthRankV3Candidate:attractiveGrowthRankV3Report(he),attractiveGrowthRankV4Candidate:attractiveGrowthRankV4Report(he),researchV21:researchV21Report(he),featureLift:featureLiftReport(he),frozenStageAwareValidation:frozenStageAwareValidation(he),frozenStageAuditV1:frozenStageAuditReport(raw,horizon),dailyReviewLoad:{t5:dailyReviewLoad(he,5),t6:dailyReviewLoad(he,6),t7:dailyReviewLoad(he,7)},topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),stageSelectionLift:stageSelectionLiftReport(he),stageEvidenceComponents:stageEvidenceComponentReport(he),stageEvidenceCombinations:stageEvidenceCombinationReport(he),candidateEngineV2Diagnostic:candidateEngineV2DiagnosticReport(he),attractiveGrowthDiscoveryV1:attractiveGrowthRankValidationReport(he),attractiveGrowthCohortAuditV1:attractiveGrowthCohortAuditReport(he),attractiveGrowthEntryContextV1:attractiveGrowthEntryContextReport(he),attractiveGrowthExtensionContextV1:attractiveGrowthExtensionContextReport(he),attractiveGrowthHeatExtensionInteractionV1:attractiveGrowthHeatExtensionInteractionReport(he),attractiveGrowthRankV2Candidate:attractiveGrowthRankV2Report(he),attractiveGrowthRankV3Candidate:attractiveGrowthRankV3Report(he),attractiveGrowthRankV4Candidate:attractiveGrowthRankV4Report(he),attractiveGrowthRankBoundaryDiagnosticV1:attractiveGrowthRankBoundaryDiagnosticReport(he),researchV21:researchV21Report(he),featureLift:featureLiftReport(he),frozenStageAwareValidation:frozenStageAwareValidation(he),frozenStageAuditV1:frozenStageAuditReport(raw,horizon),dailyReviewLoad:{t5:dailyReviewLoad(he,5),t6:dailyReviewLoad(he,6),t7:dailyReviewLoad(he,7)},topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),range,holdoutEnd:holdoutEnd||null,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};
 fs.mkdirSync('data',{recursive:true});
 const earlyReclaimCases=events.filter(e=>e.horizon===20&&e.stage==='Early Watch'&&e.setups?.includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=0.70&&e.upDownVolumeRatio<0.85).map(e=>({symbol:e.symbol,date:e.date,forwardReturn:e.forwardReturn,benchmarkReturn:e.benchmarkReturn,excessReturn:Number.isFinite(e.forwardReturn)&&Number.isFinite(e.benchmarkReturn)?round(e.forwardReturn-e.benchmarkReturn):null,atr14Pct:e.atr14Pct,rs20:e.rs20,momentumShift:e.momentumShift,rsi:e.rsi,upDownVolumeRatio:e.upDownVolumeRatio,regime:e.regime,sector:e.sector,mae:e.mae,mfe:e.mfe}));
