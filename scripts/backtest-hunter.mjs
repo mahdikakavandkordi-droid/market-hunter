@@ -425,7 +425,7 @@ function attractiveGrowthEntryContextReport(a){
     roomLt3Pct:xs.length?round(xs.filter(e=>Number.isFinite(e.roomToResistance)&&e.roomToResistance<3).length/xs.length*100,1):0,
     roomGte7Pct:xs.length?round(xs.filter(e=>Number.isFinite(e.roomToResistance)&&e.roomToResistance>=7).length/xs.length*100,1):0
   });
-  return {spec:ATTRACTIVE_GROWTH_ENTRY_CONTEXT_V1,groups,report,topVsMiddleContext:{top:context(top),middle:context(middle)},note:'Diagnostic only; use to understand entry location, not to create hard filters.'};
+  return {spec:ATTRACTIVE_GROWTH_ENTRY_CONTEXT_V1,report,topVsMiddleContext:{top:context(top),middle:context(middle)},note:'Diagnostic only; use to understand entry location, not to create hard filters.'};
 }
 
 const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
