@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T17:58:35.450Z",
+  "generatedAt": "2026-09-25T18:06:57.199Z",
   "range": "5y",
   "holdoutEnd": null,
   "horizons": [
@@ -130,10 +130,10 @@
     "GOOG.TO",
     "COST.TO"
   ],
-  "totalEvents": 69351,
+  "totalEvents": 69354,
   "byHorizon": {
     "5": {
-      "rawObservations": 23117,
+      "rawObservations": 23118,
       "independentEvents": 9962,
       "overall": {
         "n": 9962,
@@ -3513,7 +3513,7 @@
             "positiveRate": 47.6,
             "gain7Rate": 10.7,
             "loss7Rate": 7.1,
-            "mean": 0.1,
+            "mean": 0.11,
             "median": -0.1,
             "benchmarkBeatRate": 46.4,
             "meanExcessReturn": 0.09
@@ -5900,6 +5900,107 @@
           }
         },
         "note": "Historical comparison only. Broad discovery is preserved; score changes priority only."
+      },
+      "attractiveGrowthRankV3Candidate": {
+        "spec": {
+          "version": "attractive-growth-rank-v3-candidate-2026-09-25",
+          "live": false,
+          "status": "historical-comparison",
+          "philosophy": "Preserve V2 broad discovery and ranking, but apply one small anti-extension penalty when price is >=6% above MA20. No hard gate and no MA50 penalty.",
+          "evidence": "Across all four batches the old Top bucket is materially more concentrated in dist20 >=6 than Middle, while dist20 >=6 shows consistently worse MAE and weaker short-horizon outcomes.",
+          "freezeRule": "Research candidate only; do not replace frozen V1 or Live/core from historical results."
+        },
+        "eligible": {
+          "n": 5090,
+          "positiveRate": 53.2,
+          "gain7Rate": 5.5,
+          "loss7Rate": 4.4,
+          "mean": 0.27,
+          "median": 0.23,
+          "benchmarkBeatRate": 49.4,
+          "meanExcessReturn": 0.04
+        },
+        "rankingBuckets": {
+          "top": {
+            "summary": {
+              "n": 1697,
+              "positiveRate": 53.7,
+              "gain7Rate": 6.1,
+              "loss7Rate": 5.4,
+              "mean": 0.24,
+              "median": 0.33,
+              "benchmarkBeatRate": 49.5,
+              "meanExcessReturn": 0.05
+            },
+            "tradeability": {
+              "n": 1697,
+              "avgReturn": 0.24,
+              "avgMae": -1.91,
+              "avgMfe": 2.3,
+              "maeBelow3": 27.28,
+              "maeBelow5": 14.38,
+              "maeBelow7": 7.19,
+              "hitPlus7": 8.66,
+              "hitMinus7": 7.19,
+              "plus7BeforeMinus7": 8.6,
+              "minus7BeforePlus7": 6.95
+            },
+            "avgRankScore": 8.3
+          },
+          "middle": {
+            "summary": {
+              "n": 1697,
+              "positiveRate": 53.7,
+              "gain7Rate": 5.2,
+              "loss7Rate": 4.3,
+              "mean": 0.29,
+              "median": 0.26,
+              "benchmarkBeatRate": 48.9,
+              "meanExcessReturn": -0.04
+            },
+            "tradeability": {
+              "n": 1697,
+              "avgReturn": 0.29,
+              "avgMae": -1.72,
+              "avgMfe": 2.09,
+              "maeBelow3": 23.81,
+              "maeBelow5": 11.61,
+              "maeBelow7": 6.31,
+              "hitPlus7": 6.95,
+              "hitMinus7": 6.31,
+              "plus7BeforeMinus7": 6.84,
+              "minus7BeforePlus7": 6.19
+            },
+            "avgRankScore": 6.26
+          },
+          "lower": {
+            "summary": {
+              "n": 1696,
+              "positiveRate": 52.1,
+              "gain7Rate": 5.3,
+              "loss7Rate": 3.6,
+              "mean": 0.27,
+              "median": 0.13,
+              "benchmarkBeatRate": 49.8,
+              "meanExcessReturn": 0.09
+            },
+            "tradeability": {
+              "n": 1696,
+              "avgReturn": 0.27,
+              "avgMae": -1.6,
+              "avgMfe": 2,
+              "maeBelow3": 22.29,
+              "maeBelow5": 10.38,
+              "maeBelow7": 5.07,
+              "hitPlus7": 6.66,
+              "hitMinus7": 5.07,
+              "plus7BeforeMinus7": 6.54,
+              "minus7BeforePlus7": 4.95
+            },
+            "avgRankScore": 3.69
+          }
+        },
+        "note": "Historical comparison only. V3 differs from V2 only by a one-point dist20 >=6 extension penalty."
       },
       "researchV21": {
         "status": "research-only-v2.1",
@@ -15220,7 +15321,7 @@
                     "mean": 2.01,
                     "median": 1.69,
                     "benchmarkBeatRate": 80,
-                    "meanExcessReturn": 1.49
+                    "meanExcessReturn": 1.48
                   }
                 },
                 {
@@ -15425,7 +15526,7 @@
                   "mean": 2.01,
                   "median": 1.69,
                   "benchmarkBeatRate": 80,
-                  "meanExcessReturn": 1.49
+                  "meanExcessReturn": 1.48
                 },
                 {
                   "n": 18,
@@ -18836,7 +18937,7 @@
                   "mean": 3.22,
                   "median": 3.02,
                   "benchmarkBeatRate": 76.2,
-                  "meanExcessReturn": 2.32
+                  "meanExcessReturn": 2.31
                 },
                 "Unknown": null
               }
@@ -19175,7 +19276,7 @@
                     "mean": 0.09,
                     "median": -0.64,
                     "benchmarkBeatRate": 60,
-                    "meanExcessReturn": 0.16
+                    "meanExcessReturn": 0.15
                   }
                 },
                 {
@@ -19371,7 +19472,7 @@
                   "mean": 0.09,
                   "median": -0.64,
                   "benchmarkBeatRate": 60,
-                  "meanExcessReturn": 0.16
+                  "meanExcessReturn": 0.15
                 },
                 {
                   "n": 1,
@@ -19460,7 +19561,7 @@
                     "mean": 0.09,
                     "median": -0.64,
                     "benchmarkBeatRate": 60,
-                    "meanExcessReturn": 0.16
+                    "meanExcessReturn": 0.15
                   }
                 },
                 {
@@ -19656,7 +19757,7 @@
                   "mean": 0.09,
                   "median": -0.64,
                   "benchmarkBeatRate": 60,
-                  "meanExcessReturn": 0.16
+                  "meanExcessReturn": 0.15
                 },
                 {
                   "n": 1,
@@ -20318,7 +20419,7 @@
                 "mean": 0.25,
                 "median": 0.34,
                 "benchmarkBeatRate": 47.8,
-                "meanExcessReturn": -0.09
+                "meanExcessReturn": -0.08
               },
               "development": {
                 "n": 849,
@@ -23119,30 +23220,30 @@
           },
           "strongUpVolume": {
             "present": {
-              "n": 186,
-              "positiveRate": 59.1,
+              "n": 185,
+              "positiveRate": 58.9,
               "gain7Rate": 8.1,
               "loss7Rate": 5.9,
-              "mean": 0.53,
-              "median": 0.76,
-              "benchmarkBeatRate": 49.5,
-              "meanExcessReturn": 0.3
+              "mean": 0.51,
+              "median": 0.7,
+              "benchmarkBeatRate": 49.2,
+              "meanExcessReturn": 0.29
             },
             "absent": {
-              "n": 755,
+              "n": 756,
               "positiveRate": 52.2,
               "gain7Rate": 5,
               "loss7Rate": 5.6,
-              "mean": 0.13,
+              "mean": 0.14,
               "median": 0.31,
               "benchmarkBeatRate": 51.7,
               "meanExcessReturn": -0.08
             },
             "lift": {
-              "positiveRate": 6.9,
-              "meanReturn": 0.4,
-              "benchmarkBeatRate": -2.2,
-              "meanExcessReturn": 0.38
+              "positiveRate": 6.7,
+              "meanReturn": 0.37,
+              "benchmarkBeatRate": -2.5,
+              "meanExcessReturn": 0.37
             }
           },
           "room7": {
@@ -24133,7 +24234,7 @@
       },
       "byPriority": {
         "10": {
-          "n": 6624,
+          "n": 6623,
           "positiveRate": 53.2,
           "gain7Rate": 7.1,
           "loss7Rate": 6.5,
@@ -31333,7 +31434,7 @@
                   "gain7Rate": 1.6,
                   "loss7Rate": 3.1,
                   "mean": 1.11,
-                  "median": 1,
+                  "median": 0.99,
                   "benchmarkBeatRate": 59.4,
                   "meanExcessReturn": 0.53
                 },
@@ -31620,7 +31721,7 @@
                 "gain7Rate": 1.6,
                 "loss7Rate": 3.1,
                 "mean": 1.11,
-                "median": 1,
+                "median": 0.99,
                 "benchmarkBeatRate": 59.4,
                 "meanExcessReturn": 0.53
               },
@@ -31930,7 +32031,7 @@
           },
           "byPriority": {
             "10": {
-              "n": 2596,
+              "n": 2595,
               "positiveRate": 56.8,
               "gain7Rate": 10.9,
               "loss7Rate": 8,
@@ -32447,7 +32548,7 @@
       }
     },
     "10": {
-      "rawObservations": 23117,
+      "rawObservations": 23118,
       "independentEvents": 7982,
       "overall": {
         "n": 7982,
@@ -38214,6 +38315,107 @@
           }
         },
         "note": "Historical comparison only. Broad discovery is preserved; score changes priority only."
+      },
+      "attractiveGrowthRankV3Candidate": {
+        "spec": {
+          "version": "attractive-growth-rank-v3-candidate-2026-09-25",
+          "live": false,
+          "status": "historical-comparison",
+          "philosophy": "Preserve V2 broad discovery and ranking, but apply one small anti-extension penalty when price is >=6% above MA20. No hard gate and no MA50 penalty.",
+          "evidence": "Across all four batches the old Top bucket is materially more concentrated in dist20 >=6 than Middle, while dist20 >=6 shows consistently worse MAE and weaker short-horizon outcomes.",
+          "freezeRule": "Research candidate only; do not replace frozen V1 or Live/core from historical results."
+        },
+        "eligible": {
+          "n": 3983,
+          "positiveRate": 54.1,
+          "gain7Rate": 11.5,
+          "loss7Rate": 9.6,
+          "mean": 0.48,
+          "median": 0.51,
+          "benchmarkBeatRate": 50.3,
+          "meanExcessReturn": 0.07
+        },
+        "rankingBuckets": {
+          "top": {
+            "summary": {
+              "n": 1328,
+              "positiveRate": 53.8,
+              "gain7Rate": 12.6,
+              "loss7Rate": 9.8,
+              "mean": 0.61,
+              "median": 0.57,
+              "benchmarkBeatRate": 51.6,
+              "meanExcessReturn": 0.23
+            },
+            "tradeability": {
+              "n": 1328,
+              "avgReturn": 0.61,
+              "avgMae": -3.27,
+              "avgMfe": 3.98,
+              "maeBelow3": 41.27,
+              "maeBelow5": 25.83,
+              "maeBelow7": 15.21,
+              "hitPlus7": 18.45,
+              "hitMinus7": 15.21,
+              "plus7BeforeMinus7": 18.15,
+              "minus7BeforePlus7": 14.61
+            },
+            "avgRankScore": 8.34
+          },
+          "middle": {
+            "summary": {
+              "n": 1328,
+              "positiveRate": 55.7,
+              "gain7Rate": 12.3,
+              "loss7Rate": 10.1,
+              "mean": 0.49,
+              "median": 0.81,
+              "benchmarkBeatRate": 49.5,
+              "meanExcessReturn": -0.07
+            },
+            "tradeability": {
+              "n": 1328,
+              "avgReturn": 0.49,
+              "avgMae": -3.18,
+              "avgMfe": 3.75,
+              "maeBelow3": 38.4,
+              "maeBelow5": 22.44,
+              "maeBelow7": 14.38,
+              "hitPlus7": 16.87,
+              "hitMinus7": 14.38,
+              "plus7BeforeMinus7": 16.64,
+              "minus7BeforePlus7": 13.93
+            },
+            "avgRankScore": 6.32
+          },
+          "lower": {
+            "summary": {
+              "n": 1327,
+              "positiveRate": 52.8,
+              "gain7Rate": 9.6,
+              "loss7Rate": 8.8,
+              "mean": 0.35,
+              "median": 0.27,
+              "benchmarkBeatRate": 49.6,
+              "meanExcessReturn": 0.06
+            },
+            "tradeability": {
+              "n": 1327,
+              "avgReturn": 0.35,
+              "avgMae": -3.01,
+              "avgMfe": 3.41,
+              "maeBelow3": 38.21,
+              "maeBelow5": 22.08,
+              "maeBelow7": 13.72,
+              "hitPlus7": 14.62,
+              "hitMinus7": 13.72,
+              "plus7BeforeMinus7": 14.32,
+              "minus7BeforePlus7": 13.26
+            },
+            "avgRankScore": 3.75
+          }
+        },
+        "note": "Historical comparison only. V3 differs from V2 only by a one-point dist20 >=6 extension penalty."
       },
       "researchV21": {
         "status": "research-only-v2.1",
@@ -55387,30 +55589,30 @@
           },
           "strongUpVolume": {
             "present": {
-              "n": 164,
-              "positiveRate": 57.9,
-              "gain7Rate": 18.3,
-              "loss7Rate": 7.9,
-              "mean": 1.4,
-              "median": 0.85,
-              "benchmarkBeatRate": 51.2,
-              "meanExcessReturn": 0.77
+              "n": 163,
+              "positiveRate": 57.7,
+              "gain7Rate": 18.4,
+              "loss7Rate": 8,
+              "mean": 1.37,
+              "median": 0.79,
+              "benchmarkBeatRate": 50.9,
+              "meanExcessReturn": 0.74
             },
             "absent": {
-              "n": 723,
+              "n": 724,
               "positiveRate": 55.2,
               "gain7Rate": 11.3,
               "loss7Rate": 9.7,
-              "mean": 0.51,
-              "median": 0.75,
+              "mean": 0.52,
+              "median": 0.76,
               "benchmarkBeatRate": 49.7,
-              "meanExcessReturn": -0.06
+              "meanExcessReturn": -0.05
             },
             "lift": {
-              "positiveRate": 2.7,
-              "meanReturn": 0.89,
-              "benchmarkBeatRate": 1.5,
-              "meanExcessReturn": 0.83
+              "positiveRate": 2.5,
+              "meanReturn": 0.85,
+              "benchmarkBeatRate": 1.2,
+              "meanExcessReturn": 0.79
             }
           },
           "room7": {
@@ -56401,7 +56603,7 @@
       },
       "byPriority": {
         "10": {
-          "n": 5319,
+          "n": 5318,
           "positiveRate": 53.8,
           "gain7Rate": 13.2,
           "loss7Rate": 10.9,
@@ -62854,7 +63056,7 @@
                 "mean": 0.29,
                 "median": 0.34,
                 "benchmarkBeatRate": 49.8,
-                "meanExcessReturn": 0.2
+                "meanExcessReturn": 0.19
               },
               "coverage": 30.5,
               "bySetup": {
@@ -63722,9 +63924,9 @@
           },
           "byPriority": {
             "10": {
-              "n": 2058,
+              "n": 2057,
               "positiveRate": 58.9,
-              "gain7Rate": 19,
+              "gain7Rate": 19.1,
               "loss7Rate": 12,
               "mean": 1.37,
               "median": 1.24,
@@ -64239,7 +64441,7 @@
       }
     },
     "20": {
-      "rawObservations": 23117,
+      "rawObservations": 23118,
       "independentEvents": 6302,
       "overall": {
         "n": 6302,
@@ -64726,7 +64928,7 @@
               "mean": 1.51,
               "median": 1.27,
               "benchmarkBeatRate": 51.3,
-              "meanExcessReturn": 0.47
+              "meanExcessReturn": 0.46
             },
             "Established Move": {
               "n": 659,
@@ -65534,7 +65736,7 @@
               "mean": 1.51,
               "median": 1.27,
               "benchmarkBeatRate": 51.3,
-              "meanExcessReturn": 0.47
+              "meanExcessReturn": 0.46
             },
             "rejected": {
               "n": 1178,
@@ -65550,7 +65752,7 @@
               "positiveRate": 1.4,
               "meanReturn": 0.29,
               "benchmarkBeatRate": -0.4,
-              "meanExcessReturn": 0.13
+              "meanExcessReturn": 0.12
             },
             "selectedTradeability": {
               "n": 1871,
@@ -66041,7 +66243,7 @@
                 "positiveRate": 8.1,
                 "meanReturn": 0.38,
                 "benchmarkBeatRate": 6,
-                "meanExcessReturn": 0.26
+                "meanExcessReturn": 0.27
               },
               "tradeability": {
                 "n": 74,
@@ -66979,20 +67181,20 @@
               "positiveRate": 55.5,
               "gain7Rate": 22,
               "loss7Rate": 14.8,
-              "mean": 1.24,
+              "mean": 1.23,
               "median": 1.17,
               "benchmarkBeatRate": 50.7,
               "meanExcessReturn": 0.11
             },
             "liftVsWithout": {
               "positiveRate": -1.5,
-              "meanReturn": -0.18,
+              "meanReturn": -0.19,
               "benchmarkBeatRate": -0.9,
               "meanExcessReturn": -0.36
             },
             "tradeability": {
               "n": 418,
-              "avgReturn": 1.24,
+              "avgReturn": 1.23,
               "avgMae": -5.03,
               "avgMfe": 6.85,
               "maeBelow3": 53.35,
@@ -67368,7 +67570,7 @@
                 "mean": 4.77,
                 "median": 3.1,
                 "benchmarkBeatRate": 56.9,
-                "meanExcessReturn": 2.35
+                "meanExcessReturn": 2.34
               },
               "Established Move": {
                 "n": 163,
@@ -67444,7 +67646,7 @@
               "positiveRate": 54.5,
               "gain7Rate": 22.1,
               "loss7Rate": 15.1,
-              "mean": 1.4,
+              "mean": 1.39,
               "median": 0.88,
               "benchmarkBeatRate": 52.1,
               "meanExcessReturn": 0.87
@@ -67475,10 +67677,10 @@
                 "positiveRate": 56.8,
                 "gain7Rate": 20.1,
                 "loss7Rate": 13.6,
-                "mean": 1.36,
+                "mean": 1.35,
                 "median": 1.25,
                 "benchmarkBeatRate": 56.2,
-                "meanExcessReturn": 1.03
+                "meanExcessReturn": 1.02
               },
               "Established Move": {
                 "n": 119,
@@ -68015,7 +68217,7 @@
             "positiveRate": 61.5,
             "gain7Rate": 19.2,
             "loss7Rate": 7.7,
-            "mean": 1.66,
+            "mean": 1.65,
             "median": 2.04,
             "benchmarkBeatRate": 57.7,
             "meanExcessReturn": 1.74
@@ -68180,10 +68382,10 @@
             "positiveRate": 66.7,
             "gain7Rate": 16.7,
             "loss7Rate": 16.7,
-            "mean": 0.7,
+            "mean": 0.65,
             "median": 3.27,
             "benchmarkBeatRate": 66.7,
-            "meanExcessReturn": 0.98
+            "meanExcessReturn": 0.92
           },
           {
             "symbol": "SVM.TO",
@@ -68707,10 +68909,10 @@
                 "positiveRate": 56.8,
                 "gain7Rate": 20.1,
                 "loss7Rate": 13.6,
-                "mean": 1.36,
+                "mean": 1.35,
                 "median": 1.25,
                 "benchmarkBeatRate": 56.2,
-                "meanExcessReturn": 1.03
+                "meanExcessReturn": 1.02
               },
               "Strong": {
                 "n": 161,
@@ -68933,7 +69135,7 @@
               "mean": 4.77,
               "median": 3.1,
               "benchmarkBeatRate": 56.9,
-              "meanExcessReturn": 2.35
+              "meanExcessReturn": 2.34
             },
             "uncertainty": {
               "n": 181,
@@ -68946,7 +69148,7 @@
                 "high": 6.77
               },
               "meanExcessReturnCI95": {
-                "low": 0.61,
+                "low": 0.6,
                 "high": 4.34
               }
             },
@@ -68970,7 +69172,7 @@
                 "mean": 2.51,
                 "median": 1.61,
                 "benchmarkBeatRate": 50,
-                "meanExcessReturn": 0.17
+                "meanExcessReturn": 0.16
               }
             }
           },
@@ -69062,7 +69264,7 @@
               "mean": 4.77,
               "median": 3.1,
               "benchmarkBeatRate": 56.9,
-              "meanExcessReturn": 2.35
+              "meanExcessReturn": 2.34
             }
           },
           "Established Move": {
@@ -69718,7 +69920,7 @@
               "mean": 0.79,
               "median": 0.94,
               "benchmarkBeatRate": 52.1,
-              "meanExcessReturn": 0
+              "meanExcessReturn": -0.01
             },
             "tradeability": {
               "n": 535,
@@ -69793,7 +69995,7 @@
               "mean": 1.18,
               "median": 1.03,
               "benchmarkBeatRate": 52,
-              "meanExcessReturn": 0.76
+              "meanExcessReturn": 0.75
             },
             "tradeability": {
               "n": 615,
@@ -70007,6 +70209,107 @@
         },
         "note": "Historical comparison only. Broad discovery is preserved; score changes priority only."
       },
+      "attractiveGrowthRankV3Candidate": {
+        "spec": {
+          "version": "attractive-growth-rank-v3-candidate-2026-09-25",
+          "live": false,
+          "status": "historical-comparison",
+          "philosophy": "Preserve V2 broad discovery and ranking, but apply one small anti-extension penalty when price is >=6% above MA20. No hard gate and no MA50 penalty.",
+          "evidence": "Across all four batches the old Top bucket is materially more concentrated in dist20 >=6 than Middle, while dist20 >=6 shows consistently worse MAE and weaker short-horizon outcomes.",
+          "freezeRule": "Research candidate only; do not replace frozen V1 or Live/core from historical results."
+        },
+        "eligible": {
+          "n": 3049,
+          "positiveRate": 56.8,
+          "gain7Rate": 21.2,
+          "loss7Rate": 14.2,
+          "mean": 1.4,
+          "median": 1.21,
+          "benchmarkBeatRate": 51.5,
+          "meanExcessReturn": 0.42
+        },
+        "rankingBuckets": {
+          "top": {
+            "summary": {
+              "n": 1017,
+              "positiveRate": 55.8,
+              "gain7Rate": 22.8,
+              "loss7Rate": 14.9,
+              "mean": 1.38,
+              "median": 1.06,
+              "benchmarkBeatRate": 51.8,
+              "meanExcessReturn": 0.46
+            },
+            "tradeability": {
+              "n": 1017,
+              "avgReturn": 1.38,
+              "avgMae": -4.95,
+              "avgMfe": 6.62,
+              "maeBelow3": 54.47,
+              "maeBelow5": 38.25,
+              "maeBelow7": 25.66,
+              "hitPlus7": 34.71,
+              "hitMinus7": 25.66,
+              "plus7BeforeMinus7": 32.94,
+              "minus7BeforePlus7": 23.3
+            },
+            "avgRankScore": 8.29
+          },
+          "middle": {
+            "summary": {
+              "n": 1016,
+              "positiveRate": 57.4,
+              "gain7Rate": 22,
+              "loss7Rate": 14.8,
+              "mean": 1.66,
+              "median": 1.42,
+              "benchmarkBeatRate": 52.5,
+              "meanExcessReturn": 0.6
+            },
+            "tradeability": {
+              "n": 1016,
+              "avgReturn": 1.66,
+              "avgMae": -4.74,
+              "avgMfe": 6.64,
+              "maeBelow3": 51.28,
+              "maeBelow5": 35.53,
+              "maeBelow7": 25,
+              "hitPlus7": 33.86,
+              "hitMinus7": 25,
+              "plus7BeforeMinus7": 32.48,
+              "minus7BeforePlus7": 22.54
+            },
+            "avgRankScore": 6.27
+          },
+          "lower": {
+            "summary": {
+              "n": 1016,
+              "positiveRate": 57.2,
+              "gain7Rate": 18.8,
+              "loss7Rate": 13,
+              "mean": 1.15,
+              "median": 1.02,
+              "benchmarkBeatRate": 50.2,
+              "meanExcessReturn": 0.19
+            },
+            "tradeability": {
+              "n": 1016,
+              "avgReturn": 1.15,
+              "avgMae": -4.75,
+              "avgMfe": 5.77,
+              "maeBelow3": 52.46,
+              "maeBelow5": 35.73,
+              "maeBelow7": 24.61,
+              "hitPlus7": 30.51,
+              "hitMinus7": 24.61,
+              "plus7BeforeMinus7": 29.43,
+              "minus7BeforePlus7": 22.83
+            },
+            "avgRankScore": 3.7
+          }
+        },
+        "note": "Historical comparison only. V3 differs from V2 only by a one-point dist20 >=6 extension penalty."
+      },
       "researchV21": {
         "status": "research-only-v2.1",
         "cutDate": "2025-04-21",
@@ -70085,7 +70388,7 @@
                 "uniqueSymbols": 53,
                 "equalWeightMeanReturn": 5.96,
                 "equalWeightPositiveRate": 65.05,
-                "equalWeightMeanExcessReturn": 3.55
+                "equalWeightMeanExcessReturn": 3.54
               },
               "holdoutRegimes": {
                 "Strong": {
@@ -83775,7 +84078,7 @@
                 "mean": 4.77,
                 "median": 3.1,
                 "benchmarkBeatRate": 56.9,
-                "meanExcessReturn": 2.35
+                "meanExcessReturn": 2.34
               },
               "holdoutUncertainty": {
                 "n": 181,
@@ -83788,7 +84091,7 @@
                   "high": 6.77
                 },
                 "meanExcessReturnCI95": {
-                  "low": 0.61,
+                  "low": 0.6,
                   "high": 4.34
                 }
               },
@@ -83812,12 +84115,12 @@
                   "mean": 2.51,
                   "median": 1.61,
                   "benchmarkBeatRate": 50,
-                  "meanExcessReturn": 0.17
+                  "meanExcessReturn": 0.16
                 }
               },
               "holdoutSymbolNeutral": {
                 "uniqueSymbols": 49,
-                "equalWeightMeanReturn": 6.24,
+                "equalWeightMeanReturn": 6.23,
                 "equalWeightPositiveRate": 68.76,
                 "equalWeightMeanExcessReturn": 3.87
               },
@@ -83840,7 +84143,7 @@
                   "mean": 4.32,
                   "median": 2.46,
                   "benchmarkBeatRate": 50,
-                  "meanExcessReturn": 2.19
+                  "meanExcessReturn": 2.18
                 },
                 "Mixed": {
                   "n": 23,
@@ -83975,10 +84278,10 @@
                   "positiveRate": 56.8,
                   "gain7Rate": 20.1,
                   "loss7Rate": 13.6,
-                  "mean": 1.36,
+                  "mean": 1.35,
                   "median": 1.25,
                   "benchmarkBeatRate": 56.2,
-                  "meanExcessReturn": 1.03
+                  "meanExcessReturn": 1.02
                 },
                 "Mixed": {
                   "n": 96,
@@ -84041,12 +84344,12 @@
                   "high": 61.3
                 },
                 "meanReturnCI95": {
-                  "low": 0.62,
+                  "low": 0.61,
                   "high": 3.55
                 },
                 "meanExcessReturnCI95": {
                   "low": -1.51,
-                  "high": 1.37
+                  "high": 1.36
                 }
               },
               "holdoutConcentration": {
@@ -84094,7 +84397,7 @@
                   "positiveRate": 46.2,
                   "gain7Rate": 24.2,
                   "loss7Rate": 23.5,
-                  "mean": 0.17,
+                  "mean": 0.16,
                   "median": -0.43,
                   "benchmarkBeatRate": 38.6,
                   "meanExcessReturn": -1.58
@@ -84210,7 +84513,7 @@
                   "positiveRate": 54.3,
                   "gain7Rate": 29.3,
                   "loss7Rate": 20.1,
-                  "mean": 1.72,
+                  "mean": 1.71,
                   "median": 1.22,
                   "benchmarkBeatRate": 46.9,
                   "meanExcessReturn": -0.27
@@ -84289,7 +84592,7 @@
                 "mean": 5.7,
                 "median": 3.1,
                 "benchmarkBeatRate": 57.6,
-                "meanExcessReturn": 3.29
+                "meanExcessReturn": 3.28
               },
               "holdoutUncertainty": {
                 "n": 99,
@@ -84351,10 +84654,10 @@
                   "positiveRate": 57.5,
                   "gain7Rate": 32.5,
                   "loss7Rate": 17.5,
-                  "mean": 4.85,
+                  "mean": 4.84,
                   "median": 2.46,
                   "benchmarkBeatRate": 47.5,
-                  "meanExcessReturn": 2.85
+                  "meanExcessReturn": 2.84
                 },
                 "Mixed": {
                   "n": 14,
@@ -84429,10 +84732,10 @@
                     "positiveRate": 68.8,
                     "gain7Rate": 47.5,
                     "loss7Rate": 15,
-                    "mean": 5.84,
+                    "mean": 5.83,
                     "median": 5.5,
                     "benchmarkBeatRate": 60,
-                    "meanExcessReturn": 3.42
+                    "meanExcessReturn": 3.41
                   }
                 }
               ],
@@ -84470,7 +84773,7 @@
                   "mean": 4.58,
                   "median": 2.32,
                   "benchmarkBeatRate": 54.5,
-                  "meanExcessReturn": 2.47
+                  "meanExcessReturn": 2.46
                 }
               ],
               "regimes": {
@@ -84489,7 +84792,7 @@
                   "positiveRate": 58.7,
                   "gain7Rate": 21.2,
                   "loss7Rate": 16.3,
-                  "mean": 1.58,
+                  "mean": 1.57,
                   "median": 1.46,
                   "benchmarkBeatRate": 53.8,
                   "meanExcessReturn": 1.33
@@ -86342,13 +86645,13 @@
               "mean": 2.32,
               "median": 1.45,
               "benchmarkBeatRate": 50.8,
-              "meanExcessReturn": 1.05
+              "meanExcessReturn": 1.04
             },
             "lift": {
               "positiveRate": 8.1,
               "meanReturn": 0.38,
               "benchmarkBeatRate": 6,
-              "meanExcessReturn": 0.26
+              "meanExcessReturn": 0.27
             }
           },
           "rsStrong": {
@@ -86813,30 +87116,30 @@
           },
           "strongUpVolume": {
             "present": {
-              "n": 149,
-              "positiveRate": 55.7,
-              "gain7Rate": 25.5,
+              "n": 148,
+              "positiveRate": 55.4,
+              "gain7Rate": 25.7,
               "loss7Rate": 12.8,
-              "mean": 2.14,
-              "median": 0.99,
-              "benchmarkBeatRate": 47.7,
+              "mean": 2.11,
+              "median": 0.96,
+              "benchmarkBeatRate": 47.3,
               "meanExcessReturn": 0.74
             },
             "absent": {
-              "n": 622,
-              "positiveRate": 55.3,
+              "n": 623,
+              "positiveRate": 55.4,
               "gain7Rate": 24.6,
               "loss7Rate": 15.4,
-              "mean": 1.53,
-              "median": 0.9,
+              "mean": 1.54,
+              "median": 0.91,
               "benchmarkBeatRate": 52.6,
-              "meanExcessReturn": 0.28
+              "meanExcessReturn": 0.29
             },
             "lift": {
-              "positiveRate": 0.4,
-              "meanReturn": 0.61,
-              "benchmarkBeatRate": -4.9,
-              "meanExcessReturn": 0.46
+              "positiveRate": 0,
+              "meanReturn": 0.57,
+              "benchmarkBeatRate": -5.3,
+              "meanExcessReturn": 0.45
             }
           },
           "room7": {
@@ -87827,7 +88130,7 @@
       },
       "byPriority": {
         "10": {
-          "n": 4202,
+          "n": 4201,
           "positiveRate": 57.6,
           "gain7Rate": 23.6,
           "loss7Rate": 15.1,
@@ -88501,7 +88804,7 @@
           },
           "2": {
             "n": 140,
-            "avgReturn": 3.28,
+            "avgReturn": 3.27,
             "avgMae": -6.75,
             "avgMfe": 9.92,
             "hitPlus7": 48.57,
@@ -88523,7 +88826,7 @@
           "confirmed": 122,
           "confirmationRate": 87.14,
           "avgConfirmationDay": 1.11,
-          "avgReturn": 2.66,
+          "avgReturn": 2.65,
           "avgMae": -7.27,
           "avgMfe": 9.44,
           "hitPlus7": 46.72,
@@ -94871,7 +95174,7 @@
             "positiveRate": 55.2,
             "gain7Rate": 18.4,
             "loss7Rate": 15.3,
-            "mean": 0.5,
+            "mean": 0.51,
             "median": 0.9,
             "benchmarkBeatRate": 50.8,
             "meanExcessReturn": 0.25
@@ -94890,13 +95193,13 @@
           },
           "byPriority": {
             "10": {
-              "n": 1594,
+              "n": 1593,
               "positiveRate": 63,
-              "gain7Rate": 32.2,
+              "gain7Rate": 32.3,
               "loss7Rate": 13.6,
               "mean": 3.54,
               "median": 2.67,
-              "benchmarkBeatRate": 54,
+              "benchmarkBeatRate": 53.9,
               "meanExcessReturn": 1.45
             },
             "20": {
@@ -94914,7 +95217,7 @@
               "positiveRate": 63.7,
               "gain7Rate": 30.8,
               "loss7Rate": 15.5,
-              "mean": 3.54,
+              "mean": 3.53,
               "median": 3,
               "benchmarkBeatRate": 56.4,
               "meanExcessReturn": 1.6
@@ -94927,7 +95230,7 @@
               "mean": 4.16,
               "median": 3.15,
               "benchmarkBeatRate": 56.8,
-              "meanExcessReturn": 2.15
+              "meanExcessReturn": 2.14
             },
             "50": {
               "n": 151,
