@@ -406,7 +406,7 @@ function attractiveGrowthEntryContextReport(a){
 }
 
 const ATTRACTIVE_GROWTH_RANK_V2_CANDIDATE=Object.freeze({
-  version:'attractive-growth-rank-v2-candidate-2026-09-25',live:false,status:'forward-validation-candidate',
+  version:'attractive-growth-rank-v2-candidate-2026-09-25',live:false,status:'historical-comparison',
   philosophy:'Rank chart-worthy Attractive Growth names without hard HH/HL, RS, momentum, volume or room gates. Reward healthy structure and constructive pullback; reduce the old bias toward maximum heat and excessive raw room.',
   freezeRule:'Research candidate only; do not replace frozen V1 or Live/core from historical results.'
 });
@@ -1033,7 +1033,7 @@ function earlyWatchStrictIntegrityV1(raw,horizon){
 }
 
 const EARLY_WATCH_RANK_V2_CANDIDATE=Object.freeze({
-  version:'early-watch-rank-v2-candidate-2026-09-25',live:false,status:'historical-comparison',
+  version:'early-watch-rank-v2-candidate-2026-09-25',live:false,status:'forward-validation-candidate',
   eligibility:'Broad Early Watch stage only; no Failed Breakdown, momentum, RS, volume, structure or room hard gate.',
   philosophy:'Prioritize the two corrected-data signals that were robust across batches: Selling Exhaustion and >=7% room to resistance. RS >=0 is a smaller ranking aid. Failed Breakdown and momentum receive no bonus.',
   freezeRule:'Research candidate only. Historical cross-batch direction is supportive, but do not promote to Live/core until a frozen forward cohort validates it.'
