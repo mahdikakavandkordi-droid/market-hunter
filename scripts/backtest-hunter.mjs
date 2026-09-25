@@ -222,9 +222,9 @@ function stageEvidenceCombinationReport(a){
 }
 const EARLY_WATCH_DISCOVERY_V1=Object.freeze({
   version:'early-watch-discovery-v1-frozen-2026-09-24',
-  status:'frozen-eligibility-forward-evaluation',
+  status:'historical-baseline-invalidated-by-ohlc-audit',
   live:false,
-  philosophy:'Discovery first: preserve chart-worthy early turns. Failed Breakdown / Reclaim eligibility remains frozen for forward evaluation; the current ranking is not considered validated after the strict independence audit.',
+  philosophy:'Historical reference only. Failed Breakdown / Reclaim eligibility lost its prior edge after the backtest OHLC scale was corrected; do not treat this as the active Early Watch forward candidate.',
   setup:'Failed Breakdown / Reclaim',
   context:Object.freeze({
     upDownVolumeBand:[.70,.85],
@@ -241,9 +241,9 @@ const EARLY_WATCH_DISCOVERY_V1=Object.freeze({
     recentTop:Object.freeze({n:37,meanReturn:5.17,meanExcessReturn:3.35,positiveRate:67.6,meanMAE:-2.79}),
     recentMiddle:Object.freeze({n:37,meanReturn:2.46,meanExcessReturn:.39,positiveRate:59.5,meanMAE:-3.63}),
     recentLower:Object.freeze({n:35,meanReturn:1.50,meanExcessReturn:.01,positiveRate:51.4,meanMAE:-4.55}),
-    caveat:'Historical snapshot only. Strict symbol+stage audit supports the reclaim eligibility thesis but does not validate the current ranking; Top/Middle/Lower separation is inconsistent and tied score boundaries are common.'
+    caveat:'Pre-correction historical snapshot only. Corrected-OHLC run 36185237742 removed the earlier reclaim eligibility edge; Top/Middle/Lower separation also remains inconsistent.'
   }),
-  freezeRule:'Do not tune thresholds from forward outcomes. Any rule change requires a new version/cohort.'
+  freezeRule:'Historical reference only. Do not promote this eligibility rule; any replacement must use a new version/cohort.'
 });
 
 function earlyWatchDiscoveryV1(e){
@@ -976,6 +976,43 @@ function earlyWatchChronologicalAuditV1(raw,horizon){
     note:'No threshold is selected from these results; this is a stability audit only.'
   };
 }
+function earlyWatchConditionFirstAuditV1(raw,horizon){
+  const base=raw.filter(e=>e.stage==='Early Watch');
+  const delta=(a,b,k)=>Number.isFinite(a?.[k])&&Number.isFinite(b?.[k])?round(a[k]-b[k]):null;
+  const one=(name,test)=>{
+    const yes=dedupeByStage(base.filter(test),horizon),no=dedupeByStage(base.filter(e=>!test(e)),horizon);
+    const ys=summary(yes),ns=summary(no);
+    return {name,selected:ys,absent:ns,liftVsAbsent:{
+      positiveRate:delta(ys,ns,'positiveRate'),meanReturn:delta(ys,ns,'mean'),
+      benchmarkBeatRate:delta(ys,ns,'benchmarkBeatRate'),meanExcessReturn:delta(ys,ns,'meanExcessReturn')
+    },tradeability:stageTradeabilityReport(yes)};
+  };
+  const sell=e=>(e.setups||[]).includes('Selling Exhaustion');
+  const reclaim=e=>(e.setups||[]).includes('Failed Breakdown / Reclaim');
+  const rs=e=>Number.isFinite(e.rs20)&&e.rs20>=0;
+  const room=e=>Number.isFinite(e.roomToResistance)&&e.roomToResistance>=7;
+  const mom=e=>Number.isFinite(e.momentumShift)&&e.momentumShift>0;
+  const structure=e=>e.swingTrend==='Structure improving'||e.swingTrend==='Higher highs + higher lows';
+  return {
+    spec:{version:'early-watch-condition-first-audit-v1-2026-09-25',live:false,status:'diagnostic-only',
+      purpose:'Re-test Early Watch evidence after filtering for the condition before dedupe, so an earlier non-matching Early Watch day cannot censor a later trigger.'},
+    features:{
+      sellingExhaustion:one('sellingExhaustion',sell),
+      rsPositive:one('rsPositive',rs),
+      room7:one('room7',room),
+      failedBreakdown:one('failedBreakdown',reclaim),
+      momentumPositive:one('momentumPositive',mom),
+      constructiveStructure:one('constructiveStructure',structure)
+    },
+    interactions:{
+      sellingAndRs:one('sellingAndRs',e=>sell(e)&&rs(e)),
+      sellingAndRoom7:one('sellingAndRoom7',e=>sell(e)&&room(e)),
+      rsAndRoom7:one('rsAndRoom7',e=>rs(e)&&room(e)),
+      sellingRsRoom7:one('sellingRsRoom7',e=>sell(e)&&rs(e)&&room(e))
+    },
+    note:'Diagnostic only. No feature or interaction becomes an eligibility gate from this report.'
+  };
+}
 function recoveryFrozenStageV2(e){
   return e.stage==='Recovery' &&
     (e.setups||[]).some(x=>x==='Higher-Low Turn'||x==='Failed Breakdown / Reclaim') &&
@@ -1303,7 +1340,7 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),stageSelectionLift:stageSelectionLiftReport(he),stageEvidenceComponents:stageEvidenceComponentReport(he),stageEvidenceCombinations:stageEvidenceCombinationReport(he),candidateEngineV2Diagnostic:candidateEngineV2DiagnosticReport(he),attractiveGrowthDiscoveryV1:attractiveGrowthRankValidationReport(he),attractiveGrowthCohortAuditV1:attractiveGrowthCohortAuditReport(he),attractiveGrowthEntryContextV1:attractiveGrowthEntryContextReport(he),attractiveGrowthExtensionContextV1:attractiveGrowthExtensionContextReport(he),attractiveGrowthHeatExtensionInteractionV1:attractiveGrowthHeatExtensionInteractionReport(he),attractiveGrowthRankV2Candidate:attractiveGrowthRankV2Report(he),attractiveGrowthRankV3Candidate:attractiveGrowthRankV3Report(he),attractiveGrowthRankV4Candidate:attractiveGrowthRankV4Report(he),attractiveGrowthRankBoundaryDiagnosticV1:attractiveGrowthRankBoundaryDiagnosticReport(he),researchV21:researchV21Report(he),featureLift:featureLiftReport(he),frozenStageAwareValidation:frozenStageAwareValidation(he),frozenStageAuditV1:frozenStageAuditReport(raw,horizon),earlyWatchReclaimFeatureAuditV1:earlyWatchReclaimFeatureAuditV1(dedupeByStage(raw,horizon)),earlyWatchReclaimAgeAuditV1:earlyWatchReclaimAgeAuditV1(dedupeByStage(raw,horizon)),earlyWatchChronologicalAuditV1:earlyWatchChronologicalAuditV1(raw,horizon),dailyReviewLoad:{t5:dailyReviewLoad(he,5),t6:dailyReviewLoad(he,6),t7:dailyReviewLoad(he,7)},topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),stageSelectionLift:stageSelectionLiftReport(he),stageEvidenceComponents:stageEvidenceComponentReport(he),stageEvidenceCombinations:stageEvidenceCombinationReport(he),candidateEngineV2Diagnostic:candidateEngineV2DiagnosticReport(he),attractiveGrowthDiscoveryV1:attractiveGrowthRankValidationReport(he),attractiveGrowthCohortAuditV1:attractiveGrowthCohortAuditReport(he),attractiveGrowthEntryContextV1:attractiveGrowthEntryContextReport(he),attractiveGrowthExtensionContextV1:attractiveGrowthExtensionContextReport(he),attractiveGrowthHeatExtensionInteractionV1:attractiveGrowthHeatExtensionInteractionReport(he),attractiveGrowthRankV2Candidate:attractiveGrowthRankV2Report(he),attractiveGrowthRankV3Candidate:attractiveGrowthRankV3Report(he),attractiveGrowthRankV4Candidate:attractiveGrowthRankV4Report(he),attractiveGrowthRankBoundaryDiagnosticV1:attractiveGrowthRankBoundaryDiagnosticReport(he),researchV21:researchV21Report(he),featureLift:featureLiftReport(he),frozenStageAwareValidation:frozenStageAwareValidation(he),frozenStageAuditV1:frozenStageAuditReport(raw,horizon),earlyWatchReclaimFeatureAuditV1:earlyWatchReclaimFeatureAuditV1(dedupeByStage(raw,horizon)),earlyWatchReclaimAgeAuditV1:earlyWatchReclaimAgeAuditV1(dedupeByStage(raw,horizon)),earlyWatchChronologicalAuditV1:earlyWatchChronologicalAuditV1(raw,horizon),earlyWatchConditionFirstAuditV1:earlyWatchConditionFirstAuditV1(raw,horizon),dailyReviewLoad:{t5:dailyReviewLoad(he,5),t6:dailyReviewLoad(he,6),t7:dailyReviewLoad(he,7)},topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),sourceCommit:process.env.GITHUB_SHA||null,sourceRunId:process.env.GITHUB_RUN_ID||null,range,holdoutEnd:holdoutEnd||null,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};
 fs.mkdirSync('data',{recursive:true});
 const earlyReclaimCases=events.filter(e=>e.horizon===20&&e.stage==='Early Watch'&&e.setups?.includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=0.70&&e.upDownVolumeRatio<0.85).map(e=>({symbol:e.symbol,date:e.date,forwardReturn:e.forwardReturn,benchmarkReturn:e.benchmarkReturn,excessReturn:Number.isFinite(e.forwardReturn)&&Number.isFinite(e.benchmarkReturn)?round(e.forwardReturn-e.benchmarkReturn):null,atr14Pct:e.atr14Pct,rs20:e.rs20,momentumShift:e.momentumShift,rsi:e.rsi,upDownVolumeRatio:e.upDownVolumeRatio,regime:e.regime,sector:e.sector,mae:e.mae,mfe:e.mfe}));
