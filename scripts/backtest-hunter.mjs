@@ -918,13 +918,25 @@ function recoveryFrozenStageV2(e){
 }
 function frozenStageAuditReport(raw,horizon){
   const legacy=dedupe(raw,horizon),strict=dedupeByStage(raw,horizon);
+  const delta=(a,b,k)=>Number.isFinite(a?.[k])&&Number.isFinite(b?.[k])?round(a[k]-b[k]):null;
+  const lift=(yes,no)=>{const y=summary(yes),n=summary(no);return {positiveRate:delta(y,n,'positiveRate'),meanReturn:delta(y,n,'mean'),benchmarkBeatRate:delta(y,n,'benchmarkBeatRate'),meanExcessReturn:delta(y,n,'meanExcessReturn')}};
   const bucket=(rows,rankFn)=>{
     const ranked=[...rows].sort((a,b)=>rankFn(b)-rankFn(a)),n=ranked.length,c1=Math.ceil(n/3),c2=Math.ceil(n*2/3);
     const one=xs=>({summary:summary(xs),tradeability:stageTradeabilityReport(xs),avgRankScore:xs.length?round(xs.reduce((z,e)=>z+rankFn(e),0)/xs.length):null});
-    return {top:one(ranked.slice(0,c1)),middle:one(ranked.slice(c1,c2)),lower:one(ranked.slice(c2))};
+    const scores=ranked.map(rankFn),topInside=scores[c1-1],topOutside=scores[c1],middleInside=scores[c2-1],middleOutside=scores[c2];
+    return {
+      top:one(ranked.slice(0,c1)),middle:one(ranked.slice(c1,c2)),lower:one(ranked.slice(c2)),
+      diagnostics:{uniqueScores:new Set(scores).size,topBoundaryTied:Number.isFinite(topInside)&&topInside===topOutside,middleBoundaryTied:Number.isFinite(middleInside)&&middleInside===middleOutside}
+    };
   };
-  const early=rows=>{const eligible=rows.filter(earlyWatchDiscoveryV1);return {eligible:summary(eligible),tradeability:stageTradeabilityReport(eligible),rankingBuckets:bucket(eligible,earlyWatchDiscoveryRank)}};
-  const recovery=rows=>{const eligible=rows.filter(recoveryFrozenStageV2);return {eligible:summary(eligible),tradeability:stageTradeabilityReport(eligible)}};
+  const early=rows=>{
+    const base=rows.filter(e=>e.stage==='Early Watch'),eligible=base.filter(earlyWatchDiscoveryV1),rejected=base.filter(e=>!earlyWatchDiscoveryV1(e));
+    return {baseline:summary(base),eligible:summary(eligible),rejected:summary(rejected),liftVsRejected:lift(eligible,rejected),tradeability:stageTradeabilityReport(eligible),rankingBuckets:bucket(eligible,earlyWatchDiscoveryRank)};
+  };
+  const recovery=rows=>{
+    const base=rows.filter(e=>e.stage==='Recovery'),eligible=base.filter(recoveryFrozenStageV2),rejected=base.filter(e=>!recoveryFrozenStageV2(e));
+    return {baseline:summary(base),eligible:summary(eligible),rejected:summary(rejected),liftVsRejected:lift(eligible,rejected),tradeability:stageTradeabilityReport(eligible)};
+  };
   return {
     spec:{version:'frozen-stage-audit-v1-2026-09-25',live:false,status:'audit-only',purpose:'Re-check frozen Early Watch and Recovery without retuning; compare legacy primary-setup dedupe with stricter symbol+stage independence.'},
     independence:{legacyIndependentEvents:legacy.length,strictIndependentEvents:strict.length,removedByStrictDedupe:legacy.length-strict.length,removedPct:legacy.length?round((legacy.length-strict.length)/legacy.length*100,1):0},
