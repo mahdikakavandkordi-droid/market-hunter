@@ -222,9 +222,9 @@ function stageEvidenceCombinationReport(a){
 }
 const EARLY_WATCH_DISCOVERY_V1=Object.freeze({
   version:'early-watch-discovery-v1-frozen-2026-09-24',
-  status:'frozen-forward-evaluation',
+  status:'frozen-eligibility-forward-evaluation',
   live:false,
-  philosophy:'Discovery first: preserve chart-worthy early turns; evidence ranks candidates instead of acting as buy/sell gates.',
+  philosophy:'Discovery first: preserve chart-worthy early turns. Failed Breakdown / Reclaim eligibility remains frozen for forward evaluation; the current ranking is not considered validated after the strict independence audit.',
   setup:'Failed Breakdown / Reclaim',
   context:Object.freeze({
     upDownVolumeBand:[.70,.85],
@@ -241,7 +241,7 @@ const EARLY_WATCH_DISCOVERY_V1=Object.freeze({
     recentTop:Object.freeze({n:37,meanReturn:5.17,meanExcessReturn:3.35,positiveRate:67.6,meanMAE:-2.79}),
     recentMiddle:Object.freeze({n:37,meanReturn:2.46,meanExcessReturn:.39,positiveRate:59.5,meanMAE:-3.63}),
     recentLower:Object.freeze({n:35,meanReturn:1.50,meanExcessReturn:.01,positiveRate:51.4,meanMAE:-4.55}),
-    caveat:'Ranking is prioritization, not a return forecast; separation is imperfect across older periods and batches.'
+    caveat:'Historical snapshot only. Strict symbol+stage audit supports the reclaim eligibility thesis but does not validate the current ranking; Top/Middle/Lower separation is inconsistent and tied score boundaries are common.'
   }),
   freezeRule:'Do not tune thresholds from forward outcomes. Any rule change requires a new version/cohort.'
 });
