@@ -489,6 +489,34 @@ function attractiveGrowthV2CandidateReport(a){
  return {spec:ATTRACTIVE_GROWTH_V2_CANDIDATE,rankingBuckets:{top:bucket(ranked.slice(0,c1)),middle:bucket(ranked.slice(c1,c2)),lower:bucket(ranked.slice(c2))},note:'Historical candidate comparison only. Do not promote or tune from one batch.'};
 }
 
+const ATTRACTIVE_GROWTH_V2_CANDIDATE=Object.freeze({
+  version:'attractive-growth-v2-candidate-2026-09-25',
+  status:'historical-candidate',
+  live:false,
+  eligibility:'Attractive Growth stage only; structure, momentum, RS, volume and room rank but do not exclude.',
+  thesis:'Prefer constructive location over maximum heat. Historical entry-context audit did not support rewarding room >=7; 3-7 was often healthier and >=7 was weak in two batches. Preserve pullbacks as evidence and penalize overheated combinations without hard gates.',
+  freezeRule:'Historical comparison only. Do not promote to Live/core without forward validation and explicit approval.'
+});
+function attractiveGrowthV2Rank(e){
+  if(e.stage!=='Attractive Growth')return null;
+  let p=0, st=e.swingTrend, rs=e.rs20, m=e.momentumShift, v=e.upDownVolumeRatio, room=e.roomToResistance, set=e.setups||[];
+  if(st==='Higher highs + higher lows')p+=3; else if(st==='Structure improving')p+=2; else if(st==='Lower highs + lower lows')p-=1;
+  if(Number.isFinite(rs)){if(rs>=4)p+=2;else if(rs>=0)p+=1;else if(rs<-5)p-=1}
+  if(Number.isFinite(m)){if(m>=1&&m<6)p+=2;else if(m>=6)p+=1;else if(m<=-3)p-=1}
+  if(Number.isFinite(v)){if(v>=.85&&v<1.5)p+=2;else if(v>=1.5)p+=1;else if(v<.7)p-=1}
+  if(Number.isFinite(room)){if(room>=3&&room<7)p+=3;else if(room<3)p+=1;else if(room>=7)p-=1}
+  if(set.includes('Pullback in Uptrend'))p+=2;
+  if(set.includes('Local Breakout'))p+=1;
+  if(Number.isFinite(rs)&&Number.isFinite(m)&&Number.isFinite(v)&&rs>=4&&m>=6&&v>=1.5)p-=2;
+  return p;
+}
+function attractiveGrowthV2ValidationReport(a){
+  const rows=a.filter(e=>e.stage==='Attractive Growth').sort((x,y)=>(attractiveGrowthV2Rank(y)??-999)-(attractiveGrowthV2Rank(x)??-999));
+  const n=rows.length,c1=Math.ceil(n/3),c2=Math.ceil(n*2/3);
+  const bucket=xs=>({summary:summary(xs),tradeability:stageTradeabilityReport(xs),avgRankScore:xs.length?round(xs.reduce((s,e)=>s+(attractiveGrowthV2Rank(e)??0),0)/xs.length):null});
+  return {spec:ATTRACTIVE_GROWTH_V2_CANDIDATE,buckets:{top:bucket(rows.slice(0,c1)),middle:bucket(rows.slice(c1,c2)),lower:bucket(rows.slice(c2))},note:'Candidate V2 tests constructive entry location versus maximum heat. Historical diagnostic only; no Live/core change.'};
+}
+
 const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
   version:'stage-evidence-candidate-v2-2026-09-23',
   status:'frozen-diagnostic',
