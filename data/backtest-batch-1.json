@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T18:25:23.462Z",
+  "generatedAt": "2026-09-25T18:30:16.109Z",
   "range": "5y",
   "holdoutEnd": null,
   "horizons": [
@@ -130,10 +130,10 @@
     "GOOG.TO",
     "COST.TO"
   ],
-  "totalEvents": 69354,
+  "totalEvents": 69351,
   "byHorizon": {
     "5": {
-      "rawObservations": 23118,
+      "rawObservations": 23117,
       "independentEvents": 9962,
       "overall": {
         "n": 9962,
@@ -6472,10 +6472,11 @@
         "spec": {
           "version": "attractive-growth-rank-v4-candidate-2026-09-25",
           "live": false,
-          "status": "historical-comparison",
+          "status": "rejected-historical-candidate",
           "philosophy": "Preserve V2 broad discovery and all existing evidence weights. Apply one small ranking-only penalty only when momentumShift >= 6 and price is >=6% above MA20.",
           "evidence": "Across four batches at 20D, the extended momentum>=6 subgroup had lower mean and excess return plus worse MAE and hit-7 in all 4/4 batches. The same interaction was also more concentrated in V2 Top than Middle in all 4/4 batches.",
-          "freezeRule": "Research candidate only. No eligibility gate and no Live/core change; require multi-horizon four-batch comparison before any forward freeze."
+          "finding": "Rejected as a ranking fix. Four-batch averages showed only modest Top downside improvement while Top/Middle return separation narrowed: 20D V2 1.40/1.29 vs V4 1.38/1.36; 10D V2 0.75/0.62 vs V4 0.72/0.69.",
+          "freezeRule": "Rejected research candidate. Keep only as historical evidence; do not promote to Live/core."
         },
         "eligible": {
           "n": 5090,
@@ -6568,6 +6569,570 @@
           }
         },
         "note": "Historical comparison only. V4 differs from V2 only by a one-point penalty for the pre-identified momentum>=6 + dist20>=6 interaction."
+      },
+      "attractiveGrowthRankBoundaryDiagnosticV1": {
+        "spec": {
+          "version": "attractive-growth-rank-boundary-diagnostic-v1-2026-09-25",
+          "live": false,
+          "status": "diagnostic-only",
+          "purpose": "Measure whether coarse integer scores and cutoff ties make Top/Middle membership unstable, and inspect which cohorts V4 actually swaps at the Top boundary."
+        },
+        "v2": {
+          "uniqueScores": 17,
+          "scoreDistribution": [
+            {
+              "score": 13,
+              "n": 1,
+              "pct": 0
+            },
+            {
+              "score": 12,
+              "n": 12,
+              "pct": 0.2
+            },
+            {
+              "score": 11,
+              "n": 58,
+              "pct": 1.1
+            },
+            {
+              "score": 10,
+              "n": 185,
+              "pct": 3.6
+            },
+            {
+              "score": 9,
+              "n": 456,
+              "pct": 9
+            },
+            {
+              "score": 8,
+              "n": 744,
+              "pct": 14.6
+            },
+            {
+              "score": 7,
+              "n": 967,
+              "pct": 19
+            },
+            {
+              "score": 6,
+              "n": 954,
+              "pct": 18.7
+            },
+            {
+              "score": 5,
+              "n": 682,
+              "pct": 13.4
+            },
+            {
+              "score": 4,
+              "n": 468,
+              "pct": 9.2
+            },
+            {
+              "score": 3,
+              "n": 270,
+              "pct": 5.3
+            },
+            {
+              "score": 2,
+              "n": 165,
+              "pct": 3.2
+            },
+            {
+              "score": 1,
+              "n": 81,
+              "pct": 1.6
+            },
+            {
+              "score": 0,
+              "n": 30,
+              "pct": 0.6
+            },
+            {
+              "score": -1,
+              "n": 12,
+              "pct": 0.2
+            },
+            {
+              "score": -2,
+              "n": 4,
+              "pct": 0.1
+            },
+            {
+              "score": -3,
+              "n": 1,
+              "pct": 0
+            }
+          ],
+          "topBoundary": {
+            "cutoffIndex": 1697,
+            "insideScore": 7,
+            "outsideScore": 7,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 967,
+            "cutoffScoreGroupPct": 19,
+            "cutoffScoreInsideN": 241,
+            "cutoffScoreOutsideN": 726
+          },
+          "middleBoundary": {
+            "cutoffIndex": 3394,
+            "insideScore": 5,
+            "outsideScore": 5,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 682,
+            "cutoffScoreGroupPct": 13.4,
+            "cutoffScoreInsideN": 17,
+            "cutoffScoreOutsideN": 665
+          },
+          "top": {
+            "n": 1697,
+            "summary": {
+              "n": 1697,
+              "positiveRate": 53,
+              "gain7Rate": 6.6,
+              "loss7Rate": 6.2,
+              "mean": 0.17,
+              "median": 0.29,
+              "benchmarkBeatRate": 49.4,
+              "meanExcessReturn": -0.01
+            },
+            "tradeability": {
+              "n": 1697,
+              "avgReturn": 0.17,
+              "avgMae": -2.03,
+              "avgMfe": 2.36,
+              "maeBelow3": 28.82,
+              "maeBelow5": 15.79,
+              "maeBelow7": 8.37,
+              "hitPlus7": 9.49,
+              "hitMinus7": 8.37,
+              "plus7BeforeMinus7": 9.43,
+              "minus7BeforePlus7": 8.07
+            },
+            "avgV2Score": 8.48,
+            "avgV4Score": 8.42,
+            "avgMomentumShift": 1.22,
+            "avgDist20": 3.93,
+            "avgRs20": 7.14,
+            "avgUpDownVolumeRatio": 1.15,
+            "hotExtendedPct": 5.5,
+            "hhhlPct": 62.6,
+            "improvingStructurePct": 36.7,
+            "pullbackPct": 49.8,
+            "breakoutPct": 17.9
+          },
+          "middle": {
+            "n": 1697,
+            "summary": {
+              "n": 1697,
+              "positiveRate": 54.6,
+              "gain7Rate": 4.9,
+              "loss7Rate": 3.4,
+              "mean": 0.4,
+              "median": 0.3,
+              "benchmarkBeatRate": 48.8,
+              "meanExcessReturn": 0.03
+            },
+            "tradeability": {
+              "n": 1697,
+              "avgReturn": 0.4,
+              "avgMae": -1.6,
+              "avgMfe": 2.09,
+              "maeBelow3": 23.16,
+              "maeBelow5": 10.37,
+              "maeBelow7": 4.89,
+              "hitPlus7": 6.72,
+              "hitMinus7": 4.89,
+              "plus7BeforeMinus7": 6.6,
+              "minus7BeforePlus7": 4.83
+            },
+            "avgV2Score": 6.42,
+            "avgV4Score": 6.39,
+            "avgMomentumShift": -0.69,
+            "avgDist20": 3.3,
+            "avgRs20": 4.83,
+            "avgUpDownVolumeRatio": 1.11,
+            "hotExtendedPct": 2.4,
+            "hhhlPct": 55.7,
+            "improvingStructurePct": 39.5,
+            "pullbackPct": 26.2,
+            "breakoutPct": 12.6
+          },
+          "lower": {
+            "n": 1696,
+            "summary": {
+              "n": 1696,
+              "positiveRate": 51.9,
+              "gain7Rate": 5,
+              "loss7Rate": 3.7,
+              "mean": 0.24,
+              "median": 0.12,
+              "benchmarkBeatRate": 50.1,
+              "meanExcessReturn": 0.09
+            },
+            "tradeability": {
+              "n": 1696,
+              "avgReturn": 0.24,
+              "avgMae": -1.6,
+              "avgMfe": 1.95,
+              "maeBelow3": 21.4,
+              "maeBelow5": 10.2,
+              "maeBelow7": 5.31,
+              "hitPlus7": 6.07,
+              "hitMinus7": 5.31,
+              "plus7BeforeMinus7": 5.96,
+              "minus7BeforePlus7": 5.19
+            },
+            "avgV2Score": 3.77,
+            "avgV4Score": 3.75,
+            "avgMomentumShift": 0.19,
+            "avgDist20": 2.55,
+            "avgRs20": 2.47,
+            "avgUpDownVolumeRatio": 0.95,
+            "hotExtendedPct": 2.1,
+            "hhhlPct": 27.1,
+            "improvingStructurePct": 38.6,
+            "pullbackPct": 15,
+            "breakoutPct": 9
+          }
+        },
+        "v4": {
+          "uniqueScores": 17,
+          "scoreDistribution": [
+            {
+              "score": 13,
+              "n": 1,
+              "pct": 0
+            },
+            {
+              "score": 12,
+              "n": 12,
+              "pct": 0.2
+            },
+            {
+              "score": 11,
+              "n": 58,
+              "pct": 1.1
+            },
+            {
+              "score": 10,
+              "n": 174,
+              "pct": 3.4
+            },
+            {
+              "score": 9,
+              "n": 443,
+              "pct": 8.7
+            },
+            {
+              "score": 8,
+              "n": 718,
+              "pct": 14.1
+            },
+            {
+              "score": 7,
+              "n": 983,
+              "pct": 19.3
+            },
+            {
+              "score": 6,
+              "n": 973,
+              "pct": 19.1
+            },
+            {
+              "score": 5,
+              "n": 678,
+              "pct": 13.3
+            },
+            {
+              "score": 4,
+              "n": 479,
+              "pct": 9.4
+            },
+            {
+              "score": 3,
+              "n": 270,
+              "pct": 5.3
+            },
+            {
+              "score": 2,
+              "n": 173,
+              "pct": 3.4
+            },
+            {
+              "score": 1,
+              "n": 81,
+              "pct": 1.6
+            },
+            {
+              "score": 0,
+              "n": 30,
+              "pct": 0.6
+            },
+            {
+              "score": -1,
+              "n": 12,
+              "pct": 0.2
+            },
+            {
+              "score": -2,
+              "n": 4,
+              "pct": 0.1
+            },
+            {
+              "score": -3,
+              "n": 1,
+              "pct": 0
+            }
+          ],
+          "topBoundary": {
+            "cutoffIndex": 1697,
+            "insideScore": 7,
+            "outsideScore": 7,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 983,
+            "cutoffScoreGroupPct": 19.3,
+            "cutoffScoreInsideN": 291,
+            "cutoffScoreOutsideN": 692
+          },
+          "middleBoundary": {
+            "cutoffIndex": 3394,
+            "insideScore": 5,
+            "outsideScore": 5,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 678,
+            "cutoffScoreGroupPct": 13.3,
+            "cutoffScoreInsideN": 32,
+            "cutoffScoreOutsideN": 646
+          },
+          "top": {
+            "n": 1697,
+            "summary": {
+              "n": 1697,
+              "positiveRate": 53.3,
+              "gain7Rate": 6.4,
+              "loss7Rate": 6,
+              "mean": 0.19,
+              "median": 0.3,
+              "benchmarkBeatRate": 49.4,
+              "meanExcessReturn": 0.01
+            },
+            "tradeability": {
+              "n": 1697,
+              "avgReturn": 0.19,
+              "avgMae": -2,
+              "avgMfe": 2.33,
+              "maeBelow3": 28.17,
+              "maeBelow5": 15.44,
+              "maeBelow7": 8.13,
+              "hitPlus7": 9.19,
+              "hitMinus7": 8.13,
+              "plus7BeforeMinus7": 9.13,
+              "minus7BeforePlus7": 7.84
+            },
+            "avgV2Score": 8.46,
+            "avgV4Score": 8.43,
+            "avgMomentumShift": 0.84,
+            "avgDist20": 3.71,
+            "avgRs20": 6.97,
+            "avgUpDownVolumeRatio": 1.14,
+            "hotExtendedPct": 2.8,
+            "hhhlPct": 63.6,
+            "improvingStructurePct": 35.7,
+            "pullbackPct": 50.5,
+            "breakoutPct": 16.1
+          },
+          "middle": {
+            "n": 1697,
+            "summary": {
+              "n": 1697,
+              "positiveRate": 54.3,
+              "gain7Rate": 5.1,
+              "loss7Rate": 3.5,
+              "mean": 0.38,
+              "median": 0.29,
+              "benchmarkBeatRate": 48.9,
+              "meanExcessReturn": 0.02
+            },
+            "tradeability": {
+              "n": 1697,
+              "avgReturn": 0.38,
+              "avgMae": -1.63,
+              "avgMfe": 2.1,
+              "maeBelow3": 23.34,
+              "maeBelow5": 10.55,
+              "maeBelow7": 5.13,
+              "hitPlus7": 6.89,
+              "hitMinus7": 5.13,
+              "plus7BeforeMinus7": 6.78,
+              "minus7BeforePlus7": 5.07
+            },
+            "avgV2Score": 6.43,
+            "avgV4Score": 6.39,
+            "avgMomentumShift": -0.42,
+            "avgDist20": 3.46,
+            "avgRs20": 4.95,
+            "avgUpDownVolumeRatio": 1.11,
+            "hotExtendedPct": 4.2,
+            "hhhlPct": 54.7,
+            "improvingStructurePct": 40.6,
+            "pullbackPct": 25.6,
+            "breakoutPct": 13.7
+          },
+          "lower": {
+            "n": 1696,
+            "summary": {
+              "n": 1696,
+              "positiveRate": 51.9,
+              "gain7Rate": 5.1,
+              "loss7Rate": 3.7,
+              "mean": 0.23,
+              "median": 0.12,
+              "benchmarkBeatRate": 49.9,
+              "meanExcessReturn": 0.08
+            },
+            "tradeability": {
+              "n": 1696,
+              "avgReturn": 0.23,
+              "avgMae": -1.6,
+              "avgMfe": 1.96,
+              "maeBelow3": 21.88,
+              "maeBelow5": 10.38,
+              "maeBelow7": 5.31,
+              "hitPlus7": 6.19,
+              "hitMinus7": 5.31,
+              "plus7BeforeMinus7": 6.07,
+              "minus7BeforePlus7": 5.19
+            },
+            "avgV2Score": 3.78,
+            "avgV4Score": 3.75,
+            "avgMomentumShift": 0.3,
+            "avgDist20": 2.6,
+            "avgRs20": 2.52,
+            "avgUpDownVolumeRatio": 0.95,
+            "hotExtendedPct": 2.9,
+            "hhhlPct": 27.1,
+            "improvingStructurePct": 38.6,
+            "pullbackPct": 14.9,
+            "breakoutPct": 9.7
+          }
+        },
+        "migration": {
+          "retainedTop": {
+            "n": 1651,
+            "summary": {
+              "n": 1651,
+              "positiveRate": 53.4,
+              "gain7Rate": 6.5,
+              "loss7Rate": 6.1,
+              "mean": 0.19,
+              "median": 0.31,
+              "benchmarkBeatRate": 49.5,
+              "meanExcessReturn": 0
+            },
+            "tradeability": {
+              "n": 1651,
+              "avgReturn": 0.19,
+              "avgMae": -2.01,
+              "avgMfe": 2.35,
+              "maeBelow3": 28.47,
+              "maeBelow5": 15.69,
+              "maeBelow7": 8.3,
+              "hitPlus7": 9.39,
+              "hitMinus7": 8.3,
+              "plus7BeforeMinus7": 9.33,
+              "minus7BeforePlus7": 8
+            },
+            "avgV2Score": 8.5,
+            "avgV4Score": 8.47,
+            "avgMomentumShift": 0.9,
+            "avgDist20": 3.72,
+            "avgRs20": 7,
+            "avgUpDownVolumeRatio": 1.15,
+            "hotExtendedPct": 2.8,
+            "hhhlPct": 63.5,
+            "improvingStructurePct": 35.7,
+            "pullbackPct": 51.1,
+            "breakoutPct": 16.4
+          },
+          "demotedFromTop": {
+            "n": 46,
+            "summary": {
+              "n": 46,
+              "positiveRate": 41.3,
+              "gain7Rate": 8.7,
+              "loss7Rate": 8.7,
+              "mean": -0.46,
+              "median": -0.95,
+              "benchmarkBeatRate": 43.5,
+              "meanExcessReturn": -0.59
+            },
+            "tradeability": {
+              "n": 46,
+              "avgReturn": -0.46,
+              "avgMae": -2.86,
+              "avgMfe": 2.72,
+              "maeBelow3": 41.3,
+              "maeBelow5": 19.57,
+              "maeBelow7": 10.87,
+              "hitPlus7": 13.04,
+              "hitMinus7": 10.87,
+              "plus7BeforeMinus7": 13.04,
+              "minus7BeforePlus7": 10.87
+            },
+            "avgV2Score": 7.83,
+            "avgV4Score": 6.83,
+            "avgMomentumShift": 12.76,
+            "avgDist20": 11.4,
+            "avgRs20": 12.17,
+            "avgUpDownVolumeRatio": 1.25,
+            "hotExtendedPct": 100,
+            "hhhlPct": 28.3,
+            "improvingStructurePct": 71.7,
+            "pullbackPct": 2.2,
+            "breakoutPct": 73.9
+          },
+          "promotedIntoTop": {
+            "n": 46,
+            "summary": {
+              "n": 46,
+              "positiveRate": 50,
+              "gain7Rate": 2.2,
+              "loss7Rate": 2.2,
+              "mean": 0.33,
+              "median": 0.03,
+              "benchmarkBeatRate": 43.5,
+              "meanExcessReturn": 0.25
+            },
+            "tradeability": {
+              "n": 46,
+              "avgReturn": 0.33,
+              "avgMae": -1.46,
+              "avgMfe": 1.72,
+              "maeBelow3": 17.39,
+              "maeBelow5": 6.52,
+              "maeBelow7": 2.17,
+              "hitPlus7": 2.17,
+              "hitMinus7": 2.17,
+              "plus7BeforeMinus7": 2.17,
+              "minus7BeforePlus7": 2.17
+            },
+            "avgV2Score": 7,
+            "avgV4Score": 7,
+            "avgMomentumShift": -1.54,
+            "avgDist20": 3.4,
+            "avgRs20": 5.78,
+            "avgUpDownVolumeRatio": 1.1,
+            "hotExtendedPct": 0,
+            "hhhlPct": 65.2,
+            "improvingStructurePct": 34.8,
+            "pullbackPct": 28.3,
+            "breakoutPct": 6.5
+          }
+        },
+        "note": "If a cutoff is tied, the current stable score sort inherits the existing deduped event order (date/symbol) within that score. Membership inside a large cutoff tie is therefore not further evidence-ranked."
       },
       "researchV21": {
         "status": "research-only-v2.1",
@@ -15888,7 +16453,7 @@
                     "mean": 2.01,
                     "median": 1.69,
                     "benchmarkBeatRate": 80,
-                    "meanExcessReturn": 1.48
+                    "meanExcessReturn": 1.49
                   }
                 },
                 {
@@ -16093,7 +16658,7 @@
                   "mean": 2.01,
                   "median": 1.69,
                   "benchmarkBeatRate": 80,
-                  "meanExcessReturn": 1.48
+                  "meanExcessReturn": 1.49
                 },
                 {
                   "n": 18,
@@ -19504,7 +20069,7 @@
                   "mean": 3.22,
                   "median": 3.02,
                   "benchmarkBeatRate": 76.2,
-                  "meanExcessReturn": 2.31
+                  "meanExcessReturn": 2.32
                 },
                 "Unknown": null
               }
@@ -19843,7 +20408,7 @@
                     "mean": 0.09,
                     "median": -0.64,
                     "benchmarkBeatRate": 60,
-                    "meanExcessReturn": 0.15
+                    "meanExcessReturn": 0.16
                   }
                 },
                 {
@@ -20039,7 +20604,7 @@
                   "mean": 0.09,
                   "median": -0.64,
                   "benchmarkBeatRate": 60,
-                  "meanExcessReturn": 0.15
+                  "meanExcessReturn": 0.16
                 },
                 {
                   "n": 1,
@@ -20128,7 +20693,7 @@
                     "mean": 0.09,
                     "median": -0.64,
                     "benchmarkBeatRate": 60,
-                    "meanExcessReturn": 0.15
+                    "meanExcessReturn": 0.16
                   }
                 },
                 {
@@ -20324,7 +20889,7 @@
                   "mean": 0.09,
                   "median": -0.64,
                   "benchmarkBeatRate": 60,
-                  "meanExcessReturn": 0.15
+                  "meanExcessReturn": 0.16
                 },
                 {
                   "n": 1,
@@ -23787,30 +24352,30 @@
           },
           "strongUpVolume": {
             "present": {
-              "n": 185,
-              "positiveRate": 58.9,
+              "n": 186,
+              "positiveRate": 59.1,
               "gain7Rate": 8.1,
               "loss7Rate": 5.9,
-              "mean": 0.51,
-              "median": 0.7,
-              "benchmarkBeatRate": 49.2,
-              "meanExcessReturn": 0.29
+              "mean": 0.53,
+              "median": 0.76,
+              "benchmarkBeatRate": 49.5,
+              "meanExcessReturn": 0.3
             },
             "absent": {
-              "n": 756,
+              "n": 755,
               "positiveRate": 52.2,
               "gain7Rate": 5,
               "loss7Rate": 5.6,
-              "mean": 0.14,
+              "mean": 0.13,
               "median": 0.31,
               "benchmarkBeatRate": 51.7,
               "meanExcessReturn": -0.08
             },
             "lift": {
-              "positiveRate": 6.7,
-              "meanReturn": 0.37,
-              "benchmarkBeatRate": -2.5,
-              "meanExcessReturn": 0.37
+              "positiveRate": 6.9,
+              "meanReturn": 0.4,
+              "benchmarkBeatRate": -2.2,
+              "meanExcessReturn": 0.38
             }
           },
           "room7": {
@@ -24679,6 +25244,285 @@
           }
         }
       },
+      "frozenStageAuditV1": {
+        "spec": {
+          "version": "frozen-stage-audit-v1-2026-09-25",
+          "live": false,
+          "status": "audit-only",
+          "purpose": "Re-check frozen Early Watch and Recovery without retuning; compare legacy primary-setup dedupe with stricter symbol+stage independence."
+        },
+        "independence": {
+          "legacyIndependentEvents": 9962,
+          "strictIndependentEvents": 6980,
+          "removedByStrictDedupe": 2982,
+          "removedPct": 29.9
+        },
+        "earlyWatch": {
+          "legacy": {
+            "eligible": {
+              "n": 144,
+              "positiveRate": 57.6,
+              "gain7Rate": 13.2,
+              "loss7Rate": 2.8,
+              "mean": 1.32,
+              "median": 1.31,
+              "benchmarkBeatRate": 58.3,
+              "meanExcessReturn": 0.66
+            },
+            "tradeability": {
+              "n": 144,
+              "avgReturn": 1.32,
+              "avgMae": -1.77,
+              "avgMfe": 3.2,
+              "maeBelow3": 25,
+              "maeBelow5": 14.58,
+              "maeBelow7": 6.94,
+              "hitPlus7": 13.89,
+              "hitMinus7": 6.94,
+              "plus7BeforeMinus7": 13.19,
+              "minus7BeforePlus7": 6.94
+            },
+            "rankingBuckets": {
+              "top": {
+                "summary": {
+                  "n": 48,
+                  "positiveRate": 54.2,
+                  "gain7Rate": 16.7,
+                  "loss7Rate": 4.2,
+                  "mean": 0.86,
+                  "median": 0.67,
+                  "benchmarkBeatRate": 58.3,
+                  "meanExcessReturn": 0.41
+                },
+                "tradeability": {
+                  "n": 48,
+                  "avgReturn": 0.86,
+                  "avgMae": -2.38,
+                  "avgMfe": 3.1,
+                  "maeBelow3": 31.25,
+                  "maeBelow5": 25,
+                  "maeBelow7": 6.25,
+                  "hitPlus7": 16.67,
+                  "hitMinus7": 6.25,
+                  "plus7BeforeMinus7": 16.67,
+                  "minus7BeforePlus7": 6.25
+                },
+                "avgRankScore": 11.69
+              },
+              "middle": {
+                "summary": {
+                  "n": 48,
+                  "positiveRate": 56.3,
+                  "gain7Rate": 2.1,
+                  "loss7Rate": 0,
+                  "mean": 0.96,
+                  "median": 1.54,
+                  "benchmarkBeatRate": 56.3,
+                  "meanExcessReturn": 0.24
+                },
+                "tradeability": {
+                  "n": 48,
+                  "avgReturn": 0.96,
+                  "avgMae": -1.15,
+                  "avgMfe": 2.69,
+                  "maeBelow3": 20.83,
+                  "maeBelow5": 4.17,
+                  "maeBelow7": 2.08,
+                  "hitPlus7": 4.17,
+                  "hitMinus7": 2.08,
+                  "plus7BeforeMinus7": 4.17,
+                  "minus7BeforePlus7": 2.08
+                },
+                "avgRankScore": 8.75
+              },
+              "lower": {
+                "summary": {
+                  "n": 48,
+                  "positiveRate": 62.5,
+                  "gain7Rate": 20.8,
+                  "loss7Rate": 4.2,
+                  "mean": 2.15,
+                  "median": 1.54,
+                  "benchmarkBeatRate": 60.4,
+                  "meanExcessReturn": 1.31
+                },
+                "tradeability": {
+                  "n": 48,
+                  "avgReturn": 2.15,
+                  "avgMae": -1.8,
+                  "avgMfe": 3.81,
+                  "maeBelow3": 22.92,
+                  "maeBelow5": 14.58,
+                  "maeBelow7": 12.5,
+                  "hitPlus7": 20.83,
+                  "hitMinus7": 12.5,
+                  "plus7BeforeMinus7": 18.75,
+                  "minus7BeforePlus7": 12.5
+                },
+                "avgRankScore": 5.04
+              }
+            }
+          },
+          "strict": {
+            "eligible": {
+              "n": 104,
+              "positiveRate": 59.6,
+              "gain7Rate": 12.5,
+              "loss7Rate": 3.8,
+              "mean": 1.25,
+              "median": 1.38,
+              "benchmarkBeatRate": 58.7,
+              "meanExcessReturn": 0.59
+            },
+            "tradeability": {
+              "n": 104,
+              "avgReturn": 1.25,
+              "avgMae": -1.9,
+              "avgMfe": 3.25,
+              "maeBelow3": 23.08,
+              "maeBelow5": 16.35,
+              "maeBelow7": 7.69,
+              "hitPlus7": 13.46,
+              "hitMinus7": 7.69,
+              "plus7BeforeMinus7": 13.46,
+              "minus7BeforePlus7": 7.69
+            },
+            "rankingBuckets": {
+              "top": {
+                "summary": {
+                  "n": 35,
+                  "positiveRate": 57.1,
+                  "gain7Rate": 14.3,
+                  "loss7Rate": 0,
+                  "mean": 1.22,
+                  "median": 0.79,
+                  "benchmarkBeatRate": 57.1,
+                  "meanExcessReturn": 0.47
+                },
+                "tradeability": {
+                  "n": 35,
+                  "avgReturn": 1.22,
+                  "avgMae": -2.12,
+                  "avgMfe": 3.31,
+                  "maeBelow3": 28.57,
+                  "maeBelow5": 22.86,
+                  "maeBelow7": 2.86,
+                  "hitPlus7": 14.29,
+                  "hitMinus7": 2.86,
+                  "plus7BeforeMinus7": 14.29,
+                  "minus7BeforePlus7": 2.86
+                },
+                "avgRankScore": 11.91
+              },
+              "middle": {
+                "summary": {
+                  "n": 35,
+                  "positiveRate": 62.9,
+                  "gain7Rate": 5.7,
+                  "loss7Rate": 5.7,
+                  "mean": 1.28,
+                  "median": 1.83,
+                  "benchmarkBeatRate": 60,
+                  "meanExcessReturn": 0.69
+                },
+                "tradeability": {
+                  "n": 35,
+                  "avgReturn": 1.28,
+                  "avgMae": -1.42,
+                  "avgMfe": 3.02,
+                  "maeBelow3": 17.14,
+                  "maeBelow5": 8.57,
+                  "maeBelow7": 5.71,
+                  "hitPlus7": 8.57,
+                  "hitMinus7": 5.71,
+                  "plus7BeforeMinus7": 8.57,
+                  "minus7BeforePlus7": 5.71
+                },
+                "avgRankScore": 8.97
+              },
+              "lower": {
+                "summary": {
+                  "n": 34,
+                  "positiveRate": 58.8,
+                  "gain7Rate": 17.6,
+                  "loss7Rate": 5.9,
+                  "mean": 1.25,
+                  "median": 1.38,
+                  "benchmarkBeatRate": 58.8,
+                  "meanExcessReturn": 0.61
+                },
+                "tradeability": {
+                  "n": 34,
+                  "avgReturn": 1.25,
+                  "avgMae": -2.16,
+                  "avgMfe": 3.43,
+                  "maeBelow3": 23.53,
+                  "maeBelow5": 17.65,
+                  "maeBelow7": 14.71,
+                  "hitPlus7": 17.65,
+                  "hitMinus7": 14.71,
+                  "plus7BeforeMinus7": 17.65,
+                  "minus7BeforePlus7": 14.71
+                },
+                "avgRankScore": 5.03
+              }
+            }
+          }
+        },
+        "recovery": {
+          "legacy": {
+            "eligible": {
+              "n": 234,
+              "positiveRate": 59.8,
+              "gain7Rate": 6,
+              "loss7Rate": 6.8,
+              "mean": 0.54,
+              "median": 0.91,
+              "benchmarkBeatRate": 52.1,
+              "meanExcessReturn": 0.21
+            },
+            "tradeability": {
+              "n": 234,
+              "avgReturn": 0.54,
+              "avgMae": -2.1,
+              "avgMfe": 2.53,
+              "maeBelow3": 29.91,
+              "maeBelow5": 16.24,
+              "maeBelow7": 9.4,
+              "hitPlus7": 7.26,
+              "hitMinus7": 9.4,
+              "plus7BeforeMinus7": 7.26,
+              "minus7BeforePlus7": 9.4
+            }
+          },
+          "strict": {
+            "eligible": {
+              "n": 218,
+              "positiveRate": 60.1,
+              "gain7Rate": 6.9,
+              "loss7Rate": 6.9,
+              "mean": 0.63,
+              "median": 0.89,
+              "benchmarkBeatRate": 52.8,
+              "meanExcessReturn": 0.29
+            },
+            "tradeability": {
+              "n": 218,
+              "avgReturn": 0.63,
+              "avgMae": -2.06,
+              "avgMfe": 2.63,
+              "maeBelow3": 29.36,
+              "maeBelow5": 15.6,
+              "maeBelow7": 8.72,
+              "hitPlus7": 8.26,
+              "hitMinus7": 8.72,
+              "plus7BeforeMinus7": 8.26,
+              "minus7BeforePlus7": 8.72
+            }
+          }
+        },
+        "note": "Strict results are the trust check. No frozen threshold is changed by this audit."
+      },
       "dailyReviewLoad": {
         "t5": {
           "threshold": 5,
@@ -24801,7 +25645,7 @@
       },
       "byPriority": {
         "10": {
-          "n": 6623,
+          "n": 6624,
           "positiveRate": 53.2,
           "gain7Rate": 7.1,
           "loss7Rate": 6.5,
@@ -24917,7 +25761,7 @@
               "positiveRate": 52,
               "gain7Rate": 5,
               "loss7Rate": 4.4,
-              "mean": 0.2,
+              "mean": 0.21,
               "median": 0.21,
               "benchmarkBeatRate": 48.3,
               "meanExcessReturn": 0.06
@@ -32598,7 +33442,7 @@
           },
           "byPriority": {
             "10": {
-              "n": 2595,
+              "n": 2596,
               "positiveRate": 56.8,
               "gain7Rate": 10.9,
               "loss7Rate": 8,
@@ -33115,7 +33959,7 @@
       }
     },
     "10": {
-      "rawObservations": 23118,
+      "rawObservations": 23117,
       "independentEvents": 7982,
       "overall": {
         "n": 7982,
@@ -33137,7 +33981,7 @@
             "loss7Rate": 11.6,
             "mean": 0.81,
             "median": 0.72,
-            "benchmarkBeatRate": 49.7,
+            "benchmarkBeatRate": 49.8,
             "meanExcessReturn": 0.27
           },
           "tradeability": {
@@ -33191,7 +34035,7 @@
               "loss7Rate": 12.4,
               "mean": 0.72,
               "median": 0.55,
-              "benchmarkBeatRate": 48.5,
+              "benchmarkBeatRate": 48.7,
               "meanExcessReturn": 0.26
             }
           }
@@ -33205,7 +34049,7 @@
             "loss7Rate": 10.8,
             "mean": 0.92,
             "median": 0.74,
-            "benchmarkBeatRate": 50.3,
+            "benchmarkBeatRate": 50.5,
             "meanExcessReturn": 0.4
           },
           "tradeability": {
@@ -33250,7 +34094,7 @@
               "loss7Rate": 11.1,
               "mean": 0.8,
               "median": 0.46,
-              "benchmarkBeatRate": 48,
+              "benchmarkBeatRate": 48.4,
               "meanExcessReturn": 0.38
             }
           }
@@ -33543,7 +34387,7 @@
               "loss7Rate": 14.9,
               "mean": 0.6,
               "median": 0.55,
-              "benchmarkBeatRate": 49,
+              "benchmarkBeatRate": 49.1,
               "meanExcessReturn": 0.18
             }
           }
@@ -33611,7 +34455,7 @@
               "loss7Rate": 14.6,
               "mean": 0.66,
               "median": 0.57,
-              "benchmarkBeatRate": 48.9,
+              "benchmarkBeatRate": 49,
               "meanExcessReturn": 0.2
             }
           }
@@ -34031,7 +34875,7 @@
               "gain7Rate": 19,
               "loss7Rate": 7.8,
               "mean": 2.01,
-              "median": 1.46,
+              "median": 1.47,
               "benchmarkBeatRate": 55.3,
               "meanExcessReturn": 1.12
             },
@@ -34616,7 +35460,7 @@
               "loss7Rate": 14.9,
               "mean": 0.6,
               "median": 0.55,
-              "benchmarkBeatRate": 49,
+              "benchmarkBeatRate": 49.1,
               "meanExcessReturn": 0.18
             },
             "rejected": {
@@ -34632,7 +35476,7 @@
             "lift": {
               "positiveRate": -0.2,
               "meanReturn": -0.46,
-              "benchmarkBeatRate": -2.5,
+              "benchmarkBeatRate": -2.4,
               "meanExcessReturn": -0.44
             },
             "selectedTradeability": {
@@ -34657,7 +35501,7 @@
               "loss7Rate": 14.6,
               "mean": 0.66,
               "median": 0.57,
-              "benchmarkBeatRate": 48.9,
+              "benchmarkBeatRate": 49,
               "meanExcessReturn": 0.2
             },
             "rejected": {
@@ -34673,7 +35517,7 @@
             "lift": {
               "positiveRate": 0.2,
               "meanReturn": -0.22,
-              "benchmarkBeatRate": -2,
+              "benchmarkBeatRate": -1.9,
               "meanExcessReturn": -0.28
             },
             "selectedTradeability": {
@@ -34708,13 +35552,13 @@
               "loss7Rate": 13.6,
               "mean": 0.84,
               "median": 0.64,
-              "benchmarkBeatRate": 51.2,
+              "benchmarkBeatRate": 51.3,
               "meanExcessReturn": 0.41
             },
             "lift": {
               "positiveRate": -0.5,
               "meanReturn": -0.2,
-              "benchmarkBeatRate": -3.5,
+              "benchmarkBeatRate": -3.6,
               "meanExcessReturn": -0.21
             },
             "selectedTradeability": {
@@ -34749,13 +35593,13 @@
               "loss7Rate": 13.4,
               "mean": 0.95,
               "median": 0.72,
-              "benchmarkBeatRate": 51.1,
+              "benchmarkBeatRate": 51.2,
               "meanExcessReturn": 0.5
             },
             "lift": {
               "positiveRate": -1.2,
               "meanReturn": -0.71,
-              "benchmarkBeatRate": -4.7,
+              "benchmarkBeatRate": -4.8,
               "meanExcessReturn": -0.62
             },
             "selectedTradeability": {
@@ -34790,13 +35634,13 @@
               "loss7Rate": 13.7,
               "mean": 0.82,
               "median": 0.65,
-              "benchmarkBeatRate": 50.1,
+              "benchmarkBeatRate": 50.2,
               "meanExcessReturn": 0.39
             },
             "lift": {
               "positiveRate": -1,
               "meanReturn": -0.33,
-              "benchmarkBeatRate": -1.5,
+              "benchmarkBeatRate": -1.6,
               "meanExcessReturn": -0.33
             },
             "selectedTradeability": {
@@ -35432,13 +36276,13 @@
                 "loss7Rate": 14.2,
                 "mean": 0.79,
                 "median": 0.64,
-                "benchmarkBeatRate": 49.8,
+                "benchmarkBeatRate": 49.9,
                 "meanExcessReturn": 0.36
               },
               "liftVsWithout": {
                 "positiveRate": 5.4,
                 "meanReturn": 1.08,
-                "benchmarkBeatRate": -1.4,
+                "benchmarkBeatRate": -1.3,
                 "meanExcessReturn": 1.13
               },
               "tradeability": {
@@ -35464,13 +36308,13 @@
                 "loss7Rate": 14.1,
                 "mean": 0.66,
                 "median": 0.67,
-                "benchmarkBeatRate": 50.4,
+                "benchmarkBeatRate": 50.5,
                 "meanExcessReturn": 0.23
               },
               "liftVsWithout": {
                 "positiveRate": 1.8,
                 "meanReturn": -0.29,
-                "benchmarkBeatRate": 1.5,
+                "benchmarkBeatRate": 1.6,
                 "meanExcessReturn": -0.3
               },
               "tradeability": {
@@ -35496,13 +36340,13 @@
                 "loss7Rate": 13.5,
                 "mean": 0.78,
                 "median": 0.32,
-                "benchmarkBeatRate": 48.7,
+                "benchmarkBeatRate": 48.9,
                 "meanExcessReturn": 0.39
               },
               "liftVsWithout": {
                 "positiveRate": -2.9,
                 "meanReturn": 0.03,
-                "benchmarkBeatRate": -2,
+                "benchmarkBeatRate": -1.8,
                 "meanExcessReturn": 0.09
               },
               "tradeability": {
@@ -35528,13 +36372,13 @@
                 "loss7Rate": 11.2,
                 "mean": 1.34,
                 "median": 0.86,
-                "benchmarkBeatRate": 51.3,
+                "benchmarkBeatRate": 51.4,
                 "meanExcessReturn": 0.88
               },
               "liftVsWithout": {
                 "positiveRate": 4.4,
                 "meanReturn": 1,
-                "benchmarkBeatRate": 2.4,
+                "benchmarkBeatRate": 2.5,
                 "meanExcessReturn": 0.95
               },
               "tradeability": {
@@ -35566,7 +36410,7 @@
               "liftVsWithout": {
                 "positiveRate": -5.6,
                 "meanReturn": -1.43,
-                "benchmarkBeatRate": -6.9,
+                "benchmarkBeatRate": -7,
                 "meanExcessReturn": -0.92
               },
               "tradeability": {
@@ -35598,7 +36442,7 @@
               "liftVsWithout": {
                 "positiveRate": 2.2,
                 "meanReturn": 0.25,
-                "benchmarkBeatRate": 0.8,
+                "benchmarkBeatRate": 0.6,
                 "meanExcessReturn": 0.08
               },
               "tradeability": {
@@ -35891,13 +36735,13 @@
               "loss7Rate": 10.8,
               "mean": 1.53,
               "median": 1.08,
-              "benchmarkBeatRate": 52.5,
+              "benchmarkBeatRate": 52.7,
               "meanExcessReturn": 0.93
             },
             "liftVsWithout": {
               "positiveRate": 6.5,
               "meanReturn": 1.07,
-              "benchmarkBeatRate": 3.7,
+              "benchmarkBeatRate": 3.9,
               "meanExcessReturn": 0.84
             },
             "tradeability": {
@@ -35923,13 +36767,13 @@
               "loss7Rate": 13.7,
               "mean": 0.58,
               "median": 0.34,
-              "benchmarkBeatRate": 50,
+              "benchmarkBeatRate": 50.3,
               "meanExcessReturn": 0.31
             },
             "liftVsWithout": {
               "positiveRate": -1.4,
               "meanReturn": -0.23,
-              "benchmarkBeatRate": 0.2,
+              "benchmarkBeatRate": 0.5,
               "meanExcessReturn": -0.03
             },
             "tradeability": {
@@ -35955,13 +36799,13 @@
               "loss7Rate": 10.7,
               "mean": 0.61,
               "median": 0.53,
-              "benchmarkBeatRate": 49.6,
+              "benchmarkBeatRate": 49.8,
               "meanExcessReturn": 0.24
             },
             "liftVsWithout": {
               "positiveRate": 0.5,
               "meanReturn": -0.22,
-              "benchmarkBeatRate": -0.4,
+              "benchmarkBeatRate": -0.2,
               "meanExcessReturn": -0.14
             },
             "tradeability": {
@@ -36130,7 +36974,7 @@
               "loss7Rate": 10.7,
               "mean": 0.61,
               "median": 0.53,
-              "benchmarkBeatRate": 49.6,
+              "benchmarkBeatRate": 49.8,
               "meanExcessReturn": 0.24
             },
             "tradeability": {
@@ -36199,7 +37043,7 @@
                 "loss7Rate": 11.6,
                 "mean": -0.43,
                 "median": -0.27,
-                "benchmarkBeatRate": 47.6,
+                "benchmarkBeatRate": 48,
                 "meanExcessReturn": -0.19
               }
             }
@@ -36322,7 +37166,7 @@
               "loss7Rate": 11.6,
               "mean": -0.01,
               "median": 0.03,
-              "benchmarkBeatRate": 46.9,
+              "benchmarkBeatRate": 47,
               "meanExcessReturn": -0.24
             },
             "byStage": {
@@ -36363,7 +37207,7 @@
                 "loss7Rate": 9.6,
                 "mean": -0.21,
                 "median": 0.04,
-                "benchmarkBeatRate": 45.9,
+                "benchmarkBeatRate": 46.6,
                 "meanExcessReturn": -0.2
               }
             }
@@ -36541,7 +37385,7 @@
             "loss7Rate": 6.6,
             "mean": 0,
             "median": 0.43,
-            "benchmarkBeatRate": 44.3,
+            "benchmarkBeatRate": 45.9,
             "meanExcessReturn": -0.46
           },
           {
@@ -37181,7 +38025,7 @@
                 "loss7Rate": 10.8,
                 "mean": 0.19,
                 "median": 0.18,
-                "benchmarkBeatRate": 45.7,
+                "benchmarkBeatRate": 46,
                 "meanExcessReturn": -0.23
               }
             }
@@ -37254,7 +38098,7 @@
               "loss7Rate": 8.7,
               "mean": 0.57,
               "median": 0.77,
-              "benchmarkBeatRate": 48.5,
+              "benchmarkBeatRate": 48.7,
               "meanExcessReturn": -0.07
             },
             "byStage": {
@@ -37295,7 +38139,7 @@
                 "loss7Rate": 8.5,
                 "mean": -0.08,
                 "median": 0.04,
-                "benchmarkBeatRate": 43.8,
+                "benchmarkBeatRate": 44.6,
                 "meanExcessReturn": -0.37
               }
             }
@@ -37636,7 +38480,7 @@
                 "loss7Rate": 8.5,
                 "mean": -0.08,
                 "median": 0.04,
-                "benchmarkBeatRate": 43.8,
+                "benchmarkBeatRate": 44.6,
                 "meanExcessReturn": -0.37
               },
               {
@@ -37670,7 +38514,7 @@
                 "loss7Rate": 9.6,
                 "mean": -0.21,
                 "median": 0.04,
-                "benchmarkBeatRate": 45.9,
+                "benchmarkBeatRate": 46.6,
                 "meanExcessReturn": -0.2
               },
               "Strong": {
@@ -39454,10 +40298,11 @@
         "spec": {
           "version": "attractive-growth-rank-v4-candidate-2026-09-25",
           "live": false,
-          "status": "historical-comparison",
+          "status": "rejected-historical-candidate",
           "philosophy": "Preserve V2 broad discovery and all existing evidence weights. Apply one small ranking-only penalty only when momentumShift >= 6 and price is >=6% above MA20.",
           "evidence": "Across four batches at 20D, the extended momentum>=6 subgroup had lower mean and excess return plus worse MAE and hit-7 in all 4/4 batches. The same interaction was also more concentrated in V2 Top than Middle in all 4/4 batches.",
-          "freezeRule": "Research candidate only. No eligibility gate and no Live/core change; require multi-horizon four-batch comparison before any forward freeze."
+          "finding": "Rejected as a ranking fix. Four-batch averages showed only modest Top downside improvement while Top/Middle return separation narrowed: 20D V2 1.40/1.29 vs V4 1.38/1.36; 10D V2 0.75/0.62 vs V4 0.72/0.69.",
+          "freezeRule": "Rejected research candidate. Keep only as historical evidence; do not promote to Live/core."
         },
         "eligible": {
           "n": 3983,
@@ -39550,6 +40395,550 @@
           }
         },
         "note": "Historical comparison only. V4 differs from V2 only by a one-point penalty for the pre-identified momentum>=6 + dist20>=6 interaction."
+      },
+      "attractiveGrowthRankBoundaryDiagnosticV1": {
+        "spec": {
+          "version": "attractive-growth-rank-boundary-diagnostic-v1-2026-09-25",
+          "live": false,
+          "status": "diagnostic-only",
+          "purpose": "Measure whether coarse integer scores and cutoff ties make Top/Middle membership unstable, and inspect which cohorts V4 actually swaps at the Top boundary."
+        },
+        "v2": {
+          "uniqueScores": 15,
+          "scoreDistribution": [
+            {
+              "score": 12,
+              "n": 8,
+              "pct": 0.2
+            },
+            {
+              "score": 11,
+              "n": 52,
+              "pct": 1.3
+            },
+            {
+              "score": 10,
+              "n": 155,
+              "pct": 3.9
+            },
+            {
+              "score": 9,
+              "n": 354,
+              "pct": 8.9
+            },
+            {
+              "score": 8,
+              "n": 611,
+              "pct": 15.3
+            },
+            {
+              "score": 7,
+              "n": 763,
+              "pct": 19.2
+            },
+            {
+              "score": 6,
+              "n": 743,
+              "pct": 18.7
+            },
+            {
+              "score": 5,
+              "n": 517,
+              "pct": 13
+            },
+            {
+              "score": 4,
+              "n": 351,
+              "pct": 8.8
+            },
+            {
+              "score": 3,
+              "n": 225,
+              "pct": 5.6
+            },
+            {
+              "score": 2,
+              "n": 113,
+              "pct": 2.8
+            },
+            {
+              "score": 1,
+              "n": 59,
+              "pct": 1.5
+            },
+            {
+              "score": 0,
+              "n": 21,
+              "pct": 0.5
+            },
+            {
+              "score": -1,
+              "n": 10,
+              "pct": 0.3
+            },
+            {
+              "score": -2,
+              "n": 1,
+              "pct": 0
+            }
+          ],
+          "topBoundary": {
+            "cutoffIndex": 1328,
+            "insideScore": 7,
+            "outsideScore": 7,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 763,
+            "cutoffScoreGroupPct": 19.2,
+            "cutoffScoreInsideN": 148,
+            "cutoffScoreOutsideN": 615
+          },
+          "middleBoundary": {
+            "cutoffIndex": 2656,
+            "insideScore": 6,
+            "outsideScore": 6,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 743,
+            "cutoffScoreGroupPct": 18.7,
+            "cutoffScoreInsideN": 713,
+            "cutoffScoreOutsideN": 30
+          },
+          "top": {
+            "n": 1328,
+            "summary": {
+              "n": 1328,
+              "positiveRate": 54.1,
+              "gain7Rate": 13.9,
+              "loss7Rate": 10.9,
+              "mean": 0.6,
+              "median": 0.64,
+              "benchmarkBeatRate": 51.5,
+              "meanExcessReturn": 0.2
+            },
+            "tradeability": {
+              "n": 1328,
+              "avgReturn": 0.6,
+              "avgMae": -3.5,
+              "avgMfe": 4.13,
+              "maeBelow3": 43,
+              "maeBelow5": 27.56,
+              "maeBelow7": 17.09,
+              "hitPlus7": 20.11,
+              "hitMinus7": 17.09,
+              "plus7BeforeMinus7": 19.73,
+              "minus7BeforePlus7": 16.34
+            },
+            "avgV2Score": 8.53,
+            "avgV4Score": 8.46,
+            "avgMomentumShift": 1.4,
+            "avgDist20": 4.03,
+            "avgRs20": 7.28,
+            "avgUpDownVolumeRatio": 1.15,
+            "hotExtendedPct": 6.6,
+            "hhhlPct": 65.1,
+            "improvingStructurePct": 34,
+            "pullbackPct": 51.5,
+            "breakoutPct": 18.6
+          },
+          "middle": {
+            "n": 1328,
+            "summary": {
+              "n": 1328,
+              "positiveRate": 56,
+              "gain7Rate": 11.4,
+              "loss7Rate": 8.4,
+              "mean": 0.63,
+              "median": 0.77,
+              "benchmarkBeatRate": 50.4,
+              "meanExcessReturn": 0.05
+            },
+            "tradeability": {
+              "n": 1328,
+              "avgReturn": 0.63,
+              "avgMae": -2.92,
+              "avgMfe": 3.66,
+              "maeBelow3": 37.2,
+              "maeBelow5": 20.33,
+              "maeBelow7": 11.9,
+              "hitPlus7": 15.89,
+              "hitMinus7": 11.9,
+              "plus7BeforeMinus7": 15.74,
+              "minus7BeforePlus7": 11.6
+            },
+            "avgV2Score": 6.46,
+            "avgV4Score": 6.43,
+            "avgMomentumShift": -0.58,
+            "avgDist20": 3.31,
+            "avgRs20": 4.69,
+            "avgUpDownVolumeRatio": 1.1,
+            "hotExtendedPct": 3.1,
+            "hhhlPct": 56.3,
+            "improvingStructurePct": 39,
+            "pullbackPct": 27.7,
+            "breakoutPct": 12.2
+          },
+          "lower": {
+            "n": 1327,
+            "summary": {
+              "n": 1327,
+              "positiveRate": 52.2,
+              "gain7Rate": 9,
+              "loss7Rate": 9.3,
+              "mean": 0.22,
+              "median": 0.23,
+              "benchmarkBeatRate": 48.9,
+              "meanExcessReturn": -0.03
+            },
+            "tradeability": {
+              "n": 1327,
+              "avgReturn": 0.22,
+              "avgMae": -3.05,
+              "avgMfe": 3.35,
+              "maeBelow3": 37.68,
+              "maeBelow5": 22.46,
+              "maeBelow7": 14.32,
+              "hitPlus7": 13.94,
+              "hitMinus7": 14.32,
+              "plus7BeforeMinus7": 13.64,
+              "minus7BeforePlus7": 13.87
+            },
+            "avgV2Score": 3.86,
+            "avgV4Score": 3.83,
+            "avgMomentumShift": 0.69,
+            "avgDist20": 2.65,
+            "avgRs20": 2.62,
+            "avgUpDownVolumeRatio": 0.95,
+            "hotExtendedPct": 2.8,
+            "hhhlPct": 28.5,
+            "improvingStructurePct": 35.9,
+            "pullbackPct": 16,
+            "breakoutPct": 10.7
+          }
+        },
+        "v4": {
+          "uniqueScores": 15,
+          "scoreDistribution": [
+            {
+              "score": 12,
+              "n": 8,
+              "pct": 0.2
+            },
+            {
+              "score": 11,
+              "n": 52,
+              "pct": 1.3
+            },
+            {
+              "score": 10,
+              "n": 143,
+              "pct": 3.6
+            },
+            {
+              "score": 9,
+              "n": 342,
+              "pct": 8.6
+            },
+            {
+              "score": 8,
+              "n": 590,
+              "pct": 14.8
+            },
+            {
+              "score": 7,
+              "n": 773,
+              "pct": 19.4
+            },
+            {
+              "score": 6,
+              "n": 763,
+              "pct": 19.2
+            },
+            {
+              "score": 5,
+              "n": 513,
+              "pct": 12.9
+            },
+            {
+              "score": 4,
+              "n": 362,
+              "pct": 9.1
+            },
+            {
+              "score": 3,
+              "n": 225,
+              "pct": 5.6
+            },
+            {
+              "score": 2,
+              "n": 121,
+              "pct": 3
+            },
+            {
+              "score": 1,
+              "n": 59,
+              "pct": 1.5
+            },
+            {
+              "score": 0,
+              "n": 21,
+              "pct": 0.5
+            },
+            {
+              "score": -1,
+              "n": 10,
+              "pct": 0.3
+            },
+            {
+              "score": -2,
+              "n": 1,
+              "pct": 0
+            }
+          ],
+          "topBoundary": {
+            "cutoffIndex": 1328,
+            "insideScore": 7,
+            "outsideScore": 7,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 773,
+            "cutoffScoreGroupPct": 19.4,
+            "cutoffScoreInsideN": 193,
+            "cutoffScoreOutsideN": 580
+          },
+          "middleBoundary": {
+            "cutoffIndex": 2656,
+            "insideScore": 6,
+            "outsideScore": 6,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 763,
+            "cutoffScoreGroupPct": 19.2,
+            "cutoffScoreInsideN": 748,
+            "cutoffScoreOutsideN": 15
+          },
+          "top": {
+            "n": 1328,
+            "summary": {
+              "n": 1328,
+              "positiveRate": 53.7,
+              "gain7Rate": 13.6,
+              "loss7Rate": 10.8,
+              "mean": 0.6,
+              "median": 0.58,
+              "benchmarkBeatRate": 51.6,
+              "meanExcessReturn": 0.23
+            },
+            "tradeability": {
+              "n": 1328,
+              "avgReturn": 0.6,
+              "avgMae": -3.44,
+              "avgMfe": 4.07,
+              "maeBelow3": 42.32,
+              "maeBelow5": 27.33,
+              "maeBelow7": 16.72,
+              "hitPlus7": 19.65,
+              "hitMinus7": 16.72,
+              "plus7BeforeMinus7": 19.28,
+              "minus7BeforePlus7": 16.04
+            },
+            "avgV2Score": 8.5,
+            "avgV4Score": 8.47,
+            "avgMomentumShift": 0.95,
+            "avgDist20": 3.76,
+            "avgRs20": 7.05,
+            "avgUpDownVolumeRatio": 1.14,
+            "hotExtendedPct": 3.3,
+            "hhhlPct": 65.9,
+            "improvingStructurePct": 33.2,
+            "pullbackPct": 52.5,
+            "breakoutPct": 16.6
+          },
+          "middle": {
+            "n": 1328,
+            "summary": {
+              "n": 1328,
+              "positiveRate": 56.4,
+              "gain7Rate": 11.7,
+              "loss7Rate": 8.8,
+              "mean": 0.59,
+              "median": 0.81,
+              "benchmarkBeatRate": 50.1,
+              "meanExcessReturn": -0.02
+            },
+            "tradeability": {
+              "n": 1328,
+              "avgReturn": 0.59,
+              "avgMae": -3,
+              "avgMfe": 3.7,
+              "maeBelow3": 37.8,
+              "maeBelow5": 20.71,
+              "maeBelow7": 12.58,
+              "hitPlus7": 16.34,
+              "hitMinus7": 12.58,
+              "plus7BeforeMinus7": 16.19,
+              "minus7BeforePlus7": 12.2
+            },
+            "avgV2Score": 6.49,
+            "avgV4Score": 6.44,
+            "avgMomentumShift": -0.24,
+            "avgDist20": 3.54,
+            "avgRs20": 4.94,
+            "avgUpDownVolumeRatio": 1.11,
+            "hotExtendedPct": 5.4,
+            "hhhlPct": 55.6,
+            "improvingStructurePct": 39.7,
+            "pullbackPct": 26.8,
+            "breakoutPct": 13.7
+          },
+          "lower": {
+            "n": 1327,
+            "summary": {
+              "n": 1327,
+              "positiveRate": 52.3,
+              "gain7Rate": 9,
+              "loss7Rate": 9.1,
+              "mean": 0.26,
+              "median": 0.23,
+              "benchmarkBeatRate": 49.1,
+              "meanExcessReturn": 0.02
+            },
+            "tradeability": {
+              "n": 1327,
+              "avgReturn": 0.26,
+              "avgMae": -3.02,
+              "avgMfe": 3.36,
+              "maeBelow3": 37.75,
+              "maeBelow5": 22.31,
+              "maeBelow7": 14.02,
+              "hitPlus7": 13.94,
+              "hitMinus7": 14.02,
+              "plus7BeforeMinus7": 13.64,
+              "minus7BeforePlus7": 13.56
+            },
+            "avgV2Score": 3.86,
+            "avgV4Score": 3.82,
+            "avgMomentumShift": 0.79,
+            "avgDist20": 2.69,
+            "avgRs20": 2.61,
+            "avgUpDownVolumeRatio": 0.95,
+            "hotExtendedPct": 3.8,
+            "hhhlPct": 28.3,
+            "improvingStructurePct": 36,
+            "pullbackPct": 15.9,
+            "breakoutPct": 11.2
+          }
+        },
+        "migration": {
+          "retainedTop": {
+            "n": 1284,
+            "summary": {
+              "n": 1284,
+              "positiveRate": 54.2,
+              "gain7Rate": 14,
+              "loss7Rate": 10.8,
+              "mean": 0.66,
+              "median": 0.65,
+              "benchmarkBeatRate": 51.9,
+              "meanExcessReturn": 0.26
+            },
+            "tradeability": {
+              "n": 1284,
+              "avgReturn": 0.66,
+              "avgMae": -3.45,
+              "avgMfe": 4.13,
+              "maeBelow3": 42.6,
+              "maeBelow5": 27.34,
+              "maeBelow7": 16.82,
+              "hitPlus7": 20.02,
+              "hitMinus7": 16.82,
+              "plus7BeforeMinus7": 19.63,
+              "minus7BeforePlus7": 16.12
+            },
+            "avgV2Score": 8.55,
+            "avgV4Score": 8.52,
+            "avgMomentumShift": 1.02,
+            "avgDist20": 3.78,
+            "avgRs20": 7.11,
+            "avgUpDownVolumeRatio": 1.15,
+            "hotExtendedPct": 3.4,
+            "hhhlPct": 66.1,
+            "improvingStructurePct": 32.9,
+            "pullbackPct": 53.1,
+            "breakoutPct": 16.7
+          },
+          "demotedFromTop": {
+            "n": 44,
+            "summary": {
+              "n": 44,
+              "positiveRate": 52.3,
+              "gain7Rate": 11.4,
+              "loss7Rate": 13.6,
+              "mean": -0.97,
+              "median": 0.4,
+              "benchmarkBeatRate": 38.6,
+              "meanExcessReturn": -1.55
+            },
+            "tradeability": {
+              "n": 44,
+              "avgReturn": -0.97,
+              "avgMae": -4.98,
+              "avgMfe": 4.33,
+              "maeBelow3": 54.55,
+              "maeBelow5": 34.09,
+              "maeBelow7": 25,
+              "hitPlus7": 22.73,
+              "hitMinus7": 25,
+              "plus7BeforeMinus7": 22.73,
+              "minus7BeforePlus7": 22.73
+            },
+            "avgV2Score": 7.84,
+            "avgV4Score": 6.84,
+            "avgMomentumShift": 12.66,
+            "avgDist20": 11.46,
+            "avgRs20": 12.2,
+            "avgUpDownVolumeRatio": 1.26,
+            "hotExtendedPct": 100,
+            "hhhlPct": 34.1,
+            "improvingStructurePct": 65.9,
+            "pullbackPct": 4.5,
+            "breakoutPct": 75
+          },
+          "promotedIntoTop": {
+            "n": 44,
+            "summary": {
+              "n": 44,
+              "positiveRate": 38.6,
+              "gain7Rate": 2.3,
+              "loss7Rate": 9.1,
+              "mean": -1.14,
+              "median": -0.79,
+              "benchmarkBeatRate": 43.2,
+              "meanExcessReturn": -0.65
+            },
+            "tradeability": {
+              "n": 44,
+              "avgReturn": -1.14,
+              "avgMae": -3.39,
+              "avgMfe": 2.5,
+              "maeBelow3": 34.09,
+              "maeBelow5": 27.27,
+              "maeBelow7": 13.64,
+              "hitPlus7": 9.09,
+              "hitMinus7": 13.64,
+              "plus7BeforeMinus7": 9.09,
+              "minus7BeforePlus7": 13.64
+            },
+            "avgV2Score": 7,
+            "avgV4Score": 7,
+            "avgMomentumShift": -0.88,
+            "avgDist20": 3.29,
+            "avgRs20": 5.1,
+            "avgUpDownVolumeRatio": 1.1,
+            "hotExtendedPct": 0,
+            "hhhlPct": 59.1,
+            "improvingStructurePct": 40.9,
+            "pullbackPct": 34.1,
+            "breakoutPct": 13.6
+          }
+        },
+        "note": "If a cutoff is tied, the current stable score sort inherits the existing deduped event order (date/symbol) within that score. Membership inside a large cutoff tie is therefore not further evidence-ranked."
       },
       "researchV21": {
         "status": "research-only-v2.1",
@@ -55465,7 +56854,7 @@
                 "loss7Rate": 10.7,
                 "mean": 0.61,
                 "median": 0.53,
-                "benchmarkBeatRate": 49.6,
+                "benchmarkBeatRate": 49.8,
                 "meanExcessReturn": 0.24
               },
               "development": {
@@ -55475,7 +56864,7 @@
                 "loss7Rate": 11.6,
                 "mean": -0.43,
                 "median": -0.27,
-                "benchmarkBeatRate": 47.6,
+                "benchmarkBeatRate": 48,
                 "meanExcessReturn": -0.19
               },
               "holdout": {
@@ -55598,9 +56987,9 @@
                     "positiveRate": 47.1,
                     "gain7Rate": 4.6,
                     "loss7Rate": 9.2,
-                    "mean": -0.49,
+                    "mean": -0.5,
                     "median": -0.54,
-                    "benchmarkBeatRate": 44.8,
+                    "benchmarkBeatRate": 46,
                     "meanExcessReturn": -0.51
                   }
                 },
@@ -55656,7 +57045,7 @@
                   "loss7Rate": 8.5,
                   "mean": -0.08,
                   "median": 0.04,
-                  "benchmarkBeatRate": 43.8,
+                  "benchmarkBeatRate": 44.6,
                   "meanExcessReturn": -0.37
                 },
                 {
@@ -55688,7 +57077,7 @@
                   "loss7Rate": 9.6,
                   "mean": -0.21,
                   "median": 0.04,
-                  "benchmarkBeatRate": 45.9,
+                  "benchmarkBeatRate": 46.6,
                   "meanExcessReturn": -0.2
                 },
                 "Mixed": {
@@ -55722,7 +57111,7 @@
                 "loss7Rate": 10.7,
                 "mean": 0.61,
                 "median": 0.53,
-                "benchmarkBeatRate": 49.6,
+                "benchmarkBeatRate": 49.8,
                 "meanExcessReturn": 0.24
               },
               "development": {
@@ -55732,7 +57121,7 @@
                 "loss7Rate": 11.6,
                 "mean": -0.43,
                 "median": -0.27,
-                "benchmarkBeatRate": 47.6,
+                "benchmarkBeatRate": 48,
                 "meanExcessReturn": -0.19
               },
               "holdout": {
@@ -55855,9 +57244,9 @@
                     "positiveRate": 47.1,
                     "gain7Rate": 4.6,
                     "loss7Rate": 9.2,
-                    "mean": -0.49,
+                    "mean": -0.5,
                     "median": -0.54,
-                    "benchmarkBeatRate": 44.8,
+                    "benchmarkBeatRate": 46,
                     "meanExcessReturn": -0.51
                   }
                 },
@@ -55913,7 +57302,7 @@
                   "loss7Rate": 8.5,
                   "mean": -0.08,
                   "median": 0.04,
-                  "benchmarkBeatRate": 43.8,
+                  "benchmarkBeatRate": 44.6,
                   "meanExcessReturn": -0.37
                 },
                 {
@@ -55945,7 +57334,7 @@
                   "loss7Rate": 9.6,
                   "mean": -0.21,
                   "median": 0.04,
-                  "benchmarkBeatRate": 45.9,
+                  "benchmarkBeatRate": 46.6,
                   "meanExcessReturn": -0.2
                 },
                 "Mixed": {
@@ -55979,7 +57368,7 @@
                 "loss7Rate": 10.5,
                 "mean": 0.75,
                 "median": 0.68,
-                "benchmarkBeatRate": 50.7,
+                "benchmarkBeatRate": 50.9,
                 "meanExcessReturn": 0.39
               },
               "development": {
@@ -55989,8 +57378,8 @@
                 "loss7Rate": 11.4,
                 "mean": -0.25,
                 "median": -0.03,
-                "benchmarkBeatRate": 49.2,
-                "meanExcessReturn": -0.02
+                "benchmarkBeatRate": 49.6,
+                "meanExcessReturn": -0.01
               },
               "holdout": {
                 "n": 202,
@@ -56114,7 +57503,7 @@
                     "loss7Rate": 10.5,
                     "mean": -0.35,
                     "median": 0.07,
-                    "benchmarkBeatRate": 50,
+                    "benchmarkBeatRate": 51.3,
                     "meanExcessReturn": -0.29
                   }
                 },
@@ -56170,7 +57559,7 @@
                   "loss7Rate": 7.3,
                   "mean": 0.23,
                   "median": 0.36,
-                  "benchmarkBeatRate": 46.4,
+                  "benchmarkBeatRate": 47.3,
                   "meanExcessReturn": -0.07
                 },
                 {
@@ -56202,7 +57591,7 @@
                   "loss7Rate": 8.1,
                   "mean": 0.05,
                   "median": 0.11,
-                  "benchmarkBeatRate": 46.7,
+                  "benchmarkBeatRate": 47.4,
                   "meanExcessReturn": 0.01
                 },
                 "Mixed": {
@@ -56723,30 +58112,30 @@
           },
           "strongUpVolume": {
             "present": {
-              "n": 163,
-              "positiveRate": 57.7,
-              "gain7Rate": 18.4,
-              "loss7Rate": 8,
-              "mean": 1.37,
-              "median": 0.79,
-              "benchmarkBeatRate": 50.9,
-              "meanExcessReturn": 0.74
+              "n": 164,
+              "positiveRate": 57.9,
+              "gain7Rate": 18.3,
+              "loss7Rate": 7.9,
+              "mean": 1.4,
+              "median": 0.85,
+              "benchmarkBeatRate": 51.2,
+              "meanExcessReturn": 0.77
             },
             "absent": {
-              "n": 724,
+              "n": 723,
               "positiveRate": 55.2,
               "gain7Rate": 11.3,
               "loss7Rate": 9.7,
-              "mean": 0.52,
-              "median": 0.76,
+              "mean": 0.51,
+              "median": 0.75,
               "benchmarkBeatRate": 49.7,
-              "meanExcessReturn": -0.05
+              "meanExcessReturn": -0.06
             },
             "lift": {
-              "positiveRate": 2.5,
-              "meanReturn": 0.85,
-              "benchmarkBeatRate": 1.2,
-              "meanExcessReturn": 0.79
+              "positiveRate": 2.7,
+              "meanReturn": 0.89,
+              "benchmarkBeatRate": 1.5,
+              "meanExcessReturn": 0.83
             }
           },
           "room7": {
@@ -57247,7 +58636,7 @@
               "loss7Rate": 14.2,
               "mean": 0.79,
               "median": 0.64,
-              "benchmarkBeatRate": 49.8,
+              "benchmarkBeatRate": 49.9,
               "meanExcessReturn": 0.36
             },
             "absent": {
@@ -57263,7 +58652,7 @@
             "lift": {
               "positiveRate": 5.4,
               "meanReturn": 1.08,
-              "benchmarkBeatRate": -1.4,
+              "benchmarkBeatRate": -1.3,
               "meanExcessReturn": 1.13
             }
           },
@@ -57275,7 +58664,7 @@
               "loss7Rate": 12.9,
               "mean": 0.8,
               "median": 0.36,
-              "benchmarkBeatRate": 49.2,
+              "benchmarkBeatRate": 49.3,
               "meanExcessReturn": 0.37
             },
             "absent": {
@@ -57291,7 +58680,7 @@
             "lift": {
               "positiveRate": -2.4,
               "meanReturn": 0.06,
-              "benchmarkBeatRate": -1.3,
+              "benchmarkBeatRate": -1.2,
               "meanExcessReturn": 0.07
             }
           },
@@ -57303,7 +58692,7 @@
               "loss7Rate": 13.7,
               "mean": 0.87,
               "median": 0.29,
-              "benchmarkBeatRate": 47.9,
+              "benchmarkBeatRate": 48.1,
               "meanExcessReturn": 0.45
             },
             "absent": {
@@ -57319,7 +58708,7 @@
             "lift": {
               "positiveRate": -3,
               "meanReturn": 0.16,
-              "benchmarkBeatRate": -2.9,
+              "benchmarkBeatRate": -2.7,
               "meanExcessReturn": 0.17
             }
           },
@@ -57331,7 +58720,7 @@
               "loss7Rate": 14.1,
               "mean": 0.67,
               "median": 0.56,
-              "benchmarkBeatRate": 49.8,
+              "benchmarkBeatRate": 49.9,
               "meanExcessReturn": 0.25
             },
             "absent": {
@@ -57347,7 +58736,7 @@
             "lift": {
               "positiveRate": -1.7,
               "meanReturn": -1.41,
-              "benchmarkBeatRate": -0.6,
+              "benchmarkBeatRate": -0.5,
               "meanExcessReturn": -1.29
             }
           },
@@ -57359,7 +58748,7 @@
               "loss7Rate": 14.2,
               "mean": 0.78,
               "median": 0.61,
-              "benchmarkBeatRate": 49.9,
+              "benchmarkBeatRate": 50,
               "meanExcessReturn": 0.39
             },
             "absent": {
@@ -57375,7 +58764,7 @@
             "lift": {
               "positiveRate": 0.8,
               "meanReturn": 0.16,
-              "benchmarkBeatRate": 0.5,
+              "benchmarkBeatRate": 0.6,
               "meanExcessReturn": 0.5
             }
           },
@@ -57387,7 +58776,7 @@
               "loss7Rate": 11.2,
               "mean": 1.34,
               "median": 0.86,
-              "benchmarkBeatRate": 51.3,
+              "benchmarkBeatRate": 51.4,
               "meanExcessReturn": 0.88
             },
             "absent": {
@@ -57403,7 +58792,7 @@
             "lift": {
               "positiveRate": 4.4,
               "meanReturn": 1,
-              "benchmarkBeatRate": 2.4,
+              "benchmarkBeatRate": 2.5,
               "meanExcessReturn": 0.95
             }
           },
@@ -57425,13 +58814,13 @@
               "loss7Rate": 13.3,
               "mean": 0.89,
               "median": 0.72,
-              "benchmarkBeatRate": 50.5,
+              "benchmarkBeatRate": 50.6,
               "meanExcessReturn": 0.42
             },
             "lift": {
               "positiveRate": -5.6,
               "meanReturn": -1.43,
-              "benchmarkBeatRate": -6.9,
+              "benchmarkBeatRate": -7,
               "meanExcessReturn": -0.92
             }
           },
@@ -57443,7 +58832,7 @@
               "loss7Rate": 8.7,
               "mean": 0.37,
               "median": 0.04,
-              "benchmarkBeatRate": 43.7,
+              "benchmarkBeatRate": 44,
               "meanExcessReturn": -0.01
             },
             "absent": {
@@ -57459,7 +58848,7 @@
             "lift": {
               "positiveRate": -5.1,
               "meanReturn": -0.49,
-              "benchmarkBeatRate": -7.7,
+              "benchmarkBeatRate": -7.4,
               "meanExcessReturn": -0.43
             }
           },
@@ -57471,7 +58860,7 @@
               "loss7Rate": 12,
               "mean": 0.59,
               "median": 0.32,
-              "benchmarkBeatRate": 49.5,
+              "benchmarkBeatRate": 49.6,
               "meanExcessReturn": 0.2
             },
             "absent": {
@@ -57487,7 +58876,7 @@
             "lift": {
               "positiveRate": -2,
               "meanReturn": -0.26,
-              "benchmarkBeatRate": -0.6,
+              "benchmarkBeatRate": -0.5,
               "meanExcessReturn": -0.2
             }
           },
@@ -57509,13 +58898,13 @@
               "loss7Rate": 14,
               "mean": 0.72,
               "median": 0.63,
-              "benchmarkBeatRate": 50.5,
+              "benchmarkBeatRate": 50.6,
               "meanExcessReturn": 0.35
             },
             "lift": {
               "positiveRate": 0.5,
               "meanReturn": 0.14,
-              "benchmarkBeatRate": -2,
+              "benchmarkBeatRate": -2.1,
               "meanExcessReturn": -0.04
             }
           },
@@ -57614,6 +59003,285 @@
             "meanExcessReturn": -0.12
           }
         }
+      },
+      "frozenStageAuditV1": {
+        "spec": {
+          "version": "frozen-stage-audit-v1-2026-09-25",
+          "live": false,
+          "status": "audit-only",
+          "purpose": "Re-check frozen Early Watch and Recovery without retuning; compare legacy primary-setup dedupe with stricter symbol+stage independence."
+        },
+        "independence": {
+          "legacyIndependentEvents": 7982,
+          "strictIndependentEvents": 4669,
+          "removedByStrictDedupe": 3313,
+          "removedPct": 41.5
+        },
+        "earlyWatch": {
+          "legacy": {
+            "eligible": {
+              "n": 116,
+              "positiveRate": 62.1,
+              "gain7Rate": 24.1,
+              "loss7Rate": 12.1,
+              "mean": 2.3,
+              "median": 2.38,
+              "benchmarkBeatRate": 53.4,
+              "meanExcessReturn": 1.05
+            },
+            "tradeability": {
+              "n": 116,
+              "avgReturn": 2.3,
+              "avgMae": -3.01,
+              "avgMfe": 5.58,
+              "maeBelow3": 36.21,
+              "maeBelow5": 26.72,
+              "maeBelow7": 16.38,
+              "hitPlus7": 32.76,
+              "hitMinus7": 16.38,
+              "plus7BeforeMinus7": 31.9,
+              "minus7BeforePlus7": 16.38
+            },
+            "rankingBuckets": {
+              "top": {
+                "summary": {
+                  "n": 39,
+                  "positiveRate": 56.4,
+                  "gain7Rate": 17.9,
+                  "loss7Rate": 17.9,
+                  "mean": 0.62,
+                  "median": 0.88,
+                  "benchmarkBeatRate": 46.2,
+                  "meanExcessReturn": -0.76
+                },
+                "tradeability": {
+                  "n": 39,
+                  "avgReturn": 0.62,
+                  "avgMae": -3.57,
+                  "avgMfe": 5.2,
+                  "maeBelow3": 38.46,
+                  "maeBelow5": 35.9,
+                  "maeBelow7": 20.51,
+                  "hitPlus7": 33.33,
+                  "hitMinus7": 20.51,
+                  "plus7BeforeMinus7": 33.33,
+                  "minus7BeforePlus7": 20.51
+                },
+                "avgRankScore": 11.79
+              },
+              "middle": {
+                "summary": {
+                  "n": 39,
+                  "positiveRate": 59,
+                  "gain7Rate": 23.1,
+                  "loss7Rate": 10.3,
+                  "mean": 1.4,
+                  "median": 2.14,
+                  "benchmarkBeatRate": 51.3,
+                  "meanExcessReturn": 0.2
+                },
+                "tradeability": {
+                  "n": 39,
+                  "avgReturn": 1.4,
+                  "avgMae": -2.72,
+                  "avgMfe": 3.92,
+                  "maeBelow3": 30.77,
+                  "maeBelow5": 17.95,
+                  "maeBelow7": 12.82,
+                  "hitPlus7": 25.64,
+                  "hitMinus7": 12.82,
+                  "plus7BeforeMinus7": 25.64,
+                  "minus7BeforePlus7": 12.82
+                },
+                "avgRankScore": 8.62
+              },
+              "lower": {
+                "summary": {
+                  "n": 38,
+                  "positiveRate": 71.1,
+                  "gain7Rate": 31.6,
+                  "loss7Rate": 7.9,
+                  "mean": 4.94,
+                  "median": 3.63,
+                  "benchmarkBeatRate": 63.2,
+                  "meanExcessReturn": 3.76
+                },
+                "tradeability": {
+                  "n": 38,
+                  "avgReturn": 4.94,
+                  "avgMae": -2.75,
+                  "avgMfe": 7.68,
+                  "maeBelow3": 39.47,
+                  "maeBelow5": 26.32,
+                  "maeBelow7": 15.79,
+                  "hitPlus7": 39.47,
+                  "hitMinus7": 15.79,
+                  "plus7BeforeMinus7": 36.84,
+                  "minus7BeforePlus7": 15.79
+                },
+                "avgRankScore": 4.61
+              }
+            }
+          },
+          "strict": {
+            "eligible": {
+              "n": 71,
+              "positiveRate": 62,
+              "gain7Rate": 25.4,
+              "loss7Rate": 15.5,
+              "mean": 2.41,
+              "median": 3.05,
+              "benchmarkBeatRate": 56.3,
+              "meanExcessReturn": 1.15
+            },
+            "tradeability": {
+              "n": 71,
+              "avgReturn": 2.41,
+              "avgMae": -3.23,
+              "avgMfe": 6.09,
+              "maeBelow3": 35.21,
+              "maeBelow5": 26.76,
+              "maeBelow7": 18.31,
+              "hitPlus7": 33.8,
+              "hitMinus7": 18.31,
+              "plus7BeforeMinus7": 33.8,
+              "minus7BeforePlus7": 18.31
+            },
+            "rankingBuckets": {
+              "top": {
+                "summary": {
+                  "n": 24,
+                  "positiveRate": 58.3,
+                  "gain7Rate": 20.8,
+                  "loss7Rate": 12.5,
+                  "mean": 1.32,
+                  "median": 1.96,
+                  "benchmarkBeatRate": 50,
+                  "meanExcessReturn": -0.42
+                },
+                "tradeability": {
+                  "n": 24,
+                  "avgReturn": 1.32,
+                  "avgMae": -3.38,
+                  "avgMfe": 6.08,
+                  "maeBelow3": 41.67,
+                  "maeBelow5": 37.5,
+                  "maeBelow7": 16.67,
+                  "hitPlus7": 41.67,
+                  "hitMinus7": 16.67,
+                  "plus7BeforeMinus7": 41.67,
+                  "minus7BeforePlus7": 16.67
+                },
+                "avgRankScore": 12.17
+              },
+              "middle": {
+                "summary": {
+                  "n": 24,
+                  "positiveRate": 54.2,
+                  "gain7Rate": 25,
+                  "loss7Rate": 16.7,
+                  "mean": 1.09,
+                  "median": 0.35,
+                  "benchmarkBeatRate": 45.8,
+                  "meanExcessReturn": 0.02
+                },
+                "tradeability": {
+                  "n": 24,
+                  "avgReturn": 1.09,
+                  "avgMae": -3.21,
+                  "avgMfe": 4.39,
+                  "maeBelow3": 25,
+                  "maeBelow5": 20.83,
+                  "maeBelow7": 16.67,
+                  "hitPlus7": 25,
+                  "hitMinus7": 16.67,
+                  "plus7BeforeMinus7": 25,
+                  "minus7BeforePlus7": 16.67
+                },
+                "avgRankScore": 9.21
+              },
+              "lower": {
+                "summary": {
+                  "n": 23,
+                  "positiveRate": 73.9,
+                  "gain7Rate": 30.4,
+                  "loss7Rate": 17.4,
+                  "mean": 4.92,
+                  "median": 3.27,
+                  "benchmarkBeatRate": 73.9,
+                  "meanExcessReturn": 3.97
+                },
+                "tradeability": {
+                  "n": 23,
+                  "avgReturn": 4.92,
+                  "avgMae": -3.1,
+                  "avgMfe": 7.88,
+                  "maeBelow3": 39.13,
+                  "maeBelow5": 21.74,
+                  "maeBelow7": 21.74,
+                  "hitPlus7": 34.78,
+                  "hitMinus7": 21.74,
+                  "plus7BeforeMinus7": 34.78,
+                  "minus7BeforePlus7": 21.74
+                },
+                "avgRankScore": 4.35
+              }
+            }
+          }
+        },
+        "recovery": {
+          "legacy": {
+            "eligible": {
+              "n": 202,
+              "positiveRate": 58.9,
+              "gain7Rate": 16.8,
+              "loss7Rate": 10.4,
+              "mean": 0.9,
+              "median": 1.88,
+              "benchmarkBeatRate": 53,
+              "meanExcessReturn": 0.17
+            },
+            "tradeability": {
+              "n": 202,
+              "avgReturn": 0.9,
+              "avgMae": -3.6,
+              "avgMfe": 4.47,
+              "maeBelow3": 40.1,
+              "maeBelow5": 28.71,
+              "maeBelow7": 18.81,
+              "hitPlus7": 23.27,
+              "hitMinus7": 18.81,
+              "plus7BeforeMinus7": 23.27,
+              "minus7BeforePlus7": 17.82
+            }
+          },
+          "strict": {
+            "eligible": {
+              "n": 177,
+              "positiveRate": 58.8,
+              "gain7Rate": 16.9,
+              "loss7Rate": 10.7,
+              "mean": 0.93,
+              "median": 1.9,
+              "benchmarkBeatRate": 54.2,
+              "meanExcessReturn": 0.22
+            },
+            "tradeability": {
+              "n": 177,
+              "avgReturn": 0.93,
+              "avgMae": -3.6,
+              "avgMfe": 4.54,
+              "maeBelow3": 38.98,
+              "maeBelow5": 27.68,
+              "maeBelow7": 18.64,
+              "hitPlus7": 24.29,
+              "hitMinus7": 18.64,
+              "plus7BeforeMinus7": 24.29,
+              "minus7BeforePlus7": 17.51
+            }
+          }
+        },
+        "note": "Strict results are the trust check. No frozen threshold is changed by this audit."
       },
       "dailyReviewLoad": {
         "t5": {
@@ -57737,7 +59405,7 @@
       },
       "byPriority": {
         "10": {
-          "n": 5318,
+          "n": 5319,
           "positiveRate": 53.8,
           "gain7Rate": 13.2,
           "loss7Rate": 10.9,
@@ -57773,7 +59441,7 @@
           "loss7Rate": 11.6,
           "mean": 0.81,
           "median": 0.72,
-          "benchmarkBeatRate": 49.7,
+          "benchmarkBeatRate": 49.8,
           "meanExcessReturn": 0.27
         },
         "50": {
@@ -57783,7 +59451,7 @@
           "loss7Rate": 10.8,
           "mean": 0.92,
           "median": 0.74,
-          "benchmarkBeatRate": 50.3,
+          "benchmarkBeatRate": 50.5,
           "meanExcessReturn": 0.4
         }
       },
@@ -57820,7 +59488,7 @@
               "loss7Rate": 9.8,
               "mean": 0.04,
               "median": 0,
-              "benchmarkBeatRate": 45.3,
+              "benchmarkBeatRate": 45.6,
               "meanExcessReturn": -0.37
             }
           ],
@@ -57855,7 +59523,7 @@
               "loss7Rate": 8.7,
               "mean": 0.9,
               "median": 0.83,
-              "benchmarkBeatRate": 51.9,
+              "benchmarkBeatRate": 52.1,
               "meanExcessReturn": 0.42
             }
           ],
@@ -57868,7 +59536,7 @@
               "loss7Rate": 7.8,
               "mean": 0.59,
               "median": 0.72,
-              "benchmarkBeatRate": 49.9,
+              "benchmarkBeatRate": 50.1,
               "meanExcessReturn": 0.11
             },
             {
@@ -57917,7 +59585,7 @@
               "loss7Rate": 5.5,
               "mean": 0.53,
               "median": 0.5,
-              "benchmarkBeatRate": 46,
+              "benchmarkBeatRate": 46.4,
               "meanExcessReturn": -0.06
             }
           ],
@@ -57952,7 +59620,7 @@
               "loss7Rate": 9.5,
               "mean": 0.7,
               "median": 0.4,
-              "benchmarkBeatRate": 50.9,
+              "benchmarkBeatRate": 51.4,
               "meanExcessReturn": 0.78
             }
           ],
@@ -57964,7 +59632,7 @@
               "loss7Rate": 7.9,
               "mean": 0.53,
               "median": 0.49,
-              "benchmarkBeatRate": 47.3,
+              "benchmarkBeatRate": 47.5,
               "meanExcessReturn": -0.05
             },
             "other": {
@@ -58726,7 +60394,7 @@
           "endCapital": 50.44,
           "totalReturn": -49.56,
           "trades": 52,
-          "maxClosedTradeDrawdown": -56.33,
+          "maxClosedTradeDrawdown": -56.34,
           "holdingSessions": 10,
           "entryRules": "Failed Breakdown on signal; Higher-Low only after frozen Confirmation V1; one position at a time; first eligible event; no leverage.",
           "ledger": [
@@ -58876,7 +60544,7 @@
               "path": "Confirmed Higher-Low",
               "regime": "Mixed",
               "entryDelay": 2,
-              "return": 2.63,
+              "return": 2.62,
               "capitalBefore": 92.68,
               "capitalAfter": 95.11
             },
@@ -58888,7 +60556,7 @@
               "entryDelay": 1,
               "return": -2.43,
               "capitalBefore": 95.11,
-              "capitalAfter": 92.8
+              "capitalAfter": 92.79
             },
             {
               "symbol": "ERO.TO",
@@ -58897,8 +60565,8 @@
               "regime": "Strong",
               "entryDelay": 2,
               "return": 7.49,
-              "capitalBefore": 92.8,
-              "capitalAfter": 99.75
+              "capitalBefore": 92.79,
+              "capitalAfter": 99.74
             },
             {
               "symbol": "FM.TO",
@@ -58907,8 +60575,8 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": 4.88,
-              "capitalBefore": 99.75,
-              "capitalAfter": 104.62
+              "capitalBefore": 99.74,
+              "capitalAfter": 104.61
             },
             {
               "symbol": "IMG.TO",
@@ -58917,8 +60585,8 @@
               "regime": "Mixed",
               "entryDelay": 2,
               "return": 2.57,
-              "capitalBefore": 104.62,
-              "capitalAfter": 107.31
+              "capitalBefore": 104.61,
+              "capitalAfter": 107.3
             },
             {
               "symbol": "IMG.TO",
@@ -58927,8 +60595,8 @@
               "regime": "Positive",
               "entryDelay": 1,
               "return": -2.95,
-              "capitalBefore": 107.31,
-              "capitalAfter": 104.15
+              "capitalBefore": 107.3,
+              "capitalAfter": 104.14
             },
             {
               "symbol": "IMG.TO",
@@ -58937,8 +60605,8 @@
               "regime": "Positive",
               "entryDelay": 1,
               "return": -7.09,
-              "capitalBefore": 104.15,
-              "capitalAfter": 96.76
+              "capitalBefore": 104.14,
+              "capitalAfter": 96.75
             },
             {
               "symbol": "EFN.TO",
@@ -58947,8 +60615,8 @@
               "regime": "Strong",
               "entryDelay": 0,
               "return": -0.08,
-              "capitalBefore": 96.76,
-              "capitalAfter": 96.68
+              "capitalBefore": 96.75,
+              "capitalAfter": 96.67
             },
             {
               "symbol": "IMG.TO",
@@ -58957,8 +60625,8 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": -3.13,
-              "capitalBefore": 96.68,
-              "capitalAfter": 93.66
+              "capitalBefore": 96.67,
+              "capitalAfter": 93.65
             },
             {
               "symbol": "DML.TO",
@@ -58967,8 +60635,8 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": -4.56,
-              "capitalBefore": 93.66,
-              "capitalAfter": 89.39
+              "capitalBefore": 93.65,
+              "capitalAfter": 89.38
             },
             {
               "symbol": "IAG.TO",
@@ -58977,8 +60645,8 @@
               "regime": "Strong",
               "entryDelay": 0,
               "return": -0.25,
-              "capitalBefore": 89.39,
-              "capitalAfter": 89.16
+              "capitalBefore": 89.38,
+              "capitalAfter": 89.15
             },
             {
               "symbol": "EFR.TO",
@@ -58987,8 +60655,8 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": -18.98,
-              "capitalBefore": 89.16,
-              "capitalAfter": 72.24
+              "capitalBefore": 89.15,
+              "capitalAfter": 72.23
             },
             {
               "symbol": "DML.TO",
@@ -58997,8 +60665,8 @@
               "regime": "Positive",
               "entryDelay": 0,
               "return": -10.73,
-              "capitalBefore": 72.24,
-              "capitalAfter": 64.49
+              "capitalBefore": 72.23,
+              "capitalAfter": 64.48
             },
             {
               "symbol": "BIR.TO",
@@ -59007,8 +60675,8 @@
               "regime": "Positive",
               "entryDelay": 0,
               "return": -6.1,
-              "capitalBefore": 64.49,
-              "capitalAfter": 60.56
+              "capitalBefore": 64.48,
+              "capitalAfter": 60.55
             },
             {
               "symbol": "OR.TO",
@@ -59017,8 +60685,8 @@
               "regime": "Positive",
               "entryDelay": 2,
               "return": 3.98,
-              "capitalBefore": 60.56,
-              "capitalAfter": 62.97
+              "capitalBefore": 60.55,
+              "capitalAfter": 62.96
             },
             {
               "symbol": "DPM.TO",
@@ -59027,7 +60695,7 @@
               "regime": "Weak",
               "entryDelay": 1,
               "return": -9.93,
-              "capitalBefore": 62.97,
+              "capitalBefore": 62.96,
               "capitalAfter": 56.71
             },
             {
@@ -59048,7 +60716,7 @@
               "entryDelay": 1,
               "return": -11.57,
               "capitalBefore": 60.08,
-              "capitalAfter": 53.13
+              "capitalAfter": 53.12
             },
             {
               "symbol": "TRI.TO",
@@ -59057,7 +60725,7 @@
               "regime": "Strong",
               "entryDelay": 0,
               "return": -6.06,
-              "capitalBefore": 53.13,
+              "capitalBefore": 53.12,
               "capitalAfter": 49.91
             },
             {
@@ -59068,7 +60736,7 @@
               "entryDelay": 0,
               "return": -2.85,
               "capitalBefore": 49.91,
-              "capitalAfter": 48.49
+              "capitalAfter": 48.48
             },
             {
               "symbol": "EQX.TO",
@@ -59077,7 +60745,7 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": 8.98,
-              "capitalBefore": 48.49,
+              "capitalBefore": 48.48,
               "capitalAfter": 52.84
             },
             {
@@ -59088,7 +60756,7 @@
               "entryDelay": 3,
               "return": 5.61,
               "capitalBefore": 52.84,
-              "capitalAfter": 55.81
+              "capitalAfter": 55.8
             },
             {
               "symbol": "ABX.TO",
@@ -59097,8 +60765,8 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": -2.94,
-              "capitalBefore": 55.81,
-              "capitalAfter": 54.17
+              "capitalBefore": 55.8,
+              "capitalAfter": 54.16
             },
             {
               "symbol": "SVM.TO",
@@ -59107,8 +60775,8 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": -9.08,
-              "capitalBefore": 54.17,
-              "capitalAfter": 49.25
+              "capitalBefore": 54.16,
+              "capitalAfter": 49.24
             },
             {
               "symbol": "ERO.TO",
@@ -59117,7 +60785,7 @@
               "regime": "Positive",
               "entryDelay": 1,
               "return": 0.8,
-              "capitalBefore": 49.25,
+              "capitalBefore": 49.24,
               "capitalAfter": 49.64
             },
             {
@@ -59128,7 +60796,7 @@
               "entryDelay": 0,
               "return": 14.9,
               "capitalBefore": 49.64,
-              "capitalAfter": 57.04
+              "capitalAfter": 57.03
             },
             {
               "symbol": "IAG.TO",
@@ -59137,8 +60805,8 @@
               "regime": "Strong",
               "entryDelay": 0,
               "return": 6.26,
-              "capitalBefore": 57.04,
-              "capitalAfter": 60.61
+              "capitalBefore": 57.03,
+              "capitalAfter": 60.6
             },
             {
               "symbol": "MX.TO",
@@ -59147,8 +60815,8 @@
               "regime": "Strong",
               "entryDelay": 0,
               "return": 8.66,
-              "capitalBefore": 60.61,
-              "capitalAfter": 65.86
+              "capitalBefore": 60.6,
+              "capitalAfter": 65.85
             },
             {
               "symbol": "EQX.TO",
@@ -59157,7 +60825,7 @@
               "regime": "Strong",
               "entryDelay": 2,
               "return": -14.49,
-              "capitalBefore": 65.86,
+              "capitalBefore": 65.85,
               "capitalAfter": 56.31
             },
             {
@@ -59168,7 +60836,7 @@
               "entryDelay": 2,
               "return": 5.74,
               "capitalBefore": 56.31,
-              "capitalAfter": 59.55
+              "capitalAfter": 59.54
             },
             {
               "symbol": "NPI.TO",
@@ -59177,8 +60845,8 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": -2.01,
-              "capitalBefore": 59.55,
-              "capitalAfter": 58.35
+              "capitalBefore": 59.54,
+              "capitalAfter": 58.34
             },
             {
               "symbol": "IPCO.TO",
@@ -59187,7 +60855,7 @@
               "regime": "Mixed",
               "entryDelay": 1,
               "return": 2.32,
-              "capitalBefore": 58.35,
+              "capitalBefore": 58.34,
               "capitalAfter": 59.7
             },
             {
@@ -59208,7 +60876,7 @@
               "entryDelay": 1,
               "return": -1.96,
               "capitalBefore": 62.95,
-              "capitalAfter": 61.72
+              "capitalAfter": 61.71
             },
             {
               "symbol": "LUN.TO",
@@ -59217,7 +60885,7 @@
               "regime": "Positive",
               "entryDelay": 1,
               "return": -9.6,
-              "capitalBefore": 61.72,
+              "capitalBefore": 61.71,
               "capitalAfter": 55.79
             },
             {
@@ -59228,7 +60896,7 @@
               "entryDelay": 0,
               "return": -4.49,
               "capitalBefore": 55.79,
-              "capitalAfter": 53.29
+              "capitalAfter": 53.28
             },
             {
               "symbol": "ERO.TO",
@@ -59237,7 +60905,7 @@
               "regime": "Strong",
               "entryDelay": 1,
               "return": 4.89,
-              "capitalBefore": 53.29,
+              "capitalBefore": 53.28,
               "capitalAfter": 55.89
             },
             {
@@ -59255,29 +60923,29 @@
         "portfolioStress": {
           "base": {
             "trades": 53,
-            "endCapital": 73.1,
-            "totalReturn": -26.9,
+            "endCapital": 73.09,
+            "totalReturn": -26.91,
             "maxEquityDrawdown": -53.33
           },
           "bestSameDayTieBreak": {
             "trades": 53,
-            "endCapital": 120.6,
-            "totalReturn": 20.6,
+            "endCapital": 120.59,
+            "totalReturn": 20.59,
             "maxEquityDrawdown": -49.69
           },
           "worstSameDayTieBreak": {
             "trades": 53,
-            "endCapital": 62.84,
-            "totalReturn": -37.16,
+            "endCapital": 62.83,
+            "totalReturn": -37.17,
             "maxEquityDrawdown": -53.33
           },
           "costSensitivity": {
             "10bpsPerSide": {
-              "endCapital": 65.74,
+              "endCapital": 65.73,
               "note": "Approximate round-trip friction sensitivity."
             },
             "25bpsPerSide": {
-              "endCapital": 56.05,
+              "endCapital": 56.04,
               "note": "Approximate round-trip friction sensitivity."
             },
             "50bpsPerSide": {
@@ -62782,7 +64450,7 @@
                 "mean": 5.3,
                 "median": 4.44,
                 "benchmarkBeatRate": 100,
-                "meanExcessReturn": 3.51
+                "meanExcessReturn": 3.5
               },
               "tradeability": {
                 "overall": {
@@ -63992,7 +65660,7 @@
                   "mean": -1.18,
                   "median": -0.08,
                   "benchmarkBeatRate": 29.4,
-                  "meanExcessReturn": -1.6
+                  "meanExcessReturn": -1.61
                 },
                 "coverage": 2.2,
                 "bySetup": {
@@ -64189,8 +65857,8 @@
                 "loss7Rate": 9.7,
                 "mean": 0.29,
                 "median": 0.34,
-                "benchmarkBeatRate": 49.8,
-                "meanExcessReturn": 0.19
+                "benchmarkBeatRate": 49.9,
+                "meanExcessReturn": 0.2
               },
               "coverage": 30.5,
               "bySetup": {
@@ -64251,7 +65919,7 @@
                   "loss7Rate": 8.3,
                   "mean": 0.87,
                   "median": 0.64,
-                  "benchmarkBeatRate": 53.2,
+                  "benchmarkBeatRate": 53.6,
                   "meanExcessReturn": 1
                 }
               }
@@ -64345,7 +66013,7 @@
                 "loss7Rate": 9.1,
                 "mean": 0.28,
                 "median": 0.45,
-                "benchmarkBeatRate": 49,
+                "benchmarkBeatRate": 49.1,
                 "meanExcessReturn": 0.06
               },
               "coverage": 29.6,
@@ -64407,7 +66075,7 @@
                   "loss7Rate": 8.1,
                   "mean": 0.75,
                   "median": 0.73,
-                  "benchmarkBeatRate": 51.9,
+                  "benchmarkBeatRate": 52.2,
                   "meanExcessReturn": 0.69
                 }
               }
@@ -64531,7 +66199,7 @@
                   "positiveRate": 52.8,
                   "gain7Rate": 8.4,
                   "loss7Rate": 8.1,
-                  "mean": 0.08,
+                  "mean": 0.09,
                   "median": 0.4,
                   "benchmarkBeatRate": 50.4,
                   "meanExcessReturn": 0.02
@@ -64563,7 +66231,7 @@
                   "loss7Rate": 8.8,
                   "mean": 0.51,
                   "median": 0.61,
-                  "benchmarkBeatRate": 51.7,
+                  "benchmarkBeatRate": 51.9,
                   "meanExcessReturn": 0.57
                 }
               }
@@ -64925,7 +66593,7 @@
               "loss7Rate": 10.4,
               "mean": -0.08,
               "median": -0.04,
-              "benchmarkBeatRate": 48.3,
+              "benchmarkBeatRate": 48.4,
               "meanExcessReturn": -0.1
             },
             "30": {
@@ -64935,7 +66603,7 @@
               "loss7Rate": 10.4,
               "mean": -0.01,
               "median": -0.04,
-              "benchmarkBeatRate": 47.6,
+              "benchmarkBeatRate": 47.7,
               "meanExcessReturn": -0.12
             },
             "40": {
@@ -64945,7 +66613,7 @@
               "loss7Rate": 10.7,
               "mean": 0.12,
               "median": 0.07,
-              "benchmarkBeatRate": 47.7,
+              "benchmarkBeatRate": 47.9,
               "meanExcessReturn": -0.06
             },
             "50": {
@@ -64955,7 +66623,7 @@
               "loss7Rate": 11.1,
               "mean": 0.17,
               "median": -0.03,
-              "benchmarkBeatRate": 46,
+              "benchmarkBeatRate": 46.5,
               "meanExcessReturn": -0.04
             }
           },
@@ -64997,7 +66665,7 @@
                 "positiveRate": 52.8,
                 "gain7Rate": 8.4,
                 "loss7Rate": 8.1,
-                "mean": 0.08,
+                "mean": 0.09,
                 "median": 0.4,
                 "benchmarkBeatRate": 50.4,
                 "meanExcessReturn": 0.02
@@ -65029,7 +66697,7 @@
                 "loss7Rate": 8.8,
                 "mean": 0.51,
                 "median": 0.61,
-                "benchmarkBeatRate": 51.7,
+                "benchmarkBeatRate": 51.9,
                 "meanExcessReturn": 0.57
               }
             }
@@ -65058,9 +66726,9 @@
           },
           "byPriority": {
             "10": {
-              "n": 2057,
+              "n": 2058,
               "positiveRate": 58.9,
-              "gain7Rate": 19.1,
+              "gain7Rate": 19,
               "loss7Rate": 12,
               "mean": 1.37,
               "median": 1.24,
@@ -65484,7 +67152,7 @@
               "loss7Rate": 11.6,
               "mean": 0.57,
               "median": 0.35,
-              "benchmarkBeatRate": 50.8,
+              "benchmarkBeatRate": 51,
               "meanExcessReturn": 0.38
             },
             "Mixed": {
@@ -65575,7 +67243,7 @@
       }
     },
     "20": {
-      "rawObservations": 23118,
+      "rawObservations": 23117,
       "independentEvents": 6302,
       "overall": {
         "n": 6302,
@@ -68315,20 +69983,20 @@
               "positiveRate": 55.5,
               "gain7Rate": 22,
               "loss7Rate": 14.8,
-              "mean": 1.24,
+              "mean": 1.23,
               "median": 1.17,
               "benchmarkBeatRate": 50.7,
               "meanExcessReturn": 0.11
             },
             "liftVsWithout": {
               "positiveRate": -1.5,
-              "meanReturn": -0.18,
+              "meanReturn": -0.19,
               "benchmarkBeatRate": -0.9,
               "meanExcessReturn": -0.35
             },
             "tradeability": {
               "n": 418,
-              "avgReturn": 1.24,
+              "avgReturn": 1.23,
               "avgMae": -5.03,
               "avgMfe": 6.85,
               "maeBelow3": 53.35,
@@ -69516,10 +71184,10 @@
             "positiveRate": 66.7,
             "gain7Rate": 16.7,
             "loss7Rate": 16.7,
-            "mean": 0.67,
+            "mean": 0.65,
             "median": 3.27,
             "benchmarkBeatRate": 66.7,
-            "meanExcessReturn": 0.94
+            "meanExcessReturn": 0.92
           },
           {
             "symbol": "SVM.TO",
@@ -69601,7 +71269,7 @@
               "mean": 1.9,
               "median": 1.33,
               "benchmarkBeatRate": 52.2,
-              "meanExcessReturn": 0.63
+              "meanExcessReturn": 0.62
             },
             "byStage": {
               "Early Watch": {
@@ -71419,14 +73087,14 @@
                 "positiveRate": 58,
                 "gain7Rate": 27.6,
                 "loss7Rate": 17.1,
-                "mean": 2.07,
+                "mean": 2.06,
                 "median": 1.5,
                 "benchmarkBeatRate": 56.9,
                 "meanExcessReturn": 1.31
               },
               "tradeability": {
                 "n": 181,
-                "avgReturn": 2.07,
+                "avgReturn": 2.06,
                 "avgMae": -6.02,
                 "avgMfe": 8.53,
                 "maeBelow3": 60.22,
@@ -71914,10 +73582,11 @@
         "spec": {
           "version": "attractive-growth-rank-v4-candidate-2026-09-25",
           "live": false,
-          "status": "historical-comparison",
+          "status": "rejected-historical-candidate",
           "philosophy": "Preserve V2 broad discovery and all existing evidence weights. Apply one small ranking-only penalty only when momentumShift >= 6 and price is >=6% above MA20.",
           "evidence": "Across four batches at 20D, the extended momentum>=6 subgroup had lower mean and excess return plus worse MAE and hit-7 in all 4/4 batches. The same interaction was also more concentrated in V2 Top than Middle in all 4/4 batches.",
-          "freezeRule": "Research candidate only. No eligibility gate and no Live/core change; require multi-horizon four-batch comparison before any forward freeze."
+          "finding": "Rejected as a ranking fix. Four-batch averages showed only modest Top downside improvement while Top/Middle return separation narrowed: 20D V2 1.40/1.29 vs V4 1.38/1.36; 10D V2 0.75/0.62 vs V4 0.72/0.69.",
+          "freezeRule": "Rejected research candidate. Keep only as historical evidence; do not promote to Live/core."
         },
         "eligible": {
           "n": 3049,
@@ -72010,6 +73679,550 @@
           }
         },
         "note": "Historical comparison only. V4 differs from V2 only by a one-point penalty for the pre-identified momentum>=6 + dist20>=6 interaction."
+      },
+      "attractiveGrowthRankBoundaryDiagnosticV1": {
+        "spec": {
+          "version": "attractive-growth-rank-boundary-diagnostic-v1-2026-09-25",
+          "live": false,
+          "status": "diagnostic-only",
+          "purpose": "Measure whether coarse integer scores and cutoff ties make Top/Middle membership unstable, and inspect which cohorts V4 actually swaps at the Top boundary."
+        },
+        "v2": {
+          "uniqueScores": 15,
+          "scoreDistribution": [
+            {
+              "score": 12,
+              "n": 5,
+              "pct": 0.2
+            },
+            {
+              "score": 11,
+              "n": 32,
+              "pct": 1
+            },
+            {
+              "score": 10,
+              "n": 113,
+              "pct": 3.7
+            },
+            {
+              "score": 9,
+              "n": 282,
+              "pct": 9.2
+            },
+            {
+              "score": 8,
+              "n": 475,
+              "pct": 15.6
+            },
+            {
+              "score": 7,
+              "n": 589,
+              "pct": 19.3
+            },
+            {
+              "score": 6,
+              "n": 533,
+              "pct": 17.5
+            },
+            {
+              "score": 5,
+              "n": 405,
+              "pct": 13.3
+            },
+            {
+              "score": 4,
+              "n": 282,
+              "pct": 9.2
+            },
+            {
+              "score": 3,
+              "n": 169,
+              "pct": 5.5
+            },
+            {
+              "score": 2,
+              "n": 96,
+              "pct": 3.1
+            },
+            {
+              "score": 1,
+              "n": 48,
+              "pct": 1.6
+            },
+            {
+              "score": 0,
+              "n": 11,
+              "pct": 0.4
+            },
+            {
+              "score": -1,
+              "n": 8,
+              "pct": 0.3
+            },
+            {
+              "score": -2,
+              "n": 1,
+              "pct": 0
+            }
+          ],
+          "topBoundary": {
+            "cutoffIndex": 1017,
+            "insideScore": 7,
+            "outsideScore": 7,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 589,
+            "cutoffScoreGroupPct": 19.3,
+            "cutoffScoreInsideN": 110,
+            "cutoffScoreOutsideN": 479
+          },
+          "middleBoundary": {
+            "cutoffIndex": 2033,
+            "insideScore": 5,
+            "outsideScore": 5,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 405,
+            "cutoffScoreGroupPct": 13.3,
+            "cutoffScoreInsideN": 4,
+            "cutoffScoreOutsideN": 401
+          },
+          "top": {
+            "n": 1017,
+            "summary": {
+              "n": 1017,
+              "positiveRate": 56.2,
+              "gain7Rate": 24.1,
+              "loss7Rate": 15.7,
+              "mean": 1.44,
+              "median": 1.26,
+              "benchmarkBeatRate": 52.2,
+              "meanExcessReturn": 0.49
+            },
+            "tradeability": {
+              "n": 1017,
+              "avgReturn": 1.44,
+              "avgMae": -5.2,
+              "avgMfe": 6.92,
+              "maeBelow3": 55.46,
+              "maeBelow5": 39.72,
+              "maeBelow7": 27.53,
+              "hitPlus7": 36.38,
+              "hitMinus7": 27.53,
+              "plus7BeforeMinus7": 34.12,
+              "minus7BeforePlus7": 24.88
+            },
+            "avgV2Score": 8.51,
+            "avgV4Score": 8.43,
+            "avgMomentumShift": 1.19,
+            "avgDist20": 4.29,
+            "avgRs20": 7.58,
+            "avgUpDownVolumeRatio": 1.15,
+            "hotExtendedPct": 7.6,
+            "hhhlPct": 64.6,
+            "improvingStructurePct": 34.4,
+            "pullbackPct": 53.1,
+            "breakoutPct": 20.4
+          },
+          "middle": {
+            "n": 1016,
+            "summary": {
+              "n": 1016,
+              "positiveRate": 57.8,
+              "gain7Rate": 21.9,
+              "loss7Rate": 13.4,
+              "mean": 1.8,
+              "median": 1.38,
+              "benchmarkBeatRate": 52.6,
+              "meanExcessReturn": 0.63
+            },
+            "tradeability": {
+              "n": 1016,
+              "avgReturn": 1.8,
+              "avgMae": -4.5,
+              "avgMfe": 6.54,
+              "maeBelow3": 50.49,
+              "maeBelow5": 33.66,
+              "maeBelow7": 22.93,
+              "hitPlus7": 33.76,
+              "hitMinus7": 22.93,
+              "plus7BeforeMinus7": 32.78,
+              "minus7BeforePlus7": 20.67
+            },
+            "avgV2Score": 6.47,
+            "avgV4Score": 6.43,
+            "avgMomentumShift": -0.54,
+            "avgDist20": 3.59,
+            "avgRs20": 5.04,
+            "avgUpDownVolumeRatio": 1.11,
+            "hotExtendedPct": 4.2,
+            "hhhlPct": 54.8,
+            "improvingStructurePct": 40.3,
+            "pullbackPct": 27.8,
+            "breakoutPct": 15
+          },
+          "lower": {
+            "n": 1016,
+            "summary": {
+              "n": 1016,
+              "positiveRate": 56.3,
+              "gain7Rate": 17.7,
+              "loss7Rate": 13.6,
+              "mean": 0.95,
+              "median": 0.88,
+              "benchmarkBeatRate": 49.7,
+              "meanExcessReturn": 0.13
+            },
+            "tradeability": {
+              "n": 1016,
+              "avgReturn": 0.95,
+              "avgMae": -4.74,
+              "avgMfe": 5.57,
+              "maeBelow3": 52.26,
+              "maeBelow5": 36.12,
+              "maeBelow7": 24.8,
+              "hitPlus7": 28.94,
+              "hitMinus7": 24.8,
+              "plus7BeforeMinus7": 27.95,
+              "minus7BeforePlus7": 23.13
+            },
+            "avgV2Score": 3.81,
+            "avgV4Score": 3.77,
+            "avgMomentumShift": 0.61,
+            "avgDist20": 2.88,
+            "avgRs20": 2.66,
+            "avgUpDownVolumeRatio": 0.95,
+            "hotExtendedPct": 3.5,
+            "hhhlPct": 29.8,
+            "improvingStructurePct": 34.9,
+            "pullbackPct": 14.8,
+            "breakoutPct": 12.3
+          }
+        },
+        "v4": {
+          "uniqueScores": 15,
+          "scoreDistribution": [
+            {
+              "score": 12,
+              "n": 5,
+              "pct": 0.2
+            },
+            {
+              "score": 11,
+              "n": 32,
+              "pct": 1
+            },
+            {
+              "score": 10,
+              "n": 103,
+              "pct": 3.4
+            },
+            {
+              "score": 9,
+              "n": 271,
+              "pct": 8.9
+            },
+            {
+              "score": 8,
+              "n": 454,
+              "pct": 14.9
+            },
+            {
+              "score": 7,
+              "n": 599,
+              "pct": 19.6
+            },
+            {
+              "score": 6,
+              "n": 550,
+              "pct": 18
+            },
+            {
+              "score": 5,
+              "n": 402,
+              "pct": 13.2
+            },
+            {
+              "score": 4,
+              "n": 291,
+              "pct": 9.5
+            },
+            {
+              "score": 3,
+              "n": 170,
+              "pct": 5.6
+            },
+            {
+              "score": 2,
+              "n": 103,
+              "pct": 3.4
+            },
+            {
+              "score": 1,
+              "n": 49,
+              "pct": 1.6
+            },
+            {
+              "score": 0,
+              "n": 11,
+              "pct": 0.4
+            },
+            {
+              "score": -1,
+              "n": 8,
+              "pct": 0.3
+            },
+            {
+              "score": -2,
+              "n": 1,
+              "pct": 0
+            }
+          ],
+          "topBoundary": {
+            "cutoffIndex": 1017,
+            "insideScore": 7,
+            "outsideScore": 7,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 599,
+            "cutoffScoreGroupPct": 19.6,
+            "cutoffScoreInsideN": 152,
+            "cutoffScoreOutsideN": 447
+          },
+          "middleBoundary": {
+            "cutoffIndex": 2033,
+            "insideScore": 5,
+            "outsideScore": 5,
+            "tiedAcrossBoundary": true,
+            "cutoffScoreGroupN": 402,
+            "cutoffScoreGroupPct": 13.2,
+            "cutoffScoreInsideN": 19,
+            "cutoffScoreOutsideN": 383
+          },
+          "top": {
+            "n": 1017,
+            "summary": {
+              "n": 1017,
+              "positiveRate": 55.8,
+              "gain7Rate": 23.6,
+              "loss7Rate": 15.6,
+              "mean": 1.4,
+              "median": 1.21,
+              "benchmarkBeatRate": 52.5,
+              "meanExcessReturn": 0.49
+            },
+            "tradeability": {
+              "n": 1017,
+              "avgReturn": 1.4,
+              "avgMae": -5.13,
+              "avgMfe": 6.78,
+              "maeBelow3": 55.36,
+              "maeBelow5": 39.72,
+              "maeBelow7": 27.34,
+              "hitPlus7": 35.89,
+              "hitMinus7": 27.34,
+              "plus7BeforeMinus7": 33.63,
+              "minus7BeforePlus7": 24.88
+            },
+            "avgV2Score": 8.47,
+            "avgV4Score": 8.43,
+            "avgMomentumShift": 0.72,
+            "avgDist20": 3.94,
+            "avgRs20": 7.35,
+            "avgUpDownVolumeRatio": 1.15,
+            "hotExtendedPct": 3.9,
+            "hhhlPct": 65.5,
+            "improvingStructurePct": 33.5,
+            "pullbackPct": 53.9,
+            "breakoutPct": 17.8
+          },
+          "middle": {
+            "n": 1016,
+            "summary": {
+              "n": 1016,
+              "positiveRate": 58.4,
+              "gain7Rate": 22.1,
+              "loss7Rate": 13.8,
+              "mean": 1.8,
+              "median": 1.42,
+              "benchmarkBeatRate": 52.1,
+              "meanExcessReturn": 0.6
+            },
+            "tradeability": {
+              "n": 1016,
+              "avgReturn": 1.8,
+              "avgMae": -4.57,
+              "avgMfe": 6.65,
+              "maeBelow3": 50.49,
+              "maeBelow5": 33.66,
+              "maeBelow7": 23.23,
+              "hitPlus7": 34.15,
+              "hitMinus7": 23.23,
+              "plus7BeforeMinus7": 33.17,
+              "minus7BeforePlus7": 20.57
+            },
+            "avgV2Score": 6.49,
+            "avgV4Score": 6.42,
+            "avgMomentumShift": -0.28,
+            "avgDist20": 3.85,
+            "avgRs20": 5.2,
+            "avgUpDownVolumeRatio": 1.12,
+            "hotExtendedPct": 6.4,
+            "hhhlPct": 54.2,
+            "improvingStructurePct": 40.8,
+            "pullbackPct": 27.4,
+            "breakoutPct": 16.2
+          },
+          "lower": {
+            "n": 1016,
+            "summary": {
+              "n": 1016,
+              "positiveRate": 56.2,
+              "gain7Rate": 17.9,
+              "loss7Rate": 13.3,
+              "mean": 1,
+              "median": 0.89,
+              "benchmarkBeatRate": 49.9,
+              "meanExcessReturn": 0.16
+            },
+            "tradeability": {
+              "n": 1016,
+              "avgReturn": 1,
+              "avgMae": -4.75,
+              "avgMfe": 5.6,
+              "maeBelow3": 52.36,
+              "maeBelow5": 36.12,
+              "maeBelow7": 24.7,
+              "hitPlus7": 29.04,
+              "hitMinus7": 24.7,
+              "plus7BeforeMinus7": 28.05,
+              "minus7BeforePlus7": 23.23
+            },
+            "avgV2Score": 3.82,
+            "avgV4Score": 3.77,
+            "avgMomentumShift": 0.82,
+            "avgDist20": 2.96,
+            "avgRs20": 2.73,
+            "avgUpDownVolumeRatio": 0.95,
+            "hotExtendedPct": 5,
+            "hhhlPct": 29.5,
+            "improvingStructurePct": 35.2,
+            "pullbackPct": 14.4,
+            "breakoutPct": 13.6
+          }
+        },
+        "migration": {
+          "retainedTop": {
+            "n": 980,
+            "summary": {
+              "n": 980,
+              "positiveRate": 56.2,
+              "gain7Rate": 24.3,
+              "loss7Rate": 15.5,
+              "mean": 1.48,
+              "median": 1.26,
+              "benchmarkBeatRate": 52.5,
+              "meanExcessReturn": 0.53
+            },
+            "tradeability": {
+              "n": 980,
+              "avgReturn": 1.48,
+              "avgMae": -5.13,
+              "avgMfe": 6.9,
+              "maeBelow3": 55.1,
+              "maeBelow5": 39.69,
+              "maeBelow7": 27.35,
+              "hitPlus7": 36.63,
+              "hitMinus7": 27.35,
+              "plus7BeforeMinus7": 34.29,
+              "minus7BeforePlus7": 24.8
+            },
+            "avgV2Score": 8.53,
+            "avgV4Score": 8.49,
+            "avgMomentumShift": 0.75,
+            "avgDist20": 3.98,
+            "avgRs20": 7.39,
+            "avgUpDownVolumeRatio": 1.15,
+            "hotExtendedPct": 4.1,
+            "hhhlPct": 65.7,
+            "improvingStructurePct": 33.3,
+            "pullbackPct": 54.9,
+            "breakoutPct": 18.2
+          },
+          "demotedFromTop": {
+            "n": 37,
+            "summary": {
+              "n": 37,
+              "positiveRate": 56.8,
+              "gain7Rate": 18.9,
+              "loss7Rate": 21.6,
+              "mean": 0.57,
+              "median": 1.17,
+              "benchmarkBeatRate": 43.2,
+              "meanExcessReturn": -0.44
+            },
+            "tradeability": {
+              "n": 37,
+              "avgReturn": 0.57,
+              "avgMae": -7.13,
+              "avgMfe": 7.37,
+              "maeBelow3": 64.86,
+              "maeBelow5": 40.54,
+              "maeBelow7": 32.43,
+              "hitPlus7": 29.73,
+              "hitMinus7": 32.43,
+              "plus7BeforeMinus7": 29.73,
+              "minus7BeforePlus7": 27.03
+            },
+            "avgV2Score": 7.89,
+            "avgV4Score": 6.89,
+            "avgMomentumShift": 12.9,
+            "avgDist20": 12.26,
+            "avgRs20": 12.59,
+            "avgUpDownVolumeRatio": 1.32,
+            "hotExtendedPct": 100,
+            "hhhlPct": 35.1,
+            "improvingStructurePct": 64.9,
+            "pullbackPct": 5.4,
+            "breakoutPct": 78.4
+          },
+          "promotedIntoTop": {
+            "n": 37,
+            "summary": {
+              "n": 37,
+              "positiveRate": 43.2,
+              "gain7Rate": 5.4,
+              "loss7Rate": 18.9,
+              "mean": -0.63,
+              "median": -0.94,
+              "benchmarkBeatRate": 51.4,
+              "meanExcessReturn": -0.45
+            },
+            "tradeability": {
+              "n": 37,
+              "avgReturn": -0.63,
+              "avgMae": -5.06,
+              "avgMfe": 3.57,
+              "maeBelow3": 62.16,
+              "maeBelow5": 40.54,
+              "maeBelow7": 27.03,
+              "hitPlus7": 16.22,
+              "hitMinus7": 27.03,
+              "plus7BeforeMinus7": 16.22,
+              "minus7BeforePlus7": 27.03
+            },
+            "avgV2Score": 7,
+            "avgV4Score": 7,
+            "avgMomentumShift": -0.09,
+            "avgDist20": 2.75,
+            "avgRs20": 6.48,
+            "avgUpDownVolumeRatio": 1.12,
+            "hotExtendedPct": 0,
+            "hhhlPct": 59.5,
+            "improvingStructurePct": 40.5,
+            "pullbackPct": 27,
+            "breakoutPct": 8.1
+          }
+        },
+        "note": "If a cutoff is tied, the current stable score sort inherits the existing deduped event order (date/symbol) within that score. Membership inside a large cutoff tie is therefore not further evidence-ranked."
       },
       "researchV21": {
         "status": "research-only-v2.1",
@@ -72188,7 +74401,7 @@
                     "mean": 5.37,
                     "median": 3.08,
                     "benchmarkBeatRate": 55.9,
-                    "meanExcessReturn": 2.98
+                    "meanExcessReturn": 2.99
                   }
                 }
               ],
@@ -86016,7 +88229,7 @@
                 "mean": 1.55,
                 "median": 1.23,
                 "benchmarkBeatRate": 51.6,
-                "meanExcessReturn": 0.29
+                "meanExcessReturn": 0.28
               },
               "development": {
                 "n": 519,
@@ -86302,8 +88515,8 @@
                   "high": 75.2
                 },
                 "meanReturnCI95": {
-                  "low": 2.78,
-                  "high": 8.88
+                  "low": 2.77,
+                  "high": 8.87
                 },
                 "meanExcessReturnCI95": {
                   "low": 0.6,
@@ -86327,7 +88540,7 @@
                   "positiveRate": 61,
                   "gain7Rate": 29.3,
                   "loss7Rate": 15.9,
-                  "mean": 1.82,
+                  "mean": 1.81,
                   "median": 1.75,
                   "benchmarkBeatRate": 48.8,
                   "meanExcessReturn": -0.6
@@ -86335,9 +88548,9 @@
               },
               "holdoutSymbolNeutral": {
                 "uniqueSymbols": 38,
-                "equalWeightMeanReturn": 6.56,
+                "equalWeightMeanReturn": 6.55,
                 "equalWeightPositiveRate": 69.08,
-                "equalWeightMeanExcessReturn": 4.3
+                "equalWeightMeanExcessReturn": 4.29
               },
               "holdoutRegimes": {
                 "Strong": {
@@ -86358,7 +88571,7 @@
                   "mean": 4.84,
                   "median": 2.46,
                   "benchmarkBeatRate": 47.5,
-                  "meanExcessReturn": 2.84
+                  "meanExcessReturn": 2.83
                 },
                 "Mixed": {
                   "n": 14,
@@ -86471,7 +88684,7 @@
                   "positiveRate": 61.8,
                   "gain7Rate": 35.5,
                   "loss7Rate": 16.4,
-                  "mean": 4.58,
+                  "mean": 4.57,
                   "median": 2.32,
                   "benchmarkBeatRate": 54.5,
                   "meanExcessReturn": 2.46
@@ -86496,7 +88709,7 @@
                   "mean": 1.57,
                   "median": 1.46,
                   "benchmarkBeatRate": 53.8,
-                  "meanExcessReturn": 1.33
+                  "meanExcessReturn": 1.32
                 },
                 "Mixed": {
                   "n": 69,
@@ -88817,30 +91030,30 @@
           },
           "strongUpVolume": {
             "present": {
-              "n": 148,
-              "positiveRate": 55.4,
-              "gain7Rate": 25.7,
+              "n": 149,
+              "positiveRate": 55.7,
+              "gain7Rate": 25.5,
               "loss7Rate": 12.8,
-              "mean": 2.11,
-              "median": 0.96,
-              "benchmarkBeatRate": 47.3,
+              "mean": 2.14,
+              "median": 0.99,
+              "benchmarkBeatRate": 47.7,
               "meanExcessReturn": 0.74
             },
             "absent": {
-              "n": 623,
-              "positiveRate": 55.4,
+              "n": 622,
+              "positiveRate": 55.3,
               "gain7Rate": 24.6,
               "loss7Rate": 15.4,
-              "mean": 1.54,
-              "median": 0.91,
+              "mean": 1.53,
+              "median": 0.9,
               "benchmarkBeatRate": 52.6,
-              "meanExcessReturn": 0.29
+              "meanExcessReturn": 0.28
             },
             "lift": {
-              "positiveRate": 0,
-              "meanReturn": 0.57,
-              "benchmarkBeatRate": -5.3,
-              "meanExcessReturn": 0.45
+              "positiveRate": 0.4,
+              "meanReturn": 0.61,
+              "benchmarkBeatRate": -4.9,
+              "meanExcessReturn": 0.46
             }
           },
           "room7": {
@@ -89454,7 +91667,7 @@
               "mean": 2.09,
               "median": 1.79,
               "benchmarkBeatRate": 54,
-              "meanExcessReturn": 1.2
+              "meanExcessReturn": 1.19
             },
             "absent": {
               "n": 141,
@@ -89470,7 +91683,7 @@
               "positiveRate": 3,
               "meanReturn": 1.93,
               "benchmarkBeatRate": 4.4,
-              "meanExcessReturn": 1.56
+              "meanExcessReturn": 1.55
             }
           },
           "strongUpVolume": {
@@ -89709,6 +91922,285 @@
           }
         }
       },
+      "frozenStageAuditV1": {
+        "spec": {
+          "version": "frozen-stage-audit-v1-2026-09-25",
+          "live": false,
+          "status": "audit-only",
+          "purpose": "Re-check frozen Early Watch and Recovery without retuning; compare legacy primary-setup dedupe with stricter symbol+stage independence."
+        },
+        "independence": {
+          "legacyIndependentEvents": 6302,
+          "strictIndependentEvents": 3181,
+          "removedByStrictDedupe": 3121,
+          "removedPct": 49.5
+        },
+        "earlyWatch": {
+          "legacy": {
+            "eligible": {
+              "n": 98,
+              "positiveRate": 64.3,
+              "gain7Rate": 35.7,
+              "loss7Rate": 13.3,
+              "mean": 4.54,
+              "median": 3.22,
+              "benchmarkBeatRate": 55.1,
+              "meanExcessReturn": 3.02
+            },
+            "tradeability": {
+              "n": 98,
+              "avgReturn": 4.54,
+              "avgMae": -4.44,
+              "avgMfe": 10.03,
+              "maeBelow3": 47.96,
+              "maeBelow5": 35.71,
+              "maeBelow7": 26.53,
+              "hitPlus7": 55.1,
+              "hitMinus7": 26.53,
+              "plus7BeforeMinus7": 51.02,
+              "minus7BeforePlus7": 23.47
+            },
+            "rankingBuckets": {
+              "top": {
+                "summary": {
+                  "n": 33,
+                  "positiveRate": 51.5,
+                  "gain7Rate": 30.3,
+                  "loss7Rate": 15.2,
+                  "mean": 2.84,
+                  "median": 0.34,
+                  "benchmarkBeatRate": 42.4,
+                  "meanExcessReturn": 0.84
+                },
+                "tradeability": {
+                  "n": 33,
+                  "avgReturn": 2.84,
+                  "avgMae": -5.31,
+                  "avgMfe": 9.16,
+                  "maeBelow3": 54.55,
+                  "maeBelow5": 48.48,
+                  "maeBelow7": 36.36,
+                  "hitPlus7": 51.52,
+                  "hitMinus7": 36.36,
+                  "plus7BeforeMinus7": 48.48,
+                  "minus7BeforePlus7": 27.27
+                },
+                "avgRankScore": 11.79
+              },
+              "middle": {
+                "summary": {
+                  "n": 33,
+                  "positiveRate": 63.6,
+                  "gain7Rate": 30.3,
+                  "loss7Rate": 12.1,
+                  "mean": 3.37,
+                  "median": 2.93,
+                  "benchmarkBeatRate": 54.5,
+                  "meanExcessReturn": 2.26
+                },
+                "tradeability": {
+                  "n": 33,
+                  "avgReturn": 3.37,
+                  "avgMae": -3.37,
+                  "avgMfe": 7.2,
+                  "maeBelow3": 45.45,
+                  "maeBelow5": 24.24,
+                  "maeBelow7": 21.21,
+                  "hitPlus7": 42.42,
+                  "hitMinus7": 21.21,
+                  "plus7BeforeMinus7": 42.42,
+                  "minus7BeforePlus7": 21.21
+                },
+                "avgRankScore": 8.64
+              },
+              "lower": {
+                "summary": {
+                  "n": 32,
+                  "positiveRate": 78.1,
+                  "gain7Rate": 46.9,
+                  "loss7Rate": 12.5,
+                  "mean": 7.48,
+                  "median": 6.25,
+                  "benchmarkBeatRate": 68.8,
+                  "meanExcessReturn": 6.03
+                },
+                "tradeability": {
+                  "n": 32,
+                  "avgReturn": 7.48,
+                  "avgMae": -4.66,
+                  "avgMfe": 13.83,
+                  "maeBelow3": 43.75,
+                  "maeBelow5": 34.38,
+                  "maeBelow7": 21.88,
+                  "hitPlus7": 71.88,
+                  "hitMinus7": 21.88,
+                  "plus7BeforeMinus7": 62.5,
+                  "minus7BeforePlus7": 21.88
+                },
+                "avgRankScore": 4.78
+              }
+            }
+          },
+          "strict": {
+            "eligible": {
+              "n": 46,
+              "positiveRate": 63,
+              "gain7Rate": 32.6,
+              "loss7Rate": 10.9,
+              "mean": 5.06,
+              "median": 3.35,
+              "benchmarkBeatRate": 50,
+              "meanExcessReturn": 3.06
+            },
+            "tradeability": {
+              "n": 46,
+              "avgReturn": 5.06,
+              "avgMae": -4.49,
+              "avgMfe": 10.78,
+              "maeBelow3": 50,
+              "maeBelow5": 36.96,
+              "maeBelow7": 28.26,
+              "hitPlus7": 58.7,
+              "hitMinus7": 28.26,
+              "plus7BeforeMinus7": 54.35,
+              "minus7BeforePlus7": 21.74
+            },
+            "rankingBuckets": {
+              "top": {
+                "summary": {
+                  "n": 16,
+                  "positiveRate": 37.5,
+                  "gain7Rate": 18.8,
+                  "loss7Rate": 12.5,
+                  "mean": 1.45,
+                  "median": -1.36,
+                  "benchmarkBeatRate": 25,
+                  "meanExcessReturn": -0.99
+                },
+                "tradeability": {
+                  "n": 16,
+                  "avgReturn": 1.45,
+                  "avgMae": -6.19,
+                  "avgMfe": 8.56,
+                  "maeBelow3": 75,
+                  "maeBelow5": 62.5,
+                  "maeBelow7": 50,
+                  "hitPlus7": 43.75,
+                  "hitMinus7": 50,
+                  "plus7BeforeMinus7": 43.75,
+                  "minus7BeforePlus7": 31.25
+                },
+                "avgRankScore": 12.56
+              },
+              "middle": {
+                "summary": {
+                  "n": 15,
+                  "positiveRate": 80,
+                  "gain7Rate": 53.3,
+                  "loss7Rate": 6.7,
+                  "mean": 8.55,
+                  "median": 7.97,
+                  "benchmarkBeatRate": 66.7,
+                  "meanExcessReturn": 6.16
+                },
+                "tradeability": {
+                  "n": 15,
+                  "avgReturn": 8.55,
+                  "avgMae": -2.98,
+                  "avgMfe": 11.96,
+                  "maeBelow3": 33.33,
+                  "maeBelow5": 20,
+                  "maeBelow7": 13.33,
+                  "hitPlus7": 66.67,
+                  "hitMinus7": 13.33,
+                  "plus7BeforeMinus7": 60,
+                  "minus7BeforePlus7": 13.33
+                },
+                "avgRankScore": 9.87
+              },
+              "lower": {
+                "summary": {
+                  "n": 15,
+                  "positiveRate": 73.3,
+                  "gain7Rate": 26.7,
+                  "loss7Rate": 13.3,
+                  "mean": 5.41,
+                  "median": 3.73,
+                  "benchmarkBeatRate": 60,
+                  "meanExcessReturn": 4.29
+                },
+                "tradeability": {
+                  "n": 15,
+                  "avgReturn": 5.41,
+                  "avgMae": -4.18,
+                  "avgMfe": 11.98,
+                  "maeBelow3": 40,
+                  "maeBelow5": 26.67,
+                  "maeBelow7": 20,
+                  "hitPlus7": 66.67,
+                  "hitMinus7": 20,
+                  "plus7BeforeMinus7": 60,
+                  "minus7BeforePlus7": 20
+                },
+                "avgRankScore": 5.27
+              }
+            }
+          }
+        },
+        "recovery": {
+          "legacy": {
+            "eligible": {
+              "n": 166,
+              "positiveRate": 67.5,
+              "gain7Rate": 33.7,
+              "loss7Rate": 10.8,
+              "mean": 3.33,
+              "median": 3.99,
+              "benchmarkBeatRate": 59,
+              "meanExcessReturn": 1.17
+            },
+            "tradeability": {
+              "n": 166,
+              "avgReturn": 3.33,
+              "avgMae": -4.67,
+              "avgMfe": 7.75,
+              "maeBelow3": 46.99,
+              "maeBelow5": 33.73,
+              "maeBelow7": 25.3,
+              "hitPlus7": 48.19,
+              "hitMinus7": 25.3,
+              "plus7BeforeMinus7": 46.99,
+              "minus7BeforePlus7": 23.49
+            }
+          },
+          "strict": {
+            "eligible": {
+              "n": 139,
+              "positiveRate": 68.3,
+              "gain7Rate": 35.3,
+              "loss7Rate": 11.5,
+              "mean": 3.52,
+              "median": 4.34,
+              "benchmarkBeatRate": 61.2,
+              "meanExcessReturn": 1.61
+            },
+            "tradeability": {
+              "n": 139,
+              "avgReturn": 3.52,
+              "avgMae": -4.69,
+              "avgMfe": 8.05,
+              "maeBelow3": 48.2,
+              "maeBelow5": 33.09,
+              "maeBelow7": 24.46,
+              "hitPlus7": 50.36,
+              "hitMinus7": 24.46,
+              "plus7BeforeMinus7": 48.92,
+              "minus7BeforePlus7": 23.02
+            }
+          }
+        },
+        "note": "Strict results are the trust check. No frozen threshold is changed by this audit."
+      },
       "dailyReviewLoad": {
         "t5": {
           "threshold": 5,
@@ -89831,7 +92323,7 @@
       },
       "byPriority": {
         "10": {
-          "n": 4201,
+          "n": 4202,
           "positiveRate": 57.6,
           "gain7Rate": 23.6,
           "loss7Rate": 15.1,
@@ -96875,7 +99367,7 @@
             "positiveRate": 55.2,
             "gain7Rate": 18.4,
             "loss7Rate": 15.3,
-            "mean": 0.5,
+            "mean": 0.51,
             "median": 0.9,
             "benchmarkBeatRate": 50.8,
             "meanExcessReturn": 0.25
@@ -96894,13 +99386,13 @@
           },
           "byPriority": {
             "10": {
-              "n": 1593,
+              "n": 1594,
               "positiveRate": 63,
-              "gain7Rate": 32.3,
+              "gain7Rate": 32.2,
               "loss7Rate": 13.6,
               "mean": 3.54,
               "median": 2.67,
-              "benchmarkBeatRate": 53.9,
+              "benchmarkBeatRate": 54,
               "meanExcessReturn": 1.45
             },
             "20": {
@@ -96918,7 +99410,7 @@
               "positiveRate": 63.7,
               "gain7Rate": 30.8,
               "loss7Rate": 15.5,
-              "mean": 3.54,
+              "mean": 3.53,
               "median": 3,
               "benchmarkBeatRate": 56.4,
               "meanExcessReturn": 1.6
@@ -97393,7 +99885,7 @@
           "positiveRate": 55.7,
           "gain7Rate": 27.1,
           "loss7Rate": 18,
-          "mean": 1.98,
+          "mean": 1.97,
           "median": 1.39,
           "benchmarkBeatRate": 53.1,
           "meanExcessReturn": 1.12
