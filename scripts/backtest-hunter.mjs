@@ -501,7 +501,31 @@ function attractiveGrowthHeatExtensionInteractionReport(a){
     const base=rows.filter(test),yes=base.filter(extended),no=base.filter(e=>!extended(e));
     return {baseN:base.length,extended:pack(yes),notExtended:pack(no)};
   };
-  return {spec:ATTRACTIVE_GROWTH_HEAT_EXTENSION_INTERACTION_V1,comparisons:Object.fromEntries(Object.entries(defs).map(([k,v])=>[k,compare(v)])),note:'Compare extended versus not-extended inside the same heat/context subgroup. Diagnostic only; ranking unchanged.'};
+  const ranked=[...rows].sort((x,y)=>(attractiveGrowthRankV2Candidate(y)??-999)-(attractiveGrowthRankV2Candidate(x)??-999));
+  const n=ranked.length,c1=Math.ceil(n/3),c2=Math.ceil(n*2/3);
+  const composition=xs=>{
+    const pctOf=test=>xs.length?round(xs.filter(test).length/xs.length*100,1):0;
+    const momentum6=e=>Number.isFinite(e.momentumShift)&&e.momentumShift>=6;
+    return {
+      n:xs.length,
+      dist20Gte6Pct:pctOf(extended),
+      momentum6Pct:pctOf(momentum6),
+      extendedMomentum6Pct:pctOf(e=>extended(e)&&momentum6(e)),
+      extendedHighRsPct:pctOf(e=>extended(e)&&Number.isFinite(e.rs20)&&e.rs20>=4),
+      extendedVolume12Pct:pctOf(e=>extended(e)&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=1.2),
+      extendedRoomGte7Pct:pctOf(e=>extended(e)&&Number.isFinite(e.roomToResistance)&&e.roomToResistance>=7)
+    };
+  };
+  return {
+    spec:ATTRACTIVE_GROWTH_HEAT_EXTENSION_INTERACTION_V1,
+    comparisons:Object.fromEntries(Object.entries(defs).map(([k,v])=>[k,compare(v)])),
+    v2BucketComposition:{
+      top:composition(ranked.slice(0,c1)),
+      middle:composition(ranked.slice(c1,c2)),
+      lower:composition(ranked.slice(c2))
+    },
+    note:'Compare extended versus not-extended inside the same heat/context subgroup, then verify whether the interaction is actually concentrated in V2 Top. Diagnostic only; ranking unchanged.'
+  };
 }
 
 function attractiveGrowthRankV2Report(a){
