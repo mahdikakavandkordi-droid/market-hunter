@@ -1034,13 +1034,21 @@ function earlyWatchRankV2Report(raw,horizon){
   const one=xs=>({summary:summary(xs),tradeability:stageTradeabilityReport(xs),
     avgRankScore:xs.length?round(xs.reduce((z,e)=>z+earlyWatchRankV2Candidate(e),0)/xs.length):null});
   const scores=ranked.map(earlyWatchRankV2Candidate);
+  const scoreLevels=[...new Set(scores)].sort((a,b)=>b-a);
+  const byScore=Object.fromEntries(scoreLevels.map(sc=>{
+    const xs=rows.filter(e=>earlyWatchRankV2Candidate(e)===sc);
+    return [String(sc),{summary:summary(xs),tradeability:stageTradeabilityReport(xs)}];
+  }));
+  const topBoundaryTied=scores[c1-1]===scores[c1],middleBoundaryTied=scores[c2-1]===scores[c2];
   return {
     spec:EARLY_WATCH_RANK_V2_CANDIDATE,
     baseline:summary(rows),
     rankingBuckets:{top:one(ranked.slice(0,c1)),middle:one(ranked.slice(c1,c2)),lower:one(ranked.slice(c2))},
-    diagnostics:{uniqueScores:new Set(scores).size,topBoundaryTied:scores[c1-1]===scores[c1],middleBoundaryTied:scores[c2-1]===scores[c2],
-      scoreCounts:Object.fromEntries([...new Set(scores)].sort((a,b)=>b-a).map(sc=>[String(sc),scores.filter(x=>x===sc).length]))},
-    note:'V2 changes ranking only; every broad Early Watch event remains eligible for review.'
+    byScore,
+    diagnostics:{uniqueScores:scoreLevels.length,topBoundaryTied,middleBoundaryTied,
+      scoreCounts:Object.fromEntries(scoreLevels.map(sc=>[String(sc),scores.filter(x=>x===sc).length])),
+      tieSafeInterpretation:'When a tertile boundary is tied, use byScore rather than the arbitrary Top/Middle/Lower split to judge ranking quality.'},
+    note:'V2 changes ranking only; every broad Early Watch event remains eligible for review. byScore is the tie-safe validation view.'
   };
 }
 function assertEarlyWatchRankV2Candidate(){
