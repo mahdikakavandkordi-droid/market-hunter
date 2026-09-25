@@ -673,9 +673,9 @@ function attractiveGrowthRankBoundaryDiagnosticReport(a){
 
 const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
   version:'stage-evidence-candidate-v2-2026-09-23',
-  status:'frozen-diagnostic',
+  status:'provisional-forward-evaluation',
   live:false,
-  rationale:'Recovery remains the frozen forward-evaluation candidate, but concentration diagnostics require additional shadow evidence before any Live promotion. Early Watch is frozen for forward discovery evaluation; Attractive Growth and Established Move remain research-only.',
+  rationale:'Recovery remains a research candidate with useful 10D/20D cohort lift, but the strict audit does not support calling it cross-horizon robust: 5D is weak and holdout excess is sensitive to a small set of contributors. Keep the rule unchanged for forward evidence; do not promote to Live/core.',
   recovery:Object.freeze({
     requireStructuralTurn:true,
     requireRs20NonNegative:true,
