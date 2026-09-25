@@ -31,14 +31,13 @@ function opportunityScore(m,stage,ss){
   return p;
 }
 function earlyWatchDiscoveryRank(e){
-  let p=0,m=e.momentumShift,rs=e.rs20,v=e.upDownVolumeRatio,set=e.setups||[],st=e.swingTrend;
-  if(set.includes('Failed Breakdown / Reclaim'))p+=3;
-  if(set.includes('Selling Exhaustion'))p+=2;
-  if(Number.isFinite(m)){if(m>=4)p+=4;else if(m>=2)p+=3;else if(m>0)p+=2;else if(m<=-3)p-=2}
-  if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>=-8)p+=1;else if(rs<-15)p-=2}
-  if(Number.isFinite(v)){if(v>=.85)p+=2;else if(v>=.70)p+=1;else if(v<.55)p-=1}
-  if(st==='Structure improving')p+=2;
-  if(st==='Lower highs + lower lows')p-=1;
+  // Research-only canonical ranking after the 2026-09-25 foundational audit.
+  // Eligibility remains the broad Early Watch gate; these features only order
+  // charts for review and must not become hard deletion gates.
+  let p=0,set=e.setups||[];
+  if(set.includes('Selling Exhaustion'))p+=3;
+  if(Number.isFinite(e.roomToResistance)&&e.roomToResistance>=7)p+=3;
+  if(Number.isFinite(e.rs20)&&e.rs20>=0)p+=1;
   return p;
 }
 const STAGE_AWARE_V1_SPEC=Object.freeze({
@@ -55,15 +54,8 @@ function stageAwareEvidence(e){
   let p=0;
   const rs=e.rs20,m=e.momentumShift,v=e.upDownVolumeRatio,room=e.roomToResistance,st=e.swingTrend,set=e.setups||[];
   if(e.stage==='Early Watch'){
-    // Discovery-first ranking: momentum/RS/volume improve priority, but are not hard gates.
-    // Only genuinely weak evidence is penalized so chart-worthy early turns remain visible.
-    if(Number.isFinite(m)){if(m>=4)p+=4;else if(m>=2)p+=3;else if(m>0)p+=2;else if(m<=-3)p-=2}
-    if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>=-8)p+=1;else if(rs<-15)p-=2}
-    if(Number.isFinite(v)){if(v>=.85)p+=2;else if(v>=.70)p+=1;else if(v<.55)p-=1}
-    if(set.includes('Failed Breakdown / Reclaim'))p+=3;
-    if(set.includes('Selling Exhaustion'))p+=2;
-    if(st==='Structure improving')p+=2;
-    if(st==='Lower highs + lower lows')p-=1; // expected in Early Watch; penalty, not exclusion
+    // Keep one canonical Early Watch research rank path to prevent drift.
+    p=earlyWatchDiscoveryRank(e);
   }else if(e.stage==='Recovery'){
     if(Number.isFinite(m)){if(m>=2)p+=3;else if(m>0)p+=1;else p-=2}
     if(Number.isFinite(rs)){if(rs>=0)p+=2;else if(rs>-5)p+=1;else p-=1}
@@ -414,7 +406,7 @@ function attractiveGrowthEntryContextReport(a){
 }
 
 const ATTRACTIVE_GROWTH_RANK_V2_CANDIDATE=Object.freeze({
-  version:'attractive-growth-rank-v2-candidate-2026-09-25',live:false,status:'historical-comparison',
+  version:'attractive-growth-rank-v2-candidate-2026-09-25',live:false,status:'forward-validation-candidate',
   philosophy:'Rank chart-worthy Attractive Growth names without hard HH/HL, RS, momentum, volume or room gates. Reward healthy structure and constructive pullback; reduce the old bias toward maximum heat and excessive raw room.',
   freezeRule:'Research candidate only; do not replace frozen V1 or Live/core from historical results.'
 });
@@ -1044,7 +1036,7 @@ const EARLY_WATCH_RANK_V2_CANDIDATE=Object.freeze({
   version:'early-watch-rank-v2-candidate-2026-09-25',live:false,status:'historical-comparison',
   eligibility:'Broad Early Watch stage only; no Failed Breakdown, momentum, RS, volume, structure or room hard gate.',
   philosophy:'Prioritize the two corrected-data signals that were robust across batches: Selling Exhaustion and >=7% room to resistance. RS >=0 is a smaller ranking aid. Failed Breakdown and momentum receive no bonus.',
-  freezeRule:'Historical candidate only. Do not promote to Live/core without robust cross-batch and forward validation.'
+  freezeRule:'Research candidate only. Historical cross-batch direction is supportive, but do not promote to Live/core until a frozen forward cohort validates it.'
 });
 function earlyWatchRankV2Candidate(e){
   if(e.stage!=='Early Watch')return null;
