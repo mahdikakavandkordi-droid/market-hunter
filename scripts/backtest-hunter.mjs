@@ -459,6 +459,36 @@ function assertAttractiveGrowthRankV2Candidate(){
 }
 assertAttractiveGrowthRankV2Candidate();
 
+const ATTRACTIVE_GROWTH_V2_CANDIDATE=Object.freeze({
+  version:'attractive-growth-v2-candidate-2026-09-25',
+  status:'historical-comparison-only',
+  live:false,
+  eligibility:'Attractive Growth stage only; structure, RS, momentum, volume, room and setup are ranking evidence.',
+  rationale:'V1 over-rewarded raw heat. V2 reduces chase bias, keeps broad discovery, rewards constructive structure/setup, and treats room as a non-linear context signal rather than assuming more room is always better.'
+});
+function attractiveGrowthV2CandidateRank(e){
+  if(e.stage!=='Attractive Growth')return null;
+  let p=0;
+  if(e.swingTrend==='Higher highs + higher lows')p+=2;
+  else if(e.swingTrend==='Structure improving')p+=1;
+  else if(e.swingTrend==='Lower highs + lower lows')p-=1;
+  if(Number.isFinite(e.rs20)){if(e.rs20>=0&&e.rs20<8)p+=2;else if(e.rs20>=8)p+=1;else if(e.rs20<-8)p-=1;}
+  if(Number.isFinite(e.momentumShift)){if(e.momentumShift>=1&&e.momentumShift<4)p+=2;else if(e.momentumShift>=4)p+=1;else if(e.momentumShift<=-3)p-=1;}
+  if(Number.isFinite(e.upDownVolumeRatio)){if(e.upDownVolumeRatio>=.85&&e.upDownVolumeRatio<1.5)p+=2;else if(e.upDownVolumeRatio>=1.5)p+=1;else if(e.upDownVolumeRatio<.7)p-=1;}
+  if(Number.isFinite(e.roomToResistance)){if(e.roomToResistance>=3&&e.roomToResistance<7)p+=2;else if(e.roomToResistance<3)p+=1;}
+  const set=e.setups||[];
+  if(set.includes('Pullback in Uptrend'))p+=2;
+  if(set.includes('Local Breakout'))p+=1;
+  return p;
+}
+function attractiveGrowthV2CandidateReport(a){
+ const rows=a.filter(e=>e.stage==='Attractive Growth');
+ const ranked=[...rows].sort((x,y)=>(attractiveGrowthV2CandidateRank(y)??-999)-(attractiveGrowthV2CandidateRank(x)??-999));
+ const c1=Math.ceil(ranked.length/3),c2=Math.ceil(ranked.length*2/3);
+ const bucket=xs=>({summary:summary(xs),tradeability:stageTradeabilityReport(xs),avgRankScore:xs.length?round(xs.reduce((s,e)=>s+(attractiveGrowthV2CandidateRank(e)??0),0)/xs.length):null});
+ return {spec:ATTRACTIVE_GROWTH_V2_CANDIDATE,rankingBuckets:{top:bucket(ranked.slice(0,c1)),middle:bucket(ranked.slice(c1,c2)),lower:bucket(ranked.slice(c2))},note:'Historical candidate comparison only. Do not promote or tune from one batch.'};
+}
+
 const HUNTER_STAGE_EVIDENCE_CANDIDATE_V2=Object.freeze({
   version:'stage-evidence-candidate-v2-2026-09-23',
   status:'frozen-diagnostic',
