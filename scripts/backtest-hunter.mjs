@@ -30,21 +30,6 @@ function opportunityScore(m,stage,ss){
   if(stage==='Recovery')p-=6;
   return p;
 }
-const EARLY_WATCH_DISCOVERY_V1_SPEC=Object.freeze({
-  version:'early-watch-discovery-v1-frozen-2026-09-24',
-  status:'frozen-forward-evaluation',
-  live:false,
-  frozenAt:'2026-09-24',
-  setup:'Failed Breakdown / Reclaim',
-  contextOnly:{upDownVolumeBand:[.70,.85],atr14PctReferenceMaxExclusive:6},
-  rankingOnly:{
-    momentum:'>=4 strongest, >=2 strong, >0 supportive; <=-3 penalty',
-    rs20:'>=0 strong, >=-8 supportive, <-15 penalty',
-    volume:'>=.85 strong, .70-.85 supportive, <.55 penalty'
-  },
-  principle:'Momentum, RS and volume rank Early Watch candidates; they do not exclude otherwise chart-worthy candidates.',
-  validation:'Recent 109-event sample separated top/mid/lower; historical robustness supports ranking as priority, not return prediction. No further threshold tuning from these results.'
-});
 function earlyWatchDiscoveryRank(e){
   let p=0,m=e.momentumShift,rs=e.rs20,v=e.upDownVolumeRatio,set=e.setups||[],st=e.swingTrend;
   if(set.includes('Failed Breakdown / Reclaim'))p+=3;
@@ -838,6 +823,29 @@ function frozenStageAwareValidation(a){
   return {spec:STAGE_AWARE_V1_SPEC,coveragePct:a.length?round(rows.length/a.length*100,1):0,summary:summary(rows),tradeability:stageTradeabilityReport(rows),byStage:Object.fromEntries(['Early Watch','Recovery','Attractive Growth','Established Move'].map(stage=>[stage,summary(rows.filter(e=>e.stage===stage))]))};
 }
 function dedupe(a,h){const out=[],last=new Map();for(const e of [...a].sort((x,y)=>x.date.localeCompare(y.date)||x.symbol.localeCompare(y.symbol))){const k=e.symbol+'|'+e.stage+'|'+e.primarySetup,prev=last.get(k);if(prev&&e.sessionIndex-prev<h)continue;out.push(e);last.set(k,e.sessionIndex)}return out}
+function dedupeByStage(a,h){const out=[],last=new Map();for(const e of [...a].sort((x,y)=>x.date.localeCompare(y.date)||x.symbol.localeCompare(y.symbol))){const k=e.symbol+'|'+e.stage,prev=last.get(k);if(prev&&e.sessionIndex-prev<h)continue;out.push(e);last.set(k,e.sessionIndex)}return out}
+function recoveryFrozenStageV2(e){
+  return e.stage==='Recovery' &&
+    (e.setups||[]).some(x=>x==='Higher-Low Turn'||x==='Failed Breakdown / Reclaim') &&
+    Number.isFinite(e.rs20)&&e.rs20>=0;
+}
+function frozenStageAuditReport(raw,horizon){
+  const legacy=dedupe(raw,horizon),strict=dedupeByStage(raw,horizon);
+  const bucket=(rows,rankFn)=>{
+    const ranked=[...rows].sort((a,b)=>rankFn(b)-rankFn(a)),n=ranked.length,c1=Math.ceil(n/3),c2=Math.ceil(n*2/3);
+    const one=xs=>({summary:summary(xs),tradeability:stageTradeabilityReport(xs),avgRankScore:xs.length?round(xs.reduce((z,e)=>z+rankFn(e),0)/xs.length):null});
+    return {top:one(ranked.slice(0,c1)),middle:one(ranked.slice(c1,c2)),lower:one(ranked.slice(c2))};
+  };
+  const early=rows=>{const eligible=rows.filter(earlyWatchDiscoveryV1);return {eligible:summary(eligible),tradeability:stageTradeabilityReport(eligible),rankingBuckets:bucket(eligible,earlyWatchDiscoveryRank)}};
+  const recovery=rows=>{const eligible=rows.filter(recoveryFrozenStageV2);return {eligible:summary(eligible),tradeability:stageTradeabilityReport(eligible)}};
+  return {
+    spec:{version:'frozen-stage-audit-v1-2026-09-25',live:false,status:'audit-only',purpose:'Re-check frozen Early Watch and Recovery without retuning; compare legacy primary-setup dedupe with stricter symbol+stage independence.'},
+    independence:{legacyIndependentEvents:legacy.length,strictIndependentEvents:strict.length,removedByStrictDedupe:legacy.length-strict.length,removedPct:legacy.length?round((legacy.length-strict.length)/legacy.length*100,1):0},
+    earlyWatch:{legacy:early(legacy),strict:early(strict)},
+    recovery:{legacy:recovery(legacy),strict:recovery(strict)},
+    note:'Strict results are the trust check. No frozen threshold is changed by this audit.'
+  };
+}
 function setupStrategy(m,stage,ss){
   const pass=[];
   // Each setup gets its own confirmation logic. This is deliberately backtest-only until OOS validation.
@@ -1116,7 +1124,7 @@ function setupStability(wf){
   }
   return out;
 }
-const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),stageSelectionLift:stageSelectionLiftReport(he),stageEvidenceComponents:stageEvidenceComponentReport(he),stageEvidenceCombinations:stageEvidenceCombinationReport(he),candidateEngineV2Diagnostic:candidateEngineV2DiagnosticReport(he),attractiveGrowthDiscoveryV1:attractiveGrowthRankValidationReport(he),attractiveGrowthCohortAuditV1:attractiveGrowthCohortAuditReport(he),attractiveGrowthEntryContextV1:attractiveGrowthEntryContextReport(he),attractiveGrowthExtensionContextV1:attractiveGrowthExtensionContextReport(he),attractiveGrowthHeatExtensionInteractionV1:attractiveGrowthHeatExtensionInteractionReport(he),attractiveGrowthRankV2Candidate:attractiveGrowthRankV2Report(he),attractiveGrowthRankV3Candidate:attractiveGrowthRankV3Report(he),attractiveGrowthRankV4Candidate:attractiveGrowthRankV4Report(he),researchV21:researchV21Report(he),featureLift:featureLiftReport(he),frozenStageAwareValidation:frozenStageAwareValidation(he),dailyReviewLoad:{t5:dailyReviewLoad(he,5),t6:dailyReviewLoad(he,6),t7:dailyReviewLoad(he,7)},topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
+const byHorizon={};for(const horizon of horizons){const raw=events.filter(e=>e.horizon===horizon),he=dedupe(raw,horizon),byStage={},bySetup={};for(const e of he){(byStage[e.stage]??=[]).push(e);for(const x of e.setups)(bySetup[x]??=[]).push(e)}const ranked=[...he].sort((a,b)=>b.priority-a.priority),topQuartile=ranked.slice(0,Math.ceil(ranked.length*.25)),split=splitChronologically(he),trainRanked=[...split.train].sort((a,b)=>b.priority-a.priority),testRanked=[...split.test].sort((a,b)=>b.priority-a.priority);const walkForward=walkForwardReport(he);byHorizon[String(horizon)]={rawObservations:raw.length,independentEvents:he.length,overall:summary(he),shortlistQuality:shortlistQualityReport(he),stageAwareShortlist:stageAwareShortlistReport(he),stageSelectionLift:stageSelectionLiftReport(he),stageEvidenceComponents:stageEvidenceComponentReport(he),stageEvidenceCombinations:stageEvidenceCombinationReport(he),candidateEngineV2Diagnostic:candidateEngineV2DiagnosticReport(he),attractiveGrowthDiscoveryV1:attractiveGrowthRankValidationReport(he),attractiveGrowthCohortAuditV1:attractiveGrowthCohortAuditReport(he),attractiveGrowthEntryContextV1:attractiveGrowthEntryContextReport(he),attractiveGrowthExtensionContextV1:attractiveGrowthExtensionContextReport(he),attractiveGrowthHeatExtensionInteractionV1:attractiveGrowthHeatExtensionInteractionReport(he),attractiveGrowthRankV2Candidate:attractiveGrowthRankV2Report(he),attractiveGrowthRankV3Candidate:attractiveGrowthRankV3Report(he),attractiveGrowthRankV4Candidate:attractiveGrowthRankV4Report(he),researchV21:researchV21Report(he),featureLift:featureLiftReport(he),frozenStageAwareValidation:frozenStageAwareValidation(he),frozenStageAuditV1:frozenStageAuditReport(raw,horizon),dailyReviewLoad:{t5:dailyReviewLoad(he,5),t6:dailyReviewLoad(he,6),t7:dailyReviewLoad(he,7)},topQuartile:summary(topQuartile),byPriority:thresholdReport(he),featureDiagnostics:featureBuckets(he),hunterV2:{spec:HUNTER_V2_SPEC,overall:v2Report(he),byRegime:regimeReport(he),entryDelay:entryDelayReport(he),confirmation:confirmationReport(he),confirmationSelection:confirmationSelectionReport(he),tradeability:tradeabilityReport(he),capital100:capital100Report(he),sequentialCapital100:sequentialCapital100Report(he,horizon),portfolioStress:portfolioStressReport(he,horizon),benchmarkComparison:benchmarkComparisonReport(he,horizon),failedBreakdownOnly:failedBreakdownOnlyReport(he,horizon),replay:replayReport(he),walkForward:v2WalkForward(he)},walkForward:{...walkForward,stability:setupStability(walkForward)},outOfSample:{cutDate:split.cut,train:{overall:summary(split.train),byPriority:thresholdReport(split.train),setupStrategy:strategyReport(split.train),topQuartile:summary(trainRanked.slice(0,Math.ceil(trainRanked.length*.25)))},test:{overall:summary(split.test),byPriority:thresholdReport(split.test),setupStrategy:strategyReport(split.test),topQuartile:summary(testRanked.slice(0,Math.ceil(testRanked.length*.25)))}},byStage:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,summary(v)])),byStageBehavior:Object.fromEntries(Object.entries(byStage).map(([k,v])=>[k,{summary:summary(v),tradeability:stageTradeabilityReport(v),byRegime:Object.fromEntries(['Strong','Positive','Mixed','Weak','Unknown'].map(r=>[r,summary(v.filter(e=>e.regime===r))]))}])),bySetup:Object.fromEntries(Object.entries(bySetup).map(([k,v])=>[k,summary(v)]))}}
 const result={generatedAt:new Date().toISOString(),range,holdoutEnd:holdoutEnd||null,horizons,minDollar,symbols,validSymbols:symbols.filter(x=>data[x]?.length),totalEvents:events.length,byHorizon,events};
 fs.mkdirSync('data',{recursive:true});
 const earlyReclaimCases=events.filter(e=>e.horizon===20&&e.stage==='Early Watch'&&e.setups?.includes('Failed Breakdown / Reclaim')&&Number.isFinite(e.upDownVolumeRatio)&&e.upDownVolumeRatio>=0.70&&e.upDownVolumeRatio<0.85).map(e=>({symbol:e.symbol,date:e.date,forwardReturn:e.forwardReturn,benchmarkReturn:e.benchmarkReturn,excessReturn:Number.isFinite(e.forwardReturn)&&Number.isFinite(e.benchmarkReturn)?round(e.forwardReturn-e.benchmarkReturn):null,atr14Pct:e.atr14Pct,rs20:e.rs20,momentumShift:e.momentumShift,rsi:e.rsi,upDownVolumeRatio:e.upDownVolumeRatio,regime:e.regime,sector:e.sector,mae:e.mae,mfe:e.mfe}));
