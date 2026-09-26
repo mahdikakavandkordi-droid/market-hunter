@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
-import {VERSION,ASSUMPTIONS,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank} from '../lib/market-hunter-v2-engine.js';
+import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank} from '../lib/market-hunter-v2-engine.js';
 
 const batchIndex=Number(process.env.V2_BATCH_INDEX||0);
 const batchCount=Math.max(1,Number(process.env.V2_BATCH_COUNT||4));
@@ -184,8 +184,15 @@ for(const h of horizons){
   for(const stage of ['Early Watch','Recovery','Attractive Growth','Established Move']){
     const x=ev.filter(e=>e.stage===stage);
     const sp=splitChron(x);
+    const review=e=>['Review First','Prime'].includes(priorityBand(stage,e.rankScore));
+    const prime=e=>priorityBand(stage,e.rankScore)==='Prime';
     report.horizons[h].byStage[stage]={
       overall:summary(x),train:summary(sp.train),test:summary(sp.test),ranking:rankingReport(x),
+      fixedPriority:{
+        floors:PRIORITY_FLOORS[stage],
+        reviewFirst:{train:summary(sp.train.filter(review)),test:summary(sp.test.filter(review))},
+        prime:{train:summary(sp.train.filter(prime)),test:summary(sp.test.filter(prime))}
+      },
       evidence:evidenceSlices(stage,x)
     };
   }
