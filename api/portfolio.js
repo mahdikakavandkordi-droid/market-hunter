@@ -9,6 +9,32 @@ const CDR_BENCHMARK={
 };
 
 function dayKey(t){return new Date(t*1000).toISOString().slice(0,10)}
+function pct(a,b){return Number.isFinite(a)&&Number.isFinite(b)&&b!==0?(a/b-1)*100:null}
+function sinceEntryStats(rows,benchRows,entry){
+  if(!entry?.date||!(Number(entry.price)>0))return null;
+  const held=rows.filter(x=>dayKey(x.t)>=entry.date);
+  if(!held.length)return {sessions:0,partialHistory:true};
+  const entryPrice=Number(entry.price),current=held.at(-1)?.close;
+  const maxHigh=Math.max(...held.map(x=>Number.isFinite(x.high)?x.high:x.close).filter(Number.isFinite));
+  let peak=null,maxDrawdown=0;
+  for(const x of held){
+    const close=x.close;if(!Number.isFinite(close))continue;
+    peak=peak===null?close:Math.max(peak,close);
+    if(peak>0)maxDrawdown=Math.min(maxDrawdown,(close/peak-1)*100);
+  }
+  const benchHeld=(benchRows||[]).filter(x=>dayKey(x.t)>=entry.date);
+  const benchmarkReturn=benchHeld.length>=2?pct(benchHeld.at(-1).close,benchHeld[0].close):null;
+  const sinceEntryReturn=pct(current,entryPrice);
+  return {
+    sessions:held.length,
+    partialHistory:dayKey(rows[0].t)>entry.date,
+    sinceEntryReturn,
+    maxGainPct:pct(maxHigh,entryPrice),
+    maxDrawdownPct:maxDrawdown,
+    benchmarkReturnPct:benchmarkReturn,
+    excessVsBenchmarkPct:Number.isFinite(sinceEntryReturn)&&Number.isFinite(benchmarkReturn)?sinceEntryReturn-benchmarkReturn:null
+  };
+}
 async function chart(symbol,deadline=Date.now()+22000){
   const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1y&interval=1d&includePrePost=false&events=div%2Csplits`;
   const controller=new AbortController();
@@ -40,6 +66,12 @@ export default async function handler(req,res){
   if(req.method!=='GET')return res.status(405).json({error:'method_not_allowed'});
   const raw=String(req.query.symbols||'');
   const symbols=[...new Set(raw.split(',').map(x=>x.trim().toUpperCase()).filter(x=>/^[A-Z0-9.^-]{1,16}$/.test(x)))].slice(0,30);
+  const entryMap=new Map();
+  for(const token of String(req.query.entries||'').split(',').filter(Boolean)){
+    const [symbol,date,price]=token.split('|');
+    const clean=String(symbol||'').trim().toUpperCase();
+    if(symbols.includes(clean)&&/^\d{4}-\d{2}-\d{2}$/.test(date||'')&&Number(price)>0)entryMap.set(clean,{date,price:Number(price)});
+  }
   if(!symbols.length)return res.status(200).json({generatedAt:new Date().toISOString(),items:[],failures:[]});
   const deadline=Date.now()+23000;
   const benchmarks=[...new Set(symbols.map(s=>CDR_BENCHMARK[s]||'^GSPTSE'))];
@@ -57,8 +89,9 @@ export default async function handler(req,res){
       const m=metrics(r.value.rows,bench);
       if(!m){failures.push({symbol,reason:'insufficient_history'});return}
       const stage=classify(m),meta=UNIVERSE_META.get(symbol)||{};
+      const entryStats=sinceEntryStats(r.value.rows,bench,entryMap.get(symbol));
       items.push({
-        symbol,name:meta.name||symbol,sector:meta.sector||null,price:m.last,currency:r.value.currency,benchmark,
+        symbol,name:meta.name||symbol,sector:meta.sector||null,price:m.last,currency:r.value.currency,benchmark,entryStats,
         stage:stage||null,
         ret5:m.ret5,ret20:m.ret20,ret60:m.ret60,
         momentumShift:m.momentumShift,rs20:m.rs20,rs60:m.rs60,rsi14:m.rsi14,atr14Pct:m.atr14Pct,
