@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
 
-const VERSION='market-hunter-v2-rebuild-h1d1-2026-09-26';
+const VERSION='market-hunter-v2-rebuild-h2-2026-09-26';
 const ASSUMPTIONS=Object.freeze({
   purpose:'Discovery scanner: which chart should be opened first, not a buy/sell signal.',
   universe:'Canadian-listed instruments from reviewed universe; CAD only by construction.',
@@ -151,28 +151,43 @@ function rank(m,stage){
     return clamp(p,0,100);
   }
   if(stage==='Recovery'){
-    p+=scale(m.momentumShift,0,6)*25+scale(m.rs20,-8,8)*20+scale(m.upDownVolumeRatio,.6,1.4)*12;
-    if(Number.isFinite(m.freshReclaimAge)&&m.freshReclaimAge<=5)p+=15;
-    if(m.higherLow===true)p+=12;
-    if(m.swingTrend==='Structure improving'||m.swingTrend==='Higher highs + higher lows')p+=8;
-    p+=scale(-Math.abs(m.dist20),-10,0)*8;
+    // H2: recovery quality is more about regained relative strength and controlled risk
+    // than simply having the strongest short-term bounce.
+    p+=scale(m.momentumShift,0,6)*15;
+    p+=scale(m.rs20,-8,8)*28;
+    p+=scale(m.upDownVolumeRatio,.6,1.4)*10;
+    if(Number.isFinite(m.freshReclaimAge)&&m.freshReclaimAge<=5)p+=6;
+    if(m.higherLow===true)p+=4;
+    if(m.swingTrend==='Structure improving'||m.swingTrend==='Higher highs + higher lows')p+=4;
+    if(Number.isFinite(m.atr14Pct)){if(m.atr14Pct<6)p+=10;else p-=8;}
     return clamp(p,0,100);
   }
   if(stage==='Attractive Growth'){
-    p+=scale(m.rs20,-3,12)*24+scale(m.rs60,-5,20)*12+scale(m.ma20Slope5,0,5)*15+scale(m.upDownVolumeRatio,.7,1.5)*12;
-    p+=scale(m.ret20,0,15)*15;
-    if(m.higherLow===true)p+=8;
-    if(m.swingTrend==='Higher highs + higher lows')p+=8;
-    if(m.dist20>=6)p-=8;
-    if(m.dist20>=10)p-=8;
+    // H2: reward durable trend + medium-term strength, but stop over-rewarding heat.
+    p+=scale(m.rs20,-3,12)*25;
+    p+=scale(m.rs60,-5,20)*4;
+    p+=scale(m.ma20Slope5,0,5)*20;
+    p+=scale(m.upDownVolumeRatio,.7,1.5)*4;
+    p+=scale(m.ret20,0,15)*18;
+    if(m.higherLow===true)p+=3;
+    if(m.swingTrend==='Higher highs + higher lows')p+=3;
+    if(Number.isFinite(m.atr14Pct)){if(m.atr14Pct<6)p+=5;else p-=12;}
+    if(Number.isFinite(m.dist20)&&m.dist20>=6)p-=10;
+    if(Number.isFinite(m.dist20)&&m.dist20>=10)p-=10;
     return clamp(p,0,100);
   }
   if(stage==='Established Move'){
-    p+=scale(m.rs20,-2,10)*20+scale(m.rs60,0,25)*18+scale(m.ma50Slope10,0,5)*16+scale(m.upDownVolumeRatio,.7,1.5)*10;
-    if(m.swingTrend==='Higher highs + higher lows')p+=14;
-    if(m.higherLow===true)p+=8;
-    p+=scale(-Math.abs(m.dist20),-10,0)*8;
-    if(m.dist20>=8)p-=8;
+    // H2: mature moves are ranked by trend durability, not raw RS/hotness.
+    p+=scale(m.ma50Slope10,0,5)*25;
+    p+=scale(m.ret60,12,30)*18;
+    p+=scale(m.rs20,-2,10)*10;
+    p+=scale(m.rs60,0,25)*5;
+    p+=scale(m.upDownVolumeRatio,.7,1.5)*6;
+    if(m.swingTrend==='Higher highs + higher lows')p+=5;
+    if(m.higherLow===true)p+=4;
+    if(Number.isFinite(m.atr14Pct)){if(m.atr14Pct<6)p+=6;else p-=12;}
+    if(Number.isFinite(m.dist20)&&m.dist20>=6)p-=10;
+    if(Number.isFinite(m.dist20)&&m.dist20>=10)p-=10;
     return clamp(p,0,100);
   }
   return 0;
