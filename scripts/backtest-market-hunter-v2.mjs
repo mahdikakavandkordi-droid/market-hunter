@@ -115,6 +115,68 @@ function evidenceSlices(stage,a){
   ];
 }
 
+
+function earlyWatchRewriteDiagnostic(a){
+  const fresh=e=>Number.isFinite(e.features.freshReclaimAge)&&e.features.freshReclaimAge<=3;
+  const rs0=e=>Number.isFinite(e.features.rs20)&&e.features.rs20>=0;
+  const rsM5=e=>Number.isFinite(e.features.rs20)&&e.features.rs20>=-5;
+  const exhaust=e=>e.features.downsideDecel===true&&e.features.volumeShockNearLow===true;
+
+  // Inclusion variants are intentionally simple and outcome-blind.
+  // They test whether weak standalone evidence (selling fade / bare reclaim)
+  // is diluting the chart-discovery cohort.
+  const inclusion={
+    baseline:e=>true,
+    noSellingFadeOnly:e=>fresh(e)||exhaust(e),
+    supportedReclaimOrExhaustion:e=>exhaust(e)||(fresh(e)&&(e.features.downsideDecel===true||e.features.volumeShockNearLow===true||rsM5(e))),
+    coreExhaustion:e=>exhaust(e)
+  };
+
+  const packRows=rows=>{
+    const sp=splitChron(rows);
+    return {overall:summary(rows),train:summary(sp.train),test:summary(sp.test)};
+  };
+
+  const candidateRank=(rows,scoreFn)=>{
+    const sp=splitChron(rows);
+    const train=sp.train.map(e=>({...e,candidateScore:scoreFn(e)}));
+    const test=sp.test.map(e=>({...e,candidateScore:scoreFn(e)}));
+    const q80=quantile(train.map(e=>e.candidateScore),.80);
+    const q90=quantile(train.map(e=>e.candidateScore),.90);
+    const above=(x,t)=>summary(x.filter(e=>Number.isFinite(t)&&e.candidateScore>=t));
+    return {cutDate:sp.cut,trainThresholds:{q80:round(q80,1),q90:round(q90,1)},q80:{train:above(train,q80),test:above(test,q80)},q90:{train:above(train,q90),test:above(test,q90)}};
+  };
+
+  const base=a.filter(inclusion.supportedReclaimOrExhaustion);
+  const rankers={
+    current:e=>e.rankScore,
+    robustCore:e=>{
+      let s=0;
+      if(e.features.downsideDecel===true)s+=40;
+      if(e.features.volumeShockNearLow===true)s+=20;
+      if(rs0(e))s+=25;
+      else if(rsM5(e))s+=10;
+      if(fresh(e)&&(e.features.downsideDecel===true||e.features.volumeShockNearLow===true))s+=5;
+      return s;
+    },
+    rsForward:e=>{
+      let s=0;
+      if(e.features.downsideDecel===true)s+=35;
+      if(e.features.volumeShockNearLow===true)s+=15;
+      if(rs0(e))s+=35;
+      else if(rsM5(e))s+=15;
+      return s;
+    }
+  };
+
+  return {
+    status:'early-watch-rewrite-diagnostic-v1',
+    inclusion:Object.fromEntries(Object.entries(inclusion).map(([name,test])=>[name,packRows(a.filter(test))])),
+    rankBase:'supportedReclaimOrExhaustion',
+    ranking:Object.fromEntries(Object.entries(rankers).map(([name,scoreFn])=>[name,candidateRank(base,scoreFn)]))
+  };
+}
+
 const needed=[...new Set([...symbols,...symbols.map(benchSymbol)])],data={};
 for(const s of needed){
   process.stdout.write('fetch '+s+'... ');
@@ -195,7 +257,8 @@ for(const h of horizons){
         cleanReview:{train:summary(sp.train.filter(cleanReview)),test:summary(sp.test.filter(cleanReview))},
         heatedReview:{train:summary(sp.train.filter(heatedReview)),test:summary(sp.test.filter(heatedReview))}
       },
-      evidence:evidenceSlices(stage,x)
+      evidence:evidenceSlices(stage,x),
+      ...(stage==='Early Watch'?{rewriteDiagnostic:earlyWatchRewriteDiagnostic(x)}:{})
     };
   }
 }
