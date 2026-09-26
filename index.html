@@ -299,12 +299,12 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
 const state={data:null,v2:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
-function v2SurfaceCandidates(){
-  const rows=state.v2?.surfacePicks?.['Early Watch']||[];
+function v2SurfaceCandidates(stage='Early Watch'){
+  const rows=state.v2?.surfacePicks?.[stage]||[];
   return rows.map(x=>({
     ...x,
     company:x.name||x.company||x.symbol,
-    stage:'Early Watch',
+    stage,
     pullback:x.pullback60,
     avgDollarVol:x.avgDollar20,
     benchmarkLabel:x.sector==='CDR'?'Nasdaq':'TSX',
@@ -316,10 +316,13 @@ function v2SurfaceCandidates(){
     why:Array.isArray(x.evidence)?x.evidence:[]
   }));
 }
+function v2AllSurfaceCandidates(){
+  return [...v2SurfaceCandidates('Early Watch'),...v2SurfaceCandidates('Recovery')];
+}
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function persistPositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
 function markBought(symbol){
-  const x=v2SurfaceCandidates().find(v=>v.symbol===symbol)||allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);if(!x)return;
+  const x=v2AllSurfaceCandidates().find(v=>v.symbol===symbol)||allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);if(!x)return;
   if(state.positions.has(symbol)){state.positions.delete(symbol)}else state.positions.set(symbol,{symbol,boughtAt:new Date().toISOString(),entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance});
   persistPositions();render();
 }
@@ -339,7 +342,7 @@ function positionHealth(x,p){
 }
 function renderPositions(){
   const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
-  const current=[...v2SurfaceCandidates(),...allHunterCandidates()],by=new Map([...(state.data.availableItems||[]),...current].map(x=>[x.symbol,x]));
+  const current=[...v2AllSurfaceCandidates(),...allHunterCandidates()],by=new Map([...(state.data.availableItems||[]),...current].map(x=>[x.symbol,x]));
   const rows=[...state.positions.values()].map(p=>({p,x:by.get(p.symbol)}));
   root.innerHTML=`<section class="watchlist"><div class="section-title"><div><h2>Positions</h2><p>Post-purchase monitoring. Hunter reports trend health and warnings; it does not issue hold/sell orders.</p></div><span class="shown">${rows.length}</span></div><div class="grid">${rows.length?rows.map(({p,x})=>{
     if(!x)return `<article class="card"><div class="ticker">${p.symbol}</div><div class="why"><strong>Position monitor</strong>Current market data unavailable.</div><button class="position-btn" data-position="${p.symbol}">Remove</button></article>`;
@@ -633,7 +636,7 @@ function renderMarket(){
 
 function renderWatchlist(){
   const d=state.data;if(!d)return;
-  const current=[...v2SurfaceCandidates(),...(d.items||[]),...(d.watchItems||[])];
+  const current=[...v2AllSurfaceCandidates(),...(d.items||[]),...(d.watchItems||[])];
   const currentSymbols=new Set(current.map(x=>x.symbol));
   const bySymbol=new Map([...(d.availableItems||[]),...current].map(x=>[x.symbol,x]));
   const failures=new Map((d.failureDetails||[]).map(x=>[x.symbol,x.reason]));
@@ -926,23 +929,78 @@ function v2EarlyWatchCard(x){
       </div></div>
     </article>`;
 }
+function v2RecoveryCard(x){
+  const q=n=>`<span class="${cls(n)}">${pct(n)}</span>`;
+  const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
+  const evidence=(x.why||[]).join(' · ')||'Fresh Recovery Review First setup';
+  const day=Number.isFinite(x.stageAge)?x.stageAge+1:null;
+  const chasePenalty=Number.isFinite(x.score)&&Number.isFinite(x.surfaceScore)?Math.max(0,x.score-x.surfaceScore):0;
+  return `
+    <article class="card">
+      <div class="top">
+        <div>
+          <div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge recovery">Recovery</span></div>
+          <div class="company">${x.company||x.symbol}</div>
+          <div class="sector">${x.sector||'—'} · Fresh Review First${day?` · Day ${day}`:''}</div>
+        </div>
+        <div>
+          <div class="card-actions">
+            <button class="heart ${state.watchlist.has(x.symbol)?'saved':''}" data-watch="${x.symbol}" title="Watchlist">${state.watchlist.has(x.symbol)?'♥':'♡'}</button>
+            <button class="tv-link" type="button" data-tv="${x.symbol}" title="Open in TradingView">Chart ↗</button>
+          </div>
+          <div class="price">${fmt(x.price)}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
+        <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
+        <div class="mini"><div class="k">MOM</div><div class="v ${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</div></div>
+        <div class="mini"><div class="k">RS20</div><div class="v">${q(x.rs20)}</div></div>
+        <div class="mini"><div class="k">RSI</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
+      </div>
+      <div class="why"><strong>Surfaced because</strong>${evidence}</div>
+      <div class="score"><small>tap details</small></div>
+      <div class="detail"><div class="detail-grid">
+        <div class="pill">Recovery age<b>${day?`Day ${day}`:'—'}</b></div>
+        <div class="pill">MA20 distance<b class="${cls(x.dist20)}">${pct(x.dist20)}</b></div>
+        <div class="pill">Structure<b>${x.swingTrend||'—'}</b></div>
+        <div class="pill">Up / down vol<b>${Number.isFinite(x.upDownVolumeRatio)?x.upDownVolumeRatio.toFixed(2)+'×':'—'}</b></div>
+        <div class="signal">Momentum change<b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</b></div>
+        <div class="signal">Relative strength<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div>
+        <div class="signal">Minor high broken<b>${x.highBroken===true?'Yes':'No'}</b></div>
+        <div class="signal">Fresh high break<b>${Number.isFinite(x.freshHighBreakAge)?x.freshHighBreakAge+' session'+(x.freshHighBreakAge===1?'':'s')+' ago':'—'}</b></div>
+        <div class="signal">Higher low<b>${x.higherLow===true?'Yes':x.higherLow===false?'No':'—'}</b></div>
+        <div class="signal">Anti-chase adjustment<b>${chasePenalty>0?'-'+chasePenalty.toFixed(1):'None'}</b></div>
+        <div class="signal">Local low<b>${fmt(x.localLow)}</b></div>
+        <div class="signal">Local high<b>${fmt(x.localHigh)}</b></div>
+      </div></div>
+    </article>`;
+}
 function renderTop5(){
   const root=document.querySelector('#top5Content');
   if(!root)return;
   if(!state.v2){
-    root.innerHTML='<section class="stage"><div class="empty">Validated Early Watch shortlist is unavailable right now.</div></section>';
+    root.innerHTML='<section class="stage"><div class="empty">Validated shortlist data is unavailable right now.</div></section>';
     return;
   }
-  const xs=v2SurfaceCandidates();
+  const early=v2SurfaceCandidates('Early Watch');
+  const recovery=v2SurfaceCandidates('Recovery');
   const generated=state.v2?.generatedAt?new Date(state.v2.generatedAt).toLocaleString():'';
   root.innerHTML=`
     <section class="stage">
       <div class="stage-head"><div class="stage-main"><div class="stage-copy">
         <h2>Early Watch Shortlist</h2>
-        <p>Only charts that cleared the validated Review First threshold. No quota; the list can be empty.</p>
+        <p>Only charts that cleared the validated Early Watch Review First threshold. No quota; the list can be empty.</p>
         ${generated?`<p>Research scan updated ${generated}</p>`:''}
-      </div></div><span class="shown">${xs.length}</span></div>
-      <div class="grid">${xs.length?xs.map(v2EarlyWatchCard).join(''):'<div class="empty">No Early Watch chart clears the final review threshold today. Doing nothing is a valid output.</div>'}</div>
+      </div></div><span class="shown">${early.length}</span></div>
+      <div class="grid">${early.length?early.map(v2EarlyWatchCard).join(''):'<div class="empty">No Early Watch chart clears the final review threshold today. Doing nothing is a valid output.</div>'}</div>
+    </section>
+    <section class="stage">
+      <div class="stage-head"><div class="stage-main"><div class="stage-copy">
+        <h2>Recovery Shortlist</h2>
+        <p>Fresh Recovery only: Review First, anti-chase ordering, stage age 0–2, maximum six. Older Recovery setups stay in backend but are hidden here.</p>
+      </div></div><span class="shown">${recovery.length}</span></div>
+      <div class="grid">${recovery.length?recovery.map(v2RecoveryCard).join(''):'<div class="empty">No fresh Recovery setup clears the final surface policy today.</div>'}</div>
     </section>`;
   bindCardActions('#top5Content');
 }
