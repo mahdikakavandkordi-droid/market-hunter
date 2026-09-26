@@ -93,6 +93,9 @@ function evidenceSlices(stage,a){
   ];
   if(stage==='Recovery')return [
     one('minorHighBroken',x=>x.features.highBroken===true),
+    one('freshMinorHighBreak<=1',x=>Number.isFinite(x.features.freshHighBreakAge)&&x.features.freshHighBreakAge<=1),
+    one('freshMinorHighBreak<=2',x=>Number.isFinite(x.features.freshHighBreakAge)&&x.features.freshHighBreakAge<=2),
+    one('freshMinorHighBreak<=3',x=>Number.isFinite(x.features.freshHighBreakAge)&&x.features.freshHighBreakAge<=3),
     one('momentumShift>=2',x=>Number.isFinite(x.features.momentumShift)&&x.features.momentumShift>=2),
     one('freshReclaim<=5',x=>Number.isFinite(x.features.freshReclaimAge)&&x.features.freshReclaimAge<=5),
     one('absDist20<=3',x=>Number.isFinite(x.features.dist20)&&Math.abs(x.features.dist20)<=3),
@@ -119,6 +122,7 @@ function evidenceSlices(stage,a){
 
 function recoveryStructureDiagnostic(a){
   const broken=e=>e.features.highBroken===true;
+  const freshBreak=e=>Number.isFinite(e.features.freshHighBreakAge)?e.features.freshHighBreakAge:null;
   const higherLow=e=>e.features.higherLow===true;
   const improving=e=>['Structure improving','Higher highs + higher lows'].includes(e.features.swingTrend);
   const strongMomentum=e=>Number.isFinite(e.features.momentumShift)&&e.features.momentumShift>=2;
@@ -134,7 +138,13 @@ function recoveryStructureDiagnostic(a){
     breakWithSupport:e=>broken(e)&&(strongMomentum(e)||rs0(e)||volSupport(e)),
     currentReviewFirst:e=>review(e),
     reviewFirstAndBreak:e=>review(e)&&broken(e),
-    reviewFirstAndBreakWithSupport:e=>review(e)&&broken(e)&&(strongMomentum(e)||rs0(e)||volSupport(e))
+    reviewFirstAndBreakWithSupport:e=>review(e)&&broken(e)&&(strongMomentum(e)||rs0(e)||volSupport(e)),
+    freshBreak1:e=>Number.isFinite(freshBreak(e))&&freshBreak(e)<=1,
+    freshBreak2:e=>Number.isFinite(freshBreak(e))&&freshBreak(e)<=2,
+    freshBreak3:e=>Number.isFinite(freshBreak(e))&&freshBreak(e)<=3,
+    reviewFirstFreshBreak1:e=>review(e)&&Number.isFinite(freshBreak(e))&&freshBreak(e)<=1,
+    reviewFirstFreshBreak2:e=>review(e)&&Number.isFinite(freshBreak(e))&&freshBreak(e)<=2,
+    reviewFirstFreshBreak3:e=>review(e)&&Number.isFinite(freshBreak(e))&&freshBreak(e)<=3
   };
 
   const pack=rows=>{
@@ -267,7 +277,7 @@ for(const symbol of symbols){
         const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
         const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
         recoverySurfaceReplayCandidates.push({
-          symbol,date,horizon:h,score:round(score,1),highBroken:m.highBroken===true,
+          symbol,date,horizon:h,score:round(score,1),highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge,
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
           ret5:round(m.ret5),ret20:round(m.ret20),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
@@ -299,7 +309,7 @@ for(const symbol of symbols){
     const features={
       freshReclaimAge:m.freshReclaimAge,sellingFading:m.sellingFading,downsideDecel:m.downsideDecel,volumeShockNearLow:m.volumeShockNearLow,
       momentumShift:round(m.momentumShift),rs20:round(m.rs20),rs60:round(m.rs60),upDownVolumeRatio:round(m.upDownVolumeRatio,2),swingTrend:m.swingTrend,
-      higherLow:m.higherLow,highBroken:m.highBroken,lowBroken:m.lowBroken,localHigh:round(m.localHigh),localLow:round(m.localLow),
+      higherLow:m.higherLow,highBroken:m.highBroken,freshHighBreakAge:m.freshHighBreakAge,lowBroken:m.lowBroken,localHigh:round(m.localHigh),localLow:round(m.localLow),
       dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),atr14Pct:round(m.atr14Pct),
       ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),ma20Slope5:round(m.ma20Slope5),ma50Slope10:round(m.ma50Slope10),rsi14:round(m.rsi14,1)
     };

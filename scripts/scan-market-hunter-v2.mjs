@@ -78,7 +78,7 @@ for(const symbol of symbols){
     dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),avgDollar20:round(m.avgDollar20),
     momentumShift:round(m.momentumShift),upDownVolumeRatio:round(m.upDownVolumeRatio,2),
     downsideDecel:m.downsideDecel,volumeShockNearLow:m.volumeShockNearLow,sellingFading:m.sellingFading,
-    freshReclaimAge:m.freshReclaimAge,maxRvol5:round(m.maxRvol5,2),
+    freshReclaimAge:m.freshReclaimAge,freshHighBreakAge:m.freshHighBreakAge,maxRvol5:round(m.maxRvol5,2),
     swingTrend:m.swingTrend,higherLow:m.higherLow,localLow:round(m.localLow),localHigh:round(m.localHigh),
     lowBroken:m.lowBroken,highBroken:m.highBroken,
     evidence:evidence(m,stage)
