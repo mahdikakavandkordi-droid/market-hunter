@@ -1,9 +1,34 @@
 {
-  "version": "market-pulse-report-v0.1-2026-09-26",
+  "version": "market-pulse-report-v0.2-2026-09-26",
   "sourceVersion": "market-pulse-v0.1-2026-09-26",
-  "generatedAt": "2026-09-26T17:14:45.834Z",
+  "generatedAt": "2026-09-26T17:28:12.450Z",
   "status": "research",
-  "note": "Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal.",
+  "analogPolicy": {
+    "exactMinimum": {
+      "overall": 100,
+      "recent": 30
+    },
+    "familyRegimes": [
+      "Bullish",
+      "Mixed",
+      "Bearish"
+    ],
+    "familyConditions": [
+      "Advance",
+      "Pullback",
+      "Extended",
+      "Recovery",
+      "Weak / Range"
+    ],
+    "fallbackOrder": [
+      "Exact State",
+      "State Family",
+      "Regime",
+      "Condition",
+      "Market Baseline"
+    ]
+  },
+  "note": "Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal. Historical analog confidence automatically falls back to broader families when exact-state samples are sparse.",
   "crossMarketRead": {
     "headline": "Risk-on but uneven: U.S. equities and crypto retain strong primary trends while Canada lags and metals are not confirming. Precious metals are currently in a weakening short-term phase.",
     "groups": [
@@ -39,7 +64,13 @@
       "historicalAnalog": {
         "5": {
           "label": "Historically Weaker",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 301,
+            "recent": 91
+          },
           "stateOverall": {
             "n": 301,
             "mean": 0.06,
@@ -97,7 +128,13 @@
         },
         "10": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 301,
+            "recent": 91
+          },
           "stateOverall": {
             "n": 301,
             "mean": 0.11,
@@ -155,7 +192,13 @@
         },
         "20": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 301,
+            "recent": 91
+          },
           "stateOverall": {
             "n": 301,
             "mean": 0.86,
@@ -212,7 +255,7 @@
           }
         }
       },
-      "outlook": "Momentum and structure are weakening, but similar recent states have still produced positive forward returns. This is better framed as a damaged/uncertain setup than a clean bearish call.",
+      "outlook": "Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.",
       "watchNext": "bullish continuation above 36410.6 · trend warning near 35959.14 · structure risk below 35722.",
       "levels": {
         "support": 35722,
@@ -301,7 +344,13 @@
       "historicalAnalog": {
         "5": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Breakout / Near High",
           "confidence": "High",
+          "sample": {
+            "overall": 675,
+            "recent": 203
+          },
           "stateOverall": {
             "n": 675,
             "mean": 0.18,
@@ -359,7 +408,13 @@
         },
         "10": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Breakout / Near High",
           "confidence": "High",
+          "sample": {
+            "overall": 675,
+            "recent": 203
+          },
           "stateOverall": {
             "n": 675,
             "mean": 0.38,
@@ -417,7 +472,13 @@
         },
         "20": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Breakout / Near High",
           "confidence": "High",
+          "sample": {
+            "overall": 675,
+            "recent": 203
+          },
           "stateOverall": {
             "n": 675,
             "mean": 0.7,
@@ -474,7 +535,7 @@
           }
         }
       },
-      "outlook": "Trend is strong, but near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.",
+      "outlook": "Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.",
       "watchNext": "bullish continuation above 7756.76 · trend warning near 7672.48 · structure risk below 7717.25.",
       "levels": {
         "support": 7717.25,
@@ -566,7 +627,13 @@
       "historicalAnalog": {
         "5": {
           "label": "Historically Weaker",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Breakout / Near High",
           "confidence": "High",
+          "sample": {
+            "overall": 528,
+            "recent": 159
+          },
           "stateOverall": {
             "n": 528,
             "mean": 0.2,
@@ -624,7 +691,13 @@
         },
         "10": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Breakout / Near High",
           "confidence": "High",
+          "sample": {
+            "overall": 528,
+            "recent": 159
+          },
           "stateOverall": {
             "n": 528,
             "mean": 0.53,
@@ -682,7 +755,13 @@
         },
         "20": {
           "label": "Historically Weaker",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Breakout / Near High",
           "confidence": "High",
+          "sample": {
+            "overall": 528,
+            "recent": 159
+          },
           "stateOverall": {
             "n": 528,
             "mean": 0.91,
@@ -739,7 +818,7 @@
           }
         }
       },
-      "outlook": "Trend is strong, but near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.",
+      "outlook": "Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.",
       "watchNext": "bullish continuation above 30642.57 · trend warning near 29620.59 · structure risk below 29604.93.",
       "levels": {
         "support": 29604.93,
@@ -831,7 +910,13 @@
       "historicalAnalog": {
         "5": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 361,
+            "recent": 109
+          },
           "stateOverall": {
             "n": 361,
             "mean": 0.57,
@@ -889,7 +974,13 @@
         },
         "10": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 361,
+            "recent": 109
+          },
           "stateOverall": {
             "n": 361,
             "mean": 0.84,
@@ -947,7 +1038,13 @@
         },
         "20": {
           "label": "Long-term Favorable · Recent Weaker",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 361,
+            "recent": 109
+          },
           "stateOverall": {
             "n": 361,
             "mean": 1.34,
@@ -1004,7 +1101,7 @@
           }
         }
       },
-      "outlook": "Momentum and structure are weakening and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.",
+      "outlook": "Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.",
       "watchNext": "bullish continuation above 4403.6 · trend warning near 4407.47 · structure risk below 4273.3.",
       "levels": {
         "support": 4273.3,
@@ -1093,7 +1190,13 @@
       "historicalAnalog": {
         "5": {
           "label": "Historically Favorable",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 362,
+            "recent": 109
+          },
           "stateOverall": {
             "n": 362,
             "mean": 0.58,
@@ -1151,7 +1254,13 @@
         },
         "10": {
           "label": "Historically Favorable",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 362,
+            "recent": 109
+          },
           "stateOverall": {
             "n": 362,
             "mean": 1.12,
@@ -1209,7 +1318,13 @@
         },
         "20": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Mixed | Weakening",
           "confidence": "High",
+          "sample": {
+            "overall": 362,
+            "recent": 109
+          },
           "stateOverall": {
             "n": 362,
             "mean": 0.87,
@@ -1266,7 +1381,7 @@
           }
         }
       },
-      "outlook": "Momentum and structure are weakening, but similar recent states have still produced positive forward returns. This is better framed as a damaged/uncertain setup than a clean bearish call.",
+      "outlook": "Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.",
       "watchNext": "bullish continuation above 66.65 · trend warning near 65.28 · structure risk below 63.74.",
       "levels": {
         "support": 63.74,
@@ -1356,7 +1471,13 @@
       "historicalAnalog": {
         "5": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Pullback",
           "confidence": "Moderate",
+          "sample": {
+            "overall": 124,
+            "recent": 38
+          },
           "stateOverall": {
             "n": 124,
             "mean": 1.33,
@@ -1414,7 +1535,13 @@
         },
         "10": {
           "label": "Long-term Favorable · Recent Weaker",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Pullback",
           "confidence": "Moderate",
+          "sample": {
+            "overall": 124,
+            "recent": 38
+          },
           "stateOverall": {
             "n": 124,
             "mean": 2.53,
@@ -1472,7 +1599,13 @@
         },
         "20": {
           "label": "Mixed / Near Baseline",
+          "analogLevel": "Exact State",
+          "analogKey": "Strong Bull | Pullback",
           "confidence": "Moderate",
+          "sample": {
+            "overall": 124,
+            "recent": 38
+          },
           "stateOverall": {
             "n": 124,
             "mean": 5.67,
@@ -1619,27 +1752,33 @@
       "whereWeAre": "Strong Bull / Pullback · Daily Strong Up · Weekly Up · Higher highs + higher lows.",
       "historicalAnalog": {
         "5": {
-          "label": "Mixed / Near Baseline",
-          "confidence": "Low",
+          "label": "Historically Favorable",
+          "analogLevel": "State Family",
+          "analogKey": "Bullish | Pullback",
+          "confidence": "High",
+          "sample": {
+            "overall": 232,
+            "recent": 71
+          },
           "stateOverall": {
-            "n": 77,
-            "mean": 0.84,
-            "median": -1.66,
-            "positiveRate": 42.9,
-            "avgMAE": -4.01,
-            "avgMFE": 4.34,
-            "hitPlus5": 32.5,
-            "hitMinus5": 36.4
+            "n": 232,
+            "mean": 1.94,
+            "median": null,
+            "positiveRate": 55.6,
+            "avgMAE": -2.71,
+            "avgMFE": 5.16,
+            "hitPlus5": 44.9,
+            "hitMinus5": 24.6
           },
           "stateRecent": {
-            "n": 24,
-            "mean": -3.38,
-            "median": -4.12,
-            "positiveRate": 25,
-            "avgMAE": -5.27,
-            "avgMFE": 1.22,
-            "hitPlus5": 16.7,
-            "hitMinus5": 50
+            "n": 71,
+            "mean": 1.5,
+            "median": null,
+            "positiveRate": 56.3,
+            "avgMAE": -2.26,
+            "avgMFE": 4.25,
+            "hitPlus5": 40.9,
+            "hitMinus5": 22.5
           },
           "baselineOverall": {
             "n": 3004,
@@ -1663,41 +1802,47 @@
           },
           "lift": {
             "overall": {
-              "meanLift": 0.13,
-              "positiveRateLift": -9.2,
-              "maeDelta": -0.33,
-              "mfeDelta": -0.18
+              "meanLift": 1.23,
+              "positiveRateLift": 3.5,
+              "maeDelta": 0.97,
+              "mfeDelta": 0.64
             },
             "recent": {
-              "meanLift": -3.53,
-              "positiveRateLift": -23.8,
-              "maeDelta": -1.86,
-              "mfeDelta": -2.46
+              "meanLift": 1.35,
+              "positiveRateLift": 7.5,
+              "maeDelta": 1.15,
+              "mfeDelta": 0.57
             }
           }
         },
         "10": {
-          "label": "Long-term Favorable · Recent Weaker",
-          "confidence": "Low",
+          "label": "Mixed / Near Baseline",
+          "analogLevel": "State Family",
+          "analogKey": "Bullish | Pullback",
+          "confidence": "High",
+          "sample": {
+            "overall": 232,
+            "recent": 71
+          },
           "stateOverall": {
-            "n": 77,
-            "mean": 4.94,
-            "median": 2.14,
-            "positiveRate": 54.5,
-            "avgMAE": -5.79,
-            "avgMFE": 9.77,
-            "hitPlus5": 48.1,
-            "hitMinus5": 50.6
+            "n": 232,
+            "mean": 2.6,
+            "median": null,
+            "positiveRate": 49.6,
+            "avgMAE": -5.47,
+            "avgMFE": 9.17,
+            "hitPlus5": 62.1,
+            "hitMinus5": 40.5
           },
           "stateRecent": {
-            "n": 24,
-            "mean": -2.74,
-            "median": -5.08,
-            "positiveRate": 33.3,
-            "avgMAE": -8.6,
-            "avgMFE": 3.61,
-            "hitPlus5": 25,
-            "hitMinus5": 75
+            "n": 71,
+            "mean": 1.02,
+            "median": null,
+            "positiveRate": 47.9,
+            "avgMAE": -4.61,
+            "avgMFE": 6.9,
+            "hitPlus5": 56.3,
+            "hitMinus5": 39.5
           },
           "baselineOverall": {
             "n": 3004,
@@ -1721,41 +1866,47 @@
           },
           "lift": {
             "overall": {
-              "meanLift": 3.45,
-              "positiveRateLift": 1.9,
-              "maeDelta": 0.43,
-              "mfeDelta": 1.77
+              "meanLift": 1.11,
+              "positiveRateLift": -3,
+              "maeDelta": 0.75,
+              "mfeDelta": 1.17
             },
             "recent": {
-              "meanLift": -3,
-              "positiveRateLift": -12.8,
-              "maeDelta": -2.79,
-              "mfeDelta": -2.74
+              "meanLift": 0.76,
+              "positiveRateLift": 1.8,
+              "maeDelta": 1.2,
+              "mfeDelta": 0.55
             }
           }
         },
         "20": {
-          "label": "Mixed / Near Baseline",
-          "confidence": "Low",
+          "label": "Long-term Favorable · Recent Weaker",
+          "analogLevel": "State Family",
+          "analogKey": "Bullish | Pullback",
+          "confidence": "High",
+          "sample": {
+            "overall": 232,
+            "recent": 71
+          },
           "stateOverall": {
-            "n": 77,
-            "mean": 10.24,
-            "median": 4.32,
-            "positiveRate": 64.9,
-            "avgMAE": -8.04,
-            "avgMFE": 19.7,
-            "hitPlus5": 66.2,
-            "hitMinus5": 57.1
+            "n": 232,
+            "mean": 6.49,
+            "median": null,
+            "positiveRate": 53.9,
+            "avgMAE": -8.15,
+            "avgMFE": 16.37,
+            "hitPlus5": 75.4,
+            "hitMinus5": 54.3
           },
           "stateRecent": {
-            "n": 24,
-            "mean": -0.61,
-            "median": -0.68,
-            "positiveRate": 45.8,
-            "avgMAE": -9.02,
-            "avgMFE": 6.95,
-            "hitPlus5": 41.7,
-            "hitMinus5": 75
+            "n": 71,
+            "mean": 0.45,
+            "median": null,
+            "positiveRate": 43.7,
+            "avgMAE": -7.04,
+            "avgMFE": 9.84,
+            "hitPlus5": 67.6,
+            "hitMinus5": 59.2
           },
           "baselineOverall": {
             "n": 3004,
@@ -1779,21 +1930,21 @@
           },
           "lift": {
             "overall": {
-              "meanLift": 7.04,
-              "positiveRateLift": 14.3,
-              "maeDelta": 1.64,
-              "mfeDelta": 6.02
+              "meanLift": 3.29,
+              "positiveRateLift": 3.3,
+              "maeDelta": 1.53,
+              "mfeDelta": 2.69
             },
             "recent": {
-              "meanLift": -1.29,
-              "positiveRateLift": 0.6,
-              "maeDelta": 0.2,
-              "mfeDelta": -3.4
+              "meanLift": -0.23,
+              "positiveRateLift": -1.5,
+              "maeDelta": 2.18,
+              "mfeDelta": -0.51
             }
           }
         }
       },
-      "outlook": "Primary trend remains constructive, but recent historical pullback analogs have been weaker than the market's normal baseline. Treat this as an intact trend with elevated continuation risk, not an automatic rebound signal.",
+      "outlook": "Primary trend remains constructive and recent pullback analogs have generally held up better than baseline. Continuation is supported historically, but confirmation still matters.",
       "watchNext": "bullish continuation above 2805.5 · trend warning near 2567 · structure risk below 2628.69.",
       "levels": {
         "support": 2628.69,
