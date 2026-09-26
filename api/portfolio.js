@@ -1,4 +1,7 @@
 import {metrics,classify} from '../lib/market-hunter-v2-engine.js';
+import {UNIVERSE} from '../lib/universe.js';
+
+const UNIVERSE_META=new Map(UNIVERSE.map(([symbol,name,sector])=>[symbol,{name,sector}]));
 
 const CDR_BENCHMARK={
   'AAPL.TO':'^IXIC','MSFT.TO':'^IXIC','NVDA.TO':'^IXIC','AMZN.TO':'^IXIC',
@@ -53,9 +56,9 @@ export default async function handler(req,res){
       if(!bench){failures.push({symbol,reason:'benchmark_unavailable'});return}
       const m=metrics(r.value.rows,bench);
       if(!m){failures.push({symbol,reason:'insufficient_history'});return}
-      const stage=classify(m);
+      const stage=classify(m),meta=UNIVERSE_META.get(symbol)||{};
       items.push({
-        symbol,price:m.last,currency:r.value.currency,benchmark,
+        symbol,name:meta.name||symbol,sector:meta.sector||null,price:m.last,currency:r.value.currency,benchmark,
         stage:stage||null,
         ret5:m.ret5,ret20:m.ret20,ret60:m.ret60,
         momentumShift:m.momentumShift,rs20:m.rs20,rs60:m.rs60,rsi14:m.rsi14,atr14Pct:m.atr14Pct,
