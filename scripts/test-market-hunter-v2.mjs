@@ -75,6 +75,7 @@ assert.equal(priorityBand('Unknown',99),'Stage Member');
 assert.equal(SURFACE_POLICY['Early Watch'].maxVisible,6);
 assert.equal(SURFACE_POLICY['Recovery'].maxStageAge,2);
 assert.equal(SURFACE_POLICY['Attractive Growth'].maxVisible,6);
+assert.equal(SURFACE_POLICY['Established Move'].minScore,60);
 assert.equal(surfaceEligible('Early Watch',PRIORITY_FLOORS['Early Watch'].reviewFirst-0.1),false);
 assert.equal(surfaceEligible('Early Watch',PRIORITY_FLOORS['Early Watch'].reviewFirst),true);
 assert.equal(surfaceEligible('Recovery',PRIORITY_FLOORS['Recovery'].reviewFirst,{stageAge:0}),true);
@@ -102,6 +103,13 @@ const attractiveSurfaced=surfaceSelect('Attractive Growth',[
   {symbol:'H',score:63}
 ]);
 assert.deepEqual(attractiveSurfaced.map(x=>x.symbol),['D','E','A','F','G','H']);
+assert.equal(surfaceEligible('Established Move',59.9,{stageAge:0}),false);
+assert.equal(surfaceEligible('Established Move',60,{stageAge:0}),true);
+const establishedSurfaced=surfaceSelect('Established Move',[
+  {symbol:'A',score:68},{symbol:'B',score:61.6},{symbol:'C',score:59.9},{symbol:'D',score:70},
+  {symbol:'E',score:65},{symbol:'F',score:64},{symbol:'G',score:63},{symbol:'H',score:62}
+]);
+assert.deepEqual(establishedSurfaced.map(x=>x.symbol),['D','A','E','F','G','H']);
 
 assert.equal(reviewLane('Attractive Growth',PRIORITY_FLOORS['Attractive Growth'].reviewFirst,m({dist20:8})),'High Intensity');
 assert.equal(reviewLane('Established Move',PRIORITY_FLOORS['Established Move'].reviewFirst,m({rsi14:80})),'High Intensity');
