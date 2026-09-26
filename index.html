@@ -243,6 +243,15 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .brief-title{font-size:11px;font-weight:800;margin-bottom:5px}.brief-title span{font-size:8px;font-weight:500;color:var(--muted);margin-left:6px}.hunter-brief>p{font-size:10px;line-height:1.5;margin:0 0 7px;color:var(--text)}
 .brief-row{display:grid;grid-template-columns:105px 1fr;gap:7px;padding:4px 0;border-top:1px solid rgba(255,255,255,.045)}.brief-row small,.brief-check small{font-size:8px;color:var(--muted)}.brief-row b,.brief-check b{font-size:9px;line-height:1.45;font-weight:600}
 .brief-check{margin-top:7px;padding:8px;border-radius:8px;background:rgba(255,255,255,.035)}.brief-check small{display:block;margin-bottom:3px}.brief-check b{display:block}
+
+.pulse-panel{margin:0 0 18px;padding:16px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.025)}
+.pulse-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}.pulse-head h2{margin:0 0 5px;font-size:16px}.pulse-head p{margin:0;color:var(--muted);font-size:10px;line-height:1.55;max-width:860px}
+.pulse-groups{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 14px}.pulse-group{padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.04);font-size:9px;color:var(--muted)}.pulse-group b{display:block;color:var(--text);font-size:10px;margin-top:2px}
+.pulse-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.pulse-card{padding:11px;border-radius:12px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.12)}.pulse-card summary{cursor:pointer;list-style:none}.pulse-card summary::-webkit-details-marker{display:none}
+.pulse-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.pulse-name{font-size:12px;font-weight:700}.pulse-price{font-size:12px;font-weight:700;text-align:right}.pulse-meta{font-size:8px;color:var(--muted);margin-top:2px}
+.pulse-state{font-size:9px;margin:8px 0 7px;line-height:1.45}.pulse-state b{display:block;font-size:10px}.pulse-returns{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.pulse-return{padding:5px;border-radius:7px;background:rgba(255,255,255,.035);text-align:center}.pulse-return small{display:block;font-size:7px;color:var(--muted)}.pulse-return b{font-size:9px}
+.pulse-detail{padding-top:9px;margin-top:9px;border-top:1px solid rgba(255,255,255,.06);font-size:9px;line-height:1.55;color:var(--muted)}.pulse-detail strong{color:var(--text)}.pulse-analog{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:7px 0}.pulse-analog div{padding:6px;border-radius:7px;background:rgba(255,255,255,.035)}.pulse-analog small{display:block;font-size:7px;color:var(--muted)}.pulse-analog b{display:block;font-size:8px;color:var(--text);margin-top:2px}
+@media(max-width:900px){.pulse-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.pulse-grid{grid-template-columns:1fr}.pulse-head{display:block}.pulse-groups{margin-top:12px}}
 </style>
 </head>
 <body>
@@ -298,7 +307,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={data:null,v2:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
+const state={data:null,v2:null,marketPulse:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
 function normalizeV2Candidate(x,stage=x.stage){
   return {
     ...x,
@@ -454,6 +463,51 @@ function behaviorSummary(symbol){
   return {count:recent.length,text:changes.length?changes.join(' · '):`${recent.length} saved session${recent.length===1?'':'s'} · no material recorded change yet`,rows:recent};
 }
 
+function pulseToneClass(regime,condition){
+  if(regime==='Strong Bull'||regime==='Bull')return 'up';
+  if(regime==='Strong Bear'||regime==='Bear'||condition==='Weakening')return 'down';
+  return 'flat';
+}
+function pulseAnalogLabel(a){
+  if(!a)return '—';
+  return a.label+(a.confidence?' · '+a.confidence:'');
+}
+function renderPulse(){
+  const p=state.marketPulse;
+  if(!p)return '<div class="pulse-panel"><div class="pulse-head"><div><h2>Market Pulse</h2><p>Cross-market report is not available yet.</p></div></div></div>';
+  const groups=(p.crossMarketRead?.groups||[]).map(g=>`<div class="pulse-group">${g.label}<b>${g.state}</b></div>`).join('');
+  const cards=(p.markets||[]).map(m=>{
+    const r=m.current?.returns||{},tone=pulseToneClass(m.regime,m.condition),a=m.historicalAnalog||{};
+    return `<details class="pulse-card">
+      <summary>
+        <div class="pulse-card-top"><div><div class="pulse-name">${m.name}</div><div class="pulse-meta">${m.regime} · ${m.condition}</div></div><div class="pulse-price">${fmt(m.price)}<div class="pulse-meta">${m.asOf||''}</div></div></div>
+        <div class="pulse-state ${tone}"><b>${m.regime}</b>${m.condition}</div>
+        <div class="pulse-returns">
+          <div class="pulse-return"><small>1D</small><b class="${cls(r.d1)}">${pct(r.d1)}</b></div>
+          <div class="pulse-return"><small>5D</small><b class="${cls(r.d5)}">${pct(r.d5)}</b></div>
+          <div class="pulse-return"><small>20D</small><b class="${cls(r.d20)}">${pct(r.d20)}</b></div>
+        </div>
+      </summary>
+      <div class="pulse-detail">
+        <div><strong>What happened</strong><br>${m.whatHappened}</div>
+        <div style="margin-top:6px"><strong>Where we are</strong><br>${m.whereWeAre}</div>
+        <div class="pulse-analog">
+          <div><small>5 sessions</small><b>${pulseAnalogLabel(a['5'])}</b></div>
+          <div><small>10 sessions</small><b>${pulseAnalogLabel(a['10'])}</b></div>
+          <div><small>20 sessions</small><b>${pulseAnalogLabel(a['20'])}</b></div>
+        </div>
+        <div><strong>Outlook</strong><br>${m.outlook}</div>
+        <div style="margin-top:6px"><strong>Watch next</strong><br>${m.watchNext}</div>
+      </div>
+    </details>`;
+  }).join('');
+  return `<div class="pulse-panel">
+    <div class="pulse-head"><div><h2>Market Pulse</h2><p>${p.crossMarketRead?.headline||'Cross-market context'}<br><span style="opacity:.7">Scenario framing from historical analogs; not a price target or buy/sell signal.</span></p></div><span class="shown">${(p.markets||[]).length}</span></div>
+    <div class="pulse-groups">${groups}</div>
+    <div class="pulse-grid">${cards}</div>
+  </div>`;
+}
+
 function renderMarket(){
   const d=state.data;if(!d)return;
   const canada=['TSX','TSX Venture'];
@@ -542,6 +596,7 @@ function renderMarket(){
   const narrative=mc.narrative||'Market regime is based on trend and recent index momentum.';
 
   document.querySelector('#marketContent').innerHTML=`
+    ${renderPulse()}
     <div class="regime-brief">
       <div class="regime-brief-top"><h2>Today's Market Read</h2><span class="regime-date">Market data · ${d.marketAsOf||'—'}</span></div>
       <div class="regime-sentence">${mc.narrative||'Market summary is not available yet.'}</div>
@@ -1218,11 +1273,12 @@ async function load(){
   app.classList.add('loading');err.style.display='none';
   try{
     const min=document.querySelector('#liq').value;
-    const [scanRes,historyRes,backtestRes,v2Res]=await Promise.allSettled([
+    const [scanRes,historyRes,backtestRes,v2Res,pulseRes]=await Promise.allSettled([
       fetch(`/api/scan?minDollar=${min}`,{cache:'no-store'}),
       fetch('/data/history.json',{cache:'no-store'}),
       fetch('/data/backtest.json',{cache:'no-store'}),
-      fetch('/data/v2-latest-scan.json',{cache:'no-store'})
+      fetch('/data/v2-latest-scan.json',{cache:'no-store'}),
+      fetch('/data/market-pulse-report.json',{cache:'no-store'})
     ]);
     if(scanRes.status!=='fulfilled') throw scanRes.reason;
     const r=scanRes.value;
@@ -1234,6 +1290,7 @@ async function load(){
     } else state.history={snapshots:[]};
     if(backtestRes.status==='fulfilled'&&backtestRes.value.ok){try{state.backtest=await backtestRes.value.json()}catch{state.backtest=null}}else state.backtest=null;
     if(v2Res.status==='fulfilled'&&v2Res.value.ok){try{state.v2=await v2Res.value.json()}catch{state.v2=null}}else state.v2=null;
+    if(pulseRes.status==='fulfilled'&&pulseRes.value.ok){try{state.marketPulse=await pulseRes.value.json()}catch{state.marketPulse=null}}else state.marketPulse=null;
     render();
   }catch(e){
     err.textContent=`Could not complete scan: ${e.message}`;
