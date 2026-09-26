@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
 
-const VERSION='market-hunter-v2-rebuild-h1-2026-09-26';
+const VERSION='market-hunter-v2-rebuild-h1d1-2026-09-26';
 const ASSUMPTIONS=Object.freeze({
   purpose:'Discovery scanner: which chart should be opened first, not a buy/sell signal.',
   universe:'Canadian-listed instruments from reviewed universe; CAD only by construction.',
@@ -229,17 +229,44 @@ function rankingReport(a){
   const pack=x=>Object.fromEntries(['Top','Middle','Lower'].map(k=>[k,summary(x.filter(e=>bucket(e)===k))]));
   return {cutDate:sp.cut,trainThresholds:{q33:round(q33,1),q67:round(q67,1)},train:pack(sp.train),test:pack(sp.test)};
 }
-function earlySlices(a){
+function evidenceSlices(stage,a){
   const one=(name,f)=>({name,yes:summary(a.filter(f)),no:summary(a.filter(x=>!f(x)))});
-  return [
+  const common=[
+    one('rs20>=0',x=>Number.isFinite(x.features.rs20)&&x.features.rs20>=0),
+    one('upDownVolume>=0.85',x=>Number.isFinite(x.features.upDownVolumeRatio)&&x.features.upDownVolumeRatio>=.85),
+    one('higherLow',x=>x.features.higherLow===true),
+    one('structureImproving',x=>['Structure improving','Higher highs + higher lows'].includes(x.features.swingTrend)),
+    one('atr<6',x=>Number.isFinite(x.features.atr14Pct)&&x.features.atr14Pct<6)
+  ];
+  if(stage==='Early Watch')return [
     one('freshReclaim<=3',x=>Number.isFinite(x.features.freshReclaimAge)&&x.features.freshReclaimAge<=3),
     one('sellingFading',x=>x.features.sellingFading===true),
     one('downsideDecel',x=>x.features.downsideDecel===true),
     one('volumeShockNearLow',x=>x.features.volumeShockNearLow===true),
     one('momentumPositive',x=>Number.isFinite(x.features.momentumShift)&&x.features.momentumShift>0),
-    one('rs20Positive',x=>Number.isFinite(x.features.rs20)&&x.features.rs20>=0),
-    one('upDownVolume>=0.85',x=>Number.isFinite(x.features.upDownVolumeRatio)&&x.features.upDownVolumeRatio>=.85),
-    one('structureImproving',x=>['Structure improving','Higher highs + higher lows'].includes(x.features.swingTrend))
+    ...common
+  ];
+  if(stage==='Recovery')return [
+    one('momentumShift>=2',x=>Number.isFinite(x.features.momentumShift)&&x.features.momentumShift>=2),
+    one('freshReclaim<=5',x=>Number.isFinite(x.features.freshReclaimAge)&&x.features.freshReclaimAge<=5),
+    one('absDist20<=3',x=>Number.isFinite(x.features.dist20)&&Math.abs(x.features.dist20)<=3),
+    ...common
+  ];
+  if(stage==='Attractive Growth')return [
+    one('rs20>=4',x=>Number.isFinite(x.features.rs20)&&x.features.rs20>=4),
+    one('rs60>=0',x=>Number.isFinite(x.features.rs60)&&x.features.rs60>=0),
+    one('dist20>=6',x=>Number.isFinite(x.features.dist20)&&x.features.dist20>=6),
+    one('ret20>=8',x=>Number.isFinite(x.features.ret20)&&x.features.ret20>=8),
+    one('ma20Slope5>=1',x=>Number.isFinite(x.features.ma20Slope5)&&x.features.ma20Slope5>=1),
+    ...common
+  ];
+  return [
+    one('rs20>=4',x=>Number.isFinite(x.features.rs20)&&x.features.rs20>=4),
+    one('rs60>=8',x=>Number.isFinite(x.features.rs60)&&x.features.rs60>=8),
+    one('dist20>=6',x=>Number.isFinite(x.features.dist20)&&x.features.dist20>=6),
+    one('ret60>=20',x=>Number.isFinite(x.features.ret60)&&x.features.ret60>=20),
+    one('ma50Slope10>=1',x=>Number.isFinite(x.features.ma50Slope10)&&x.features.ma50Slope10>=1),
+    ...common
   ];
 }
 
@@ -268,8 +295,9 @@ for(const symbol of symbols){
     if(!episodeStart)continue;
     const features={
       freshReclaimAge:m.freshReclaimAge,sellingFading:m.sellingFading,downsideDecel:m.downsideDecel,volumeShockNearLow:m.volumeShockNearLow,
-      momentumShift:round(m.momentumShift),rs20:round(m.rs20),upDownVolumeRatio:round(m.upDownVolumeRatio,2),swingTrend:m.swingTrend,
-      higherLow:m.higherLow,dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),atr14Pct:round(m.atr14Pct)
+      momentumShift:round(m.momentumShift),rs20:round(m.rs20),rs60:round(m.rs60),upDownVolumeRatio:round(m.upDownVolumeRatio,2),swingTrend:m.swingTrend,
+      higherLow:m.higherLow,dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),atr14Pct:round(m.atr14Pct),
+      ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),ma20Slope5:round(m.ma20Slope5),ma50Slope10:round(m.ma50Slope10)
     };
     for(const h of horizons){
       const entry=rows[i].close,window=rows.slice(i+1,i+h+1),path=window.map(x=>pct(x.close,entry)).filter(Number.isFinite);
@@ -313,7 +341,7 @@ for(const h of horizons){
     const sp=splitChron(x);
     report.horizons[h].byStage[stage]={
       overall:summary(x),train:summary(sp.train),test:summary(sp.test),ranking:rankingReport(x),
-      earlyEvidence:stage==='Early Watch'?earlySlices(x):undefined
+      evidence:evidenceSlices(stage,x)
     };
   }
 }
