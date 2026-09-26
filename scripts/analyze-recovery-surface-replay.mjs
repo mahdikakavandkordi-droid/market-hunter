@@ -16,22 +16,29 @@ const dates=[...new Set(reports.flatMap(r=>r.recoverySurfaceReplay?.dates||[]))]
 const candidates=reports.flatMap(r=>r.recoverySurfaceReplay?.candidates||[]);
 const horizons=[5,10,20];
 
-function policyReplay(h,filterFn){
+function policyReplay(h,filterFn,scoreFn=x=>x.score){
   const pool=candidates.filter(x=>x.horizon===h&&filterFn(x));
   const byDate=new Map();
   for(const x of pool){if(!byDate.has(x.date))byDate.set(x.date,[]);byDate.get(x.date).push(x);}
-  const observations=[],counts=[];
+  const observations=[],counts=[],crowdedSelected=[],crowdedExcluded=[];
   for(const date of dates){
-    const selected=[...(byDate.get(date)||[])].sort((a,b)=>b.score-a.score||a.symbol.localeCompare(b.symbol)).slice(0,MAX_VISIBLE);
+    const eligible=[...(byDate.get(date)||[])].map(x=>({...x,policyScore:scoreFn(x)}))
+      .sort((a,b)=>b.policyScore-a.policyScore||b.score-a.score||a.symbol.localeCompare(b.symbol));
+    const selected=eligible.slice(0,MAX_VISIBLE).map((x,i)=>({...x,rank:i+1}));
     counts.push(selected.length); observations.push(...selected);
+    if(eligible.length>MAX_VISIBLE){crowdedSelected.push(...selected);crowdedExcluded.push(...eligible.slice(MAX_VISIBLE));}
   }
   const active=counts.filter(n=>n>0).length;
   const cut=dates[Math.floor(dates.length*.7)]||null;
+  const sel=summary(crowdedSelected),exc=summary(crowdedExcluded);
   return {
     selection:{scanDays:dates.length,daysWithPicks:active,zeroPickDays:dates.length-active,pctDaysWithPicks:round(active/dates.length*100,1),
       averageVisibleAllDays:round(observations.length/dates.length,2),averageVisibleActiveDays:active?round(observations.length/active,2):null,maxVisibleObserved:Math.max(0,...counts)},
     overall:summary(observations),
-    chronologicalSplit:{cutDate:cut,train:summary(observations.filter(x=>!cut||x.date<cut)),recentHoldout:summary(observations.filter(x=>cut&&x.date>=cut))}
+    chronologicalSplit:{cutDate:cut,train:summary(observations.filter(x=>!cut||x.date<cut)),recentHoldout:summary(observations.filter(x=>cut&&x.date>=cut))},
+    crowdedDays:{selectedTop6:sel,excludedBelow6:exc,selectedMinusExcluded:{
+      mean:round((sel?.mean??NaN)-(exc?.mean??NaN)),meanExcess:round((sel?.meanExcess??NaN)-(exc?.meanExcess??NaN)),
+      positiveRate:round((sel?.positiveRate??NaN)-(exc?.positiveRate??NaN),1)}}
   };
 }
 
@@ -40,7 +47,9 @@ for(const h of horizons){
   result.horizons[h]={
     currentReviewFirst:policyReplay(h,()=>true),
     reviewFirstAndMinorHighBroken:policyReplay(h,x=>x.highBroken===true),
-    reviewFirstAndFreshHighBreak3:policyReplay(h,x=>x.highBroken===true&&Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3)
+    reviewFirstAndFreshHighBreak3:policyReplay(h,x=>x.highBroken===true&&Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3),
+    rankMinorHighBoost:policyReplay(h,()=>true,x=>x.score+(x.highBroken===true?8:0)),
+    rankFreshHighBreakBoost:policyReplay(h,()=>true,x=>x.score+(Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3?10:0))
   };
 }
 fs.mkdirSync('data',{recursive:true});
