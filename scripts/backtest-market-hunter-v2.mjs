@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
 
-const VERSION='market-hunter-v2-rebuild-h0-2026-09-26';
+const VERSION='market-hunter-v2-rebuild-h1-2026-09-26';
 const ASSUMPTIONS=Object.freeze({
   purpose:'Discovery scanner: which chart should be opened first, not a buy/sell signal.',
   universe:'Canadian-listed instruments from reviewed universe; CAD only by construction.',
@@ -135,15 +135,19 @@ function scale(x,lo,hi){return Number.isFinite(x)?clamp((x-lo)/(hi-lo),0,1):0}
 function rank(m,stage){
   let p=0;
   if(stage==='Early Watch'){
-    if(Number.isFinite(m.freshReclaimAge)&&m.freshReclaimAge<=3)p+=22;
-    if(m.sellingFading)p+=16;
-    if(m.downsideDecel)p+=10;
-    if(m.volumeShockNearLow)p+=8;
-    p+=scale(m.momentumShift,-3,5)*18;
-    p+=scale(m.rs20,-15,5)*12;
+    // H1: preserve the pre-reversal nature of Early Watch.
+    // Retrospective H0 diagnostics showed that rewarding positive momentum and a fresh reclaim too heavily
+    // often promoted later/less attractive entries. Downside deceleration is the primary quality evidence;
+    // volume shock and RS help prioritize, while reclaim/selling-fade remain supporting evidence.
+    if(m.downsideDecel)p+=26;
+    if(m.volumeShockNearLow)p+=16;
+    if(Number.isFinite(m.freshReclaimAge)&&m.freshReclaimAge<=3)p+=8;
+    if(m.sellingFading)p+=5;
+    p+=scale(m.rs20,-15,5)*18;
     p+=scale(m.upDownVolumeRatio,.5,1.2)*8;
-    if(m.swingTrend==='Structure improving')p+=4;
-    if(m.swingTrend==='Higher highs + higher lows')p+=5;
+    if(Number.isFinite(m.momentumShift)&&m.momentumShift<=-5)p-=5;
+    if(m.swingTrend==='Structure improving')p+=6;
+    if(m.swingTrend==='Higher highs + higher lows')p+=8;
     return clamp(p,0,100);
   }
   if(stage==='Recovery'){
@@ -259,7 +263,6 @@ for(const symbol of symbols){
     if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){prevStage=null;continue}
     const stage=classify(m);
     const score=stage?rank(m,stage):null;
-    if(i===rows.length-maxH-1&&stage)latest.push({symbol,name:symbolMeta.get(symbol)?.name,sector:symbolMeta.get(symbol)?.sector,stage,score:round(score,1),date,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),rs20:round(m.rs20),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),swingTrend:m.swingTrend});
     if(!stage){prevStage=null;continue}
     const episodeStart=stage!==prevStage;prevStage=stage;
     if(!episodeStart)continue;
@@ -280,6 +283,20 @@ for(const symbol of symbols){
       });
     }
   }
+}
+
+for(const symbol of symbols){
+  const pack=data[symbol],rows=pack?.rows||[],benchRows=data[benchSymbol(symbol)]?.rows||[];
+  if(rows.length<120||benchRows.length<80)continue;
+  const i=rows.length-1;
+  if(hadRecentSplit(rows,pack.splitDays,i))continue;
+  const date=dayKey(rows[i].t),bh=benchmarkHist(benchRows,date);
+  if(!bh||bh.length<65)continue;
+  const m=metrics(rows,bh);if(!m)continue;
+  if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20)continue;
+  const stage=classify(m);if(!stage)continue;
+  const score=rank(m,stage);
+  latest.push({symbol,name:symbolMeta.get(symbol)?.name,sector:symbolMeta.get(symbol)?.sector,stage,score:round(score,1),date,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),rs20:round(m.rs20),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),swingTrend:m.swingTrend});
 }
 
 const report={
