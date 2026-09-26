@@ -233,3 +233,50 @@ Validation:
 - `api/portfolio.js` syntax: PASS
 - no new GitHub Actions run triggered on the temporary UI branch
 - Vercel preview is currently READY only up to commit `f0d32b6`; newer portfolio data-path commits still need a fresh preview deployment before runtime verification
+
+
+## Portfolio Monitor — V1.1
+
+Added after V1:
+
+### Allocation & concentration
+- current market-value weight per holding
+- largest position
+- largest sector
+- concentration read
+- sector exposure breakdown
+- Market Hunter vs Manual / External exposure breakdown
+- holdings outside the reviewed universe remain `Unclassified` rather than receiving a guessed sector
+
+### Currency safety
+- Portfolio totals and allocation are aggregated only when current holdings resolve to one known currency
+- if multiple or unknown currencies are present, combined value / P&L / weights are intentionally withheld
+- individual holdings continue to be monitored independently
+- no implicit CAD/USD FX conversion is performed
+
+### Since-entry analysis
+The portfolio endpoint now accepts purchase date + actual average purchase price context and returns:
+- sessions held
+- current return from actual entry price
+- maximum gain since entry
+- maximum peak-to-trough drawdown during the holding period
+- benchmark return since entry
+- excess return vs benchmark
+- partial-history flag when stored market history does not cover the full holding period
+
+These analytics live in position details and do not generate trade instructions.
+
+### V1.1 commits
+- `5a3f9a5` — add universe name/sector metadata to portfolio endpoint
+- `887600e` — allocation / concentration UI
+- `59fbec2` — repair allocation holding metric template
+- `073d838` — currency-safe portfolio totals and allocation
+- `330f390` — since-entry performance endpoint context
+- `99acd46` — surface since-entry drawdown / benchmark metrics
+
+Validation:
+- latest frontend JavaScript syntax: PASS
+- latest `api/portfolio.js` syntax: PASS
+- allocation / currency guard / since-entry metrics present
+- GitHub Actions count remains unchanged at the one old failed run
+- newest Vercel preview currently observed is commit `59fbec2`; later V1.1 commits still need preview deployment before visual/runtime validation
