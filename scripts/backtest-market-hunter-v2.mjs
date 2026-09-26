@@ -59,10 +59,20 @@ function splitChron(a){
   return {cut,train:a.filter(x=>!cut||x.date<cut),test:a.filter(x=>cut&&x.date>=cut)};
 }
 function rankingReport(a){
-  const sp=splitChron(a),scores=sp.train.map(x=>x.rankScore),q33=quantile(scores,.33),q67=quantile(scores,.67);
+  const sp=splitChron(a),scores=sp.train.map(x=>x.rankScore);
+  const q33=quantile(scores,.33),q67=quantile(scores,.67),q80=quantile(scores,.80),q90=quantile(scores,.90);
   const bucket=x=>x.rankScore>=q67?'Top':x.rankScore>=q33?'Middle':'Lower';
   const pack=x=>Object.fromEntries(['Top','Middle','Lower'].map(k=>[k,summary(x.filter(e=>bucket(e)===k))]));
-  return {cutDate:sp.cut,trainThresholds:{q33:round(q33,1),q67:round(q67,1)},train:pack(sp.train),test:pack(sp.test)};
+  const above=(rows,t)=>Number.isFinite(t)?summary(rows.filter(e=>e.rankScore>=t)):null;
+  return {
+    cutDate:sp.cut,
+    trainThresholds:{q33:round(q33,1),q67:round(q67,1),q80:round(q80,1),q90:round(q90,1)},
+    train:pack(sp.train),test:pack(sp.test),
+    highPriority:{
+      q80:{train:above(sp.train,q80),test:above(sp.test,q80)},
+      q90:{train:above(sp.train,q90),test:above(sp.test,q90)}
+    }
+  };
 }
 function evidenceSlices(stage,a){
   const one=(name,f)=>({name,yes:summary(a.filter(f)),no:summary(a.filter(x=>!f(x)))});
