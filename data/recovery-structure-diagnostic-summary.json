@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T13:17:32.420Z",
+  "generatedAt": "2026-09-26T13:18:11.485Z",
   "source": "Four V2 historical backtest batches",
   "note": "Diagnostic only. No Recovery production rule was changed.",
   "horizons": {
@@ -99,6 +99,149 @@
             "meanExcess": 0.32
           },
           "positiveBatchCount": 3
+        },
+        "currentReviewFirst": {
+          "pooledTest": {
+            "n": 357,
+            "mean": 1.66,
+            "positiveRate": 60.5,
+            "benchmarkBeatRate": 54.9,
+            "meanExcess": 1.02,
+            "avgMAE": -2.05,
+            "avgMFE": 4.04
+          },
+          "retentionVsBaseline": 19.2,
+          "deltaVsBaseline": {
+            "mean": 0.67,
+            "positiveRate": 3.6,
+            "benchmarkBeatRate": 4.4,
+            "meanExcess": 0.65
+          },
+          "positiveBatchCount": 3
+        },
+        "reviewFirstAndBreak": {
+          "pooledTest": {
+            "n": 141,
+            "mean": 2.87,
+            "positiveRate": 63.8,
+            "benchmarkBeatRate": 61.7,
+            "meanExcess": 2.1,
+            "avgMAE": -1.55,
+            "avgMFE": 5.16
+          },
+          "retentionVsBaseline": 7.6,
+          "deltaVsBaseline": {
+            "mean": 1.88,
+            "positiveRate": 6.9,
+            "benchmarkBeatRate": 11.2,
+            "meanExcess": 1.73
+          },
+          "positiveBatchCount": 4
+        },
+        "reviewFirstAndBreakWithSupport": {
+          "pooledTest": {
+            "n": 141,
+            "mean": 2.87,
+            "positiveRate": 63.8,
+            "benchmarkBeatRate": 61.7,
+            "meanExcess": 2.1,
+            "avgMAE": -1.55,
+            "avgMFE": 5.16
+          },
+          "retentionVsBaseline": 7.6,
+          "deltaVsBaseline": {
+            "mean": 1.88,
+            "positiveRate": 6.9,
+            "benchmarkBeatRate": 11.2,
+            "meanExcess": 1.73
+          },
+          "positiveBatchCount": 4
+        }
+      },
+      "ranking": {
+        "current": {
+          "pooledTrain": {
+            "n": 907,
+            "mean": 0.32,
+            "positiveRate": 53.5,
+            "benchmarkBeatRate": 51.7,
+            "meanExcess": 0.19,
+            "avgMAE": -2.37,
+            "avgMFE": 2.82
+          },
+          "pooledTest": {
+            "n": 299,
+            "mean": 1.7,
+            "positiveRate": 60.5,
+            "benchmarkBeatRate": 55.9,
+            "meanExcess": 1.15,
+            "avgMAE": -2.14,
+            "avgMFE": 4.23
+          },
+          "retentionVsCurrent": 100,
+          "deltaVsCurrent": {
+            "mean": 0,
+            "positiveRate": 0,
+            "benchmarkBeatRate": 0,
+            "meanExcess": 0
+          },
+          "positiveBatchCount": 0
+        },
+        "minorHighBoost": {
+          "pooledTrain": {
+            "n": 907,
+            "mean": 0.25,
+            "positiveRate": 53.8,
+            "benchmarkBeatRate": 51.8,
+            "meanExcess": 0.17,
+            "avgMAE": -2.39,
+            "avgMFE": 2.77
+          },
+          "pooledTest": {
+            "n": 309,
+            "mean": 1.63,
+            "positiveRate": 58.9,
+            "benchmarkBeatRate": 56.3,
+            "meanExcess": 0.97,
+            "avgMAE": -2.18,
+            "avgMFE": 4.22
+          },
+          "retentionVsCurrent": 103.3,
+          "deltaVsCurrent": {
+            "mean": -0.07,
+            "positiveRate": -1.6,
+            "benchmarkBeatRate": 0.4,
+            "meanExcess": -0.18
+          },
+          "positiveBatchCount": 1
+        },
+        "confirmedBreakBoost": {
+          "pooledTrain": {
+            "n": 900,
+            "mean": 0.15,
+            "positiveRate": 52.6,
+            "benchmarkBeatRate": 51.5,
+            "meanExcess": 0.09,
+            "avgMAE": -2.46,
+            "avgMFE": 2.7
+          },
+          "pooledTest": {
+            "n": 306,
+            "mean": 1.52,
+            "positiveRate": 58.5,
+            "benchmarkBeatRate": 55.2,
+            "meanExcess": 0.81,
+            "avgMAE": -2.26,
+            "avgMFE": 4.13
+          },
+          "retentionVsCurrent": 102.3,
+          "deltaVsCurrent": {
+            "mean": -0.18,
+            "positiveRate": -2,
+            "benchmarkBeatRate": -0.7,
+            "meanExcess": -0.34
+          },
+          "positiveBatchCount": 0
         }
       },
       "perBatch": [
@@ -305,6 +448,120 @@
                 "avgMFE": 3.66,
                 "hitPlus7": 16.4,
                 "hitMinus7": 10
+              }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 307,
+                "mean": 0.94,
+                "median": 0.95,
+                "positiveRate": 58,
+                "benchmarkBeatRate": 55.4,
+                "meanExcess": 0.66,
+                "avgMAE": -2.39,
+                "avgMFE": 3.38,
+                "hitPlus7": 16.3,
+                "hitMinus7": 11.7
+              },
+              "train": {
+                "n": 220,
+                "mean": 0.55,
+                "median": 0.75,
+                "positiveRate": 55.5,
+                "benchmarkBeatRate": 55.9,
+                "meanExcess": 0.47,
+                "avgMAE": -2.45,
+                "avgMFE": 3.09,
+                "hitPlus7": 14.1,
+                "hitMinus7": 12.3
+              },
+              "test": {
+                "n": 87,
+                "mean": 1.91,
+                "median": 1.28,
+                "positiveRate": 64.4,
+                "benchmarkBeatRate": 54,
+                "meanExcess": 1.13,
+                "avgMAE": -2.24,
+                "avgMFE": 4.13,
+                "hitPlus7": 21.8,
+                "hitMinus7": 10.3
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 100,
+                "mean": 1.18,
+                "median": 0.96,
+                "positiveRate": 58,
+                "benchmarkBeatRate": 57,
+                "meanExcess": 0.96,
+                "avgMAE": -2.29,
+                "avgMFE": 3.73,
+                "hitPlus7": 21,
+                "hitMinus7": 13
+              },
+              "train": {
+                "n": 71,
+                "mean": 0.48,
+                "median": 0.4,
+                "positiveRate": 53.5,
+                "benchmarkBeatRate": 53.5,
+                "meanExcess": 0.43,
+                "avgMAE": -2.53,
+                "avgMFE": 3.35,
+                "hitPlus7": 18.3,
+                "hitMinus7": 15.5
+              },
+              "test": {
+                "n": 29,
+                "mean": 2.9,
+                "median": 1.73,
+                "positiveRate": 69,
+                "benchmarkBeatRate": 65.5,
+                "meanExcess": 2.25,
+                "avgMAE": -1.69,
+                "avgMFE": 4.67,
+                "hitPlus7": 27.6,
+                "hitMinus7": 6.9
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 100,
+                "mean": 1.18,
+                "median": 0.96,
+                "positiveRate": 58,
+                "benchmarkBeatRate": 57,
+                "meanExcess": 0.96,
+                "avgMAE": -2.29,
+                "avgMFE": 3.73,
+                "hitPlus7": 21,
+                "hitMinus7": 13
+              },
+              "train": {
+                "n": 71,
+                "mean": 0.48,
+                "median": 0.4,
+                "positiveRate": 53.5,
+                "benchmarkBeatRate": 53.5,
+                "meanExcess": 0.43,
+                "avgMAE": -2.53,
+                "avgMFE": 3.35,
+                "hitPlus7": 18.3,
+                "hitMinus7": 15.5
+              },
+              "test": {
+                "n": 29,
+                "mean": 2.9,
+                "median": 1.73,
+                "positiveRate": 69,
+                "benchmarkBeatRate": 65.5,
+                "meanExcess": 2.25,
+                "avgMAE": -1.69,
+                "avgMFE": 4.67,
+                "hitPlus7": 27.6,
+                "hitMinus7": 6.9
               }
             }
           },
@@ -704,6 +961,120 @@
                 "hitPlus7": 22.1,
                 "hitMinus7": 12.5
               }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 319,
+                "mean": 0.84,
+                "median": 0.89,
+                "positiveRate": 59.2,
+                "benchmarkBeatRate": 55.2,
+                "meanExcess": 0.63,
+                "avgMAE": -2.37,
+                "avgMFE": 3.32,
+                "hitPlus7": 16,
+                "hitMinus7": 10.7
+              },
+              "train": {
+                "n": 223,
+                "mean": 0.44,
+                "median": 0.61,
+                "positiveRate": 57,
+                "benchmarkBeatRate": 51.6,
+                "meanExcess": 0.31,
+                "avgMAE": -2.42,
+                "avgMFE": 2.9,
+                "hitPlus7": 13.5,
+                "hitMinus7": 11.2
+              },
+              "test": {
+                "n": 96,
+                "mean": 1.77,
+                "median": 1.44,
+                "positiveRate": 64.6,
+                "benchmarkBeatRate": 63.5,
+                "meanExcess": 1.37,
+                "avgMAE": -2.25,
+                "avgMFE": 4.29,
+                "hitPlus7": 21.9,
+                "hitMinus7": 9.4
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 114,
+                "mean": 1.42,
+                "median": 1.15,
+                "positiveRate": 60.5,
+                "benchmarkBeatRate": 58.8,
+                "meanExcess": 1.03,
+                "avgMAE": -2.35,
+                "avgMFE": 3.9,
+                "hitPlus7": 19.3,
+                "hitMinus7": 13.2
+              },
+              "train": {
+                "n": 73,
+                "mean": 0.71,
+                "median": 0.98,
+                "positiveRate": 58.9,
+                "benchmarkBeatRate": 56.2,
+                "meanExcess": 0.55,
+                "avgMAE": -2.33,
+                "avgMFE": 3.12,
+                "hitPlus7": 15.1,
+                "hitMinus7": 13.7
+              },
+              "test": {
+                "n": 41,
+                "mean": 2.68,
+                "median": 1.86,
+                "positiveRate": 63.4,
+                "benchmarkBeatRate": 63.4,
+                "meanExcess": 1.89,
+                "avgMAE": -2.37,
+                "avgMFE": 5.29,
+                "hitPlus7": 26.8,
+                "hitMinus7": 12.2
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 114,
+                "mean": 1.42,
+                "median": 1.15,
+                "positiveRate": 60.5,
+                "benchmarkBeatRate": 58.8,
+                "meanExcess": 1.03,
+                "avgMAE": -2.35,
+                "avgMFE": 3.9,
+                "hitPlus7": 19.3,
+                "hitMinus7": 13.2
+              },
+              "train": {
+                "n": 73,
+                "mean": 0.71,
+                "median": 0.98,
+                "positiveRate": 58.9,
+                "benchmarkBeatRate": 56.2,
+                "meanExcess": 0.55,
+                "avgMAE": -2.33,
+                "avgMFE": 3.12,
+                "hitPlus7": 15.1,
+                "hitMinus7": 13.7
+              },
+              "test": {
+                "n": 41,
+                "mean": 2.68,
+                "median": 1.86,
+                "positiveRate": 63.4,
+                "benchmarkBeatRate": 63.4,
+                "meanExcess": 1.89,
+                "avgMAE": -2.37,
+                "avgMFE": 5.29,
+                "hitPlus7": 26.8,
+                "hitMinus7": 12.2
+              }
             }
           },
           "evidence": [
@@ -1101,6 +1472,120 @@
                 "avgMFE": 4.5,
                 "hitPlus7": 26.1,
                 "hitMinus7": 12.6
+              }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 290,
+                "mean": 0.58,
+                "median": 0.45,
+                "positiveRate": 52.4,
+                "benchmarkBeatRate": 49.3,
+                "meanExcess": 0.19,
+                "avgMAE": -2.19,
+                "avgMFE": 3.06,
+                "hitPlus7": 15.5,
+                "hitMinus7": 9.7
+              },
+              "train": {
+                "n": 199,
+                "mean": -0.14,
+                "median": -0.35,
+                "positiveRate": 49.2,
+                "benchmarkBeatRate": 45.7,
+                "meanExcess": -0.35,
+                "avgMAE": -2.56,
+                "avgMFE": 2.32,
+                "hitPlus7": 10.6,
+                "hitMinus7": 10.6
+              },
+              "test": {
+                "n": 91,
+                "mean": 2.15,
+                "median": 1.73,
+                "positiveRate": 59.3,
+                "benchmarkBeatRate": 57.1,
+                "meanExcess": 1.37,
+                "avgMAE": -1.38,
+                "avgMFE": 4.66,
+                "hitPlus7": 26.4,
+                "hitMinus7": 7.7
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 107,
+                "mean": 0.93,
+                "median": 0.03,
+                "positiveRate": 50.5,
+                "benchmarkBeatRate": 48.6,
+                "meanExcess": 0.66,
+                "avgMAE": -1.71,
+                "avgMFE": 3.37,
+                "hitPlus7": 18.7,
+                "hitMinus7": 10.3
+              },
+              "train": {
+                "n": 69,
+                "mean": -0.83,
+                "median": -1.08,
+                "positiveRate": 42,
+                "benchmarkBeatRate": 39.1,
+                "meanExcess": -0.86,
+                "avgMAE": -2.55,
+                "avgMFE": 1.63,
+                "hitPlus7": 7.2,
+                "hitMinus7": 13
+              },
+              "test": {
+                "n": 38,
+                "mean": 4.14,
+                "median": 2.96,
+                "positiveRate": 65.8,
+                "benchmarkBeatRate": 65.8,
+                "meanExcess": 3.41,
+                "avgMAE": -0.2,
+                "avgMFE": 6.55,
+                "hitPlus7": 39.5,
+                "hitMinus7": 5.3
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 107,
+                "mean": 0.93,
+                "median": 0.03,
+                "positiveRate": 50.5,
+                "benchmarkBeatRate": 48.6,
+                "meanExcess": 0.66,
+                "avgMAE": -1.71,
+                "avgMFE": 3.37,
+                "hitPlus7": 18.7,
+                "hitMinus7": 10.3
+              },
+              "train": {
+                "n": 69,
+                "mean": -0.83,
+                "median": -1.08,
+                "positiveRate": 42,
+                "benchmarkBeatRate": 39.1,
+                "meanExcess": -0.86,
+                "avgMAE": -2.55,
+                "avgMFE": 1.63,
+                "hitPlus7": 7.2,
+                "hitMinus7": 13
+              },
+              "test": {
+                "n": 38,
+                "mean": 4.14,
+                "median": 2.96,
+                "positiveRate": 65.8,
+                "benchmarkBeatRate": 65.8,
+                "meanExcess": 3.41,
+                "avgMAE": -0.2,
+                "avgMFE": 6.55,
+                "hitPlus7": 39.5,
+                "hitMinus7": 5.3
               }
             }
           },
@@ -1500,6 +1985,120 @@
                 "hitPlus7": 18.4,
                 "hitMinus7": 13.6
               }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 280,
+                "mean": 0.33,
+                "median": 0.2,
+                "positiveRate": 51.1,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.18,
+                "avgMAE": -2.31,
+                "avgMFE": 2.9,
+                "hitPlus7": 14.3,
+                "hitMinus7": 12.5
+              },
+              "train": {
+                "n": 197,
+                "mean": 0.16,
+                "median": 0.15,
+                "positiveRate": 50.3,
+                "benchmarkBeatRate": 52.8,
+                "meanExcess": 0.21,
+                "avgMAE": -2.3,
+                "avgMFE": 2.86,
+                "hitPlus7": 13.2,
+                "hitMinus7": 13.2
+              },
+              "test": {
+                "n": 83,
+                "mean": 0.73,
+                "median": 0.29,
+                "positiveRate": 53,
+                "benchmarkBeatRate": 43.4,
+                "meanExcess": 0.1,
+                "avgMAE": -2.34,
+                "avgMFE": 2.97,
+                "hitPlus7": 16.9,
+                "hitMinus7": 10.8
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 102,
+                "mean": 0.17,
+                "median": 0.24,
+                "positiveRate": 51,
+                "benchmarkBeatRate": 51,
+                "meanExcess": 0.15,
+                "avgMAE": -2.29,
+                "avgMFE": 2.8,
+                "hitPlus7": 14.7,
+                "hitMinus7": 11.8
+              },
+              "train": {
+                "n": 69,
+                "mean": -0.52,
+                "median": -0.27,
+                "positiveRate": 47.8,
+                "benchmarkBeatRate": 50.7,
+                "meanExcess": -0.12,
+                "avgMAE": -2.46,
+                "avgMFE": 2.32,
+                "hitPlus7": 10.1,
+                "hitMinus7": 11.6
+              },
+              "test": {
+                "n": 33,
+                "mean": 1.6,
+                "median": 0.99,
+                "positiveRate": 57.6,
+                "benchmarkBeatRate": 51.5,
+                "meanExcess": 0.73,
+                "avgMAE": -1.96,
+                "avgMFE": 3.81,
+                "hitPlus7": 24.2,
+                "hitMinus7": 12.1
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 102,
+                "mean": 0.17,
+                "median": 0.24,
+                "positiveRate": 51,
+                "benchmarkBeatRate": 51,
+                "meanExcess": 0.15,
+                "avgMAE": -2.29,
+                "avgMFE": 2.8,
+                "hitPlus7": 14.7,
+                "hitMinus7": 11.8
+              },
+              "train": {
+                "n": 69,
+                "mean": -0.52,
+                "median": -0.27,
+                "positiveRate": 47.8,
+                "benchmarkBeatRate": 50.7,
+                "meanExcess": -0.12,
+                "avgMAE": -2.46,
+                "avgMFE": 2.32,
+                "hitPlus7": 10.1,
+                "hitMinus7": 11.6
+              },
+              "test": {
+                "n": 33,
+                "mean": 1.6,
+                "median": 0.99,
+                "positiveRate": 57.6,
+                "benchmarkBeatRate": 51.5,
+                "meanExcess": 0.73,
+                "avgMAE": -1.96,
+                "avgMFE": 3.81,
+                "hitPlus7": 24.2,
+                "hitMinus7": 12.1
+              }
             }
           },
           "evidence": [
@@ -1792,6 +2391,149 @@
             "meanExcess": 0.78
           },
           "positiveBatchCount": 3
+        },
+        "currentReviewFirst": {
+          "pooledTest": {
+            "n": 280,
+            "mean": 2.08,
+            "positiveRate": 60.7,
+            "benchmarkBeatRate": 49.3,
+            "meanExcess": 0.68,
+            "avgMAE": -3.72,
+            "avgMFE": 6.51
+          },
+          "retentionVsBaseline": 18.7,
+          "deltaVsBaseline": {
+            "mean": 0.8,
+            "positiveRate": 4.8,
+            "benchmarkBeatRate": 1.5,
+            "meanExcess": 0.6
+          },
+          "positiveBatchCount": 4
+        },
+        "reviewFirstAndBreak": {
+          "pooledTest": {
+            "n": 91,
+            "mean": 4.39,
+            "positiveRate": 68.1,
+            "benchmarkBeatRate": 60.5,
+            "meanExcess": 2.99,
+            "avgMAE": -2.85,
+            "avgMFE": 8.64
+          },
+          "retentionVsBaseline": 6.1,
+          "deltaVsBaseline": {
+            "mean": 3.11,
+            "positiveRate": 12.2,
+            "benchmarkBeatRate": 12.7,
+            "meanExcess": 2.91
+          },
+          "positiveBatchCount": 4
+        },
+        "reviewFirstAndBreakWithSupport": {
+          "pooledTest": {
+            "n": 91,
+            "mean": 4.39,
+            "positiveRate": 68.1,
+            "benchmarkBeatRate": 60.5,
+            "meanExcess": 2.99,
+            "avgMAE": -2.85,
+            "avgMFE": 8.64
+          },
+          "retentionVsBaseline": 6.1,
+          "deltaVsBaseline": {
+            "mean": 3.11,
+            "positiveRate": 12.2,
+            "benchmarkBeatRate": 12.7,
+            "meanExcess": 2.91
+          },
+          "positiveBatchCount": 4
+        }
+      },
+      "ranking": {
+        "current": {
+          "pooledTrain": {
+            "n": 731,
+            "mean": 1.16,
+            "positiveRate": 56.6,
+            "benchmarkBeatRate": 53.4,
+            "meanExcess": 0.63,
+            "avgMAE": -3.81,
+            "avgMFE": 4.98
+          },
+          "pooledTest": {
+            "n": 230,
+            "mean": 2.14,
+            "positiveRate": 60.4,
+            "benchmarkBeatRate": 51.3,
+            "meanExcess": 0.82,
+            "avgMAE": -4.04,
+            "avgMFE": 6.83
+          },
+          "retentionVsCurrent": 100,
+          "deltaVsCurrent": {
+            "mean": 0,
+            "positiveRate": 0,
+            "benchmarkBeatRate": 0,
+            "meanExcess": 0
+          },
+          "positiveBatchCount": 0
+        },
+        "minorHighBoost": {
+          "pooledTrain": {
+            "n": 731,
+            "mean": 0.92,
+            "positiveRate": 55.7,
+            "benchmarkBeatRate": 53.3,
+            "meanExcess": 0.49,
+            "avgMAE": -3.93,
+            "avgMFE": 4.88
+          },
+          "pooledTest": {
+            "n": 243,
+            "mean": 2.08,
+            "positiveRate": 60.1,
+            "benchmarkBeatRate": 51.8,
+            "meanExcess": 0.78,
+            "avgMAE": -3.95,
+            "avgMFE": 6.78
+          },
+          "retentionVsCurrent": 105.7,
+          "deltaVsCurrent": {
+            "mean": -0.06,
+            "positiveRate": -0.3,
+            "benchmarkBeatRate": 0.5,
+            "meanExcess": -0.04
+          },
+          "positiveBatchCount": 2
+        },
+        "confirmedBreakBoost": {
+          "pooledTrain": {
+            "n": 736,
+            "mean": 0.94,
+            "positiveRate": 56.4,
+            "benchmarkBeatRate": 53.5,
+            "meanExcess": 0.48,
+            "avgMAE": -3.9,
+            "avgMFE": 4.87
+          },
+          "pooledTest": {
+            "n": 247,
+            "mean": 2.01,
+            "positiveRate": 60.3,
+            "benchmarkBeatRate": 51.4,
+            "meanExcess": 0.66,
+            "avgMAE": -4.09,
+            "avgMFE": 6.75
+          },
+          "retentionVsCurrent": 107.4,
+          "deltaVsCurrent": {
+            "mean": -0.13,
+            "positiveRate": -0.1,
+            "benchmarkBeatRate": 0.1,
+            "meanExcess": -0.16
+          },
+          "positiveBatchCount": 1
         }
       },
       "perBatch": [
@@ -1998,6 +2740,120 @@
                 "avgMFE": 6.09,
                 "hitPlus7": 34.5,
                 "hitMinus7": 16.1
+              }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 244,
+                "mean": 1.54,
+                "median": 1.69,
+                "positiveRate": 58.6,
+                "benchmarkBeatRate": 55.3,
+                "meanExcess": 0.81,
+                "avgMAE": -3.86,
+                "avgMFE": 5.64,
+                "hitPlus7": 28.3,
+                "hitMinus7": 21.7
+              },
+              "train": {
+                "n": 172,
+                "mean": 1.46,
+                "median": 2.19,
+                "positiveRate": 61.6,
+                "benchmarkBeatRate": 61.6,
+                "meanExcess": 1.06,
+                "avgMAE": -3.83,
+                "avgMFE": 5.32,
+                "hitPlus7": 26.7,
+                "hitMinus7": 21.5
+              },
+              "test": {
+                "n": 72,
+                "mean": 1.73,
+                "median": 0.59,
+                "positiveRate": 51.4,
+                "benchmarkBeatRate": 40.3,
+                "meanExcess": 0.21,
+                "avgMAE": -3.95,
+                "avgMFE": 6.42,
+                "hitPlus7": 31.9,
+                "hitMinus7": 22.2
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 60,
+                "mean": 2.74,
+                "median": 3.04,
+                "positiveRate": 65,
+                "benchmarkBeatRate": 61.7,
+                "meanExcess": 1.55,
+                "avgMAE": -3.43,
+                "avgMFE": 6.44,
+                "hitPlus7": 38.3,
+                "hitMinus7": 21.7
+              },
+              "train": {
+                "n": 41,
+                "mean": 3.08,
+                "median": 3.39,
+                "positiveRate": 73.2,
+                "benchmarkBeatRate": 68.3,
+                "meanExcess": 2.07,
+                "avgMAE": -3.56,
+                "avgMFE": 6.13,
+                "hitPlus7": 36.6,
+                "hitMinus7": 22
+              },
+              "test": {
+                "n": 19,
+                "mean": 2.02,
+                "median": 0,
+                "positiveRate": 47.4,
+                "benchmarkBeatRate": 47.4,
+                "meanExcess": 0.41,
+                "avgMAE": -3.14,
+                "avgMFE": 7.09,
+                "hitPlus7": 42.1,
+                "hitMinus7": 21.1
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 60,
+                "mean": 2.74,
+                "median": 3.04,
+                "positiveRate": 65,
+                "benchmarkBeatRate": 61.7,
+                "meanExcess": 1.55,
+                "avgMAE": -3.43,
+                "avgMFE": 6.44,
+                "hitPlus7": 38.3,
+                "hitMinus7": 21.7
+              },
+              "train": {
+                "n": 41,
+                "mean": 3.08,
+                "median": 3.39,
+                "positiveRate": 73.2,
+                "benchmarkBeatRate": 68.3,
+                "meanExcess": 2.07,
+                "avgMAE": -3.56,
+                "avgMFE": 6.13,
+                "hitPlus7": 36.6,
+                "hitMinus7": 22
+              },
+              "test": {
+                "n": 19,
+                "mean": 2.02,
+                "median": 0,
+                "positiveRate": 47.4,
+                "benchmarkBeatRate": 47.4,
+                "meanExcess": 0.41,
+                "avgMAE": -3.14,
+                "avgMFE": 7.09,
+                "hitPlus7": 42.1,
+                "hitMinus7": 21.1
               }
             }
           },
@@ -2397,6 +3253,120 @@
                 "hitPlus7": 45.3,
                 "hitMinus7": 24.2
               }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 233,
+                "mean": 1.61,
+                "median": 2.12,
+                "positiveRate": 59.2,
+                "benchmarkBeatRate": 53.2,
+                "meanExcess": 0.88,
+                "avgMAE": -3.82,
+                "avgMFE": 5.87,
+                "hitPlus7": 33.5,
+                "hitMinus7": 21
+              },
+              "train": {
+                "n": 162,
+                "mean": 1.73,
+                "median": 1.73,
+                "positiveRate": 57.4,
+                "benchmarkBeatRate": 52.5,
+                "meanExcess": 1.1,
+                "avgMAE": -3.8,
+                "avgMFE": 5.68,
+                "hitPlus7": 32.7,
+                "hitMinus7": 21.6
+              },
+              "test": {
+                "n": 71,
+                "mean": 1.33,
+                "median": 2.24,
+                "positiveRate": 63.4,
+                "benchmarkBeatRate": 54.9,
+                "meanExcess": 0.36,
+                "avgMAE": -3.85,
+                "avgMFE": 6.33,
+                "hitPlus7": 35.2,
+                "hitMinus7": 19.7
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 64,
+                "mean": 1.18,
+                "median": 2.2,
+                "positiveRate": 59.4,
+                "benchmarkBeatRate": 48.4,
+                "meanExcess": 0.26,
+                "avgMAE": -4.3,
+                "avgMFE": 6.57,
+                "hitPlus7": 37.5,
+                "hitMinus7": 29.7
+              },
+              "train": {
+                "n": 40,
+                "mean": 0.48,
+                "median": 2.2,
+                "positiveRate": 57.5,
+                "benchmarkBeatRate": 45,
+                "meanExcess": -0.41,
+                "avgMAE": -4.56,
+                "avgMFE": 5.83,
+                "hitPlus7": 32.5,
+                "hitMinus7": 35
+              },
+              "test": {
+                "n": 24,
+                "mean": 2.36,
+                "median": 2.51,
+                "positiveRate": 62.5,
+                "benchmarkBeatRate": 54.2,
+                "meanExcess": 1.37,
+                "avgMAE": -3.87,
+                "avgMFE": 7.81,
+                "hitPlus7": 45.8,
+                "hitMinus7": 20.8
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 64,
+                "mean": 1.18,
+                "median": 2.2,
+                "positiveRate": 59.4,
+                "benchmarkBeatRate": 48.4,
+                "meanExcess": 0.26,
+                "avgMAE": -4.3,
+                "avgMFE": 6.57,
+                "hitPlus7": 37.5,
+                "hitMinus7": 29.7
+              },
+              "train": {
+                "n": 40,
+                "mean": 0.48,
+                "median": 2.2,
+                "positiveRate": 57.5,
+                "benchmarkBeatRate": 45,
+                "meanExcess": -0.41,
+                "avgMAE": -4.56,
+                "avgMFE": 5.83,
+                "hitPlus7": 32.5,
+                "hitMinus7": 35
+              },
+              "test": {
+                "n": 24,
+                "mean": 2.36,
+                "median": 2.51,
+                "positiveRate": 62.5,
+                "benchmarkBeatRate": 54.2,
+                "meanExcess": 1.37,
+                "avgMAE": -3.87,
+                "avgMFE": 7.81,
+                "hitPlus7": 45.8,
+                "hitMinus7": 20.8
+              }
             }
           },
           "evidence": [
@@ -2794,6 +3764,120 @@
                 "avgMFE": 7.77,
                 "hitPlus7": 44.7,
                 "hitMinus7": 18.8
+              }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 229,
+                "mean": 1.32,
+                "median": 1.12,
+                "positiveRate": 55,
+                "benchmarkBeatRate": 52,
+                "meanExcess": 0.29,
+                "avgMAE": -3.76,
+                "avgMFE": 5.23,
+                "hitPlus7": 28.8,
+                "hitMinus7": 20.1
+              },
+              "train": {
+                "n": 155,
+                "mean": 0.39,
+                "median": 0.28,
+                "positiveRate": 50.3,
+                "benchmarkBeatRate": 51,
+                "meanExcess": -0.29,
+                "avgMAE": -4.17,
+                "avgMFE": 4.22,
+                "hitPlus7": 23.9,
+                "hitMinus7": 23.2
+              },
+              "test": {
+                "n": 74,
+                "mean": 3.27,
+                "median": 1.63,
+                "positiveRate": 64.9,
+                "benchmarkBeatRate": 54.1,
+                "meanExcess": 1.5,
+                "avgMAE": -2.91,
+                "avgMFE": 7.35,
+                "hitPlus7": 39.2,
+                "hitMinus7": 13.5
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 76,
+                "mean": 2.28,
+                "median": 1.61,
+                "positiveRate": 55.3,
+                "benchmarkBeatRate": 53.9,
+                "meanExcess": 1.65,
+                "avgMAE": -3.51,
+                "avgMFE": 5.92,
+                "hitPlus7": 32.9,
+                "hitMinus7": 19.7
+              },
+              "train": {
+                "n": 50,
+                "mean": -0.95,
+                "median": -1.42,
+                "positiveRate": 40,
+                "benchmarkBeatRate": 42,
+                "meanExcess": -1.15,
+                "avgMAE": -4.93,
+                "avgMFE": 3.15,
+                "hitPlus7": 20,
+                "hitMinus7": 28
+              },
+              "test": {
+                "n": 26,
+                "mean": 8.47,
+                "median": 5.63,
+                "positiveRate": 84.6,
+                "benchmarkBeatRate": 76.9,
+                "meanExcess": 7.03,
+                "avgMAE": -0.79,
+                "avgMFE": 11.25,
+                "hitPlus7": 57.7,
+                "hitMinus7": 3.8
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 76,
+                "mean": 2.28,
+                "median": 1.61,
+                "positiveRate": 55.3,
+                "benchmarkBeatRate": 53.9,
+                "meanExcess": 1.65,
+                "avgMAE": -3.51,
+                "avgMFE": 5.92,
+                "hitPlus7": 32.9,
+                "hitMinus7": 19.7
+              },
+              "train": {
+                "n": 50,
+                "mean": -0.95,
+                "median": -1.42,
+                "positiveRate": 40,
+                "benchmarkBeatRate": 42,
+                "meanExcess": -1.15,
+                "avgMAE": -4.93,
+                "avgMFE": 3.15,
+                "hitPlus7": 20,
+                "hitMinus7": 28
+              },
+              "test": {
+                "n": 26,
+                "mean": 8.47,
+                "median": 5.63,
+                "positiveRate": 84.6,
+                "benchmarkBeatRate": 76.9,
+                "meanExcess": 7.03,
+                "avgMAE": -0.79,
+                "avgMFE": 11.25,
+                "hitPlus7": 57.7,
+                "hitMinus7": 3.8
               }
             }
           },
@@ -3193,6 +4277,120 @@
                 "hitPlus7": 34.6,
                 "hitMinus7": 28.4
               }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 214,
+                "mean": 1.25,
+                "median": 1.17,
+                "positiveRate": 58.9,
+                "benchmarkBeatRate": 51.4,
+                "meanExcess": 0.7,
+                "avgMAE": -4.04,
+                "avgMFE": 5.18,
+                "hitPlus7": 30.4,
+                "hitMinus7": 25.7
+              },
+              "train": {
+                "n": 151,
+                "mean": 0.98,
+                "median": 0.92,
+                "positiveRate": 57,
+                "benchmarkBeatRate": 53,
+                "meanExcess": 0.74,
+                "avgMAE": -3.95,
+                "avgMFE": 4.92,
+                "hitPlus7": 29.1,
+                "hitMinus7": 26.5
+              },
+              "test": {
+                "n": 63,
+                "mean": 1.91,
+                "median": 1.63,
+                "positiveRate": 63.5,
+                "benchmarkBeatRate": 47.6,
+                "meanExcess": 0.62,
+                "avgMAE": -4.27,
+                "avgMFE": 5.83,
+                "hitPlus7": 33.3,
+                "hitMinus7": 23.8
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 64,
+                "mean": 1.78,
+                "median": 0.95,
+                "positiveRate": 53.1,
+                "benchmarkBeatRate": 54.7,
+                "meanExcess": 1.32,
+                "avgMAE": -3.7,
+                "avgMFE": 5.54,
+                "hitPlus7": 31.3,
+                "hitMinus7": 23.4
+              },
+              "train": {
+                "n": 42,
+                "mean": 0.72,
+                "median": -0.57,
+                "positiveRate": 42.9,
+                "benchmarkBeatRate": 52.4,
+                "meanExcess": 0.87,
+                "avgMAE": -3.58,
+                "avgMFE": 4.37,
+                "hitPlus7": 26.2,
+                "hitMinus7": 23.8
+              },
+              "test": {
+                "n": 22,
+                "mean": 3.81,
+                "median": 2.71,
+                "positiveRate": 72.7,
+                "benchmarkBeatRate": 59.1,
+                "meanExcess": 2.2,
+                "avgMAE": -3.93,
+                "avgMFE": 7.79,
+                "hitPlus7": 40.9,
+                "hitMinus7": 22.7
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 64,
+                "mean": 1.78,
+                "median": 0.95,
+                "positiveRate": 53.1,
+                "benchmarkBeatRate": 54.7,
+                "meanExcess": 1.32,
+                "avgMAE": -3.7,
+                "avgMFE": 5.54,
+                "hitPlus7": 31.3,
+                "hitMinus7": 23.4
+              },
+              "train": {
+                "n": 42,
+                "mean": 0.72,
+                "median": -0.57,
+                "positiveRate": 42.9,
+                "benchmarkBeatRate": 52.4,
+                "meanExcess": 0.87,
+                "avgMAE": -3.58,
+                "avgMFE": 4.37,
+                "hitPlus7": 26.2,
+                "hitMinus7": 23.8
+              },
+              "test": {
+                "n": 22,
+                "mean": 3.81,
+                "median": 2.71,
+                "positiveRate": 72.7,
+                "benchmarkBeatRate": 59.1,
+                "meanExcess": 2.2,
+                "avgMAE": -3.93,
+                "avgMFE": 7.79,
+                "hitPlus7": 40.9,
+                "hitMinus7": 22.7
+              }
             }
           },
           "evidence": [
@@ -3485,6 +4683,149 @@
             "meanExcess": 0.24
           },
           "positiveBatchCount": 2
+        },
+        "currentReviewFirst": {
+          "pooledTest": {
+            "n": 168,
+            "mean": 4.93,
+            "positiveRate": 66.1,
+            "benchmarkBeatRate": 59.5,
+            "meanExcess": 2.49,
+            "avgMAE": -5.14,
+            "avgMFE": 11.89
+          },
+          "retentionVsBaseline": 14.6,
+          "deltaVsBaseline": {
+            "mean": 2.63,
+            "positiveRate": 9.7,
+            "benchmarkBeatRate": 13.3,
+            "meanExcess": 2.19
+          },
+          "positiveBatchCount": 4
+        },
+        "reviewFirstAndBreak": {
+          "pooledTest": {
+            "n": 50,
+            "mean": 10.09,
+            "positiveRate": 78,
+            "benchmarkBeatRate": 72,
+            "meanExcess": 7.3,
+            "avgMAE": -2.9,
+            "avgMFE": 16.64
+          },
+          "retentionVsBaseline": 4.3,
+          "deltaVsBaseline": {
+            "mean": 7.79,
+            "positiveRate": 21.6,
+            "benchmarkBeatRate": 25.8,
+            "meanExcess": 7
+          },
+          "positiveBatchCount": 3
+        },
+        "reviewFirstAndBreakWithSupport": {
+          "pooledTest": {
+            "n": 50,
+            "mean": 10.09,
+            "positiveRate": 78,
+            "benchmarkBeatRate": 72,
+            "meanExcess": 7.3,
+            "avgMAE": -2.9,
+            "avgMFE": 16.64
+          },
+          "retentionVsBaseline": 4.3,
+          "deltaVsBaseline": {
+            "mean": 7.79,
+            "positiveRate": 21.6,
+            "benchmarkBeatRate": 25.8,
+            "meanExcess": 7
+          },
+          "positiveBatchCount": 3
+        }
+      },
+      "ranking": {
+        "current": {
+          "pooledTrain": {
+            "n": 556,
+            "mean": 2.06,
+            "positiveRate": 60.8,
+            "benchmarkBeatRate": 53.4,
+            "meanExcess": 0.85,
+            "avgMAE": -5.77,
+            "avgMFE": 7.71
+          },
+          "pooledTest": {
+            "n": 156,
+            "mean": 4.54,
+            "positiveRate": 62.2,
+            "benchmarkBeatRate": 54.5,
+            "meanExcess": 2.19,
+            "avgMAE": -5.36,
+            "avgMFE": 11.44
+          },
+          "retentionVsCurrent": 100,
+          "deltaVsCurrent": {
+            "mean": 0,
+            "positiveRate": 0,
+            "benchmarkBeatRate": 0,
+            "meanExcess": 0
+          },
+          "positiveBatchCount": 0
+        },
+        "minorHighBoost": {
+          "pooledTrain": {
+            "n": 555,
+            "mean": 2.19,
+            "positiveRate": 62.9,
+            "benchmarkBeatRate": 53.9,
+            "meanExcess": 0.79,
+            "avgMAE": -5.74,
+            "avgMFE": 7.8
+          },
+          "pooledTest": {
+            "n": 166,
+            "mean": 4.61,
+            "positiveRate": 63.8,
+            "benchmarkBeatRate": 57.2,
+            "meanExcess": 2.14,
+            "avgMAE": -5.04,
+            "avgMFE": 11.9
+          },
+          "retentionVsCurrent": 106.4,
+          "deltaVsCurrent": {
+            "mean": 0.07,
+            "positiveRate": 1.6,
+            "benchmarkBeatRate": 2.7,
+            "meanExcess": -0.05
+          },
+          "positiveBatchCount": 2
+        },
+        "confirmedBreakBoost": {
+          "pooledTrain": {
+            "n": 553,
+            "mean": 2.15,
+            "positiveRate": 62.6,
+            "benchmarkBeatRate": 53.9,
+            "meanExcess": 0.77,
+            "avgMAE": -5.82,
+            "avgMFE": 7.75
+          },
+          "pooledTest": {
+            "n": 168,
+            "mean": 4.6,
+            "positiveRate": 63.7,
+            "benchmarkBeatRate": 57.1,
+            "meanExcess": 2.12,
+            "avgMAE": -5,
+            "avgMFE": 11.9
+          },
+          "retentionVsCurrent": 107.7,
+          "deltaVsCurrent": {
+            "mean": 0.06,
+            "positiveRate": 1.5,
+            "benchmarkBeatRate": 2.6,
+            "meanExcess": -0.07
+          },
+          "positiveBatchCount": 2
         }
       },
       "perBatch": [
@@ -3691,6 +5032,120 @@
                 "avgMFE": 9.98,
                 "hitPlus7": 66.1,
                 "hitMinus7": 29
+              }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 132,
+                "mean": 3.37,
+                "median": 5.18,
+                "positiveRate": 68.9,
+                "benchmarkBeatRate": 62.1,
+                "meanExcess": 1.64,
+                "avgMAE": -5.09,
+                "avgMFE": 8.91,
+                "hitPlus7": 57.6,
+                "hitMinus7": 28
+              },
+              "train": {
+                "n": 95,
+                "mean": 2.78,
+                "median": 4.96,
+                "positiveRate": 68.4,
+                "benchmarkBeatRate": 62.1,
+                "meanExcess": 1.32,
+                "avgMAE": -5.28,
+                "avgMFE": 7.8,
+                "hitPlus7": 50.5,
+                "hitMinus7": 30.5
+              },
+              "test": {
+                "n": 37,
+                "mean": 4.9,
+                "median": 6.9,
+                "positiveRate": 70.3,
+                "benchmarkBeatRate": 62.2,
+                "meanExcess": 2.44,
+                "avgMAE": -4.6,
+                "avgMFE": 11.74,
+                "hitPlus7": 75.7,
+                "hitMinus7": 21.6
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 31,
+                "mean": 2.67,
+                "median": 3.56,
+                "positiveRate": 71,
+                "benchmarkBeatRate": 67.7,
+                "meanExcess": 1.69,
+                "avgMAE": -5.85,
+                "avgMFE": 8.91,
+                "hitPlus7": 58.1,
+                "hitMinus7": 32.3
+              },
+              "train": {
+                "n": 22,
+                "mean": 2.98,
+                "median": 3.88,
+                "positiveRate": 72.7,
+                "benchmarkBeatRate": 72.7,
+                "meanExcess": 2.54,
+                "avgMAE": -6.54,
+                "avgMFE": 8.64,
+                "hitPlus7": 54.5,
+                "hitMinus7": 36.4
+              },
+              "test": {
+                "n": 9,
+                "mean": 1.92,
+                "median": 3.13,
+                "positiveRate": 66.7,
+                "benchmarkBeatRate": 55.6,
+                "meanExcess": -0.39,
+                "avgMAE": -4.17,
+                "avgMFE": 9.58,
+                "hitPlus7": 66.7,
+                "hitMinus7": 22.2
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 31,
+                "mean": 2.67,
+                "median": 3.56,
+                "positiveRate": 71,
+                "benchmarkBeatRate": 67.7,
+                "meanExcess": 1.69,
+                "avgMAE": -5.85,
+                "avgMFE": 8.91,
+                "hitPlus7": 58.1,
+                "hitMinus7": 32.3
+              },
+              "train": {
+                "n": 22,
+                "mean": 2.98,
+                "median": 3.88,
+                "positiveRate": 72.7,
+                "benchmarkBeatRate": 72.7,
+                "meanExcess": 2.54,
+                "avgMAE": -6.54,
+                "avgMFE": 8.64,
+                "hitPlus7": 54.5,
+                "hitMinus7": 36.4
+              },
+              "test": {
+                "n": 9,
+                "mean": 1.92,
+                "median": 3.13,
+                "positiveRate": 66.7,
+                "benchmarkBeatRate": 55.6,
+                "meanExcess": -0.39,
+                "avgMAE": -4.17,
+                "avgMFE": 9.58,
+                "hitPlus7": 66.7,
+                "hitMinus7": 22.2
               }
             }
           },
@@ -4090,6 +5545,120 @@
                 "hitPlus7": 68.4,
                 "hitMinus7": 34.2
               }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 143,
+                "mean": 5.02,
+                "median": 3.43,
+                "positiveRate": 67.1,
+                "benchmarkBeatRate": 55.9,
+                "meanExcess": 3.29,
+                "avgMAE": -5.31,
+                "avgMFE": 10.8,
+                "hitPlus7": 55.2,
+                "hitMinus7": 29.4
+              },
+              "train": {
+                "n": 102,
+                "mean": 4.39,
+                "median": 2.88,
+                "positiveRate": 68.6,
+                "benchmarkBeatRate": 54.9,
+                "meanExcess": 2.81,
+                "avgMAE": -5.56,
+                "avgMFE": 9.95,
+                "hitPlus7": 52,
+                "hitMinus7": 30.4
+              },
+              "test": {
+                "n": 41,
+                "mean": 6.59,
+                "median": 7.14,
+                "positiveRate": 63.4,
+                "benchmarkBeatRate": 58.5,
+                "meanExcess": 4.48,
+                "avgMAE": -4.7,
+                "avgMFE": 12.91,
+                "hitPlus7": 63.4,
+                "hitMinus7": 26.8
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 38,
+                "mean": 6.69,
+                "median": 6.51,
+                "positiveRate": 71.1,
+                "benchmarkBeatRate": 63.2,
+                "meanExcess": 4.71,
+                "avgMAE": -5.66,
+                "avgMFE": 12.61,
+                "hitPlus7": 60.5,
+                "hitMinus7": 28.9
+              },
+              "train": {
+                "n": 25,
+                "mean": 3.31,
+                "median": 4.67,
+                "positiveRate": 68,
+                "benchmarkBeatRate": 60,
+                "meanExcess": 1.53,
+                "avgMAE": -7.2,
+                "avgMFE": 9.33,
+                "hitPlus7": 52,
+                "hitMinus7": 36
+              },
+              "test": {
+                "n": 13,
+                "mean": 13.19,
+                "median": 11.6,
+                "positiveRate": 76.9,
+                "benchmarkBeatRate": 69.2,
+                "meanExcess": 10.81,
+                "avgMAE": -2.72,
+                "avgMFE": 18.9,
+                "hitPlus7": 76.9,
+                "hitMinus7": 15.4
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 38,
+                "mean": 6.69,
+                "median": 6.51,
+                "positiveRate": 71.1,
+                "benchmarkBeatRate": 63.2,
+                "meanExcess": 4.71,
+                "avgMAE": -5.66,
+                "avgMFE": 12.61,
+                "hitPlus7": 60.5,
+                "hitMinus7": 28.9
+              },
+              "train": {
+                "n": 25,
+                "mean": 3.31,
+                "median": 4.67,
+                "positiveRate": 68,
+                "benchmarkBeatRate": 60,
+                "meanExcess": 1.53,
+                "avgMAE": -7.2,
+                "avgMFE": 9.33,
+                "hitPlus7": 52,
+                "hitMinus7": 36
+              },
+              "test": {
+                "n": 13,
+                "mean": 13.19,
+                "median": 11.6,
+                "positiveRate": 76.9,
+                "benchmarkBeatRate": 69.2,
+                "meanExcess": 10.81,
+                "avgMAE": -2.72,
+                "avgMFE": 18.9,
+                "hitPlus7": 76.9,
+                "hitMinus7": 15.4
+              }
             }
           },
           "evidence": [
@@ -4488,6 +6057,120 @@
                 "hitPlus7": 60.9,
                 "hitMinus7": 34.8
               }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 140,
+                "mean": 0.9,
+                "median": 1.52,
+                "positiveRate": 54.3,
+                "benchmarkBeatRate": 49.3,
+                "meanExcess": -0.4,
+                "avgMAE": -6.54,
+                "avgMFE": 7.86,
+                "hitPlus7": 42.1,
+                "hitMinus7": 38.6
+              },
+              "train": {
+                "n": 95,
+                "mean": -0.09,
+                "median": 0.82,
+                "positiveRate": 52.6,
+                "benchmarkBeatRate": 46.3,
+                "meanExcess": -1.1,
+                "avgMAE": -6.92,
+                "avgMFE": 5.58,
+                "hitPlus7": 34.7,
+                "hitMinus7": 40
+              },
+              "test": {
+                "n": 45,
+                "mean": 2.99,
+                "median": 2.37,
+                "positiveRate": 57.8,
+                "benchmarkBeatRate": 55.6,
+                "meanExcess": 1.07,
+                "avgMAE": -5.73,
+                "avgMFE": 12.67,
+                "hitPlus7": 57.8,
+                "hitMinus7": 35.6
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 46,
+                "mean": 2.07,
+                "median": -0.32,
+                "positiveRate": 47.8,
+                "benchmarkBeatRate": 45.7,
+                "meanExcess": 1.07,
+                "avgMAE": -6.61,
+                "avgMFE": 9.75,
+                "hitPlus7": 41.3,
+                "hitMinus7": 43.5
+              },
+              "train": {
+                "n": 30,
+                "mean": -3.93,
+                "median": -3.19,
+                "positiveRate": 30,
+                "benchmarkBeatRate": 26.7,
+                "meanExcess": -3.7,
+                "avgMAE": -9.46,
+                "avgMFE": 4.02,
+                "hitPlus7": 26.7,
+                "hitMinus7": 56.7
+              },
+              "test": {
+                "n": 16,
+                "mean": 13.31,
+                "median": 12.92,
+                "positiveRate": 81.3,
+                "benchmarkBeatRate": 81.3,
+                "meanExcess": 10.02,
+                "avgMAE": -1.27,
+                "avgMFE": 20.5,
+                "hitPlus7": 68.8,
+                "hitMinus7": 18.8
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 46,
+                "mean": 2.07,
+                "median": -0.32,
+                "positiveRate": 47.8,
+                "benchmarkBeatRate": 45.7,
+                "meanExcess": 1.07,
+                "avgMAE": -6.61,
+                "avgMFE": 9.75,
+                "hitPlus7": 41.3,
+                "hitMinus7": 43.5
+              },
+              "train": {
+                "n": 30,
+                "mean": -3.93,
+                "median": -3.19,
+                "positiveRate": 30,
+                "benchmarkBeatRate": 26.7,
+                "meanExcess": -3.7,
+                "avgMAE": -9.46,
+                "avgMFE": 4.02,
+                "hitPlus7": 26.7,
+                "hitMinus7": 56.7
+              },
+              "test": {
+                "n": 16,
+                "mean": 13.31,
+                "median": 12.92,
+                "positiveRate": 81.3,
+                "benchmarkBeatRate": 81.3,
+                "meanExcess": 10.02,
+                "avgMAE": -1.27,
+                "avgMFE": 20.5,
+                "hitPlus7": 68.8,
+                "hitMinus7": 18.8
+              }
             }
           },
           "evidence": [
@@ -4885,6 +6568,120 @@
                 "avgMFE": 9.42,
                 "hitPlus7": 52.2,
                 "hitMinus7": 40.6
+              }
+            },
+            "currentReviewFirst": {
+              "overall": {
+                "n": 134,
+                "mean": 2.81,
+                "median": 3.88,
+                "positiveRate": 63.4,
+                "benchmarkBeatRate": 53,
+                "meanExcess": 1.14,
+                "avgMAE": -6.12,
+                "avgMFE": 8.79,
+                "hitPlus7": 48.5,
+                "hitMinus7": 40.3
+              },
+              "train": {
+                "n": 89,
+                "mean": 1.51,
+                "median": 2.71,
+                "positiveRate": 58.4,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": 0.64,
+                "avgMAE": -6.5,
+                "avgMFE": 8.01,
+                "hitPlus7": 42.7,
+                "hitMinus7": 42.7
+              },
+              "test": {
+                "n": 45,
+                "mean": 5.39,
+                "median": 5.71,
+                "positiveRate": 73.3,
+                "benchmarkBeatRate": 62.2,
+                "meanExcess": 2.12,
+                "avgMAE": -5.38,
+                "avgMFE": 10.32,
+                "hitPlus7": 60,
+                "hitMinus7": 35.6
+              }
+            },
+            "reviewFirstAndBreak": {
+              "overall": {
+                "n": 36,
+                "mean": 2.88,
+                "median": 3.08,
+                "positiveRate": 61.1,
+                "benchmarkBeatRate": 58.3,
+                "meanExcess": 2.23,
+                "avgMAE": -5.94,
+                "avgMFE": 9.62,
+                "hitPlus7": 50,
+                "hitMinus7": 41.7
+              },
+              "train": {
+                "n": 24,
+                "mean": 0.04,
+                "median": -0.65,
+                "positiveRate": 50,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.51,
+                "avgMAE": -6.76,
+                "avgMFE": 7.28,
+                "hitPlus7": 37.5,
+                "hitMinus7": 45.8
+              },
+              "test": {
+                "n": 12,
+                "mean": 8.57,
+                "median": 6.32,
+                "positiveRate": 83.3,
+                "benchmarkBeatRate": 75,
+                "meanExcess": 5.65,
+                "avgMAE": -4.3,
+                "avgMFE": 14.32,
+                "hitPlus7": 75,
+                "hitMinus7": 33.3
+              }
+            },
+            "reviewFirstAndBreakWithSupport": {
+              "overall": {
+                "n": 36,
+                "mean": 2.88,
+                "median": 3.08,
+                "positiveRate": 61.1,
+                "benchmarkBeatRate": 58.3,
+                "meanExcess": 2.23,
+                "avgMAE": -5.94,
+                "avgMFE": 9.62,
+                "hitPlus7": 50,
+                "hitMinus7": 41.7
+              },
+              "train": {
+                "n": 24,
+                "mean": 0.04,
+                "median": -0.65,
+                "positiveRate": 50,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.51,
+                "avgMAE": -6.76,
+                "avgMFE": 7.28,
+                "hitPlus7": 37.5,
+                "hitMinus7": 45.8
+              },
+              "test": {
+                "n": 12,
+                "mean": 8.57,
+                "median": 6.32,
+                "positiveRate": 83.3,
+                "benchmarkBeatRate": 75,
+                "meanExcess": 5.65,
+                "avgMAE": -4.3,
+                "avgMFE": 14.32,
+                "hitPlus7": 75,
+                "hitMinus7": 33.3
               }
             }
           },
