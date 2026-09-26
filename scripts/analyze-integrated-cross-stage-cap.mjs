@@ -71,13 +71,30 @@ function evaluate(h,selector){
    stageShare:Object.fromEntries(stages.map(s=>[s,{n:stageCounts[s],pct:round(stageCounts[s]/Math.max(1,picked.length)*100,1)}]))
  };
 }
+const orders={
+  default:['Early Watch','Recovery','Attractive Growth','Established Move'],
+  reverse:['Established Move','Attractive Growth','Recovery','Early Watch'],
+  growthFirst:['Attractive Growth','Established Move','Recovery','Early Watch'],
+  recoveryFirst:['Recovery','Early Watch','Established Move','Attractive Growth']
+};
+function roundRobinOrdered(stageRows,maxTotal,order){
+ const out=[];
+ for(let rank=0;rank<6&&out.length<maxTotal;rank++){
+   for(const s of order){
+     const x=stageRows[s]?.[rank];
+     if(x&&out.length<maxTotal)out.push(x);
+   }
+ }
+ return out;
+}
 const result={generatedAt:new Date().toISOString(),note:'Cross-stage shortlist diagnostic. Stage scores are never compared across stages.',horizons:{}};
 for(const h of [5,10,20]){
  result.horizons[h]={
    uncapped:evaluate(h,(rows,all)=>all),
    fixed2Each:evaluate(h,rows=>fixed2(rows)),
    roundRobin8:evaluate(h,rows=>roundRobin(rows,8)),
-   roundRobin6:evaluate(h,rows=>roundRobin(rows,6))
+   roundRobin6:evaluate(h,rows=>roundRobin(rows,6)),
+   roundRobin6Orders:Object.fromEntries(Object.entries(orders).map(([name,order])=>[name,evaluate(h,rows=>roundRobinOrdered(rows,6,order))]))
  };
 }
 fs.mkdirSync('data',{recursive:true});
