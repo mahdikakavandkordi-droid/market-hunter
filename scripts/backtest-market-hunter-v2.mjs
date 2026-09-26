@@ -166,6 +166,20 @@ function earlyWatchRewriteDiagnostic(a){
       if(rs0(e))s+=35;
       else if(rsM5(e))s+=15;
       return s;
+    },
+    balancedEvidence:e=>{
+      let s=0;
+      if(e.features.downsideDecel===true)s+=35;
+      if(e.features.volumeShockNearLow===true)s+=15;
+      if(rs0(e))s+=25;
+      else if(rsM5(e))s+=15;
+      else if(Number.isFinite(e.features.rs20)&&e.features.rs20>=-10)s+=6;
+      if(fresh(e))s+=3;
+      if(Number.isFinite(e.features.upDownVolumeRatio)&&e.features.upDownVolumeRatio>=.85)s+=4;
+      if(Number.isFinite(e.features.momentumShift)&&e.features.momentumShift<=-5)s-=8;
+      if(e.features.swingTrend==='Structure improving')s+=2;
+      else if(e.features.swingTrend==='Higher highs + higher lows')s+=3;
+      return Math.max(0,s);
     }
   };
 
