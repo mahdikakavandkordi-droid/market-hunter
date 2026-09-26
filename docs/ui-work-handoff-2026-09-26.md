@@ -280,3 +280,43 @@ Validation:
 - allocation / currency guard / since-entry metrics present
 - GitHub Actions count remains unchanged at the one old failed run
 - newest Vercel preview currently observed is commit `59fbec2`; later V1.1 commits still need preview deployment before visual/runtime validation
+
+
+## Portfolio Monitor — V1.2 Advanced Risk
+
+Added after V1.1:
+
+### Advanced Risk (collapsed by default)
+Portfolio-level historical context is available behind a collapsed `Advanced Risk` section so the default Portfolio view remains compact.
+
+Metrics:
+- annualized volatility (recent common-session window)
+- portfolio max drawdown
+- beta vs TSX Composite
+- portfolio return vs TSX over the same window
+- excess return vs TSX
+- average pairwise holding correlation
+- diversification read
+- pairwise correlation matrix
+- beta-based TSX ±5% stress lens
+
+### Guardrails
+- these are descriptive historical analytics, not forecasts or trade signals
+- TSX Composite is the current portfolio-level benchmark
+- correlation remains available for mixed-currency portfolios because it is return-based
+- combined volatility / beta / stress analytics are withheld when holdings span multiple or unknown currencies
+- stress estimates are simple beta-based sensitivity approximations, not predicted outcomes
+- correlation table is limited in the UI to keep mobile density manageable
+
+### V1.2 commits
+- `43a8908` — advanced portfolio risk and correlation backend
+- `4e971e5` — collapsed Advanced Risk UI
+- `61b780a` — currency-safe advanced risk calculations
+- `1ab5341` — preserve correlation view for mixed-currency portfolios
+
+Validation:
+- frontend JavaScript syntax: PASS
+- `api/portfolio.js` syntax: PASS
+- Vercel deployment for `61b780a` is READY
+- no runtime errors observed in the selected recent Vercel window
+- GitHub Actions usage remains unchanged on the temporary UI branch
