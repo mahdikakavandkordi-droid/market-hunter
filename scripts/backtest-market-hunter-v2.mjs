@@ -184,14 +184,12 @@ for(const h of horizons){
   for(const stage of ['Early Watch','Recovery','Attractive Growth','Established Move']){
     const x=ev.filter(e=>e.stage===stage);
     const sp=splitChron(x);
-    const review=e=>['Review First','Prime'].includes(priorityBand(stage,e.rankScore));
-    const prime=e=>priorityBand(stage,e.rankScore)==='Prime';
+    const review=e=>priorityBand(stage,e.rankScore)==='Review First';
     report.horizons[h].byStage[stage]={
       overall:summary(x),train:summary(sp.train),test:summary(sp.test),ranking:rankingReport(x),
       fixedPriority:{
         floors:PRIORITY_FLOORS[stage],
-        reviewFirst:{train:summary(sp.train.filter(review)),test:summary(sp.test.filter(review))},
-        prime:{train:summary(sp.train.filter(prime)),test:summary(sp.test.filter(prime))}
+        reviewFirst:{train:summary(sp.train.filter(review)),test:summary(sp.test.filter(review))}
       },
       evidence:evidenceSlices(stage,x)
     };
