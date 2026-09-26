@@ -25,6 +25,22 @@ function recentSplit(rows,splitDays,lookback=30){
   return false;
 }
 
+function recoveryStageAge(rows,benchRows){
+  let age=0;
+  for(let offset=1;offset<=12;offset++){
+    const idx=rows.length-1-offset;
+    if(idx<100)break;
+    const date=dayKey(rows[idx].t),bh=benchmarkHist(benchRows,date);
+    if(!bh||bh.length<65)break;
+    const hist=rows.slice(0,idx+1),m=metrics(hist,bh);
+    if(!m)break;
+    if(rows[idx].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20)break;
+    if(classify(m)!=='Recovery')break;
+    age++;
+  }
+  return age;
+}
+
 function evidence(m,stage){
   const out=[];
   if(stage==='Early Watch'){
@@ -70,10 +86,11 @@ for(const symbol of symbols){
   if(m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){excluded.liquidity=(excluded.liquidity||0)+1;continue}
   const stage=classify(m);
   if(!stage){excluded.unclassified=(excluded.unclassified||0)+1;continue}
+  const stageAge=stage==='Recovery'?recoveryStageAge(r,bench):null;
   const baseScore=rank(m,stage),score=round(baseScore,1),surfaceScore=round(surfaceRank(m,stage,baseScore),1),flags=riskFlags(m),lane=reviewLane(stage,score,m);
   rows.push({
     symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,date,stage,
-    score,surfaceScore,priorityBand:priorityBand(stage,score),reviewLane:lane,riskFlags:flags,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),
+    score,surfaceScore,stageAge,priorityBand:priorityBand(stage,score),reviewLane:lane,riskFlags:flags,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),
     rs20:round(m.rs20),rs60:round(m.rs60),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),
     dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),avgDollar20:round(m.avgDollar20),
     momentumShift:round(m.momentumShift),upDownVolumeRatio:round(m.upDownVolumeRatio,2),
@@ -93,9 +110,10 @@ const surfacePicks=Object.fromEntries(
 );
 const surfaceCounts=Object.fromEntries(
   Object.keys(SURFACE_POLICY).map(stage=>{
-    const eligible=(byStage[stage]||[]).filter(x=>x.priorityBand===SURFACE_POLICY[stage].requiredBand).length;
+    const reviewFirst=(byStage[stage]||[]).filter(x=>x.priorityBand===SURFACE_POLICY[stage].requiredBand).length;
+    const eligible=(byStage[stage]||[]).filter(x=>surfaceEligible(stage,x.score,x)).length;
     const visible=surfacePicks[stage].length;
-    return [stage,{eligible,visible,hidden:Math.max(0,eligible-visible)}];
+    return [stage,{reviewFirst,eligible,visible,hidden:Math.max(0,reviewFirst-visible)}];
   })
 );
 const report={

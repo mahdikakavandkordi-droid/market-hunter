@@ -59,11 +59,11 @@ function policyReplay(h,filterFn,scoreFn=x=>Number.isFinite(x.surfaceScore)?x.su
   };
 }
 
-const result={generatedAt:new Date().toISOString(),note:'h2p6 validation: Recovery eligibility uses base score; daily shortlist ordering defaults to engine surfaceScore. Frontend unchanged.',dateRange:{start:dates[0]||null,end:dates.at(-1)||null,scanDays:dates.length},horizons:{}};
+const result={generatedAt:new Date().toISOString(),note:'h2p7 validation: Recovery surface requires base Review First, stageAge <= 2, and engine surfaceScore ordering. Frontend unchanged.',dateRange:{start:dates[0]||null,end:dates.at(-1)||null,scanDays:dates.length},horizons:{}};
 for(const h of horizons){
   const freshBreak3=x=>x.highBroken===true&&Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3;
   result.horizons[h]={
-    currentReviewFirst:policyReplay(h,()=>true),
+    currentReviewFirst:policyReplay(h,x=>Number.isFinite(x.stageAge)&&x.stageAge<=2),
     reviewFirstRsNonNegative:policyReplay(h,x=>Number.isFinite(x.rs20)&&x.rs20>=0),
     reviewFirstAndMinorHighBroken:policyReplay(h,x=>x.highBroken===true),
     reviewFirstAndFreshHighBreak3:policyReplay(h,freshBreak3),

@@ -73,12 +73,23 @@ for(const [stage,floor] of Object.entries(PRIORITY_FLOORS)){
 assert.equal(priorityBand('Unknown',99),'Stage Member');
 
 assert.equal(SURFACE_POLICY['Early Watch'].maxVisible,6);
+assert.equal(SURFACE_POLICY['Recovery'].maxStageAge,2);
 assert.equal(surfaceEligible('Early Watch',PRIORITY_FLOORS['Early Watch'].reviewFirst-0.1),false);
 assert.equal(surfaceEligible('Early Watch',PRIORITY_FLOORS['Early Watch'].reviewFirst),true);
-assert.equal(surfaceEligible('Recovery',99),false);
+assert.equal(surfaceEligible('Recovery',PRIORITY_FLOORS['Recovery'].reviewFirst,{stageAge:0}),true);
+assert.equal(surfaceEligible('Recovery',PRIORITY_FLOORS['Recovery'].reviewFirst,{stageAge:2}),true);
+assert.equal(surfaceEligible('Recovery',PRIORITY_FLOORS['Recovery'].reviewFirst,{stageAge:3}),false);
+assert.equal(surfaceEligible('Recovery',PRIORITY_FLOORS['Recovery'].reviewFirst),false);
 const surfaced=surfaceSelect('Early Watch',Array.from({length:9},(_,i)=>({symbol:'S'+i,score:70-i})));
 assert.equal(surfaced.length,6);
 assert.deepEqual(surfaced.map(x=>x.symbol),['S0','S1','S2','S3','S4','S5']);
+const recoverySurfaced=surfaceSelect('Recovery',[
+  {symbol:'A',score:60,surfaceScore:45,stageAge:0},
+  {symbol:'B',score:55,surfaceScore:54,stageAge:1},
+  {symbol:'C',score:58,surfaceScore:57,stageAge:2},
+  {symbol:'D',score:80,surfaceScore:79,stageAge:3}
+]);
+assert.deepEqual(recoverySurfaced.map(x=>x.symbol),['C','B']);
 
 assert.equal(reviewLane('Attractive Growth',PRIORITY_FLOORS['Attractive Growth'].reviewFirst,m({dist20:8})),'High Intensity');
 assert.equal(reviewLane('Established Move',PRIORITY_FLOORS['Established Move'].reviewFirst,m({rsi14:80})),'High Intensity');
