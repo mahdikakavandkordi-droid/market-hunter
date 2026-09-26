@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {classify,rank,surfaceRank,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,PRIORITY_FLOORS,SURFACE_POLICY} from '../lib/market-hunter-v2-engine.js';
+import {classify,rank,surfaceRank,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY} from '../lib/market-hunter-v2-engine.js';
 
 const base={
   weeklyUp:false,last:100,ma20:100,ma50:100,ma20Slope5:0,ma50Slope10:0,
