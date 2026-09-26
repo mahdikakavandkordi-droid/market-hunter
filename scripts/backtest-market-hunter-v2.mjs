@@ -92,6 +92,7 @@ function evidenceSlices(stage,a){
     ...common
   ];
   if(stage==='Recovery')return [
+    one('minorHighBroken',x=>x.features.highBroken===true),
     one('momentumShift>=2',x=>Number.isFinite(x.features.momentumShift)&&x.features.momentumShift>=2),
     one('freshReclaim<=5',x=>Number.isFinite(x.features.freshReclaimAge)&&x.features.freshReclaimAge<=5),
     one('absDist20<=3',x=>Number.isFinite(x.features.dist20)&&Math.abs(x.features.dist20)<=3),
@@ -115,6 +116,34 @@ function evidenceSlices(stage,a){
   ];
 }
 
+
+function recoveryStructureDiagnostic(a){
+  const broken=e=>e.features.highBroken===true;
+  const higherLow=e=>e.features.higherLow===true;
+  const improving=e=>['Structure improving','Higher highs + higher lows'].includes(e.features.swingTrend);
+  const strongMomentum=e=>Number.isFinite(e.features.momentumShift)&&e.features.momentumShift>=2;
+  const rs0=e=>Number.isFinite(e.features.rs20)&&e.features.rs20>=0;
+  const volSupport=e=>Number.isFinite(e.features.upDownVolumeRatio)&&e.features.upDownVolumeRatio>=.85;
+
+  const variants={
+    baseline:e=>true,
+    requireMinorHighBreak:e=>broken(e),
+    breakOrHigherLow:e=>broken(e)||higherLow(e),
+    structuralConfirmation:e=>broken(e)||improving(e),
+    breakWithSupport:e=>broken(e)&&(strongMomentum(e)||rs0(e)||volSupport(e))
+  };
+
+  const pack=rows=>{
+    const sp=splitChron(rows);
+    return {overall:summary(rows),train:summary(sp.train),test:summary(sp.test)};
+  };
+
+  return {
+    status:'recovery-structure-diagnostic-v1',
+    note:'Diagnostic only. Recovery classification and production ranking are unchanged.',
+    variants:Object.fromEntries(Object.entries(variants).map(([name,test])=>[name,pack(a.filter(test))]))
+  };
+}
 
 function earlyWatchRewriteDiagnostic(a){
   const fresh=e=>Number.isFinite(e.features.freshReclaimAge)&&e.features.freshReclaimAge<=3;
@@ -235,7 +264,8 @@ for(const symbol of symbols){
     const features={
       freshReclaimAge:m.freshReclaimAge,sellingFading:m.sellingFading,downsideDecel:m.downsideDecel,volumeShockNearLow:m.volumeShockNearLow,
       momentumShift:round(m.momentumShift),rs20:round(m.rs20),rs60:round(m.rs60),upDownVolumeRatio:round(m.upDownVolumeRatio,2),swingTrend:m.swingTrend,
-      higherLow:m.higherLow,dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),atr14Pct:round(m.atr14Pct),
+      higherLow:m.higherLow,highBroken:m.highBroken,lowBroken:m.lowBroken,localHigh:round(m.localHigh),localLow:round(m.localLow),
+      dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),atr14Pct:round(m.atr14Pct),
       ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),ma20Slope5:round(m.ma20Slope5),ma50Slope10:round(m.ma50Slope10),rsi14:round(m.rsi14,1)
     };
     for(const h of horizons){
@@ -303,7 +333,8 @@ for(const h of horizons){
         ...(stage==='Early Watch'?{polishGuard:{train:summary(sp.train.filter(earlyPolish)),test:summary(sp.test.filter(earlyPolish))}}:{})
       },
       evidence:evidenceSlices(stage,x),
-      ...(stage==='Early Watch'?{rewriteDiagnostic:earlyWatchRewriteDiagnostic(x)}:{})
+      ...(stage==='Early Watch'?{rewriteDiagnostic:earlyWatchRewriteDiagnostic(x)}:{}),
+      ...(stage==='Recovery'?{structureDiagnostic:recoveryStructureDiagnostic(x)}:{})
     };
   }
 }
