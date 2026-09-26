@@ -24,6 +24,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:18p
 .brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
 .toolbar{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.scan-settings{position:relative}.scan-settings>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:rgba(17,24,33,.82);border:1px solid var(--line);border-radius:10px;padding:9px 11px;color:var(--muted);font-size:11px;font-weight:750;min-height:38px}.scan-settings>summary::-webkit-details-marker{display:none}.scan-settings>summary:after{content:'⌄';font-size:9px}.scan-settings[open]>summary:after{content:'⌃'}.scan-settings-panel{position:absolute;right:0;top:44px;z-index:40;width:250px;padding:10px;background:rgba(13,20,28,.98);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.scan-settings-panel .control{width:100%;justify-content:space-between;margin-bottom:7px}.scan-settings-panel .control:last-child{margin-bottom:0}
 .control{display:flex;align-items:center;gap:7px;background:rgba(17,24,33,.82);border:1px solid var(--line);border-radius:10px;padding:7px 10px;color:var(--muted);font-size:12px;min-height:38px}
 .control strong{color:var(--text);font-weight:700}
 select{background:transparent;color:var(--text);border:0;outline:0;font:inherit;font-weight:700}
@@ -142,22 +143,21 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 }
 @media(max-width:620px){
   .wrap{padding:12px 12px 24px}header{padding:15px 14px;border-radius:16px}header{display:block;margin-bottom:12px}.brand h1{font-size:27px}.brand p{font-size:12px;max-width:340px}
-  .toolbar{align-items:stretch;margin-top:12px;gap:7px}.controls{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}
-  .control{padding:7px 9px;min-height:36px}.control span{display:none}button{padding:8px 11px;min-height:36px;font-size:12px}
+  .toolbar{align-items:stretch;margin-top:12px;gap:7px}.controls{display:flex;justify-content:flex-start;gap:7px}
+  .control{padding:7px 9px;min-height:36px}.control span{display:inline}button{padding:8px 11px;min-height:36px;font-size:12px}.scan-settings{flex:1}.scan-settings>summary{width:100%;justify-content:center;min-height:36px}.scan-settings-panel{left:0;right:auto;width:min(300px,calc(100vw - 28px))}
   .status{align-self:flex-start;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tabs{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:sticky;top:6px;z-index:20;backdrop-filter:blur(14px)}.tab{width:100%;padding:8px 4px;font-size:9px}
+  .tabs{width:calc(100% + 24px);margin-left:-12px;padding:5px 12px;display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:4px;z-index:20;backdrop-filter:blur(14px);border-left:0;border-right:0;border-radius:0}.tabs::-webkit-scrollbar{display:none}.tab{flex:0 0 auto;width:auto;padding:8px 12px;font-size:10px}
   .index-grid{grid-template-columns:1fr 1fr;gap:9px}.regime-grid{grid-template-columns:1fr 1fr;gap:7px}.regime-panel{padding:13px}.regime-card{padding:9px}.metric{padding:12px}.metric .v{font-size:19px}.metric .sub{font-size:10px}
   .market-grid{grid-template-columns:1fr}.sector-row{grid-template-columns:1.2fr .7fr .7fr .9fr}.sector-row>*:nth-child(4){display:none}.sector-row.head>*:nth-child(4){display:none}
   .takeaway-grid{grid-template-columns:1fr 1fr}.regime-strip{grid-template-columns:1fr 1fr}.regime-brief{padding:14px}.regime-sentence{font-size:12px}
   .grid{grid-template-columns:1fr}.stage{margin-top:20px}.stage-head{grid-template-columns:1fr auto;align-items:center;gap:8px}
   .stage-main{align-items:flex-start;gap:8px}.stage-copy h2{font-size:16px}.stage-copy p{font-size:10px;white-space:normal}
-  .badge{font-size:9px;padding:4px 7px;margin-top:1px}.card{padding:14px}.row{grid-template-columns:repeat(5,1fr)}
-  .mini{padding:7px 6px}.mini .v{font-size:12px}.detail-grid{grid-template-columns:repeat(2,1fr)}
+  .badge{font-size:9px;padding:4px 7px;margin-top:1px}.card{padding:14px}.row{grid-template-columns:repeat(2,1fr)}
+  .mini{padding:7px 8px}.mini .v{font-size:12px}.detail-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:390px){
-  .controls{grid-template-columns:1fr 1fr}#refresh{grid-column:1/-1}
-  .row{grid-template-columns:repeat(5,1fr)}
-  .mini{padding:6px 3px}.mini .k{font-size:8px}.mini .v{font-size:10px}
+  .row{grid-template-columns:repeat(2,1fr)}
+  .mini{padding:7px 6px}.mini .k{font-size:8px}.mini .v{font-size:11px}
   .sector-row{grid-template-columns:1.1fr .65fr .7fr}.sector-row>*:nth-child(5){display:none}.sector-row.head>*:nth-child(5){display:none}
 }
 
@@ -263,7 +263,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .pulse-returns{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}.pulse-return{padding:4px 0;border-top:1px solid rgba(255,255,255,.045);text-align:left}.pulse-return small{display:inline;font-size:6.5px;color:var(--muted);margin-right:4px}.pulse-return b{font-size:8px}
 .pulse-detail{padding-top:8px;margin-top:8px;border-top:1px solid rgba(255,255,255,.055);font-size:8px;line-height:1.5;color:var(--muted)}.pulse-detail strong{color:var(--text)}.pulse-analog{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:6px 0}.pulse-analog div{padding:5px;border-radius:7px;background:rgba(255,255,255,.025)}.pulse-analog small{display:block;font-size:6px;color:var(--muted)}.pulse-analog b{display:block;font-size:7px;color:var(--text);margin-top:2px}.pulse-warning{margin-top:6px;padding:6px 7px;border-radius:7px;background:rgba(241,199,91,.06);font-size:7px;line-height:1.45}.pulse-warning b{display:block;font-size:7px;margin-bottom:2px}.pulse-sample{font-size:6px;color:var(--muted);margin-top:2px}
 .market-internals{margin:0 0 18px;border:1px solid rgba(255,255,255,.065);border-radius:14px;background:rgba(255,255,255,.012);overflow:hidden}.market-internals>summary{cursor:pointer;list-style:none;padding:12px 14px;font-size:10px;font-weight:800;color:var(--text);display:flex;justify-content:space-between;align-items:center}.market-internals>summary::-webkit-details-marker{display:none}.market-internals>summary span{font-size:8px;font-weight:500;color:var(--muted)}.market-internals>summary:after{content:'＋';margin-left:auto;padding-left:12px;color:var(--muted)}.market-internals[open]>summary:after{content:'−'}.market-internals-body{padding:0 14px 14px}
-@media(max-width:900px){.pulse-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.pulse-grid{grid-template-columns:1fr}.pulse-head{display:block}.pulse-head .shown{display:none}.daily-report{padding:13px}.daily-headline{font-size:12px}.daily-group{padding:7px 6px}.daily-group b{font-size:9px}.market-internals>summary span{display:none}}
+@media(max-width:900px){.pulse-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.pulse-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;padding-bottom:3px;scrollbar-width:none}.pulse-grid::-webkit-scrollbar{display:none}.pulse-card{flex:0 0 82%;scroll-snap-align:start}.pulse-head{display:block}.pulse-head .shown{display:none}.daily-report{padding:13px}.daily-headline{font-size:12px}.daily-group{padding:7px 6px}.daily-group b{font-size:9px}.market-internals>summary span{display:none}}
 </style>
 </head>
 <body>
@@ -275,9 +275,14 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   </div>
   <div class="toolbar">
     <div class="controls">
-      <label class="control"><span>Show</span><strong>Top</strong><select id="topN"><option selected>3</option><option>5</option></select></label>
-      <label class="control"><span>Min $ volume</span><strong>Liquidity</strong><select id="liq"><option value="2000000">$2M</option><option value="5000000" selected>$5M</option><option value="10000000">$10M</option><option value="25000000">$25M</option></select></label>
       <button id="refresh">Refresh</button>
+      <details class="scan-settings">
+        <summary>Scan settings</summary>
+        <div class="scan-settings-panel">
+          <label class="control"><span>Legacy stage view</span><strong>Top</strong><select id="topN"><option selected>3</option><option>5</option></select></label>
+          <label class="control"><span>Market scan liquidity</span><strong>Minimum</strong><select id="liq"><option value="2000000">$2M</option><option value="5000000" selected>$5M</option><option value="10000000">$10M</option><option value="25000000">$25M</option></select></label>
+        </div>
+      </details>
     </div>
     <div class="status" id="status"><span class="dot"></span>Waiting for scan</div>
   </div>
