@@ -637,13 +637,13 @@ function renderPortfolioAdvanced(){
     <div class="portfolio-advanced-body">
       ${a.note?`<div class="risk-note">${esc(a.note)}</div>`:''}
       ${hasPortfolioRisk?`<div class="risk-grid">
-        <div class="risk-card"><small>Annualized volatility</small><b>${pct(a.annualizedVolPct)}</b></div>
+        <div class="risk-card"><small>Volatility vs TSX</small><b>${Number.isFinite(a.annualizedVolPct)?a.annualizedVolPct.toFixed(1)+'%':'—'} vs ${Number.isFinite(a.benchmarkAnnualizedVolPct)?a.benchmarkAnnualizedVolPct.toFixed(1)+'%':'—'}</b></div>
         <div class="risk-card"><small>Max drawdown</small><b class="${cls(a.maxDrawdownPct)}">${pct(a.maxDrawdownPct)}</b></div>
         <div class="risk-card"><small>Beta vs TSX</small><b>${Number.isFinite(a.betaVsTsx)?a.betaVsTsx.toFixed(2):'—'}</b></div>
         <div class="risk-card"><small>Return vs TSX</small><b class="${cls(a.excessReturnPct)}">${pct(a.portfolioReturnPct)} vs ${pct(a.benchmarkReturnPct)}</b></div>
         <div class="risk-card"><small>Avg correlation</small><b>${Number.isFinite(a.avgPairwiseCorrelation)?a.avgPairwiseCorrelation.toFixed(2):'—'}</b></div>
       </div>`:''}
-      ${a.diversificationRead?`<div class="risk-note">${esc(a.diversificationRead)}. Historical context only; not a forecast.</div>`:''}
+      ${a.diversificationRead?`<div class="risk-note">${esc(a.diversificationRead)}. Historical context only; not a forecast.${a.highestCorrelationPair?.symbols?.length===2&&Number.isFinite(a.highestCorrelationPair.correlation)?' Highest pair: '+a.highestCorrelationPair.symbols.map(x=>x.replace(/\\.(TO|NE|V)$/,'')).join(' / ')+' ('+a.highestCorrelationPair.correlation.toFixed(2)+').':''}</div>`:''}
       ${(a.stressLens||[]).length?`<div class="allocation-subhead">Stress lens</div><div class="stress-grid">${a.stressLens.map(x=>`<div class="stress-card">${esc(x.label)}<b class="${cls(x.estimatedPortfolioMovePct)}">Estimated portfolio move ${pct(x.estimatedPortfolioMovePct)}</b></div>`).join('')}</div><div class="risk-note">Stress estimates are simple beta-based sensitivity approximations. They are not predicted outcomes.</div>`:''}
       ${corrRows.length>1?`<div class="allocation-subhead">Holding correlation</div><div class="corr-wrap"><table class="corr-table"><thead><tr><th></th>${symbols.map(s=>`<th>${s.replace(/\\.(TO|NE|V)$/,'')}</th>`).join('')}</tr></thead><tbody>${corrRows.map(row=>`<tr><td>${row.symbol.replace(/\\.(TO|NE|V)$/,'')}</td>${symbols.map(sym=>{const v=row.values?.[sym];return `<td class="corr-cell ${corrClass(v)}">${Number.isFinite(v)?v.toFixed(2):'—'}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`:''}
     </div>
