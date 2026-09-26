@@ -27,7 +27,22 @@ assert.equal(classify(m({
 
 assert.equal(classify(m({
   priorWeakness:true,advancedNearHigh:false,nearLow20:true,ret5:-1,ret20:-7,
-  freshReclaimAge:1,pullback60:-14
+  freshReclaimAge:1,rs20:-2,pullback60:-14
+})),'Early Watch');
+
+assert.equal(classify(m({
+  priorWeakness:true,advancedNearHigh:false,nearLow20:true,ret5:-1,ret20:-7,
+  freshReclaimAge:1,rs20:-9,pullback60:-14
+})),null);
+
+assert.equal(classify(m({
+  priorWeakness:true,advancedNearHigh:false,nearLow20:true,ret5:-1,ret20:-7,
+  freshReclaimAge:null,sellingFading:true,pullback60:-14
+})),null);
+
+assert.equal(classify(m({
+  priorWeakness:true,advancedNearHigh:false,nearLow20:true,ret5:-2,ret20:-8,
+  freshReclaimAge:null,downsideDecel:true,volumeShockNearLow:true,pullback60:-14
 })),'Early Watch');
 
 assert.equal(classify(m({
