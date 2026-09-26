@@ -371,7 +371,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,{source:x.source||(x.entryStage?'market-hunter':'manual'),quantity:Number.isFinite(Number(x.quantity))&&Number(x.quantity)>0?Number(x.quantity):null,...x}]))}catch{return new Map()}};
-const state={data:null,v2:null,marketPulse:null,dailyMarketReport:null,portfolioData:new Map(),history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
+const state={data:null,v2:null,marketPulse:null,dailyMarketReport:null,portfolioData:new Map(),portfolioPreviousData:new Map(),history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
 function normalizeV2Candidate(x,stage=x.stage){
   return {
     ...x,
@@ -423,13 +423,24 @@ function localDateInput(d=new Date()){
 }
 async function refreshPortfolioData(){
   const symbols=[...state.positions.keys()].filter(Boolean);
-  state.portfolioData=new Map();
+  state.portfolioData=new Map();state.portfolioPreviousData=new Map();
   if(!symbols.length)return;
   try{
     const r=await fetch('/api/portfolio?symbols='+encodeURIComponent(symbols.join(',')),{cache:'no-store'});
     if(!r.ok)return;
-    const j=await r.json();
-    state.portfolioData=new Map((j.items||[]).map(x=>[x.symbol,x]));
+    const j=await r.json(),items=j.items||[];
+    state.portfolioData=new Map(items.map(x=>[x.symbol,x]));
+    const currentDate=items.map(x=>x.asOf).filter(Boolean).sort().at(-1)||null;
+    let saved=null;try{saved=JSON.parse(localStorage.getItem('marketHunterPortfolioDaily')||'null')}catch{}
+    if(saved?.currentDate&&saved.currentDate!==currentDate){
+      state.portfolioPreviousData=new Map((saved.currentItems||[]).map(x=>[x.symbol,x]));
+      localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify({previousDate:saved.currentDate,previousItems:saved.currentItems||[],currentDate,currentItems:items}));
+    }else if(saved?.currentDate===currentDate){
+      state.portfolioPreviousData=new Map((saved.previousItems||[]).map(x=>[x.symbol,x]));
+      localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify({...saved,currentItems:items}));
+    }else{
+      localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify({previousDate:null,previousItems:[],currentDate,currentItems:items}));
+    }
   }catch{}
 }
 function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
@@ -518,10 +529,11 @@ function portfolioRows(){
   return [...state.positions.values()].map(p=>({p,x:portfolioMarketData(p.symbol)}));
 }
 function portfolioChanges(rows){
-  const prev=previousCandidateMap(),out=[];
+  const fallback=previousCandidateMap(),out=[];
   for(const {p,x} of rows){
     if(!x)continue;
-    const reasons=changeReasons(x,prev.get(p.symbol));
+    const prev=state.portfolioPreviousData.get(p.symbol)||fallback.get(p.symbol);
+    const reasons=changeReasons(x,prev);
     if(reasons.length)out.push({symbol:p.symbol,reasons:reasons.slice(0,3)});
   }
   return out;
