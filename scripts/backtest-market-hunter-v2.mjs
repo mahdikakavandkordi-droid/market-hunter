@@ -281,7 +281,7 @@ for(const s of needed){
   catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set()}}
 }
 
-const rawEvents=[],surfaceReplayCandidates=[],recoverySurfaceReplayCandidates=[],attractiveGrowthSurfaceReplayCandidates=[],surfaceReplayDates=new Set(),latest=[];
+const rawEvents=[],surfaceReplayCandidates=[],recoverySurfaceReplayCandidates=[],attractiveGrowthSurfaceReplayCandidates=[],establishedMoveSurfaceReplayCandidates=[],surfaceReplayDates=new Set(),latest=[];
 for(const symbol of symbols){
   const pack=data[symbol],rows=pack.rows,benchPack=data[benchSymbol(symbol)],benchRows=benchPack?.rows||[];
   if(rows.length<120||benchRows.length<80)continue;
@@ -297,6 +297,23 @@ for(const symbol of symbols){
     const surfaceScore=stage?surfaceRank(m,stage,score):null;
     const stageAge=stage?(stage===prevStage?prevStageAge+1:0):null;
     surfaceReplayDates.add(date);
+    if(stage==='Established Move'&&priorityBand(stage,score)==='Review First'){
+      const flags=riskFlags(m);
+      for(const h of horizons){
+        const entry=rows[i].close,window=rows.slice(i+1,i+h+1),path=window.map(x=>pct(x.close,entry)).filter(Number.isFinite);
+        const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
+        const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
+        establishedMoveSurfaceReplayCandidates.push({
+          symbol,date,horizon:h,score:round(score,1),stageAge,cleanReview:flags.length===0,riskFlags:flags,
+          forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
+          mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
+          ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),dist20:round(m.dist20),
+          rs20:round(m.rs20),rs60:round(m.rs60),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct),
+          ma20Slope5:round(m.ma20Slope5),ma50Slope10:round(m.ma50Slope10),upDownVolumeRatio:round(m.upDownVolumeRatio,2),
+          swingTrend:m.swingTrend,higherLow:m.higherLow,highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge
+        });
+      }
+    }
     if(stage==='Attractive Growth'&&priorityBand(stage,score)==='Review First'){
       const flags=riskFlags(m);
       for(const h of horizons){
@@ -405,6 +422,12 @@ const report={
     maxVisible:6,
     dates:[...surfaceReplayDates].sort(),
     candidates:attractiveGrowthSurfaceReplayCandidates
+  },
+  establishedMoveSurfaceReplay:{
+    mode:'daily-established-move-review-first-candidates-with-current-health-features',
+    maxVisible:6,
+    dates:[...surfaceReplayDates].sort(),
+    candidates:establishedMoveSurfaceReplayCandidates
   },
   latestPicks:latest.sort((a,b)=>b.score-a.score)
 };
