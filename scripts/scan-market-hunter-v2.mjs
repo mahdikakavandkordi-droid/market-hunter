@@ -45,8 +45,6 @@ function evidence(m,stage){
     if(Number.isFinite(m.ret60)&&m.ret60>=20)out.push('mature 60-session advance');
     if(m.higherLow===true)out.push('higher low');
   }
-  if(Number.isFinite(m.atr14Pct)&&m.atr14Pct>=6)out.push('high ATR risk');
-  if(Number.isFinite(m.dist20)&&m.dist20>=6)out.push('extended above MA20');
   return out;
 }
 
