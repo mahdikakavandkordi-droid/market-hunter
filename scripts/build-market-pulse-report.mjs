@@ -48,24 +48,35 @@ function compareState(state,base){
 function chooseAnalog(bt,h,regime,condition){
   const hz=bt?.horizons?.[h],stateKey=`${regime} | ${condition}`;
   const exact=hz?.byState?.[stateKey]||null;
-  if(robust(exact))return {stats:exact,level:'Exact State',key:stateKey};
+  if(robust(exact))return {stats:exact,level:'Exact State',key:stateKey,exactStats:exact};
 
   const family=familyStats(hz?.byState||{},regime,condition);
-  if(robust(family))return {stats:family,level:'State Family',key:`${regimeFamily(regime)} | ${conditionFamily(condition)}`};
+  if(robust(family))return {stats:family,level:'State Family',key:`${regimeFamily(regime)} | ${conditionFamily(condition)}`,exactStats:exact};
 
   const reg=hz?.byRegime?.[regime]||null;
-  if(robust(reg,150,45))return {stats:reg,level:'Regime',key:regime};
+  if(robust(reg,150,45))return {stats:reg,level:'Regime',key:regime,exactStats:exact};
 
   const cond=hz?.byCondition?.[condition]||null;
-  if(robust(cond,150,45))return {stats:cond,level:'Condition',key:condition};
+  if(robust(cond,150,45))return {stats:cond,level:'Condition',key:condition,exactStats:exact};
 
-  return {stats:hz?.overall||null,level:'Market Baseline',key:'All states'};
+  return {stats:hz?.overall||null,level:'Market Baseline',key:'All states',exactStats:exact};
 }
 function horizonAssessment(chosen,baseStats){
   const stateStats=chosen?.stats;
   if(!stateStats||!baseStats)return null;
   const overall=compareState(stateStats.overall,baseStats.overall);
   const recent=compareState(stateStats.recent,baseStats.recent);
+  const exact=chosen?.exactStats;
+  const exactRecent=exact?.recent||null;
+  const exactVsChosen=chosen.level!=='Exact State'&&exactRecent&&stateStats.recent?{
+    sample:{overall:exact?.overall?.n||0,recent:exactRecent.n||0},
+    recentMeanGap:round(exactRecent.mean-stateStats.recent.mean),
+    recentPositiveRateGap:round(exactRecent.positiveRate-stateStats.recent.positiveRate,1)
+  }:null;
+  const specificSetupWarning=!!(exactVsChosen&&exactVsChosen.sample.recent>=15&&(
+    exactVsChosen.recentMeanGap<=-1||
+    exactVsChosen.recentPositiveRateGap<=-10
+  ));
   const favorable=x=>x&&x.meanLift>0&&x.positiveRateLift>=0;
   const weaker=x=>x&&x.meanLift<0&&x.positiveRateLift<=0;
   let label='Mixed / Near Baseline';
@@ -84,7 +95,12 @@ function horizonAssessment(chosen,baseStats){
     stateRecent:stateStats.recent,
     baselineOverall:baseStats.overall,
     baselineRecent:baseStats.recent,
-    lift:{overall,recent}
+    lift:{overall,recent},
+    specificSetup:exactVsChosen?{
+      ...exactVsChosen,
+      warning:specificSetupWarning,
+      note:specificSetupWarning?'Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through.':null
+    }:null
   };
 }
 function signed(n){return Number.isFinite(n)?(n>=0?'+':'')+round(n,1)+'%':'—'}
@@ -110,7 +126,9 @@ function outlookText(m,a5,a10,a20){
   const labels=usable.map(x=>x.label);
   const weakRecent=usable.filter(x=>x?.lift?.recent?.meanLift<0).length;
   const strongRecent=usable.filter(x=>x?.lift?.recent?.meanLift>0).length;
+  const specificWarnings=usable.filter(x=>x?.specificSetup?.warning).length;
   if((regime==='Strong Bull'||regime==='Bull')&&condition==='Pullback'){
+    if(specificWarnings>=2)return 'Primary trend remains constructive, and the broader pullback family is reasonably supported, but the exact current setup has shown materially weaker recent follow-through. Treat rebound expectations cautiously until price confirms.';
     if(weakRecent>=2)return 'Primary trend remains constructive, but recent historical pullback analogs have been weaker than the market\'s normal baseline. Treat this as an intact trend with elevated continuation risk, not an automatic rebound signal.';
     if(strongRecent>=2)return 'Primary trend remains constructive and recent pullback analogs have generally held up better than baseline. Continuation is supported historically, but confirmation still matters.';
     return 'Primary trend remains constructive, while pullback analogs are mixed. Expect a two-sided setup until support or resistance resolves.';
@@ -178,7 +196,7 @@ if(us.every(x=>x.descriptiveState?.regime==='Strong Bull')&&crypto.every(x=>x.de
 if(metals.every(x=>x.descriptiveState?.condition==='Weakening'))overall+=' Precious metals are currently in a weakening short-term phase.';
 
 const report={
-  version:'market-pulse-report-v0.2-2026-09-26',
+  version:'market-pulse-report-v0.3-2026-09-26',
   sourceVersion:latest.version,
   generatedAt:new Date().toISOString(),
   status:'research',
@@ -188,7 +206,7 @@ const report={
     familyConditions:['Advance','Pullback','Extended','Recovery','Weak / Range'],
     fallbackOrder:['Exact State','State Family','Regime','Condition','Market Baseline']
   },
-  note:'Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal. Historical analog confidence automatically falls back to broader families when exact-state samples are sparse.',
+  note:'Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal. Historical analog confidence automatically falls back to broader families when exact-state samples are sparse, while weak exact-state evidence is retained as a secondary caution.',
   crossMarketRead:{headline:overall,groups:groupReads},
   markets:marketReports
 };
