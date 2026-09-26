@@ -4,10 +4,37 @@ const latest=JSON.parse(fs.readFileSync('data/market-pulse-latest.json','utf8'))
 const backtest=JSON.parse(fs.readFileSync('data/market-pulse-state-backtest.json','utf8'));
 const round=(n,d=2)=>Number.isFinite(n)?Number(n.toFixed(d)):null;
 
+const regimeFamily=r=>r==='Strong Bull'||r==='Bull'?'Bullish':r==='Strong Bear'||r==='Bear'?'Bearish':'Mixed';
+const conditionFamily=c=>c==='Breakout / Near High'||c==='Positive Momentum'?'Advance':
+  c==='Pullback'?'Pullback':
+  c==='Extended'?'Extended':
+  c==='Recovery Attempt'?'Recovery':'Weak / Range';
+
 function confidence(overallN,recentN){
-  if(overallN>=200&&recentN>=80)return 'High';
+  if(overallN>=200&&recentN>=60)return 'High';
   if(overallN>=100&&recentN>=30)return 'Moderate';
   return 'Low';
+}
+function robust(stats,minOverall=100,minRecent=30){
+  return !!stats&&(stats.overall?.n||0)>=minOverall&&(stats.recent?.n||0)>=minRecent;
+}
+function mergeSummary(xs){
+  xs=xs.filter(Boolean).filter(x=>(x.n||0)>0);
+  const n=xs.reduce((s,x)=>s+x.n,0);if(!n)return null;
+  const w=k=>xs.reduce((s,x)=>s+(Number.isFinite(x[k])?x[k]*x.n:0),0)/n;
+  return {n,mean:round(w('mean')),median:null,positiveRate:round(w('positiveRate'),1),avgMAE:round(w('avgMAE')),avgMFE:round(w('avgMFE')),hitPlus5:round(w('hitPlus5'),1),hitMinus5:round(w('hitMinus5'),1)};
+}
+function familyStats(byState,regime,condition){
+  const rf=regimeFamily(regime),cf=conditionFamily(condition),matched=[];
+  for(const [state,v] of Object.entries(byState||{})){
+    const [r,c]=state.split(' | ');
+    if(regimeFamily(r)===rf&&conditionFamily(c)===cf)matched.push(v);
+  }
+  return {
+    overall:mergeSummary(matched.map(x=>x?.overall)),
+    train:mergeSummary(matched.map(x=>x?.train)),
+    recent:mergeSummary(matched.map(x=>x?.recent))
+  };
 }
 function compareState(state,base){
   if(!state||!base)return null;
@@ -18,20 +45,41 @@ function compareState(state,base){
     mfeDelta:round(state.avgMFE-base.avgMFE)
   };
 }
-function horizonAssessment(stateStats,baseStats){
+function chooseAnalog(bt,h,regime,condition){
+  const hz=bt?.horizons?.[h],stateKey=`${regime} | ${condition}`;
+  const exact=hz?.byState?.[stateKey]||null;
+  if(robust(exact))return {stats:exact,level:'Exact State',key:stateKey};
+
+  const family=familyStats(hz?.byState||{},regime,condition);
+  if(robust(family))return {stats:family,level:'State Family',key:`${regimeFamily(regime)} | ${conditionFamily(condition)}`};
+
+  const reg=hz?.byRegime?.[regime]||null;
+  if(robust(reg,150,45))return {stats:reg,level:'Regime',key:regime};
+
+  const cond=hz?.byCondition?.[condition]||null;
+  if(robust(cond,150,45))return {stats:cond,level:'Condition',key:condition};
+
+  return {stats:hz?.overall||null,level:'Market Baseline',key:'All states'};
+}
+function horizonAssessment(chosen,baseStats){
+  const stateStats=chosen?.stats;
   if(!stateStats||!baseStats)return null;
   const overall=compareState(stateStats.overall,baseStats.overall);
   const recent=compareState(stateStats.recent,baseStats.recent);
   const favorable=x=>x&&x.meanLift>0&&x.positiveRateLift>=0;
   const weaker=x=>x&&x.meanLift<0&&x.positiveRateLift<=0;
   let label='Mixed / Near Baseline';
-  if(favorable(overall)&&favorable(recent))label='Historically Favorable';
+  if(chosen.level==='Market Baseline')label='Baseline Context';
+  else if(favorable(overall)&&favorable(recent))label='Historically Favorable';
   else if(weaker(overall)&&weaker(recent))label='Historically Weaker';
   else if(favorable(overall)&&weaker(recent))label='Long-term Favorable · Recent Weaker';
   else if(weaker(overall)&&favorable(recent))label='Long-term Weaker · Recent Better';
   return {
     label,
-    confidence:confidence(stateStats.overall?.n||0,stateStats.recent?.n||0),
+    analogLevel:chosen.level,
+    analogKey:chosen.key,
+    confidence:chosen.level==='Market Baseline'?'Low':confidence(stateStats.overall?.n||0,stateStats.recent?.n||0),
+    sample:{overall:stateStats.overall?.n||0,recent:stateStats.recent?.n||0},
     stateOverall:stateStats.overall,
     stateRecent:stateStats.recent,
     baselineOverall:baseStats.overall,
@@ -58,27 +106,28 @@ function watch(m){
 }
 function outlookText(m,a5,a10,a20){
   const regime=m.descriptiveState?.regime,condition=m.descriptiveState?.condition;
-  const labels=[a5?.label,a10?.label,a20?.label].filter(Boolean);
-  const weakRecent=[a5,a10,a20].filter(x=>x?.lift?.recent?.meanLift<0).length;
-  const strongRecent=[a5,a10,a20].filter(x=>x?.lift?.recent?.meanLift>0).length;
+  const usable=[a5,a10,a20].filter(x=>x&&x.analogLevel!=='Market Baseline');
+  const labels=usable.map(x=>x.label);
+  const weakRecent=usable.filter(x=>x?.lift?.recent?.meanLift<0).length;
+  const strongRecent=usable.filter(x=>x?.lift?.recent?.meanLift>0).length;
   if((regime==='Strong Bull'||regime==='Bull')&&condition==='Pullback'){
     if(weakRecent>=2)return 'Primary trend remains constructive, but recent historical pullback analogs have been weaker than the market\'s normal baseline. Treat this as an intact trend with elevated continuation risk, not an automatic rebound signal.';
     if(strongRecent>=2)return 'Primary trend remains constructive and recent pullback analogs have generally held up better than baseline. Continuation is supported historically, but confirmation still matters.';
     return 'Primary trend remains constructive, while pullback analogs are mixed. Expect a two-sided setup until support or resistance resolves.';
   }
-  if((regime==='Strong Bull'||regime==='Bull')&&condition==='Breakout / Near High'){
-    if(weakRecent>=2)return 'Trend is strong, but near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.';
-    return 'Trend and location are constructive. Historical near-high behavior does not remove pullback risk, so follow-through above resistance matters more than the headline trend label.';
+  if((regime==='Strong Bull'||regime==='Bull')&&(condition==='Breakout / Near High'||condition==='Positive Momentum')){
+    if(weakRecent>=2)return 'Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.';
+    return 'Trend and location are constructive. Historical advance behavior does not remove pullback risk, so follow-through above resistance matters more than the headline trend label.';
   }
-  if(condition==='Weakening'){
-    if(strongRecent>=2)return 'Momentum and structure are weakening, but similar recent states have still produced positive forward returns. This is better framed as a damaged/uncertain setup than a clean bearish call.';
-    if(weakRecent>=2)return 'Momentum and structure are weakening and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.';
-    return 'Momentum is weakening, but historical follow-through is mixed. Confirmation from support/resistance is more useful than assuming immediate continuation lower.';
+  if(condition==='Weakening'||condition==='Range / Mixed'){
+    if(strongRecent>=2)return 'Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.';
+    if(weakRecent>=2)return 'Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.';
+    return 'Short-term structure is soft, but historical follow-through is mixed. Confirmation from support/resistance is more useful than assuming immediate continuation lower.';
   }
   if(condition==='Recovery Attempt')return 'The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.';
   if(condition==='Extended')return 'Trend is constructive but stretched. Historical context favors separating trend strength from entry timing; consolidation risk is elevated.';
-  if(labels.every(x=>x==='Historically Favorable'))return 'Current analogs have historically outperformed this market\'s baseline across the tested horizons.';
-  if(labels.every(x=>x==='Historically Weaker'))return 'Current analogs have historically underperformed this market\'s baseline across the tested horizons.';
+  if(labels.length&&labels.every(x=>x==='Historically Favorable'))return 'Current analogs have historically outperformed this market\'s baseline across the tested horizons.';
+  if(labels.length&&labels.every(x=>x==='Historically Weaker'))return 'Current analogs have historically underperformed this market\'s baseline across the tested horizons.';
   return 'Historical analogs are mixed across horizons, so scenario levels matter more than a single directional forecast.';
 }
 function groupRead(rows,label){
@@ -97,16 +146,15 @@ function groupRead(rows,label){
 
 const marketReports=[];
 for(const m of latest.markets){
-  const bt=backtest.markets?.[m.key],stateKey=`${m.descriptiveState.regime} | ${m.descriptiveState.condition}`;
+  const bt=backtest.markets?.[m.key],regime=m.descriptiveState.regime,condition=m.descriptiveState.condition;
   const assessments={};
   for(const h of ['5','10','20']){
-    const stateStats=bt?.horizons?.[h]?.byState?.[stateKey]||null;
-    const baseStats=bt?.horizons?.[h]?.overall||null;
-    assessments[h]=horizonAssessment(stateStats,baseStats);
+    const chosen=chooseAnalog(bt,h,regime,condition);
+    assessments[h]=horizonAssessment(chosen,bt?.horizons?.[h]?.overall||null);
   }
   marketReports.push({
     key:m.key,name:m.name,symbol:m.symbol,group:m.group,asOf:m.asOf,price:m.price,
-    regime:m.descriptiveState.regime,condition:m.descriptiveState.condition,
+    regime,condition,
     whatHappened:happened(m),
     whereWeAre:where(m),
     historicalAnalog:assessments,
@@ -130,13 +178,19 @@ if(us.every(x=>x.descriptiveState?.regime==='Strong Bull')&&crypto.every(x=>x.de
 if(metals.every(x=>x.descriptiveState?.condition==='Weakening'))overall+=' Precious metals are currently in a weakening short-term phase.';
 
 const report={
-  version:'market-pulse-report-v0.1-2026-09-26',
+  version:'market-pulse-report-v0.2-2026-09-26',
   sourceVersion:latest.version,
   generatedAt:new Date().toISOString(),
   status:'research',
-  note:'Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal.',
+  analogPolicy:{
+    exactMinimum:{overall:100,recent:30},
+    familyRegimes:['Bullish','Mixed','Bearish'],
+    familyConditions:['Advance','Pullback','Extended','Recovery','Weak / Range'],
+    fallbackOrder:['Exact State','State Family','Regime','Condition','Market Baseline']
+  },
+  note:'Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal. Historical analog confidence automatically falls back to broader families when exact-state samples are sparse.',
   crossMarketRead:{headline:overall,groups:groupReads},
   markets:marketReports
 };
 fs.writeFileSync('data/market-pulse-report.json',JSON.stringify(report,null,2));
-console.log(JSON.stringify({headline:report.crossMarketRead.headline,markets:marketReports.map(x=>({key:x.key,regime:x.regime,condition:x.condition,outlook:x.outlook,watchNext:x.watchNext}))},null,2));
+console.log(JSON.stringify({version:report.version,headline:report.crossMarketRead.headline,markets:marketReports.map(x=>({key:x.key,regime:x.regime,condition:x.condition,analogs:Object.fromEntries(Object.entries(x.historicalAnalog).map(([h,a])=>[h,a&&{level:a.analogLevel,key:a.analogKey,confidence:a.confidence,sample:a.sample,label:a.label}]))}))},null,2));
