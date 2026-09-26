@@ -16,6 +16,21 @@ const dates=[...new Set(reports.flatMap(r=>r.recoverySurfaceReplay?.dates||[]))]
 const candidates=reports.flatMap(r=>r.recoverySurfaceReplay?.candidates||[]);
 const horizons=[5,10,20];
 
+function featureProfile(rows){
+  if(!rows.length)return null;
+  const mean=k=>round(avg(rows.map(x=>x[k]).filter(Number.isFinite)),2);
+  const rate=f=>round(rows.filter(f).length/rows.length*100,1);
+  return {
+    n:rows.length,
+    score:mean('score'),rs20:mean('rs20'),momentumShift:mean('momentumShift'),
+    upDownVolumeRatio:mean('upDownVolumeRatio'),atr14Pct:mean('atr14Pct'),ret5:mean('ret5'),ret20:mean('ret20'),
+    highBrokenRate:rate(x=>x.highBroken===true),
+    freshHighBreak3Rate:rate(x=>Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3),
+    higherLowRate:rate(x=>x.higherLow===true),
+    structureImprovingRate:rate(x=>x.swingTrend==='Structure improving'||x.swingTrend==='Higher highs + higher lows')
+  };
+}
+
 function policyReplay(h,filterFn,scoreFn=x=>x.score){
   const pool=candidates.filter(x=>x.horizon===h&&filterFn(x));
   const byDate=new Map();
@@ -36,7 +51,9 @@ function policyReplay(h,filterFn,scoreFn=x=>x.score){
       averageVisibleAllDays:round(observations.length/dates.length,2),averageVisibleActiveDays:active?round(observations.length/active,2):null,maxVisibleObserved:Math.max(0,...counts)},
     overall:summary(observations),
     chronologicalSplit:{cutDate:cut,train:summary(observations.filter(x=>!cut||x.date<cut)),recentHoldout:summary(observations.filter(x=>cut&&x.date>=cut))},
-    crowdedDays:{selectedTop6:sel,excludedBelow6:exc,selectedMinusExcluded:{
+    crowdedDays:{selectedTop6:sel,excludedBelow6:exc,
+      selectedProfile:featureProfile(crowdedSelected),excludedProfile:featureProfile(crowdedExcluded),
+      selectedMinusExcluded:{
       mean:round((sel?.mean??NaN)-(exc?.mean??NaN)),meanExcess:round((sel?.meanExcess??NaN)-(exc?.meanExcess??NaN)),
       positiveRate:round((sel?.positiveRate??NaN)-(exc?.positiveRate??NaN),1)}}
   };
