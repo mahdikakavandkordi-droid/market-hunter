@@ -799,8 +799,8 @@ function renderWatchlist(){
   const failures=new Map((d.failureDetails||[]).map(x=>[x.symbol,x.reason]));
   const watched=[...state.watchlist].map(symbol=>{
     const item=bySymbol.get(symbol);
-    if(item) return {...item,watchStatus:currentSymbols.has(symbol)?null:'خارج از فهرست فعلی'};
-    return {symbol,company:symbol,sector:'Saved chart',watchStatus:'داده فعلاً در دسترس نیست',unavailableReason:failures.get(symbol)||'not_in_current_scan'};
+    if(item) return {...item,watchStatus:currentSymbols.has(symbol)?null:'Outside today’s active list'};
+    return {symbol,company:symbol,sector:'Saved chart',watchStatus:'Current data unavailable',unavailableReason:failures.get(symbol)||'not_in_current_scan'};
   });
   document.querySelector('#watchlistContent').innerHTML=`
     <section class="watchlist">
