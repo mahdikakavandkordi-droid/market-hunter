@@ -47,6 +47,7 @@ for(const h of horizons){
   const freshBreak3=x=>x.highBroken===true&&Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3;
   result.horizons[h]={
     currentReviewFirst:policyReplay(h,()=>true),
+    reviewFirstRsNonNegative:policyReplay(h,x=>Number.isFinite(x.rs20)&&x.rs20>=0),
     reviewFirstAndMinorHighBroken:policyReplay(h,x=>x.highBroken===true),
     reviewFirstAndFreshHighBreak3:policyReplay(h,freshBreak3),
     reviewFirstEpisodeStart:policyReplay(h,x=>x.stageAge===0),
