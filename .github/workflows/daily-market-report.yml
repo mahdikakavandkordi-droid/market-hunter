@@ -5,13 +5,9 @@ on:
       - research/market-hunter-v2-rebuild
     paths:
       - 'data/market-pulse-report.json'
-      - 'data/v2-latest-scan.json'
       - 'scripts/build-daily-market-report.mjs'
       - '.github/workflows/daily-market-report.yml'
   workflow_dispatch:
-  # This schedule becomes active when this workflow is present on the repository default branch.
-  schedule:
-    - cron: '15 21 * * *'
 permissions:
   contents: write
 jobs:
