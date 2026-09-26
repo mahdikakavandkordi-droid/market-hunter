@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
-import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank} from '../lib/market-hunter-v2-engine.js';
+import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 
 const range=process.env.V2_SCAN_RANGE||'2y';
 const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
@@ -70,10 +70,10 @@ for(const symbol of symbols){
   if(m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){excluded.liquidity=(excluded.liquidity||0)+1;continue}
   const stage=classify(m);
   if(!stage){excluded.unclassified=(excluded.unclassified||0)+1;continue}
-  const score=round(rank(m,stage),1),flags=riskFlags(m),lane=reviewLane(stage,score,m);
+  const baseScore=rank(m,stage),score=round(baseScore,1),surfaceScore=round(surfaceRank(m,stage,baseScore),1),flags=riskFlags(m),lane=reviewLane(stage,score,m);
   rows.push({
     symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,date,stage,
-    score,priorityBand:priorityBand(stage,score),reviewLane:lane,riskFlags:flags,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),
+    score,surfaceScore,priorityBand:priorityBand(stage,score),reviewLane:lane,riskFlags:flags,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),
     rs20:round(m.rs20),rs60:round(m.rs60),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),
     dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),avgDollar20:round(m.avgDollar20),
     momentumShift:round(m.momentumShift),upDownVolumeRatio:round(m.upDownVolumeRatio,2),
