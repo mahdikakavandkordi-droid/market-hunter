@@ -116,7 +116,10 @@ function watch(m){
   const bull=m.levels?.bullishTrigger,bear=m.levels?.bearishTrigger,warn=m.levels?.warningLevel;
   const parts=[];
   if(Number.isFinite(bull))parts.push(`bullish continuation above ${round(bull)}`);
-  if(Number.isFinite(warn))parts.push(`trend warning near ${round(warn)}`);
+  if(Number.isFinite(warn)){
+    const trendLabel=Number.isFinite(m.price)&&warn>m.price?'trend reclaim near':'trend warning below';
+    parts.push(`${trendLabel} ${round(warn)}`);
+  }
   if(Number.isFinite(bear))parts.push(`structure risk below ${round(bear)}`);
   return parts.join(' · ')+'.';
 }
