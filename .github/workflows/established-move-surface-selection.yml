@@ -1,0 +1,26 @@
+name: Established Move Surface Selection Stability
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'scripts/analyze-established-move-surface-selection.mjs'
+      - '.github/workflows/established-move-surface-selection.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/analyze-established-move-surface-selection.mjs
+      - name: Commit surface selection stability
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/established-move-surface-selection-stability.json
+          git commit -m "research: save Established Move surface selection stability" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild
