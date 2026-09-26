@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
-import {VERSION,ASSUMPTIONS,round,dayKey,benchmarkHist,metrics,classify,rank} from '../lib/market-hunter-v2-engine.js';
+import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,round,dayKey,benchmarkHist,metrics,classify,rank} from '../lib/market-hunter-v2-engine.js';
 
 const range=process.env.V2_SCAN_RANGE||'2y';
 const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
@@ -72,9 +72,10 @@ for(const symbol of symbols){
   if(m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){excluded.liquidity=(excluded.liquidity||0)+1;continue}
   const stage=classify(m);
   if(!stage){excluded.unclassified=(excluded.unclassified||0)+1;continue}
+  const score=round(rank(m,stage),1);
   rows.push({
     symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,date,stage,
-    score:round(rank(m,stage),1),price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),
+    score,priorityBand:priorityBand(stage,score),price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),
     rs20:round(m.rs20),rs60:round(m.rs60),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),
     dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),
     upDownVolumeRatio:round(m.upDownVolumeRatio,2),swingTrend:m.swingTrend,higherLow:m.higherLow,
@@ -90,6 +91,13 @@ const report={
   purpose:ASSUMPTIONS.purpose,
   universeCount:symbols.length,classifiedCount:rows.length,excluded,
   stageCounts:Object.fromEntries(stages.map(s=>[s,byStage[s].length])),
+  priorityFloors:PRIORITY_FLOORS,
+  priorityCounts:{
+    reviewFirst:rows.filter(x=>x.priorityBand==='Review First'||x.priorityBand==='Prime').length,
+    prime:rows.filter(x=>x.priorityBand==='Prime').length
+  },
+  reviewFirst:Object.fromEntries(stages.map(s=>[s,byStage[s].filter(x=>x.priorityBand==='Review First'||x.priorityBand==='Prime')])),
+  prime:Object.fromEntries(stages.map(s=>[s,byStage[s].filter(x=>x.priorityBand==='Prime')])),
   byStage,all:rows
 };
 fs.mkdirSync('data',{recursive:true});
