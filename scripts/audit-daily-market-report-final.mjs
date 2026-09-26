@@ -11,6 +11,8 @@ const fail=(name,pass,detail)=>checks.push({name,pass,detail});
 fail('seven_markets_in_pulse',expected.every(k=>pulse.markets.some(x=>x.key===k))&&pulse.markets.length===7,pulse.markets.map(x=>x.key));
 fail('daily_report_three_groups',report.groups?.length===3,report.groups?.map(x=>x.label));
 fail('daily_report_key_developments',report.keyDevelopments?.length>=3,report.keyDevelopments?.length);
+fail('daily_report_key_divergences',(report.keyDivergences?.length||0)>=2,report.keyDivergences);
+fail('daily_report_watch_next',(report.watchNext?.length||0)>=3&&report.watchNext.every(x=>x.market&&x.text&&x.levels),report.watchNext);
 fail('mixed_dates_disclosed',report.asOf?.mixedDates===true&&report.executiveSummary?.some(x=>x.includes('timestamps differ')),report.asOf);
 fail('highest_attention_present',(report.highestAttention?.length||0)>=3,report.highestAttention);
 fail('hunter_context_max6',(report.hunterContext?.visible||0)<=6,report.hunterContext);
@@ -23,6 +25,10 @@ for(const key of expected){
   fail(`${key}_outlook_present`,!!m?.outlook,m?.outlook);
   fail(`${key}_watch_next_present`,!!m?.watchNext,m?.watchNext);
   fail(`${key}_evidence_5_10_20`,['sessions5','sessions10','sessions20'].every(k=>!!m?.evidence?.[k]),m?.evidence);
+  fail(`${key}_evidence_metadata`,['5','10','20'].every(h=>{
+    const x=m?.evidence?.horizons?.[h];
+    return !!x?.tone&&!!x?.confidence&&!!x?.analogLevel&&Number.isFinite(x?.sample?.overall)&&Number.isFinite(x?.sample?.recent);
+  }),m?.evidence?.horizons);
 }
 fail('markdown_title',md.startsWith('# Market Hunter — Daily Market Report'),md.slice(0,80));
 fail('markdown_all_markets',expected.every(k=>{
@@ -37,7 +43,7 @@ const pass=checks.every(x=>x.pass);
 const result={
   generatedAt:new Date().toISOString(),
   status:pass?'PASS':'FAIL',
-  decision:pass?'Daily Market Report v0 is defensible for research use: deterministic summary from frozen Market Pulse evidence, explicit mixed timestamps, 7-market coverage, Hunter context, JSON + Markdown outputs, and Home rendering.':'Do not freeze Daily Market Report yet.',
+  decision:pass?'Daily Market Report v0.2 is defensible for research use: deterministic summary from frozen Market Pulse evidence, explicit mixed timestamps, 7-market coverage, cross-market divergences, scenario watch levels, horizon evidence metadata, Hunter context, JSON + Markdown outputs, and Home rendering.':'Do not freeze Daily Market Report yet.',
   checks
 };
 fs.writeFileSync('data/daily-market-report-final-audit.json',JSON.stringify(result,null,2));
