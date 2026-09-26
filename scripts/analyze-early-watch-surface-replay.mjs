@@ -50,6 +50,73 @@ function episodeStarts(dates,selectedByDate){
   return out;
 }
 
+const clamp=(x,lo,hi)=>Number.isFinite(x)?Math.max(lo,Math.min(hi,x)):0;
+function structureAdj(s){
+  if(s==='Structure improving')return 2;
+  if(s==='Higher highs + higher lows')return 1;
+  if(s==='Lower highs + lower lows')return -2;
+  if(s==='Structure weakening')return -2;
+  return 0;
+}
+const rankingVariants={
+  baseline:x=>x.score,
+  momentumRsBalanced:x=>
+    x.score
+    +1.2*clamp(x.momentumShift,-4,4)
+    +0.35*clamp(x.rs20,-8,8)
+    +structureAdj(x.swingTrend),
+  inflectionFirst:x=>
+    x.score
+    +1.8*clamp(x.momentumShift,-4,4)
+    +(Number.isFinite(x.rs20)?(x.rs20>=0?3:x.rs20>=-5?1:-2):0)
+    +structureAdj(x.swingTrend)*1.5
+};
+
+function rankingExperiment(byDate,dates,scoreFn){
+  const selectedByDate=new Map(),observations=[],crowdedSelected=[],crowdedExcluded=[];
+  for(const date of dates){
+    const eligible=[...(byDate.get(date)||[])]
+      .map(x=>({...x,experimentScore:scoreFn(x)}))
+      .sort((a,b)=>b.experimentScore-a.experimentScore||b.score-a.score||a.symbol.localeCompare(b.symbol));
+    const selected=eligible.slice(0,MAX_VISIBLE).map((x,i)=>({...x,rank:i+1}));
+    selectedByDate.set(date,selected);
+    observations.push(...selected);
+    if(eligible.length>MAX_VISIBLE){
+      crowdedSelected.push(...selected);
+      crowdedExcluded.push(...eligible.slice(MAX_VISIBLE));
+    }
+  }
+  const cut=dates[Math.floor(dates.length*.7)]||null;
+  const train=observations.filter(x=>!cut||x.date<cut);
+  const test=observations.filter(x=>cut&&x.date>=cut);
+  const pack=rows=>{
+    const top=rows.filter(x=>x.rank<=3),bottom=rows.filter(x=>x.rank>=4);
+    const ts=summary(top),bs=summary(bottom);
+    return {
+      all:summary(rows),rank1:summary(rows.filter(x=>x.rank===1)),ranks1to3:ts,ranks4to6:bs,
+      top3MinusBottom3:{
+        mean:round((ts?.mean??NaN)-(bs?.mean??NaN)),
+        meanExcess:round((ts?.meanExcess??NaN)-(bs?.meanExcess??NaN)),
+        positiveRate:round((ts?.positiveRate??NaN)-(bs?.positiveRate??NaN),1),
+        benchmarkBeatRate:round((ts?.benchmarkBeatRate??NaN)-(bs?.benchmarkBeatRate??NaN),1)
+      }
+    };
+  };
+  const cs=summary(crowdedSelected),ce=summary(crowdedExcluded);
+  return {
+    chronologicalSplit:{cutDate:cut,train:pack(train),recentHoldout:pack(test)},
+    overall:pack(observations),
+    crowdedDays:{
+      selectedTop6:cs,excludedBelow6:ce,
+      selectedMinusExcluded:{
+        mean:round((cs?.mean??NaN)-(ce?.mean??NaN)),
+        meanExcess:round((cs?.meanExcess??NaN)-(ce?.meanExcess??NaN)),
+        positiveRate:round((cs?.positiveRate??NaN)-(ce?.positiveRate??NaN),1)
+      }
+    }
+  };
+}
+
 const dates=[...new Set(reports.flatMap(r=>r.surfaceReplay?.dates||[]))].sort();
 const candidates=reports.flatMap(r=>r.surfaceReplay?.candidates||[]);
 const horizons=[...new Set(candidates.map(x=>x.horizon).filter(Number.isFinite))].sort((a,b)=>a-b);
@@ -63,7 +130,8 @@ const result={
     candidateSource:'All daily Early Watch Review First candidates from all four universe batches.',
     repeatedNames:'pickDayObservations reflects what the user would actually see each day. firstSurfaceEpisodes removes consecutive-day repeats.',
     holdout:'Recent holdout is the last 30% of chronological scan dates; no threshold is refit on holdout outcomes.',
-    capTest:'On days with more than six eligible names, topSixOnCrowdedDays is compared with excludedBelowSix to test whether score ordering adds value rather than merely reducing workload.'
+    capTest:'On days with more than six eligible names, topSixOnCrowdedDays is compared with excludedBelowSix to test whether score ordering adds value rather than merely reducing workload.',
+    rankingTest:'Two small outcome-blind ranking variants are compared with the frozen baseline. Eligibility and max-six policy remain unchanged; success requires better top-3 vs ranks 4-6 separation, especially on the recent chronological holdout.'
   },
   dateRange:{start:dates[0]||null,end:dates.at(-1)||null,scanDays:dates.length},
   horizons:{}
@@ -140,7 +208,10 @@ for(const h of horizons){
     },
     dailyEqualWeightCohort:summary(daily),
     firstSurfaceEpisodes:summary(episodes),
-    uniqueSymbols:new Set(observations.map(x=>x.symbol)).size
+    uniqueSymbols:new Set(observations.map(x=>x.symbol)).size,
+    rankingExperiments:Object.fromEntries(
+      Object.entries(rankingVariants).map(([name,scoreFn])=>[name,rankingExperiment(byDate,dates,scoreFn)])
+    )
   };
 }
 
