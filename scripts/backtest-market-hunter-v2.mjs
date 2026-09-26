@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
-import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank} from '../lib/market-hunter-v2-engine.js';
+import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,riskFlags,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank} from '../lib/market-hunter-v2-engine.js';
 
 const batchIndex=Number(process.env.V2_BATCH_INDEX||0);
 const batchCount=Math.max(1,Number(process.env.V2_BATCH_COUNT||4));
@@ -142,7 +142,7 @@ for(const symbol of symbols){
       freshReclaimAge:m.freshReclaimAge,sellingFading:m.sellingFading,downsideDecel:m.downsideDecel,volumeShockNearLow:m.volumeShockNearLow,
       momentumShift:round(m.momentumShift),rs20:round(m.rs20),rs60:round(m.rs60),upDownVolumeRatio:round(m.upDownVolumeRatio,2),swingTrend:m.swingTrend,
       higherLow:m.higherLow,dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),atr14Pct:round(m.atr14Pct),
-      ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),ma20Slope5:round(m.ma20Slope5),ma50Slope10:round(m.ma50Slope10)
+      ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),ma20Slope5:round(m.ma20Slope5),ma50Slope10:round(m.ma50Slope10),rsi14:round(m.rsi14,1)
     };
     for(const h of horizons){
       const entry=rows[i].close,window=rows.slice(i+1,i+h+1),path=window.map(x=>pct(x.close,entry)).filter(Number.isFinite);
@@ -185,11 +185,15 @@ for(const h of horizons){
     const x=ev.filter(e=>e.stage===stage);
     const sp=splitChron(x);
     const review=e=>priorityBand(stage,e.rankScore)==='Review First';
+    const cleanReview=e=>review(e)&&riskFlags(e.features).length===0;
+    const heatedReview=e=>review(e)&&riskFlags(e.features).length>0;
     report.horizons[h].byStage[stage]={
       overall:summary(x),train:summary(sp.train),test:summary(sp.test),ranking:rankingReport(x),
       fixedPriority:{
         floors:PRIORITY_FLOORS[stage],
-        reviewFirst:{train:summary(sp.train.filter(review)),test:summary(sp.test.filter(review))}
+        reviewFirst:{train:summary(sp.train.filter(review)),test:summary(sp.test.filter(review))},
+        cleanReview:{train:summary(sp.train.filter(cleanReview)),test:summary(sp.test.filter(cleanReview))},
+        heatedReview:{train:summary(sp.train.filter(heatedReview)),test:summary(sp.test.filter(heatedReview))}
       },
       evidence:evidenceSlices(stage,x)
     };
