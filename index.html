@@ -244,6 +244,12 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .brief-row{display:grid;grid-template-columns:105px 1fr;gap:7px;padding:4px 0;border-top:1px solid rgba(255,255,255,.045)}.brief-row small,.brief-check small{font-size:8px;color:var(--muted)}.brief-row b,.brief-check b{font-size:9px;line-height:1.45;font-weight:600}
 .brief-check{margin-top:7px;padding:8px;border-radius:8px;background:rgba(255,255,255,.035)}.brief-check small{display:block;margin-bottom:3px}.brief-check b{display:block}
 
+.daily-report{margin:0 0 14px;padding:17px 18px;border:1px solid rgba(103,168,255,.2);border-radius:17px;background:linear-gradient(135deg,rgba(103,168,255,.075),rgba(117,224,176,.035));box-shadow:var(--shadow)}
+.daily-report-head{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}.daily-report h2{margin:0;font-size:17px}.daily-report .asof{font-size:9px;color:var(--muted2);white-space:nowrap}.daily-headline{font-size:13px;line-height:1.65;color:#dce5ed;margin:8px 0 11px;max-width:980px}
+.daily-group-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}.daily-group{padding:9px 10px;border:1px solid rgba(37,48,60,.78);border-radius:10px;background:rgba(11,15,20,.3)}.daily-group small{font-size:8px;color:var(--muted2);text-transform:uppercase}.daily-group b{display:block;font-size:11px;margin-top:3px}.daily-group span{display:block;font-size:8px;color:var(--muted);margin-top:3px;line-height:1.35}
+.daily-developments{display:grid;gap:6px}.daily-dev{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;padding:7px 8px;border-radius:9px;background:rgba(255,255,255,.025);font-size:9px;line-height:1.45;color:var(--muted)}.daily-dev b{font-size:8px;color:var(--text);padding:2px 5px;border:1px solid rgba(255,255,255,.08);border-radius:999px}
+.daily-more{margin-top:9px;border-top:1px solid rgba(37,48,60,.7);padding-top:9px}.daily-more summary{cursor:pointer;font-size:9px;font-weight:800;color:var(--accent)}.daily-attention{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.daily-attention span{font-size:8px;padding:4px 6px;border-radius:999px;background:rgba(255,255,255,.04);color:var(--muted)}.daily-note{font-size:8px;line-height:1.5;color:var(--muted);margin-top:8px}
+@media(max-width:700px){.daily-group-grid{grid-template-columns:1fr}.daily-report-head{grid-template-columns:1fr}.daily-report .asof{white-space:normal}}
 .pulse-panel{margin:0 0 18px;padding:16px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.025)}
 .pulse-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}.pulse-head h2{margin:0 0 5px;font-size:16px}.pulse-head p{margin:0;color:var(--muted);font-size:10px;line-height:1.55;max-width:860px}
 .pulse-groups{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 14px}.pulse-group{padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.04);font-size:9px;color:var(--muted)}.pulse-group b{display:block;color:var(--text);font-size:10px;margin-top:2px}
@@ -307,7 +313,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={data:null,v2:null,marketPulse:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
+const state={data:null,v2:null,marketPulse:null,dailyMarketReport:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
 function normalizeV2Candidate(x,stage=x.stage){
   return {
     ...x,
@@ -463,6 +469,28 @@ function behaviorSummary(symbol){
   return {count:recent.length,text:changes.length?changes.join(' · '):`${recent.length} saved session${recent.length===1?'':'s'} · no material recorded change yet`,rows:recent};
 }
 
+function renderDailyMarketReport(){
+  const r=state.dailyMarketReport;
+  if(!r)return '';
+  const groups=(r.groups||[]).map(g=>`<div class="daily-group"><small>${g.label}</small><b>${g.state}</b><span>${g.detail||''}</span></div>`).join('');
+  const devs=(r.keyDevelopments||[]).slice(0,5).map(x=>`<div class="daily-dev"><b>${x.severity}</b><span>${x.text}</span></div>`).join('');
+  const asOf=r.asOf?.mixedDates?`${r.asOf.earliest} → ${r.asOf.latest}`:(r.asOf?.latest||'');
+  const attention=(r.highestAttention||[]).map(x=>`<span>${x}</span>`).join('');
+  const hunter=r.hunterContext;
+  return `<section class="daily-report">
+    <div class="daily-report-head"><div><h2>Daily Market Report</h2><div class="daily-headline">${r.headline||''}</div></div><div class="asof">As of ${asOf}</div></div>
+    <div class="daily-group-grid">${groups}</div>
+    <div class="daily-developments">${devs}</div>
+    <details class="daily-more">
+      <summary>More context</summary>
+      <div class="daily-attention">Highest attention: ${attention||'—'}</div>
+      <div class="daily-note">${(r.executiveSummary||[]).slice(1).join(' · ')}</div>
+      ${hunter?`<div class="daily-note">Hunter context: ${hunter.visible??0} final charts visible · ${hunter.hiddenByIntegratedCap??0} additional validated stage picks kept in backend.</div>`:''}
+      <div class="daily-note">Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal.</div>
+    </details>
+  </section>`;
+}
+
 function pulseToneClass(regime,condition){
   if(regime==='Strong Bull'||regime==='Bull')return 'up';
   if(regime==='Strong Bear'||regime==='Bear'||condition==='Weakening')return 'down';
@@ -607,6 +635,7 @@ function renderMarket(){
   const narrative=mc.narrative||'Market regime is based on trend and recent index momentum.';
 
   document.querySelector('#marketContent').innerHTML=`
+    ${renderDailyMarketReport()}
     ${renderPulse()}
     <div class="regime-brief">
       <div class="regime-brief-top"><h2>Today's Market Read</h2><span class="regime-date">Market data · ${d.marketAsOf||'—'}</span></div>
@@ -1284,12 +1313,13 @@ async function load(){
   app.classList.add('loading');err.style.display='none';
   try{
     const min=document.querySelector('#liq').value;
-    const [scanRes,historyRes,backtestRes,v2Res,pulseRes]=await Promise.allSettled([
+    const [scanRes,historyRes,backtestRes,v2Res,pulseRes,dailyRes]=await Promise.allSettled([
       fetch(`/api/scan?minDollar=${min}`,{cache:'no-store'}),
       fetch('/data/history.json',{cache:'no-store'}),
       fetch('/data/backtest.json',{cache:'no-store'}),
       fetch('/data/v2-latest-scan.json',{cache:'no-store'}),
-      fetch('/data/market-pulse-report.json',{cache:'no-store'})
+      fetch('/data/market-pulse-report.json',{cache:'no-store'}),
+      fetch('/data/daily-market-report.json',{cache:'no-store'})
     ]);
     if(scanRes.status!=='fulfilled') throw scanRes.reason;
     const r=scanRes.value;
@@ -1302,6 +1332,7 @@ async function load(){
     if(backtestRes.status==='fulfilled'&&backtestRes.value.ok){try{state.backtest=await backtestRes.value.json()}catch{state.backtest=null}}else state.backtest=null;
     if(v2Res.status==='fulfilled'&&v2Res.value.ok){try{state.v2=await v2Res.value.json()}catch{state.v2=null}}else state.v2=null;
     if(pulseRes.status==='fulfilled'&&pulseRes.value.ok){try{state.marketPulse=await pulseRes.value.json()}catch{state.marketPulse=null}}else state.marketPulse=null;
+    if(dailyRes.status==='fulfilled'&&dailyRes.value.ok){try{state.dailyMarketReport=await dailyRes.value.json()}catch{state.dailyMarketReport=null}}else state.dailyMarketReport=null;
     render();
   }catch(e){
     err.textContent=`Could not complete scan: ${e.message}`;
