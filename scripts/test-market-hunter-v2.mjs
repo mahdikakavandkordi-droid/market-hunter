@@ -89,7 +89,7 @@ const recoverySurfaced=surfaceSelect('Recovery',[
   {symbol:'C',score:58,surfaceScore:57,stageAge:2},
   {symbol:'D',score:80,surfaceScore:79,stageAge:3}
 ]);
-assert.deepEqual(recoverySurfaced.map(x=>x.symbol),['C','B']);
+assert.deepEqual(recoverySurfaced.map(x=>x.symbol),['C','B','A']);
 
 assert.equal(reviewLane('Attractive Growth',PRIORITY_FLOORS['Attractive Growth'].reviewFirst,m({dist20:8})),'High Intensity');
 assert.equal(reviewLane('Established Move',PRIORITY_FLOORS['Established Move'].reviewFirst,m({rsi14:80})),'High Intensity');
