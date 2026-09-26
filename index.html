@@ -144,7 +144,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   .toolbar{align-items:stretch;margin-top:12px;gap:7px}.controls{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}
   .control{padding:7px 9px;min-height:36px}.control span{display:none}button{padding:8px 11px;min-height:36px;font-size:12px}
   .status{align-self:flex-start;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tabs{width:100%;display:grid;grid-template-columns:repeat(4,1fr);position:sticky;top:6px;z-index:20;backdrop-filter:blur(14px)}.tab{width:100%;padding:8px 5px;font-size:10px}
+  .tabs{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:sticky;top:6px;z-index:20;backdrop-filter:blur(14px)}.tab{width:100%;padding:8px 4px;font-size:9px}
   .index-grid{grid-template-columns:1fr 1fr;gap:9px}.regime-grid{grid-template-columns:1fr 1fr;gap:7px}.regime-panel{padding:13px}.regime-card{padding:9px}.metric{padding:12px}.metric .v{font-size:19px}.metric .sub{font-size:10px}
   .market-grid{grid-template-columns:1fr}.sector-row{grid-template-columns:1.2fr .7fr .7fr .9fr}.sector-row>*:nth-child(4){display:none}.sector-row.head>*:nth-child(4){display:none}
   .takeaway-grid{grid-template-columns:1fr 1fr}.regime-strip{grid-template-columns:1fr 1fr}.regime-brief{padding:14px}.regime-sentence{font-size:12px}
@@ -380,8 +380,10 @@ function toggleWatch(symbol){
   persistWatch();
   renderTop5();renderHunter();renderWatchlist();
 }
+const tradingViewCdrSymbols=new Set(['AAPL.TO','MSFT.TO','NVDA.TO','AMZN.TO','GOOG.TO','META.TO','TSLA.TO','AMD.TO','COST.TO']);
 function tradingViewSymbol(symbol){
-  const clean=symbol.replace(/\.(TO|V)$/,'');
+  const clean=symbol.replace(/\.(TO|NE|V)$/,'');
+  if(symbol.endsWith('.NE')||tradingViewCdrSymbols.has(symbol))return 'NEO:'+clean;
   return (symbol.endsWith('.V')?'TSXV:':'TSX:')+clean;
 }
 function openTradingView(symbol){
