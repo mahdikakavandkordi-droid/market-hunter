@@ -1,0 +1,613 @@
+{
+  "generatedAt": "2026-09-26T15:07:55.605Z",
+  "status": "PASS",
+  "decision": "Attractive Growth is defensible with unchanged classification/ranking and a backend surface of Review First + max 6. No clean-only gate and no stage-age cap.",
+  "checks": [
+    {
+      "name": "review_improves_stage_mean_5d",
+      "pass": true,
+      "detail": {
+        "stage": 0.52,
+        "review": 1.18
+      }
+    },
+    {
+      "name": "review_excess_positive_5d",
+      "pass": true,
+      "detail": {
+        "meanExcess": 0.7
+      }
+    },
+    {
+      "name": "all_batches_review_mean_positive_5d",
+      "pass": true,
+      "detail": [
+        {
+          "batch": 0,
+          "mean": 0.72,
+          "meanExcess": 0.29
+        },
+        {
+          "batch": 1,
+          "mean": 1.12,
+          "meanExcess": 0.75
+        },
+        {
+          "batch": 2,
+          "mean": 0.46,
+          "meanExcess": -0.03
+        },
+        {
+          "batch": 3,
+          "mean": 2.85,
+          "meanExcess": 2.16
+        }
+      ]
+    },
+    {
+      "name": "daily_holdout_positive_5d",
+      "pass": true,
+      "detail": {
+        "mean": 0.64,
+        "meanExcess": 0.1
+      }
+    },
+    {
+      "name": "top6_beats_excluded_5d",
+      "pass": true,
+      "detail": {
+        "top6": 0.39,
+        "excluded": 0.15
+      }
+    },
+    {
+      "name": "review_improves_stage_mean_10d",
+      "pass": true,
+      "detail": {
+        "stage": 0.77,
+        "review": 1.54
+      }
+    },
+    {
+      "name": "review_excess_positive_10d",
+      "pass": true,
+      "detail": {
+        "meanExcess": 0.88
+      }
+    },
+    {
+      "name": "all_batches_review_mean_positive_10d",
+      "pass": true,
+      "detail": [
+        {
+          "batch": 0,
+          "mean": 0.53,
+          "meanExcess": 0
+        },
+        {
+          "batch": 1,
+          "mean": 0.25,
+          "meanExcess": -0.15
+        },
+        {
+          "batch": 2,
+          "mean": 2.37,
+          "meanExcess": 1.6
+        },
+        {
+          "batch": 3,
+          "mean": 3.67,
+          "meanExcess": 2.61
+        }
+      ]
+    },
+    {
+      "name": "daily_holdout_positive_10d",
+      "pass": true,
+      "detail": {
+        "mean": 2.01,
+        "meanExcess": 1.09
+      }
+    },
+    {
+      "name": "top6_beats_excluded_10d",
+      "pass": true,
+      "detail": {
+        "top6": 1.03,
+        "excluded": 0.7
+      }
+    },
+    {
+      "name": "review_improves_stage_mean_20d",
+      "pass": true,
+      "detail": {
+        "stage": 1.7,
+        "review": 3.13
+      }
+    },
+    {
+      "name": "review_excess_positive_20d",
+      "pass": true,
+      "detail": {
+        "meanExcess": 1.87
+      }
+    },
+    {
+      "name": "all_batches_review_mean_positive_20d",
+      "pass": true,
+      "detail": [
+        {
+          "batch": 0,
+          "mean": 1.42,
+          "meanExcess": 0.27
+        },
+        {
+          "batch": 1,
+          "mean": 0.75,
+          "meanExcess": -0.25
+        },
+        {
+          "batch": 2,
+          "mean": 5.59,
+          "meanExcess": 4.24
+        },
+        {
+          "batch": 3,
+          "mean": 5.61,
+          "meanExcess": 3.96
+        }
+      ]
+    },
+    {
+      "name": "daily_holdout_positive_20d",
+      "pass": true,
+      "detail": {
+        "mean": 3.56,
+        "meanExcess": 1.9
+      }
+    },
+    {
+      "name": "top6_beats_excluded_20d",
+      "pass": true,
+      "detail": {
+        "top6": 1.99,
+        "excluded": 1.1
+      }
+    },
+    {
+      "name": "baseline_20d_not_dominated_by_risk_reorder",
+      "pass": true,
+      "detail": {
+        "baselineOverall": 2.12,
+        "riskPenaltyOverall": 2.05,
+        "cleanFirstOverall": 2.03,
+        "baselineHoldout": 3.56,
+        "riskPenaltyHoldout": 3.4,
+        "cleanFirstHoldout": 3.44
+      }
+    },
+    {
+      "name": "no_freshness_cap_supported",
+      "pass": true,
+      "detail": {
+        "age0to2": 2.04,
+        "age3to5": 1.46,
+        "age6to10": 2.09,
+        "age11to20": 1.75
+      }
+    }
+  ],
+  "summary": {
+    "5": {
+      "test": {
+        "n": 1558,
+        "mean": 0.52,
+        "positiveRate": 54.25,
+        "benchmarkBeatRate": 47.18,
+        "meanExcess": 0,
+        "avgMAE": -1.91,
+        "avgMFE": 2.59
+      },
+      "review": {
+        "n": 305,
+        "mean": 1.18,
+        "positiveRate": 55.74,
+        "benchmarkBeatRate": 52.44,
+        "meanExcess": 0.7,
+        "avgMAE": -2.49,
+        "avgMFE": 3.81
+      },
+      "batchReview": [
+        {
+          "batch": 0,
+          "n": 77,
+          "mean": 0.72,
+          "median": 0.54,
+          "positiveRate": 55.8,
+          "benchmarkBeatRate": 53.2,
+          "meanExcess": 0.29,
+          "avgMAE": -2.27,
+          "avgMFE": 3.23,
+          "hitPlus7": 14.3,
+          "hitMinus7": 13
+        },
+        {
+          "batch": 1,
+          "n": 90,
+          "mean": 1.12,
+          "median": 0.8,
+          "positiveRate": 57.8,
+          "benchmarkBeatRate": 50,
+          "meanExcess": 0.75,
+          "avgMAE": -2.49,
+          "avgMFE": 3.74,
+          "hitPlus7": 23.3,
+          "hitMinus7": 20
+        },
+        {
+          "batch": 2,
+          "n": 79,
+          "mean": 0.46,
+          "median": -0.49,
+          "positiveRate": 45.6,
+          "benchmarkBeatRate": 48.1,
+          "meanExcess": -0.03,
+          "avgMAE": -3.11,
+          "avgMFE": 3.63,
+          "hitPlus7": 21.5,
+          "hitMinus7": 19
+        },
+        {
+          "batch": 3,
+          "n": 59,
+          "mean": 2.85,
+          "median": 1.74,
+          "positiveRate": 66.1,
+          "benchmarkBeatRate": 61,
+          "meanExcess": 2.16,
+          "avgMAE": -1.94,
+          "avgMFE": 4.91,
+          "hitPlus7": 23.7,
+          "hitMinus7": 8.5
+        }
+      ],
+      "daily": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 997,
+          "zeroPickDays": 138,
+          "pctDaysWithPicks": 87.8,
+          "averageVisibleAllDays": 3.47,
+          "averageVisibleActiveDays": 3.95,
+          "maxVisibleObserved": 6
+        },
+        "overall": {
+          "n": 3940,
+          "mean": 0.32,
+          "median": 0.34,
+          "positiveRate": 53.8,
+          "benchmarkBeatRate": 49.8,
+          "meanExcess": 0.09,
+          "avgMAE": -2.15,
+          "avgMFE": 2.5
+        },
+        "recentHoldout": {
+          "n": 1226,
+          "mean": 0.64,
+          "median": 0.81,
+          "positiveRate": 56.9,
+          "benchmarkBeatRate": 51.6,
+          "meanExcess": 0.1,
+          "avgMAE": -2.4,
+          "avgMFE": 3.15
+        },
+        "dailyEqualWeight": {
+          "n": 997,
+          "mean": 0.35,
+          "median": 0.37,
+          "positiveRate": 54,
+          "benchmarkBeatRate": 50.7,
+          "meanExcess": 0.13,
+          "avgMAE": -2.09,
+          "avgMFE": 2.48
+        },
+        "crowdedDays": {
+          "selectedTop6": {
+            "n": 1740,
+            "mean": 0.39,
+            "median": 0.33,
+            "positiveRate": 53.2,
+            "benchmarkBeatRate": 46.6,
+            "meanExcess": -0.04,
+            "avgMAE": -2.08,
+            "avgMFE": 2.55
+          },
+          "excludedBelow6": {
+            "n": 1196,
+            "mean": 0.15,
+            "median": 0.12,
+            "positiveRate": 51.2,
+            "benchmarkBeatRate": 44.8,
+            "meanExcess": -0.31,
+            "avgMAE": -1.96,
+            "avgMFE": 2.12
+          }
+        }
+      }
+    },
+    "10": {
+      "test": {
+        "n": 1237,
+        "mean": 0.77,
+        "positiveRate": 55.25,
+        "benchmarkBeatRate": 47.91,
+        "meanExcess": -0.12,
+        "avgMAE": -3.43,
+        "avgMFE": 4.28
+      },
+      "review": {
+        "n": 251,
+        "mean": 1.54,
+        "positiveRate": 58.18,
+        "benchmarkBeatRate": 54.6,
+        "meanExcess": 0.88,
+        "avgMAE": -4.55,
+        "avgMFE": 6.18
+      },
+      "batchReview": [
+        {
+          "batch": 0,
+          "n": 65,
+          "mean": 0.53,
+          "median": 0.66,
+          "positiveRate": 52.3,
+          "benchmarkBeatRate": 50.8,
+          "meanExcess": 0,
+          "avgMAE": -4.24,
+          "avgMFE": 5.01,
+          "hitPlus7": 29.2,
+          "hitMinus7": 24.6
+        },
+        {
+          "batch": 1,
+          "n": 72,
+          "mean": 0.25,
+          "median": 0.85,
+          "positiveRate": 55.6,
+          "benchmarkBeatRate": 50,
+          "meanExcess": -0.15,
+          "avgMAE": -4.68,
+          "avgMFE": 5.57,
+          "hitPlus7": 31.9,
+          "hitMinus7": 26.4
+        },
+        {
+          "batch": 2,
+          "n": 64,
+          "mean": 2.37,
+          "median": 2.39,
+          "positiveRate": 59.4,
+          "benchmarkBeatRate": 59.4,
+          "meanExcess": 1.6,
+          "avgMAE": -5.14,
+          "avgMFE": 6.74,
+          "hitPlus7": 39.1,
+          "hitMinus7": 26.6
+        },
+        {
+          "batch": 3,
+          "n": 50,
+          "mean": 3.67,
+          "median": 4.58,
+          "positiveRate": 68,
+          "benchmarkBeatRate": 60,
+          "meanExcess": 2.61,
+          "avgMAE": -3.99,
+          "avgMFE": 7.88,
+          "hitPlus7": 46,
+          "hitMinus7": 22
+        }
+      ],
+      "daily": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 997,
+          "zeroPickDays": 138,
+          "pctDaysWithPicks": 87.8,
+          "averageVisibleAllDays": 3.47,
+          "averageVisibleActiveDays": 3.95,
+          "maxVisibleObserved": 6
+        },
+        "overall": {
+          "n": 3940,
+          "mean": 1,
+          "median": 0.85,
+          "positiveRate": 55.8,
+          "benchmarkBeatRate": 52.7,
+          "meanExcess": 0.59,
+          "avgMAE": -3.45,
+          "avgMFE": 4.41
+        },
+        "recentHoldout": {
+          "n": 1226,
+          "mean": 2.01,
+          "median": 1.77,
+          "positiveRate": 59.9,
+          "benchmarkBeatRate": 54.2,
+          "meanExcess": 1.09,
+          "avgMAE": -3.69,
+          "avgMFE": 5.64
+        },
+        "dailyEqualWeight": {
+          "n": 997,
+          "mean": 1.08,
+          "median": 1,
+          "positiveRate": 59.5,
+          "benchmarkBeatRate": 56.6,
+          "meanExcess": 0.65,
+          "avgMAE": -3.36,
+          "avgMFE": 4.41
+        },
+        "crowdedDays": {
+          "selectedTop6": {
+            "n": 1740,
+            "mean": 1.03,
+            "median": 0.65,
+            "positiveRate": 54.7,
+            "benchmarkBeatRate": 48.8,
+            "meanExcess": 0.4,
+            "avgMAE": -3.39,
+            "avgMFE": 4.46
+          },
+          "excludedBelow6": {
+            "n": 1196,
+            "mean": 0.7,
+            "median": 0.56,
+            "positiveRate": 54.3,
+            "benchmarkBeatRate": 47.5,
+            "meanExcess": 0.07,
+            "avgMAE": -3.04,
+            "avgMFE": 3.83
+          }
+        }
+      }
+    },
+    "20": {
+      "test": {
+        "n": 957,
+        "mean": 1.7,
+        "positiveRate": 56.33,
+        "benchmarkBeatRate": 47.54,
+        "meanExcess": -0.12,
+        "avgMAE": -5.17,
+        "avgMFE": 7.28
+      },
+      "review": {
+        "n": 214,
+        "mean": 3.13,
+        "positiveRate": 56.56,
+        "benchmarkBeatRate": 53.27,
+        "meanExcess": 1.87,
+        "avgMAE": -6.71,
+        "avgMFE": 11.28
+      },
+      "batchReview": [
+        {
+          "batch": 0,
+          "n": 58,
+          "mean": 1.42,
+          "median": -0.15,
+          "positiveRate": 48.3,
+          "benchmarkBeatRate": 50,
+          "meanExcess": 0.27,
+          "avgMAE": -7.05,
+          "avgMFE": 9.16,
+          "hitPlus7": 44.8,
+          "hitMinus7": 39.7
+        },
+        {
+          "batch": 1,
+          "n": 59,
+          "mean": 0.75,
+          "median": -0.08,
+          "positiveRate": 49.2,
+          "benchmarkBeatRate": 47.5,
+          "meanExcess": -0.25,
+          "avgMAE": -8.06,
+          "avgMFE": 10.21,
+          "hitPlus7": 45.8,
+          "hitMinus7": 44.1
+        },
+        {
+          "batch": 2,
+          "n": 53,
+          "mean": 5.59,
+          "median": 2.09,
+          "positiveRate": 60.4,
+          "benchmarkBeatRate": 54.7,
+          "meanExcess": 4.24,
+          "avgMAE": -6.88,
+          "avgMFE": 14.16,
+          "hitPlus7": 56.6,
+          "hitMinus7": 37.7
+        },
+        {
+          "batch": 3,
+          "n": 44,
+          "mean": 5.61,
+          "median": 4.85,
+          "positiveRate": 72.7,
+          "benchmarkBeatRate": 63.6,
+          "meanExcess": 3.96,
+          "avgMAE": -4.27,
+          "avgMFE": 12.06,
+          "hitPlus7": 65.9,
+          "hitMinus7": 27.3
+        }
+      ],
+      "daily": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 997,
+          "zeroPickDays": 138,
+          "pctDaysWithPicks": 87.8,
+          "averageVisibleAllDays": 3.47,
+          "averageVisibleActiveDays": 3.95,
+          "maxVisibleObserved": 6
+        },
+        "overall": {
+          "n": 3940,
+          "mean": 2.12,
+          "median": 1.81,
+          "positiveRate": 58.8,
+          "benchmarkBeatRate": 55.5,
+          "meanExcess": 1.49,
+          "avgMAE": -5,
+          "avgMFE": 7.47
+        },
+        "recentHoldout": {
+          "n": 1226,
+          "mean": 3.56,
+          "median": 3.01,
+          "positiveRate": 64.1,
+          "benchmarkBeatRate": 56,
+          "meanExcess": 1.9,
+          "avgMAE": -5.07,
+          "avgMFE": 9.41
+        },
+        "dailyEqualWeight": {
+          "n": 997,
+          "mean": 2.39,
+          "median": 2.08,
+          "positiveRate": 62.2,
+          "benchmarkBeatRate": 60.2,
+          "meanExcess": 1.59,
+          "avgMAE": -4.92,
+          "avgMFE": 7.56
+        },
+        "crowdedDays": {
+          "selectedTop6": {
+            "n": 1740,
+            "mean": 1.99,
+            "median": 1.76,
+            "positiveRate": 59.4,
+            "benchmarkBeatRate": 55.1,
+            "meanExcess": 1.19,
+            "avgMAE": -4.8,
+            "avgMFE": 7.36
+          },
+          "excludedBelow6": {
+            "n": 1196,
+            "mean": 1.1,
+            "median": 1.36,
+            "positiveRate": 58.3,
+            "benchmarkBeatRate": 52.1,
+            "meanExcess": 0.1,
+            "avgMAE": -4.46,
+            "avgMFE": 5.96
+          }
+        }
+      }
+    }
+  }
+}
