@@ -371,7 +371,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,{source:x.source||(x.entryStage?'market-hunter':'manual'),quantity:Number.isFinite(Number(x.quantity))&&Number(x.quantity)>0?Number(x.quantity):null,...x}]))}catch{return new Map()}};
-const state={data:null,v2:null,marketPulse:null,dailyMarketReport:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
+const state={data:null,v2:null,marketPulse:null,dailyMarketReport:null,portfolioData:new Map(),history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
 function normalizeV2Candidate(x,stage=x.stage){
   return {
     ...x,
@@ -404,11 +404,13 @@ function persistPositions(){localStorage.setItem('marketHunterPositions',JSON.st
 function portfolioMarketData(symbol){
   const all=[...v2AllSurfaceCandidates(),...allHunterCandidates(),...(state.data?.availableItems||[])];
   const by=new Map(all.map(x=>[x.symbol,x]));
-  if(by.has(symbol))return by.get(symbol);
-  if(!symbol.includes('.')){
-    for(const suffix of ['.TO','.V','.NE'])if(by.has(symbol+suffix))return by.get(symbol+suffix);
+  let resolved=symbol,base=by.get(symbol)||null;
+  if(!base&&!symbol.includes('.')){
+    for(const suffix of ['.TO','.V','.NE'])if(by.has(symbol+suffix)){resolved=symbol+suffix;base=by.get(resolved);break}
   }
-  return null;
+  const extra=state.portfolioData.get(resolved)||state.portfolioData.get(symbol)||null;
+  if(base&&extra)return {...base,...extra,company:base.company||base.name||extra.company||resolved,sector:base.sector||extra.sector};
+  return extra||base;
 }
 function portfolioSymbol(raw){
   const symbol=String(raw||'').trim().toUpperCase().replace(/\s+/g,'');
@@ -418,6 +420,17 @@ function portfolioSymbol(raw){
 function localDateInput(d=new Date()){
   const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
   return `${y}-${m}-${day}`;
+}
+async function refreshPortfolioData(){
+  const symbols=[...state.positions.keys()].filter(Boolean);
+  state.portfolioData=new Map();
+  if(!symbols.length)return;
+  try{
+    const r=await fetch('/api/portfolio?symbols='+encodeURIComponent(symbols.join(',')),{cache:'no-store'});
+    if(!r.ok)return;
+    const j=await r.json();
+    state.portfolioData=new Map((j.items||[]).map(x=>[x.symbol,x]));
+  }catch{}
 }
 function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
 function positionSourceLabel(p){return p.source==='market-hunter'?'Market Hunter':'Manual / External'}
@@ -477,13 +490,13 @@ function openPositionEditor(symbol='',source='manual'){
       record.entryStage=null;record.entryEvidence=[];
     }
     if(existing&&existing.symbol!==savedSymbol)state.positions.delete(existing.symbol);
-    state.positions.set(savedSymbol,record);persistPositions();close();render();
+    state.positions.set(savedSymbol,record);persistPositions();close();refreshPortfolioData().then(render);
   });
 }
 function removePosition(symbol){
   const p=state.positions.get(symbol);if(!p)return;
   if(confirm(`Remove ${symbol} from Portfolio Monitor? This only removes it from the tracker.`)){
-    state.positions.delete(symbol);persistPositions();renderPositions();renderTop5();renderHunter();renderWatchlist();
+    state.positions.delete(symbol);persistPositions();state.portfolioData.delete(symbol);renderPositions();renderTop5();renderHunter();renderWatchlist();
   }
 }
 function positionHealth(x,p){
@@ -1600,6 +1613,7 @@ async function load(){
     if(v2Res.status==='fulfilled'&&v2Res.value.ok){try{state.v2=await v2Res.value.json()}catch{state.v2=null}}else state.v2=null;
     if(pulseRes.status==='fulfilled'&&pulseRes.value.ok){try{state.marketPulse=await pulseRes.value.json()}catch{state.marketPulse=null}}else state.marketPulse=null;
     if(dailyRes.status==='fulfilled'&&dailyRes.value.ok){try{state.dailyMarketReport=await dailyRes.value.json()}catch{state.dailyMarketReport=null}}else state.dailyMarketReport=null;
+    await refreshPortfolioData();
     render();
   }catch(e){
     err.textContent=`Could not complete scan: ${e.message}`;
