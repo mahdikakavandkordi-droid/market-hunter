@@ -15,6 +15,7 @@ on:
       - research/market-hunter-v2-rebuild
     paths:
       - 'scripts/backtest-market-hunter-v2.mjs'
+      - 'scripts/aggregate-early-watch-surface-replay.mjs'
       - 'lib/market-hunter-v2-engine.js'
       - '.github/workflows/market-hunter-v2-backtest.yml'
 permissions:
@@ -40,6 +41,12 @@ jobs:
           V2_RANGE: ${{ inputs.range || '5y' }}
           V2_HORIZONS: ${{ inputs.horizons || '5,10,20' }}
         run: node scripts/backtest-market-hunter-v2.mjs
+      - name: Upload batch replay input
+        uses: actions/upload-artifact@v4
+        with:
+          name: v2-backtest-batch-${{ matrix.batch }}
+          path: data/v2-backtest-batch-${{ matrix.batch }}.json
+          retention-days: 1
       - name: Commit research report
         run: |
           git config user.name "market-hunter-bot"
@@ -60,3 +67,31 @@ jobs:
             echo "Failed to push V2 research report" >&2
             exit 1
           fi
+
+  surface-replay:
+    needs: backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download all batch replay inputs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v2-backtest-batch-*
+          path: data
+          merge-multiple: true
+      - name: Aggregate daily Early Watch surfaced shortlist replay
+        run: node scripts/aggregate-early-watch-surface-replay.mjs
+      - name: Commit surfaced shortlist replay report
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/v2-early-watch-surface-replay.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "research: refresh Early Watch surface replay"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin research/market-hunter-v2-rebuild
+            if git push origin HEAD:research/market-hunter-v2-rebuild; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          exit 1

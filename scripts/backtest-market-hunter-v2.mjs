@@ -198,7 +198,7 @@ for(const s of needed){
   catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set()}}
 }
 
-const rawEvents=[],latest=[];
+const rawEvents=[],surfaceReplayCandidates=[],surfaceReplayDates=new Set(),latest=[];
 for(const symbol of symbols){
   const pack=data[symbol],rows=pack.rows,benchPack=data[benchSymbol(symbol)],benchRows=benchPack?.rows||[];
   if(rows.length<120||benchRows.length<80)continue;
@@ -211,6 +211,21 @@ for(const symbol of symbols){
     if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){prevStage=null;continue}
     const stage=classify(m);
     const score=stage?rank(m,stage):null;
+    surfaceReplayDates.add(date);
+    if(stage==='Early Watch'&&priorityBand(stage,score)==='Review First'){
+      for(const h of horizons){
+        const entry=rows[i].close,window=rows.slice(i+1,i+h+1),path=window.map(x=>pct(x.close,entry)).filter(Number.isFinite);
+        const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
+        const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
+        surfaceReplayCandidates.push({
+          symbol,date,horizon:h,score:round(score,1),
+          forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
+          mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
+          ret5:round(m.ret5),ret20:round(m.ret20),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
+          rsi14:round(m.rsi14,1),swingTrend:m.swingTrend
+        });
+      }
+    }
     if(!stage){prevStage=null;continue}
     const episodeStart=stage!==prevStage;prevStage=stage;
     if(!episodeStart)continue;
@@ -252,6 +267,12 @@ const report={
   version:VERSION,generatedAt:new Date().toISOString(),batchIndex,batchCount,range,horizons,assumptions:ASSUMPTIONS,
   symbolCount:symbols.length,symbols,
   horizons:{},
+  surfaceReplay:{
+    mode:'daily-review-first-candidates-before-global-cap',
+    maxVisible:6,
+    dates:[...surfaceReplayDates].sort(),
+    candidates:surfaceReplayCandidates
+  },
   latestPicks:latest.sort((a,b)=>b.score-a.score)
 };
 for(const h of horizons){
