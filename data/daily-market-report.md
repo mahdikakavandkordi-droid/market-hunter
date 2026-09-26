@@ -22,6 +22,21 @@
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Crypto: Strong trend · Pullback** — All tracked markets in this group remain in a strong bull regime.
 
+## Key divergences
+
+- **Equity leadership:** Canada is lagging U.S. equity leadership: TSX is Mixed / Weakening, while S&P 500 and Nasdaq-100 are both in stronger primary regimes.
+- **Cross-asset confirmation:** U.S. equities remain constructive while both gold and silver are weakening short term, so metals are not confirming the current risk-on tone.
+- **Timeframe divergence:** Bitcoin and Ethereum retain bullish primary regimes, but both are in short-term pullbacks. The higher-timeframe trend and near-term condition are pointing in different directions.
+- **Analog divergence:** Ethereum’s broader bullish-pullback family is more robust than the sparse exact setup; the exact recent setup has shown materially weaker follow-through.
+
+## What to watch next
+
+- **Ethereum:** bullish continuation above 2805.5 · trend warning near 2567 · structure risk below 2628.69.
+- **TSX Composite:** bullish continuation above 36410.6 · trend warning near 35959.14 · structure risk below 35722.
+- **Gold:** bullish continuation above 4403.6 · trend warning near 4407.47 · structure risk below 4273.3.
+- **Nasdaq-100:** bullish continuation above 30642.57 · trend warning near 29620.59 · structure risk below 29604.93.
+- **Bitcoin:** bullish continuation above 87363.76 · trend warning near 80145.35 · structure risk below 82906.62.
+
 ## Market detail
 
 ### TSX Composite
