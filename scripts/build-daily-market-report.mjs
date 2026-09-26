@@ -15,12 +15,20 @@ function horizonTone(a){
 }
 function evidenceSummary(m){
   const a=m.historicalAnalog||{};
+  const horizons=Object.fromEntries(['5','10','20'].map(h=>[h,{
+    tone:horizonTone(a[h]),
+    label:a[h]?.label||null,
+    confidence:a[h]?.confidence||null,
+    analogLevel:a[h]?.analogLevel||null,
+    sample:a[h]?.sample||null
+  }]));
   return {
-    sessions5:horizonTone(a['5']),
-    sessions10:horizonTone(a['10']),
-    sessions20:horizonTone(a['20']),
-    confidence:[a['5']?.confidence,a['10']?.confidence,a['20']?.confidence].filter(Boolean),
-    analogLevels:[a['5']?.analogLevel,a['10']?.analogLevel,a['20']?.analogLevel].filter(Boolean)
+    sessions5:horizons['5'].tone,
+    sessions10:horizons['10'].tone,
+    sessions20:horizons['20'].tone,
+    confidence:[horizons['5'].confidence,horizons['10'].confidence,horizons['20'].confidence].filter(Boolean),
+    analogLevels:[horizons['5'].analogLevel,horizons['10'].analogLevel,horizons['20'].analogLevel].filter(Boolean),
+    horizons
   };
 }
 function attentionScore(m){
@@ -79,6 +87,38 @@ function groupSummary(label){
     markets:members.map(x=>({key:x.key,name:x.name,regime:x.regime,condition:x.condition,d5:x.current?.returns?.d5,d20:x.current?.returns?.d20}))
   };
 }
+function regimeRank(r){
+  return ({'Strong Bear':0,'Bear':1,'Mixed':2,'Bull':3,'Strong Bull':4})[r]??2;
+}
+function buildDivergences(){
+  const by=Object.fromEntries(pulse.markets.map(x=>[x.key,x]));
+  const out=[];
+  const tsx=by.TSX,sp=by.SP500,nq=by.NASDAQ100,gold=by.GOLD,silver=by.SILVER,btc=by.BTC,eth=by.ETH;
+  if(tsx&&sp&&nq&&regimeRank(tsx.regime)<Math.min(regimeRank(sp.regime),regimeRank(nq.regime))){
+    out.push({id:'canada-vs-us',label:'Equity leadership',text:`Canada is lagging U.S. equity leadership: TSX is ${tsx.regime} / ${tsx.condition}, while S&P 500 and Nasdaq-100 are both in stronger primary regimes.`});
+  }
+  if(gold&&silver&&gold.condition==='Weakening'&&silver.condition==='Weakening'&&sp&&nq&&regimeRank(sp.regime)>=3&&regimeRank(nq.regime)>=3){
+    out.push({id:'metals-vs-risk',label:'Cross-asset confirmation',text:'U.S. equities remain constructive while both gold and silver are weakening short term, so metals are not confirming the current risk-on tone.'});
+  }
+  if(btc&&eth&&regimeRank(btc.regime)>=3&&regimeRank(eth.regime)>=3&&btc.condition==='Pullback'&&eth.condition==='Pullback'){
+    out.push({id:'crypto-timeframe',label:'Timeframe divergence',text:'Bitcoin and Ethereum retain bullish primary regimes, but both are in short-term pullbacks. The higher-timeframe trend and near-term condition are pointing in different directions.'});
+  }
+  const ethSpecific=eth&&Object.values(eth.historicalAnalog||{}).find(x=>x?.specificSetup?.warning)?.specificSetup;
+  if(ethSpecific){
+    out.push({id:'eth-exact-vs-family',label:'Analog divergence',text:'Ethereum’s broader bullish-pullback family is more robust than the sparse exact setup; the exact recent setup has shown materially weaker follow-through.'});
+  }
+  return out.slice(0,4);
+}
+function watchItem(m){
+  return {
+    market:m.key,
+    name:m.name,
+    regime:m.regime,
+    condition:m.condition,
+    text:`${m.name}: ${m.watchNext}`,
+    levels:m.levels||null
+  };
+}
 
 const views=pulse.markets.map(marketView);
 const attention=[...views].sort((a,b)=>b.attentionScore-a.attentionScore||a.name.localeCompare(b.name));
@@ -87,6 +127,7 @@ const movers=[...pulse.markets].sort((a,b)=>Math.abs(b.current?.returns?.d1||0)-
 const dataDates=[...new Set(pulse.markets.map(x=>x.asOf).filter(Boolean))].sort();
 const latestAsOf=dataDates.at(-1)||null,earliestAsOf=dataDates[0]||null;
 const mixedDates=dataDates.length>1;
+const keyDivergences=buildDivergences();
 
 const headline=pulse.crossMarketRead?.headline||'Cross-market conditions are mixed.';
 const keyDevelopments=[];
@@ -116,6 +157,8 @@ if(keyDevelopments.length<3){
   }
 }
 
+const watchNext=attention.slice(0,5).map(x=>watchItem(pulse.markets.find(m=>m.key===x.key))).filter(Boolean);
+
 const hunterSummary=hunter?{
   generatedAt:hunter.generatedAt,
   visible:hunter.integratedSurfaceCounts?.visible??hunter.integratedSurfacePicks?.length??null,
@@ -124,7 +167,7 @@ const hunterSummary=hunter?{
 }:null;
 
 const report={
-  version:'daily-market-report-v0.1-2026-09-26',
+  version:'daily-market-report-v0.2-2026-09-26',
   generatedAt:new Date().toISOString(),
   status:'research',
   asOf:{earliest:earliestAsOf,latest:latestAsOf,mixedDates},
@@ -136,6 +179,8 @@ const report={
   ],
   groups:[groupSummary('Equities'),groupSummary('Metals'),groupSummary('Crypto')],
   keyDevelopments,
+  keyDivergences,
+  watchNext,
   markets:views,
   highestAttention:attention.slice(0,4).map(x=>x.key),
   hunterContext:hunterSummary,
@@ -173,6 +218,14 @@ ${keyDevelopments.map(x=>`- **${x.severity}:** ${x.text}`).join('\n')}
 ## Group read
 
 ${report.groups.map(g=>`- **${g.label}: ${g.state}** — ${g.detail}`).join('\n')}
+
+## Key divergences
+
+${keyDivergences.length?keyDivergences.map(x=>`- **${x.label}:** ${x.text}`).join('\n'):'- No major cross-market divergence flagged today.'}
+
+## What to watch next
+
+${watchNext.map(x=>`- **${x.name}:** ${x.text.replace(x.name+': ','')}`).join('\n')}
 
 ## Market detail
 
