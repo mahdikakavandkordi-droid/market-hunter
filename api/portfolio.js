@@ -35,6 +35,128 @@ function sinceEntryStats(rows,benchRows,entry){
     excessVsBenchmarkPct:Number.isFinite(sinceEntryReturn)&&Number.isFinite(benchmarkReturn)?sinceEntryReturn-benchmarkReturn:null
   };
 }
+
+function mean(a){const x=a.filter(Number.isFinite);return x.length?x.reduce((s,v)=>s+v,0)/x.length:null}
+function variance(a){
+  const m=mean(a);if(!Number.isFinite(m)||a.length<2)return null;
+  return a.reduce((s,v)=>s+(v-m)**2,0)/(a.length-1);
+}
+function covariance(a,b){
+  const n=Math.min(a.length,b.length);if(n<2)return null;
+  const aa=a.slice(-n),bb=b.slice(-n),ma=mean(aa),mb=mean(bb);
+  if(!Number.isFinite(ma)||!Number.isFinite(mb))return null;
+  return aa.reduce((s,v,i)=>s+(v-ma)*(bb[i]-mb),0)/(n-1);
+}
+function correlation(a,b){
+  const cov=covariance(a,b),va=variance(a),vb=variance(b);
+  return Number.isFinite(cov)&&Number.isFinite(va)&&Number.isFinite(vb)&&va>0&&vb>0?cov/Math.sqrt(va*vb):null;
+}
+function returnMap(rows){
+  const map=new Map();
+  for(let i=1;i<rows.length;i++){
+    const prev=rows[i-1]?.close,cur=rows[i]?.close;
+    if(Number.isFinite(prev)&&prev>0&&Number.isFinite(cur))map.set(dayKey(rows[i].t),cur/prev-1);
+  }
+  return map;
+}
+function maxDrawdownFromReturns(returns){
+  let wealth=1,peak=1,mdd=0;
+  for(const r of returns){
+    wealth*=1+r;peak=Math.max(peak,wealth);
+    if(peak>0)mdd=Math.min(mdd,wealth/peak-1);
+  }
+  return mdd*100;
+}
+function cumulativeReturn(returns){
+  if(!returns.length)return null;
+  return (returns.reduce((w,r)=>w*(1+r),1)-1)*100;
+}
+function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows){
+  const usable=symbols.filter(symbol=>{
+    const q=Number(positionMap.get(symbol));
+    return q>0&&seriesMap.get(symbol)?.rows?.length>65;
+  });
+  if(!usable.length)return null;
+
+  const currencies=new Set(usable.map(s=>seriesMap.get(s)?.currency||'UNKNOWN'));
+  const singleCurrency=currencies.size===1&&!currencies.has('UNKNOWN');
+  const values=new Map(),latestPrices=new Map();
+  let totalValue=0;
+  for(const symbol of usable){
+    const series=seriesMap.get(symbol),qty=Number(positionMap.get(symbol)),price=series.rows.at(-1)?.close;
+    if(!(qty>0)&&!Number.isFinite(price))continue;
+    latestPrices.set(symbol,price);
+    const value=qty*price;values.set(symbol,value);totalValue+=value;
+  }
+  const weights=new Map(usable.map(s=>[s,totalValue>0?(values.get(s)||0)/totalValue:0]));
+  const maps=new Map(usable.map(s=>[s,returnMap(seriesMap.get(s).rows)]));
+  let commonDates=[...maps.get(usable[0]).keys()];
+  for(const symbol of usable.slice(1)){
+    const m=maps.get(symbol);
+    commonDates=commonDates.filter(d=>m.has(d));
+  }
+  const benchMap=returnMap(benchmarkRows||[]);
+  commonDates=commonDates.filter(d=>benchMap.has(d)).sort().slice(-60);
+  if(commonDates.length<20)return {
+    windowSessions:commonDates.length,
+    currency:singleCurrency?[...currencies][0]:null,
+    mixedCurrencies:!singleCurrency,
+    note:'Insufficient common history for stable portfolio-level risk analytics.',
+    correlationMatrix:[]
+  };
+
+  const portfolioReturns=commonDates.map(date=>usable.reduce((sum,symbol)=>sum+(weights.get(symbol)||0)*(maps.get(symbol).get(date)||0),0));
+  const benchmarkReturns=commonDates.map(date=>benchMap.get(date));
+  const volVar=variance(portfolioReturns);
+  const annualizedVolPct=Number.isFinite(volVar)?Math.sqrt(volVar)*Math.sqrt(252)*100:null;
+  const benchVar=variance(benchmarkReturns);
+  const cov=covariance(portfolioReturns,benchmarkReturns);
+  const betaVsTsx=Number.isFinite(cov)&&Number.isFinite(benchVar)&&benchVar>0?cov/benchVar:null;
+  const portfolioReturnPct=cumulativeReturn(portfolioReturns);
+  const benchmarkReturnPct=cumulativeReturn(benchmarkReturns);
+  const maxDrawdownPct=maxDrawdownFromReturns(portfolioReturns);
+
+  const correlationMatrix=[];
+  const pairwise=[];
+  for(let i=0;i<usable.length;i++){
+    const row={symbol:usable[i],values:{}};
+    for(let j=0;j<usable.length;j++){
+      if(i===j){row.values[usable[j]]=1;continue}
+      const a=commonDates.map(d=>maps.get(usable[i]).get(d));
+      const b=commonDates.map(d=>maps.get(usable[j]).get(d));
+      const corr=correlation(a,b);
+      row.values[usable[j]]=corr;
+      if(j>i&&Number.isFinite(corr))pairwise.push(corr);
+    }
+    correlationMatrix.push(row);
+  }
+  const avgPairwiseCorrelation=mean(pairwise);
+  const diversificationRead=!Number.isFinite(avgPairwiseCorrelation)?'Not enough pair data'
+    :avgPairwiseCorrelation>=0.75?'Holdings are moving very similarly'
+    :avgPairwiseCorrelation>=0.5?'Holdings show moderate-to-high co-movement'
+    :avgPairwiseCorrelation>=0.25?'Holdings show moderate diversification'
+    :'Holdings are relatively differentiated';
+
+  return {
+    benchmark:'TSX Composite',
+    windowSessions:commonDates.length,
+    currency:singleCurrency?[...currencies][0]:null,
+    mixedCurrencies:!singleCurrency,
+    annualizedVolPct,
+    maxDrawdownPct,
+    betaVsTsx,
+    portfolioReturnPct,
+    benchmarkReturnPct,
+    excessReturnPct:Number.isFinite(portfolioReturnPct)&&Number.isFinite(benchmarkReturnPct)?portfolioReturnPct-benchmarkReturnPct:null,
+    avgPairwiseCorrelation,
+    diversificationRead,
+    stressLens:Number.isFinite(betaVsTsx)?[
+      {label:'TSX -5%',marketShockPct:-5,estimatedPortfolioMovePct:betaVsTsx*-5},
+      {label:'TSX +5%',marketShockPct:5,estimatedPortfolioMovePct:betaVsTsx*5}
+    ]:[],
+    correlationMatrix
+  };
+}
 async function chart(symbol,deadline=Date.now()+22000){
   const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1y&interval=1d&includePrePost=false&events=div%2Csplits`;
   const controller=new AbortController();
@@ -66,7 +188,12 @@ export default async function handler(req,res){
   if(req.method!=='GET')return res.status(405).json({error:'method_not_allowed'});
   const raw=String(req.query.symbols||'');
   const symbols=[...new Set(raw.split(',').map(x=>x.trim().toUpperCase()).filter(x=>/^[A-Z0-9.^-]{1,16}$/.test(x)))].slice(0,30);
-  const entryMap=new Map();
+  const entryMap=new Map(),positionMap=new Map();
+  for(const token of String(req.query.positions||'').split(',').filter(Boolean)){
+    const [symbol,quantity]=token.split('|');
+    const clean=String(symbol||'').trim().toUpperCase(),q=Number(quantity);
+    if(symbols.includes(clean)&&q>0)positionMap.set(clean,q);
+  }
   for(const token of String(req.query.entries||'').split(',').filter(Boolean)){
     const [symbol,date,price]=token.split('|');
     const clean=String(symbol||'').trim().toUpperCase();
@@ -80,10 +207,11 @@ export default async function handler(req,res){
     const benchMap=new Map();
     benchResults.forEach((r,i)=>{if(r.status==='fulfilled')benchMap.set(benchmarks[i],r.value.rows)});
     const results=await mapLimit(symbols,5,s=>chart(s,deadline));
-    const items=[],failures=[];
+    const items=[],failures=[],seriesMap=new Map();
     results.forEach((r,i)=>{
       const symbol=symbols[i];
       if(r.status!=='fulfilled'){failures.push({symbol,reason:String(r.reason?.message||r.reason||'unavailable')});return}
+      seriesMap.set(symbol,r.value);
       const benchmark=CDR_BENCHMARK[symbol]||'^GSPTSE',bench=benchMap.get(benchmark);
       if(!bench){failures.push({symbol,reason:'benchmark_unavailable'});return}
       const m=metrics(r.value.rows,bench);
@@ -107,8 +235,9 @@ export default async function handler(req,res){
         asOf:r.value.rows.length?dayKey(r.value.rows.at(-1).t):null
       });
     });
+    const portfolioAnalytics=portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchMap.get('^GSPTSE')||[]);
     res.setHeader('Cache-Control','s-maxage=300, stale-while-revalidate=900');
-    return res.status(200).json({generatedAt:new Date().toISOString(),items,failures});
+    return res.status(200).json({generatedAt:new Date().toISOString(),items,failures,portfolioAnalytics});
   }catch(e){
     return res.status(500).json({error:'portfolio_monitor_failed',message:String(e?.message||e)});
   }
