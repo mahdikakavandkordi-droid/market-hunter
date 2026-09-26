@@ -1,0 +1,26 @@
+name: Integrated Surface Workload Audit
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'scripts/audit-integrated-surface-workload.mjs'
+      - '.github/workflows/integrated-surface-workload-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/audit-integrated-surface-workload.mjs
+      - name: Commit workload audit
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/integrated-surface-workload-audit.json
+          git commit -m "research: save integrated surface workload audit" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild
