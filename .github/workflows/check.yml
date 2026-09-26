@@ -1,5 +1,9 @@
 name: Check scanner
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore:
+      - research/market-hunter-ui-work
+  pull_request:
 permissions:
   contents: read
 jobs:
