@@ -2,7 +2,7 @@ import fs from 'node:fs';
 
 const reports=Array.from({length:4},(_,i)=>JSON.parse(fs.readFileSync('data/v2-backtest-batch-'+i+'.json','utf8')));
 const horizons=['5','10','20'];
-const variants=['baseline','requireMinorHighBreak','breakOrHigherLow','structuralConfirmation','breakWithSupport','currentReviewFirst','reviewFirstAndBreak','reviewFirstAndBreakWithSupport'];
+const variants=['baseline','requireMinorHighBreak','breakOrHigherLow','structuralConfirmation','breakWithSupport','currentReviewFirst','reviewFirstAndBreak','reviewFirstAndBreakWithSupport','freshBreak1','freshBreak2','freshBreak3','reviewFirstFreshBreak1','reviewFirstFreshBreak2','reviewFirstFreshBreak3'];
 const rankingVariants=['current','minorHighBoost','confirmedBreakBoost'];
 const round=(n,d=2)=>Number.isFinite(n)?Number(n.toFixed(d)):null;
 
