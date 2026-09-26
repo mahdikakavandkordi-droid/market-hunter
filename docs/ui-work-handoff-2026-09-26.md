@@ -354,3 +354,7 @@ Latest validation:
 - api/portfolio.js syntax: PASS
 - risk contribution wiring: PASS
 - no new GitHub Actions run triggered
+
+
+## Preview deployment trigger
+- Latest UI-work branch requested for preview deployment on 2026-09-26 after syntax validation.
