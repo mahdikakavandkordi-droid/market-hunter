@@ -401,13 +401,94 @@ function v2AllSurfaceCandidates(){
 }
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function persistPositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
-function markBought(symbol){
-  const x=v2AllSurfaceCandidates().find(v=>v.symbol===symbol)||allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);if(!x)return;
-  if(state.positions.has(symbol)){state.positions.delete(symbol)}else state.positions.set(symbol,{symbol,boughtAt:new Date().toISOString(),entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance});
-  persistPositions();render();
+function portfolioMarketData(symbol){
+  const all=[...v2AllSurfaceCandidates(),...allHunterCandidates(),...(state.data?.availableItems||[])];
+  const by=new Map(all.map(x=>[x.symbol,x]));
+  if(by.has(symbol))return by.get(symbol);
+  if(!symbol.includes('.')){
+    for(const suffix of ['.TO','.V','.NE'])if(by.has(symbol+suffix))return by.get(symbol+suffix);
+  }
+  return null;
+}
+function portfolioSymbol(raw){
+  const symbol=String(raw||'').trim().toUpperCase().replace(/\s+/g,'');
+  const x=portfolioMarketData(symbol);
+  return x?.symbol||symbol;
+}
+function localDateInput(d=new Date()){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function positionSourceLabel(p){return p.source==='market-hunter'?'Market Hunter':'Manual / External'}
+function markBought(symbol){openPositionEditor(symbol,'market-hunter')}
+function openPositionEditor(symbol='',source='manual'){
+  const modal=document.querySelector('#positionModal');if(!modal)return;
+  const normalized=portfolioSymbol(symbol),existing=state.positions.get(normalized)||state.positions.get(symbol);
+  const x=portfolioMarketData(normalized);
+  const p=existing||{};
+  const sourceValue=p.source||source;
+  const dateValue=(p.boughtAt||'').slice(0,10)||localDateInput();
+  const priceValue=Number.isFinite(p.entryPrice)?p.entryPrice:(sourceValue==='market-hunter'&&Number.isFinite(x?.price)?x.price:'');
+  modal.innerHTML=`<div class="position-sheet">
+    <div class="position-sheet-head"><div><h2>${existing?'Edit position':'Add position'}</h2><p>Record what you actually own. Portfolio Monitor analyzes the position; it does not issue buy/sell signals.</p></div><button type="button" class="position-close" aria-label="Close">×</button></div>
+    <form class="position-form" id="positionForm">
+      <div class="position-field"><label>Symbol</label><input name="symbol" required maxlength="16" value="${esc(existing?.symbol||normalized)}" placeholder="RY.TO" ${existing?'readonly':''}></div>
+      <div class="position-field"><label>Source</label><select name="source"><option value="market-hunter" ${sourceValue==='market-hunter'?'selected':''}>Market Hunter</option><option value="manual" ${sourceValue!=='market-hunter'?'selected':''}>Manual / External</option></select></div>
+      <div class="position-field"><label>Quantity</label><input name="quantity" required inputmode="decimal" type="number" min="0.000001" step="any" value="${Number.isFinite(p.quantity)?p.quantity:''}" placeholder="100"></div>
+      <div class="position-field"><label>Average purchase price</label><input name="entryPrice" required inputmode="decimal" type="number" min="0.000001" step="any" value="${priceValue}" placeholder="125.40"></div>
+      <div class="position-field"><label>Purchase date</label><input name="boughtAt" required type="date" value="${dateValue}"></div>
+      <div class="position-field"><label>Current market data</label><input value="${x?esc((x.company||x.name||x.symbol)+' · '+fmt(x.price)):'Not currently covered'}" disabled></div>
+      <div class="position-field full"><label>Entry thesis / note (optional)</label><textarea name="notes" placeholder="Why did you buy it? What were you watching?">${esc(p.notes||'')}</textarea></div>
+      <div class="position-form-note">If the position came from Market Hunter, the current Hunter setup is saved as the entry snapshot when you add it. Manual positions are monitored the same way, but are not presented as if Hunter originally selected them.</div>
+      <div class="position-form-actions"><button type="button" class="position-cancel">Cancel</button><button type="submit" class="position-save">Save position</button></div>
+    </form>
+  </div>`;
+  modal.classList.add('show');
+  const close=()=>modal.classList.remove('show');
+  modal.querySelector('.position-close').addEventListener('click',close);
+  modal.querySelector('.position-cancel').addEventListener('click',close);
+  modal.addEventListener('click',e=>{if(e.target===modal)close()},{once:true});
+  modal.querySelector('#positionForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const fd=new FormData(e.currentTarget);
+    const savedSymbol=portfolioSymbol(fd.get('symbol'));
+    if(!/^[A-Z0-9.-]{1,16}$/.test(savedSymbol)){alert('Please enter a valid market symbol, for example RY.TO.');return}
+    const quantity=Number(fd.get('quantity')),entryPrice=Number(fd.get('entryPrice')),boughtAt=String(fd.get('boughtAt')||'');
+    if(!(quantity>0)||!(entryPrice>0)||!boughtAt){alert('Quantity, purchase price and purchase date are required.');return}
+    const source=fd.get('source')==='market-hunter'?'market-hunter':'manual';
+    const market=portfolioMarketData(savedSymbol);
+    const previous=state.positions.get(savedSymbol);
+    const captureHunter=source==='market-hunter'&&!previous;
+    const record={
+      ...(previous||{}),symbol:savedSymbol,quantity,entryPrice,boughtAt,source,notes:String(fd.get('notes')||'').trim(),
+      updatedAt:new Date().toISOString(),createdAt:previous?.createdAt||new Date().toISOString()
+    };
+    if(captureHunter&&market){
+      Object.assign(record,{
+        entrySnapshotAt:new Date().toISOString(),
+        entryStage:market.stage||'Unstaged',
+        entryRs20:market.rs20,entryMomentumShift:market.momentumShift,entryRsi14:market.rsi14,
+        entryLowState:market.lowState,entryHighState:market.highState,
+        entrySupport:market.support,entryResistance:market.resistance,
+        entryEvidence:Array.isArray(market.why)?market.why.slice(0,5):[]
+      });
+    }else if(source!=='market-hunter'){
+      record.entryStage=null;record.entryEvidence=[];
+    }
+    if(existing&&existing.symbol!==savedSymbol)state.positions.delete(existing.symbol);
+    state.positions.set(savedSymbol,record);persistPositions();close();render();
+  });
+}
+function removePosition(symbol){
+  const p=state.positions.get(symbol);if(!p)return;
+  if(confirm(`Remove ${symbol} from Portfolio Monitor? This only removes it from the tracker.`)){
+    state.positions.delete(symbol);persistPositions();renderPositions();renderTop5();renderHunter();renderWatchlist();
+  }
 }
 function positionHealth(x,p){
   const warnings=[],watch=[],healthy=[];
+  if(!x)return {status:'Data Unavailable',warnings:['Current market data is not available in the scanner feed.'],watch:[],healthy:[]};
   if(x.lowState==='local_low_broken') warnings.push('Daily local low broken by close');
   if(Number.isFinite(x.support)&&Number.isFinite(x.price)&&x.price<x.support) warnings.push('Price below detected support');
   if(x.swingTrend==='Lower highs + lower lows') warnings.push('Lower-high / lower-low structure');
@@ -417,21 +498,82 @@ function positionHealth(x,p){
   if(x.lowState==='local_low_held'||x.lowState==='failed_low_break') healthy.push('Latest local low holding/reclaimed');
   if(x.weeklyUp===true&&x.dailyUp===true) healthy.push('Weekly + daily trend aligned');
   if(x.swingTrend==='Higher highs + higher lows') healthy.push('Higher-high / higher-low structure');
-  const status=warnings.length?'Structure Warning':watch.length>=2?'Watch Closely':'Trend Healthy';
+  const status=warnings.length?'Structure Warning':watch.length>=2?'Watch Closely':watch.length?'Momentum Cooling':'Trend Healthy';
   return {status,warnings,watch,healthy};
+}
+function portfolioRows(){
+  return [...state.positions.values()].map(p=>({p,x:portfolioMarketData(p.symbol)}));
+}
+function portfolioSummary(rows){
+  let totalCost=0,totalValue=0,covered=0,warnings=0,watch=0;
+  const sectorValues=new Map();
+  for(const {p,x} of rows){
+    const qty=Number(p.quantity)||0,cost=(Number(p.entryPrice)||0)*qty;totalCost+=cost;
+    if(x&&Number.isFinite(x.price)){const value=x.price*qty;totalValue+=value;covered++;if(x.sector)sectorValues.set(x.sector,(sectorValues.get(x.sector)||0)+value)}
+    const h=positionHealth(x,p);if(h.warnings.length)warnings++;else if(h.watch.length)watch++;
+  }
+  const pnl=covered===rows.length?totalValue-totalCost:null;
+  const pnlPct=Number.isFinite(pnl)&&totalCost>0?pnl/totalCost*100:null;
+  let maxSector=null,maxSectorValue=0;for(const [sector,value] of sectorValues)if(value>maxSectorValue){maxSector=sector;maxSectorValue=value}
+  const concentration=totalValue>0?maxSectorValue/totalValue*100:null;
+  let read='Add positions to start monitoring portfolio health.';
+  if(rows.length){
+    const parts=[];
+    if(warnings)parts.push(`${warnings} position${warnings===1?'':'s'} with structural warnings`);
+    if(watch)parts.push(`${watch} with softer momentum / relative strength`);
+    if(!warnings&&!watch&&covered)parts.push('no major structural warning across covered positions');
+    if(Number.isFinite(concentration)&&concentration>=35)parts.push(`${maxSector} exposure is concentrated at about ${concentration.toFixed(0)}%`);
+    if(covered<rows.length)parts.push(`${rows.length-covered} holding${rows.length-covered===1?' is':'s are'} missing current scanner data`);
+    read=parts.join(' · ')+'.';
+  }
+  return {totalCost,totalValue,covered,pnl,pnlPct,warnings,watch,read,concentration,maxSector};
+}
+function positionAttention(rows){
+  const out=[];
+  for(const {p,x} of rows){
+    const h=positionHealth(x,p);
+    const reason=h.warnings[0]||h.watch[0];
+    if(reason)out.push({symbol:p.symbol,reason,status:h.status});
+  }
+  return out;
 }
 function renderPositions(){
   const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
-  const current=[...v2AllSurfaceCandidates(),...allHunterCandidates()],by=new Map([...(state.data.availableItems||[]),...current].map(x=>[x.symbol,x]));
-  const rows=[...state.positions.values()].map(p=>({p,x:by.get(p.symbol)}));
-  root.innerHTML=`<section class="watchlist"><div class="section-title"><div><h2>Positions</h2><p>Post-purchase monitoring. Hunter reports trend health and warnings; it does not issue hold/sell orders.</p></div><span class="shown">${rows.length}</span></div><div class="grid">${rows.length?rows.map(({p,x})=>{
-    if(!x)return `<article class="card"><div class="ticker">${p.symbol}</div><div class="why"><strong>Position monitor</strong>Current market data unavailable.</div><button class="position-btn" data-position="${p.symbol}">Remove</button></article>`;
-    const h=positionHealth(x,p),ret=Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null;
-    const tone=h.status==='Structure Warning'?'down':h.status==='Watch Closely'?'flat':'up';
-    return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${x.company}</div><div class="sector">Bought ${new Date(p.boughtAt).toLocaleDateString()} · Entry ${fmt(p.entryPrice)}</div></div><div><div class="price">${fmt(x.price)}</div><div class="${cls(ret)}">Since entry ${pct(ret)}</div></div></div><div class="why"><strong>Monitor says</strong>${h.warnings.concat(h.watch,h.healthy).slice(0,4).join(' · ')||'No material structural change detected.'}</div><div class="detail open"><div class="detail-grid"><div class="pill">Entry stage<b>${p.entryStage}</b></div><div class="pill">Current stage<b>${x.stage||'Outside active candidate stages'}</b></div><div class="pill">RS20<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="pill">Momentum<b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div><div class="pill">Support<b>${fmt(x.support)}</b></div><div class="pill">Resistance<b>${fmt(x.resistance)}</b></div></div></div><div class="card-actions"><button class="tv-link" data-tv="${x.symbol}">Chart ↗</button><button class="position-btn" data-position="${x.symbol}">Close / remove</button></div></article>`;
-  }).join(''):'<div class="watch-empty">No positions yet. On a Hunter card tap “Bought” after you actually purchase it.</div>'}</div></section>`;
-  root.querySelectorAll('.position-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();markBought(b.dataset.position)}));
-  root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openTradingView(b.dataset.tv)}));
+  const rows=portfolioRows(),sum=portfolioSummary(rows),attention=positionAttention(rows);
+  const valueLabel=sum.covered===rows.length?'Portfolio value':'Tracked value';
+  root.innerHTML=`
+    <section class="portfolio-overview">
+      <div class="portfolio-overview-head"><div><h2>Portfolio Monitor</h2><p>Monitor what you actually own — whether it came from Market Hunter or somewhere else. Analysis only; no buy/sell instructions.</p></div><button type="button" class="portfolio-add">+ Add position</button></div>
+      <div class="portfolio-metrics">
+        <div class="portfolio-metric"><small>${valueLabel}</small><b>${rows.length?'$'+fmt(sum.totalValue):'—'}</b></div>
+        <div class="portfolio-metric"><small>Cost basis</small><b>${rows.length?'$'+fmt(sum.totalCost):'—'}</b></div>
+        <div class="portfolio-metric"><small>Total P/L</small><b class="${cls(sum.pnlPct)}">${Number.isFinite(sum.pnl)?(sum.pnl>=0?'+':'')+'$'+fmt(Math.abs(sum.pnl))+' · '+pct(sum.pnlPct):'—'}</b></div>
+        <div class="portfolio-metric"><small>Holdings</small><b>${rows.length}</b></div>
+        <div class="portfolio-metric"><small>Needs attention</small><b>${sum.warnings+sum.watch}</b></div>
+      </div>
+      <div class="portfolio-read"><strong>Portfolio read</strong>${sum.read}</div>
+    </section>
+    ${attention.length?`<section class="portfolio-section"><div class="portfolio-section-head"><div><h3>Current attention</h3><p>Material structural or momentum context — not trade signals.</p></div><span class="shown">${attention.length}</span></div><div class="portfolio-change-list">${attention.map(a=>`<div class="portfolio-change"><b>${a.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${a.status} · ${a.reason}</span></div>`).join('')}</div></section>`:''}
+    <section class="portfolio-section">
+      <div class="portfolio-section-head"><div><h3>Holdings</h3><p>Purchase data, current health and entry context.</p></div><span class="shown">${rows.length}</span></div>
+      <div class="grid">${rows.length?rows.map(({p,x})=>{
+        const h=positionHealth(x,p),qty=Number(p.quantity)||0,ret=x&&Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null;
+        const pnl=x&&Number.isFinite(x.price)?(x.price-p.entryPrice)*qty:null,value=x&&Number.isFinite(x.price)?x.price*qty:null;
+        const tone=h.status==='Structure Warning'?'down':h.status==='Trend Healthy'?'up':'flat';
+        if(!x)return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${esc(p.symbol.replace(/\\.(TO|NE|V)$/,''))}</div><span class="history-note flat">Data Unavailable</span></div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span></div></div><div><div class="price">—</div></div></div><div class="why"><strong>Position monitor</strong>Purchase recorded at $${fmt(p.entryPrice)} on ${new Date(p.boughtAt+'T12:00:00').toLocaleDateString()}, but current scanner data is unavailable.</div><div class="portfolio-card-actions"><button type="button" class="portfolio-edit" data-edit-position="${esc(p.symbol)}">Edit</button><button type="button" class="portfolio-remove" data-remove-position="${esc(p.symbol)}">Remove</button></div></article>`;
+        return `<article class="card">
+          <div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${esc(x.company||x.name||x.symbol)}</div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span><span class="source-pill manual">${qty} shares</span></div></div><div><div class="price">$${fmt(x.price)}</div><div class="${cls(ret)}">Since entry ${pct(ret)}</div></div></div>
+          <div class="row"><div class="mini"><div class="k">Value</div><div class="v">$${fmt(value)}</div></div><div class="mini"><div class="k">P/L</div><div class="v ${cls(pnl)}">${Number.isFinite(pnl)?(pnl>=0?'+':'')+'$'+fmt(Math.abs(pnl)):'—'}</div></div><div class="mini"><div class="k">Avg cost</div><div class="v">$${fmt(p.entryPrice)}</div></div><div class="mini"><div class="k">RSI</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div></div>
+          <div class="why"><strong>Monitor says</strong>${h.warnings.concat(h.watch,h.healthy).slice(0,4).join(' · ')||'No material structural change detected.'}</div>
+          <div class="detail open"><div class="detail-grid"><div class="pill">Purchased<b>${new Date(p.boughtAt+'T12:00:00').toLocaleDateString()}</b></div><div class="pill">Entry source<b>${positionSourceLabel(p)}</b></div><div class="pill">Entry stage<b>${p.entryStage||'Not captured'}</b></div><div class="pill">Current stage<b>${x.stage||'Outside active candidate stages'}</b></div><div class="pill">RS20<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="pill">Momentum<b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div><div class="pill">Support<b>${fmt(x.support)}</b></div><div class="pill">Resistance<b>${fmt(x.resistance)}</b></div>${p.notes?`<div class="selection-explain"><small>Entry thesis / note</small><b>${esc(p.notes)}</b></div>`:''}</div></div>
+          <div class="portfolio-card-actions"><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button><button type="button" class="portfolio-edit" data-edit-position="${x.symbol}">Edit</button><button type="button" class="portfolio-remove" data-remove-position="${x.symbol}">Remove</button></div>
+        </article>`;
+      }).join(''):'<div class="watch-empty">No holdings yet. Add a position manually, or use “Bought” on a Hunter card and enter the real purchase details.</div>'}</div>
+    </section>`;
+  root.querySelector('.portfolio-add')?.addEventListener('click',()=>openPositionEditor('','manual'));
+  root.querySelectorAll('.portfolio-edit').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openPositionEditor(b.dataset.editPosition,state.positions.get(b.dataset.editPosition)?.source||'manual')}));
+  root.querySelectorAll('.portfolio-remove').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();removePosition(b.dataset.removePosition)}));
+  root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openTradingView(b.dataset.tv)}));
 }
 function toggleWatch(symbol){
   state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);
