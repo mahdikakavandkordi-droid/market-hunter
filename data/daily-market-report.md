@@ -31,11 +31,11 @@
 
 ## What to watch next
 
-- **Ethereum:** bullish continuation above 2805.5 · trend warning near 2567 · structure risk below 2628.69.
+- **Ethereum:** bullish continuation above 2805.5 · trend warning near 2566.98 · structure risk below 2628.69.
 - **TSX Composite:** bullish continuation above 36410.6 · trend warning near 35959.14 · structure risk below 35722.
 - **Gold:** bullish continuation above 4403.6 · trend warning near 4407.47 · structure risk below 4273.3.
 - **Nasdaq-100:** bullish continuation above 30642.57 · trend warning near 29620.59 · structure risk below 29604.93.
-- **Bitcoin:** bullish continuation above 87363.76 · trend warning near 80145.35 · structure risk below 82906.62.
+- **Bitcoin:** bullish continuation above 87363.76 · trend warning near 80145.05 · structure risk below 82906.62.
 
 ## Market detail
 
@@ -85,7 +85,7 @@
 - **Historical read:** 5 sessions: Mixed · 10: Constructive, recent caution · 20: Mixed
 - **Framing:** Primary trend intact, pullback unresolved
 - **Outlook:** Primary trend remains constructive, but recent historical pullback analogs have been weaker than the market's normal baseline. Treat this as an intact trend with elevated continuation risk, not an automatic rebound signal.
-- **Watch next:** bullish continuation above 87363.76 · trend warning near 80145.35 · structure risk below 82906.62.
+- **Watch next:** bullish continuation above 87363.76 · trend warning near 80145.05 · structure risk below 82906.62.
 
 ### Ethereum
 - **State:** Strong Bull / Pullback
@@ -93,7 +93,7 @@
 - **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Constructive, recent caution
 - **Framing:** Broader setup constructive, exact setup caution
 - **Outlook:** Primary trend remains constructive, and the broader pullback family is reasonably supported, but the exact current setup has shown materially weaker recent follow-through. Treat rebound expectations cautiously until price confirms.
-- **Watch next:** bullish continuation above 2805.5 · trend warning near 2567 · structure risk below 2628.69.
+- **Watch next:** bullish continuation above 2805.5 · trend warning near 2566.98 · structure risk below 2628.69.
 - **Specific setup caution:** Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through.
 
 

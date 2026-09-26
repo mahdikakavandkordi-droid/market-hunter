@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T18:22:08.463Z",
+  "generatedAt": "2026-09-26T18:26:52.195Z",
   "status": "PASS",
   "decision": "Daily Market Report v0.2 is defensible for research use: deterministic summary from frozen Market Pulse evidence, explicit mixed timestamps, 7-market coverage, cross-market divergences, scenario watch levels, horizon evidence metadata, Hunter context, JSON + Markdown outputs, and Home rendering.",
   "checks": [
@@ -65,12 +65,12 @@
           "name": "Ethereum",
           "regime": "Strong Bull",
           "condition": "Pullback",
-          "text": "Ethereum: bullish continuation above 2805.5 · trend warning near 2567 · structure risk below 2628.69.",
+          "text": "Ethereum: bullish continuation above 2805.5 · trend warning near 2566.98 · structure risk below 2628.69.",
           "levels": {
             "support": 2628.69,
             "resistance": 2805.5,
             "bullishTrigger": 2805.5,
-            "warningLevel": 2567,
+            "warningLevel": 2566.98,
             "bearishTrigger": 2628.69
           }
         },
@@ -121,12 +121,12 @@
           "name": "Bitcoin",
           "regime": "Strong Bull",
           "condition": "Pullback",
-          "text": "Bitcoin: bullish continuation above 87363.76 · trend warning near 80145.35 · structure risk below 82906.62.",
+          "text": "Bitcoin: bullish continuation above 87363.76 · trend warning near 80145.05 · structure risk below 82906.62.",
           "levels": {
             "support": 82906.62,
             "resistance": 87363.76,
             "bullishTrigger": 87363.76,
-            "warningLevel": 80145.35,
+            "warningLevel": 80145.05,
             "bearishTrigger": 82906.62
           }
         }
@@ -155,7 +155,7 @@
       "name": "hunter_context_max6",
       "pass": true,
       "detail": {
-        "generatedAt": "2026-09-26T16:52:11.411Z",
+        "generatedAt": "2026-09-26T18:26:51.901Z",
         "visible": 6,
         "hiddenByIntegratedCap": 7,
         "picks": [
@@ -204,6 +204,47 @@
       "detail": {
         "report": 6,
         "backend": 6
+      }
+    },
+    {
+      "name": "pulse_report_matches_latest_source",
+      "pass": true,
+      "detail": {
+        "reportSource": "market-pulse-v0.1-2026-09-26",
+        "latestVersion": "market-pulse-v0.1-2026-09-26"
+      }
+    },
+    {
+      "name": "daily_report_matches_pulse_report",
+      "pass": true,
+      "detail": {
+        "dailySource": "market-pulse-report-v0.3-2026-09-26",
+        "pulseVersion": "market-pulse-report-v0.3-2026-09-26"
+      }
+    },
+    {
+      "name": "daily_report_matches_latest_hunter",
+      "pass": true,
+      "detail": {
+        "dailyHunterGeneratedAt": "2026-09-26T18:26:51.901Z",
+        "hunterGeneratedAt": "2026-09-26T18:26:51.901Z"
+      }
+    },
+    {
+      "name": "pulse_report_not_older_than_source",
+      "pass": true,
+      "detail": {
+        "pulseGeneratedAt": "2026-09-26T18:26:52.064Z",
+        "sourceGeneratedAt": "2026-09-26T18:26:06.785Z"
+      }
+    },
+    {
+      "name": "daily_report_not_older_than_inputs",
+      "pass": true,
+      "detail": {
+        "dailyGeneratedAt": "2026-09-26T18:26:52.135Z",
+        "pulseGeneratedAt": "2026-09-26T18:26:52.064Z",
+        "hunterGeneratedAt": "2026-09-26T18:26:51.901Z"
       }
     },
     {
@@ -777,7 +818,7 @@
     {
       "name": "BTC_watch_next_present",
       "pass": true,
-      "detail": "bullish continuation above 87363.76 · trend warning near 80145.35 · structure risk below 82906.62."
+      "detail": "bullish continuation above 87363.76 · trend warning near 80145.05 · structure risk below 82906.62."
     },
     {
       "name": "BTC_evidence_5_10_20",
@@ -887,7 +928,7 @@
     {
       "name": "ETH_watch_next_present",
       "pass": true,
-      "detail": "bullish continuation above 2805.5 · trend warning near 2567 · structure risk below 2628.69."
+      "detail": "bullish continuation above 2805.5 · trend warning near 2566.98 · structure risk below 2628.69."
     },
     {
       "name": "ETH_evidence_5_10_20",
