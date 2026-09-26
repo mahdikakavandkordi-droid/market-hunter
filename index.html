@@ -474,6 +474,8 @@ function renderDailyMarketReport(){
   if(!r)return '';
   const groups=(r.groups||[]).map(g=>`<div class="daily-group"><small>${g.label}</small><b>${g.state}</b><span>${g.detail||''}</span></div>`).join('');
   const devs=(r.keyDevelopments||[]).slice(0,5).map(x=>`<div class="daily-dev"><b>${x.severity}</b><span>${x.text}</span></div>`).join('');
+  const divergences=(r.keyDivergences||[]).map(x=>`<div class="daily-dev"><b>DIV</b><span><strong>${x.label}:</strong> ${x.text}</span></div>`).join('');
+  const watch=(r.watchNext||[]).slice(0,5).map(x=>`<div class="daily-dev"><b>WATCH</b><span>${x.text}</span></div>`).join('');
   const asOf=r.asOf?.mixedDates?`${r.asOf.earliest} → ${r.asOf.latest}`:(r.asOf?.latest||'');
   const attention=(r.highestAttention||[]).map(x=>`<span>${x}</span>`).join('');
   const hunter=r.hunterContext;
@@ -483,6 +485,8 @@ function renderDailyMarketReport(){
     <div class="daily-developments">${devs}</div>
     <details class="daily-more">
       <summary>More context</summary>
+      ${divergences?`<div class="daily-note"><strong>Key divergences</strong></div><div class="daily-developments">${divergences}</div>`:''}
+      ${watch?`<div class="daily-note"><strong>What to watch next</strong></div><div class="daily-developments">${watch}</div>`:''}
       <div class="daily-attention">Highest attention: ${attention||'—'}</div>
       <div class="daily-note">${(r.executiveSummary||[]).slice(1).join(' · ')}</div>
       ${hunter?`<div class="daily-note">Hunter context: ${hunter.visible??0} final charts visible · ${hunter.hiddenByIntegratedCap??0} additional validated stage picks kept in backend.</div>`:''}
