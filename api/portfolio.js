@@ -165,6 +165,24 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
   const volVar=variance(portfolioReturns),benchmarkVolVar=variance(benchmarkReturns);
   const annualizedVolPct=Number.isFinite(volVar)?Math.sqrt(volVar)*Math.sqrt(252)*100:null;
   const benchmarkAnnualizedVolPct=Number.isFinite(benchmarkVolVar)?Math.sqrt(benchmarkVolVar)*Math.sqrt(252)*100:null;
+  const assetReturns=new Map(usable.map(symbol=>[symbol,commonDates.map(date=>maps.get(symbol).get(date))]));
+  const covarianceMatrix=new Map();
+  for(const a of usable){
+    const row=new Map();
+    for(const b of usable)row.set(b,covariance(assetReturns.get(a),assetReturns.get(b)));
+    covarianceMatrix.set(a,row);
+  }
+  const portfolioVarianceFromComponents=usable.reduce((outer,a)=>{
+    const wa=weights.get(a)||0;
+    return outer+usable.reduce((inner,b)=>inner+wa*(weights.get(b)||0)*(covarianceMatrix.get(a)?.get(b)||0),0);
+  },0);
+  const riskContributions=portfolioVarianceFromComponents>0?usable.map(symbol=>{
+    const w=weights.get(symbol)||0;
+    const marginal=usable.reduce((sum,b)=>sum+(weights.get(b)||0)*(covarianceMatrix.get(symbol)?.get(b)||0),0);
+    const contributionPct=w*marginal/portfolioVarianceFromComponents*100;
+    return {symbol,weightPct:w*100,riskContributionPct:contributionPct};
+  }).sort((a,b)=>b.riskContributionPct-a.riskContributionPct):[];
+  const topRiskContributor=riskContributions[0]||null;
   const benchVar=variance(benchmarkReturns),cov=covariance(portfolioReturns,benchmarkReturns);
   const betaVsTsx=Number.isFinite(cov)&&Number.isFinite(benchVar)&&benchVar>0?cov/benchVar:null;
   const portfolioReturnPct=cumulativeReturn(portfolioReturns),benchmarkReturnPct=cumulativeReturn(benchmarkReturns);
@@ -198,6 +216,8 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
     benchmarkAnnualizedVolPct,
     volatilityRatio,
     riskRead,
+    riskContributions,
+    topRiskContributor,
     maxDrawdownPct,
     betaVsTsx,
     portfolioReturnPct,
