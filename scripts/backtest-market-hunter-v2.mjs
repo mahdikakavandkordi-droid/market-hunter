@@ -124,13 +124,17 @@ function recoveryStructureDiagnostic(a){
   const strongMomentum=e=>Number.isFinite(e.features.momentumShift)&&e.features.momentumShift>=2;
   const rs0=e=>Number.isFinite(e.features.rs20)&&e.features.rs20>=0;
   const volSupport=e=>Number.isFinite(e.features.upDownVolumeRatio)&&e.features.upDownVolumeRatio>=.85;
+  const review=e=>priorityBand('Recovery',e.rankScore)==='Review First';
 
   const variants={
     baseline:e=>true,
     requireMinorHighBreak:e=>broken(e),
     breakOrHigherLow:e=>broken(e)||higherLow(e),
     structuralConfirmation:e=>broken(e)||improving(e),
-    breakWithSupport:e=>broken(e)&&(strongMomentum(e)||rs0(e)||volSupport(e))
+    breakWithSupport:e=>broken(e)&&(strongMomentum(e)||rs0(e)||volSupport(e)),
+    currentReviewFirst:e=>review(e),
+    reviewFirstAndBreak:e=>review(e)&&broken(e),
+    reviewFirstAndBreakWithSupport:e=>review(e)&&broken(e)&&(strongMomentum(e)||rs0(e)||volSupport(e))
   };
 
   const pack=rows=>{
@@ -138,10 +142,26 @@ function recoveryStructureDiagnostic(a){
     return {overall:summary(rows),train:summary(sp.train),test:summary(sp.test)};
   };
 
+  const candidateRank=(scoreFn)=>{
+    const sp=splitChron(a);
+    const train=sp.train.map(e=>({...e,candidateScore:scoreFn(e)}));
+    const test=sp.test.map(e=>({...e,candidateScore:scoreFn(e)}));
+    const q80=quantile(train.map(e=>e.candidateScore),.80);
+    const above=(rows,t)=>summary(rows.filter(e=>Number.isFinite(t)&&e.candidateScore>=t));
+    return {cutDate:sp.cut,trainQ80:round(q80,1),q80:{train:above(train,q80),test:above(test,q80)}};
+  };
+
+  const ranking={
+    current:candidateRank(e=>e.rankScore),
+    minorHighBoost:candidateRank(e=>e.rankScore+(broken(e)?10:0)),
+    confirmedBreakBoost:candidateRank(e=>e.rankScore+(broken(e)?10:0)+(broken(e)&&rs0(e)?4:0))
+  };
+
   return {
-    status:'recovery-structure-diagnostic-v1',
+    status:'recovery-structure-diagnostic-v2',
     note:'Diagnostic only. Recovery classification and production ranking are unchanged.',
-    variants:Object.fromEntries(Object.entries(variants).map(([name,test])=>[name,pack(a.filter(test))]))
+    variants:Object.fromEntries(Object.entries(variants).map(([name,test])=>[name,pack(a.filter(test))])),
+    ranking
   };
 }
 
