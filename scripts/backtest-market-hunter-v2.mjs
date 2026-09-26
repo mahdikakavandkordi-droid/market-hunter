@@ -222,7 +222,10 @@ for(const symbol of symbols){
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
           ret5:round(m.ret5),ret20:round(m.ret20),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
-          rsi14:round(m.rsi14,1),swingTrend:m.swingTrend
+          rsi14:round(m.rsi14,1),swingTrend:m.swingTrend,
+          downsideDecel:m.downsideDecel,volumeShockNearLow:m.volumeShockNearLow,sellingFading:m.sellingFading,
+          freshReclaimAge:m.freshReclaimAge,upDownVolumeRatio:round(m.upDownVolumeRatio,2),higherLow:m.higherLow,
+          atr14Pct:round(m.atr14Pct),pullback60:round(m.pullback60)
         });
       }
     }

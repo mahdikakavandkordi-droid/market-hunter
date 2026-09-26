@@ -80,8 +80,8 @@ jobs:
           pattern: v2-backtest-batch-*
           path: data
           merge-multiple: true
-      - name: Aggregate daily Early Watch surfaced shortlist replay
-        run: node scripts/aggregate-early-watch-surface-replay.mjs
+      - name: Analyze global daily Early Watch surfaced shortlist replay
+        run: node scripts/analyze-early-watch-surface-replay.mjs
       - name: Commit surfaced shortlist replay report
         run: |
           git config user.name "market-hunter-bot"
@@ -89,6 +89,7 @@ jobs:
           git add data/v2-early-watch-surface-replay.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "research: refresh Early Watch surface replay"
+          git restore data/v2-backtest-batch-*.json || true
           for attempt in 1 2 3 4 5; do
             git pull --rebase origin research/market-hunter-v2-rebuild
             if git push origin HEAD:research/market-hunter-v2-rebuild; then exit 0; fi

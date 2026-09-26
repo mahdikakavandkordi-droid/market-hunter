@@ -69,7 +69,20 @@ const rankingVariants={
     x.score
     +1.8*clamp(x.momentumShift,-4,4)
     +(Number.isFinite(x.rs20)?(x.rs20>=0?3:x.rs20>=-5?1:-2):0)
-    +structureAdj(x.swingTrend)*1.5
+    +structureAdj(x.swingTrend)*1.5,
+  evidencePolish:x=>{
+    let s=x.score;
+    s+=1.0*clamp(x.momentumShift,-4,4);
+    if(x.downsideDecel===true)s+=3;
+    if(x.volumeShockNearLow===true)s+=1;
+    if(Number.isFinite(x.upDownVolumeRatio)){
+      if(x.upDownVolumeRatio>=1.05)s+=2;
+      else if(x.upDownVolumeRatio<0.75)s-=2;
+    }
+    if(Number.isFinite(x.freshReclaimAge)&&x.freshReclaimAge<=2)s+=0.5;
+    s+=structureAdj(x.swingTrend);
+    return s;
+  }
 };
 
 function rankingExperiment(byDate,dates,scoreFn){
