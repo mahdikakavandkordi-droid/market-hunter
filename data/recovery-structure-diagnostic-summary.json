@@ -1,0 +1,5086 @@
+{
+  "generatedAt": "2026-09-26T13:13:57.945Z",
+  "source": "Four V2 historical backtest batches",
+  "note": "Diagnostic only. No Recovery production rule was changed.",
+  "horizons": {
+    "5": {
+      "pooled": {
+        "baseline": {
+          "pooledTest": {
+            "n": 1858,
+            "mean": 0.99,
+            "positiveRate": 56.9,
+            "benchmarkBeatRate": 50.5,
+            "meanExcess": 0.37,
+            "avgMAE": -2.09,
+            "avgMFE": 3.44
+          },
+          "retentionVsBaseline": 100,
+          "deltaVsBaseline": {
+            "mean": 0,
+            "positiveRate": 0,
+            "benchmarkBeatRate": 0,
+            "meanExcess": 0
+          },
+          "positiveBatchCount": 0
+        },
+        "requireMinorHighBreak": {
+          "pooledTest": {
+            "n": 479,
+            "mean": 1.33,
+            "positiveRate": 58.5,
+            "benchmarkBeatRate": 54.3,
+            "meanExcess": 0.63,
+            "avgMAE": -2.05,
+            "avgMFE": 3.9
+          },
+          "retentionVsBaseline": 25.8,
+          "deltaVsBaseline": {
+            "mean": 0.34,
+            "positiveRate": 1.6,
+            "benchmarkBeatRate": 3.8,
+            "meanExcess": 0.26
+          },
+          "positiveBatchCount": 3
+        },
+        "breakOrHigherLow": {
+          "pooledTest": {
+            "n": 900,
+            "mean": 1.34,
+            "positiveRate": 58.8,
+            "benchmarkBeatRate": 52.2,
+            "meanExcess": 0.68,
+            "avgMAE": -2.07,
+            "avgMFE": 3.83
+          },
+          "retentionVsBaseline": 48.4,
+          "deltaVsBaseline": {
+            "mean": 0.35,
+            "positiveRate": 1.9,
+            "benchmarkBeatRate": 1.7,
+            "meanExcess": 0.31
+          },
+          "positiveBatchCount": 3
+        },
+        "structuralConfirmation": {
+          "pooledTest": {
+            "n": 1235,
+            "mean": 1.05,
+            "positiveRate": 56.5,
+            "benchmarkBeatRate": 50.6,
+            "meanExcess": 0.43,
+            "avgMAE": -2.16,
+            "avgMFE": 3.62
+          },
+          "retentionVsBaseline": 66.5,
+          "deltaVsBaseline": {
+            "mean": 0.06,
+            "positiveRate": -0.4,
+            "benchmarkBeatRate": 0.1,
+            "meanExcess": 0.06
+          },
+          "positiveBatchCount": 3
+        },
+        "breakWithSupport": {
+          "pooledTest": {
+            "n": 461,
+            "mean": 1.36,
+            "positiveRate": 58.8,
+            "benchmarkBeatRate": 55.1,
+            "meanExcess": 0.66,
+            "avgMAE": -2.06,
+            "avgMFE": 3.91
+          },
+          "retentionVsBaseline": 24.8,
+          "deltaVsBaseline": {
+            "mean": 0.37,
+            "positiveRate": 1.9,
+            "benchmarkBeatRate": 4.6,
+            "meanExcess": 0.29
+          },
+          "positiveBatchCount": 3
+        }
+      },
+      "perBatch": [
+        {
+          "batch": 0,
+          "baselineTest": {
+            "n": 458,
+            "mean": 1.02,
+            "median": 0.65,
+            "positiveRate": 57,
+            "benchmarkBeatRate": 48.3,
+            "meanExcess": 0.36,
+            "avgMAE": -2.13,
+            "avgMFE": 3.45,
+            "hitPlus7": 17.5,
+            "hitMinus7": 10.5
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1590,
+                "mean": 0.48,
+                "median": 0.47,
+                "positiveRate": 54.7,
+                "benchmarkBeatRate": 49.9,
+                "meanExcess": 0.13,
+                "avgMAE": -2.06,
+                "avgMFE": 2.7,
+                "hitPlus7": 11.3,
+                "hitMinus7": 8.9
+              },
+              "train": {
+                "n": 1132,
+                "mean": 0.26,
+                "median": 0.4,
+                "positiveRate": 53.7,
+                "benchmarkBeatRate": 50.6,
+                "meanExcess": 0.04,
+                "avgMAE": -2.03,
+                "avgMFE": 2.4,
+                "hitPlus7": 8.7,
+                "hitMinus7": 8.3
+              },
+              "test": {
+                "n": 458,
+                "mean": 1.02,
+                "median": 0.65,
+                "positiveRate": 57,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": 0.36,
+                "avgMAE": -2.13,
+                "avgMFE": 3.45,
+                "hitPlus7": 17.5,
+                "hitMinus7": 10.5
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 365,
+                "mean": 0.62,
+                "median": 0.75,
+                "positiveRate": 56.2,
+                "benchmarkBeatRate": 52.3,
+                "meanExcess": 0.34,
+                "avgMAE": -2.06,
+                "avgMFE": 2.95,
+                "hitPlus7": 14,
+                "hitMinus7": 10.7
+              },
+              "train": {
+                "n": 250,
+                "mean": 0.06,
+                "median": 0.11,
+                "positiveRate": 50.8,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.02,
+                "avgMAE": -2.31,
+                "avgMFE": 2.63,
+                "hitPlus7": 12.8,
+                "hitMinus7": 11.2
+              },
+              "test": {
+                "n": 115,
+                "mean": 1.83,
+                "median": 1.9,
+                "positiveRate": 67.8,
+                "benchmarkBeatRate": 57.4,
+                "meanExcess": 1.05,
+                "avgMAE": -1.51,
+                "avgMFE": 3.65,
+                "hitPlus7": 16.5,
+                "hitMinus7": 9.6
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 710,
+                "mean": 0.73,
+                "median": 0.69,
+                "positiveRate": 56.8,
+                "benchmarkBeatRate": 52.3,
+                "meanExcess": 0.36,
+                "avgMAE": -2.01,
+                "avgMFE": 2.93,
+                "hitPlus7": 13.2,
+                "hitMinus7": 8.6
+              },
+              "train": {
+                "n": 510,
+                "mean": 0.4,
+                "median": 0.48,
+                "positiveRate": 53.7,
+                "benchmarkBeatRate": 52.4,
+                "meanExcess": 0.17,
+                "avgMAE": -2.02,
+                "avgMFE": 2.59,
+                "hitPlus7": 11.4,
+                "hitMinus7": 8.2
+              },
+              "test": {
+                "n": 200,
+                "mean": 1.58,
+                "median": 1.1,
+                "positiveRate": 64.5,
+                "benchmarkBeatRate": 52,
+                "meanExcess": 0.85,
+                "avgMAE": -1.97,
+                "avgMFE": 3.8,
+                "hitPlus7": 18,
+                "hitMinus7": 9.5
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 999,
+                "mean": 0.54,
+                "median": 0.52,
+                "positiveRate": 55.2,
+                "benchmarkBeatRate": 51.2,
+                "meanExcess": 0.22,
+                "avgMAE": -2.1,
+                "avgMFE": 2.81,
+                "hitPlus7": 12.4,
+                "hitMinus7": 9.7
+              },
+              "train": {
+                "n": 712,
+                "mean": 0.34,
+                "median": 0.41,
+                "positiveRate": 53.4,
+                "benchmarkBeatRate": 51.4,
+                "meanExcess": 0.13,
+                "avgMAE": -2.02,
+                "avgMFE": 2.49,
+                "hitPlus7": 10.8,
+                "hitMinus7": 8.7
+              },
+              "test": {
+                "n": 287,
+                "mean": 1.03,
+                "median": 0.76,
+                "positiveRate": 59.6,
+                "benchmarkBeatRate": 50.5,
+                "meanExcess": 0.45,
+                "avgMAE": -2.32,
+                "avgMFE": 3.59,
+                "hitPlus7": 16.4,
+                "hitMinus7": 12.2
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 347,
+                "mean": 0.66,
+                "median": 0.76,
+                "positiveRate": 55.9,
+                "benchmarkBeatRate": 53,
+                "meanExcess": 0.39,
+                "avgMAE": -2.04,
+                "avgMFE": 2.97,
+                "hitPlus7": 14.1,
+                "hitMinus7": 11
+              },
+              "train": {
+                "n": 236,
+                "mean": 0.1,
+                "median": 0.17,
+                "positiveRate": 50.8,
+                "benchmarkBeatRate": 50.4,
+                "meanExcess": 0.05,
+                "avgMAE": -2.28,
+                "avgMFE": 2.65,
+                "hitPlus7": 13.1,
+                "hitMinus7": 11.4
+              },
+              "test": {
+                "n": 111,
+                "mean": 1.84,
+                "median": 1.91,
+                "positiveRate": 66.7,
+                "benchmarkBeatRate": 58.6,
+                "meanExcess": 1.1,
+                "avgMAE": -1.54,
+                "avgMFE": 3.65,
+                "hitPlus7": 16.2,
+                "hitMinus7": 9.9
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 365,
+                "mean": 0.62,
+                "median": 0.75,
+                "positiveRate": 56.2,
+                "benchmarkBeatRate": 52.3,
+                "meanExcess": 0.34,
+                "avgMAE": -2.06,
+                "avgMFE": 2.95,
+                "hitPlus7": 14,
+                "hitMinus7": 10.7
+              },
+              "no": {
+                "n": 1225,
+                "mean": 0.44,
+                "median": 0.43,
+                "positiveRate": 54.2,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": 0.07,
+                "avgMAE": -2.06,
+                "avgMFE": 2.63,
+                "hitPlus7": 10.4,
+                "hitMinus7": 8.4
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 1310,
+                "mean": 0.41,
+                "median": 0.36,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.15,
+                "avgMAE": -2.13,
+                "avgMFE": 2.75,
+                "hitPlus7": 11.7,
+                "hitMinus7": 9.5
+              },
+              "no": {
+                "n": 280,
+                "mean": 0.81,
+                "median": 0.94,
+                "positiveRate": 61.1,
+                "benchmarkBeatRate": 49.6,
+                "meanExcess": 0.07,
+                "avgMAE": -1.75,
+                "avgMFE": 2.46,
+                "hitPlus7": 9.3,
+                "hitMinus7": 6.4
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 478,
+                "mean": 0.89,
+                "median": 0.71,
+                "positiveRate": 57.7,
+                "benchmarkBeatRate": 51.9,
+                "meanExcess": 0.47,
+                "avgMAE": -2.09,
+                "avgMFE": 3.16,
+                "hitPlus7": 13.4,
+                "hitMinus7": 9.8
+              },
+              "no": {
+                "n": 1112,
+                "mean": 0.3,
+                "median": 0.38,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 49.1,
+                "meanExcess": -0.01,
+                "avgMAE": -2.05,
+                "avgMFE": 2.51,
+                "hitPlus7": 10.3,
+                "hitMinus7": 8.5
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 870,
+                "mean": 0.49,
+                "median": 0.48,
+                "positiveRate": 54.6,
+                "benchmarkBeatRate": 50.3,
+                "meanExcess": 0.12,
+                "avgMAE": -2.17,
+                "avgMFE": 2.83,
+                "hitPlus7": 12.5,
+                "hitMinus7": 9.9
+              },
+              "no": {
+                "n": 720,
+                "mean": 0.47,
+                "median": 0.46,
+                "positiveRate": 54.7,
+                "benchmarkBeatRate": 49.4,
+                "meanExcess": 0.15,
+                "avgMAE": -1.92,
+                "avgMFE": 2.55,
+                "hitPlus7": 9.7,
+                "hitMinus7": 7.8
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 526,
+                "mean": 0.79,
+                "median": 0.64,
+                "positiveRate": 56.7,
+                "benchmarkBeatRate": 51.5,
+                "meanExcess": 0.36,
+                "avgMAE": -2.07,
+                "avgMFE": 2.97,
+                "hitPlus7": 13.7,
+                "hitMinus7": 8.4
+              },
+              "no": {
+                "n": 1064,
+                "mean": 0.32,
+                "median": 0.38,
+                "positiveRate": 53.7,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": 0.02,
+                "avgMAE": -2.06,
+                "avgMFE": 2.57,
+                "hitPlus7": 10.1,
+                "hitMinus7": 9.2
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 835,
+                "mean": 0.54,
+                "median": 0.5,
+                "positiveRate": 54.7,
+                "benchmarkBeatRate": 50.7,
+                "meanExcess": 0.2,
+                "avgMAE": -2.16,
+                "avgMFE": 2.81,
+                "hitPlus7": 12.3,
+                "hitMinus7": 9.8
+              },
+              "no": {
+                "n": 755,
+                "mean": 0.41,
+                "median": 0.44,
+                "positiveRate": 54.6,
+                "benchmarkBeatRate": 49.1,
+                "meanExcess": 0.06,
+                "avgMAE": -1.95,
+                "avgMFE": 2.58,
+                "hitPlus7": 10.1,
+                "hitMinus7": 7.9
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 1510,
+                "mean": 0.49,
+                "median": 0.49,
+                "positiveRate": 55,
+                "benchmarkBeatRate": 50.1,
+                "meanExcess": 0.16,
+                "avgMAE": -1.95,
+                "avgMFE": 2.58,
+                "hitPlus7": 10.5,
+                "hitMinus7": 7.7
+              },
+              "no": {
+                "n": 80,
+                "mean": 0.32,
+                "median": -0.17,
+                "positiveRate": 48.8,
+                "benchmarkBeatRate": 47.5,
+                "meanExcess": -0.37,
+                "avgMAE": -4.13,
+                "avgMFE": 5.05,
+                "hitPlus7": 26.3,
+                "hitMinus7": 31.3
+              }
+            }
+          ]
+        },
+        {
+          "batch": 1,
+          "baselineTest": {
+            "n": 480,
+            "mean": 0.97,
+            "median": 0.86,
+            "positiveRate": 58.1,
+            "benchmarkBeatRate": 53.3,
+            "meanExcess": 0.49,
+            "avgMAE": -2.07,
+            "avgMFE": 3.46,
+            "hitPlus7": 16.3,
+            "hitMinus7": 8.8
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1631,
+                "mean": 0.4,
+                "median": 0.42,
+                "positiveRate": 53.9,
+                "benchmarkBeatRate": 50.5,
+                "meanExcess": 0.2,
+                "avgMAE": -2.16,
+                "avgMFE": 2.76,
+                "hitPlus7": 12.4,
+                "hitMinus7": 9.4
+              },
+              "train": {
+                "n": 1151,
+                "mean": 0.16,
+                "median": 0.23,
+                "positiveRate": 52.1,
+                "benchmarkBeatRate": 49.3,
+                "meanExcess": 0.07,
+                "avgMAE": -2.2,
+                "avgMFE": 2.46,
+                "hitPlus7": 10.9,
+                "hitMinus7": 9.6
+              },
+              "test": {
+                "n": 480,
+                "mean": 0.97,
+                "median": 0.86,
+                "positiveRate": 58.1,
+                "benchmarkBeatRate": 53.3,
+                "meanExcess": 0.49,
+                "avgMAE": -2.07,
+                "avgMFE": 3.46,
+                "hitPlus7": 16.3,
+                "hitMinus7": 8.8
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 396,
+                "mean": 0.55,
+                "median": 0.52,
+                "positiveRate": 54,
+                "benchmarkBeatRate": 52.3,
+                "meanExcess": 0.31,
+                "avgMAE": -2.38,
+                "avgMFE": 3.07,
+                "hitPlus7": 14.4,
+                "hitMinus7": 12.1
+              },
+              "train": {
+                "n": 257,
+                "mean": 0.02,
+                "median": 0.22,
+                "positiveRate": 51.8,
+                "benchmarkBeatRate": 49.4,
+                "meanExcess": 0,
+                "avgMAE": -2.48,
+                "avgMFE": 2.48,
+                "hitPlus7": 10.5,
+                "hitMinus7": 11.7
+              },
+              "test": {
+                "n": 139,
+                "mean": 1.54,
+                "median": 1.34,
+                "positiveRate": 58.3,
+                "benchmarkBeatRate": 57.6,
+                "meanExcess": 0.87,
+                "avgMAE": -2.18,
+                "avgMFE": 4.16,
+                "hitPlus7": 21.6,
+                "hitMinus7": 12.9
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 775,
+                "mean": 0.61,
+                "median": 0.53,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 52.8,
+                "meanExcess": 0.45,
+                "avgMAE": -2.22,
+                "avgMFE": 3.03,
+                "hitPlus7": 14.8,
+                "hitMinus7": 10.5
+              },
+              "train": {
+                "n": 534,
+                "mean": 0.08,
+                "median": 0.21,
+                "positiveRate": 51.5,
+                "benchmarkBeatRate": 50.4,
+                "meanExcess": 0.12,
+                "avgMAE": -2.35,
+                "avgMFE": 2.52,
+                "hitPlus7": 11.2,
+                "hitMinus7": 10.9
+              },
+              "test": {
+                "n": 241,
+                "mean": 1.78,
+                "median": 1.43,
+                "positiveRate": 62.2,
+                "benchmarkBeatRate": 58.1,
+                "meanExcess": 1.16,
+                "avgMAE": -1.94,
+                "avgMFE": 4.17,
+                "hitPlus7": 22.8,
+                "hitMinus7": 9.5
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 1047,
+                "mean": 0.47,
+                "median": 0.53,
+                "positiveRate": 54.6,
+                "benchmarkBeatRate": 52.3,
+                "meanExcess": 0.28,
+                "avgMAE": -2.22,
+                "avgMFE": 2.96,
+                "hitPlus7": 13.7,
+                "hitMinus7": 9.8
+              },
+              "train": {
+                "n": 735,
+                "mean": 0.2,
+                "median": 0.39,
+                "positiveRate": 53.6,
+                "benchmarkBeatRate": 51.4,
+                "meanExcess": 0.15,
+                "avgMAE": -2.22,
+                "avgMFE": 2.65,
+                "hitPlus7": 12.1,
+                "hitMinus7": 9.9
+              },
+              "test": {
+                "n": 312,
+                "mean": 1.1,
+                "median": 0.89,
+                "positiveRate": 57.1,
+                "benchmarkBeatRate": 54.5,
+                "meanExcess": 0.6,
+                "avgMAE": -2.21,
+                "avgMFE": 3.69,
+                "hitPlus7": 17.3,
+                "hitMinus7": 9.6
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 381,
+                "mean": 0.55,
+                "median": 0.5,
+                "positiveRate": 53.8,
+                "benchmarkBeatRate": 52.2,
+                "meanExcess": 0.33,
+                "avgMAE": -2.43,
+                "avgMFE": 3.08,
+                "hitPlus7": 14.7,
+                "hitMinus7": 12.3
+              },
+              "train": {
+                "n": 245,
+                "mean": -0.06,
+                "median": 0.02,
+                "positiveRate": 50.6,
+                "benchmarkBeatRate": 48.6,
+                "meanExcess": -0.05,
+                "avgMAE": -2.59,
+                "avgMFE": 2.45,
+                "hitPlus7": 10.6,
+                "hitMinus7": 12.2
+              },
+              "test": {
+                "n": 136,
+                "mean": 1.67,
+                "median": 1.39,
+                "positiveRate": 59.6,
+                "benchmarkBeatRate": 58.8,
+                "meanExcess": 1.01,
+                "avgMAE": -2.14,
+                "avgMFE": 4.21,
+                "hitPlus7": 22.1,
+                "hitMinus7": 12.5
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 396,
+                "mean": 0.55,
+                "median": 0.52,
+                "positiveRate": 54,
+                "benchmarkBeatRate": 52.3,
+                "meanExcess": 0.31,
+                "avgMAE": -2.38,
+                "avgMFE": 3.07,
+                "hitPlus7": 14.4,
+                "hitMinus7": 12.1
+              },
+              "no": {
+                "n": 1235,
+                "mean": 0.35,
+                "median": 0.39,
+                "positiveRate": 53.8,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.16,
+                "avgMAE": -2.09,
+                "avgMFE": 2.66,
+                "hitPlus7": 11.8,
+                "hitMinus7": 8.5
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 1399,
+                "mean": 0.36,
+                "median": 0.32,
+                "positiveRate": 53,
+                "benchmarkBeatRate": 49.9,
+                "meanExcess": 0.17,
+                "avgMAE": -2.21,
+                "avgMFE": 2.79,
+                "hitPlus7": 12.7,
+                "hitMinus7": 9.6
+              },
+              "no": {
+                "n": 232,
+                "mean": 0.67,
+                "median": 0.72,
+                "positiveRate": 59.1,
+                "benchmarkBeatRate": 54.3,
+                "meanExcess": 0.38,
+                "avgMAE": -1.85,
+                "avgMFE": 2.58,
+                "hitPlus7": 11.2,
+                "hitMinus7": 7.8
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 481,
+                "mean": 0.61,
+                "median": 0.66,
+                "positiveRate": 56.8,
+                "benchmarkBeatRate": 52,
+                "meanExcess": 0.5,
+                "avgMAE": -2.29,
+                "avgMFE": 3.18,
+                "hitPlus7": 14.1,
+                "hitMinus7": 10
+              },
+              "no": {
+                "n": 1150,
+                "mean": 0.31,
+                "median": 0.27,
+                "positiveRate": 52.7,
+                "benchmarkBeatRate": 49.9,
+                "meanExcess": 0.07,
+                "avgMAE": -2.11,
+                "avgMFE": 2.58,
+                "hitPlus7": 11.7,
+                "hitMinus7": 9.1
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 907,
+                "mean": 0.42,
+                "median": 0.5,
+                "positiveRate": 54.5,
+                "benchmarkBeatRate": 51,
+                "meanExcess": 0.25,
+                "avgMAE": -2.28,
+                "avgMFE": 2.9,
+                "hitPlus7": 14.1,
+                "hitMinus7": 9.9
+              },
+              "no": {
+                "n": 724,
+                "mean": 0.38,
+                "median": 0.29,
+                "positiveRate": 53.2,
+                "benchmarkBeatRate": 49.9,
+                "meanExcess": 0.13,
+                "avgMAE": -2.01,
+                "avgMFE": 2.58,
+                "hitPlus7": 10.4,
+                "hitMinus7": 8.7
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 580,
+                "mean": 0.91,
+                "median": 0.68,
+                "positiveRate": 56.6,
+                "benchmarkBeatRate": 54.5,
+                "meanExcess": 0.71,
+                "avgMAE": -2.03,
+                "avgMFE": 3.24,
+                "hitPlus7": 15.9,
+                "hitMinus7": 8.8
+              },
+              "no": {
+                "n": 1051,
+                "mean": 0.12,
+                "median": 0.24,
+                "positiveRate": 52.4,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": -0.09,
+                "avgMAE": -2.23,
+                "avgMFE": 2.49,
+                "hitPlus7": 10.6,
+                "hitMinus7": 9.7
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 876,
+                "mean": 0.63,
+                "median": 0.58,
+                "positiveRate": 55.5,
+                "benchmarkBeatRate": 53.3,
+                "meanExcess": 0.4,
+                "avgMAE": -2.1,
+                "avgMFE": 3.07,
+                "hitPlus7": 14,
+                "hitMinus7": 8.6
+              },
+              "no": {
+                "n": 755,
+                "mean": 0.14,
+                "median": 0.22,
+                "positiveRate": 52.1,
+                "benchmarkBeatRate": 47.3,
+                "meanExcess": -0.04,
+                "avgMAE": -2.23,
+                "avgMFE": 2.39,
+                "hitPlus7": 10.6,
+                "hitMinus7": 10.3
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 1525,
+                "mean": 0.39,
+                "median": 0.42,
+                "positiveRate": 54,
+                "benchmarkBeatRate": 50.6,
+                "meanExcess": 0.21,
+                "avgMAE": -2.08,
+                "avgMFE": 2.58,
+                "hitPlus7": 11.1,
+                "hitMinus7": 8.5
+              },
+              "no": {
+                "n": 106,
+                "mean": 0.57,
+                "median": 0.37,
+                "positiveRate": 51.9,
+                "benchmarkBeatRate": 50,
+                "meanExcess": -0.02,
+                "avgMAE": -3.33,
+                "avgMFE": 5.26,
+                "hitPlus7": 32.1,
+                "hitMinus7": 21.7
+              }
+            }
+          ]
+        },
+        {
+          "batch": 2,
+          "baselineTest": {
+            "n": 485,
+            "mean": 0.74,
+            "median": 0.62,
+            "positiveRate": 55.5,
+            "benchmarkBeatRate": 49.1,
+            "meanExcess": 0.16,
+            "avgMAE": -2.16,
+            "avgMFE": 3.38,
+            "hitPlus7": 16.7,
+            "hitMinus7": 11.1
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1515,
+                "mean": 0.17,
+                "median": 0.2,
+                "positiveRate": 52.6,
+                "benchmarkBeatRate": 47.3,
+                "meanExcess": -0.15,
+                "avgMAE": -2.26,
+                "avgMFE": 2.65,
+                "hitPlus7": 11.7,
+                "hitMinus7": 10.2
+              },
+              "train": {
+                "n": 1030,
+                "mean": -0.09,
+                "median": 0.1,
+                "positiveRate": 51.3,
+                "benchmarkBeatRate": 46.5,
+                "meanExcess": -0.29,
+                "avgMAE": -2.31,
+                "avgMFE": 2.3,
+                "hitPlus7": 9.3,
+                "hitMinus7": 9.7
+              },
+              "test": {
+                "n": 485,
+                "mean": 0.74,
+                "median": 0.62,
+                "positiveRate": 55.5,
+                "benchmarkBeatRate": 49.1,
+                "meanExcess": 0.16,
+                "avgMAE": -2.16,
+                "avgMFE": 3.38,
+                "hitPlus7": 16.7,
+                "hitMinus7": 11.1
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 362,
+                "mean": 0.12,
+                "median": 0.1,
+                "positiveRate": 51.7,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": -0.12,
+                "avgMAE": -2.28,
+                "avgMFE": 2.81,
+                "hitPlus7": 14.6,
+                "hitMinus7": 12.4
+              },
+              "train": {
+                "n": 246,
+                "mean": -0.59,
+                "median": -0.24,
+                "positiveRate": 49.2,
+                "benchmarkBeatRate": 46.3,
+                "meanExcess": -0.68,
+                "avgMAE": -2.53,
+                "avgMFE": 2.01,
+                "hitPlus7": 8.9,
+                "hitMinus7": 12.6
+              },
+              "test": {
+                "n": 116,
+                "mean": 1.63,
+                "median": 1.49,
+                "positiveRate": 56.9,
+                "benchmarkBeatRate": 55.2,
+                "meanExcess": 1.07,
+                "avgMAE": -1.76,
+                "avgMFE": 4.5,
+                "hitPlus7": 26.7,
+                "hitMinus7": 12.1
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 717,
+                "mean": 0.2,
+                "median": 0.06,
+                "positiveRate": 51.2,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": -0.03,
+                "avgMAE": -2.31,
+                "avgMFE": 2.81,
+                "hitPlus7": 14.1,
+                "hitMinus7": 11.6
+              },
+              "train": {
+                "n": 487,
+                "mean": -0.28,
+                "median": -0.1,
+                "positiveRate": 49.5,
+                "benchmarkBeatRate": 46.8,
+                "meanExcess": -0.39,
+                "avgMAE": -2.46,
+                "avgMFE": 2.27,
+                "hitPlus7": 10.7,
+                "hitMinus7": 11.1
+              },
+              "test": {
+                "n": 230,
+                "mean": 1.21,
+                "median": 0.7,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 51.3,
+                "meanExcess": 0.75,
+                "avgMAE": -2,
+                "avgMFE": 3.94,
+                "hitPlus7": 21.3,
+                "hitMinus7": 12.6
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 986,
+                "mean": 0.25,
+                "median": 0.14,
+                "positiveRate": 52,
+                "benchmarkBeatRate": 48.1,
+                "meanExcess": -0.02,
+                "avgMAE": -2.26,
+                "avgMFE": 2.79,
+                "hitPlus7": 13.4,
+                "hitMinus7": 10.2
+              },
+              "train": {
+                "n": 667,
+                "mean": -0.15,
+                "median": 0.03,
+                "positiveRate": 50.5,
+                "benchmarkBeatRate": 47.1,
+                "meanExcess": -0.31,
+                "avgMAE": -2.39,
+                "avgMFE": 2.31,
+                "hitPlus7": 10.5,
+                "hitMinus7": 10
+              },
+              "test": {
+                "n": 319,
+                "mean": 1.09,
+                "median": 0.68,
+                "positiveRate": 55.2,
+                "benchmarkBeatRate": 50.2,
+                "meanExcess": 0.58,
+                "avgMAE": -2,
+                "avgMFE": 3.79,
+                "hitPlus7": 19.4,
+                "hitMinus7": 10.7
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 344,
+                "mean": 0.18,
+                "median": 0.11,
+                "positiveRate": 52,
+                "benchmarkBeatRate": 49.7,
+                "meanExcess": -0.08,
+                "avgMAE": -2.25,
+                "avgMFE": 2.9,
+                "hitPlus7": 14.8,
+                "hitMinus7": 11.9
+              },
+              "train": {
+                "n": 233,
+                "mean": -0.48,
+                "median": -0.11,
+                "positiveRate": 49.8,
+                "benchmarkBeatRate": 47.2,
+                "meanExcess": -0.58,
+                "avgMAE": -2.43,
+                "avgMFE": 2.13,
+                "hitPlus7": 9.4,
+                "hitMinus7": 11.6
+              },
+              "test": {
+                "n": 111,
+                "mean": 1.55,
+                "median": 1.43,
+                "positiveRate": 56.8,
+                "benchmarkBeatRate": 55,
+                "meanExcess": 0.97,
+                "avgMAE": -1.86,
+                "avgMFE": 4.5,
+                "hitPlus7": 26.1,
+                "hitMinus7": 12.6
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 362,
+                "mean": 0.12,
+                "median": 0.1,
+                "positiveRate": 51.7,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": -0.12,
+                "avgMAE": -2.28,
+                "avgMFE": 2.81,
+                "hitPlus7": 14.6,
+                "hitMinus7": 12.4
+              },
+              "no": {
+                "n": 1153,
+                "mean": 0.19,
+                "median": 0.29,
+                "positiveRate": 52.9,
+                "benchmarkBeatRate": 46.7,
+                "meanExcess": -0.16,
+                "avgMAE": -2.26,
+                "avgMFE": 2.6,
+                "hitPlus7": 10.8,
+                "hitMinus7": 9.5
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 1264,
+                "mean": 0.24,
+                "median": 0.29,
+                "positiveRate": 53.4,
+                "benchmarkBeatRate": 47.9,
+                "meanExcess": -0.08,
+                "avgMAE": -2.28,
+                "avgMFE": 2.73,
+                "hitPlus7": 12.1,
+                "hitMinus7": 10.1
+              },
+              "no": {
+                "n": 251,
+                "mean": -0.13,
+                "median": -0.12,
+                "positiveRate": 48.6,
+                "benchmarkBeatRate": 44.6,
+                "meanExcess": -0.5,
+                "avgMAE": -2.18,
+                "avgMFE": 2.25,
+                "hitPlus7": 9.6,
+                "hitMinus7": 10.4
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 416,
+                "mean": 0.27,
+                "median": 0.14,
+                "positiveRate": 51.2,
+                "benchmarkBeatRate": 46.9,
+                "meanExcess": -0.12,
+                "avgMAE": -2.43,
+                "avgMFE": 2.8,
+                "hitPlus7": 13.7,
+                "hitMinus7": 10.3
+              },
+              "no": {
+                "n": 1099,
+                "mean": 0.14,
+                "median": 0.25,
+                "positiveRate": 53.1,
+                "benchmarkBeatRate": 47.5,
+                "meanExcess": -0.16,
+                "avgMAE": -2.2,
+                "avgMFE": 2.59,
+                "hitPlus7": 10.9,
+                "hitMinus7": 10.1
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 866,
+                "mean": 0.42,
+                "median": 0.43,
+                "positiveRate": 53.6,
+                "benchmarkBeatRate": 50.1,
+                "meanExcess": 0.07,
+                "avgMAE": -2.17,
+                "avgMFE": 2.89,
+                "hitPlus7": 12.6,
+                "hitMinus7": 9.4
+              },
+              "no": {
+                "n": 649,
+                "mean": -0.16,
+                "median": 0.06,
+                "positiveRate": 51.3,
+                "benchmarkBeatRate": 43.6,
+                "meanExcess": -0.43,
+                "avgMAE": -2.38,
+                "avgMFE": 2.33,
+                "hitPlus7": 10.5,
+                "hitMinus7": 11.2
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 558,
+                "mean": 0.21,
+                "median": 0.09,
+                "positiveRate": 51.3,
+                "benchmarkBeatRate": 48.4,
+                "meanExcess": -0.01,
+                "avgMAE": -2.29,
+                "avgMFE": 2.79,
+                "hitPlus7": 13.8,
+                "hitMinus7": 11.6
+              },
+              "no": {
+                "n": 957,
+                "mean": 0.16,
+                "median": 0.27,
+                "positiveRate": 53.4,
+                "benchmarkBeatRate": 46.7,
+                "meanExcess": -0.23,
+                "avgMAE": -2.25,
+                "avgMFE": 2.56,
+                "hitPlus7": 10.4,
+                "hitMinus7": 9.3
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 837,
+                "mean": 0.28,
+                "median": 0.22,
+                "positiveRate": 52.2,
+                "benchmarkBeatRate": 48.1,
+                "meanExcess": 0,
+                "avgMAE": -2.22,
+                "avgMFE": 2.78,
+                "hitPlus7": 13,
+                "hitMinus7": 9.9
+              },
+              "no": {
+                "n": 678,
+                "mean": 0.05,
+                "median": 0.19,
+                "positiveRate": 53.1,
+                "benchmarkBeatRate": 46.3,
+                "meanExcess": -0.33,
+                "avgMAE": -2.32,
+                "avgMFE": 2.48,
+                "hitPlus7": 10,
+                "hitMinus7": 10.5
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 1420,
+                "mean": 0.1,
+                "median": 0.18,
+                "positiveRate": 52.3,
+                "benchmarkBeatRate": 47,
+                "meanExcess": -0.19,
+                "avgMAE": -2.17,
+                "avgMFE": 2.45,
+                "hitPlus7": 10,
+                "hitMinus7": 9
+              },
+              "no": {
+                "n": 95,
+                "mean": 1.22,
+                "median": 0.87,
+                "positiveRate": 56.8,
+                "benchmarkBeatRate": 52.6,
+                "meanExcess": 0.5,
+                "avgMAE": -3.64,
+                "avgMFE": 5.53,
+                "hitPlus7": 36.8,
+                "hitMinus7": 27.4
+              }
+            }
+          ]
+        },
+        {
+          "batch": 3,
+          "baselineTest": {
+            "n": 435,
+            "mean": 1.24,
+            "median": 0.62,
+            "positiveRate": 57,
+            "benchmarkBeatRate": 51.5,
+            "meanExcess": 0.49,
+            "avgMAE": -1.98,
+            "avgMFE": 3.49,
+            "hitPlus7": 15.9,
+            "hitMinus7": 9.9
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1594,
+                "mean": 0.29,
+                "median": 0.28,
+                "positiveRate": 52.6,
+                "benchmarkBeatRate": 48.9,
+                "meanExcess": 0.02,
+                "avgMAE": -2.09,
+                "avgMFE": 2.52,
+                "hitPlus7": 9.8,
+                "hitMinus7": 9.5
+              },
+              "train": {
+                "n": 1159,
+                "mean": -0.07,
+                "median": 0.15,
+                "positiveRate": 51,
+                "benchmarkBeatRate": 48,
+                "meanExcess": -0.16,
+                "avgMAE": -2.13,
+                "avgMFE": 2.15,
+                "hitPlus7": 7.6,
+                "hitMinus7": 9.3
+              },
+              "test": {
+                "n": 435,
+                "mean": 1.24,
+                "median": 0.62,
+                "positiveRate": 57,
+                "benchmarkBeatRate": 51.5,
+                "meanExcess": 0.49,
+                "avgMAE": -1.98,
+                "avgMFE": 3.49,
+                "hitPlus7": 15.9,
+                "hitMinus7": 9.9
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 363,
+                "mean": -0.4,
+                "median": -0.37,
+                "positiveRate": 45.7,
+                "benchmarkBeatRate": 45.5,
+                "meanExcess": -0.54,
+                "avgMAE": -2.66,
+                "avgMFE": 2.29,
+                "hitPlus7": 9.9,
+                "hitMinus7": 12.1
+              },
+              "train": {
+                "n": 254,
+                "mean": -0.67,
+                "median": -0.52,
+                "positiveRate": 43.7,
+                "benchmarkBeatRate": 45.3,
+                "meanExcess": -0.52,
+                "avgMAE": -2.62,
+                "avgMFE": 1.91,
+                "hitPlus7": 6.7,
+                "hitMinus7": 11.4
+              },
+              "test": {
+                "n": 109,
+                "mean": 0.23,
+                "median": 0.08,
+                "positiveRate": 50.5,
+                "benchmarkBeatRate": 45.9,
+                "meanExcess": -0.6,
+                "avgMAE": -2.75,
+                "avgMFE": 3.19,
+                "hitPlus7": 17.4,
+                "hitMinus7": 13.8
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 722,
+                "mean": -0.12,
+                "median": -0.12,
+                "positiveRate": 48.5,
+                "benchmarkBeatRate": 46.5,
+                "meanExcess": -0.3,
+                "avgMAE": -2.49,
+                "avgMFE": 2.45,
+                "hitPlus7": 10.2,
+                "hitMinus7": 12
+              },
+              "train": {
+                "n": 493,
+                "mean": -0.54,
+                "median": -0.23,
+                "positiveRate": 45.8,
+                "benchmarkBeatRate": 46.2,
+                "meanExcess": -0.43,
+                "avgMAE": -2.55,
+                "avgMFE": 2.02,
+                "hitPlus7": 7.3,
+                "hitMinus7": 12.2
+              },
+              "test": {
+                "n": 229,
+                "mean": 0.8,
+                "median": 0.34,
+                "positiveRate": 54.1,
+                "benchmarkBeatRate": 47.2,
+                "meanExcess": -0.03,
+                "avgMAE": -2.36,
+                "avgMFE": 3.39,
+                "hitPlus7": 16.6,
+                "hitMinus7": 11.8
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 1014,
+                "mean": 0.08,
+                "median": 0,
+                "positiveRate": 49.9,
+                "benchmarkBeatRate": 47.9,
+                "meanExcess": -0.13,
+                "avgMAE": -2.29,
+                "avgMFE": 2.53,
+                "hitPlus7": 10.3,
+                "hitMinus7": 10.7
+              },
+              "train": {
+                "n": 697,
+                "mean": -0.33,
+                "median": -0.13,
+                "positiveRate": 47.9,
+                "benchmarkBeatRate": 48.2,
+                "meanExcess": -0.24,
+                "avgMAE": -2.37,
+                "avgMFE": 2.14,
+                "hitPlus7": 7.6,
+                "hitMinus7": 11
+              },
+              "test": {
+                "n": 317,
+                "mean": 0.98,
+                "median": 0.48,
+                "positiveRate": 54.3,
+                "benchmarkBeatRate": 47.3,
+                "meanExcess": 0.11,
+                "avgMAE": -2.11,
+                "avgMFE": 3.4,
+                "hitPlus7": 16.1,
+                "hitMinus7": 10.1
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 341,
+                "mean": -0.45,
+                "median": -0.37,
+                "positiveRate": 45.7,
+                "benchmarkBeatRate": 45.5,
+                "meanExcess": -0.59,
+                "avgMAE": -2.71,
+                "avgMFE": 2.28,
+                "hitPlus7": 10,
+                "hitMinus7": 12.6
+              },
+              "train": {
+                "n": 238,
+                "mean": -0.74,
+                "median": -0.63,
+                "positiveRate": 43.3,
+                "benchmarkBeatRate": 45,
+                "meanExcess": -0.57,
+                "avgMAE": -2.7,
+                "avgMFE": 1.9,
+                "hitPlus7": 6.7,
+                "hitMinus7": 12.2
+              },
+              "test": {
+                "n": 103,
+                "mean": 0.23,
+                "median": 0.14,
+                "positiveRate": 51.5,
+                "benchmarkBeatRate": 46.6,
+                "meanExcess": -0.63,
+                "avgMAE": -2.74,
+                "avgMFE": 3.14,
+                "hitPlus7": 17.5,
+                "hitMinus7": 13.6
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 363,
+                "mean": -0.4,
+                "median": -0.37,
+                "positiveRate": 45.7,
+                "benchmarkBeatRate": 45.5,
+                "meanExcess": -0.54,
+                "avgMAE": -2.66,
+                "avgMFE": 2.29,
+                "hitPlus7": 9.9,
+                "hitMinus7": 12.1
+              },
+              "no": {
+                "n": 1231,
+                "mean": 0.49,
+                "median": 0.4,
+                "positiveRate": 54.7,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.19,
+                "avgMAE": -1.92,
+                "avgMFE": 2.58,
+                "hitPlus7": 9.8,
+                "hitMinus7": 8.7
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 1318,
+                "mean": 0.27,
+                "median": 0.28,
+                "positiveRate": 52.5,
+                "benchmarkBeatRate": 48.9,
+                "meanExcess": 0.03,
+                "avgMAE": -2.17,
+                "avgMFE": 2.59,
+                "hitPlus7": 10.5,
+                "hitMinus7": 10.2
+              },
+              "no": {
+                "n": 276,
+                "mean": 0.37,
+                "median": 0.24,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 49.3,
+                "meanExcess": -0.04,
+                "avgMAE": -1.7,
+                "avgMFE": 2.16,
+                "hitPlus7": 6.5,
+                "hitMinus7": 5.8
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 470,
+                "mean": 0.13,
+                "median": 0.01,
+                "positiveRate": 50,
+                "benchmarkBeatRate": 45.7,
+                "meanExcess": -0.24,
+                "avgMAE": -2.36,
+                "avgMFE": 2.65,
+                "hitPlus7": 11.5,
+                "hitMinus7": 12.3
+              },
+              "no": {
+                "n": 1124,
+                "mean": 0.35,
+                "median": 0.34,
+                "positiveRate": 53.7,
+                "benchmarkBeatRate": 50.3,
+                "meanExcess": 0.13,
+                "avgMAE": -1.97,
+                "avgMFE": 2.46,
+                "hitPlus7": 9.2,
+                "hitMinus7": 8.3
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 838,
+                "mean": 0.3,
+                "median": 0.24,
+                "positiveRate": 52.7,
+                "benchmarkBeatRate": 50.4,
+                "meanExcess": 0.09,
+                "avgMAE": -2.19,
+                "avgMFE": 2.64,
+                "hitPlus7": 11.3,
+                "hitMinus7": 11.1
+              },
+              "no": {
+                "n": 756,
+                "mean": 0.27,
+                "median": 0.33,
+                "positiveRate": 52.5,
+                "benchmarkBeatRate": 47.4,
+                "meanExcess": -0.06,
+                "avgMAE": -1.98,
+                "avgMFE": 2.39,
+                "hitPlus7": 8.2,
+                "hitMinus7": 7.7
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 557,
+                "mean": 0.18,
+                "median": 0.13,
+                "positiveRate": 50.8,
+                "benchmarkBeatRate": 48.8,
+                "meanExcess": -0.05,
+                "avgMAE": -2.28,
+                "avgMFE": 2.62,
+                "hitPlus7": 11.3,
+                "hitMinus7": 10.8
+              },
+              "no": {
+                "n": 1037,
+                "mean": 0.34,
+                "median": 0.32,
+                "positiveRate": 53.6,
+                "benchmarkBeatRate": 49,
+                "meanExcess": 0.06,
+                "avgMAE": -1.99,
+                "avgMFE": 2.46,
+                "hitPlus7": 9.1,
+                "hitMinus7": 8.8
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 872,
+                "mean": 0.33,
+                "median": 0.23,
+                "positiveRate": 51.9,
+                "benchmarkBeatRate": 50.2,
+                "meanExcess": 0.1,
+                "avgMAE": -2.1,
+                "avgMFE": 2.66,
+                "hitPlus7": 10.9,
+                "hitMinus7": 9.7
+              },
+              "no": {
+                "n": 722,
+                "mean": 0.23,
+                "median": 0.29,
+                "positiveRate": 53.5,
+                "benchmarkBeatRate": 47.4,
+                "meanExcess": -0.08,
+                "avgMAE": -2.08,
+                "avgMFE": 2.35,
+                "hitPlus7": 8.6,
+                "hitMinus7": 9.1
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 1529,
+                "mean": 0.18,
+                "median": 0.24,
+                "positiveRate": 52.5,
+                "benchmarkBeatRate": 48.9,
+                "meanExcess": -0.06,
+                "avgMAE": -2.05,
+                "avgMFE": 2.35,
+                "hitPlus7": 8.5,
+                "hitMinus7": 8.9
+              },
+              "no": {
+                "n": 65,
+                "mean": 2.71,
+                "median": 2.01,
+                "positiveRate": 56.9,
+                "benchmarkBeatRate": 50.8,
+                "meanExcess": 1.78,
+                "avgMAE": -2.89,
+                "avgMFE": 6.43,
+                "hitPlus7": 41.5,
+                "hitMinus7": 23.1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "10": {
+      "pooled": {
+        "baseline": {
+          "pooledTest": {
+            "n": 1498,
+            "mean": 1.28,
+            "positiveRate": 55.9,
+            "benchmarkBeatRate": 47.8,
+            "meanExcess": 0.08,
+            "avgMAE": -3.99,
+            "avgMFE": 5.81
+          },
+          "retentionVsBaseline": 100,
+          "deltaVsBaseline": {
+            "mean": 0,
+            "positiveRate": 0,
+            "benchmarkBeatRate": 0,
+            "meanExcess": 0
+          },
+          "positiveBatchCount": 0
+        },
+        "requireMinorHighBreak": {
+          "pooledTest": {
+            "n": 362,
+            "mean": 2.38,
+            "positiveRate": 62.4,
+            "benchmarkBeatRate": 53.3,
+            "meanExcess": 0.91,
+            "avgMAE": -3.63,
+            "avgMFE": 6.86
+          },
+          "retentionVsBaseline": 24.2,
+          "deltaVsBaseline": {
+            "mean": 1.1,
+            "positiveRate": 6.5,
+            "benchmarkBeatRate": 5.5,
+            "meanExcess": 0.83
+          },
+          "positiveBatchCount": 3
+        },
+        "breakOrHigherLow": {
+          "pooledTest": {
+            "n": 689,
+            "mean": 1.38,
+            "positiveRate": 55.1,
+            "benchmarkBeatRate": 45.7,
+            "meanExcess": 0.01,
+            "avgMAE": -4.01,
+            "avgMFE": 6.29
+          },
+          "retentionVsBaseline": 46,
+          "deltaVsBaseline": {
+            "mean": 0.1,
+            "positiveRate": -0.8,
+            "benchmarkBeatRate": -2.1,
+            "meanExcess": -0.07
+          },
+          "positiveBatchCount": 2
+        },
+        "structuralConfirmation": {
+          "pooledTest": {
+            "n": 952,
+            "mean": 1.1,
+            "positiveRate": 54.2,
+            "benchmarkBeatRate": 46,
+            "meanExcess": -0.12,
+            "avgMAE": -4.25,
+            "avgMFE": 6.05
+          },
+          "retentionVsBaseline": 63.6,
+          "deltaVsBaseline": {
+            "mean": -0.18,
+            "positiveRate": -1.7,
+            "benchmarkBeatRate": -1.8,
+            "meanExcess": -0.2
+          },
+          "positiveBatchCount": 1
+        },
+        "breakWithSupport": {
+          "pooledTest": {
+            "n": 350,
+            "mean": 2.35,
+            "positiveRate": 62.3,
+            "benchmarkBeatRate": 53.4,
+            "meanExcess": 0.85,
+            "avgMAE": -3.62,
+            "avgMFE": 6.88
+          },
+          "retentionVsBaseline": 23.4,
+          "deltaVsBaseline": {
+            "mean": 1.07,
+            "positiveRate": 6.4,
+            "benchmarkBeatRate": 5.6,
+            "meanExcess": 0.77
+          },
+          "positiveBatchCount": 3
+        }
+      },
+      "perBatch": [
+        {
+          "batch": 0,
+          "baselineTest": {
+            "n": 372,
+            "mean": 0.83,
+            "median": 0.72,
+            "positiveRate": 55.4,
+            "benchmarkBeatRate": 47.8,
+            "meanExcess": -0.3,
+            "avgMAE": -4.03,
+            "avgMFE": 5.28,
+            "hitPlus7": 27.7,
+            "hitMinus7": 22.6
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1304,
+                "mean": 0.62,
+                "median": 0.46,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 49.5,
+                "meanExcess": 0.02,
+                "avgMAE": -3.74,
+                "avgMFE": 4.6,
+                "hitPlus7": 23.7,
+                "hitMinus7": 19.9
+              },
+              "train": {
+                "n": 932,
+                "mean": 0.53,
+                "median": 0.38,
+                "positiveRate": 52.5,
+                "benchmarkBeatRate": 50.2,
+                "meanExcess": 0.15,
+                "avgMAE": -3.63,
+                "avgMFE": 4.32,
+                "hitPlus7": 22.1,
+                "hitMinus7": 18.8
+              },
+              "test": {
+                "n": 372,
+                "mean": 0.83,
+                "median": 0.72,
+                "positiveRate": 55.4,
+                "benchmarkBeatRate": 47.8,
+                "meanExcess": -0.3,
+                "avgMAE": -4.03,
+                "avgMFE": 5.28,
+                "hitPlus7": 27.7,
+                "hitMinus7": 22.6
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 265,
+                "mean": 0.87,
+                "median": 1.22,
+                "positiveRate": 57,
+                "benchmarkBeatRate": 54.7,
+                "meanExcess": 0.21,
+                "avgMAE": -3.71,
+                "avgMFE": 5.22,
+                "hitPlus7": 29.1,
+                "hitMinus7": 20.4
+              },
+              "train": {
+                "n": 175,
+                "mean": 0.41,
+                "median": 0.85,
+                "positiveRate": 53.7,
+                "benchmarkBeatRate": 54.3,
+                "meanExcess": 0.14,
+                "avgMAE": -4.03,
+                "avgMFE": 4.8,
+                "hitPlus7": 26.3,
+                "hitMinus7": 22.9
+              },
+              "test": {
+                "n": 90,
+                "mean": 1.76,
+                "median": 1.51,
+                "positiveRate": 63.3,
+                "benchmarkBeatRate": 55.6,
+                "meanExcess": 0.34,
+                "avgMAE": -3.1,
+                "avgMFE": 6.03,
+                "hitPlus7": 34.4,
+                "hitMinus7": 15.6
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 514,
+                "mean": 0.86,
+                "median": 0.77,
+                "positiveRate": 55.1,
+                "benchmarkBeatRate": 52.1,
+                "meanExcess": 0.15,
+                "avgMAE": -3.62,
+                "avgMFE": 4.96,
+                "hitPlus7": 26.5,
+                "hitMinus7": 18.5
+              },
+              "train": {
+                "n": 360,
+                "mean": 0.86,
+                "median": 0.8,
+                "positiveRate": 54.7,
+                "benchmarkBeatRate": 54.2,
+                "meanExcess": 0.37,
+                "avgMAE": -3.65,
+                "avgMFE": 4.69,
+                "hitPlus7": 24.4,
+                "hitMinus7": 18.6
+              },
+              "test": {
+                "n": 154,
+                "mean": 0.87,
+                "median": 0.72,
+                "positiveRate": 55.8,
+                "benchmarkBeatRate": 47.4,
+                "meanExcess": -0.36,
+                "avgMAE": -3.55,
+                "avgMFE": 5.6,
+                "hitPlus7": 31.2,
+                "hitMinus7": 18.2
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 769,
+                "mean": 0.59,
+                "median": 0.49,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 50.1,
+                "meanExcess": -0.04,
+                "avgMAE": -3.86,
+                "avgMFE": 4.69,
+                "hitPlus7": 24.3,
+                "hitMinus7": 20.5
+              },
+              "train": {
+                "n": 542,
+                "mean": 0.68,
+                "median": 0.55,
+                "positiveRate": 53.5,
+                "benchmarkBeatRate": 52.6,
+                "meanExcess": 0.25,
+                "avgMAE": -3.67,
+                "avgMFE": 4.39,
+                "hitPlus7": 23.1,
+                "hitMinus7": 19.2
+              },
+              "test": {
+                "n": 227,
+                "mean": 0.37,
+                "median": 0.29,
+                "positiveRate": 52.9,
+                "benchmarkBeatRate": 44.1,
+                "meanExcess": -0.73,
+                "avgMAE": -4.33,
+                "avgMFE": 5.38,
+                "hitPlus7": 27.3,
+                "hitMinus7": 23.8
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 253,
+                "mean": 0.76,
+                "median": 0.87,
+                "positiveRate": 55.7,
+                "benchmarkBeatRate": 53.8,
+                "meanExcess": 0.13,
+                "avgMAE": -3.84,
+                "avgMFE": 5.23,
+                "hitPlus7": 29.6,
+                "hitMinus7": 21.3
+              },
+              "train": {
+                "n": 166,
+                "mean": 0.25,
+                "median": 0.67,
+                "positiveRate": 52.4,
+                "benchmarkBeatRate": 53,
+                "meanExcess": 0.02,
+                "avgMAE": -4.19,
+                "avgMFE": 4.78,
+                "hitPlus7": 27.1,
+                "hitMinus7": 24.1
+              },
+              "test": {
+                "n": 87,
+                "mean": 1.73,
+                "median": 1.39,
+                "positiveRate": 62.1,
+                "benchmarkBeatRate": 55.2,
+                "meanExcess": 0.35,
+                "avgMAE": -3.17,
+                "avgMFE": 6.09,
+                "hitPlus7": 34.5,
+                "hitMinus7": 16.1
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 265,
+                "mean": 0.87,
+                "median": 1.22,
+                "positiveRate": 57,
+                "benchmarkBeatRate": 54.7,
+                "meanExcess": 0.21,
+                "avgMAE": -3.71,
+                "avgMFE": 5.22,
+                "hitPlus7": 29.1,
+                "hitMinus7": 20.4
+              },
+              "no": {
+                "n": 1039,
+                "mean": 0.55,
+                "median": 0.36,
+                "positiveRate": 52.4,
+                "benchmarkBeatRate": 48.2,
+                "meanExcess": -0.03,
+                "avgMAE": -3.75,
+                "avgMFE": 4.44,
+                "hitPlus7": 22.3,
+                "hitMinus7": 19.7
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 1141,
+                "mean": 0.61,
+                "median": 0.41,
+                "positiveRate": 52.6,
+                "benchmarkBeatRate": 49.8,
+                "meanExcess": 0.08,
+                "avgMAE": -3.82,
+                "avgMFE": 4.71,
+                "hitPlus7": 24.4,
+                "hitMinus7": 20.6
+              },
+              "no": {
+                "n": 163,
+                "mean": 0.63,
+                "median": 1.04,
+                "positiveRate": 58.3,
+                "benchmarkBeatRate": 47.9,
+                "meanExcess": -0.42,
+                "avgMAE": -3.17,
+                "avgMFE": 3.8,
+                "hitPlus7": 19,
+                "hitMinus7": 14.7
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 355,
+                "mean": 1.38,
+                "median": 1.45,
+                "positiveRate": 57.5,
+                "benchmarkBeatRate": 52.4,
+                "meanExcess": 0.62,
+                "avgMAE": -3.68,
+                "avgMFE": 5.27,
+                "hitPlus7": 26.5,
+                "hitMinus7": 18.9
+              },
+              "no": {
+                "n": 949,
+                "mean": 0.33,
+                "median": 0.24,
+                "positiveRate": 51.7,
+                "benchmarkBeatRate": 48.5,
+                "meanExcess": -0.2,
+                "avgMAE": -3.76,
+                "avgMFE": 4.34,
+                "hitPlus7": 22.7,
+                "hitMinus7": 20.2
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 696,
+                "mean": 0.6,
+                "median": 0.43,
+                "positiveRate": 52.3,
+                "benchmarkBeatRate": 49.9,
+                "meanExcess": 0.04,
+                "avgMAE": -3.99,
+                "avgMFE": 4.7,
+                "hitPlus7": 25,
+                "hitMinus7": 21.4
+              },
+              "no": {
+                "n": 608,
+                "mean": 0.63,
+                "median": 0.56,
+                "positiveRate": 54.4,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": 0,
+                "avgMAE": -3.46,
+                "avgMFE": 4.47,
+                "hitPlus7": 22.2,
+                "hitMinus7": 18.1
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 365,
+                "mean": 1.01,
+                "median": 0.55,
+                "positiveRate": 53.7,
+                "benchmarkBeatRate": 51.5,
+                "meanExcess": 0.27,
+                "avgMAE": -3.55,
+                "avgMFE": 4.97,
+                "hitPlus7": 26.6,
+                "hitMinus7": 17.3
+              },
+              "no": {
+                "n": 939,
+                "mean": 0.46,
+                "median": 0.46,
+                "positiveRate": 53.1,
+                "benchmarkBeatRate": 48.8,
+                "meanExcess": -0.08,
+                "avgMAE": -3.81,
+                "avgMFE": 4.45,
+                "hitPlus7": 22.6,
+                "hitMinus7": 20.9
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 629,
+                "mean": 0.6,
+                "median": 0.36,
+                "positiveRate": 52.1,
+                "benchmarkBeatRate": 49.1,
+                "meanExcess": -0.03,
+                "avgMAE": -3.87,
+                "avgMFE": 4.63,
+                "hitPlus7": 23.7,
+                "hitMinus7": 20.2
+              },
+              "no": {
+                "n": 675,
+                "mean": 0.63,
+                "median": 0.66,
+                "positiveRate": 54.4,
+                "benchmarkBeatRate": 49.9,
+                "meanExcess": 0.07,
+                "avgMAE": -3.62,
+                "avgMFE": 4.56,
+                "hitPlus7": 23.7,
+                "hitMinus7": 19.6
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 1236,
+                "mean": 0.61,
+                "median": 0.46,
+                "positiveRate": 53.4,
+                "benchmarkBeatRate": 49.8,
+                "meanExcess": 0.07,
+                "avgMAE": -3.55,
+                "avgMFE": 4.41,
+                "hitPlus7": 22.2,
+                "hitMinus7": 18.2
+              },
+              "no": {
+                "n": 68,
+                "mean": 0.75,
+                "median": 0.47,
+                "positiveRate": 51.5,
+                "benchmarkBeatRate": 45.6,
+                "meanExcess": -0.82,
+                "avgMAE": -7.19,
+                "avgMFE": 8.03,
+                "hitPlus7": 50,
+                "hitMinus7": 50
+              }
+            }
+          ]
+        },
+        {
+          "batch": 1,
+          "baselineTest": {
+            "n": 387,
+            "mean": 0.86,
+            "median": 1.09,
+            "positiveRate": 55.8,
+            "benchmarkBeatRate": 48.8,
+            "meanExcess": -0.25,
+            "avgMAE": -4.16,
+            "avgMFE": 5.7,
+            "hitPlus7": 31.5,
+            "hitMinus7": 22.7
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1322,
+                "mean": 0.84,
+                "median": 0.68,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 49.5,
+                "meanExcess": 0.22,
+                "avgMAE": -3.8,
+                "avgMFE": 4.88,
+                "hitPlus7": 26.1,
+                "hitMinus7": 20.4
+              },
+              "train": {
+                "n": 935,
+                "mean": 0.83,
+                "median": 0.59,
+                "positiveRate": 54.4,
+                "benchmarkBeatRate": 49.7,
+                "meanExcess": 0.42,
+                "avgMAE": -3.66,
+                "avgMFE": 4.55,
+                "hitPlus7": 23.9,
+                "hitMinus7": 19.5
+              },
+              "test": {
+                "n": 387,
+                "mean": 0.86,
+                "median": 1.09,
+                "positiveRate": 55.8,
+                "benchmarkBeatRate": 48.8,
+                "meanExcess": -0.25,
+                "avgMAE": -4.16,
+                "avgMFE": 5.7,
+                "hitPlus7": 31.5,
+                "hitMinus7": 22.7
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 284,
+                "mean": 1.5,
+                "median": 1.87,
+                "positiveRate": 62,
+                "benchmarkBeatRate": 54.9,
+                "meanExcess": 0.63,
+                "avgMAE": -3.75,
+                "avgMFE": 5.55,
+                "hitPlus7": 30.3,
+                "hitMinus7": 21.8
+              },
+              "train": {
+                "n": 186,
+                "mean": 0.71,
+                "median": 0.98,
+                "positiveRate": 57.5,
+                "benchmarkBeatRate": 52.2,
+                "meanExcess": 0.17,
+                "avgMAE": -3.76,
+                "avgMFE": 4.51,
+                "hitPlus7": 22,
+                "hitMinus7": 20.4
+              },
+              "test": {
+                "n": 98,
+                "mean": 2.98,
+                "median": 3.69,
+                "positiveRate": 70.4,
+                "benchmarkBeatRate": 60.2,
+                "meanExcess": 1.51,
+                "avgMAE": -3.73,
+                "avgMFE": 7.53,
+                "hitPlus7": 45.9,
+                "hitMinus7": 24.5
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 560,
+                "mean": 0.9,
+                "median": 0.73,
+                "positiveRate": 55.4,
+                "benchmarkBeatRate": 50.7,
+                "meanExcess": 0.3,
+                "avgMAE": -3.77,
+                "avgMFE": 5.17,
+                "hitPlus7": 28.7,
+                "hitMinus7": 20.7
+              },
+              "train": {
+                "n": 374,
+                "mean": 0.49,
+                "median": 0.25,
+                "positiveRate": 52.1,
+                "benchmarkBeatRate": 50.5,
+                "meanExcess": 0.32,
+                "avgMAE": -3.85,
+                "avgMFE": 4.5,
+                "hitPlus7": 23.5,
+                "hitMinus7": 20.6
+              },
+              "test": {
+                "n": 186,
+                "mean": 1.73,
+                "median": 2.01,
+                "positiveRate": 61.8,
+                "benchmarkBeatRate": 51.1,
+                "meanExcess": 0.27,
+                "avgMAE": -3.61,
+                "avgMFE": 6.52,
+                "hitPlus7": 39.2,
+                "hitMinus7": 21
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 789,
+                "mean": 0.81,
+                "median": 0.72,
+                "positiveRate": 55.3,
+                "benchmarkBeatRate": 50.6,
+                "meanExcess": 0.2,
+                "avgMAE": -3.88,
+                "avgMFE": 5.13,
+                "hitPlus7": 27.9,
+                "hitMinus7": 21.7
+              },
+              "train": {
+                "n": 550,
+                "mean": 0.78,
+                "median": 0.52,
+                "positiveRate": 54.5,
+                "benchmarkBeatRate": 50.9,
+                "meanExcess": 0.4,
+                "avgMAE": -3.7,
+                "avgMFE": 4.72,
+                "hitPlus7": 25.6,
+                "hitMinus7": 19.8
+              },
+              "test": {
+                "n": 239,
+                "mean": 0.88,
+                "median": 1.4,
+                "positiveRate": 56.9,
+                "benchmarkBeatRate": 49.8,
+                "meanExcess": -0.28,
+                "avgMAE": -4.3,
+                "avgMFE": 6.08,
+                "hitPlus7": 33.1,
+                "hitMinus7": 25.9
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 275,
+                "mean": 1.51,
+                "median": 1.91,
+                "positiveRate": 62.2,
+                "benchmarkBeatRate": 54.2,
+                "meanExcess": 0.59,
+                "avgMAE": -3.77,
+                "avgMFE": 5.59,
+                "hitPlus7": 30.5,
+                "hitMinus7": 22.2
+              },
+              "train": {
+                "n": 180,
+                "mean": 0.72,
+                "median": 0.98,
+                "positiveRate": 57.8,
+                "benchmarkBeatRate": 51.1,
+                "meanExcess": 0.12,
+                "avgMAE": -3.85,
+                "avgMFE": 4.54,
+                "hitPlus7": 22.8,
+                "hitMinus7": 21.1
+              },
+              "test": {
+                "n": 95,
+                "mean": 2.99,
+                "median": 3.63,
+                "positiveRate": 70.5,
+                "benchmarkBeatRate": 60,
+                "meanExcess": 1.48,
+                "avgMAE": -3.62,
+                "avgMFE": 7.56,
+                "hitPlus7": 45.3,
+                "hitMinus7": 24.2
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 284,
+                "mean": 1.5,
+                "median": 1.87,
+                "positiveRate": 62,
+                "benchmarkBeatRate": 54.9,
+                "meanExcess": 0.63,
+                "avgMAE": -3.75,
+                "avgMFE": 5.55,
+                "hitPlus7": 30.3,
+                "hitMinus7": 21.8
+              },
+              "no": {
+                "n": 1038,
+                "mean": 0.66,
+                "median": 0.45,
+                "positiveRate": 52.9,
+                "benchmarkBeatRate": 48,
+                "meanExcess": 0.11,
+                "avgMAE": -3.82,
+                "avgMFE": 4.7,
+                "hitPlus7": 25,
+                "hitMinus7": 20
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 1204,
+                "mean": 0.86,
+                "median": 0.69,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 49.3,
+                "meanExcess": 0.22,
+                "avgMAE": -3.86,
+                "avgMFE": 4.96,
+                "hitPlus7": 26.9,
+                "hitMinus7": 21.3
+              },
+              "no": {
+                "n": 118,
+                "mean": 0.56,
+                "median": 0.53,
+                "positiveRate": 55.1,
+                "benchmarkBeatRate": 51.7,
+                "meanExcess": 0.28,
+                "avgMAE": -3.22,
+                "avgMFE": 4.15,
+                "hitPlus7": 17.8,
+                "hitMinus7": 11
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 347,
+                "mean": 1.51,
+                "median": 1.65,
+                "positiveRate": 59.4,
+                "benchmarkBeatRate": 53.3,
+                "meanExcess": 0.8,
+                "avgMAE": -3.79,
+                "avgMFE": 5.62,
+                "hitPlus7": 31.4,
+                "hitMinus7": 20.7
+              },
+              "no": {
+                "n": 975,
+                "mean": 0.6,
+                "median": 0.47,
+                "positiveRate": 53.2,
+                "benchmarkBeatRate": 48.1,
+                "meanExcess": 0.02,
+                "avgMAE": -3.81,
+                "avgMFE": 4.62,
+                "hitPlus7": 24.2,
+                "hitMinus7": 20.3
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 701,
+                "mean": 0.9,
+                "median": 0.72,
+                "positiveRate": 54.9,
+                "benchmarkBeatRate": 50.1,
+                "meanExcess": 0.4,
+                "avgMAE": -4.14,
+                "avgMFE": 5.19,
+                "hitPlus7": 28.8,
+                "hitMinus7": 23.3
+              },
+              "no": {
+                "n": 621,
+                "mean": 0.77,
+                "median": 0.65,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 48.8,
+                "meanExcess": 0.02,
+                "avgMAE": -3.42,
+                "avgMFE": 4.54,
+                "hitPlus7": 23,
+                "hitMinus7": 17.2
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 396,
+                "mean": 0.88,
+                "median": 0.58,
+                "positiveRate": 53.8,
+                "benchmarkBeatRate": 48.2,
+                "meanExcess": 0.26,
+                "avgMAE": -3.65,
+                "avgMFE": 5.29,
+                "hitPlus7": 30.1,
+                "hitMinus7": 19.9
+              },
+              "no": {
+                "n": 926,
+                "mean": 0.82,
+                "median": 0.69,
+                "positiveRate": 55.3,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.21,
+                "avgMAE": -3.87,
+                "avgMFE": 4.71,
+                "hitPlus7": 24.4,
+                "hitMinus7": 20.6
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 640,
+                "mean": 0.83,
+                "median": 0.71,
+                "positiveRate": 54.4,
+                "benchmarkBeatRate": 49.1,
+                "meanExcess": 0.19,
+                "avgMAE": -3.8,
+                "avgMFE": 5.22,
+                "hitPlus7": 28.6,
+                "hitMinus7": 21.1
+              },
+              "no": {
+                "n": 682,
+                "mean": 0.84,
+                "median": 0.67,
+                "positiveRate": 55.3,
+                "benchmarkBeatRate": 49.9,
+                "meanExcess": 0.26,
+                "avgMAE": -3.81,
+                "avgMFE": 4.57,
+                "hitPlus7": 23.8,
+                "hitMinus7": 19.8
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 1230,
+                "mean": 0.85,
+                "median": 0.71,
+                "positiveRate": 55.2,
+                "benchmarkBeatRate": 50.2,
+                "meanExcess": 0.28,
+                "avgMAE": -3.58,
+                "avgMFE": 4.6,
+                "hitPlus7": 23.9,
+                "hitMinus7": 18.9
+              },
+              "no": {
+                "n": 92,
+                "mean": 0.63,
+                "median": -0.16,
+                "positiveRate": 50,
+                "benchmarkBeatRate": 40.2,
+                "meanExcess": -0.56,
+                "avgMAE": -6.72,
+                "avgMFE": 8.67,
+                "hitPlus7": 55.4,
+                "hitMinus7": 40.2
+              }
+            }
+          ]
+        },
+        {
+          "batch": 2,
+          "baselineTest": {
+            "n": 383,
+            "mean": 1.77,
+            "median": 0.93,
+            "positiveRate": 55.1,
+            "benchmarkBeatRate": 47,
+            "meanExcess": 0.62,
+            "avgMAE": -3.75,
+            "avgMFE": 6.33,
+            "hitPlus7": 34.2,
+            "hitMinus7": 21.7
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1210,
+                "mean": 0.76,
+                "median": 0.51,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 46.9,
+                "meanExcess": 0.09,
+                "avgMAE": -3.88,
+                "avgMFE": 4.8,
+                "hitPlus7": 26.1,
+                "hitMinus7": 20.2
+              },
+              "train": {
+                "n": 827,
+                "mean": 0.29,
+                "median": 0.43,
+                "positiveRate": 52.5,
+                "benchmarkBeatRate": 46.8,
+                "meanExcess": -0.15,
+                "avgMAE": -3.94,
+                "avgMFE": 4.09,
+                "hitPlus7": 22.4,
+                "hitMinus7": 19.5
+              },
+              "test": {
+                "n": 383,
+                "mean": 1.77,
+                "median": 0.93,
+                "positiveRate": 55.1,
+                "benchmarkBeatRate": 47,
+                "meanExcess": 0.62,
+                "avgMAE": -3.75,
+                "avgMFE": 6.33,
+                "hitPlus7": 34.2,
+                "hitMinus7": 21.7
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 271,
+                "mean": 0.63,
+                "median": -0.2,
+                "positiveRate": 48.3,
+                "benchmarkBeatRate": 44.3,
+                "meanExcess": -0.01,
+                "avgMAE": -4.03,
+                "avgMFE": 4.98,
+                "hitPlus7": 29.5,
+                "hitMinus7": 21.8
+              },
+              "train": {
+                "n": 184,
+                "mean": -0.7,
+                "median": -1.17,
+                "positiveRate": 42.4,
+                "benchmarkBeatRate": 40.2,
+                "meanExcess": -1.01,
+                "avgMAE": -4.6,
+                "avgMFE": 3.68,
+                "hitPlus7": 22.3,
+                "hitMinus7": 23.4
+              },
+              "test": {
+                "n": 87,
+                "mean": 3.44,
+                "median": 1.63,
+                "positiveRate": 60.9,
+                "benchmarkBeatRate": 52.9,
+                "meanExcess": 2.11,
+                "avgMAE": -2.83,
+                "avgMFE": 7.74,
+                "hitPlus7": 44.8,
+                "hitMinus7": 18.4
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 530,
+                "mean": 0.38,
+                "median": -0.13,
+                "positiveRate": 48.7,
+                "benchmarkBeatRate": 43.6,
+                "meanExcess": -0.15,
+                "avgMAE": -4.27,
+                "avgMFE": 5.08,
+                "hitPlus7": 26.6,
+                "hitMinus7": 24.9
+              },
+              "train": {
+                "n": 356,
+                "mean": -0.45,
+                "median": -0.49,
+                "positiveRate": 47.8,
+                "benchmarkBeatRate": 43.5,
+                "meanExcess": -0.7,
+                "avgMAE": -4.47,
+                "avgMFE": 3.97,
+                "hitPlus7": 22.5,
+                "hitMinus7": 24.4
+              },
+              "test": {
+                "n": 174,
+                "mean": 2.08,
+                "median": 0.1,
+                "positiveRate": 50.6,
+                "benchmarkBeatRate": 43.7,
+                "meanExcess": 0.98,
+                "avgMAE": -3.87,
+                "avgMFE": 7.35,
+                "hitPlus7": 35.1,
+                "hitMinus7": 25.9
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 748,
+                "mean": 0.71,
+                "median": 0.06,
+                "positiveRate": 50.4,
+                "benchmarkBeatRate": 45.5,
+                "meanExcess": 0.11,
+                "avgMAE": -4.07,
+                "avgMFE": 5.05,
+                "hitPlus7": 27.3,
+                "hitMinus7": 22.6
+              },
+              "train": {
+                "n": 501,
+                "mean": 0.05,
+                "median": -0.16,
+                "positiveRate": 49.1,
+                "benchmarkBeatRate": 45.1,
+                "meanExcess": -0.3,
+                "avgMAE": -4.2,
+                "avgMFE": 4.13,
+                "hitPlus7": 23.6,
+                "hitMinus7": 21.8
+              },
+              "test": {
+                "n": 247,
+                "mean": 2.05,
+                "median": 0.7,
+                "positiveRate": 53,
+                "benchmarkBeatRate": 46.2,
+                "meanExcess": 0.96,
+                "avgMAE": -3.81,
+                "avgMFE": 6.91,
+                "hitPlus7": 34.8,
+                "hitMinus7": 24.3
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 261,
+                "mean": 0.71,
+                "median": -0.08,
+                "positiveRate": 49,
+                "benchmarkBeatRate": 45.2,
+                "meanExcess": 0.05,
+                "avgMAE": -3.96,
+                "avgMFE": 5.07,
+                "hitPlus7": 29.9,
+                "hitMinus7": 20.7
+              },
+              "train": {
+                "n": 176,
+                "mean": -0.65,
+                "median": -1.15,
+                "positiveRate": 43.2,
+                "benchmarkBeatRate": 41.5,
+                "meanExcess": -0.96,
+                "avgMAE": -4.49,
+                "avgMFE": 3.77,
+                "hitPlus7": 22.7,
+                "hitMinus7": 21.6
+              },
+              "test": {
+                "n": 85,
+                "mean": 3.52,
+                "median": 1.63,
+                "positiveRate": 61.2,
+                "benchmarkBeatRate": 52.9,
+                "meanExcess": 2.12,
+                "avgMAE": -2.87,
+                "avgMFE": 7.77,
+                "hitPlus7": 44.7,
+                "hitMinus7": 18.8
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 271,
+                "mean": 0.63,
+                "median": -0.2,
+                "positiveRate": 48.3,
+                "benchmarkBeatRate": 44.3,
+                "meanExcess": -0.01,
+                "avgMAE": -4.03,
+                "avgMFE": 4.98,
+                "hitPlus7": 29.5,
+                "hitMinus7": 21.8
+              },
+              "no": {
+                "n": 939,
+                "mean": 0.79,
+                "median": 0.82,
+                "positiveRate": 54.7,
+                "benchmarkBeatRate": 47.6,
+                "meanExcess": 0.12,
+                "avgMAE": -3.83,
+                "avgMFE": 4.75,
+                "hitPlus7": 25.1,
+                "hitMinus7": 19.7
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 1083,
+                "mean": 0.79,
+                "median": 0.49,
+                "positiveRate": 53.1,
+                "benchmarkBeatRate": 47.2,
+                "meanExcess": 0.11,
+                "avgMAE": -3.92,
+                "avgMFE": 4.91,
+                "hitPlus7": 26.9,
+                "hitMinus7": 20.5
+              },
+              "no": {
+                "n": 127,
+                "mean": 0.5,
+                "median": 0.82,
+                "positiveRate": 55.1,
+                "benchmarkBeatRate": 44.1,
+                "meanExcess": -0.07,
+                "avgMAE": -3.52,
+                "avgMFE": 3.88,
+                "hitPlus7": 19.7,
+                "hitMinus7": 17.3
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 325,
+                "mean": 0.93,
+                "median": 0.95,
+                "positiveRate": 55.4,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": 0.05,
+                "avgMAE": -4,
+                "avgMFE": 4.91,
+                "hitPlus7": 28.3,
+                "hitMinus7": 20
+              },
+              "no": {
+                "n": 885,
+                "mean": 0.69,
+                "median": 0.43,
+                "positiveRate": 52.5,
+                "benchmarkBeatRate": 46,
+                "meanExcess": 0.11,
+                "avgMAE": -3.83,
+                "avgMFE": 4.76,
+                "hitPlus7": 25.3,
+                "hitMinus7": 20.2
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 681,
+                "mean": 0.83,
+                "median": 0.49,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": 0.09,
+                "avgMAE": -3.96,
+                "avgMFE": 5.04,
+                "hitPlus7": 26.9,
+                "hitMinus7": 20.9
+              },
+              "no": {
+                "n": 529,
+                "mean": 0.66,
+                "median": 0.71,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 45,
+                "meanExcess": 0.09,
+                "avgMAE": -3.78,
+                "avgMFE": 4.49,
+                "hitPlus7": 25.1,
+                "hitMinus7": 19.3
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 385,
+                "mean": 0.26,
+                "median": -0.16,
+                "positiveRate": 47.8,
+                "benchmarkBeatRate": 42.9,
+                "meanExcess": -0.25,
+                "avgMAE": -4.37,
+                "avgMFE": 5.14,
+                "hitPlus7": 24.9,
+                "hitMinus7": 25.7
+              },
+              "no": {
+                "n": 825,
+                "mean": 0.99,
+                "median": 0.95,
+                "positiveRate": 55.9,
+                "benchmarkBeatRate": 48.7,
+                "meanExcess": 0.25,
+                "avgMAE": -3.65,
+                "avgMFE": 4.64,
+                "hitPlus7": 26.7,
+                "hitMinus7": 17.6
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 610,
+                "mean": 0.77,
+                "median": 0.06,
+                "positiveRate": 50.5,
+                "benchmarkBeatRate": 45.6,
+                "meanExcess": 0.14,
+                "avgMAE": -4.06,
+                "avgMFE": 5.1,
+                "hitPlus7": 26.4,
+                "hitMinus7": 22.5
+              },
+              "no": {
+                "n": 600,
+                "mean": 0.75,
+                "median": 1.06,
+                "positiveRate": 56.2,
+                "benchmarkBeatRate": 48.2,
+                "meanExcess": 0.04,
+                "avgMAE": -3.7,
+                "avgMFE": 4.49,
+                "hitPlus7": 25.8,
+                "hitMinus7": 17.8
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 1131,
+                "mean": 0.72,
+                "median": 0.52,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 46.9,
+                "meanExcess": 0.1,
+                "avgMAE": -3.71,
+                "avgMFE": 4.5,
+                "hitPlus7": 24,
+                "hitMinus7": 18.5
+              },
+              "no": {
+                "n": 79,
+                "mean": 1.29,
+                "median": 0.26,
+                "positiveRate": 53.2,
+                "benchmarkBeatRate": 46.8,
+                "meanExcess": -0.08,
+                "avgMAE": -6.23,
+                "avgMFE": 9.04,
+                "hitPlus7": 57,
+                "hitMinus7": 44.3
+              }
+            }
+          ]
+        },
+        {
+          "batch": 3,
+          "baselineTest": {
+            "n": 356,
+            "mean": 1.68,
+            "median": 1.25,
+            "positiveRate": 57.3,
+            "benchmarkBeatRate": 47.5,
+            "meanExcess": 0.26,
+            "avgMAE": -4.02,
+            "avgMFE": 5.91,
+            "hitPlus7": 32.3,
+            "hitMinus7": 24.2
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1279,
+                "mean": 0.78,
+                "median": 0.72,
+                "positiveRate": 55,
+                "benchmarkBeatRate": 47.6,
+                "meanExcess": 0.13,
+                "avgMAE": -3.64,
+                "avgMFE": 4.47,
+                "hitPlus7": 22.5,
+                "hitMinus7": 19.5
+              },
+              "train": {
+                "n": 923,
+                "mean": 0.43,
+                "median": 0.55,
+                "positiveRate": 54.2,
+                "benchmarkBeatRate": 47.7,
+                "meanExcess": 0.08,
+                "avgMAE": -3.49,
+                "avgMFE": 3.91,
+                "hitPlus7": 18.7,
+                "hitMinus7": 17.7
+              },
+              "test": {
+                "n": 356,
+                "mean": 1.68,
+                "median": 1.25,
+                "positiveRate": 57.3,
+                "benchmarkBeatRate": 47.5,
+                "meanExcess": 0.26,
+                "avgMAE": -4.02,
+                "avgMFE": 5.91,
+                "hitPlus7": 32.3,
+                "hitMinus7": 24.2
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 268,
+                "mean": 0.37,
+                "median": -0.09,
+                "positiveRate": 49.6,
+                "benchmarkBeatRate": 47.4,
+                "meanExcess": -0.13,
+                "avgMAE": -4.27,
+                "avgMFE": 4.37,
+                "hitPlus7": 22.4,
+                "hitMinus7": 23.1
+              },
+              "train": {
+                "n": 181,
+                "mean": -0.06,
+                "median": -0.42,
+                "positiveRate": 47.5,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": -0.01,
+                "avgMAE": -3.99,
+                "avgMFE": 3.55,
+                "hitPlus7": 16.6,
+                "hitMinus7": 21
+              },
+              "test": {
+                "n": 87,
+                "mean": 1.27,
+                "median": 1.01,
+                "positiveRate": 54,
+                "benchmarkBeatRate": 43.7,
+                "meanExcess": -0.37,
+                "avgMAE": -4.86,
+                "avgMFE": 6.09,
+                "hitPlus7": 34.5,
+                "hitMinus7": 27.6
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 528,
+                "mean": 0.2,
+                "median": 0.06,
+                "positiveRate": 50.6,
+                "benchmarkBeatRate": 45.8,
+                "meanExcess": -0.16,
+                "avgMAE": -4.28,
+                "avgMFE": 4.27,
+                "hitPlus7": 21.6,
+                "hitMinus7": 24.2
+              },
+              "train": {
+                "n": 353,
+                "mean": -0.07,
+                "median": -0.07,
+                "positiveRate": 49.9,
+                "benchmarkBeatRate": 48.4,
+                "meanExcess": 0.2,
+                "avgMAE": -3.95,
+                "avgMFE": 3.61,
+                "hitPlus7": 17.6,
+                "hitMinus7": 21.5
+              },
+              "test": {
+                "n": 175,
+                "mean": 0.75,
+                "median": 0.12,
+                "positiveRate": 52,
+                "benchmarkBeatRate": 40.6,
+                "meanExcess": -0.9,
+                "avgMAE": -4.96,
+                "avgMFE": 5.6,
+                "hitPlus7": 29.7,
+                "hitMinus7": 29.7
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 763,
+                "mean": 0.49,
+                "median": 0.39,
+                "positiveRate": 52.7,
+                "benchmarkBeatRate": 46.8,
+                "meanExcess": 0,
+                "avgMAE": -3.96,
+                "avgMFE": 4.41,
+                "hitPlus7": 22.5,
+                "hitMinus7": 22.4
+              },
+              "train": {
+                "n": 524,
+                "mean": 0.24,
+                "median": 0.32,
+                "positiveRate": 52.1,
+                "benchmarkBeatRate": 48.1,
+                "meanExcess": 0.22,
+                "avgMAE": -3.69,
+                "avgMFE": 3.79,
+                "hitPlus7": 18.3,
+                "hitMinus7": 20.4
+              },
+              "test": {
+                "n": 239,
+                "mean": 1.05,
+                "median": 0.89,
+                "positiveRate": 54,
+                "benchmarkBeatRate": 43.9,
+                "meanExcess": -0.51,
+                "avgMAE": -4.56,
+                "avgMFE": 5.78,
+                "hitPlus7": 31.8,
+                "hitMinus7": 26.8
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 253,
+                "mean": 0.34,
+                "median": 0.04,
+                "positiveRate": 50.2,
+                "benchmarkBeatRate": 47.8,
+                "meanExcess": -0.2,
+                "avgMAE": -4.33,
+                "avgMFE": 4.39,
+                "hitPlus7": 22.9,
+                "hitMinus7": 23.7
+              },
+              "train": {
+                "n": 170,
+                "mean": -0.01,
+                "median": -0.37,
+                "positiveRate": 48.2,
+                "benchmarkBeatRate": 49.4,
+                "meanExcess": 0.01,
+                "avgMAE": -4.07,
+                "avgMFE": 3.6,
+                "hitPlus7": 17.1,
+                "hitMinus7": 21.8
+              },
+              "test": {
+                "n": 83,
+                "mean": 1.06,
+                "median": 1.01,
+                "positiveRate": 54.2,
+                "benchmarkBeatRate": 44.6,
+                "meanExcess": -0.64,
+                "avgMAE": -4.87,
+                "avgMFE": 6,
+                "hitPlus7": 34.9,
+                "hitMinus7": 27.7
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 268,
+                "mean": 0.37,
+                "median": -0.09,
+                "positiveRate": 49.6,
+                "benchmarkBeatRate": 47.4,
+                "meanExcess": -0.13,
+                "avgMAE": -4.27,
+                "avgMFE": 4.37,
+                "hitPlus7": 22.4,
+                "hitMinus7": 23.1
+              },
+              "no": {
+                "n": 1011,
+                "mean": 0.89,
+                "median": 0.78,
+                "positiveRate": 56.5,
+                "benchmarkBeatRate": 47.7,
+                "meanExcess": 0.2,
+                "avgMAE": -3.47,
+                "avgMFE": 4.5,
+                "hitPlus7": 22.6,
+                "hitMinus7": 18.5
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 1125,
+                "mean": 0.84,
+                "median": 0.73,
+                "positiveRate": 55.6,
+                "benchmarkBeatRate": 48.7,
+                "meanExcess": 0.2,
+                "avgMAE": -3.71,
+                "avgMFE": 4.61,
+                "hitPlus7": 23.4,
+                "hitMinus7": 20.3
+              },
+              "no": {
+                "n": 154,
+                "mean": 0.32,
+                "median": 0.23,
+                "positiveRate": 51.3,
+                "benchmarkBeatRate": 39.6,
+                "meanExcess": -0.36,
+                "avgMAE": -3.09,
+                "avgMFE": 3.43,
+                "hitPlus7": 16.2,
+                "hitMinus7": 13.6
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 342,
+                "mean": 0.99,
+                "median": 0.94,
+                "positiveRate": 57.9,
+                "benchmarkBeatRate": 50.3,
+                "meanExcess": 0.12,
+                "avgMAE": -3.98,
+                "avgMFE": 4.72,
+                "hitPlus7": 25.7,
+                "hitMinus7": 24.6
+              },
+              "no": {
+                "n": 937,
+                "mean": 0.7,
+                "median": 0.48,
+                "positiveRate": 54,
+                "benchmarkBeatRate": 46.6,
+                "meanExcess": 0.13,
+                "avgMAE": -3.51,
+                "avgMFE": 4.38,
+                "hitPlus7": 21.3,
+                "hitMinus7": 17.6
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 650,
+                "mean": 0.75,
+                "median": 0.64,
+                "positiveRate": 53.8,
+                "benchmarkBeatRate": 48.8,
+                "meanExcess": 0.25,
+                "avgMAE": -3.92,
+                "avgMFE": 4.66,
+                "hitPlus7": 24.9,
+                "hitMinus7": 22.3
+              },
+              "no": {
+                "n": 629,
+                "mean": 0.81,
+                "median": 0.78,
+                "positiveRate": 56.3,
+                "benchmarkBeatRate": 46.4,
+                "meanExcess": 0.01,
+                "avgMAE": -3.34,
+                "avgMFE": 4.27,
+                "hitPlus7": 20,
+                "hitMinus7": 16.5
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 384,
+                "mean": 0.58,
+                "median": 0.46,
+                "positiveRate": 52.6,
+                "benchmarkBeatRate": 47.1,
+                "meanExcess": 0.21,
+                "avgMAE": -4.01,
+                "avgMFE": 4.56,
+                "hitPlus7": 22.9,
+                "hitMinus7": 22.1
+              },
+              "no": {
+                "n": 895,
+                "mean": 0.87,
+                "median": 0.79,
+                "positiveRate": 56.1,
+                "benchmarkBeatRate": 47.8,
+                "meanExcess": 0.1,
+                "avgMAE": -3.48,
+                "avgMFE": 4.43,
+                "hitPlus7": 22.3,
+                "hitMinus7": 18.3
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 634,
+                "mean": 0.8,
+                "median": 0.67,
+                "positiveRate": 54.4,
+                "benchmarkBeatRate": 48.1,
+                "meanExcess": 0.3,
+                "avgMAE": -3.72,
+                "avgMFE": 4.62,
+                "hitPlus7": 23.7,
+                "hitMinus7": 20.8
+              },
+              "no": {
+                "n": 645,
+                "mean": 0.76,
+                "median": 0.74,
+                "positiveRate": 55.7,
+                "benchmarkBeatRate": 47.1,
+                "meanExcess": -0.04,
+                "avgMAE": -3.56,
+                "avgMFE": 4.32,
+                "hitPlus7": 21.4,
+                "hitMinus7": 18.1
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 1221,
+                "mean": 0.7,
+                "median": 0.67,
+                "positiveRate": 54.9,
+                "benchmarkBeatRate": 47.3,
+                "meanExcess": 0.1,
+                "avgMAE": -3.51,
+                "avgMFE": 4.19,
+                "hitPlus7": 20.9,
+                "hitMinus7": 18.3
+              },
+              "no": {
+                "n": 58,
+                "mean": 2.49,
+                "median": 2.72,
+                "positiveRate": 58.6,
+                "benchmarkBeatRate": 53.4,
+                "meanExcess": 0.85,
+                "avgMAE": -6.21,
+                "avgMFE": 10.46,
+                "hitPlus7": 56.9,
+                "hitMinus7": 43.1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "20": {
+      "pooled": {
+        "baseline": {
+          "pooledTest": {
+            "n": 1150,
+            "mean": 2.3,
+            "positiveRate": 56.4,
+            "benchmarkBeatRate": 46.2,
+            "meanExcess": 0.3,
+            "avgMAE": -5.64,
+            "avgMFE": 9.51
+          },
+          "retentionVsBaseline": 100,
+          "deltaVsBaseline": {
+            "mean": 0,
+            "positiveRate": 0,
+            "benchmarkBeatRate": 0,
+            "meanExcess": 0
+          },
+          "positiveBatchCount": 0
+        },
+        "requireMinorHighBreak": {
+          "pooledTest": {
+            "n": 291,
+            "mean": 2.65,
+            "positiveRate": 59.1,
+            "benchmarkBeatRate": 51.5,
+            "meanExcess": 0.61,
+            "avgMAE": -5.69,
+            "avgMFE": 11.23
+          },
+          "retentionVsBaseline": 25.3,
+          "deltaVsBaseline": {
+            "mean": 0.35,
+            "positiveRate": 2.7,
+            "benchmarkBeatRate": 5.3,
+            "meanExcess": 0.31
+          },
+          "positiveBatchCount": 2
+        },
+        "breakOrHigherLow": {
+          "pooledTest": {
+            "n": 505,
+            "mean": 2.16,
+            "positiveRate": 55.8,
+            "benchmarkBeatRate": 47.5,
+            "meanExcess": 0.15,
+            "avgMAE": -5.87,
+            "avgMFE": 10.32
+          },
+          "retentionVsBaseline": 43.9,
+          "deltaVsBaseline": {
+            "mean": -0.14,
+            "positiveRate": -0.6,
+            "benchmarkBeatRate": 1.3,
+            "meanExcess": -0.15
+          },
+          "positiveBatchCount": 2
+        },
+        "structuralConfirmation": {
+          "pooledTest": {
+            "n": 706,
+            "mean": 1.74,
+            "positiveRate": 54.7,
+            "benchmarkBeatRate": 45.5,
+            "meanExcess": -0.28,
+            "avgMAE": -6.11,
+            "avgMFE": 9.64
+          },
+          "retentionVsBaseline": 61.4,
+          "deltaVsBaseline": {
+            "mean": -0.56,
+            "positiveRate": -1.7,
+            "benchmarkBeatRate": -0.7,
+            "meanExcess": -0.58
+          },
+          "positiveBatchCount": 0
+        },
+        "breakWithSupport": {
+          "pooledTest": {
+            "n": 278,
+            "mean": 2.55,
+            "positiveRate": 59,
+            "benchmarkBeatRate": 51.8,
+            "meanExcess": 0.49,
+            "avgMAE": -5.76,
+            "avgMFE": 11.33
+          },
+          "retentionVsBaseline": 24.2,
+          "deltaVsBaseline": {
+            "mean": 0.25,
+            "positiveRate": 2.6,
+            "benchmarkBeatRate": 5.6,
+            "meanExcess": 0.19
+          },
+          "positiveBatchCount": 2
+        }
+      },
+      "perBatch": [
+        {
+          "batch": 0,
+          "baselineTest": {
+            "n": 282,
+            "mean": 1.58,
+            "median": 1.04,
+            "positiveRate": 53.2,
+            "benchmarkBeatRate": 44.3,
+            "meanExcess": -0.21,
+            "avgMAE": -5.76,
+            "avgMFE": 8.85,
+            "hitPlus7": 49.6,
+            "hitMinus7": 33.7
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 982,
+                "mean": 1.05,
+                "median": 1.04,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 47.5,
+                "meanExcess": -0.05,
+                "avgMAE": -5.65,
+                "avgMFE": 7.26,
+                "hitPlus7": 40.5,
+                "hitMinus7": 32.2
+              },
+              "train": {
+                "n": 700,
+                "mean": 0.83,
+                "median": 1.04,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 48.7,
+                "meanExcess": 0.01,
+                "avgMAE": -5.61,
+                "avgMFE": 6.62,
+                "hitPlus7": 36.9,
+                "hitMinus7": 31.6
+              },
+              "test": {
+                "n": 282,
+                "mean": 1.58,
+                "median": 1.04,
+                "positiveRate": 53.2,
+                "benchmarkBeatRate": 44.3,
+                "meanExcess": -0.21,
+                "avgMAE": -5.76,
+                "avgMFE": 8.85,
+                "hitPlus7": 49.6,
+                "hitMinus7": 33.7
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 212,
+                "mean": 0.74,
+                "median": 1.46,
+                "positiveRate": 56.1,
+                "benchmarkBeatRate": 48.6,
+                "meanExcess": -0.34,
+                "avgMAE": -6.37,
+                "avgMFE": 8.2,
+                "hitPlus7": 49.1,
+                "hitMinus7": 35.4
+              },
+              "train": {
+                "n": 147,
+                "mean": 0.52,
+                "median": 1.48,
+                "positiveRate": 56.5,
+                "benchmarkBeatRate": 49,
+                "meanExcess": -0.08,
+                "avgMAE": -7,
+                "avgMFE": 7.51,
+                "hitPlus7": 41.5,
+                "hitMinus7": 38.8
+              },
+              "test": {
+                "n": 65,
+                "mean": 1.24,
+                "median": 1.33,
+                "positiveRate": 55.4,
+                "benchmarkBeatRate": 47.7,
+                "meanExcess": -0.92,
+                "avgMAE": -4.96,
+                "avgMFE": 9.78,
+                "hitPlus7": 66.2,
+                "hitMinus7": 27.7
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 383,
+                "mean": 0.87,
+                "median": 1.39,
+                "positiveRate": 54,
+                "benchmarkBeatRate": 48,
+                "meanExcess": -0.11,
+                "avgMAE": -5.95,
+                "avgMFE": 7.8,
+                "hitPlus7": 44.4,
+                "hitMinus7": 32.9
+              },
+              "train": {
+                "n": 272,
+                "mean": 0.65,
+                "median": 1.48,
+                "positiveRate": 55.1,
+                "benchmarkBeatRate": 48.9,
+                "meanExcess": 0.01,
+                "avgMAE": -6.2,
+                "avgMFE": 7.14,
+                "hitPlus7": 39.3,
+                "hitMinus7": 33.8
+              },
+              "test": {
+                "n": 111,
+                "mean": 1.39,
+                "median": 0.95,
+                "positiveRate": 51.4,
+                "benchmarkBeatRate": 45.9,
+                "meanExcess": -0.4,
+                "avgMAE": -5.32,
+                "avgMFE": 9.41,
+                "hitPlus7": 56.8,
+                "hitMinus7": 30.6
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 557,
+                "mean": 0.85,
+                "median": 1.33,
+                "positiveRate": 53.9,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": -0.08,
+                "avgMAE": -5.96,
+                "avgMFE": 7.42,
+                "hitPlus7": 42,
+                "hitMinus7": 33.6
+              },
+              "train": {
+                "n": 394,
+                "mean": 0.83,
+                "median": 1.46,
+                "positiveRate": 55.1,
+                "benchmarkBeatRate": 50.5,
+                "meanExcess": 0.22,
+                "avgMAE": -5.91,
+                "avgMFE": 6.77,
+                "hitPlus7": 37.6,
+                "hitMinus7": 33
+              },
+              "test": {
+                "n": 163,
+                "mean": 0.92,
+                "median": 0.16,
+                "positiveRate": 50.9,
+                "benchmarkBeatRate": 46,
+                "meanExcess": -0.79,
+                "avgMAE": -6.08,
+                "avgMFE": 9,
+                "hitPlus7": 52.8,
+                "hitMinus7": 35
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 199,
+                "mean": 0.72,
+                "median": 1.49,
+                "positiveRate": 56.3,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": -0.31,
+                "avgMAE": -6.55,
+                "avgMFE": 8.33,
+                "hitPlus7": 50.3,
+                "hitMinus7": 36.7
+              },
+              "train": {
+                "n": 136,
+                "mean": 0.48,
+                "median": 1.59,
+                "positiveRate": 57.4,
+                "benchmarkBeatRate": 50,
+                "meanExcess": -0.02,
+                "avgMAE": -7.26,
+                "avgMFE": 7.58,
+                "hitPlus7": 42.6,
+                "hitMinus7": 40.4
+              },
+              "test": {
+                "n": 63,
+                "mean": 1.23,
+                "median": 0.99,
+                "positiveRate": 54,
+                "benchmarkBeatRate": 47.6,
+                "meanExcess": -0.93,
+                "avgMAE": -5.02,
+                "avgMFE": 9.94,
+                "hitPlus7": 66.7,
+                "hitMinus7": 28.6
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 212,
+                "mean": 0.74,
+                "median": 1.46,
+                "positiveRate": 56.1,
+                "benchmarkBeatRate": 48.6,
+                "meanExcess": -0.34,
+                "avgMAE": -6.37,
+                "avgMFE": 8.2,
+                "hitPlus7": 49.1,
+                "hitMinus7": 35.4
+              },
+              "no": {
+                "n": 770,
+                "mean": 1.13,
+                "median": 0.91,
+                "positiveRate": 52.5,
+                "benchmarkBeatRate": 47.1,
+                "meanExcess": 0.03,
+                "avgMAE": -5.46,
+                "avgMFE": 7,
+                "hitPlus7": 38.2,
+                "hitMinus7": 31.3
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 849,
+                "mean": 1.01,
+                "median": 0.78,
+                "positiveRate": 52.2,
+                "benchmarkBeatRate": 47.5,
+                "meanExcess": -0.02,
+                "avgMAE": -5.79,
+                "avgMFE": 7.43,
+                "hitPlus7": 42.2,
+                "hitMinus7": 33
+              },
+              "no": {
+                "n": 133,
+                "mean": 1.3,
+                "median": 2.1,
+                "positiveRate": 60.2,
+                "benchmarkBeatRate": 47.4,
+                "meanExcess": -0.21,
+                "avgMAE": -4.81,
+                "avgMFE": 6.18,
+                "hitPlus7": 30.1,
+                "hitMinus7": 27.1
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 215,
+                "mean": 3.37,
+                "median": 4.06,
+                "positiveRate": 67.4,
+                "benchmarkBeatRate": 58.6,
+                "meanExcess": 1.37,
+                "avgMAE": -5.02,
+                "avgMFE": 8.59,
+                "hitPlus7": 48.8,
+                "hitMinus7": 28.4
+              },
+              "no": {
+                "n": 767,
+                "mean": 0.39,
+                "median": -0.14,
+                "positiveRate": 49.3,
+                "benchmarkBeatRate": 44.3,
+                "meanExcess": -0.45,
+                "avgMAE": -5.83,
+                "avgMFE": 6.89,
+                "hitPlus7": 38.2,
+                "hitMinus7": 33.2
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 463,
+                "mean": 1.78,
+                "median": 2.11,
+                "positiveRate": 59.2,
+                "benchmarkBeatRate": 53.1,
+                "meanExcess": 0.45,
+                "avgMAE": -5.74,
+                "avgMFE": 7.73,
+                "hitPlus7": 44.3,
+                "hitMinus7": 32.8
+              },
+              "no": {
+                "n": 519,
+                "mean": 0.39,
+                "median": -0.31,
+                "positiveRate": 48,
+                "benchmarkBeatRate": 42.4,
+                "meanExcess": -0.49,
+                "avgMAE": -5.57,
+                "avgMFE": 6.84,
+                "hitPlus7": 37.2,
+                "hitMinus7": 31.6
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 262,
+                "mean": 1.03,
+                "median": 1.32,
+                "positiveRate": 53.1,
+                "benchmarkBeatRate": 49.2,
+                "meanExcess": 0.25,
+                "avgMAE": -5.68,
+                "avgMFE": 7.66,
+                "hitPlus7": 42.7,
+                "hitMinus7": 32.1
+              },
+              "no": {
+                "n": 720,
+                "mean": 1.05,
+                "median": 0.95,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 46.8,
+                "meanExcess": -0.16,
+                "avgMAE": -5.64,
+                "avgMFE": 7.12,
+                "hitPlus7": 39.7,
+                "hitMinus7": 32.2
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 440,
+                "mean": 0.96,
+                "median": 1.3,
+                "positiveRate": 53.2,
+                "benchmarkBeatRate": 50.2,
+                "meanExcess": 0.16,
+                "avgMAE": -5.77,
+                "avgMFE": 7.24,
+                "hitPlus7": 40.2,
+                "hitMinus7": 33
+              },
+              "no": {
+                "n": 542,
+                "mean": 1.11,
+                "median": 0.85,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 45.2,
+                "meanExcess": -0.22,
+                "avgMAE": -5.56,
+                "avgMFE": 7.29,
+                "hitPlus7": 40.8,
+                "hitMinus7": 31.5
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 928,
+                "mean": 1.2,
+                "median": 1.12,
+                "positiveRate": 53.9,
+                "benchmarkBeatRate": 47.8,
+                "meanExcess": 0.16,
+                "avgMAE": -5.31,
+                "avgMFE": 7.05,
+                "hitPlus7": 39.5,
+                "hitMinus7": 30.1
+              },
+              "no": {
+                "n": 54,
+                "mean": -1.61,
+                "median": -3.21,
+                "positiveRate": 42.6,
+                "benchmarkBeatRate": 40.7,
+                "meanExcess": -3.73,
+                "avgMAE": -11.56,
+                "avgMFE": 11.02,
+                "hitPlus7": 57.4,
+                "hitMinus7": 68.5
+              }
+            }
+          ]
+        },
+        {
+          "batch": 1,
+          "baselineTest": {
+            "n": 291,
+            "mean": 2.34,
+            "median": 1.62,
+            "positiveRate": 57,
+            "benchmarkBeatRate": 47.1,
+            "meanExcess": 0.56,
+            "avgMAE": -5.83,
+            "avgMFE": 10.19,
+            "hitPlus7": 52.9,
+            "hitMinus7": 31.6
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 1009,
+                "mean": 1.5,
+                "median": 1,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 48.4,
+                "meanExcess": 0.37,
+                "avgMAE": -5.87,
+                "avgMFE": 7.95,
+                "hitPlus7": 42.5,
+                "hitMinus7": 33.2
+              },
+              "train": {
+                "n": 718,
+                "mean": 1.16,
+                "median": 0.67,
+                "positiveRate": 53.9,
+                "benchmarkBeatRate": 48.9,
+                "meanExcess": 0.29,
+                "avgMAE": -5.89,
+                "avgMFE": 7.04,
+                "hitPlus7": 38.3,
+                "hitMinus7": 33.8
+              },
+              "test": {
+                "n": 291,
+                "mean": 2.34,
+                "median": 1.62,
+                "positiveRate": 57,
+                "benchmarkBeatRate": 47.1,
+                "meanExcess": 0.56,
+                "avgMAE": -5.83,
+                "avgMFE": 10.19,
+                "hitPlus7": 52.9,
+                "hitMinus7": 31.6
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 231,
+                "mean": 1.81,
+                "median": 1.46,
+                "positiveRate": 55.8,
+                "benchmarkBeatRate": 51.9,
+                "meanExcess": 0.46,
+                "avgMAE": -6.15,
+                "avgMFE": 9.19,
+                "hitPlus7": 49.4,
+                "hitMinus7": 35.1
+              },
+              "train": {
+                "n": 153,
+                "mean": 1.06,
+                "median": 0.65,
+                "positiveRate": 53.6,
+                "benchmarkBeatRate": 50.3,
+                "meanExcess": -0.05,
+                "avgMAE": -6.36,
+                "avgMFE": 7.24,
+                "hitPlus7": 39.9,
+                "hitMinus7": 34.6
+              },
+              "test": {
+                "n": 78,
+                "mean": 3.26,
+                "median": 3,
+                "positiveRate": 60.3,
+                "benchmarkBeatRate": 55.1,
+                "meanExcess": 1.46,
+                "avgMAE": -5.72,
+                "avgMFE": 13.02,
+                "hitPlus7": 67.9,
+                "hitMinus7": 35.9
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 431,
+                "mean": 1.56,
+                "median": 1.07,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 50.6,
+                "meanExcess": 0.55,
+                "avgMAE": -6.05,
+                "avgMFE": 8.62,
+                "hitPlus7": 47.6,
+                "hitMinus7": 34.8
+              },
+              "train": {
+                "n": 287,
+                "mean": 0.74,
+                "median": 0.42,
+                "positiveRate": 51.9,
+                "benchmarkBeatRate": 48.8,
+                "meanExcess": 0.31,
+                "avgMAE": -6.48,
+                "avgMFE": 7.12,
+                "hitPlus7": 39,
+                "hitMinus7": 36.9
+              },
+              "test": {
+                "n": 144,
+                "mean": 3.2,
+                "median": 2.95,
+                "positiveRate": 60.4,
+                "benchmarkBeatRate": 54.2,
+                "meanExcess": 1.03,
+                "avgMAE": -5.19,
+                "avgMFE": 11.62,
+                "hitPlus7": 64.6,
+                "hitMinus7": 30.6
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 594,
+                "mean": 1.47,
+                "median": 0.85,
+                "positiveRate": 54.5,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": 0.33,
+                "avgMAE": -6.13,
+                "avgMFE": 8.3,
+                "hitPlus7": 44.6,
+                "hitMinus7": 35.2
+              },
+              "train": {
+                "n": 414,
+                "mean": 1.19,
+                "median": 0.62,
+                "positiveRate": 54.1,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": 0.34,
+                "avgMAE": -6.14,
+                "avgMFE": 7.33,
+                "hitPlus7": 40.3,
+                "hitMinus7": 35
+              },
+              "test": {
+                "n": 180,
+                "mean": 2.11,
+                "median": 1.36,
+                "positiveRate": 55.6,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": 0.29,
+                "avgMAE": -6.11,
+                "avgMFE": 10.54,
+                "hitPlus7": 54.4,
+                "hitMinus7": 35.6
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 222,
+                "mean": 1.69,
+                "median": 1.66,
+                "positiveRate": 56.3,
+                "benchmarkBeatRate": 51.4,
+                "meanExcess": 0.29,
+                "avgMAE": -6.19,
+                "avgMFE": 9.15,
+                "hitPlus7": 49.5,
+                "hitMinus7": 35.1
+              },
+              "train": {
+                "n": 146,
+                "mean": 0.95,
+                "median": 0.8,
+                "positiveRate": 54.1,
+                "benchmarkBeatRate": 49.3,
+                "meanExcess": -0.2,
+                "avgMAE": -6.51,
+                "avgMFE": 7.18,
+                "hitPlus7": 39.7,
+                "hitMinus7": 35.6
+              },
+              "test": {
+                "n": 76,
+                "mean": 3.1,
+                "median": 3,
+                "positiveRate": 60.5,
+                "benchmarkBeatRate": 55.3,
+                "meanExcess": 1.23,
+                "avgMAE": -5.56,
+                "avgMFE": 12.92,
+                "hitPlus7": 68.4,
+                "hitMinus7": 34.2
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 231,
+                "mean": 1.81,
+                "median": 1.46,
+                "positiveRate": 55.8,
+                "benchmarkBeatRate": 51.9,
+                "meanExcess": 0.46,
+                "avgMAE": -6.15,
+                "avgMFE": 9.19,
+                "hitPlus7": 49.4,
+                "hitMinus7": 35.1
+              },
+              "no": {
+                "n": 778,
+                "mean": 1.41,
+                "median": 0.88,
+                "positiveRate": 54.5,
+                "benchmarkBeatRate": 47.3,
+                "meanExcess": 0.34,
+                "avgMAE": -5.79,
+                "avgMFE": 7.58,
+                "hitPlus7": 40.5,
+                "hitMinus7": 32.6
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 919,
+                "mean": 1.54,
+                "median": 1.11,
+                "positiveRate": 55.6,
+                "benchmarkBeatRate": 48.4,
+                "meanExcess": 0.36,
+                "avgMAE": -5.93,
+                "avgMFE": 8.1,
+                "hitPlus7": 43.6,
+                "hitMinus7": 33.8
+              },
+              "no": {
+                "n": 90,
+                "mean": 1.06,
+                "median": -0.93,
+                "positiveRate": 46.7,
+                "benchmarkBeatRate": 47.8,
+                "meanExcess": 0.45,
+                "avgMAE": -5.31,
+                "avgMFE": 6.41,
+                "hitPlus7": 31.1,
+                "hitMinus7": 26.7
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 220,
+                "mean": 3.68,
+                "median": 2.97,
+                "positiveRate": 65,
+                "benchmarkBeatRate": 53.2,
+                "meanExcess": 1.95,
+                "avgMAE": -5.49,
+                "avgMFE": 9.72,
+                "hitPlus7": 51.8,
+                "hitMinus7": 29.5
+              },
+              "no": {
+                "n": 789,
+                "mean": 0.89,
+                "median": 0.47,
+                "positiveRate": 52,
+                "benchmarkBeatRate": 47,
+                "meanExcess": -0.07,
+                "avgMAE": -5.98,
+                "avgMFE": 7.45,
+                "hitPlus7": 39.9,
+                "hitMinus7": 34.2
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 479,
+                "mean": 2.1,
+                "median": 1.67,
+                "positiveRate": 56.4,
+                "benchmarkBeatRate": 51.8,
+                "meanExcess": 1.23,
+                "avgMAE": -6.16,
+                "avgMFE": 8.73,
+                "hitPlus7": 45.7,
+                "hitMinus7": 34.2
+              },
+              "no": {
+                "n": 530,
+                "mean": 0.96,
+                "median": 0.67,
+                "positiveRate": 53.4,
+                "benchmarkBeatRate": 45.3,
+                "meanExcess": -0.41,
+                "avgMAE": -5.62,
+                "avgMFE": 7.24,
+                "hitPlus7": 39.6,
+                "hitMinus7": 32.3
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 298,
+                "mean": 1.85,
+                "median": 1.08,
+                "positiveRate": 54.7,
+                "benchmarkBeatRate": 51.7,
+                "meanExcess": 0.82,
+                "avgMAE": -5.77,
+                "avgMFE": 8.68,
+                "hitPlus7": 49,
+                "hitMinus7": 34.6
+              },
+              "no": {
+                "n": 711,
+                "mean": 1.35,
+                "median": 0.92,
+                "positiveRate": 54.9,
+                "benchmarkBeatRate": 47,
+                "meanExcess": 0.18,
+                "avgMAE": -5.92,
+                "avgMFE": 7.64,
+                "hitPlus7": 39.8,
+                "hitMinus7": 32.6
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 475,
+                "mean": 1.7,
+                "median": 0.77,
+                "positiveRate": 54.7,
+                "benchmarkBeatRate": 48.4,
+                "meanExcess": 0.49,
+                "avgMAE": -5.95,
+                "avgMFE": 8.25,
+                "hitPlus7": 44.4,
+                "hitMinus7": 34.7
+              },
+              "no": {
+                "n": 534,
+                "mean": 1.32,
+                "median": 1.06,
+                "positiveRate": 54.9,
+                "benchmarkBeatRate": 48.3,
+                "meanExcess": 0.26,
+                "avgMAE": -5.81,
+                "avgMFE": 7.68,
+                "hitPlus7": 40.8,
+                "hitMinus7": 31.8
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 938,
+                "mean": 1.58,
+                "median": 1.08,
+                "positiveRate": 55.4,
+                "benchmarkBeatRate": 48.7,
+                "meanExcess": 0.43,
+                "avgMAE": -5.51,
+                "avgMFE": 7.51,
+                "hitPlus7": 40.4,
+                "hitMinus7": 31.3
+              },
+              "no": {
+                "n": 71,
+                "mean": 0.41,
+                "median": -1.9,
+                "positiveRate": 46.5,
+                "benchmarkBeatRate": 43.7,
+                "meanExcess": -0.48,
+                "avgMAE": -10.63,
+                "avgMFE": 13.72,
+                "hitPlus7": 70.4,
+                "hitMinus7": 57.7
+              }
+            }
+          ]
+        },
+        {
+          "batch": 2,
+          "baselineTest": {
+            "n": 291,
+            "mean": 1.89,
+            "median": 0.58,
+            "positiveRate": 52.2,
+            "benchmarkBeatRate": 43.3,
+            "meanExcess": -0.05,
+            "avgMAE": -5.76,
+            "avgMFE": 9.54,
+            "hitPlus7": 49.5,
+            "hitMinus7": 34.7
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 921,
+                "mean": 0.85,
+                "median": 0.31,
+                "positiveRate": 51.5,
+                "benchmarkBeatRate": 42.9,
+                "meanExcess": -0.37,
+                "avgMAE": -6.03,
+                "avgMFE": 7.49,
+                "hitPlus7": 40.6,
+                "hitMinus7": 34.6
+              },
+              "train": {
+                "n": 630,
+                "mean": 0.37,
+                "median": 0.15,
+                "positiveRate": 51.1,
+                "benchmarkBeatRate": 42.7,
+                "meanExcess": -0.51,
+                "avgMAE": -6.16,
+                "avgMFE": 6.54,
+                "hitPlus7": 36.5,
+                "hitMinus7": 34.6
+              },
+              "test": {
+                "n": 291,
+                "mean": 1.89,
+                "median": 0.58,
+                "positiveRate": 52.2,
+                "benchmarkBeatRate": 43.3,
+                "meanExcess": -0.05,
+                "avgMAE": -5.76,
+                "avgMFE": 9.54,
+                "hitPlus7": 49.5,
+                "hitMinus7": 34.7
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 220,
+                "mean": 0.66,
+                "median": -0.26,
+                "positiveRate": 49.1,
+                "benchmarkBeatRate": 43.2,
+                "meanExcess": -0.39,
+                "avgMAE": -6.66,
+                "avgMFE": 8.05,
+                "hitPlus7": 41.8,
+                "hitMinus7": 39.5
+              },
+              "train": {
+                "n": 148,
+                "mean": -0.8,
+                "median": -0.59,
+                "positiveRate": 45.3,
+                "benchmarkBeatRate": 38.5,
+                "meanExcess": -1.47,
+                "avgMAE": -7.07,
+                "avgMFE": 5.82,
+                "hitPlus7": 33.1,
+                "hitMinus7": 41.9
+              },
+              "test": {
+                "n": 72,
+                "mean": 3.64,
+                "median": 2.55,
+                "positiveRate": 56.9,
+                "benchmarkBeatRate": 52.8,
+                "meanExcess": 1.84,
+                "avgMAE": -5.83,
+                "avgMFE": 12.64,
+                "hitPlus7": 59.7,
+                "hitMinus7": 34.7
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 386,
+                "mean": 0.07,
+                "median": -0.36,
+                "positiveRate": 47.7,
+                "benchmarkBeatRate": 39.6,
+                "meanExcess": -1,
+                "avgMAE": -6.88,
+                "avgMFE": 7.4,
+                "hitPlus7": 38.3,
+                "hitMinus7": 41.2
+              },
+              "train": {
+                "n": 262,
+                "mean": -0.83,
+                "median": -0.75,
+                "positiveRate": 45.4,
+                "benchmarkBeatRate": 37.8,
+                "meanExcess": -1.55,
+                "avgMAE": -7.13,
+                "avgMFE": 5.91,
+                "hitPlus7": 32.4,
+                "hitMinus7": 41.6
+              },
+              "test": {
+                "n": 124,
+                "mean": 1.98,
+                "median": 0.97,
+                "positiveRate": 52.4,
+                "benchmarkBeatRate": 43.5,
+                "meanExcess": 0.17,
+                "avgMAE": -6.36,
+                "avgMFE": 10.55,
+                "hitPlus7": 50.8,
+                "hitMinus7": 40.3
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 548,
+                "mean": 0.76,
+                "median": 0.3,
+                "positiveRate": 51.5,
+                "benchmarkBeatRate": 43.1,
+                "meanExcess": -0.51,
+                "avgMAE": -6.41,
+                "avgMFE": 7.64,
+                "hitPlus7": 40,
+                "hitMinus7": 38
+              },
+              "train": {
+                "n": 368,
+                "mean": 0.21,
+                "median": 0.14,
+                "positiveRate": 50.8,
+                "benchmarkBeatRate": 42.9,
+                "meanExcess": -0.7,
+                "avgMAE": -6.54,
+                "avgMFE": 6.46,
+                "hitPlus7": 35.9,
+                "hitMinus7": 37.8
+              },
+              "test": {
+                "n": 180,
+                "mean": 1.87,
+                "median": 0.97,
+                "positiveRate": 52.8,
+                "benchmarkBeatRate": 43.3,
+                "meanExcess": -0.13,
+                "avgMAE": -6.13,
+                "avgMFE": 10.06,
+                "hitPlus7": 48.3,
+                "hitMinus7": 38.3
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 208,
+                "mean": 0.77,
+                "median": -0.17,
+                "positiveRate": 49.5,
+                "benchmarkBeatRate": 43.3,
+                "meanExcess": -0.3,
+                "avgMAE": -6.65,
+                "avgMFE": 8.21,
+                "hitPlus7": 42.8,
+                "hitMinus7": 39.4
+              },
+              "train": {
+                "n": 139,
+                "mean": -0.7,
+                "median": -0.55,
+                "positiveRate": 45.3,
+                "benchmarkBeatRate": 38.8,
+                "meanExcess": -1.37,
+                "avgMAE": -7.05,
+                "avgMFE": 5.88,
+                "hitPlus7": 33.8,
+                "hitMinus7": 41.7
+              },
+              "test": {
+                "n": 69,
+                "mean": 3.75,
+                "median": 2.73,
+                "positiveRate": 58,
+                "benchmarkBeatRate": 52.2,
+                "meanExcess": 1.88,
+                "avgMAE": -5.85,
+                "avgMFE": 12.92,
+                "hitPlus7": 60.9,
+                "hitMinus7": 34.8
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 220,
+                "mean": 0.66,
+                "median": -0.26,
+                "positiveRate": 49.1,
+                "benchmarkBeatRate": 43.2,
+                "meanExcess": -0.39,
+                "avgMAE": -6.66,
+                "avgMFE": 8.05,
+                "hitPlus7": 41.8,
+                "hitMinus7": 39.5
+              },
+              "no": {
+                "n": 701,
+                "mean": 0.91,
+                "median": 0.35,
+                "positiveRate": 52.2,
+                "benchmarkBeatRate": 42.8,
+                "meanExcess": -0.36,
+                "avgMAE": -5.84,
+                "avgMFE": 7.31,
+                "hitPlus7": 40.2,
+                "hitMinus7": 33.1
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 816,
+                "mean": 0.84,
+                "median": 0.33,
+                "positiveRate": 51.6,
+                "benchmarkBeatRate": 43.6,
+                "meanExcess": -0.41,
+                "avgMAE": -6.05,
+                "avgMFE": 7.66,
+                "hitPlus7": 42.3,
+                "hitMinus7": 34.1
+              },
+              "no": {
+                "n": 105,
+                "mean": 0.93,
+                "median": 0.15,
+                "positiveRate": 50.5,
+                "benchmarkBeatRate": 37.1,
+                "meanExcess": -0.03,
+                "avgMAE": -5.93,
+                "avgMFE": 6.2,
+                "hitPlus7": 27.6,
+                "hitMinus7": 39
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 199,
+                "mean": 0.89,
+                "median": 1.29,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 45.7,
+                "meanExcess": -0.59,
+                "avgMAE": -6.56,
+                "avgMFE": 7.74,
+                "hitPlus7": 41.2,
+                "hitMinus7": 38.7
+              },
+              "no": {
+                "n": 722,
+                "mean": 0.84,
+                "median": 0.2,
+                "positiveRate": 51,
+                "benchmarkBeatRate": 42.1,
+                "meanExcess": -0.3,
+                "avgMAE": -5.89,
+                "avgMFE": 7.42,
+                "hitPlus7": 40.4,
+                "hitMinus7": 33.5
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 471,
+                "mean": 0.24,
+                "median": -0.11,
+                "positiveRate": 49.7,
+                "benchmarkBeatRate": 41.6,
+                "meanExcess": -0.99,
+                "avgMAE": -6.33,
+                "avgMFE": 7.46,
+                "hitPlus7": 39.5,
+                "hitMinus7": 36.9
+              },
+              "no": {
+                "n": 450,
+                "mean": 1.5,
+                "median": 0.79,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 44.2,
+                "meanExcess": 0.29,
+                "avgMAE": -5.72,
+                "avgMFE": 7.52,
+                "hitPlus7": 41.8,
+                "hitMinus7": 32.2
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 271,
+                "mean": -0.19,
+                "median": -0.29,
+                "positiveRate": 48.3,
+                "benchmarkBeatRate": 38,
+                "meanExcess": -1.25,
+                "avgMAE": -6.93,
+                "avgMFE": 7.18,
+                "hitPlus7": 35.8,
+                "hitMinus7": 42.1
+              },
+              "no": {
+                "n": 650,
+                "mean": 1.28,
+                "median": 0.69,
+                "positiveRate": 52.8,
+                "benchmarkBeatRate": 44.9,
+                "meanExcess": 0,
+                "avgMAE": -5.66,
+                "avgMFE": 7.62,
+                "hitPlus7": 42.6,
+                "hitMinus7": 31.5
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 436,
+                "mean": 0.9,
+                "median": 0.35,
+                "positiveRate": 52.8,
+                "benchmarkBeatRate": 43.1,
+                "meanExcess": -0.45,
+                "avgMAE": -6.28,
+                "avgMFE": 7.66,
+                "hitPlus7": 38.8,
+                "hitMinus7": 37.6
+              },
+              "no": {
+                "n": 485,
+                "mean": 0.81,
+                "median": 0.14,
+                "positiveRate": 50.3,
+                "benchmarkBeatRate": 42.7,
+                "meanExcess": -0.29,
+                "avgMAE": -5.81,
+                "avgMFE": 7.33,
+                "hitPlus7": 42.3,
+                "hitMinus7": 32
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 854,
+                "mean": 1.09,
+                "median": 0.56,
+                "positiveRate": 52.7,
+                "benchmarkBeatRate": 43.3,
+                "meanExcess": -0.12,
+                "avgMAE": -5.74,
+                "avgMFE": 7.11,
+                "hitPlus7": 38.4,
+                "hitMinus7": 32.8
+              },
+              "no": {
+                "n": 67,
+                "mean": -2.2,
+                "median": -3.8,
+                "positiveRate": 35.8,
+                "benchmarkBeatRate": 37.3,
+                "meanExcess": -3.54,
+                "avgMAE": -9.77,
+                "avgMFE": 12.38,
+                "hitPlus7": 68.7,
+                "hitMinus7": 58.2
+              }
+            }
+          ]
+        },
+        {
+          "batch": 3,
+          "baselineTest": {
+            "n": 286,
+            "mean": 3.37,
+            "median": 2.75,
+            "positiveRate": 63.3,
+            "benchmarkBeatRate": 50,
+            "meanExcess": 0.9,
+            "avgMAE": -5.19,
+            "avgMFE": 9.43,
+            "hitPlus7": 50.7,
+            "hitMinus7": 30.1
+          },
+          "variants": {
+            "baseline": {
+              "overall": {
+                "n": 972,
+                "mean": 1.45,
+                "median": 0.93,
+                "positiveRate": 55.2,
+                "benchmarkBeatRate": 48.6,
+                "meanExcess": 0.24,
+                "avgMAE": -5.65,
+                "avgMFE": 7.26,
+                "hitPlus7": 38.3,
+                "hitMinus7": 32.4
+              },
+              "train": {
+                "n": 686,
+                "mean": 0.65,
+                "median": 0.31,
+                "positiveRate": 51.9,
+                "benchmarkBeatRate": 48,
+                "meanExcess": -0.03,
+                "avgMAE": -5.83,
+                "avgMFE": 6.35,
+                "hitPlus7": 33.1,
+                "hitMinus7": 33.4
+              },
+              "test": {
+                "n": 286,
+                "mean": 3.37,
+                "median": 2.75,
+                "positiveRate": 63.3,
+                "benchmarkBeatRate": 50,
+                "meanExcess": 0.9,
+                "avgMAE": -5.19,
+                "avgMFE": 9.43,
+                "hitPlus7": 50.7,
+                "hitMinus7": 30.1
+              }
+            },
+            "requireMinorHighBreak": {
+              "overall": {
+                "n": 209,
+                "mean": 1.03,
+                "median": 0.94,
+                "positiveRate": 55,
+                "benchmarkBeatRate": 48.8,
+                "meanExcess": -0.05,
+                "avgMAE": -6.01,
+                "avgMFE": 7.43,
+                "hitPlus7": 37.8,
+                "hitMinus7": 35.9
+              },
+              "train": {
+                "n": 133,
+                "mean": 0.3,
+                "median": 0.06,
+                "positiveRate": 50.4,
+                "benchmarkBeatRate": 48.1,
+                "meanExcess": 0,
+                "avgMAE": -5.93,
+                "avgMFE": 6.37,
+                "hitPlus7": 30.1,
+                "hitMinus7": 33.8
+              },
+              "test": {
+                "n": 76,
+                "mean": 2.31,
+                "median": 2.21,
+                "positiveRate": 63.2,
+                "benchmarkBeatRate": 50,
+                "meanExcess": -0.13,
+                "avgMAE": -6.16,
+                "avgMFE": 9.28,
+                "hitPlus7": 51.3,
+                "hitMinus7": 39.5
+              }
+            },
+            "breakOrHigherLow": {
+              "overall": {
+                "n": 388,
+                "mean": 0.87,
+                "median": 0.66,
+                "positiveRate": 54.6,
+                "benchmarkBeatRate": 47.2,
+                "meanExcess": -0.1,
+                "avgMAE": -6.23,
+                "avgMFE": 7.24,
+                "hitPlus7": 35.8,
+                "hitMinus7": 37.4
+              },
+              "train": {
+                "n": 262,
+                "mean": 0.4,
+                "median": 0.32,
+                "positiveRate": 53.1,
+                "benchmarkBeatRate": 48.1,
+                "meanExcess": 0.05,
+                "avgMAE": -6.03,
+                "avgMFE": 6.2,
+                "hitPlus7": 30.2,
+                "hitMinus7": 36.3
+              },
+              "test": {
+                "n": 126,
+                "mean": 1.84,
+                "median": 1.7,
+                "positiveRate": 57.9,
+                "benchmarkBeatRate": 45.2,
+                "meanExcess": -0.4,
+                "avgMAE": -6.65,
+                "avgMFE": 9.4,
+                "hitPlus7": 47.6,
+                "hitMinus7": 39.7
+              }
+            },
+            "structuralConfirmation": {
+              "overall": {
+                "n": 562,
+                "mean": 1.18,
+                "median": 0.88,
+                "positiveRate": 55.2,
+                "benchmarkBeatRate": 47.7,
+                "meanExcess": 0.01,
+                "avgMAE": -5.96,
+                "avgMFE": 7.24,
+                "hitPlus7": 37.4,
+                "hitMinus7": 35.6
+              },
+              "train": {
+                "n": 379,
+                "mean": 0.79,
+                "median": 0.46,
+                "positiveRate": 53.3,
+                "benchmarkBeatRate": 49.3,
+                "meanExcess": 0.26,
+                "avgMAE": -5.89,
+                "avgMFE": 6.43,
+                "hitPlus7": 32.7,
+                "hitMinus7": 35.6
+              },
+              "test": {
+                "n": 183,
+                "mean": 1.99,
+                "median": 1.78,
+                "positiveRate": 59,
+                "benchmarkBeatRate": 44.3,
+                "meanExcess": -0.52,
+                "avgMAE": -6.11,
+                "avgMFE": 8.91,
+                "hitPlus7": 47,
+                "hitMinus7": 35.5
+              }
+            },
+            "breakWithSupport": {
+              "overall": {
+                "n": 194,
+                "mean": 0.96,
+                "median": 1.03,
+                "positiveRate": 54.1,
+                "benchmarkBeatRate": 48.5,
+                "meanExcess": -0.1,
+                "avgMAE": -6.22,
+                "avgMFE": 7.52,
+                "hitPlus7": 38.7,
+                "hitMinus7": 37.6
+              },
+              "train": {
+                "n": 124,
+                "mean": 0.41,
+                "median": -0.43,
+                "positiveRate": 49.2,
+                "benchmarkBeatRate": 46.8,
+                "meanExcess": 0.07,
+                "avgMAE": -6.02,
+                "avgMFE": 6.53,
+                "hitPlus7": 31.5,
+                "hitMinus7": 35.5
+              },
+              "test": {
+                "n": 70,
+                "mean": 1.94,
+                "median": 2.21,
+                "positiveRate": 62.9,
+                "benchmarkBeatRate": 51.4,
+                "meanExcess": -0.4,
+                "avgMAE": -6.57,
+                "avgMFE": 9.28,
+                "hitPlus7": 51.4,
+                "hitMinus7": 41.4
+              }
+            }
+          },
+          "evidence": [
+            {
+              "name": "minorHighBroken",
+              "yes": {
+                "n": 209,
+                "mean": 1.03,
+                "median": 0.94,
+                "positiveRate": 55,
+                "benchmarkBeatRate": 48.8,
+                "meanExcess": -0.05,
+                "avgMAE": -6.01,
+                "avgMFE": 7.43,
+                "hitPlus7": 37.8,
+                "hitMinus7": 35.9
+              },
+              "no": {
+                "n": 763,
+                "mean": 1.57,
+                "median": 0.92,
+                "positiveRate": 55.3,
+                "benchmarkBeatRate": 48.5,
+                "meanExcess": 0.32,
+                "avgMAE": -5.55,
+                "avgMFE": 7.21,
+                "hitPlus7": 38.4,
+                "hitMinus7": 31.5
+              }
+            },
+            {
+              "name": "momentumShift>=2",
+              "yes": {
+                "n": 856,
+                "mean": 1.69,
+                "median": 1.21,
+                "positiveRate": 56.7,
+                "benchmarkBeatRate": 48.9,
+                "meanExcess": 0.38,
+                "avgMAE": -5.68,
+                "avgMFE": 7.51,
+                "hitPlus7": 39.6,
+                "hitMinus7": 32.9
+              },
+              "no": {
+                "n": 116,
+                "mean": -0.32,
+                "median": -1.32,
+                "positiveRate": 44.8,
+                "benchmarkBeatRate": 45.7,
+                "meanExcess": -0.8,
+                "avgMAE": -5.4,
+                "avgMFE": 5.43,
+                "hitPlus7": 28.4,
+                "hitMinus7": 28.4
+              }
+            },
+            {
+              "name": "rs20>=0",
+              "yes": {
+                "n": 228,
+                "mean": 2.65,
+                "median": 2.56,
+                "positiveRate": 63.2,
+                "benchmarkBeatRate": 53.1,
+                "meanExcess": 0.66,
+                "avgMAE": -5.71,
+                "avgMFE": 7.85,
+                "hitPlus7": 42.5,
+                "hitMinus7": 34.6
+              },
+              "no": {
+                "n": 744,
+                "mean": 1.08,
+                "median": 0.46,
+                "positiveRate": 52.8,
+                "benchmarkBeatRate": 47.2,
+                "meanExcess": 0.11,
+                "avgMAE": -5.63,
+                "avgMFE": 7.08,
+                "hitPlus7": 37,
+                "hitMinus7": 31.7
+              }
+            },
+            {
+              "name": "upDownVolume>=0.85",
+              "yes": {
+                "n": 442,
+                "mean": 1.69,
+                "median": 1.69,
+                "positiveRate": 58.8,
+                "benchmarkBeatRate": 50.2,
+                "meanExcess": 0.31,
+                "avgMAE": -5.96,
+                "avgMFE": 7.82,
+                "hitPlus7": 42.1,
+                "hitMinus7": 34.2
+              },
+              "no": {
+                "n": 530,
+                "mean": 1.25,
+                "median": 0.39,
+                "positiveRate": 52.3,
+                "benchmarkBeatRate": 47.2,
+                "meanExcess": 0.18,
+                "avgMAE": -5.38,
+                "avgMFE": 6.79,
+                "hitPlus7": 35.1,
+                "hitMinus7": 30.9
+              }
+            },
+            {
+              "name": "higherLow",
+              "yes": {
+                "n": 272,
+                "mean": 0.96,
+                "median": 0.54,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 46.7,
+                "meanExcess": 0.01,
+                "avgMAE": -6.18,
+                "avgMFE": 7.52,
+                "hitPlus7": 36.8,
+                "hitMinus7": 37.5
+              },
+              "no": {
+                "n": 700,
+                "mean": 1.64,
+                "median": 1.12,
+                "positiveRate": 55.4,
+                "benchmarkBeatRate": 49.3,
+                "meanExcess": 0.33,
+                "avgMAE": -5.44,
+                "avgMFE": 7.16,
+                "hitPlus7": 38.9,
+                "hitMinus7": 30.4
+              }
+            },
+            {
+              "name": "structureImproving",
+              "yes": {
+                "n": 459,
+                "mean": 1.34,
+                "median": 0.92,
+                "positiveRate": 55.8,
+                "benchmarkBeatRate": 47.9,
+                "meanExcess": 0.14,
+                "avgMAE": -5.83,
+                "avgMFE": 7.35,
+                "hitPlus7": 38.1,
+                "hitMinus7": 35.1
+              },
+              "no": {
+                "n": 513,
+                "mean": 1.55,
+                "median": 0.98,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 49.1,
+                "meanExcess": 0.33,
+                "avgMAE": -5.48,
+                "avgMFE": 7.18,
+                "hitPlus7": 38.4,
+                "hitMinus7": 30
+              }
+            },
+            {
+              "name": "atr<6",
+              "yes": {
+                "n": 929,
+                "mean": 1.31,
+                "median": 0.84,
+                "positiveRate": 54.8,
+                "benchmarkBeatRate": 48.1,
+                "meanExcess": 0.14,
+                "avgMAE": -5.47,
+                "avgMFE": 6.84,
+                "hitPlus7": 36.5,
+                "hitMinus7": 31.3
+              },
+              "no": {
+                "n": 43,
+                "mean": 4.49,
+                "median": 4.65,
+                "positiveRate": 65.1,
+                "benchmarkBeatRate": 58.1,
+                "meanExcess": 2.37,
+                "avgMAE": -9.5,
+                "avgMFE": 16.38,
+                "hitPlus7": 76.7,
+                "hitMinus7": 55.8
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
