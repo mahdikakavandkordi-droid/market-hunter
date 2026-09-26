@@ -370,7 +370,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
-const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
+const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,{source:x.source||(x.entryStage?'market-hunter':'manual'),quantity:Number.isFinite(Number(x.quantity))&&Number(x.quantity)>0?Number(x.quantity):null,...x}]))}catch{return new Map()}};
 const state={data:null,v2:null,marketPulse:null,dailyMarketReport:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
 function normalizeV2Candidate(x,stage=x.stage){
   return {
@@ -448,7 +448,7 @@ function openPositionEditor(symbol='',source='manual'){
   const close=()=>modal.classList.remove('show');
   modal.querySelector('.position-close').addEventListener('click',close);
   modal.querySelector('.position-cancel').addEventListener('click',close);
-  modal.addEventListener('click',e=>{if(e.target===modal)close()},{once:true});
+  modal.onclick=e=>{if(e.target===modal)close()};
   modal.querySelector('#positionForm').addEventListener('submit',e=>{
     e.preventDefault();
     const fd=new FormData(e.currentTarget);
@@ -504,33 +504,47 @@ function positionHealth(x,p){
 function portfolioRows(){
   return [...state.positions.values()].map(p=>({p,x:portfolioMarketData(p.symbol)}));
 }
+function portfolioChanges(rows){
+  const prev=previousCandidateMap(),out=[];
+  for(const {p,x} of rows){
+    if(!x)continue;
+    const reasons=changeReasons(x,prev.get(p.symbol));
+    if(reasons.length)out.push({symbol:p.symbol,reasons:reasons.slice(0,3)});
+  }
+  return out;
+}
 function portfolioSummary(rows){
-  let totalCost=0,totalValue=0,covered=0,warnings=0,watch=0;
+  let totalCost=0,totalValue=0,covered=0,complete=0,incomplete=0,warnings=0,watch=0;
   const sectorValues=new Map();
   for(const {p,x} of rows){
-    const qty=Number(p.quantity)||0,cost=(Number(p.entryPrice)||0)*qty;totalCost+=cost;
+    const qty=Number(p.quantity),price=Number(p.entryPrice),valid=qty>0&&price>0;
+    if(!valid){incomplete++;continue}
+    complete++;const cost=price*qty;totalCost+=cost;
     if(x&&Number.isFinite(x.price)){const value=x.price*qty;totalValue+=value;covered++;if(x.sector)sectorValues.set(x.sector,(sectorValues.get(x.sector)||0)+value)}
     const h=positionHealth(x,p);if(h.warnings.length)warnings++;else if(h.watch.length)watch++;
   }
-  const pnl=covered===rows.length?totalValue-totalCost:null;
+  const allValued=complete>0&&covered===complete;
+  const pnl=allValued?totalValue-totalCost:null;
   const pnlPct=Number.isFinite(pnl)&&totalCost>0?pnl/totalCost*100:null;
   let maxSector=null,maxSectorValue=0;for(const [sector,value] of sectorValues)if(value>maxSectorValue){maxSector=sector;maxSectorValue=value}
   const concentration=totalValue>0?maxSectorValue/totalValue*100:null;
   let read='Add positions to start monitoring portfolio health.';
   if(rows.length){
     const parts=[];
+    if(incomplete)parts.push(`${incomplete} saved position${incomplete===1?' needs':'s need'} purchase details`);
     if(warnings)parts.push(`${warnings} position${warnings===1?'':'s'} with structural warnings`);
     if(watch)parts.push(`${watch} with softer momentum / relative strength`);
     if(!warnings&&!watch&&covered)parts.push('no major structural warning across covered positions');
     if(Number.isFinite(concentration)&&concentration>=35)parts.push(`${maxSector} exposure is concentrated at about ${concentration.toFixed(0)}%`);
-    if(covered<rows.length)parts.push(`${rows.length-covered} holding${rows.length-covered===1?' is':'s are'} missing current scanner data`);
+    if(complete&&covered<complete)parts.push(`${complete-covered} complete holding${complete-covered===1?' is':'s are'} missing current scanner data`);
     read=parts.join(' · ')+'.';
   }
-  return {totalCost,totalValue,covered,pnl,pnlPct,warnings,watch,read,concentration,maxSector};
+  return {totalCost,totalValue,covered,complete,incomplete,pnl,pnlPct,warnings,watch,read,concentration,maxSector};
 }
 function positionAttention(rows){
   const out=[];
   for(const {p,x} of rows){
+    if(!(Number(p.quantity)>0&&Number(p.entryPrice)>0))continue;
     const h=positionHealth(x,p);
     const reason=h.warnings[0]||h.watch[0];
     if(reason)out.push({symbol:p.symbol,reason,status:h.status});
@@ -539,8 +553,8 @@ function positionAttention(rows){
 }
 function renderPositions(){
   const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
-  const rows=portfolioRows(),sum=portfolioSummary(rows),attention=positionAttention(rows);
-  const valueLabel=sum.covered===rows.length?'Portfolio value':'Tracked value';
+  const rows=portfolioRows(),sum=portfolioSummary(rows),attention=positionAttention(rows),changes=portfolioChanges(rows);
+  const valueLabel=sum.complete>0&&sum.covered===sum.complete?'Portfolio value':'Tracked value';
   root.innerHTML=`
     <section class="portfolio-overview">
       <div class="portfolio-overview-head"><div><h2>Portfolio Monitor</h2><p>Monitor what you actually own — whether it came from Market Hunter or somewhere else. Analysis only; no buy/sell instructions.</p></div><button type="button" class="portfolio-add">+ Add position</button></div>
@@ -549,17 +563,19 @@ function renderPositions(){
         <div class="portfolio-metric"><small>Cost basis</small><b>${rows.length?'$'+fmt(sum.totalCost):'—'}</b></div>
         <div class="portfolio-metric"><small>Total P/L</small><b class="${cls(sum.pnlPct)}">${Number.isFinite(sum.pnl)?(sum.pnl>=0?'+':'')+'$'+fmt(Math.abs(sum.pnl))+' · '+pct(sum.pnlPct):'—'}</b></div>
         <div class="portfolio-metric"><small>Holdings</small><b>${rows.length}</b></div>
-        <div class="portfolio-metric"><small>Needs attention</small><b>${sum.warnings+sum.watch}</b></div>
+        <div class="portfolio-metric"><small>Needs attention</small><b>${sum.warnings+sum.watch+sum.incomplete}</b></div>
       </div>
       <div class="portfolio-read"><strong>Portfolio read</strong>${sum.read}</div>
     </section>
+    ${changes.length?`<section class="portfolio-section"><div class="portfolio-section-head"><div><h3>What changed today</h3><p>Only material changes detected versus the previous compatible snapshot.</p></div><span class="shown">${changes.length}</span></div><div class="portfolio-change-list">${changes.map(a=>`<div class="portfolio-change"><b>${a.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${a.reasons.join(' · ')}</span></div>`).join('')}</div></section>`:''}
     ${attention.length?`<section class="portfolio-section"><div class="portfolio-section-head"><div><h3>Current attention</h3><p>Material structural or momentum context — not trade signals.</p></div><span class="shown">${attention.length}</span></div><div class="portfolio-change-list">${attention.map(a=>`<div class="portfolio-change"><b>${a.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${a.status} · ${a.reason}</span></div>`).join('')}</div></section>`:''}
     <section class="portfolio-section">
       <div class="portfolio-section-head"><div><h3>Holdings</h3><p>Purchase data, current health and entry context.</p></div><span class="shown">${rows.length}</span></div>
       <div class="grid">${rows.length?rows.map(({p,x})=>{
         const h=positionHealth(x,p),qty=Number(p.quantity)||0,ret=x&&Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null;
-        const pnl=x&&Number.isFinite(x.price)?(x.price-p.entryPrice)*qty:null,value=x&&Number.isFinite(x.price)?x.price*qty:null;
+        const pnl=x&&Number.isFinite(x.price)&&qty>0?(x.price-p.entryPrice)*qty:null,value=x&&Number.isFinite(x.price)&&qty>0?x.price*qty:null;
         const tone=h.status==='Structure Warning'?'down':h.status==='Trend Healthy'?'up':'flat';
+        if(!(qty>0&&Number(p.entryPrice)>0))return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${esc(p.symbol.replace(/\\.(TO|NE|V)$/,''))}</div><span class="history-note flat">Needs Details</span></div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span></div></div></div><div class="why"><strong>Complete this position</strong>Add the real quantity, average purchase price and purchase date so Portfolio Monitor can calculate value and P/L correctly.</div><div class="portfolio-card-actions"><button type="button" class="portfolio-edit" data-edit-position="${esc(p.symbol)}">Add purchase details</button><button type="button" class="portfolio-remove" data-remove-position="${esc(p.symbol)}">Remove</button></div></article>`;
         if(!x)return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${esc(p.symbol.replace(/\\.(TO|NE|V)$/,''))}</div><span class="history-note flat">Data Unavailable</span></div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span></div></div><div><div class="price">—</div></div></div><div class="why"><strong>Position monitor</strong>Purchase recorded at $${fmt(p.entryPrice)} on ${new Date(p.boughtAt+'T12:00:00').toLocaleDateString()}, but current scanner data is unavailable.</div><div class="portfolio-card-actions"><button type="button" class="portfolio-edit" data-edit-position="${esc(p.symbol)}">Edit</button><button type="button" class="portfolio-remove" data-remove-position="${esc(p.symbol)}">Remove</button></div></article>`;
         return `<article class="card">
           <div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${esc(x.company||x.name||x.symbol)}</div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span><span class="source-pill manual">${qty} shares</span></div></div><div><div class="price">$${fmt(x.price)}</div><div class="${cls(ret)}">Since entry ${pct(ret)}</div></div></div>
