@@ -1,0 +1,61 @@
+name: Market Hunter V2 Clean Rebuild Backtest
+on:
+  workflow_dispatch:
+    inputs:
+      range:
+        description: 'Yahoo history range'
+        required: false
+        default: '5y'
+      horizons:
+        description: 'Forward trading sessions'
+        required: false
+        default: '5,10,20'
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'scripts/backtest-market-hunter-v2.mjs'
+      - '.github/workflows/market-hunter-v2-backtest.yml'
+permissions:
+  contents: write
+concurrency:
+  group: market-hunter-v2-backtest
+  cancel-in-progress: true
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        batch: [0,1,2,3]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run clean-room V2 historical backtest
+        env:
+          V2_BATCH_INDEX: ${{ matrix.batch }}
+          V2_BATCH_COUNT: 4
+          V2_RANGE: ${{ inputs.range || '5y' }}
+          V2_HORIZONS: ${{ inputs.horizons || '5,10,20' }}
+        run: node scripts/backtest-market-hunter-v2.mjs
+      - name: Commit research report
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/v2-backtest-batch-${{ matrix.batch }}.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "research: refresh V2 backtest batch ${{ matrix.batch }}"
+          pushed=0
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin research/market-hunter-v2-rebuild
+            if git push origin HEAD:research/market-hunter-v2-rebuild; then
+              pushed=1
+              break
+            fi
+            sleep $((attempt * 2))
+          done
+          if [ "$pushed" -ne 1 ]; then
+            echo "Failed to push V2 research report" >&2
+            exit 1
+          fi
