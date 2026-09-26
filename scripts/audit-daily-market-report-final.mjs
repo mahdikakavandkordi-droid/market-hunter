@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 const report=JSON.parse(fs.readFileSync('data/daily-market-report.json','utf8'));
 const pulse=JSON.parse(fs.readFileSync('data/market-pulse-report.json','utf8'));
+const pulseLatest=JSON.parse(fs.readFileSync('data/market-pulse-latest.json','utf8'));
 const hunter=JSON.parse(fs.readFileSync('data/v2-latest-scan.json','utf8'));
 const md=fs.readFileSync('data/daily-market-report.md','utf8');
 const html=fs.readFileSync('index.html','utf8');
@@ -17,6 +18,11 @@ fail('mixed_dates_disclosed',report.asOf?.mixedDates===true&&report.executiveSum
 fail('highest_attention_present',(report.highestAttention?.length||0)>=3,report.highestAttention);
 fail('hunter_context_max6',(report.hunterContext?.visible||0)<=6,report.hunterContext);
 fail('hunter_context_matches_backend',report.hunterContext?.visible===hunter.integratedSurfaceCounts?.visible,{report:report.hunterContext?.visible,backend:hunter.integratedSurfaceCounts?.visible});
+fail('pulse_report_matches_latest_source',pulse.sourceVersion===pulseLatest.version,{reportSource:pulse.sourceVersion,latestVersion:pulseLatest.version});
+fail('daily_report_matches_pulse_report',report.methodology?.source===pulse.version,{dailySource:report.methodology?.source,pulseVersion:pulse.version});
+fail('daily_report_matches_latest_hunter',report.hunterContext?.generatedAt===hunter.generatedAt,{dailyHunterGeneratedAt:report.hunterContext?.generatedAt,hunterGeneratedAt:hunter.generatedAt});
+fail('pulse_report_not_older_than_source',Date.parse(pulse.generatedAt)>=Date.parse(pulseLatest.generatedAt),{pulseGeneratedAt:pulse.generatedAt,sourceGeneratedAt:pulseLatest.generatedAt});
+fail('daily_report_not_older_than_inputs',Date.parse(report.generatedAt)>=Math.max(Date.parse(pulse.generatedAt),Date.parse(hunter.generatedAt)),{dailyGeneratedAt:report.generatedAt,pulseGeneratedAt:pulse.generatedAt,hunterGeneratedAt:hunter.generatedAt});
 
 for(const key of expected){
   const m=report.markets?.find(x=>x.key===key);
