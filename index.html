@@ -545,16 +545,21 @@ function portfolioChanges(rows){
   return out;
 }
 function portfolioAllocation(rows){
-  const holdings=[],sectors=new Map(),sources=new Map();
+  const holdings=[],sectors=new Map(),sources=new Map(),currencies=new Set();
   let total=0;
   for(const {p,x} of rows){
     const qty=Number(p.quantity);
     if(!(qty>0)||!x||!Number.isFinite(x.price))continue;
+    const currency=x.currency||'UNKNOWN';
+    currencies.add(currency);
     const value=qty*x.price;total+=value;
-    holdings.push({symbol:p.symbol,value,sector:x.sector||'Unclassified',source:positionSourceLabel(p)});
+    holdings.push({symbol:p.symbol,value,sector:x.sector||'Unclassified',source:positionSourceLabel(p),currency});
     const sector=x.sector||'Unclassified';sectors.set(sector,(sectors.get(sector)||0)+value);
     const source=positionSourceLabel(p);sources.set(source,(sources.get(source)||0)+value);
   }
+  const currency=currencies.size===1&&!currencies.has('UNKNOWN')?[...currencies][0]:null;
+  const mixedCurrencies=currencies.size>1||currencies.has('UNKNOWN');
+  if(!currency)return {total:null,currency:null,mixedCurrencies,holdingRows:[],sectorRows:[],sourceRows:[],topHolding:null,topSector:null,concentration:'Allocation requires a single known currency'};
   const withWeight=list=>list.map(x=>({...x,weight:total>0?x.value/total*100:null})).sort((a,b)=>b.value-a.value);
   const holdingRows=withWeight(holdings);
   const sectorRows=withWeight([...sectors].map(([name,value])=>({name,value})));
@@ -564,27 +569,34 @@ function portfolioAllocation(rows){
   if(topHolding?.weight>=40)concentration='High single-position concentration';
   else if(topSector?.weight>=50&&topSector.name!=='Unclassified')concentration='High sector concentration';
   else if(topHolding?.weight>=25||topSector?.weight>=35)concentration='Moderate concentration';
-  return {total,holdingRows,sectorRows,sourceRows,topHolding,topSector,concentration};
+  return {total,currency,mixedCurrencies:false,holdingRows,sectorRows,sourceRows,topHolding,topSector,concentration};
 }
 function portfolioSummary(rows){
   let totalCost=0,totalValue=0,covered=0,complete=0,incomplete=0,warnings=0,watch=0;
-  const sectorValues=new Map();
+  const sectorValues=new Map(),currencies=new Set();
   for(const {p,x} of rows){
     const qty=Number(p.quantity),price=Number(p.entryPrice),valid=qty>0&&price>0;
     if(!valid){incomplete++;continue}
     complete++;const cost=price*qty;totalCost+=cost;
-    if(x&&Number.isFinite(x.price)){const value=x.price*qty;totalValue+=value;covered++;if(x.sector)sectorValues.set(x.sector,(sectorValues.get(x.sector)||0)+value)}
+    if(x&&Number.isFinite(x.price)){
+      const value=x.price*qty;totalValue+=value;covered++;
+      currencies.add(x.currency||'UNKNOWN');
+      if(x.sector)sectorValues.set(x.sector,(sectorValues.get(x.sector)||0)+value)
+    }
     const h=positionHealth(x,p);if(h.warnings.length)warnings++;else if(h.watch.length)watch++;
   }
-  const allValued=complete>0&&covered===complete;
+  const currency=currencies.size===1&&!currencies.has('UNKNOWN')?[...currencies][0]:null;
+  const mixedCurrencies=currencies.size>1||currencies.has('UNKNOWN');
+  const allValued=complete>0&&covered===complete&&!mixedCurrencies&&!!currency;
   const pnl=allValued?totalValue-totalCost:null;
   const pnlPct=Number.isFinite(pnl)&&totalCost>0?pnl/totalCost*100:null;
   let maxSector=null,maxSectorValue=0;for(const [sector,value] of sectorValues)if(value>maxSectorValue){maxSector=sector;maxSectorValue=value}
-  const concentration=totalValue>0?maxSectorValue/totalValue*100:null;
+  const concentration=!mixedCurrencies&&totalValue>0?maxSectorValue/totalValue*100:null;
   let read='Add positions to start monitoring portfolio health.';
   if(rows.length){
     const parts=[];
     if(incomplete)parts.push(`${incomplete} saved position${incomplete===1?' needs':'s need'} purchase details`);
+    if(mixedCurrencies)parts.push('multiple or unknown currencies are kept separate; no combined total is shown without FX conversion');
     if(warnings)parts.push(`${warnings} position${warnings===1?'':'s'} with structural warnings`);
     if(watch)parts.push(`${watch} with softer momentum / relative strength`);
     if(!warnings&&!watch&&covered)parts.push('no major structural warning across covered positions');
@@ -592,7 +604,7 @@ function portfolioSummary(rows){
     if(complete&&covered<complete)parts.push(`${complete-covered} complete holding${complete-covered===1?' is':'s are'} missing current scanner data`);
     read=parts.join(' · ')+'.';
   }
-  return {totalCost,totalValue,covered,complete,incomplete,pnl,pnlPct,warnings,watch,read,concentration,maxSector};
+  return {totalCost:mixedCurrencies?null:totalCost,totalValue:mixedCurrencies?null:totalValue,covered,complete,incomplete,pnl,pnlPct,warnings,watch,read,concentration,maxSector,currency,mixedCurrencies};
 }
 function positionAttention(rows){
   const out=[];
@@ -612,15 +624,15 @@ function renderPositions(){
     <section class="portfolio-overview">
       <div class="portfolio-overview-head"><div><h2>Portfolio Monitor</h2><p>Monitor what you actually own — whether it came from Market Hunter or somewhere else. Analysis only; no buy/sell instructions.</p></div><button type="button" class="portfolio-add">+ Add position</button></div>
       <div class="portfolio-metrics">
-        <div class="portfolio-metric"><small>${valueLabel}</small><b>${rows.length?'$'+fmt(sum.totalValue):'—'}</b></div>
-        <div class="portfolio-metric"><small>Cost basis</small><b>${rows.length?'$'+fmt(sum.totalCost):'—'}</b></div>
-        <div class="portfolio-metric"><small>Total P/L</small><b class="${cls(sum.pnlPct)}">${Number.isFinite(sum.pnl)?(sum.pnl>=0?'+$':'-$')+fmt(Math.abs(sum.pnl))+' · '+pct(sum.pnlPct):'—'}</b></div>
+        <div class="portfolio-metric"><small>${valueLabel}</small><b>${sum.mixedCurrencies?'Mixed currencies':(rows.length?money(sum.totalValue,sum.currency||'CAD'):'—')}</b></div>
+        <div class="portfolio-metric"><small>Cost basis</small><b>${sum.mixedCurrencies?'See holdings':(rows.length?money(sum.totalCost,sum.currency||'CAD'):'—')}</b></div>
+        <div class="portfolio-metric"><small>Total P/L</small><b class="${cls(sum.pnlPct)}">${Number.isFinite(sum.pnl)?(sum.pnl>=0?'+':'')+money(sum.pnl,sum.currency||'CAD')+' · '+pct(sum.pnlPct):'—'}</b></div>
         <div class="portfolio-metric"><small>Holdings</small><b>${rows.length}</b></div>
         <div class="portfolio-metric"><small>Needs attention</small><b>${sum.warnings+sum.watch+sum.incomplete}</b></div>
       </div>
       <div class="portfolio-read"><strong>Portfolio read</strong>${sum.read}</div>
     </section>
-    ${allocation.total>0?`<section class="portfolio-allocation">
+    ${Number.isFinite(allocation.total)&&allocation.total>0?`<section class="portfolio-allocation">
       <div class="portfolio-allocation-head"><div><h3>Allocation & concentration</h3><p>Current market-value weights. Context only — not a rebalance instruction.</p></div></div>
       <div class="portfolio-concentration-grid">
         <div class="portfolio-concentration"><small>Largest position</small><b>${allocation.topHolding?allocation.topHolding.symbol.replace(/\\.(TO|NE|V)$/,'')+' · '+allocation.topHolding.weight.toFixed(1)+'%':'—'}</b></div>
@@ -637,7 +649,7 @@ function renderPositions(){
         <div class="allocation-list">${allocation.sourceRows.map(a=>`<div class="allocation-row"><div class="allocation-name">${esc(a.name)}</div><div class="allocation-track"><div class="allocation-fill" style="width:${Math.max(2,a.weight||0)}%"></div></div><div class="allocation-weight">${a.weight.toFixed(1)}%</div></div>`).join('')}</div>
         ${allocation.sectorRows.some(a=>a.name==='Unclassified')?'<div class="allocation-note">Some holdings are outside the reviewed Market Hunter universe, so their sector is currently unclassified rather than guessed.</div>':''}
       </details>
-    </section>`:''}
+    </section>`:(rows.length&&allocation.mixedCurrencies?`<section class="portfolio-allocation"><div class="portfolio-allocation-head"><div><h3>Allocation & concentration</h3><p>Holdings are in multiple or unknown currencies.</p></div></div><div class="allocation-note">Combined weights are intentionally withheld until FX conversion is added. Each position is still monitored independently.</div></section>`:'')}
     ${changes.length?`<section class="portfolio-section"><div class="portfolio-section-head"><div><h3>What changed today</h3><p>Only material changes detected versus the previous compatible snapshot.</p></div><span class="shown">${changes.length}</span></div><div class="portfolio-change-list">${changes.map(a=>`<div class="portfolio-change"><b>${a.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${a.reasons.join(' · ')}</span></div>`).join('')}</div></section>`:''}
     ${attention.length?`<section class="portfolio-section"><div class="portfolio-section-head"><div><h3>Current attention</h3><p>Material structural or momentum context — not trade signals.</p></div><span class="shown">${attention.length}</span></div><div class="portfolio-change-list">${attention.map(a=>`<div class="portfolio-change"><b>${a.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${a.status} · ${a.reason}</span></div>`).join('')}</div></section>`:''}
     <section class="portfolio-section">
@@ -649,8 +661,8 @@ function renderPositions(){
         if(!(qty>0&&Number(p.entryPrice)>0))return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${esc(p.symbol.replace(/\\.(TO|NE|V)$/,''))}</div><span class="history-note flat">Needs Details</span></div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span></div></div></div><div class="why"><strong>Complete this position</strong>Add the real quantity, average purchase price and purchase date so Portfolio Monitor can calculate value and P/L correctly.</div><div class="portfolio-card-actions"><button type="button" class="portfolio-edit" data-edit-position="${esc(p.symbol)}">Add purchase details</button><button type="button" class="portfolio-remove" data-remove-position="${esc(p.symbol)}">Remove</button></div></article>`;
         if(!x)return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${esc(p.symbol.replace(/\\.(TO|NE|V)$/,''))}</div><span class="history-note flat">Data Unavailable</span></div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span></div></div><div><div class="price">—</div></div></div><div class="why"><strong>Position monitor</strong>Purchase recorded at $${fmt(p.entryPrice)} on ${new Date(p.boughtAt+'T12:00:00').toLocaleDateString()}, but current scanner data is unavailable.</div><div class="portfolio-card-actions"><button type="button" class="portfolio-edit" data-edit-position="${esc(p.symbol)}">Edit</button><button type="button" class="portfolio-remove" data-remove-position="${esc(p.symbol)}">Remove</button></div></article>`;
         return `<article class="card">
-          <div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${esc(x.company||x.name||x.symbol)}</div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span><span class="source-pill manual">${qty} shares</span></div></div><div><div class="price">$${fmt(x.price)}</div><div class="${cls(ret)}">Since entry ${pct(ret)}</div></div></div>
-          <div class="row"><div class="mini"><div class="k">Value</div><div class="v">$${fmt(value)}</div></div><div class="mini"><div class="k">Weight</div><div class="v">${allocation.total>0?(value/allocation.total*100).toFixed(1)+'%':'—'}</div></div><div class="mini"><div class="k">P/L</div><div class="v ${cls(pnl)}">${Number.isFinite(pnl)?(pnl>=0?'+$':'-$')+fmt(Math.abs(pnl)):'—'}</div></div><div class="mini"><div class="k">Avg cost</div><div class="v">$${fmt(p.entryPrice)}</div></div></div>
+          <div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${esc(x.company||x.name||x.symbol)}</div><div class="portfolio-card-meta"><span class="source-pill ${p.source==='market-hunter'?'':'manual'}">${positionSourceLabel(p)}</span><span class="source-pill manual">${qty} shares</span></div></div><div><div class="price">${money(x.price,x.currency||'CAD')}</div><div class="${cls(ret)}">Since entry ${pct(ret)}</div></div></div>
+          <div class="row"><div class="mini"><div class="k">Value</div><div class="v">${money(value,x.currency||'CAD')}</div></div><div class="mini"><div class="k">Weight</div><div class="v">${Number.isFinite(allocation.total)&&allocation.total>0?(value/allocation.total*100).toFixed(1)+'%':'—'}</div></div><div class="mini"><div class="k">P/L</div><div class="v ${cls(pnl)}">${Number.isFinite(pnl)?money(pnl,x.currency||'CAD'):'—'}</div></div><div class="mini"><div class="k">Avg cost</div><div class="v">${money(p.entryPrice,x.currency||'CAD')}</div></div></div>
           <div class="why"><strong>Monitor says</strong>${h.warnings.concat(h.watch,h.healthy).slice(0,4).join(' · ')||'No material structural change detected.'}</div>
           <div class="detail open"><div class="detail-grid"><div class="pill">Purchased<b>${new Date(p.boughtAt+'T12:00:00').toLocaleDateString()}</b></div><div class="pill">Entry source<b>${positionSourceLabel(p)}</b></div><div class="pill">Entry stage<b>${p.entryStage||'Not captured'}</b></div><div class="pill">Current stage<b>${x.stage||'Outside active candidate stages'}</b></div><div class="pill">Sector<b>${x.sector||'Unclassified'}</b></div><div class="pill">RSI 14<b>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</b></div><div class="pill">RS20<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="pill">Momentum<b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div><div class="pill">Support<b>${fmt(x.support)}</b></div><div class="pill">Resistance<b>${fmt(x.resistance)}</b></div>${p.notes?`<div class="selection-explain"><small>Entry thesis / note</small><b>${esc(p.notes)}</b></div>`:''}</div></div>
           <div class="portfolio-card-actions"><button type="button" class="tv-link" data-tv="${x.symbol}">Chart ↗</button><button type="button" class="portfolio-edit" data-edit-position="${x.symbol}">Edit</button><button type="button" class="portfolio-remove" data-remove-position="${x.symbol}">Remove</button></div>
@@ -679,6 +691,7 @@ function openTradingView(symbol){
   window.open(web,'_blank','noopener');
 }
 const fmt=n=>Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
+const money=(n,currency='CAD')=>Number.isFinite(n)?new Intl.NumberFormat(undefined,{style:'currency',currency:currency||'CAD',maximumFractionDigits:2}).format(n):'—';
 const pct=n=>Number.isFinite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'—';
 const cls=n=>n>0?'up':n<0?'down':'flat';
 const statusClass=s=>s==='Strong'?'strong':s==='Weak'?'weak':'neutral';
