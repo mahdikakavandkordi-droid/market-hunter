@@ -72,11 +72,10 @@ function cumulativeReturn(returns){
   return (returns.reduce((w,r)=>w*(1+r),1)-1)*100;
 }
 function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows){
-  const usable=symbols.filter(symbol=>{
-    const q=Number(positionMap.get(symbol));
-    return q>0&&seriesMap.get(symbol)?.rows?.length>65;
-  });
+  const requested=symbols.filter(symbol=>Number(positionMap.get(symbol))>0);
+  const usable=requested.filter(symbol=>seriesMap.get(symbol)?.rows?.length>65);
   if(!usable.length)return null;
+  const completeCoverage=usable.length===requested.length;
 
   const currencies=new Set(usable.map(s=>seriesMap.get(s)?.currency||'UNKNOWN'));
   const singleCurrency=currencies.size===1&&!currencies.has('UNKNOWN');
@@ -114,9 +113,27 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
   if(commonDates.length<20)return {
     benchmark:'TSX Composite',
     windowSessions:commonDates.length,
+    requestedHoldings:requested.length,
+    coveredHoldings:usable.length,
+    partialCoverage:!completeCoverage,
     currency:singleCurrency?[...currencies][0]:null,
     mixedCurrencies:!singleCurrency,
     note:'Insufficient common history for stable portfolio-level risk analytics.',
+    avgPairwiseCorrelation,
+    highestCorrelationPair,
+    diversificationRead,
+    correlationMatrix
+  };
+
+  if(!completeCoverage)return {
+    benchmark:'TSX Composite',
+    windowSessions:commonDates.length,
+    requestedHoldings:requested.length,
+    coveredHoldings:usable.length,
+    partialCoverage:true,
+    currency:singleCurrency?[...currencies][0]:null,
+    mixedCurrencies:!singleCurrency,
+    note:`Portfolio-level volatility, beta and stress estimates are withheld because only ${usable.length} of ${requested.length} holdings have sufficient common history. Correlations shown below use the covered subset only.`,
     avgPairwiseCorrelation,
     diversificationRead,
     correlationMatrix
@@ -125,6 +142,9 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
   if(!singleCurrency)return {
     benchmark:'TSX Composite',
     windowSessions:commonDates.length,
+    requestedHoldings:requested.length,
+    coveredHoldings:usable.length,
+    partialCoverage:false,
     currency:null,
     mixedCurrencies:true,
     note:'Portfolio-level volatility, beta and stress estimates are withheld because holdings span multiple or unknown currencies. Correlations remain valid because they use percentage returns.',
@@ -142,19 +162,34 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
   const weights=new Map(usable.map(s=>[s,totalValue>0?(values.get(s)||0)/totalValue:0]));
   const portfolioReturns=commonDates.map(date=>usable.reduce((sum,symbol)=>sum+(weights.get(symbol)||0)*(maps.get(symbol).get(date)||0),0));
   const benchmarkReturns=commonDates.map(date=>benchMap.get(date));
-  const volVar=variance(portfolioReturns);
+  const volVar=variance(portfolioReturns),benchmarkVolVar=variance(benchmarkReturns);
   const annualizedVolPct=Number.isFinite(volVar)?Math.sqrt(volVar)*Math.sqrt(252)*100:null;
+  const benchmarkAnnualizedVolPct=Number.isFinite(benchmarkVolVar)?Math.sqrt(benchmarkVolVar)*Math.sqrt(252)*100:null;
   const benchVar=variance(benchmarkReturns),cov=covariance(portfolioReturns,benchmarkReturns);
   const betaVsTsx=Number.isFinite(cov)&&Number.isFinite(benchVar)&&benchVar>0?cov/benchVar:null;
   const portfolioReturnPct=cumulativeReturn(portfolioReturns),benchmarkReturnPct=cumulativeReturn(benchmarkReturns);
   const maxDrawdownPct=maxDrawdownFromReturns(portfolioReturns);
 
+  let highestCorrelationPair=null;
+  if(pairwise.length&&usable.length>1){
+    let best=-Infinity;
+    for(let i=0;i<usable.length;i++)for(let j=i+1;j<usable.length;j++){
+      const a=commonDates.map(d=>maps.get(usable[i]).get(d)),b=commonDates.map(d=>maps.get(usable[j]).get(d));
+      const corr=correlation(a,b);
+      if(Number.isFinite(corr)&&corr>best){best=corr;highestCorrelationPair={symbols:[usable[i],usable[j]],correlation:corr}}
+    }
+  }
+
   return {
     benchmark:'TSX Composite',
     windowSessions:commonDates.length,
+    requestedHoldings:requested.length,
+    coveredHoldings:usable.length,
+    partialCoverage:false,
     currency:[...currencies][0],
     mixedCurrencies:false,
     annualizedVolPct,
+    benchmarkAnnualizedVolPct,
     maxDrawdownPct,
     betaVsTsx,
     portfolioReturnPct,
@@ -213,7 +248,7 @@ export default async function handler(req,res){
   }
   if(!symbols.length)return res.status(200).json({generatedAt:new Date().toISOString(),items:[],failures:[]});
   const deadline=Date.now()+23000;
-  const benchmarks=[...new Set(symbols.map(s=>CDR_BENCHMARK[s]||'^GSPTSE'))];
+  const benchmarks=[...new Set(['^GSPTSE',...symbols.map(s=>CDR_BENCHMARK[s]||'^GSPTSE')])];
   try{
     const benchResults=await mapLimit(benchmarks,3,s=>chart(s,deadline));
     const benchMap=new Map();
