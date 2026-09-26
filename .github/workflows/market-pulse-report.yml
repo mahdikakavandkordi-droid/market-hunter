@@ -1,0 +1,32 @@
+name: Market Pulse Report
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'data/market-pulse-latest.json'
+      - 'data/market-pulse-state-backtest.json'
+      - 'scripts/build-market-pulse-report.mjs'
+      - '.github/workflows/market-pulse-report.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node --check scripts/build-market-pulse-report.mjs
+      - run: node scripts/build-market-pulse-report.mjs
+      - name: Commit Market Pulse report
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/market-pulse-report.json
+          git commit -m "research: save Market Pulse report" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild
