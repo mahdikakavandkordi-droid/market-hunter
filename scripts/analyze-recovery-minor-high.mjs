@@ -3,9 +3,10 @@ import fs from 'node:fs';
 const files=[0,1,2,3].map(i=>'data/v2-backtest-batch-'+i+'.json');
 const reports=files.map(f=>JSON.parse(fs.readFileSync(f,'utf8')));
 const variants=[
-  'baseline','requireMinorHighBreak','freshBreak1','freshBreak2','freshBreak3',
+  'baseline','ma20Reclaimed','requireMinorHighBreak','freshBreak1','freshBreak2','freshBreak3',
   'breakOrHigherLow','structuralConfirmation','breakWithSupport',
-  'currentReviewFirst','reviewFirstAndBreak','reviewFirstFreshBreak1','reviewFirstFreshBreak2','reviewFirstFreshBreak3'
+  'currentReviewFirst','reviewFirstAndMa20Reclaimed','reviewFirstAndBreak',
+  'reviewFirstFreshBreak1','reviewFirstFreshBreak2','reviewFirstFreshBreak3'
 ];
 const round=(n,d=2)=>Number.isFinite(n)?Number(n.toFixed(d)):null;
 
