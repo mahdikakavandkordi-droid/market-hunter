@@ -2,7 +2,8 @@ import fs from 'node:fs';
 
 const reports=Array.from({length:4},(_,i)=>JSON.parse(fs.readFileSync('data/v2-backtest-batch-'+i+'.json','utf8')));
 const horizons=['5','10','20'];
-const variants=['baseline','requireMinorHighBreak','breakOrHigherLow','structuralConfirmation','breakWithSupport'];
+const variants=['baseline','requireMinorHighBreak','breakOrHigherLow','structuralConfirmation','breakWithSupport','currentReviewFirst','reviewFirstAndBreak','reviewFirstAndBreakWithSupport'];
+const rankingVariants=['current','minorHighBoost','confirmedBreakBoost'];
 const round=(n,d=2)=>Number.isFinite(n)?Number(n.toFixed(d)):null;
 
 function pooled(summaries){
@@ -60,7 +61,31 @@ for(const h of horizons){
       }).length
     };
   }
-  out.horizons[h]={pooled:pooledVariants,perBatch};
+  const pooledRanking={};
+  for(const v of rankingVariants){
+    const tests=reports.map(r=>r?.horizons?.[h]?.byStage?.Recovery?.structureDiagnostic?.ranking?.[v]?.q80?.test||null);
+    const trains=reports.map(r=>r?.horizons?.[h]?.byStage?.Recovery?.structureDiagnostic?.ranking?.[v]?.q80?.train||null);
+    const p=pooled(tests);
+    const pt=pooled(trains);
+    const base=pooled(reports.map(r=>r?.horizons?.[h]?.byStage?.Recovery?.structureDiagnostic?.ranking?.current?.q80?.test||null));
+    pooledRanking[v]={
+      pooledTrain:pt,
+      pooledTest:p,
+      retentionVsCurrent:p&&base?round(p.n/base.n*100,1):null,
+      deltaVsCurrent:p&&base?{
+        mean:round(p.mean-base.mean),
+        positiveRate:round(p.positiveRate-base.positiveRate,1),
+        benchmarkBeatRate:round(p.benchmarkBeatRate-base.benchmarkBeatRate,1),
+        meanExcess:round(p.meanExcess-base.meanExcess)
+      }:null,
+      positiveBatchCount:reports.filter(r=>{
+        const x=r?.horizons?.[h]?.byStage?.Recovery?.structureDiagnostic?.ranking?.[v]?.q80?.test;
+        const b=r?.horizons?.[h]?.byStage?.Recovery?.structureDiagnostic?.ranking?.current?.q80?.test;
+        return x&&b&&Number.isFinite(x.meanExcess)&&Number.isFinite(b.meanExcess)&&x.meanExcess>b.meanExcess;
+      }).length
+    };
+  }
+  out.horizons[h]={pooled:pooledVariants,ranking:pooledRanking,perBatch};
 }
 
 fs.mkdirSync('data',{recursive:true});
