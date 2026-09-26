@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/market-hunter-v2-rebuild
+          ref: ${{ github.ref_name }}
 
       - uses: actions/setup-node@v4
         with:
@@ -129,9 +129,10 @@ jobs:
             exit 0
           fi
           git commit -m "research: refresh validated daily market package"
+          branch="${GITHUB_REF_NAME}"
           for attempt in 1 2 3 4 5; do
-            git pull --rebase origin research/market-hunter-v2-rebuild
-            if git push origin HEAD:research/market-hunter-v2-rebuild; then exit 0; fi
+            git pull --rebase origin "$branch"
+            if git push origin HEAD:"$branch"; then exit 0; fi
             sleep $((attempt * 2))
           done
           exit 1
