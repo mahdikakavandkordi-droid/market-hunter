@@ -261,15 +261,16 @@ const rawEvents=[],surfaceReplayCandidates=[],recoverySurfaceReplayCandidates=[]
 for(const symbol of symbols){
   const pack=data[symbol],rows=pack.rows,benchPack=data[benchSymbol(symbol)],benchRows=benchPack?.rows||[];
   if(rows.length<120||benchRows.length<80)continue;
-  let prevStage=null;
+  let prevStage=null,prevStageAge=-1;
   for(let i=100;i<rows.length-maxH;i++){
     if(hadRecentSplit(rows,pack.splitDays,i))continue;
     const date=dayKey(rows[i].t),hist=rows.slice(0,i+1),bh=benchmarkHist(benchRows,date);
     if(!bh||bh.length<65)continue;
     const m=metrics(hist,bh);if(!m)continue;
-    if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){prevStage=null;continue}
+    if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){prevStage=null;prevStageAge=-1;continue}
     const stage=classify(m);
     const score=stage?rank(m,stage):null;
+    const stageAge=stage?(stage===prevStage?prevStageAge+1:0):null;
     surfaceReplayDates.add(date);
     if(stage==='Recovery'&&priorityBand(stage,score)==='Review First'){
       for(const h of horizons){
@@ -277,7 +278,7 @@ for(const symbol of symbols){
         const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
         const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
         recoverySurfaceReplayCandidates.push({
-          symbol,date,horizon:h,score:round(score,1),highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge,
+          symbol,date,horizon:h,score:round(score,1),stageAge,highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge,
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
           ret5:round(m.ret5),ret20:round(m.ret20),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
@@ -303,8 +304,8 @@ for(const symbol of symbols){
         });
       }
     }
-    if(!stage){prevStage=null;continue}
-    const episodeStart=stage!==prevStage;prevStage=stage;
+    if(!stage){prevStage=null;prevStageAge=-1;continue}
+    const episodeStart=stage!==prevStage;prevStage=stage;prevStageAge=stageAge;
     if(!episodeStart)continue;
     const features={
       freshReclaimAge:m.freshReclaimAge,sellingFading:m.sellingFading,downsideDecel:m.downsideDecel,volumeShockNearLow:m.volumeShockNearLow,
@@ -352,7 +353,7 @@ const report={
     candidates:surfaceReplayCandidates
   },
   recoverySurfaceReplay:{
-    mode:'daily-recovery-review-first-candidates-with-minor-high-confirmation-flag',
+    mode:'daily-recovery-review-first-candidates-with-stage-age-and-minor-high-confirmation',
     maxVisible:6,
     dates:[...surfaceReplayDates].sort(),
     candidates:recoverySurfaceReplayCandidates
