@@ -128,10 +128,13 @@ function recoveryStructureDiagnostic(a){
   const strongMomentum=e=>Number.isFinite(e.features.momentumShift)&&e.features.momentumShift>=2;
   const rs0=e=>Number.isFinite(e.features.rs20)&&e.features.rs20>=0;
   const volSupport=e=>Number.isFinite(e.features.upDownVolumeRatio)&&e.features.upDownVolumeRatio>=.85;
+  const ma20Reclaimed=e=>Number.isFinite(e.features.dist20)&&e.features.dist20>=0;
   const review=e=>priorityBand('Recovery',e.rankScore)==='Review First';
 
   const variants={
     baseline:e=>true,
+    ma20Reclaimed:e=>ma20Reclaimed(e),
+    reviewFirstAndMa20Reclaimed:e=>review(e)&&ma20Reclaimed(e),
     requireMinorHighBreak:e=>broken(e),
     breakOrHigherLow:e=>broken(e)||higherLow(e),
     structuralConfirmation:e=>broken(e)||improving(e),
