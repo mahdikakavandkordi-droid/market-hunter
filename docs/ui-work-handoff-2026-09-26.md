@@ -137,3 +137,99 @@ Once Vercel can build a fresh preview:
    - empty/unavailable states
 5. Only after successful preview validation, discuss moving UI work back to the research branch.
 6. Main/live merge requires explicit user approval.
+
+
+## Portfolio Monitor — V1 implemented
+
+The old Positions area is now a real Portfolio Monitor.
+
+### Position entry
+Each holding can be added manually or from a Market Hunter card. Stored fields include:
+- symbol
+- quantity
+- average purchase price
+- purchase date
+- source: Market Hunter or Manual / External
+- optional entry thesis / note
+- created / updated timestamps
+
+For Market Hunter-origin positions, the Hunter setup is captured as an entry snapshot when available:
+- entry stage
+- RS20
+- momentum shift
+- RSI14
+- local structure
+- support / resistance
+- evidence
+
+Legacy saved positions are preserved and marked Needs Details rather than inventing a quantity.
+
+### Portfolio overview
+The Portfolio tab now shows:
+- portfolio / tracked value
+- cost basis
+- total P/L in $ and %
+- holdings count
+- needs-attention count
+- plain-language Portfolio Read
+
+If any complete holding lacks current data, totals are not presented as if the portfolio were fully valued.
+
+### Monitoring, not signals
+Per-position health uses descriptive states:
+- Trend Healthy
+- Momentum Cooling
+- Watch Closely
+- Structure Warning
+- Data Unavailable
+
+The monitor reports evidence such as:
+- local-low break / reclaim
+- swing structure
+- momentum weakening
+- RS vs benchmark
+- weekly + daily trend alignment
+- support / resistance context
+
+It does not generate Buy, Sell, Hold, Take Profit or Stop Loss instructions.
+
+### What Changed Today
+Portfolio monitoring keeps an independent daily snapshot in localStorage:
+`marketHunterPortfolioDaily`
+
+The current portfolio state is compared with the prior market-day snapshot for material changes such as:
+- stage context change
+- momentum improvement / deterioration
+- local-high break
+- local-low break / reclaim
+- newly unusual volume
+
+### Independent data path
+New serverless endpoint:
+`api/portfolio.js`
+
+Purpose:
+- fetch technical data for holdings independently of the current Hunter shortlist / scanner universe
+- use the frozen V2 metrics engine for descriptive portfolio monitoring
+- use TSX as the default benchmark for CAD-listed holdings
+- use Nasdaq / S&P benchmark mappings for known Canadian-traded U.S. CDRs
+- return context only; it does not run shortlist selection or ranking
+
+Frontend endpoint:
+`/api/portfolio?symbols=...`
+
+### Portfolio commits
+- `0bf4089` — Portfolio Monitor layout/editor styling
+- `f0d32b6` — holdings form + overview + health monitor
+- `398aedb` — daily changes + legacy position migration
+- `da57a75` — independent portfolio metrics endpoint
+- `3f4a1a6` — load holdings independently from scanner universe
+- `4bff9c5` — independent daily monitoring snapshots
+- `4169cb7` — migration and signed P/L fixes
+- `2faab01` — repaired P/L template expressions
+
+Validation:
+- latest frontend JavaScript syntax: PASS
+- `api/portfolio.js` syntax: PASS
+- no new GitHub Actions run triggered on the temporary UI branch
+- Vercel preview is currently READY only up to commit `f0d32b6`; newer portfolio data-path commits still need a fresh preview deployment before runtime verification
