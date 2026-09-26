@@ -46,12 +46,21 @@ function replay(h,filterFn,scoreFn=x=>x.score){
 }
 const result={generatedAt:new Date().toISOString(),note:'Daily Attractive Growth replay. Diagnostic only; production surface unchanged.',dateRange:{start:dates[0]||null,end:dates.at(-1)||null,scanDays:dates.length},horizons:{}};
 for(const h of [5,10,20]){
+  const pool=candidates.filter(x=>x.horizon===h);
+  const ageBuckets={
+    age0to2:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge<=2)),
+    age3to5:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge>=3&&x.stageAge<=5)),
+    age6to10:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge>=6&&x.stageAge<=10)),
+    age11to20:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge>=11&&x.stageAge<=20)),
+    age21plus:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge>=21))
+  };
   result.horizons[h]={
     currentReviewFirst:replay(h,()=>true),
     cleanReview:replay(h,x=>x.cleanReview===true),
     heatedOnly:replay(h,x=>x.cleanReview===false),
     riskPenalty6:replay(h,()=>true,x=>x.score-6*((x.riskFlags||[]).length)),
-    cleanFirstOrdering:replay(h,()=>true,x=>x.score+(x.cleanReview===true?20:0))
+    cleanFirstOrdering:replay(h,()=>true,x=>x.score+(x.cleanReview===true?20:0)),
+    ageBuckets
   };
 }
 fs.mkdirSync('data',{recursive:true});
