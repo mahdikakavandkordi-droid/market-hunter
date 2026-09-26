@@ -1,0 +1,104 @@
+name: Research Daily Refresh
+
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - '.github/workflows/research-daily-refresh.yml'
+  workflow_dispatch:
+  # GitHub schedules run only from the repository default branch.
+  # This becomes the production daily cadence only after an explicitly approved merge.
+  schedule:
+    - cron: '45 22 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-daily-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/market-hunter-v2-rebuild
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate refresh scripts
+        run: |
+          node --check lib/market-pulse-engine.js
+          node --check scripts/scan-market-pulse.mjs
+          node --check scripts/backtest-market-pulse.mjs
+          node --check scripts/scan-market-hunter-v2.mjs
+
+      - name: Refresh Market Pulse snapshot
+        run: node scripts/scan-market-pulse.mjs
+
+      - name: Refresh Market Pulse historical state evidence
+        run: node scripts/backtest-market-pulse.mjs
+
+      - name: Refresh V2 stock shortlist source
+        shell: bash
+        run: |
+          set -euo pipefail
+          weekday="$(date -u +%u)"
+          if [ "$GITHUB_EVENT_NAME" != "schedule" ] || [ "$weekday" -le 5 ]; then
+            node scripts/scan-market-hunter-v2.mjs
+          else
+            echo "Weekend schedule: keep the latest completed-session V2 stock snapshot."
+          fi
+
+      - name: Validate source snapshots before commit
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const expected=['TSX','SP500','NASDAQ100','GOLD','SILVER','BTC','ETH'];
+          const pulse=JSON.parse(fs.readFileSync('data/market-pulse-latest.json','utf8'));
+          const pulseKeys=(pulse.markets||[]).map(x=>x.key);
+          if(pulseKeys.length!==7||!expected.every(k=>pulseKeys.includes(k))){
+            throw new Error('Market Pulse snapshot incomplete: '+JSON.stringify(pulseKeys));
+          }
+
+          const bt=JSON.parse(fs.readFileSync('data/market-pulse-state-backtest.json','utf8'));
+          const btKeys=Object.keys(bt.markets||{});
+          if(!expected.every(k=>btKeys.includes(k))||expected.some(k=>bt.markets[k]?.error)){
+            throw new Error('Market Pulse backtest incomplete: '+JSON.stringify(Object.fromEntries(expected.map(k=>[k,bt.markets?.[k]?.error||'ok']))));
+          }
+
+          const v2=JSON.parse(fs.readFileSync('data/v2-latest-scan.json','utf8'));
+          if(!Array.isArray(v2.integratedSurfacePicks)||v2.integratedSurfacePicks.length>6){
+            throw new Error('V2 integrated shortlist invalid');
+          }
+          if((v2.integratedSurfaceCounts?.visible??v2.integratedSurfacePicks.length)!==v2.integratedSurfacePicks.length){
+            throw new Error('V2 integrated shortlist count mismatch');
+          }
+
+          console.log('Validated 7 Market Pulse markets, complete historical evidence, and V2 max-6 source.');
+          NODE
+
+      - name: Commit validated source refresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/market-pulse-latest.json data/market-pulse-state-backtest.json data/v2-latest-scan.json
+          if git diff --cached --quiet; then
+            echo "No source refresh changes."
+            exit 0
+          fi
+          git commit -m "research: daily validated market refresh"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin research/market-hunter-v2-rebuild
+            if git push origin HEAD:research/market-hunter-v2-rebuild; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          exit 1
