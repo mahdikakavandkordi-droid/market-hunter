@@ -1,0 +1,29 @@
+name: Market Pulse Family Audit
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'scripts/audit-market-pulse-families.mjs'
+      - '.github/workflows/market-pulse-family-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/audit-market-pulse-families.mjs
+      - name: Commit family audit
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/market-pulse-family-audit.json
+          git commit -m "research: save Market Pulse family audit" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild
