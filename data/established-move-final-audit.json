@@ -1,0 +1,206 @@
+{
+  "generatedAt": "2026-09-26T16:29:34.105Z",
+  "status": "PASS",
+  "decision": "Established Move is defensible with unchanged classification/ranking and a stricter backend surface: Review First + score >= 60 + max 6. Risk flags remain context only; no freshness cap.",
+  "checks": [
+    {
+      "name": "stage_test_positive_5d",
+      "pass": true,
+      "detail": {
+        "mean": 0.67,
+        "meanExcess": 0.19
+      }
+    },
+    {
+      "name": "review_positive_5d",
+      "pass": true,
+      "detail": {
+        "mean": 0.98,
+        "meanExcess": 0.42
+      }
+    },
+    {
+      "name": "stage_test_positive_10d",
+      "pass": true,
+      "detail": {
+        "mean": 1.51,
+        "meanExcess": 0.53
+      }
+    },
+    {
+      "name": "review_positive_10d",
+      "pass": true,
+      "detail": {
+        "mean": 1.52,
+        "meanExcess": 0.53
+      }
+    },
+    {
+      "name": "stage_test_positive_20d",
+      "pass": true,
+      "detail": {
+        "mean": 2.63,
+        "meanExcess": 0.99
+      }
+    },
+    {
+      "name": "review_positive_20d",
+      "pass": true,
+      "detail": {
+        "mean": 3.8,
+        "meanExcess": 1.87
+      }
+    },
+    {
+      "name": "score60_holdout_mean_stability_5d",
+      "pass": true,
+      "detail": {
+        "wins": 3,
+        "total": 4,
+        "minRequired": 3
+      }
+    },
+    {
+      "name": "score60_holdout_excess_stability_5d",
+      "pass": true,
+      "detail": {
+        "wins": 3,
+        "total": 4,
+        "minRequired": 3
+      }
+    },
+    {
+      "name": "score60_holdout_mean_stability_10d",
+      "pass": true,
+      "detail": {
+        "wins": 3,
+        "total": 4,
+        "minRequired": 3
+      }
+    },
+    {
+      "name": "score60_holdout_excess_stability_10d",
+      "pass": true,
+      "detail": {
+        "wins": 3,
+        "total": 4,
+        "minRequired": 3
+      }
+    },
+    {
+      "name": "score60_holdout_mean_stability_20d",
+      "pass": true,
+      "detail": {
+        "wins": 4,
+        "total": 4,
+        "minRequired": 4
+      }
+    },
+    {
+      "name": "score60_holdout_excess_stability_20d",
+      "pass": true,
+      "detail": {
+        "wins": 4,
+        "total": 4,
+        "minRequired": 4
+      }
+    },
+    {
+      "name": "score60_reduces_review_workload",
+      "pass": true,
+      "detail": [
+        {
+          "batch": 0,
+          "avgVisible": 2.41,
+          "pctDays": 82.4
+        },
+        {
+          "batch": 1,
+          "avgVisible": 2.1,
+          "pctDays": 79.3
+        },
+        {
+          "batch": 2,
+          "avgVisible": 2.55,
+          "pctDays": 82.7
+        },
+        {
+          "batch": 3,
+          "avgVisible": 2.13,
+          "pctDays": 74.5
+        }
+      ]
+    },
+    {
+      "name": "score60_keeps_reasonable_coverage",
+      "pass": true,
+      "detail": [
+        {
+          "batch": 0,
+          "pctDays": 82.4
+        },
+        {
+          "batch": 1,
+          "pctDays": 79.3
+        },
+        {
+          "batch": 2,
+          "pctDays": 82.7
+        },
+        {
+          "batch": 3,
+          "pctDays": 74.5
+        }
+      ]
+    },
+    {
+      "name": "clean_gate_rejected_on_20d_holdout",
+      "pass": true,
+      "detail": [
+        {
+          "batch": 0,
+          "baseline": 4.85,
+          "clean": 4.74
+        },
+        {
+          "batch": 1,
+          "baseline": 3.91,
+          "clean": 3.59
+        },
+        {
+          "batch": 2,
+          "baseline": 3.41,
+          "clean": 3.27
+        },
+        {
+          "batch": 3,
+          "baseline": 3.76,
+          "clean": 3.59
+        }
+      ]
+    },
+    {
+      "name": "current_surface_is_small",
+      "pass": true,
+      "detail": {
+        "reviewFirst": 6,
+        "score60Eligible": 2,
+        "symbols": [
+          {
+            "symbol": "RUS.TO",
+            "score": 68,
+            "riskFlags": [
+              "Extended above MA20",
+              "Very high RSI"
+            ]
+          },
+          {
+            "symbol": "MSFT.TO",
+            "score": 61.6,
+            "riskFlags": []
+          }
+        ]
+      }
+    }
+  ]
+}
