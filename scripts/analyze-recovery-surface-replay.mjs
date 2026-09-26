@@ -55,7 +55,9 @@ for(const h of horizons){
     reviewFirstStageAge3:policyReplay(h,x=>Number.isFinite(x.stageAge)&&x.stageAge<=3),
     reviewFirstStageAge3OrFreshBreak3:policyReplay(h,x=>(Number.isFinite(x.stageAge)&&x.stageAge<=3)||freshBreak3(x)),
     rankMinorHighBoost:policyReplay(h,()=>true,x=>x.score+(x.highBroken===true?8:0)),
-    rankFreshHighBreakBoost:policyReplay(h,()=>true,x=>x.score+(Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3?10:0))
+    rankFreshHighBreakBoost:policyReplay(h,()=>true,x=>x.score+(Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3?10:0)),
+    rankRsOnly:policyReplay(h,()=>true,x=>Number.isFinite(x.rs20)?x.rs20:-999),
+    rankRsMomentum:policyReplay(h,()=>true,x=>(Number.isFinite(x.rs20)?x.rs20*2:0)+(Number.isFinite(x.momentumShift)?x.momentumShift:0))
   };
 }
 fs.mkdirSync('data',{recursive:true});
