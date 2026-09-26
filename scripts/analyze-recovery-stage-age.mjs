@@ -45,6 +45,7 @@ for(const h of [5,10,20]){
     ageBuckets:Object.fromEntries(ageBuckets.map(b=>[b.name,summary(pool.filter(b.test))])),
     surfacePolicies:{
       noAgeLimit:replay(h,null),
+      maxAge2:replay(h,2),
       maxAge3:replay(h,3),
       maxAge5:replay(h,5),
       maxAge7:replay(h,7),
