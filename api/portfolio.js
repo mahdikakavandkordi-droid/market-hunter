@@ -169,6 +169,12 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
   const betaVsTsx=Number.isFinite(cov)&&Number.isFinite(benchVar)&&benchVar>0?cov/benchVar:null;
   const portfolioReturnPct=cumulativeReturn(portfolioReturns),benchmarkReturnPct=cumulativeReturn(benchmarkReturns);
   const maxDrawdownPct=maxDrawdownFromReturns(portfolioReturns);
+  const volatilityRatio=Number.isFinite(annualizedVolPct)&&Number.isFinite(benchmarkAnnualizedVolPct)&&benchmarkAnnualizedVolPct>0?annualizedVolPct/benchmarkAnnualizedVolPct:null;
+  const riskParts=[];
+  if(Number.isFinite(volatilityRatio))riskParts.push(volatilityRatio>=1.25?'recent volatility is meaningfully above TSX':volatilityRatio<=0.8?'recent volatility is below TSX':'recent volatility is close to TSX');
+  if(Number.isFinite(betaVsTsx))riskParts.push(betaVsTsx>=1.2?'market sensitivity is above TSX':betaVsTsx<=0.8?'market sensitivity is below TSX':'market sensitivity is near TSX');
+  if(Number.isFinite(avgPairwiseCorrelation))riskParts.push(avgPairwiseCorrelation>=0.75?'holdings are highly correlated':avgPairwiseCorrelation>=0.5?'holdings have moderate-to-high co-movement':avgPairwiseCorrelation>=0.25?'holdings have moderate diversification':'holdings are relatively differentiated');
+  const riskRead=riskParts.length?riskParts.join(' · '):null;
 
   let highestCorrelationPair=null;
   if(pairwise.length&&usable.length>1){
@@ -190,6 +196,8 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
     mixedCurrencies:false,
     annualizedVolPct,
     benchmarkAnnualizedVolPct,
+    volatilityRatio,
+    riskRead,
     maxDrawdownPct,
     betaVsTsx,
     portfolioReturnPct,
