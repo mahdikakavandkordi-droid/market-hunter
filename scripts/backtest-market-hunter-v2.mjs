@@ -263,13 +263,20 @@ for(const h of horizons){
     const review=e=>priorityBand(stage,e.rankScore)==='Review First';
     const cleanReview=e=>review(e)&&riskFlags(e.features).length===0;
     const heatedReview=e=>review(e)&&riskFlags(e.features).length>0;
+    // Backend-only display polish candidate for Early Watch.
+    // It does NOT redefine stage membership or ranking. It only removes clearly
+    // deteriorating / deeply weak names after they already passed Review First.
+    const earlyPolish=e=>review(e)
+      &&(!Number.isFinite(e.features.momentumShift)||e.features.momentumShift>-5)
+      &&(!Number.isFinite(e.features.rs20)||e.features.rs20>=-10);
     report.horizons[h].byStage[stage]={
       overall:summary(x),train:summary(sp.train),test:summary(sp.test),ranking:rankingReport(x),
       fixedPriority:{
         floors:PRIORITY_FLOORS[stage],
         reviewFirst:{train:summary(sp.train.filter(review)),test:summary(sp.test.filter(review))},
         cleanReview:{train:summary(sp.train.filter(cleanReview)),test:summary(sp.test.filter(cleanReview))},
-        heatedReview:{train:summary(sp.train.filter(heatedReview)),test:summary(sp.test.filter(heatedReview))}
+        heatedReview:{train:summary(sp.train.filter(heatedReview)),test:summary(sp.test.filter(heatedReview))},
+        ...(stage==='Early Watch'?{polishGuard:{train:summary(sp.train.filter(earlyPolish)),test:summary(sp.test.filter(earlyPolish))}}:{})
       },
       evidence:evidenceSlices(stage,x),
       ...(stage==='Early Watch'?{rewriteDiagnostic:earlyWatchRewriteDiagnostic(x)}:{})
