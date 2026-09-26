@@ -223,6 +223,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .portfolio-allocation details{margin-top:8px;border-top:1px solid rgba(255,255,255,.05);padding-top:8px}.portfolio-allocation summary{cursor:pointer;list-style:none;color:var(--accent);font-size:8.5px;font-weight:800}.portfolio-allocation summary::-webkit-details-marker{display:none}.allocation-list{display:grid;gap:6px;margin-top:8px}.allocation-row{display:grid;grid-template-columns:minmax(82px,1fr) 2fr 42px;gap:8px;align-items:center;font-size:8.5px}.allocation-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.allocation-track{height:7px;border-radius:999px;background:rgba(255,255,255,.055);overflow:hidden}.allocation-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--green));min-width:2px}.allocation-weight{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
 .allocation-subhead{font-size:7px;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em;margin:11px 0 5px}.allocation-note{font-size:8px;line-height:1.45;color:var(--muted);margin-top:8px}
 @media(max-width:620px){.portfolio-concentration-grid{grid-template-columns:1fr}.allocation-row{grid-template-columns:minmax(78px,1fr) 1.6fr 38px}}
+.portfolio-advanced{margin:0 0 14px;border:1px solid rgba(255,255,255,.065);border-radius:14px;background:rgba(255,255,255,.012);overflow:hidden}.portfolio-advanced>summary{cursor:pointer;list-style:none;padding:12px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;font-weight:800}.portfolio-advanced>summary::-webkit-details-marker{display:none}.portfolio-advanced>summary:after{content:'＋';color:var(--muted)}.portfolio-advanced[open]>summary:after{content:'−'}.portfolio-advanced-summary{display:flex;flex-direction:column;gap:2px}.portfolio-advanced-summary small{font-size:8px;color:var(--muted);font-weight:500}.portfolio-advanced-body{padding:0 13px 13px}.risk-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.risk-card{padding:9px;border:1px solid rgba(255,255,255,.05);border-radius:9px;background:rgba(255,255,255,.02)}.risk-card small{display:block;font-size:7px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em}.risk-card b{display:block;margin-top:3px;font-size:10px}.risk-note{margin-top:8px;font-size:8px;line-height:1.5;color:var(--muted)}.stress-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.stress-card{padding:8px 9px;border:1px dashed rgba(255,255,255,.08);border-radius:9px;font-size:8px;color:var(--muted)}.stress-card b{display:block;margin-top:2px;font-size:10px;color:var(--text)}.corr-wrap{margin-top:10px;overflow-x:auto}.corr-table{border-collapse:collapse;min-width:420px;width:100%;font-size:8px}.corr-table th,.corr-table td{padding:6px;text-align:center;border-top:1px solid rgba(255,255,255,.045)}.corr-table th:first-child,.corr-table td:first-child{text-align:left;color:var(--muted)}.corr-table th{color:var(--muted2);font-weight:700}.corr-cell{font-variant-numeric:tabular-nums}.corr-high{color:#f1c75b}.corr-low{color:#75e0b0}@media(max-width:700px){.risk-grid{grid-template-columns:repeat(2,1fr)}.risk-card:last-child{grid-column:1/-1}.stress-grid{grid-template-columns:1fr}}
 .portfolio-section{margin-top:14px}.portfolio-section-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:8px}.portfolio-section-head h3{margin:0;font-size:14px}.portfolio-section-head p{margin:2px 0 0;color:var(--muted);font-size:9px}
 .portfolio-change-list{display:grid;gap:5px}.portfolio-change{display:flex;justify-content:space-between;gap:10px;padding:8px 9px;border:1px solid rgba(255,255,255,.055);border-radius:9px;background:rgba(255,255,255,.018);font-size:9px}.portfolio-change b{font-size:10px}.portfolio-change span{color:var(--muted);text-align:right}
 .portfolio-card-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}.source-pill{display:inline-flex;padding:3px 6px;border-radius:999px;background:rgba(103,168,255,.08);color:var(--accent);font-size:8px;font-weight:700}.source-pill.manual{background:rgba(255,255,255,.04);color:var(--muted)}
@@ -377,7 +378,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,{...x,source:x.source||(x.entryStage?'market-hunter':'manual'),quantity:Number.isFinite(Number(x.quantity))&&Number(x.quantity)>0?Number(x.quantity):null}]))}catch{return new Map()}};
-const state={data:null,v2:null,marketPulse:null,dailyMarketReport:null,portfolioData:new Map(),portfolioPreviousData:new Map(),history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
+const state={data:null,v2:null,marketPulse:null,dailyMarketReport:null,portfolioData:new Map(),portfolioPreviousData:new Map(),portfolioAnalytics:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
 function normalizeV2Candidate(x,stage=x.stage){
   return {
     ...x,
@@ -429,18 +430,22 @@ function localDateInput(d=new Date()){
 }
 async function refreshPortfolioData(){
   const symbols=[...state.positions.keys()].filter(Boolean);
-  state.portfolioData=new Map();state.portfolioPreviousData=new Map();
+  state.portfolioData=new Map();state.portfolioPreviousData=new Map();state.portfolioAnalytics=null;
   if(!symbols.length)return;
   try{
     const entries=[...state.positions.values()]
       .filter(p=>p?.symbol&&p?.boughtAt&&Number(p?.entryPrice)>0)
       .map(p=>[p.symbol,String(p.boughtAt).slice(0,10),Number(p.entryPrice)].join('|'))
       .join(',');
-    const url='/api/portfolio?symbols='+encodeURIComponent(symbols.join(','))+(entries?'&entries='+encodeURIComponent(entries):'');
+    const positions=[...state.positions.values()]
+      .filter(p=>p?.symbol&&Number(p?.quantity)>0)
+      .map(p=>[p.symbol,Number(p.quantity)].join('|'))
+      .join(',');
+    const url='/api/portfolio?symbols='+encodeURIComponent(symbols.join(','))+(entries?'&entries='+encodeURIComponent(entries):'')+(positions?'&positions='+encodeURIComponent(positions):'');
     const r=await fetch(url,{cache:'no-store'});
     if(!r.ok)return;
     const j=await r.json(),items=j.items||[];
-    state.portfolioData=new Map(items.map(x=>[x.symbol,x]));
+    state.portfolioData=new Map(items.map(x=>[x.symbol,x]));state.portfolioAnalytics=j.portfolioAnalytics||null;
     const currentDate=items.map(x=>x.asOf).filter(Boolean).sort().at(-1)||null;
     let saved=null;try{saved=JSON.parse(localStorage.getItem('marketHunterPortfolioDaily')||'null')}catch{}
     if(saved?.currentDate&&saved.currentDate!==currentDate){
@@ -621,6 +626,28 @@ function positionAttention(rows){
   }
   return out;
 }
+function renderPortfolioAdvanced(){
+  const a=state.portfolioAnalytics;
+  if(!a)return '';
+  if(a.note)return `<details class="portfolio-advanced"><summary><span class="portfolio-advanced-summary">Advanced Risk<small>Historical portfolio-level context</small></span></summary><div class="portfolio-advanced-body"><div class="risk-note">${esc(a.note)}</div></div></details>`;
+  const corrRows=(a.correlationMatrix||[]).slice(0,8),symbols=corrRows.map(r=>r.symbol);
+  const corrClass=v=>Number.isFinite(v)?(v>=.75?'corr-high':v<=.25?'corr-low':''):'';
+  return `<details class="portfolio-advanced">
+    <summary><span class="portfolio-advanced-summary">Advanced Risk<small>${a.windowSessions||'—'} sessions · benchmark ${esc(a.benchmark||'TSX Composite')}</small></span></summary>
+    <div class="portfolio-advanced-body">
+      <div class="risk-grid">
+        <div class="risk-card"><small>Annualized volatility</small><b>${pct(a.annualizedVolPct)}</b></div>
+        <div class="risk-card"><small>Max drawdown</small><b class="${cls(a.maxDrawdownPct)}">${pct(a.maxDrawdownPct)}</b></div>
+        <div class="risk-card"><small>Beta vs TSX</small><b>${Number.isFinite(a.betaVsTsx)?a.betaVsTsx.toFixed(2):'—'}</b></div>
+        <div class="risk-card"><small>Return vs TSX</small><b class="${cls(a.excessReturnPct)}">${pct(a.portfolioReturnPct)} vs ${pct(a.benchmarkReturnPct)}</b></div>
+        <div class="risk-card"><small>Avg correlation</small><b>${Number.isFinite(a.avgPairwiseCorrelation)?a.avgPairwiseCorrelation.toFixed(2):'—'}</b></div>
+      </div>
+      <div class="risk-note">${esc(a.diversificationRead||'')}. Volatility, beta and correlation are historical context, not forecasts.</div>
+      ${(a.stressLens||[]).length?`<div class="allocation-subhead">Stress lens</div><div class="stress-grid">${a.stressLens.map(x=>`<div class="stress-card">${esc(x.label)}<b class="${cls(x.estimatedPortfolioMovePct)}">Estimated portfolio move ${pct(x.estimatedPortfolioMovePct)}</b></div>`).join('')}</div><div class="risk-note">Stress estimates are simple beta-based sensitivity approximations. They are not predicted outcomes.</div>`:''}
+      ${corrRows.length>1?`<div class="allocation-subhead">Holding correlation</div><div class="corr-wrap"><table class="corr-table"><thead><tr><th></th>${symbols.map(s=>`<th>${s.replace(/\\.(TO|NE|V)$/,'')}</th>`).join('')}</tr></thead><tbody>${corrRows.map(row=>`<tr><td>${row.symbol.replace(/\\.(TO|NE|V)$/,'')}</td>${symbols.map(sym=>{const v=row.values?.[sym];return `<td class="corr-cell ${corrClass(v)}">${Number.isFinite(v)?v.toFixed(2):'—'}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`:''}
+    </div>
+  </details>`;
+}
 function renderPositions(){
   const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
   const rows=portfolioRows(),sum=portfolioSummary(rows),allocation=portfolioAllocation(rows),attention=positionAttention(rows),changes=portfolioChanges(rows);
@@ -655,6 +682,7 @@ function renderPositions(){
         ${allocation.sectorRows.some(a=>a.name==='Unclassified')?'<div class="allocation-note">Some holdings are outside the reviewed Market Hunter universe, so their sector is currently unclassified rather than guessed.</div>':''}
       </details>
     </section>`:(rows.length&&allocation.mixedCurrencies?`<section class="portfolio-allocation"><div class="portfolio-allocation-head"><div><h3>Allocation & concentration</h3><p>Holdings are in multiple or unknown currencies.</p></div></div><div class="allocation-note">Combined weights are intentionally withheld until FX conversion is added. Each position is still monitored independently.</div></section>`:'')}
+    ${renderPortfolioAdvanced()}
     ${changes.length?`<section class="portfolio-section"><div class="portfolio-section-head"><div><h3>What changed today</h3><p>Only material changes detected versus the previous compatible snapshot.</p></div><span class="shown">${changes.length}</span></div><div class="portfolio-change-list">${changes.map(a=>`<div class="portfolio-change"><b>${a.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${a.reasons.join(' · ')}</span></div>`).join('')}</div></section>`:''}
     ${attention.length?`<section class="portfolio-section"><div class="portfolio-section-head"><div><h3>Current attention</h3><p>Material structural or momentum context — not trade signals.</p></div><span class="shown">${attention.length}</span></div><div class="portfolio-change-list">${attention.map(a=>`<div class="portfolio-change"><b>${a.symbol.replace(/\\.(TO|NE|V)$/,'')}</b><span>${a.status} · ${a.reason}</span></div>`).join('')}</div></section>`:''}
     <section class="portfolio-section">
