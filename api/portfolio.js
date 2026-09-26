@@ -80,15 +80,6 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
 
   const currencies=new Set(usable.map(s=>seriesMap.get(s)?.currency||'UNKNOWN'));
   const singleCurrency=currencies.size===1&&!currencies.has('UNKNOWN');
-  const values=new Map(),latestPrices=new Map();
-  let totalValue=0;
-  for(const symbol of usable){
-    const series=seriesMap.get(symbol),qty=Number(positionMap.get(symbol)),price=series.rows.at(-1)?.close;
-    if(!(qty>0)&&!Number.isFinite(price))continue;
-    latestPrices.set(symbol,price);
-    const value=qty*price;values.set(symbol,value);totalValue+=value;
-  }
-  const weights=new Map(usable.map(s=>[s,totalValue>0?(values.get(s)||0)/totalValue:0]));
   const maps=new Map(usable.map(s=>[s,returnMap(seriesMap.get(s).rows)]));
   let commonDates=[...maps.get(usable[0]).keys()];
   for(const symbol of usable.slice(1)){
@@ -97,38 +88,21 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
   }
   const benchMap=returnMap(benchmarkRows||[]);
   commonDates=commonDates.filter(d=>benchMap.has(d)).sort().slice(-60);
-  if(commonDates.length<20)return {
-    windowSessions:commonDates.length,
-    currency:singleCurrency?[...currencies][0]:null,
-    mixedCurrencies:!singleCurrency,
-    note:'Insufficient common history for stable portfolio-level risk analytics.',
-    correlationMatrix:[]
-  };
 
-  const portfolioReturns=commonDates.map(date=>usable.reduce((sum,symbol)=>sum+(weights.get(symbol)||0)*(maps.get(symbol).get(date)||0),0));
-  const benchmarkReturns=commonDates.map(date=>benchMap.get(date));
-  const volVar=variance(portfolioReturns);
-  const annualizedVolPct=Number.isFinite(volVar)?Math.sqrt(volVar)*Math.sqrt(252)*100:null;
-  const benchVar=variance(benchmarkReturns);
-  const cov=covariance(portfolioReturns,benchmarkReturns);
-  const betaVsTsx=Number.isFinite(cov)&&Number.isFinite(benchVar)&&benchVar>0?cov/benchVar:null;
-  const portfolioReturnPct=cumulativeReturn(portfolioReturns);
-  const benchmarkReturnPct=cumulativeReturn(benchmarkReturns);
-  const maxDrawdownPct=maxDrawdownFromReturns(portfolioReturns);
-
-  const correlationMatrix=[];
-  const pairwise=[];
-  for(let i=0;i<usable.length;i++){
-    const row={symbol:usable[i],values:{}};
-    for(let j=0;j<usable.length;j++){
-      if(i===j){row.values[usable[j]]=1;continue}
-      const a=commonDates.map(d=>maps.get(usable[i]).get(d));
-      const b=commonDates.map(d=>maps.get(usable[j]).get(d));
-      const corr=correlation(a,b);
-      row.values[usable[j]]=corr;
-      if(j>i&&Number.isFinite(corr))pairwise.push(corr);
+  const correlationMatrix=[],pairwise=[];
+  if(commonDates.length>=20){
+    for(let i=0;i<usable.length;i++){
+      const row={symbol:usable[i],values:{}};
+      for(let j=0;j<usable.length;j++){
+        if(i===j){row.values[usable[j]]=1;continue}
+        const a=commonDates.map(d=>maps.get(usable[i]).get(d));
+        const b=commonDates.map(d=>maps.get(usable[j]).get(d));
+        const corr=correlation(a,b);
+        row.values[usable[j]]=corr;
+        if(j>i&&Number.isFinite(corr))pairwise.push(corr);
+      }
+      correlationMatrix.push(row);
     }
-    correlationMatrix.push(row);
   }
   const avgPairwiseCorrelation=mean(pairwise);
   const diversificationRead=!Number.isFinite(avgPairwiseCorrelation)?'Not enough pair data'
@@ -137,11 +111,49 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
     :avgPairwiseCorrelation>=0.25?'Holdings show moderate diversification'
     :'Holdings are relatively differentiated';
 
-  return {
+  if(commonDates.length<20)return {
     benchmark:'TSX Composite',
     windowSessions:commonDates.length,
     currency:singleCurrency?[...currencies][0]:null,
     mixedCurrencies:!singleCurrency,
+    note:'Insufficient common history for stable portfolio-level risk analytics.',
+    avgPairwiseCorrelation,
+    diversificationRead,
+    correlationMatrix
+  };
+
+  if(!singleCurrency)return {
+    benchmark:'TSX Composite',
+    windowSessions:commonDates.length,
+    currency:null,
+    mixedCurrencies:true,
+    note:'Portfolio-level volatility, beta and stress estimates are withheld because holdings span multiple or unknown currencies. Correlations remain valid because they use percentage returns.',
+    avgPairwiseCorrelation,
+    diversificationRead,
+    correlationMatrix
+  };
+
+  const values=new Map();let totalValue=0;
+  for(const symbol of usable){
+    const series=seriesMap.get(symbol),qty=Number(positionMap.get(symbol)),price=series.rows.at(-1)?.close;
+    if(!(qty>0)||!Number.isFinite(price))continue;
+    const value=qty*price;values.set(symbol,value);totalValue+=value;
+  }
+  const weights=new Map(usable.map(s=>[s,totalValue>0?(values.get(s)||0)/totalValue:0]));
+  const portfolioReturns=commonDates.map(date=>usable.reduce((sum,symbol)=>sum+(weights.get(symbol)||0)*(maps.get(symbol).get(date)||0),0));
+  const benchmarkReturns=commonDates.map(date=>benchMap.get(date));
+  const volVar=variance(portfolioReturns);
+  const annualizedVolPct=Number.isFinite(volVar)?Math.sqrt(volVar)*Math.sqrt(252)*100:null;
+  const benchVar=variance(benchmarkReturns),cov=covariance(portfolioReturns,benchmarkReturns);
+  const betaVsTsx=Number.isFinite(cov)&&Number.isFinite(benchVar)&&benchVar>0?cov/benchVar:null;
+  const portfolioReturnPct=cumulativeReturn(portfolioReturns),benchmarkReturnPct=cumulativeReturn(benchmarkReturns);
+  const maxDrawdownPct=maxDrawdownFromReturns(portfolioReturns);
+
+  return {
+    benchmark:'TSX Composite',
+    windowSessions:commonDates.length,
+    currency:[...currencies][0],
+    mixedCurrencies:false,
     annualizedVolPct,
     maxDrawdownPct,
     betaVsTsx,
