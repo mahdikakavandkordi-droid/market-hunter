@@ -116,18 +116,19 @@ button{border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 
 .price{text-align:right;font-size:18px;font-weight:800}
 .score-pill{display:none;;align-items:center;gap:5px;margin-top:5px;padding:4px 7px;border-radius:999px;background:#0d141c;border:1px solid #22303d;color:var(--muted);font-size:10px;font-weight:700}
 .score-pill b{color:var(--text)}
-.row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:14px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:6px;margin-top:11px}
 .mini{background:linear-gradient(180deg,#0d151e,#0b1219);border:1px solid #202b36;border-radius:10px;padding:8px}
 .mini .k{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em}.mini .v{font-size:13px;font-weight:780;margin-top:3px}
-.why{margin-top:11px;padding:10px 11px;border-radius:11px;background:rgba(255,255,255,.025);border:1px solid rgba(37,48,60,.72);color:#d8e0e8;font-size:11.5px;line-height:1.45}
+.why{margin-top:9px;padding:8px 9px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(37,48,60,.62);color:#d8e0e8;font-size:10.5px;line-height:1.4}
 .why strong{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.06em;margin-right:5px}
-.score{margin-top:10px;display:flex;align-items:center;gap:8px}.bar{height:5px;background:#202a34;border-radius:999px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,#7186a0,#dce6f2)}.score small{color:var(--muted2);font-size:10px}
+.score{margin-top:7px;display:flex;align-items:center;gap:8px}.bar{height:5px;background:#202a34;border-radius:999px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,#7186a0,#dce6f2)}.score small{color:var(--muted2);font-size:10px}
 .detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.card.open .detail{display:block}
 .detail-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.pill{border:1px solid var(--line);border-radius:9px;padding:7px;text-align:center;font-size:9px;color:var(--muted)}.pill b{display:block;margin-top:3px;font-size:11px;color:var(--text)}
 .signal{border:1px solid var(--line);border-radius:9px;padding:8px 9px;font-size:9px;color:var(--muted);text-align:left}
 .signal b{display:block;margin-top:3px;font-size:11px;color:var(--text);line-height:1.3}
 .history-note{display:inline-flex;margin-top:8px;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.035);border:1px solid rgba(37,48,60,.8);font-size:9px;font-weight:800}
 .empty{grid-column:1/-1;border:1px dashed var(--line);border-radius:14px;padding:24px;text-align:center;color:var(--muted)}
+.shortlist-method{margin:-2px 0 10px;padding:0 2px}.shortlist-method summary{cursor:pointer;list-style:none;color:var(--accent);font-size:9px;font-weight:800}.shortlist-method summary::-webkit-details-marker{display:none}.shortlist-method summary:after{content:' ＋';color:var(--muted)}.shortlist-method[open] summary:after{content:' −'}.shortlist-method div{margin-top:6px;color:var(--muted);font-size:9px;line-height:1.45;max-width:860px}
 footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .loading{opacity:.65;pointer-events:none}.error{background:rgba(242,123,129,.08);border:1px solid rgba(242,123,129,.3);color:#ffc5c8;padding:12px;border-radius:12px;margin-bottom:14px;display:none}
 
@@ -1023,13 +1024,12 @@ function v2EarlyWatchCard(x){
       </div>
       <div class="row">
         <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
-        <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
         <div class="mini"><div class="k">MOM</div><div class="v ${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</div></div>
         <div class="mini"><div class="k">RS20</div><div class="v">${q(x.rs20)}</div></div>
         <div class="mini"><div class="k">RSI</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
       </div>
       <div class="why"><strong>Surfaced because</strong>${evidence}</div>
-      <div class="score"><small>tap details</small></div>
+      <div class="score"><small>Details ↓</small></div>
       <div class="detail"><div class="detail-grid">
         <div class="pill">60D<b class="${cls(x.ret60)}">${pct(x.ret60)}</b></div>
         <div class="pill">Pullback 60D<b class="${cls(x.pullback60)}">${pct(x.pullback60)}</b></div>
@@ -1070,13 +1070,12 @@ function v2RecoveryCard(x){
       </div>
       <div class="row">
         <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
-        <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
         <div class="mini"><div class="k">MOM</div><div class="v ${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+'pp':'—'}</div></div>
         <div class="mini"><div class="k">RS20</div><div class="v">${q(x.rs20)}</div></div>
         <div class="mini"><div class="k">RSI</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
       </div>
       <div class="why"><strong>Surfaced because</strong>${evidence}</div>
-      <div class="score"><small>tap details</small></div>
+      <div class="score"><small>Details ↓</small></div>
       <div class="detail"><div class="detail-grid">
         <div class="pill">Recovery age<b>${day?`Day ${day}`:'—'}</b></div>
         <div class="pill">MA20 distance<b class="${cls(x.dist20)}">${pct(x.dist20)}</b></div>
@@ -1115,14 +1114,13 @@ function v2AttractiveGrowthCard(x){
         </div>
       </div>
       <div class="row">
-        <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
         <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
         <div class="mini"><div class="k">60D</div><div class="v">${q(x.ret60)}</div></div>
         <div class="mini"><div class="k">RS20</div><div class="v">${q(x.rs20)}</div></div>
         <div class="mini"><div class="k">RSI</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
       </div>
       <div class="why"><strong>Risk context</strong>${riskText}</div>
-      <div class="score"><small>tap details</small></div>
+      <div class="score"><small>Details ↓</small></div>
       <div class="detail"><div class="detail-grid">
         <div class="pill">MA20 distance<b class="${cls(x.dist20)}">${pct(x.dist20)}</b></div>
         <div class="pill">MA20 slope<b class="${cls(x.ma20Slope5)}">${Number.isFinite(x.ma20Slope5)?x.ma20Slope5.toFixed(2):'—'}</b></div>
@@ -1158,14 +1156,13 @@ function v2EstablishedMoveCard(x){
         </div>
       </div>
       <div class="row">
-        <div class="mini"><div class="k">5D</div><div class="v">${q(x.ret5)}</div></div>
         <div class="mini"><div class="k">20D</div><div class="v">${q(x.ret20)}</div></div>
         <div class="mini"><div class="k">60D</div><div class="v">${q(x.ret60)}</div></div>
         <div class="mini"><div class="k">RS20</div><div class="v">${q(x.rs20)}</div></div>
         <div class="mini"><div class="k">RSI</div><div class="v">${Number.isFinite(x.rsi14)?x.rsi14.toFixed(1):'—'}</div></div>
       </div>
       <div class="why"><strong>Risk context</strong>${riskText}</div>
-      <div class="score"><small>tap details</small></div>
+      <div class="score"><small>Details ↓</small></div>
       <div class="detail"><div class="detail-grid">
         <div class="pill">Score<b>${Number.isFinite(x.score)?x.score.toFixed(1):'—'}</b></div>
         <div class="pill">MA20 distance<b class="${cls(x.dist20)}">${pct(x.dist20)}</b></div>
@@ -1202,11 +1199,12 @@ function renderTop5(){
       <div class="stage-head">
         <div class="stage-main"><div class="stage-copy">
           <h2>Today's Final Shortlist</h2>
-          <p>Maximum six charts across all four validated stages. Hunter preserves each stage's own ranking, then selects by stage rank in order: Early Watch → Recovery → Attractive Growth → Established Move. Scores are never compared across stages.</p>
-          ${generated?`<p>Research scan updated ${generated}${Number.isFinite(hidden)?` · ${hidden} additional validated stage picks kept in backend`:''}</p>`:''}
+          <p>Up to six charts worth reviewing today. Open a card only when you want the full evidence.</p>
+          ${generated?`<p>Updated ${generated}${Number.isFinite(hidden)?` · ${hidden} additional validated picks kept in backend`:''}</p>`:''}
         </div></div>
         <span class="shown">${picks.length}</span>
       </div>
+      <details class="shortlist-method"><summary>How this shortlist is built</summary><div>Each stage keeps its validated ranking. Hunter then selects by stage rank — Early Watch → Recovery → Attractive Growth → Established Move — and stops at six total charts. Raw scores are never compared across stages.</div></details>
       <div class="grid">${picks.length?picks.map(v2IntegratedCard).join(''):'<div class="empty">No chart clears the final integrated shortlist today. Doing nothing is a valid output.</div>'}</div>
     </section>`;
   bindCardActions('#top5Content');
@@ -1285,7 +1283,7 @@ function card(x,kind,fa,inWatch=false){
         <div class="mini"><div class="k">VOL 5D</div><div class="v">${Number.isFinite(x.max5Rvol)?fmt(x.max5Rvol)+'×':'—'}</div></div>
       </div>
       <div class="why"><strong>${x.watchStatus?'Current status':'Surfaced because'}</strong>${x.watchStatus?x.watchStatus:((x.why||[]).join(' · ')||'Saved chart')}</div>
-      <div class="score"><small>tap details</small></div>
+      <div class="score"><small>Details ↓</small></div>
       ${inWatch?'<div class="remove-hint">Swipe left to remove</div>':''}
       <div class="detail"><div class="detail-grid">
         ${x.selectionExplanation?explainBlock('Why Shortlist',x.selectionExplanation):''}
