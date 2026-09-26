@@ -1,0 +1,26 @@
+name: Attractive Growth Risk Diagnostic
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'scripts/analyze-attractive-growth-risk-report.mjs'
+      - '.github/workflows/attractive-growth-risk-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/analyze-attractive-growth-risk-report.mjs
+      - name: Commit risk diagnostic
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/attractive-growth-risk-diagnostic.json
+          git commit -m "research: save Attractive Growth risk diagnostic" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild
