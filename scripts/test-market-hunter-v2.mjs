@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {classify,rank,priorityBand,riskFlags,reviewLane,PRIORITY_FLOORS} from '../lib/market-hunter-v2-engine.js';
+import {classify,rank,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,PRIORITY_FLOORS,SURFACE_POLICY} from '../lib/market-hunter-v2-engine.js';
 
 const base={
   weeklyUp:false,last:100,ma20:100,ma50:100,ma20Slope5:0,ma50Slope10:0,
@@ -65,6 +65,14 @@ for(const [stage,floor] of Object.entries(PRIORITY_FLOORS)){
   assert.equal(priorityBand(stage,floor.reviewFirst),'Review First');
 }
 assert.equal(priorityBand('Unknown',99),'Stage Member');
+
+assert.equal(SURFACE_POLICY['Early Watch'].maxVisible,6);
+assert.equal(surfaceEligible('Early Watch',PRIORITY_FLOORS['Early Watch'].reviewFirst-0.1),false);
+assert.equal(surfaceEligible('Early Watch',PRIORITY_FLOORS['Early Watch'].reviewFirst),true);
+assert.equal(surfaceEligible('Recovery',99),false);
+const surfaced=surfaceSelect('Early Watch',Array.from({length:9},(_,i)=>({symbol:'S'+i,score:70-i})));
+assert.equal(surfaced.length,6);
+assert.deepEqual(surfaced.map(x=>x.symbol),['S0','S1','S2','S3','S4','S5']);
 
 assert.equal(reviewLane('Attractive Growth',PRIORITY_FLOORS['Attractive Growth'].reviewFirst,m({dist20:8})),'High Intensity');
 assert.equal(reviewLane('Established Move',PRIORITY_FLOORS['Established Move'].reviewFirst,m({rsi14:80})),'High Intensity');
