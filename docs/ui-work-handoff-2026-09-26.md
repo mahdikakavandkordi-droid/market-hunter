@@ -320,3 +320,37 @@ Validation:
 - Vercel deployment for `61b780a` is READY
 - no runtime errors observed in the selected recent Vercel window
 - GitHub Actions usage remains unchanged on the temporary UI branch
+
+
+## Portfolio Monitor — Advanced Risk
+
+Advanced Risk is implemented as a collapsed section so the default Portfolio view stays simple.
+
+### Metrics
+- current-weight annualized volatility vs TSX
+- 60-session max drawdown
+- beta vs TSX
+- portfolio return vs TSX
+- excess return vs TSX
+- average pairwise holding correlation
+- highest-correlation pair
+- diversification read
+- TSX ±5% beta-based stress lens
+- holding-level variance / risk contribution
+
+### Risk contribution
+Uses current portfolio weights and the covariance matrix over the common historical session window. It distinguishes portfolio weight from contribution to recent portfolio variance.
+
+### Safety / integrity guards
+- TSX benchmark is always fetched for portfolio-level beta/stress analytics, including CDR-only portfolios.
+- Portfolio-level volatility, beta and stress analytics are withheld if not all quantity-bearing holdings have sufficient common history.
+- Mixed/unknown currencies continue to block combined value-weighted portfolio analytics until FX conversion exists.
+- Correlation can still be shown for a covered subset because it is based on percentage returns.
+- Portfolio risk history is explicitly described as a current-weight monitoring approximation rather than a reconstructed transaction-level track record.
+- Stress lens is described as sensitivity, not a forecast or signal.
+
+Latest validation:
+- frontend JavaScript syntax: PASS
+- api/portfolio.js syntax: PASS
+- risk contribution wiring: PASS
+- no new GitHub Actions run triggered
