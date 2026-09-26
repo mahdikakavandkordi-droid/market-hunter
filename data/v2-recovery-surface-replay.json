@@ -1,0 +1,1031 @@
+{
+  "generatedAt": "2026-09-26T13:22:21.298Z",
+  "version": "market-hunter-v2-rebuild-h2p5-2026-09-26",
+  "method": {
+    "description": "Historical daily replay of Recovery Review First candidates from all four batches. Compare current Review First surface with Review First plus a confirmed break above the latest minor swing high. Both policies are capped at six with no quota filling.",
+    "maxVisible": 6,
+    "holdout": "Recent holdout is the final 30% of chronological scan dates.",
+    "note": "Diagnostic only. Production Recovery rules are unchanged."
+  },
+  "dateRange": {
+    "start": "2022-02-18",
+    "end": "2026-08-27",
+    "scanDays": 1135
+  },
+  "horizons": {
+    "5": {
+      "reviewFirst": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 919,
+          "zeroPickDays": 216,
+          "pctDaysWithPicks": 81,
+          "averageVisibleAllDays": 2.72,
+          "averageVisibleActiveDays": 3.36,
+          "averageEligibleActiveDays": 4.6,
+          "maxEligibleBeforeCap": 31,
+          "capBindingDays": 198,
+          "maxVisibleObserved": 6,
+          "visibleDistribution": {
+            "0": 216,
+            "1": 230,
+            "2": 166,
+            "3": 123,
+            "4": 86,
+            "5": 67,
+            "6": 247
+          }
+        },
+        "pickDayObservations": {
+          "overall": {
+            "n": 3092,
+            "mean": 0.25,
+            "median": 0.28,
+            "positiveRate": 51.7,
+            "benchmarkBeatRate": 49.5,
+            "meanExcess": -0.04,
+            "avgMAE": -2.64,
+            "avgMFE": 2.84
+          },
+          "chronologicalSplit": {
+            "cutDate": "2025-04-21",
+            "train": {
+              "n": 2145,
+              "mean": 0.23,
+              "median": 0.27,
+              "positiveRate": 51.6,
+              "benchmarkBeatRate": 50.6,
+              "meanExcess": 0.07,
+              "avgMAE": -2.58,
+              "avgMFE": 2.71
+            },
+            "recentHoldout": {
+              "n": 947,
+              "mean": 0.28,
+              "median": 0.29,
+              "positiveRate": 52,
+              "benchmarkBeatRate": 47.2,
+              "meanExcess": -0.31,
+              "avgMAE": -2.76,
+              "avgMFE": 3.13
+            }
+          },
+          "rank1": {
+            "n": 919,
+            "mean": 0.02,
+            "median": 0.19,
+            "positiveRate": 51.4,
+            "benchmarkBeatRate": 48.5,
+            "meanExcess": -0.23,
+            "avgMAE": -2.85,
+            "avgMFE": 2.75
+          },
+          "ranks1to3": {
+            "n": 2131,
+            "mean": 0.15,
+            "median": 0.22,
+            "positiveRate": 51.5,
+            "benchmarkBeatRate": 49.8,
+            "meanExcess": -0.13,
+            "avgMAE": -2.73,
+            "avgMFE": 2.77
+          },
+          "ranks4to6": {
+            "n": 961,
+            "mean": 0.47,
+            "median": 0.37,
+            "positiveRate": 52.1,
+            "benchmarkBeatRate": 48.9,
+            "meanExcess": 0.15,
+            "avgMAE": -2.42,
+            "avgMFE": 3
+          },
+          "byYear": {
+            "2022": {
+              "n": 681,
+              "mean": -0.4,
+              "median": -0.39,
+              "positiveRate": 46,
+              "benchmarkBeatRate": 46.3,
+              "meanExcess": -0.14,
+              "avgMAE": -3.31,
+              "avgMFE": 2.54
+            },
+            "2023": {
+              "n": 681,
+              "mean": 1.01,
+              "median": 0.62,
+              "positiveRate": 57,
+              "benchmarkBeatRate": 56.1,
+              "meanExcess": 0.7,
+              "avgMAE": -1.89,
+              "avgMFE": 3.15
+            },
+            "2024": {
+              "n": 527,
+              "mean": 0.2,
+              "median": 0.19,
+              "positiveRate": 51,
+              "benchmarkBeatRate": 49.5,
+              "meanExcess": -0.28,
+              "avgMAE": -2.47,
+              "avgMFE": 2.52
+            },
+            "2025": {
+              "n": 612,
+              "mean": 1.22,
+              "median": 1.07,
+              "positiveRate": 58.3,
+              "benchmarkBeatRate": 54.4,
+              "meanExcess": 0.7,
+              "avgMAE": -2.01,
+              "avgMFE": 3.37
+            },
+            "2026": {
+              "n": 591,
+              "mean": -0.86,
+              "median": -0.36,
+              "positiveRate": 46,
+              "benchmarkBeatRate": 40.8,
+              "meanExcess": -1.35,
+              "avgMAE": -3.52,
+              "avgMFE": 2.57
+            }
+          }
+        },
+        "dailyEqualWeightCohort": {
+          "n": 919,
+          "mean": 0.14,
+          "median": 0.24,
+          "positiveRate": 52.1,
+          "benchmarkBeatRate": 48.3,
+          "meanExcess": -0.08,
+          "avgMAE": -2.67,
+          "avgMFE": 2.84
+        },
+        "firstSurfaceEpisodes": {
+          "n": 1927,
+          "mean": 0.39,
+          "median": 0.36,
+          "positiveRate": 52.8,
+          "benchmarkBeatRate": 50.9,
+          "meanExcess": 0.16,
+          "avgMAE": -2.5,
+          "avgMFE": 2.97
+        },
+        "uniqueSymbols": 229
+      },
+      "confirmedBreak": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 687,
+          "zeroPickDays": 448,
+          "pctDaysWithPicks": 60.5,
+          "averageVisibleAllDays": 1.49,
+          "averageVisibleActiveDays": 2.47,
+          "averageEligibleActiveDays": 2.84,
+          "maxEligibleBeforeCap": 29,
+          "capBindingDays": 54,
+          "maxVisibleObserved": 6,
+          "visibleDistribution": {
+            "0": 448,
+            "1": 276,
+            "2": 154,
+            "3": 97,
+            "4": 54,
+            "5": 31,
+            "6": 75
+          }
+        },
+        "pickDayObservations": {
+          "overall": {
+            "n": 1696,
+            "mean": 0.09,
+            "median": 0.05,
+            "positiveRate": 50.4,
+            "benchmarkBeatRate": 47.6,
+            "meanExcess": -0.19,
+            "avgMAE": -2.7,
+            "avgMFE": 2.77
+          },
+          "chronologicalSplit": {
+            "cutDate": "2025-04-21",
+            "train": {
+              "n": 1175,
+              "mean": 0.01,
+              "median": 0.04,
+              "positiveRate": 50.2,
+              "benchmarkBeatRate": 47.9,
+              "meanExcess": -0.09,
+              "avgMAE": -2.67,
+              "avgMFE": 2.55
+            },
+            "recentHoldout": {
+              "n": 521,
+              "mean": 0.27,
+              "median": 0.28,
+              "positiveRate": 50.7,
+              "benchmarkBeatRate": 47,
+              "meanExcess": -0.43,
+              "avgMAE": -2.77,
+              "avgMFE": 3.27
+            }
+          },
+          "rank1": {
+            "n": 687,
+            "mean": 0.15,
+            "median": -0.11,
+            "positiveRate": 49.3,
+            "benchmarkBeatRate": 47.3,
+            "meanExcess": -0.11,
+            "avgMAE": -2.79,
+            "avgMFE": 2.89
+          },
+          "ranks1to3": {
+            "n": 1355,
+            "mean": 0.22,
+            "median": 0.27,
+            "positiveRate": 51.2,
+            "benchmarkBeatRate": 48.6,
+            "meanExcess": -0.09,
+            "avgMAE": -2.63,
+            "avgMFE": 2.84
+          },
+          "ranks4to6": {
+            "n": 341,
+            "mean": -0.41,
+            "median": -0.38,
+            "positiveRate": 46.9,
+            "benchmarkBeatRate": 44,
+            "meanExcess": -0.57,
+            "avgMAE": -2.96,
+            "avgMFE": 2.49
+          },
+          "byYear": {
+            "2022": {
+              "n": 380,
+              "mean": -0.67,
+              "median": -0.74,
+              "positiveRate": 41.3,
+              "benchmarkBeatRate": 41.8,
+              "meanExcess": -0.34,
+              "avgMAE": -3.36,
+              "avgMFE": 2.12
+            },
+            "2023": {
+              "n": 400,
+              "mean": 0.72,
+              "median": 0.56,
+              "positiveRate": 55.3,
+              "benchmarkBeatRate": 53,
+              "meanExcess": 0.48,
+              "avgMAE": -2.06,
+              "avgMFE": 3.03
+            },
+            "2024": {
+              "n": 259,
+              "mean": -0.04,
+              "median": 0.36,
+              "positiveRate": 52.1,
+              "benchmarkBeatRate": 47.9,
+              "meanExcess": -0.52,
+              "avgMAE": -2.59,
+              "avgMFE": 2.53
+            },
+            "2025": {
+              "n": 333,
+              "mean": 1.14,
+              "median": 0.97,
+              "positiveRate": 57.4,
+              "benchmarkBeatRate": 52.3,
+              "meanExcess": 0.58,
+              "avgMAE": -1.93,
+              "avgMFE": 3.34
+            },
+            "2026": {
+              "n": 324,
+              "mean": -0.75,
+              "median": -0.43,
+              "positiveRate": 46.3,
+              "benchmarkBeatRate": 42.9,
+              "meanExcess": -1.37,
+              "avgMAE": -3.59,
+              "avgMFE": 2.83
+            }
+          }
+        },
+        "dailyEqualWeightCohort": {
+          "n": 687,
+          "mean": 0.11,
+          "median": -0.04,
+          "positiveRate": 49.6,
+          "benchmarkBeatRate": 48.2,
+          "meanExcess": -0.14,
+          "avgMAE": -2.65,
+          "avgMFE": 2.81
+        },
+        "firstSurfaceEpisodes": {
+          "n": 1105,
+          "mean": 0.29,
+          "median": 0.28,
+          "positiveRate": 51.4,
+          "benchmarkBeatRate": 48.1,
+          "meanExcess": 0.01,
+          "avgMAE": -2.44,
+          "avgMFE": 2.92
+        },
+        "uniqueSymbols": 218
+      },
+      "deltaConfirmedVsReviewFirst": {
+        "overall": {
+          "mean": -0.16,
+          "positiveRate": -1.3,
+          "benchmarkBeatRate": -1.9,
+          "meanExcess": -0.15
+        },
+        "recentHoldout": {
+          "mean": -0.01,
+          "positiveRate": -1.3,
+          "benchmarkBeatRate": -0.2,
+          "meanExcess": -0.12
+        }
+      }
+    },
+    "10": {
+      "reviewFirst": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 919,
+          "zeroPickDays": 216,
+          "pctDaysWithPicks": 81,
+          "averageVisibleAllDays": 2.72,
+          "averageVisibleActiveDays": 3.36,
+          "averageEligibleActiveDays": 4.6,
+          "maxEligibleBeforeCap": 31,
+          "capBindingDays": 198,
+          "maxVisibleObserved": 6,
+          "visibleDistribution": {
+            "0": 216,
+            "1": 230,
+            "2": 166,
+            "3": 123,
+            "4": 86,
+            "5": 67,
+            "6": 247
+          }
+        },
+        "pickDayObservations": {
+          "overall": {
+            "n": 3092,
+            "mean": 0.76,
+            "median": 0.66,
+            "positiveRate": 53.6,
+            "benchmarkBeatRate": 49.2,
+            "meanExcess": 0.07,
+            "avgMAE": -4.34,
+            "avgMFE": 5.01
+          },
+          "chronologicalSplit": {
+            "cutDate": "2025-04-21",
+            "train": {
+              "n": 2145,
+              "mean": 0.44,
+              "median": 0.54,
+              "positiveRate": 52.9,
+              "benchmarkBeatRate": 49.5,
+              "meanExcess": 0.04,
+              "avgMAE": -4.28,
+              "avgMFE": 4.71
+            },
+            "recentHoldout": {
+              "n": 947,
+              "mean": 1.46,
+              "median": 0.95,
+              "positiveRate": 55.2,
+              "benchmarkBeatRate": 48.6,
+              "meanExcess": 0.14,
+              "avgMAE": -4.46,
+              "avgMFE": 5.68
+            }
+          },
+          "rank1": {
+            "n": 919,
+            "mean": 0.33,
+            "median": 0.2,
+            "positiveRate": 51.1,
+            "benchmarkBeatRate": 46.6,
+            "meanExcess": -0.28,
+            "avgMAE": -4.62,
+            "avgMFE": 4.87
+          },
+          "ranks1to3": {
+            "n": 2131,
+            "mean": 0.5,
+            "median": 0.37,
+            "positiveRate": 51.5,
+            "benchmarkBeatRate": 48,
+            "meanExcess": -0.13,
+            "avgMAE": -4.46,
+            "avgMFE": 4.88
+          },
+          "ranks4to6": {
+            "n": 961,
+            "mean": 1.34,
+            "median": 1.43,
+            "positiveRate": 58.3,
+            "benchmarkBeatRate": 51.9,
+            "meanExcess": 0.53,
+            "avgMAE": -4.05,
+            "avgMFE": 5.29
+          },
+          "byYear": {
+            "2022": {
+              "n": 681,
+              "mean": -0.11,
+              "median": 0.33,
+              "positiveRate": 52,
+              "benchmarkBeatRate": 50.4,
+              "meanExcess": 0.15,
+              "avgMAE": -5.24,
+              "avgMFE": 4.72
+            },
+            "2023": {
+              "n": 681,
+              "mean": 1.27,
+              "median": 1,
+              "positiveRate": 55.1,
+              "benchmarkBeatRate": 51.8,
+              "meanExcess": 0.63,
+              "avgMAE": -3.5,
+              "avgMFE": 5.08
+            },
+            "2024": {
+              "n": 527,
+              "mean": 0.7,
+              "median": 0.37,
+              "positiveRate": 51.6,
+              "benchmarkBeatRate": 46.1,
+              "meanExcess": -0.31,
+              "avgMAE": -3.81,
+              "avgMFE": 4.59
+            },
+            "2025": {
+              "n": 612,
+              "mean": 2.01,
+              "median": 1.9,
+              "positiveRate": 61.8,
+              "benchmarkBeatRate": 55.4,
+              "meanExcess": 0.86,
+              "avgMAE": -3.48,
+              "avgMFE": 5.76
+            },
+            "2026": {
+              "n": 591,
+              "mean": -0.08,
+              "median": -0.49,
+              "positiveRate": 47.2,
+              "benchmarkBeatRate": 41.1,
+              "meanExcess": -1.13,
+              "avgMAE": -5.62,
+              "avgMFE": 4.84
+            }
+          }
+        },
+        "dailyEqualWeightCohort": {
+          "n": 919,
+          "mean": 0.59,
+          "median": 0.56,
+          "positiveRate": 53.6,
+          "benchmarkBeatRate": 48.2,
+          "meanExcess": 0.02,
+          "avgMAE": -4.34,
+          "avgMFE": 4.91
+        },
+        "firstSurfaceEpisodes": {
+          "n": 1927,
+          "mean": 0.93,
+          "median": 0.72,
+          "positiveRate": 54.4,
+          "benchmarkBeatRate": 50.2,
+          "meanExcess": 0.33,
+          "avgMAE": -4.19,
+          "avgMFE": 5.13
+        },
+        "uniqueSymbols": 229
+      },
+      "confirmedBreak": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 687,
+          "zeroPickDays": 448,
+          "pctDaysWithPicks": 60.5,
+          "averageVisibleAllDays": 1.49,
+          "averageVisibleActiveDays": 2.47,
+          "averageEligibleActiveDays": 2.84,
+          "maxEligibleBeforeCap": 29,
+          "capBindingDays": 54,
+          "maxVisibleObserved": 6,
+          "visibleDistribution": {
+            "0": 448,
+            "1": 276,
+            "2": 154,
+            "3": 97,
+            "4": 54,
+            "5": 31,
+            "6": 75
+          }
+        },
+        "pickDayObservations": {
+          "overall": {
+            "n": 1696,
+            "mean": 0.64,
+            "median": 0.64,
+            "positiveRate": 53.1,
+            "benchmarkBeatRate": 48.9,
+            "meanExcess": 0.04,
+            "avgMAE": -4.38,
+            "avgMFE": 4.99
+          },
+          "chronologicalSplit": {
+            "cutDate": "2025-04-21",
+            "train": {
+              "n": 1175,
+              "mean": 0.2,
+              "median": 0.4,
+              "positiveRate": 51.6,
+              "benchmarkBeatRate": 48.1,
+              "meanExcess": -0.05,
+              "avgMAE": -4.37,
+              "avgMFE": 4.59
+            },
+            "recentHoldout": {
+              "n": 521,
+              "mean": 1.61,
+              "median": 1.55,
+              "positiveRate": 56.6,
+              "benchmarkBeatRate": 50.7,
+              "meanExcess": 0.23,
+              "avgMAE": -4.39,
+              "avgMFE": 5.91
+            }
+          },
+          "rank1": {
+            "n": 687,
+            "mean": 0.7,
+            "median": 0.65,
+            "positiveRate": 53,
+            "benchmarkBeatRate": 48.8,
+            "meanExcess": 0.1,
+            "avgMAE": -4.48,
+            "avgMFE": 5.16
+          },
+          "ranks1to3": {
+            "n": 1355,
+            "mean": 0.77,
+            "median": 0.69,
+            "positiveRate": 53.3,
+            "benchmarkBeatRate": 49.2,
+            "meanExcess": 0.12,
+            "avgMAE": -4.27,
+            "avgMFE": 5.07
+          },
+          "ranks4to6": {
+            "n": 341,
+            "mean": 0.13,
+            "median": 0.47,
+            "positiveRate": 52.5,
+            "benchmarkBeatRate": 47.5,
+            "meanExcess": -0.32,
+            "avgMAE": -4.81,
+            "avgMFE": 4.68
+          },
+          "byYear": {
+            "2022": {
+              "n": 380,
+              "mean": -0.38,
+              "median": 0.06,
+              "positiveRate": 50.5,
+              "benchmarkBeatRate": 49.2,
+              "meanExcess": -0.05,
+              "avgMAE": -5.26,
+              "avgMFE": 4.38
+            },
+            "2023": {
+              "n": 400,
+              "mean": 1.53,
+              "median": 1.1,
+              "positiveRate": 55.3,
+              "benchmarkBeatRate": 50.2,
+              "meanExcess": 0.9,
+              "avgMAE": -3.58,
+              "avgMFE": 5.14
+            },
+            "2024": {
+              "n": 259,
+              "mean": -0.32,
+              "median": -0.33,
+              "positiveRate": 47.5,
+              "benchmarkBeatRate": 40.9,
+              "meanExcess": -1.14,
+              "avgMAE": -4,
+              "avgMFE": 4.3
+            },
+            "2025": {
+              "n": 333,
+              "mean": 1.84,
+              "median": 2.07,
+              "positiveRate": 60.7,
+              "benchmarkBeatRate": 56.5,
+              "meanExcess": 0.85,
+              "avgMAE": -3.46,
+              "avgMFE": 5.67
+            },
+            "2026": {
+              "n": 324,
+              "mean": 0.27,
+              "median": 0.18,
+              "positiveRate": 50.3,
+              "benchmarkBeatRate": 45.4,
+              "meanExcess": -0.83,
+              "avgMAE": -5.59,
+              "avgMFE": 5.39
+            }
+          }
+        },
+        "dailyEqualWeightCohort": {
+          "n": 687,
+          "mean": 0.56,
+          "median": 0.41,
+          "positiveRate": 52.1,
+          "benchmarkBeatRate": 46.7,
+          "meanExcess": -0.02,
+          "avgMAE": -4.26,
+          "avgMFE": 4.85
+        },
+        "firstSurfaceEpisodes": {
+          "n": 1105,
+          "mean": 0.8,
+          "median": 0.71,
+          "positiveRate": 53.6,
+          "benchmarkBeatRate": 49,
+          "meanExcess": 0.18,
+          "avgMAE": -4.14,
+          "avgMFE": 5.11
+        },
+        "uniqueSymbols": 218
+      },
+      "deltaConfirmedVsReviewFirst": {
+        "overall": {
+          "mean": -0.12,
+          "positiveRate": -0.5,
+          "benchmarkBeatRate": -0.3,
+          "meanExcess": -0.03
+        },
+        "recentHoldout": {
+          "mean": 0.15,
+          "positiveRate": 1.4,
+          "benchmarkBeatRate": 2.1,
+          "meanExcess": 0.09
+        }
+      }
+    },
+    "20": {
+      "reviewFirst": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 919,
+          "zeroPickDays": 216,
+          "pctDaysWithPicks": 81,
+          "averageVisibleAllDays": 2.72,
+          "averageVisibleActiveDays": 3.36,
+          "averageEligibleActiveDays": 4.6,
+          "maxEligibleBeforeCap": 31,
+          "capBindingDays": 198,
+          "maxVisibleObserved": 6,
+          "visibleDistribution": {
+            "0": 216,
+            "1": 230,
+            "2": 166,
+            "3": 123,
+            "4": 86,
+            "5": 67,
+            "6": 247
+          }
+        },
+        "pickDayObservations": {
+          "overall": {
+            "n": 3092,
+            "mean": 1.75,
+            "median": 1.87,
+            "positiveRate": 56.9,
+            "benchmarkBeatRate": 50.4,
+            "meanExcess": 0.45,
+            "avgMAE": -6.47,
+            "avgMFE": 8.27
+          },
+          "chronologicalSplit": {
+            "cutDate": "2025-04-21",
+            "train": {
+              "n": 2145,
+              "mean": 1.13,
+              "median": 1.51,
+              "positiveRate": 55.9,
+              "benchmarkBeatRate": 50.8,
+              "meanExcess": 0.29,
+              "avgMAE": -6.48,
+              "avgMFE": 7.51
+            },
+            "recentHoldout": {
+              "n": 947,
+              "mean": 3.15,
+              "median": 3.05,
+              "positiveRate": 58.9,
+              "benchmarkBeatRate": 49.3,
+              "meanExcess": 0.8,
+              "avgMAE": -6.44,
+              "avgMFE": 10.01
+            }
+          },
+          "rank1": {
+            "n": 919,
+            "mean": 1.2,
+            "median": 1.09,
+            "positiveRate": 53.3,
+            "benchmarkBeatRate": 48.4,
+            "meanExcess": 0.11,
+            "avgMAE": -7.01,
+            "avgMFE": 8.03
+          },
+          "ranks1to3": {
+            "n": 2131,
+            "mean": 1.56,
+            "median": 1.67,
+            "positiveRate": 55.8,
+            "benchmarkBeatRate": 49.7,
+            "meanExcess": 0.36,
+            "avgMAE": -6.67,
+            "avgMFE": 8.18
+          },
+          "ranks4to6": {
+            "n": 961,
+            "mean": 2.16,
+            "median": 2.79,
+            "positiveRate": 59.2,
+            "benchmarkBeatRate": 51.7,
+            "meanExcess": 0.64,
+            "avgMAE": -6.02,
+            "avgMFE": 8.47
+          },
+          "byYear": {
+            "2022": {
+              "n": 681,
+              "mean": 0.12,
+              "median": 1.19,
+              "positiveRate": 54.9,
+              "benchmarkBeatRate": 51.4,
+              "meanExcess": 0.22,
+              "avgMAE": -7.57,
+              "avgMFE": 7.32
+            },
+            "2023": {
+              "n": 681,
+              "mean": 2.52,
+              "median": 2.28,
+              "positiveRate": 61.8,
+              "benchmarkBeatRate": 53.7,
+              "meanExcess": 1.23,
+              "avgMAE": -5.09,
+              "avgMFE": 7.8
+            },
+            "2024": {
+              "n": 527,
+              "mean": 2.36,
+              "median": 1.94,
+              "positiveRate": 57.1,
+              "benchmarkBeatRate": 50.1,
+              "meanExcess": 0.4,
+              "avgMAE": -5.62,
+              "avgMFE": 7.86
+            },
+            "2025": {
+              "n": 612,
+              "mean": 4.13,
+              "median": 4.49,
+              "positiveRate": 64.1,
+              "benchmarkBeatRate": 57.2,
+              "meanExcess": 2.16,
+              "avgMAE": -5.79,
+              "avgMFE": 10.21
+            },
+            "2026": {
+              "n": 591,
+              "mean": -0.28,
+              "median": -1.5,
+              "positiveRate": 45.7,
+              "benchmarkBeatRate": 38.4,
+              "meanExcess": -1.92,
+              "avgMAE": -8.26,
+              "avgMFE": 8.29
+            }
+          }
+        },
+        "dailyEqualWeightCohort": {
+          "n": 919,
+          "mean": 1.48,
+          "median": 1.94,
+          "positiveRate": 58.9,
+          "benchmarkBeatRate": 53.1,
+          "meanExcess": 0.44,
+          "avgMAE": -6.65,
+          "avgMFE": 8.05
+        },
+        "firstSurfaceEpisodes": {
+          "n": 1927,
+          "mean": 1.99,
+          "median": 2.02,
+          "positiveRate": 57.6,
+          "benchmarkBeatRate": 52.4,
+          "meanExcess": 0.78,
+          "avgMAE": -6.33,
+          "avgMFE": 8.46
+        },
+        "uniqueSymbols": 229
+      },
+      "confirmedBreak": {
+        "selection": {
+          "scanDays": 1135,
+          "daysWithPicks": 687,
+          "zeroPickDays": 448,
+          "pctDaysWithPicks": 60.5,
+          "averageVisibleAllDays": 1.49,
+          "averageVisibleActiveDays": 2.47,
+          "averageEligibleActiveDays": 2.84,
+          "maxEligibleBeforeCap": 29,
+          "capBindingDays": 54,
+          "maxVisibleObserved": 6,
+          "visibleDistribution": {
+            "0": 448,
+            "1": 276,
+            "2": 154,
+            "3": 97,
+            "4": 54,
+            "5": 31,
+            "6": 75
+          }
+        },
+        "pickDayObservations": {
+          "overall": {
+            "n": 1696,
+            "mean": 1.37,
+            "median": 1.54,
+            "positiveRate": 55.2,
+            "benchmarkBeatRate": 49.2,
+            "meanExcess": 0.13,
+            "avgMAE": -6.59,
+            "avgMFE": 8.11
+          },
+          "chronologicalSplit": {
+            "cutDate": "2025-04-21",
+            "train": {
+              "n": 1175,
+              "mean": 1.02,
+              "median": 1.08,
+              "positiveRate": 54.1,
+              "benchmarkBeatRate": 49.6,
+              "meanExcess": 0.23,
+              "avgMAE": -6.64,
+              "avgMFE": 7.42
+            },
+            "recentHoldout": {
+              "n": 521,
+              "mean": 2.14,
+              "median": 2.66,
+              "positiveRate": 57.6,
+              "benchmarkBeatRate": 48.4,
+              "meanExcess": -0.1,
+              "avgMAE": -6.49,
+              "avgMFE": 9.65
+            }
+          },
+          "rank1": {
+            "n": 687,
+            "mean": 1.37,
+            "median": 1.27,
+            "positiveRate": 52.8,
+            "benchmarkBeatRate": 47.5,
+            "meanExcess": 0.19,
+            "avgMAE": -6.89,
+            "avgMFE": 8.3
+          },
+          "ranks1to3": {
+            "n": 1355,
+            "mean": 1.47,
+            "median": 1.56,
+            "positiveRate": 55.3,
+            "benchmarkBeatRate": 49.4,
+            "meanExcess": 0.24,
+            "avgMAE": -6.5,
+            "avgMFE": 8.18
+          },
+          "ranks4to6": {
+            "n": 341,
+            "mean": 0.98,
+            "median": 1.17,
+            "positiveRate": 54.8,
+            "benchmarkBeatRate": 48.7,
+            "meanExcess": -0.32,
+            "avgMAE": -6.95,
+            "avgMFE": 7.81
+          },
+          "byYear": {
+            "2022": {
+              "n": 380,
+              "mean": -0.76,
+              "median": 0.7,
+              "positiveRate": 53.2,
+              "benchmarkBeatRate": 49.2,
+              "meanExcess": -0.62,
+              "avgMAE": -7.59,
+              "avgMFE": 6.69
+            },
+            "2023": {
+              "n": 400,
+              "mean": 3.27,
+              "median": 2.33,
+              "positiveRate": 59.8,
+              "benchmarkBeatRate": 52.5,
+              "meanExcess": 1.78,
+              "avgMAE": -5.12,
+              "avgMFE": 8.2
+            },
+            "2024": {
+              "n": 259,
+              "mean": 1.79,
+              "median": 0.23,
+              "positiveRate": 51.4,
+              "benchmarkBeatRate": 47.9,
+              "meanExcess": 0.15,
+              "avgMAE": -6.13,
+              "avgMFE": 7.66
+            },
+            "2025": {
+              "n": 333,
+              "mean": 3.41,
+              "median": 4.05,
+              "positiveRate": 64,
+              "benchmarkBeatRate": 55,
+              "meanExcess": 1.4,
+              "avgMAE": -5.89,
+              "avgMFE": 9.41
+            },
+            "2026": {
+              "n": 324,
+              "mean": -0.93,
+              "median": -1.46,
+              "positiveRate": 46,
+              "benchmarkBeatRate": 40.4,
+              "meanExcess": -2.38,
+              "avgMAE": -8.33,
+              "avgMFE": 8.68
+            }
+          }
+        },
+        "dailyEqualWeightCohort": {
+          "n": 687,
+          "mean": 1.28,
+          "median": 1.7,
+          "positiveRate": 56,
+          "benchmarkBeatRate": 50.4,
+          "meanExcess": 0.14,
+          "avgMAE": -6.56,
+          "avgMFE": 7.82
+        },
+        "firstSurfaceEpisodes": {
+          "n": 1105,
+          "mean": 1.49,
+          "median": 1.48,
+          "positiveRate": 55.7,
+          "benchmarkBeatRate": 49,
+          "meanExcess": 0.2,
+          "avgMAE": -6.37,
+          "avgMFE": 8.13
+        },
+        "uniqueSymbols": 218
+      },
+      "deltaConfirmedVsReviewFirst": {
+        "overall": {
+          "mean": -0.38,
+          "positiveRate": -1.7,
+          "benchmarkBeatRate": -1.2,
+          "meanExcess": -0.32
+        },
+        "recentHoldout": {
+          "mean": -1.01,
+          "positiveRate": -1.3,
+          "benchmarkBeatRate": -0.9,
+          "meanExcess": -0.9
+        }
+      }
+    }
+  }
+}
