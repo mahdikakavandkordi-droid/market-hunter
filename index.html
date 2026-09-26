@@ -123,7 +123,7 @@ button{border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 
 .why{margin-top:9px;padding:8px 9px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(37,48,60,.62);color:#d8e0e8;font-size:10.5px;line-height:1.4}
 .why strong{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.06em;margin-right:5px}
 .score{margin-top:7px;display:flex;align-items:center;gap:8px}.bar{height:5px;background:#202a34;border-radius:999px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,#7186a0,#dce6f2)}.score small{color:var(--muted2);font-size:10px}
-.detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.card.open .detail{display:block}
+.detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.card.open .detail,.detail.open{display:block}
 .detail-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.pill{border:1px solid var(--line);border-radius:9px;padding:7px;text-align:center;font-size:9px;color:var(--muted)}.pill b{display:block;margin-top:3px;font-size:11px;color:var(--text)}
 .signal{border:1px solid var(--line);border-radius:9px;padding:8px 9px;font-size:9px;color:var(--muted);text-align:left}
 .signal b{display:block;margin-top:3px;font-size:11px;color:var(--text);line-height:1.3}
@@ -289,7 +289,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
         </div>
       </details>
     </div>
-    <div class="status" id="status"><span class="dot"></span>Waiting for scan</div>
+    <div class="status" id="status" aria-live="polite"><span class="dot"></span>Waiting for scan</div>
   </div>
 </header>
 
@@ -301,7 +301,7 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
   <button class="tab" data-tab="positions">Positions</button>
 </div>
 
-<div class="error" id="error"></div>
+<div class="error" id="error" role="alert"></div>
 
 <section id="marketView" class="view active">
   <div id="marketContent"></div>
@@ -812,10 +812,10 @@ function renderWatchlist(){
 function unavailableWatchCard(x){
   const ticker=x.symbol.replace(/\.(TO|NE|V)$/,'');
   return `<article class="card">
-    <div class="top"><div><div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge recovery">Watchlist</span></div><div class="company">${x.company}</div><div class="sector">داده فعلاً در دسترس نیست · ${x.unavailableReason}</div></div>
-    <div class="card-actions"><button class="heart saved" data-watch="${x.symbol}" title="Watchlist">♥</button><button class="position-btn" type="button" data-position="${x.symbol}" title="Mark as purchased">${state.positions.has(x.symbol)?'✓ Bought':'Bought'}</button>
+    <div class="top"><div><div class="ticker-line"><div class="ticker">${ticker}</div><span class="badge recovery">Watchlist</span></div><div class="company">${x.company}</div><div class="sector">Current market data unavailable · ${x.unavailableReason}</div></div>
+    <div class="card-actions"><button class="heart saved" data-watch="${x.symbol}" title="Remove from Watchlist">♥</button>
             <button class="tv-link" type="button" data-tv="${x.symbol}" title="Open in TradingView">Chart ↗</button></div></div>
-    <div class="why"><strong>Saved status</strong>نماد ذخیره‌شده باقی مانده و با برگشت داده دوباره کامل نمایش داده می‌شود.</div>
+    <div class="why"><strong>Saved status</strong>This symbol stays saved and will return to the full card automatically when market data is available again.</div>
     <div class="remove-hint">Swipe left to remove</div>
   </article>`;
 }
@@ -1374,8 +1374,10 @@ function render(){
 
 async function load(){
   state.expanded.clear();
-  const app=document.querySelector('#app'),err=document.querySelector('#error');
+  const app=document.querySelector('#app'),err=document.querySelector('#error'),refresh=document.querySelector('#refresh'),status=document.querySelector('#status');
   app.classList.add('loading');err.style.display='none';
+  if(refresh){refresh.disabled=true;refresh.dataset.label=refresh.textContent;refresh.textContent='Refreshing…'}
+  if(status)status.innerHTML='<span class="dot"></span>Refreshing market data';
   try{
     const min=document.querySelector('#liq').value;
     const [scanRes,historyRes,backtestRes,v2Res,pulseRes,dailyRes]=await Promise.allSettled([
@@ -1403,7 +1405,10 @@ async function load(){
     err.textContent=`Could not complete scan: ${e.message}`;
     err.style.display='block';
     document.querySelector('#status').textContent='Scan unavailable';
-  }finally{app.classList.remove('loading')}
+  }finally{
+    app.classList.remove('loading');
+    if(refresh){refresh.disabled=false;refresh.textContent=refresh.dataset.label||'Refresh'}
+  }
 }
 
 document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
