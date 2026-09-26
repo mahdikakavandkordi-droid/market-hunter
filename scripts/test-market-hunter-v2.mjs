@@ -110,6 +110,17 @@ const establishedSurfaced=surfaceSelect('Established Move',[
   {symbol:'E',score:65},{symbol:'F',score:64},{symbol:'G',score:63},{symbol:'H',score:62}
 ]);
 assert.deepEqual(establishedSurfaced.map(x=>x.symbol),['D','A','E','F','G','H']);
+assert.equal(INTEGRATED_SURFACE_POLICY.maxVisible,6);
+assert.deepEqual(INTEGRATED_SURFACE_POLICY.stageOrder,['Early Watch','Recovery','Attractive Growth','Established Move']);
+const integrated=integratedSurfaceSelect({
+  'Early Watch':[{symbol:'E1',score:1},{symbol:'E2',score:999},{symbol:'E3',score:500}],
+  'Recovery':[{symbol:'R1',score:1},{symbol:'R2',score:1}],
+  'Attractive Growth':[{symbol:'A1',score:99},{symbol:'A2',score:98}],
+  'Established Move':[{symbol:'M1',score:100},{symbol:'M2',score:99}]
+});
+assert.deepEqual(integrated.map(x=>x.symbol),['E1','R1','A1','M1','E2','R2']);
+assert.deepEqual(integrated.map(x=>x.integratedRank),[1,2,3,4,5,6]);
+assert.equal(integrated.length,6);
 
 assert.equal(reviewLane('Attractive Growth',PRIORITY_FLOORS['Attractive Growth'].reviewFirst,m({dist20:8})),'High Intensity');
 assert.equal(reviewLane('Established Move',PRIORITY_FLOORS['Established Move'].reviewFirst,m({rsi14:80})),'High Intensity');

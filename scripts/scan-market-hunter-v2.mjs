@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
-import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
+import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 
 const range=process.env.V2_SCAN_RANGE||'2y';
 const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
@@ -116,6 +116,13 @@ const surfaceCounts=Object.fromEntries(
     return [stage,{reviewFirst,eligible,visible,hidden:Math.max(0,reviewFirst-visible)}];
   })
 );
+const integratedSurfacePicks=integratedSurfaceSelect(surfacePicks);
+const integratedSurfaceCounts={
+  stageSurfaceTotal:Object.values(surfacePicks).reduce((sum,x)=>sum+x.length,0),
+  visible:integratedSurfacePicks.length,
+  hiddenByIntegratedCap:Math.max(0,Object.values(surfacePicks).reduce((sum,x)=>sum+x.length,0)-integratedSurfacePicks.length),
+  byStage:Object.fromEntries(stages.map(stage=>[stage,integratedSurfacePicks.filter(x=>x.stage===stage).length]))
+};
 const report={
   version:VERSION,generatedAt:new Date().toISOString(),range,
   purpose:ASSUMPTIONS.purpose,
@@ -123,6 +130,7 @@ const report={
   stageCounts:Object.fromEntries(stages.map(s=>[s,byStage[s].length])),
   priorityFloors:PRIORITY_FLOORS,
   surfacePolicy:SURFACE_POLICY,surfacePicks,surfaceCounts,
+  integratedSurfacePolicy:INTEGRATED_SURFACE_POLICY,integratedSurfacePicks,integratedSurfaceCounts,
   priorityCounts:{
     reviewFirst:rows.filter(x=>x.reviewLane==='Review First').length,
     highIntensity:rows.filter(x=>x.reviewLane==='High Intensity').length
