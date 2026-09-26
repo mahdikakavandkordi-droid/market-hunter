@@ -22,13 +22,13 @@ function dailyEqualWeight(byDate){
   }
   return summary(rows);
 }
-function replay(h,filterFn){
+function replay(h,filterFn,scoreFn=x=>x.score){
   const pool=candidates.filter(x=>x.horizon===h&&filterFn(x));
   const byDateRaw=new Map();
   for(const x of pool){if(!byDateRaw.has(x.date))byDateRaw.set(x.date,[]);byDateRaw.get(x.date).push(x);}
   const byDateSelected=new Map(),obs=[],counts=[],crowdedSelected=[],crowdedExcluded=[];
   for(const date of dates){
-    const eligible=[...(byDateRaw.get(date)||[])].sort((a,b)=>b.score-a.score||a.symbol.localeCompare(b.symbol));
+    const eligible=[...(byDateRaw.get(date)||[])].map(x=>({...x,policyScore:scoreFn(x)})).sort((a,b)=>b.policyScore-a.policyScore||b.score-a.score||a.symbol.localeCompare(b.symbol));
     const sel=eligible.slice(0,MAX_VISIBLE);
     byDateSelected.set(date,sel);counts.push(sel.length);obs.push(...sel);
     if(eligible.length>MAX_VISIBLE){crowdedSelected.push(...sel);crowdedExcluded.push(...eligible.slice(MAX_VISIBLE));}
@@ -49,7 +49,9 @@ for(const h of [5,10,20]){
   result.horizons[h]={
     currentReviewFirst:replay(h,()=>true),
     cleanReview:replay(h,x=>x.cleanReview===true),
-    heatedOnly:replay(h,x=>x.cleanReview===false)
+    heatedOnly:replay(h,x=>x.cleanReview===false),
+    riskPenalty6:replay(h,()=>true,x=>x.score-6*((x.riskFlags||[]).length)),
+    cleanFirstOrdering:replay(h,()=>true,x=>x.score+(x.cleanReview===true?20:0))
   };
 }
 fs.mkdirSync('data',{recursive:true});
