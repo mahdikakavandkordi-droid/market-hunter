@@ -1,9 +1,15 @@
 {
   "version": 2,
   "functions": {
-    "api/scan.js": { "maxDuration": 30 }
+    "api/scan.js": {
+      "maxDuration": 30
+    }
   },
   "rewrites": [
-    { "source": "/api/scan", "destination": "/api/scan.js" }
-  ]
+    {
+      "source": "/api/scan",
+      "destination": "/api/scan.js"
+    }
+  ],
+  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"research/market-hunter-ui-work\" ] && ! printf '%s' \"$VERCEL_GIT_COMMIT_MESSAGE\" | grep -q '\\[deploy\\]'; then exit 0; else exit 1; fi"
 }
