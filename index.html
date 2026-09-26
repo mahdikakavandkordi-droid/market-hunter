@@ -102,7 +102,7 @@ button{border:0;border-radius:10px;background:#edf2f7;color:#0c1117;padding:9px 
 .shown{color:var(--muted2);font-size:11px;white-space:nowrap}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
 .card{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow);cursor:pointer;transition:border-color .16s ease,transform .16s ease}
-.card:hover{border-color:#405268;transform:translateY(-2px)}.card:before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:2px;border-radius:3px;background:transparent}.card:has(.badge.recovery):before{background:rgba(241,199,91,.75)}.card:has(.badge.attractive):before{background:rgba(93,214,158,.75)}.card:has(.badge.established):before{background:rgba(103,168,255,.75)}
+.card:hover{border-color:#405268;transform:translateY(-2px)}.card:focus-visible{outline:2px solid rgba(138,180,255,.75);outline-offset:2px;border-color:#405268}.card:before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:2px;border-radius:3px;background:transparent}.card:has(.badge.recovery):before{background:rgba(241,199,91,.75)}.card:has(.badge.attractive):before{background:rgba(93,214,158,.75)}.card:has(.badge.established):before{background:rgba(103,168,255,.75)}
 .card-actions{display:flex;align-items:center;gap:6px}
 .heart{background:transparent;color:var(--muted);padding:3px 5px;min-height:auto;font-size:20px;line-height:1}
 .heart.saved{color:var(--red)}
@@ -787,21 +787,34 @@ function unavailableWatchCard(x){
   </article>`;
 }
 function bindCardActions(root=''){
-  document.querySelectorAll(root+' .card').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
-  document.querySelectorAll(root+' .heart').forEach(el=>{
-    const act=e=>{e.preventDefault();e.stopPropagation();toggleWatch(el.dataset.watch)};
-    el.addEventListener('click',act);
-    el.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();toggleWatch(el.dataset.watch)},{passive:false});
+  const interactive='button,a,select,input,summary';
+  document.querySelectorAll(root+' .card').forEach(el=>{
+    el.tabIndex=0;
+    el.setAttribute('role','button');
+    el.setAttribute('aria-expanded',el.classList.contains('open')?'true':'false');
+    const toggle=e=>{
+      if(e?.target?.closest?.(interactive))return;
+      el.classList.toggle('open');
+      el.setAttribute('aria-expanded',el.classList.contains('open')?'true':'false');
+    };
+    el.addEventListener('click',toggle);
+    el.addEventListener('keydown',e=>{
+      if((e.key==='Enter'||e.key===' ')&&!e.target.closest(interactive)){e.preventDefault();toggle(e)}
+    });
   });
+  document.querySelectorAll(root+' .heart').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleWatch(el.dataset.watch)}));
   document.querySelectorAll(root+' .position-btn').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();markBought(el.dataset.position)}));
-  document.querySelectorAll(root+' .tv-link').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openTradingView(el.dataset.tv)}));
+  document.querySelectorAll(root+' .tv-link').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openTradingView(el.dataset.tv)}));
   document.querySelectorAll(root+' .watchlist .card').forEach(el=>{
-    let startX=null;
-    el.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});
+    let startX=null,startY=null;
+    el.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY},{passive:true});
     el.addEventListener('touchend',e=>{
-      if(startX===null)return;
-      const dx=e.changedTouches[0].clientX-startX;startX=null;
-      if(dx<-55){const symbol=el.querySelector('.heart')?.dataset.watch;if(symbol){state.watchlist.delete(symbol);persistWatch();renderHunter();renderWatchlist()}}
+      if(startX===null||startY===null)return;
+      const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;startX=null;startY=null;
+      if(dx<-55&&Math.abs(dx)>Math.abs(dy)*1.4){
+        const symbol=el.querySelector('.heart')?.dataset.watch;
+        if(symbol){state.watchlist.delete(symbol);persistWatch();renderHunter();renderWatchlist()}
+      }
     },{passive:true});
   });
 }
@@ -1363,6 +1376,7 @@ async function load(){
 document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
   state.tab=btn.dataset.tab;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
+  btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   document.querySelector('#marketView').classList.toggle('active',state.tab==='market');
   document.querySelector('#top5View').classList.toggle('active',state.tab==='top5');
   document.querySelector('#changesView').classList.toggle('active',state.tab==='changes');
