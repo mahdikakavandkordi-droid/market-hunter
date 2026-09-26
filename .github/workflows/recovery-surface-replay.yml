@@ -1,4 +1,4 @@
-name: Recovery Daily Surface Replay
+name: Recovery Surface Replay Diagnostic
 on:
   push:
     branches:
@@ -12,21 +12,16 @@ permissions:
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Analyze Recovery daily surface replay
+      - name: Analyze Recovery surfaced shortlist policies
         run: node scripts/analyze-recovery-surface-replay.mjs
-      - name: Commit Recovery replay report
+      - name: Commit diagnostic
         run: |
           git config user.name "market-hunter-bot"
           git config user.email "market-hunter-bot@users.noreply.github.com"
-          git add data/v2-recovery-surface-replay.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "research: refresh Recovery surface replay"
-          for attempt in 1 2 3 4 5; do
-            git pull --rebase origin research/market-hunter-v2-rebuild
-            if git push origin HEAD:research/market-hunter-v2-rebuild; then exit 0; fi
-            sleep $((attempt * 2))
-          done
-          exit 1
+          git add data/recovery-surface-replay-diagnostic.json
+          git commit -m "research: save Recovery surface replay diagnostic" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild
