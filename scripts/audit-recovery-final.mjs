@@ -58,8 +58,8 @@ for(const h of horizons){
   const close=(a,b)=>Math.abs((a??0)-(b??0))<=0.05;
   checks.push({
     name:`implemented_replay_matches_diagnostic_${h}d`,
-    pass:close(cur.overall.mean,expected.overall.mean)&&close(cur.recentHoldout.mean,expected.recentHoldout.mean),
-    detail:{implementedOverall:cur.overall.mean,diagnosticOverall:expected.overall.mean,implementedHoldout:cur.recentHoldout.mean,diagnosticHoldout:expected.recentHoldout.mean}
+    pass:close(cur.overall.mean,expected.overall.mean)&&close(cur.chronologicalSplit.recentHoldout.mean,expected.recentHoldout.mean),
+    detail:{implementedOverall:cur.overall.mean,diagnosticOverall:expected.overall.mean,implementedHoldout:cur.chronologicalSplit.recentHoldout.mean,diagnosticHoldout:expected.recentHoldout.mean}
   });
 }
 
