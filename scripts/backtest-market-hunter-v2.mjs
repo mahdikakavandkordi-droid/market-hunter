@@ -120,6 +120,27 @@ function evidenceSlices(stage,a){
 }
 
 
+function attractiveGrowthRiskDiagnostic(a){
+  const review=e=>priorityBand('Attractive Growth',e.rankScore)==='Review First';
+  const atrOk=e=>!Number.isFinite(e.features.atr14Pct)||e.features.atr14Pct<6;
+  const distOk=e=>!Number.isFinite(e.features.dist20)||e.features.dist20<6;
+  const rsiOk=e=>!Number.isFinite(e.features.rsi14)||e.features.rsi14<75;
+  const pack=rows=>{const sp=splitChron(rows);return {overall:summary(rows),train:summary(sp.train),test:summary(sp.test)}};
+  const variants={
+    reviewFirst:e=>review(e),
+    reviewNoHighATR:e=>review(e)&&atrOk(e),
+    reviewNotExtended:e=>review(e)&&distOk(e),
+    reviewNoHighRSI:e=>review(e)&&rsiOk(e),
+    reviewATRAndDistance:e=>review(e)&&atrOk(e)&&distOk(e),
+    cleanReview:e=>review(e)&&atrOk(e)&&distOk(e)&&rsiOk(e)
+  };
+  return {
+    status:'attractive-growth-risk-diagnostic-v1',
+    note:'Diagnostic only. Attractive Growth classification/ranking unchanged.',
+    variants:Object.fromEntries(Object.entries(variants).map(([name,test])=>[name,pack(a.filter(test))]))
+  };
+}
+
 function recoveryStructureDiagnostic(a){
   const broken=e=>e.features.highBroken===true;
   const freshBreak=e=>Number.isFinite(e.features.freshHighBreakAge)?e.features.freshHighBreakAge:null;
@@ -390,7 +411,8 @@ for(const h of horizons){
       },
       evidence:evidenceSlices(stage,x),
       ...(stage==='Early Watch'?{rewriteDiagnostic:earlyWatchRewriteDiagnostic(x)}:{}),
-      ...(stage==='Recovery'?{structureDiagnostic:recoveryStructureDiagnostic(x)}:{})
+      ...(stage==='Recovery'?{structureDiagnostic:recoveryStructureDiagnostic(x)}:{}),
+      ...(stage==='Attractive Growth'?{riskDiagnostic:attractiveGrowthRiskDiagnostic(x)}:{})
     };
   }
 }
