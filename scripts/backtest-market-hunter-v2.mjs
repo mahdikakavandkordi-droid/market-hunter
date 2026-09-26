@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
-import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,riskFlags,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank} from '../lib/market-hunter-v2-engine.js';
+import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,riskFlags,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 
 const batchIndex=Number(process.env.V2_BATCH_INDEX||0);
 const batchCount=Math.max(1,Number(process.env.V2_BATCH_COUNT||4));
@@ -273,6 +273,7 @@ for(const symbol of symbols){
     if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){prevStage=null;prevStageAge=-1;continue}
     const stage=classify(m);
     const score=stage?rank(m,stage):null;
+    const surfaceScore=stage?surfaceRank(m,stage,score):null;
     const stageAge=stage?(stage===prevStage?prevStageAge+1:0):null;
     surfaceReplayDates.add(date);
     if(stage==='Recovery'&&priorityBand(stage,score)==='Review First'){
@@ -281,7 +282,7 @@ for(const symbol of symbols){
         const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
         const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
         recoverySurfaceReplayCandidates.push({
-          symbol,date,horizon:h,score:round(score,1),stageAge,highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge,
+          symbol,date,horizon:h,score:round(score,1),surfaceScore:round(surfaceScore,1),stageAge,highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge,
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
           ret5:round(m.ret5),ret20:round(m.ret20),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
@@ -341,8 +342,8 @@ for(const symbol of symbols){
   const m=metrics(rows,bh);if(!m)continue;
   if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20)continue;
   const stage=classify(m);if(!stage)continue;
-  const score=rank(m,stage);
-  latest.push({symbol,name:symbolMeta.get(symbol)?.name,sector:symbolMeta.get(symbol)?.sector,stage,score:round(score,1),date,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),rs20:round(m.rs20),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),swingTrend:m.swingTrend});
+  const score=rank(m,stage),surfaceScore=surfaceRank(m,stage,score);
+  latest.push({symbol,name:symbolMeta.get(symbol)?.name,sector:symbolMeta.get(symbol)?.sector,stage,score:round(score,1),surfaceScore:round(surfaceScore,1),date,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),rs20:round(m.rs20),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),swingTrend:m.swingTrend});
 }
 
 const report={

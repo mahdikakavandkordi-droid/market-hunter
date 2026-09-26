@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {classify,rank,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,PRIORITY_FLOORS,SURFACE_POLICY} from '../lib/market-hunter-v2-engine.js';
+import {classify,rank,surfaceRank,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,PRIORITY_FLOORS,SURFACE_POLICY} from '../lib/market-hunter-v2-engine.js';
 
 const base={
   weeklyUp:false,last:100,ma20:100,ma50:100,ma20Slope5:0,ma50Slope10:0,
@@ -59,6 +59,12 @@ for(const stage of ['Early Watch','Recovery','Attractive Growth','Established Mo
   }),stage);
   assert.ok(Number.isFinite(score) && score>=0 && score<=100,stage+' rank must stay bounded');
 }
+
+const recoveryBaseNoChase=rank(m({momentumShift:3,rs20:2,upDownVolumeRatio:1,higherLow:true,swingTrend:'Structure improving',atr14Pct:3,ret20:3}), 'Recovery');
+assert.equal(surfaceRank(m({ret20:3}),'Recovery',recoveryBaseNoChase),recoveryBaseNoChase);
+const recoveryBaseChase=rank(m({momentumShift:3,rs20:2,upDownVolumeRatio:1,higherLow:true,swingTrend:'Structure improving',atr14Pct:3,ret20:9}), 'Recovery');
+assert.equal(surfaceRank(m({ret20:9}),'Recovery',recoveryBaseChase),Math.max(0,recoveryBaseChase-9));
+assert.equal(surfaceRank(m({ret20:9}),'Early Watch',55),55);
 
 for(const [stage,floor] of Object.entries(PRIORITY_FLOORS)){
   assert.equal(priorityBand(stage,floor.reviewFirst-0.1),'Stage Member');

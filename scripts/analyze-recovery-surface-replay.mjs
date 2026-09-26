@@ -31,7 +31,7 @@ function featureProfile(rows){
   };
 }
 
-function policyReplay(h,filterFn,scoreFn=x=>x.score){
+function policyReplay(h,filterFn,scoreFn=x=>Number.isFinite(x.surfaceScore)?x.surfaceScore:x.score){
   const pool=candidates.filter(x=>x.horizon===h&&filterFn(x));
   const byDate=new Map();
   for(const x of pool){if(!byDate.has(x.date))byDate.set(x.date,[]);byDate.get(x.date).push(x);}
