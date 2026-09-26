@@ -299,9 +299,8 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
 const state={data:null,v2:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
-function v2SurfaceCandidates(stage='Early Watch'){
-  const rows=state.v2?.surfacePicks?.[stage]||[];
-  return rows.map(x=>({
+function normalizeV2Candidate(x,stage=x.stage){
+  return {
     ...x,
     company:x.name||x.company||x.symbol,
     stage,
@@ -314,7 +313,15 @@ function v2SurfaceCandidates(stage='Early Watch'){
     lowState:x.lowBroken===true?'local_low_broken':(Number.isFinite(x.freshReclaimAge)&&x.freshReclaimAge<=3?'failed_low_break':'local_low_held'),
     highState:x.highBroken===true?'local_high_broken':'local_high_intact',
     why:Array.isArray(x.evidence)?x.evidence:[]
-  }));
+  };
+}
+function v2SurfaceCandidates(stage='Early Watch'){
+  const rows=state.v2?.surfacePicks?.[stage]||[];
+  return rows.map(x=>normalizeV2Candidate(x,stage));
+}
+function v2IntegratedCandidates(){
+  const rows=state.v2?.integratedSurfacePicks||[];
+  return rows.map(x=>normalizeV2Candidate(x,x.stage));
 }
 function v2AllSurfaceCandidates(){
   return [...v2SurfaceCandidates('Early Watch'),...v2SurfaceCandidates('Recovery'),...v2SurfaceCandidates('Attractive Growth'),...v2SurfaceCandidates('Established Move')];
@@ -1062,6 +1069,14 @@ function v2EstablishedMoveCard(x){
     </article>`;
 }
 
+function v2IntegratedCard(x){
+  if(x.stage==='Early Watch')return v2EarlyWatchCard(x);
+  if(x.stage==='Recovery')return v2RecoveryCard(x);
+  if(x.stage==='Attractive Growth')return v2AttractiveGrowthCard(x);
+  if(x.stage==='Established Move')return v2EstablishedMoveCard(x);
+  return '';
+}
+
 function renderTop5(){
   const root=document.querySelector('#top5Content');
   if(!root)return;
@@ -1069,40 +1084,20 @@ function renderTop5(){
     root.innerHTML='<section class="stage"><div class="empty">Validated shortlist data is unavailable right now.</div></section>';
     return;
   }
-  const early=v2SurfaceCandidates('Early Watch');
-  const recovery=v2SurfaceCandidates('Recovery');
-  const attractive=v2SurfaceCandidates('Attractive Growth');
-  const established=v2SurfaceCandidates('Established Move');
+  const picks=v2IntegratedCandidates();
   const generated=state.v2?.generatedAt?new Date(state.v2.generatedAt).toLocaleString():'';
+  const hidden=state.v2?.integratedSurfaceCounts?.hiddenByIntegratedCap;
   root.innerHTML=`
     <section class="stage">
-      <div class="stage-head"><div class="stage-main"><div class="stage-copy">
-        <h2>Early Watch Shortlist</h2>
-        <p>Only charts that cleared the validated Early Watch Review First threshold. No quota; the list can be empty.</p>
-        ${generated?`<p>Research scan updated ${generated}</p>`:''}
-      </div></div><span class="shown">${early.length}</span></div>
-      <div class="grid">${early.length?early.map(v2EarlyWatchCard).join(''):'<div class="empty">No Early Watch chart clears the final review threshold today. Doing nothing is a valid output.</div>'}</div>
-    </section>
-    <section class="stage">
-      <div class="stage-head"><div class="stage-main"><div class="stage-copy">
-        <h2>Recovery Shortlist</h2>
-        <p>Fresh Recovery only: Review First, anti-chase ordering, stage age 0–2, maximum six. Older Recovery setups stay in backend but are hidden here.</p>
-      </div></div><span class="shown">${recovery.length}</span></div>
-      <div class="grid">${recovery.length?recovery.map(v2RecoveryCard).join(''):'<div class="empty">No fresh Recovery setup clears the final surface policy today.</div>'}</div>
-    </section>
-    <section class="stage">
-      <div class="stage-head"><div class="stage-main"><div class="stage-copy">
-        <h2>Attractive Growth Shortlist</h2>
-        <p>Validated Review First ranking, maximum six. Risk flags stay visible as context; heated setups are not automatically removed.</p>
-      </div></div><span class="shown">${attractive.length}</span></div>
-      <div class="grid">${attractive.length?attractive.map(v2AttractiveGrowthCard).join(''):'<div class="empty">No Attractive Growth chart clears Review First today.</div>'}</div>
-    </section>
-    <section class="stage">
-      <div class="stage-head"><div class="stage-main"><div class="stage-copy">
-        <h2>Established Move Shortlist</h2>
-        <p>Established Move uses a stricter validated surface floor: Review First plus score ≥ 60, maximum six. Risk flags remain visible context, not an automatic exclusion.</p>
-      </div></div><span class="shown">${established.length}</span></div>
-      <div class="grid">${established.length?established.map(v2EstablishedMoveCard).join(''):'<div class="empty">No Established Move chart clears the stricter score ≥ 60 surface floor today.</div>'}</div>
+      <div class="stage-head">
+        <div class="stage-main"><div class="stage-copy">
+          <h2>Today's Final Shortlist</h2>
+          <p>Maximum six charts across all four validated stages. Hunter preserves each stage's own ranking, then selects by stage rank in order: Early Watch → Recovery → Attractive Growth → Established Move. Scores are never compared across stages.</p>
+          ${generated?`<p>Research scan updated ${generated}${Number.isFinite(hidden)?` · ${hidden} additional validated stage picks kept in backend`:''}</p>`:''}
+        </div></div>
+        <span class="shown">${picks.length}</span>
+      </div>
+      <div class="grid">${picks.length?picks.map(v2IntegratedCard).join(''):'<div class="empty">No chart clears the final integrated shortlist today. Doing nothing is a valid output.</div>'}</div>
     </section>`;
   bindCardActions('#top5Content');
 }
