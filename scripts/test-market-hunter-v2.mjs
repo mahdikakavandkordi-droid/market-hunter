@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {classify,rank,priorityBand,riskFlags,PRIORITY_FLOORS} from '../lib/market-hunter-v2-engine.js';
+import {classify,rank,priorityBand,riskFlags,reviewLane,PRIORITY_FLOORS} from '../lib/market-hunter-v2-engine.js';
 
 const base={
   weeklyUp:false,last:100,ma20:100,ma50:100,ma20Slope5:0,ma50Slope10:0,
@@ -50,6 +50,11 @@ for(const [stage,floor] of Object.entries(PRIORITY_FLOORS)){
   assert.equal(priorityBand(stage,floor.reviewFirst),'Review First');
 }
 assert.equal(priorityBand('Unknown',99),'Stage Member');
+
+assert.equal(reviewLane('Attractive Growth',PRIORITY_FLOORS['Attractive Growth'].reviewFirst,m({dist20:8})),'High Intensity');
+assert.equal(reviewLane('Established Move',PRIORITY_FLOORS['Established Move'].reviewFirst,m({rsi14:80})),'High Intensity');
+assert.equal(reviewLane('Recovery',PRIORITY_FLOORS['Recovery'].reviewFirst,m({dist20:8})),'Review First');
+assert.equal(reviewLane('Early Watch',PRIORITY_FLOORS['Early Watch'].reviewFirst,m({atr14Pct:7})),'Review First');
 
 assert.deepEqual(
   riskFlags(m({dist20:11,rsi14:82,atr14Pct:6.5})),
