@@ -279,8 +279,9 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
       <details class="scan-settings">
         <summary>Scan settings</summary>
         <div class="scan-settings-panel">
-          <label class="control"><span>Legacy stage view</span><strong>Top</strong><select id="topN"><option selected>3</option><option>5</option></select></label>
-          <label class="control"><span>Market scan liquidity</span><strong>Minimum</strong><select id="liq"><option value="2000000">$2M</option><option value="5000000" selected>$5M</option><option value="10000000">$10M</option><option value="25000000">$25M</option></select></label>
+          <select id="topN" hidden><option selected>3</option><option>5</option></select>
+          <label class="control"><span>Market / legacy scan liquidity</span><strong>Minimum</strong><select id="liq"><option value="2000000">$2M</option><option value="5000000" selected>$5M</option><option value="10000000">$10M</option><option value="25000000">$25M</option></select></label>
+          <div style="font-size:8px;line-height:1.45;color:var(--muted2);padding:2px 2px 0">The validated Final Shortlist keeps its frozen backend rules; this setting does not rerank it in the browser.</div>
         </div>
       </details>
     </div>
