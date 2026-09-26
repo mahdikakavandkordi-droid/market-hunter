@@ -44,10 +44,15 @@ function policyReplay(h,filterFn,scoreFn=x=>x.score){
 
 const result={generatedAt:new Date().toISOString(),note:'Diagnostic only. Recovery engine and frontend unchanged.',dateRange:{start:dates[0]||null,end:dates.at(-1)||null,scanDays:dates.length},horizons:{}};
 for(const h of horizons){
+  const freshBreak3=x=>x.highBroken===true&&Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3;
   result.horizons[h]={
     currentReviewFirst:policyReplay(h,()=>true),
     reviewFirstAndMinorHighBroken:policyReplay(h,x=>x.highBroken===true),
-    reviewFirstAndFreshHighBreak3:policyReplay(h,x=>x.highBroken===true&&Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3),
+    reviewFirstAndFreshHighBreak3:policyReplay(h,freshBreak3),
+    reviewFirstEpisodeStart:policyReplay(h,x=>x.stageAge===0),
+    reviewFirstStageAge2:policyReplay(h,x=>Number.isFinite(x.stageAge)&&x.stageAge<=2),
+    reviewFirstStageAge3:policyReplay(h,x=>Number.isFinite(x.stageAge)&&x.stageAge<=3),
+    reviewFirstStageAge3OrFreshBreak3:policyReplay(h,x=>(Number.isFinite(x.stageAge)&&x.stageAge<=3)||freshBreak3(x)),
     rankMinorHighBoost:policyReplay(h,()=>true,x=>x.score+(x.highBroken===true?8:0)),
     rankFreshHighBreakBoost:policyReplay(h,()=>true,x=>x.score+(Number.isFinite(x.freshHighBreakAge)&&x.freshHighBreakAge<=3?10:0))
   };
