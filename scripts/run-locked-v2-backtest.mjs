@@ -16,7 +16,9 @@ const p=spawn(process.execPath,['scripts/backtest-market-hunter-v2.mjs'],{
     V2_RANGE:'5y',
     V2_PERIOD1:String(manifest.source.period1),
     V2_PERIOD2:String(manifest.source.period2),
-    V2_EXPECT_DATA_SHA256:String(batch.dataSha256)
+    V2_EXPECT_STRUCTURE_SHA256:String(batch.structureSha256),
+    V2_FINAL_TEST_START:process.env.V2_FINAL_TEST_START||'2026-01-01',
+    V2_OPEN_FINAL_TEST:process.env.V2_OPEN_FINAL_TEST||'0'
   }
 });
 p.on('exit',code=>process.exit(code??1));

@@ -1,15 +1,18 @@
-# Market Hunter V2 — Deterministic Dataset Lock
+# Market Hunter V2 — Structural Dataset Lock
 
-This directory defines the fixed raw-data basis for validation experiments created on 2026-09-27.
+This directory defines the fixed validation source window created on 2026-09-27.
 
-The repository stores a compact lock manifest instead of roughly 41 MB of duplicated normalized Yahoo rows.
+The lock is intentionally based on **structural market data**, not Yahoo's full-precision adjusted-price floats.
 
-A locked backtest must:
-1. query the exact UTC source window in `manifest.json`;
-2. normalize data using the V2 backtest loader;
-3. calculate the batch's canonical SHA-256 fingerprint;
-4. abort if it differs from the expected `dataSha256`.
+Locked fields:
+- timestamp
+- raw open-independent OHLC fields available to the backtest (raw close/high/low)
+- volume
+- split events
+- dividend events
 
-This prevents silent data drift between experiments. If Yahoo retroactively changes adjusted history, split handling, or any normalized row, the run fails instead of silently producing a different comparison.
+Yahoo adjusted prices remain inputs to calculations, but repeated requests showed tiny sub-mill floating-point revisions even when raw market data and corporate actions were unchanged. Those precision changes must not trigger a false data-drift failure.
 
-Use `scripts/run-locked-v2-backtest.mjs` with the desired `V2_BATCH_INDEX`.
+Every comparative experiment must run baseline and candidate variants from the **same fetched data object in the same process**.
+
+Use `scripts/run-locked-v2-backtest.mjs`. A structural SHA mismatch aborts the run.
