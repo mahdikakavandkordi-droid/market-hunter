@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: market-hunter-dashboard
+    runtime: node
+    branch: research/market-hunter-ui-lite
+    plan: free
+    region: virginia
+    buildCommand: npm install --ignore-scripts
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: false
