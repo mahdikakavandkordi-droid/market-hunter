@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0a0f15">
+  <meta name="theme-color" content="#08111d">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Market Hunter">
@@ -14,29 +14,60 @@
   <title>Market Hunter</title>
 </head>
 <body>
-  <div class="shell">
-    <header class="topbar">
+  <div class="app-shell">
+    <aside class="sidebar">
       <div class="brand">
-        <div class="brandmark"><i></i><i></i><i></i></div>
-        <div><h1>Market Hunter</h1><p id="asOf">Research dashboard</p></div>
+        <div class="brandmark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div>
+          <strong>Market Hunter</strong>
+          <small>Personal research desk</small>
+        </div>
       </div>
-      <button class="refresh" id="refreshBtn" aria-label="Refresh">↻</button>
-    </header>
 
-    <nav class="nav" aria-label="Primary">
-      <button class="navbtn active" data-view="home">Home</button>
-      <button class="navbtn" data-view="shortlist">Shortlist</button>
-      <button class="navbtn" data-view="portfolio">Portfolio</button>
-      <button class="navbtn" data-view="watchlist">Watchlist</button>
-    </nav>
+      <nav class="side-nav" aria-label="Primary">
+        <button class="navbtn active" data-view="home"><span>⌂</span>Home</button>
+        <button class="navbtn" data-view="shortlist"><span>◎</span>Charts to Review</button>
+        <button class="navbtn" data-view="portfolio"><span>▣</span>Portfolio</button>
+        <button class="navbtn" data-view="watchlist"><span>☆</span>Watchlist</button>
+      </nav>
 
-    <main>
-      <section class="view active" id="homeView"></section>
-      <section class="view" id="shortlistView"></section>
-      <section class="view" id="portfolioView"></section>
-      <section class="view" id="watchlistView"></section>
-    </main>
+      <div class="side-note">
+        <span class="status-dot"></span>
+        <div>
+          <b>Research mode</b>
+          <small>No buy/sell signals</small>
+        </div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div>
+          <div class="kicker">DAILY DASHBOARD</div>
+          <h1 id="pageTitle">Home</h1>
+          <p id="asOf">Loading market data…</p>
+        </div>
+        <div class="top-actions">
+          <div class="market-status"><span></span><b>Market Hunter</b></div>
+          <button class="iconbtn" id="refreshBtn" aria-label="Refresh data" title="Refresh">↻</button>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="view active" id="homeView"></section>
+        <section class="view" id="shortlistView"></section>
+        <section class="view" id="portfolioView"></section>
+        <section class="view" id="watchlistView"></section>
+      </main>
+    </div>
   </div>
+
+  <nav class="mobile-nav" aria-label="Mobile primary">
+    <button class="navbtn active" data-view="home"><span>⌂</span><small>Home</small></button>
+    <button class="navbtn" data-view="shortlist"><span>◎</span><small>Review</small></button>
+    <button class="navbtn" data-view="portfolio"><span>▣</span><small>Portfolio</small></button>
+    <button class="navbtn" data-view="watchlist"><span>☆</span><small>Watchlist</small></button>
+  </nav>
 
   <div class="modal" id="positionModal" aria-hidden="true"></div>
   <div class="toast" id="toast" aria-live="polite"></div>
