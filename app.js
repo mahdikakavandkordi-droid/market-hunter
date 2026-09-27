@@ -104,14 +104,66 @@ async function load(){
 }
 function homeHtml(){
   const d=state.daily,p=state.pulse,picks=(state.v2?.integratedSurfacePicks||[]).slice(0,6);
-  const groups=(d?.groups||[]).map(g=>`<div class="group"><small>${esc(g.label)}</small><b>${esc(g.state)}</b><p>${esc(g.detail)}</p></div>`).join('');
-  const developments=(d?.keyDevelopments||[]).slice(0,3).map(x=>`<div class="dev"><b>${esc(x.market)}</b><span>${esc(x.text)}</span></div>`).join('');
-  const markets=(p?.markets||[]).map(x=>`<article class="pulse"><h4>${esc(x.name)}</h4><div class="price">${fmt(x.price)}</div><div class="tags"><span class="tag ${/Bull/.test(x.regime)?'green':'amber'}">${esc(x.regime)}</span><span class="tag">${esc(x.condition)}</span></div><details><summary>Open analysis</summary><div class="copy"><strong>What happened</strong><br>${esc(x.whatHappened)}<br><br><strong>Where we are</strong><br>${esc(x.whereWeAre)}</div></details></article>`).join('');
-  const rows=picks.map((x,i)=>`<div class="prow"><div class="rank">${i+1}</div><div class="sym"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></div><div class="stage">${esc(x.stage)}</div><button class="btn" data-chart="${x.symbol}">Chart</button></div>`).join('');
+  const s=portfolioSummary();
+  const groups=(d?.groups||[]).slice(0,3).map(g=>`<div class="group-card"><small>${esc(g.label)}</small><b>${esc(g.state)}</b><p>${esc(g.detail)}</p></div>`).join('');
+  const markets=(p?.markets||[]).map(x=>{
+    const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
+    return `<div class="market-row"><div><b>${esc(x.name)}</b><small>${esc(x.condition||'')}</small></div><div class="market-value">${fmt(x.price)}</div><div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div></div>`;
+  }).join('');
+  const pulse=(p?.markets||[]).map(x=>{
+    const direction=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'up':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'down':'flat';
+    const tone=direction==='up'?'good':direction==='down'?'bad':'';
+    return `<article class="pulse-card"><div class="pulse-top"><div><h4>${esc(x.name)}</h4><span class="badge ${tone}">${esc(x.regime||'Neutral')}</span></div></div><div class="price">${fmt(x.price)}</div><div class="sub">${esc(x.condition||'No short-term condition')}</div><div class="trendline ${direction}"></div></article>`;
+  }).join('');
+  const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
+  const devs=(d?.keyDevelopments||[]).slice(0,4).map(x=>`<div class="development"><b>${esc(x.market)}</b><span>${esc(x.text)}</span></div>`).join('');
+  const portfolioValue=s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—';
+  const pnl=s.currency?`${money(s.pnl,s.currency)} · ${pct(s.pnlPct)}`:'—';
+
   return `<div class="stack">
-    <section class="panel"><div class="eyebrow">Daily Market Report</div><div class="headline">${esc(d?.headline||'Market report unavailable.')}</div><div class="groups">${groups}</div>${developments?'<div class="devs">'+developments+'</div>':''}</section>
-    <section class="panel soft"><div class="sectionhead"><div><h2>Market Pulse</h2><p>Regime first, details on demand.</p></div></div><div class="scroll">${markets||'<div class="empty">Pulse unavailable.</div>'}</div></section>
-    <section class="panel soft"><div class="sectionhead"><div><h2>Charts to review</h2><p>Backend final shortlist · max six.</p></div><button class="btn" data-open="shortlist">Open</button></div><div class="preview">${rows||'<div class="empty">No current shortlist.</div>'}</div></section>
+    <div class="grid home-hero">
+      <section class="panel"><div class="panel-inner">
+        <div class="eyebrow">Daily Market Report</div>
+        <div class="report-title">${esc(d?.headline||'Market report unavailable')}</div>
+        <div class="report-copy">${esc(d?.summary||d?.keyDevelopments?.[0]?.text||'Trend regime, short-term condition and the daily shortlist are loaded from the research engine.')}</div>
+        <div class="report-badges">
+          ${(d?.groups||[]).slice(0,3).map(g=>`<span class="badge">${esc(g.label)} · ${esc(g.state)}</span>`).join('')}
+        </div>
+        <div class="group-grid">${groups}</div>
+      </div></section>
+      <section class="panel soft">
+        <div class="panel-head"><div><h3>Market board</h3><p>Fast read before opening details.</p></div></div>
+        <div class="market-list">${markets||'<div class="empty">Market Pulse unavailable.</div>'}</div>
+      </section>
+    </div>
+
+    <section class="panel soft">
+      <div class="panel-head"><div><h2>Market Pulse</h2><p>Trend regime + short-term condition. No prediction layer.</p></div></div>
+      <div class="pulse-strip">${pulse||'<div class="empty">Pulse unavailable.</div>'}</div>
+    </section>
+
+    <div class="grid home-lower">
+      <section class="panel soft">
+        <div class="panel-head"><div><h2>Charts to Review Today</h2><p>Final integrated shortlist · quality over count · max six.</p></div><button class="btn ghost" data-open="shortlist">View all</button></div>
+        <div class="table-wrap"><table class="review-table"><thead><tr><th>#</th><th>Symbol</th><th>Stage</th><th>Context</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="5">No current shortlist.</td></tr>'}</tbody></table></div>
+      </section>
+
+      <section class="panel soft">
+        <div class="panel-head"><div><h3>Portfolio Monitor</h3><p>What changed in things you actually own.</p></div><button class="btn ghost" data-open="portfolio">Open</button></div>
+        <div class="portfolio-glance">
+          <div class="eyebrow">Current value</div>
+          <div class="portfolio-value">${portfolioValue}</div>
+          <div class="portfolio-pnl ${cls(s.pnl)==='up'?'metric-good':cls(s.pnl)==='down'?'metric-bad':'metric-flat'}">${pnl}</div>
+          <div class="glance-grid">
+            <div class="glance-stat"><small>Holdings</small><b>${s.rows.length}</b></div>
+            <div class="glance-stat"><small>Needs attention</small><b>${s.attention.length}</b></div>
+            <div class="glance-stat"><small>Changed today</small><b>${s.changed.length}</b></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    ${devs?`<section class="panel soft"><div class="panel-head"><div><h3>Today’s context</h3><p>Evidence worth knowing before opening individual charts.</p></div></div><div class="developments">${devs}</div></section>`:''}
   </div>`;
 }
 function stockCard(x,rank=''){
@@ -194,6 +246,8 @@ function setView(view){
   state.view=view;
   qa('.view').forEach(el=>el.classList.toggle('active',el.id===view+'View'));
   qa('.navbtn').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
+  const titles={home:'Home',shortlist:'Charts to Review',portfolio:'Portfolio Monitor',watchlist:'Watchlist'};
+  const title=q('#pageTitle');if(title)title.textContent=titles[view]||'Market Hunter';
   renderView(view);window.scrollTo({top:0,behavior:'smooth'});
 }
 function closeModal(){q('#positionModal').classList.remove('open');q('#positionModal').setAttribute('aria-hidden','true')}
