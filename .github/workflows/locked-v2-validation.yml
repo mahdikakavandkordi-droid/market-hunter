@@ -8,12 +8,14 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  V2_DATASET_REGISTRY: data/frozen/market-hunter-v2-numerical-snapshot/registry.json
   V2_DATASET_LOCK_MANIFEST: data/frozen/market-hunter-v2-numerical-snapshot/manifest.json
   V2_SNAPSHOT_DIR: data/frozen/market-hunter-v2-numerical-snapshot/files
 
 jobs:
-  preflight:
+  materialize-and-preflight:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,11 +23,64 @@ jobs:
           node-version: '20'
       - name: Contract tests
         run: npm test
-      - name: Require immutable numerical snapshot
+      - name: Require Vercel artifact access
+        shell: bash
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${VERCEL_TOKEN:-}" ]; then
+            echo "VERCEL_TOKEN GitHub secret is required to retrieve the registered immutable numerical snapshot."
+            exit 1
+          fi
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Resolve registered immutable deployment
+        id: registered
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const r=JSON.parse(fs.readFileSync(process.env.V2_DATASET_REGISTRY,'utf8'));
+          if(r.status!=='VERIFIED_READY') throw new Error('Registered artifact is not VERIFIED_READY');
+          if(!r.artifact?.deploymentUrl||!r.artifact?.deploymentId||!r.artifact?.manifestPath||!r.artifact?.teamSlug){
+            throw new Error('Registry missing deployment materialization metadata');
+          }
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'deployment_url=https://'+r.artifact.deploymentUrl+'\n');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'deployment_id='+r.artifact.deploymentId+'\n');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'manifest_path='+r.artifact.manifestPath+'\n');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'team_slug='+r.artifact.teamSlug+'\n');
+          NODE
+      - name: Materialize exact numerical snapshot artifact
+        shell: bash
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DEPLOYMENT_URL: ${{ steps.registered.outputs.deployment_url }}
+          MANIFEST_PATH: ${{ steps.registered.outputs.manifest_path }}
+          TEAM_SLUG: ${{ steps.registered.outputs.team_slug }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$V2_SNAPSHOT_DIR"
+          vercel curl "$MANIFEST_PATH" --deployment "$DEPLOYMENT_URL" --token "$VERCEL_TOKEN" --scope "$TEAM_SLUG" > "$V2_DATASET_LOCK_MANIFEST"
+          node -e "JSON.parse(require('fs').readFileSync(process.env.V2_DATASET_LOCK_MANIFEST,'utf8')); console.log('Downloaded artifact manifest JSON')"
+          for batch in 0 1 2 3; do
+            file=$(node -e "const m=JSON.parse(require('fs').readFileSync(process.env.V2_DATASET_LOCK_MANIFEST,'utf8')); const b=m.batches.find(x=>x.batchIndex===Number(process.argv[1])); if(!b) process.exit(2); process.stdout.write(b.file)" "$batch")
+            base=$(dirname "$MANIFEST_PATH")
+            vercel curl "$base/$file" --deployment "$DEPLOYMENT_URL" --token "$VERCEL_TOKEN" --scope "$TEAM_SLUG" > "$V2_SNAPSHOT_DIR/$file"
+          done
+      - name: Verify exact downloaded bytes and provenance
         run: node scripts/verify-locked-validation-inputs.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: market-hunter-v2-numerical-snapshot
+          path: |
+            data/frozen/market-hunter-v2-numerical-snapshot/manifest.json
+            data/frozen/market-hunter-v2-numerical-snapshot/files/*.json
+          retention-days: 1
+          if-no-files-found: error
 
   backtest:
-    needs: preflight
+    needs: materialize-and-preflight
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -38,6 +93,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - uses: actions/download-artifact@v4
+        with:
+          name: market-hunter-v2-numerical-snapshot
+          path: data/frozen/market-hunter-v2-numerical-snapshot
+      - name: Re-verify materialized snapshot
+        run: node scripts/verify-locked-validation-inputs.mjs
       - name: Run locked offline V2 backtest
         env:
           V2_BATCH_INDEX: ${{ matrix.batch }}
@@ -49,3 +110,4 @@ jobs:
           name: locked-v2-backtest-batch-${{ matrix.batch }}
           path: data/v2-backtest-batch-${{ matrix.batch }}.json
           retention-days: 7
+          if-no-files-found: error

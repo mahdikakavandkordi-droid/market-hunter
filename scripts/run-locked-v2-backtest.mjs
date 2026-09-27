@@ -5,21 +5,15 @@ import {spawn} from 'node:child_process';
 const manifestFile=process.env.V2_DATASET_LOCK_MANIFEST||'data/frozen/market-hunter-v2-numerical-snapshot/manifest.json';
 const batchIndex=Number(process.env.V2_BATCH_INDEX||0);
 const manifest=JSON.parse(fs.readFileSync(manifestFile,'utf8'));
-if(manifest.format!=='market-hunter-v2-numerical-snapshot-manifest-v1'){
-  throw new Error('Locked runner requires a numerical snapshot manifest v1');
-}
+if(manifest.format!=='market-hunter-v2-numerical-snapshot-manifest-v1')throw new Error('Locked runner requires a numerical snapshot manifest v1');
 const batch=manifest.batches?.find(x=>x.batchIndex===batchIndex);
 if(!batch)throw new Error('Dataset manifest has no batch '+batchIndex);
 
 const snapshotDir=process.env.V2_SNAPSHOT_DIR||manifest.localSnapshotDir||'data/frozen/market-hunter-v2-numerical-snapshot/files';
 const datasetFile=process.env.V2_DATASET_FILE||path.resolve(snapshotDir,batch.file);
-if(!fs.existsSync(datasetFile)){
-  throw new Error(
-    'Designated numerical snapshot file is missing: '+datasetFile+
-    '. Retrieve artifact '+String(manifest.artifact?.id||'unknown')+
-    ' and place the immutable snapshot files in '+snapshotDir
-  );
-}
+if(!fs.existsSync(datasetFile))throw new Error('Designated numerical snapshot file is missing: '+datasetFile);
+const artifactId=manifest.artifact?.deploymentId||manifest.artifact?.id;
+if(typeof artifactId!=='string'||!artifactId.startsWith('dpl_'))throw new Error('Locked manifest missing immutable artifact deployment ID');
 
 const p=spawn(process.execPath,['scripts/backtest-market-hunter-v2.mjs'],{
   stdio:'inherit',
@@ -38,8 +32,8 @@ const p=spawn(process.execPath,['scripts/backtest-market-hunter-v2.mjs'],{
     V2_DEVELOPMENT_START:String(manifest.validationCalendar.developmentStart),
     V2_VALIDATION_START:String(manifest.validationCalendar.validationStart),
     V2_FINAL_TEST_START:String(manifest.validationCalendar.finalStart),
-    V2_OPEN_FINAL_TEST:process.env.V2_OPEN_FINAL_TEST||'0',
-    V2_DATASET_ARTIFACT_ID:String(manifest.artifact?.id||'')
+    V2_OPEN_FINAL_TEST:'0',
+    V2_DATASET_ARTIFACT_ID:artifactId
   }
 });
 p.on('exit',code=>process.exit(code??1));
