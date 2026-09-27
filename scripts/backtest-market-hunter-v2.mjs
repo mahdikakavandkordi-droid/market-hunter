@@ -14,6 +14,8 @@ const period1=process.env.V2_PERIOD1||null;
 const period2=process.env.V2_PERIOD2||null;
 const expectedDataSha256=process.env.V2_EXPECT_DATA_SHA256||null;
 const expectedStructureSha256=process.env.V2_EXPECT_STRUCTURE_SHA256||null;
+const developmentStart=process.env.V2_DEVELOPMENT_START||'2021-09-27';
+const validationStart=process.env.V2_VALIDATION_START||'2024-09-20';
 const finalTestStart=process.env.V2_FINAL_TEST_START||'2026-01-01';
 const openFinalTest=process.env.V2_OPEN_FINAL_TEST==='1';
 if((period1&&!period2)||(!period1&&period2))throw new Error('V2_PERIOD1 and V2_PERIOD2 must be provided together');
@@ -485,6 +487,7 @@ const report=buildResearchReport({
   validation:{
     method:'purged chronological development split + sealed historical final period',
     trainFraction:.7,
+    calendarMode:'fixed_calendar',
     note:'Historical final period is sealed from this point forward but is not claimed to be a virgin holdout because earlier project iterations had already observed this history. A truly untouched forward sample begins after 2026-09-27.'
   },
   dataset:datasetInfo,
@@ -496,7 +499,8 @@ const report=buildResearchReport({
   establishedMoveSurfaceReplayCandidates,
   latestPicks:latest,
   finalTestStart,
-  openFinalTest
+  openFinalTest,
+  validationCalendar:{developmentStart,validationStart,finalStart:finalTestStart}
 });
 
 fs.mkdirSync('data',{recursive:true});
