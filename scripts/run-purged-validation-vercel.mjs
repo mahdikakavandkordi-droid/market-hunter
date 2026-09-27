@@ -80,4 +80,11 @@ fs.writeFileSync(path.join(root,'data/purged-split-impact.json'),JSON.stringify(
 for(let i=0;i<4;i++){
   fs.copyFileSync(path.join(tmp,'batch-'+i,'data/v2-backtest-batch-'+i+'.json'),path.join(root,'data/purged-v2-backtest-batch-'+i+'.json'));
 }
+const publicData=path.join(root,'public','data');
+fs.mkdirSync(publicData,{recursive:true});
+fs.copyFileSync(path.join(root,'data','purged-split-impact.json'),path.join(publicData,'purged-split-impact.json'));
+for(let i=0;i<4;i++){
+  fs.copyFileSync(path.join(root,'data','purged-v2-backtest-batch-'+i+'.json'),path.join(publicData,'purged-v2-backtest-batch-'+i+'.json'));
+}
+fs.writeFileSync(path.join(root,'public','index.html'),'<pre>Purged split validation artifact</pre>');
 console.log('PURGED_VALIDATION_SUMMARY '+JSON.stringify(report.summary));
