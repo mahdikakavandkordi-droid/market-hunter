@@ -603,7 +603,20 @@ function openPosition(symbol='',source='manual'){
     state.positions.set(s,rec);savePositions();closeModal();await loadPortfolio();renderAll();setView('portfolio');toast('Position saved');
   };
 }
+function closeRiskInfo(except=null){
+  qa('.risk-info[open]').forEach(d=>{if(d!==except)d.open=false});
+}
 document.addEventListener('click',async e=>{
+  const riskInfo=e.target.closest('.risk-info');
+  if(riskInfo){
+    if(e.target.closest('summary')){
+      setTimeout(()=>{
+        if(riskInfo.open)closeRiskInfo(riskInfo);
+      },0);
+    }
+  }else{
+    closeRiskInfo();
+  }
   const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return}
   const stageTab=e.target.closest('[data-stage-tab]');if(stageTab){state.reviewStage=stageTab.dataset.stageTab;renderView('shortlist');return}
   const open=e.target.closest('[data-open]');if(open){setView(open.dataset.open);return}
@@ -625,4 +638,5 @@ q('#backupFile')?.addEventListener('change',async e=>{
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
 }
+window.addEventListener('scroll',()=>closeRiskInfo(),{passive:true});
 load();
