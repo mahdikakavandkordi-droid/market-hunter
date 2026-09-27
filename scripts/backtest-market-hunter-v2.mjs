@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import {captureFrozenDataset,loadFrozenDataset,frozenDataDigest,structuralDataDigest} from '../lib/frozen-dataset.js';
+import {captureFrozenDataset,loadFrozenDataset,frozenDataDigest,structuralDataDigest,NORMALIZATION_VERSION} from '../lib/frozen-dataset.js';
 import {UNIVERSE} from '../lib/universe.js';
 import {VERSION,ASSUMPTIONS,priorityBand,riskFlags,round,pct,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 import {buildResearchReport} from '../lib/backtest-report-builder.js';
@@ -13,6 +13,11 @@ const period1=process.env.V2_PERIOD1||null;
 const period2=process.env.V2_PERIOD2||null;
 const expectedDataSha256=process.env.V2_EXPECT_DATA_SHA256||null;
 const expectedStructureSha256=process.env.V2_EXPECT_STRUCTURE_SHA256||null;
+const expectedSnapshotId=process.env.V2_EXPECT_SNAPSHOT_ID||null;
+const expectedNormalizationVersion=process.env.V2_EXPECT_NORMALIZATION_VERSION||null;
+const expectedSource=process.env.V2_EXPECT_SOURCE_JSON?JSON.parse(process.env.V2_EXPECT_SOURCE_JSON):null;
+const forbidNetwork=process.env.V2_FORBID_NETWORK==='1';
+const datasetArtifactId=process.env.V2_DATASET_ARTIFACT_ID||null;
 const developmentStart=process.env.V2_DEVELOPMENT_START||'2021-09-27';
 const validationStart=process.env.V2_VALIDATION_START||'2024-09-20';
 const finalTestStart=process.env.V2_FINAL_TEST_START||'2026-01-01';
@@ -28,6 +33,7 @@ const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
 const benchSymbol=s=>CDR.has(s)?'^IXIC':'^GSPTSE';
 
 async function fetchRows(symbol){
+  if(forbidNetwork)throw new Error('Network access forbidden in frozen dataset mode');
   const windowQuery=period1&&period2
     ?'period1='+encodeURIComponent(period1)+'&period2='+encodeURIComponent(period2)
     :'range='+encodeURIComponent(range);
@@ -65,18 +71,37 @@ function hadRecentSplit(rows,splitDays,i,lookback=30){
 }
 
 const needed=[...new Set([...symbols,...symbols.map(benchSymbol)])];
+const sourceMeta={
+  provider:'Yahoo Finance chart endpoint',
+  interval:'1d',
+  period1:period1||null,
+  period2:period2||null,
+  range:period1&&period2?null:range,
+  includePrePost:false,
+  events:['div','splits']
+};
 let data={};
 let datasetInfo={mode:datasetMode,file:frozenDatasetFile||captureDatasetFile||null,sha256:null,dataSha256:null,structureSha256:null,snapshotId:null,period1,period2};
 
 if(frozenDatasetFile){
   const loaded=loadFrozenDataset(frozenDatasetFile,{
-    expectedRange:range,
+    expectedSnapshotId,
+    expectedDataSha256,
+    expectedStructureSha256,
+    expectedSource:expectedSource||undefined,
+    expectedNormalizationVersion:expectedNormalizationVersion||undefined,
     expectedBatchIndex:batchIndex,
     expectedBatchCount:batchCount,
     expectedSymbols:needed
   });
   data=loaded.data;
-  datasetInfo={mode:'frozen',file:frozenDatasetFile,sha256:loaded.sha256,dataSha256:loaded.dataSha256,structureSha256:loaded.structureSha256,snapshotId:loaded.snapshotId,capturedAt:loaded.capturedAt,period1,period2};
+  datasetInfo={
+    mode:'frozen',file:frozenDatasetFile,artifactId:datasetArtifactId,
+    sha256:loaded.sha256,dataSha256:loaded.dataSha256,structureSha256:loaded.structureSha256,
+    snapshotId:loaded.snapshotId,capturedAt:loaded.capturedAt,
+    normalizationVersion:loaded.normalizationVersion,source:loaded.source,
+    captureRevision:loaded.captureRevision
+  };
   console.log('loaded frozen dataset '+loaded.snapshotId+' '+loaded.sha256);
 }else{
   for(const s of needed){
@@ -84,8 +109,8 @@ if(frozenDatasetFile){
     try{data[s]=await fetchRows(s);console.log(data[s].rows.length)}
     catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set(),splitEvents:[],dividends:[]}}
   }
-  const dataSha256=frozenDataDigest({range,batchIndex,batchCount,symbols:needed,data});
-  const structureSha256=structuralDataDigest({range,batchIndex,batchCount,symbols:needed,data});
+  const dataSha256=frozenDataDigest({source:sourceMeta,batchIndex,batchCount,symbols:needed,data,normalizationVersion:NORMALIZATION_VERSION});
+  const structureSha256=structuralDataDigest({source:sourceMeta,batchIndex,batchCount,symbols:needed,data,normalizationVersion:NORMALIZATION_VERSION});
   datasetInfo={...datasetInfo,dataSha256,structureSha256};
   if(expectedStructureSha256&&structureSha256!==expectedStructureSha256){
     throw new Error('Structural dataset drift detected for batch '+batchIndex+': '+structureSha256+' != '+expectedStructureSha256);
@@ -95,10 +120,18 @@ if(frozenDatasetFile){
   }
   if(captureDatasetFile){
     const captured=captureFrozenDataset(captureDatasetFile,{
-      range,batchIndex,batchCount,symbols:needed,data,
-      engineVersion:VERSION
+      source:sourceMeta,batchIndex,batchCount,symbols:needed,data,
+      engineVersion:VERSION,
+      captureRevision:process.env.V2_CAPTURE_REVISION||process.env.VERCEL_GIT_COMMIT_SHA||null,
+      normalizationVersion:NORMALIZATION_VERSION
     });
-    datasetInfo={mode:'captured-live',file:captureDatasetFile,sha256:captured.sha256,dataSha256:captured.dataSha256,structureSha256:captured.structureSha256,snapshotId:captured.snapshotId,capturedAt:captured.capturedAt,period1,period2};
+    datasetInfo={
+      mode:'captured-live',file:captureDatasetFile,artifactId:datasetArtifactId,
+      sha256:captured.sha256,dataSha256:captured.dataSha256,structureSha256:captured.structureSha256,
+      snapshotId:captured.snapshotId,capturedAt:captured.capturedAt,
+      normalizationVersion:captured.normalizationVersion,source:captured.source,
+      captureRevision:captured.captureRevision
+    };
     console.log('captured frozen dataset '+captured.snapshotId+' '+captured.sha256+' data '+captured.dataSha256);
   }
 }
