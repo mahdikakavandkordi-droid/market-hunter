@@ -123,7 +123,8 @@ function holdingInsights(x){
   if(!x)return {
     strength:'No reliable strength read — current market data is unavailable.',
     weakness:'No reliable weakness read — current market data is unavailable.',
-    watch:'Wait for fresh market data before interpreting the chart.'
+    watch:'Wait for fresh market data before interpreting the chart.',
+    change:'The view cannot be updated until fresh price and trend data are available.'
   };
 
   const strengths=[],weaknesses=[],watch=[];
@@ -153,10 +154,35 @@ function holdingInsights(x){
   else if(Number.isFinite(x.resistance)&&x.highBroken!==true)watch.push('Watch resistance near '+money(x.resistance,x.currency||'CAD'));
   if(!x.stage)watch.push('A return to an active Hunter stage would require stronger structure or momentum');
 
+  const currentlyWeak=
+    x.lowBroken===true ||
+    x.swingTrend==='Lower highs + lower lows' ||
+    x.swingTrend==='Structure weakening' ||
+    (Number.isFinite(x.momentumShift)&&x.momentumShift<0) ||
+    (Number.isFinite(x.rs20)&&x.rs20<0);
+
+  let change;
+  if(currentlyWeak){
+    const improve=[];
+    const high=Number.isFinite(x.localHigh)?x.localHigh:(Number.isFinite(x.resistance)?x.resistance:null);
+    if(Number.isFinite(high)&&x.highBroken!==true)improve.push('price clears the recent high near '+money(high,x.currency||'CAD'));
+    improve.push('momentum turns positive');
+    improve.push('20-day relative strength recovers toward or above the TSX');
+    change='The read would turn more constructive if '+improve.slice(0,3).join(', and ')+'.';
+  }else{
+    const weaken=[];
+    const low=Number.isFinite(x.localLow)?x.localLow:(Number.isFinite(x.support)?x.support:null);
+    if(Number.isFinite(low))weaken.push('price breaks the recent support near '+money(low,x.currency||'CAD'));
+    weaken.push('momentum turns clearly negative');
+    weaken.push('relative strength falls below the TSX');
+    change='The constructive read would weaken if '+weaken.slice(0,3).join(', or ')+'.';
+  }
+
   return {
     strength:strengths[0]||'No clear positive edge is standing out yet',
     weakness:weaknesses[0]||'No material technical weakness is currently flagged',
-    watch:watch[0]||'Watch for a meaningful change in structure, momentum or relative strength'
+    watch:watch[0]||'Watch for a meaningful change in structure, momentum or relative strength',
+    change
   };
 }
 function insightRowsHtml(x){
@@ -165,6 +191,7 @@ function insightRowsHtml(x){
     <div class="insight-row strength"><span>Strength</span><p>${esc(r.strength)}</p></div>
     <div class="insight-row weakness"><span>Weakness</span><p>${esc(r.weakness)}</p></div>
     <div class="insight-row watch"><span>Watch</span><p>${esc(r.watch)}</p></div>
+    <div class="insight-row change"><span>View changes if</span><p>${esc(r.change)}</p></div>
   </div>`;
 }
 function changeReasons(cur,prev){
@@ -522,7 +549,7 @@ async function importBackupFile(file){
 function portfolioHtml(){
   const s=portfolioSummary();
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
-  const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness and the next thing worth watching.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>`<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`).join('')}</div></section>`:'';
+  const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness, what to watch, and what would change the current read.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>`<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`).join('')}</div></section>`:'';
   return `<div class="stack">
     <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
       <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention weight</small><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
