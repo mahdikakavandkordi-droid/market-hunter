@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import {captureFrozenDataset,loadFrozenDataset} from '../lib/frozen-dataset.js';
+import {captureFrozenDataset,loadFrozenDataset,frozenDataDigest} from '../lib/frozen-dataset.js';
 import {UNIVERSE} from '../lib/universe.js';
 import {purgedChronSplit} from '../lib/validation-split.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,riskFlags,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
@@ -9,6 +9,10 @@ const batchCount=Math.max(1,Number(process.env.V2_BATCH_COUNT||4));
 const range=process.env.V2_RANGE||'5y';
 const frozenDatasetFile=process.env.V2_DATASET_FILE||null;
 const captureDatasetFile=process.env.V2_DATASET_CAPTURE||null;
+const period1=process.env.V2_PERIOD1||null;
+const period2=process.env.V2_PERIOD2||null;
+const expectedDataSha256=process.env.V2_EXPECT_DATA_SHA256||null;
+if((period1&&!period2)||(!period1&&period2))throw new Error('V2_PERIOD1 and V2_PERIOD2 must be provided together');
 const datasetMode=frozenDatasetFile?'frozen':'live';
 const horizons=(process.env.V2_HORIZONS||'5,10,20').split(',').map(Number).filter(x=>x>0);
 const maxH=Math.max(...horizons);
@@ -19,7 +23,10 @@ const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
 const benchSymbol=s=>CDR.has(s)?'^IXIC':'^GSPTSE';
 
 async function fetchRows(symbol){
-  const url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?range='+range+'&interval=1d&includePrePost=false&events=div%2Csplits';
+  const windowQuery=period1&&period2
+    ?'period1='+encodeURIComponent(period1)+'&period2='+encodeURIComponent(period2)
+    :'range='+encodeURIComponent(range);
+  const url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?'+windowQuery+'&interval=1d&includePrePost=false&events=div%2Csplits';
   const res=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 MarketHunterV2Research/1.0'}});
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
@@ -281,7 +288,7 @@ function earlyWatchRewriteDiagnostic(a){
 
 const needed=[...new Set([...symbols,...symbols.map(benchSymbol)])];
 let data={};
-let datasetInfo={mode:datasetMode,file:frozenDatasetFile||captureDatasetFile||null,sha256:null,snapshotId:null};
+let datasetInfo={mode:datasetMode,file:frozenDatasetFile||captureDatasetFile||null,sha256:null,dataSha256:null,snapshotId:null,period1,period2};
 
 if(frozenDatasetFile){
   const loaded=loadFrozenDataset(frozenDatasetFile,{
@@ -291,7 +298,7 @@ if(frozenDatasetFile){
     expectedSymbols:needed
   });
   data=loaded.data;
-  datasetInfo={mode:'frozen',file:frozenDatasetFile,sha256:loaded.sha256,snapshotId:loaded.snapshotId,capturedAt:loaded.capturedAt};
+  datasetInfo={mode:'frozen',file:frozenDatasetFile,sha256:loaded.sha256,dataSha256:loaded.dataSha256,snapshotId:loaded.snapshotId,capturedAt:loaded.capturedAt,period1,period2};
   console.log('loaded frozen dataset '+loaded.snapshotId+' '+loaded.sha256);
 }else{
   for(const s of needed){
@@ -299,13 +306,18 @@ if(frozenDatasetFile){
     try{data[s]=await fetchRows(s);console.log(data[s].rows.length)}
     catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set()}}
   }
+  const dataSha256=frozenDataDigest({range,batchIndex,batchCount,symbols:needed,data});
+  datasetInfo={...datasetInfo,dataSha256};
+  if(expectedDataSha256&&dataSha256!==expectedDataSha256){
+    throw new Error('Dataset drift detected for batch '+batchIndex+': '+dataSha256+' != '+expectedDataSha256);
+  }
   if(captureDatasetFile){
     const captured=captureFrozenDataset(captureDatasetFile,{
       range,batchIndex,batchCount,symbols:needed,data,
       engineVersion:VERSION
     });
-    datasetInfo={mode:'captured-live',file:captureDatasetFile,sha256:captured.sha256,snapshotId:captured.snapshotId,capturedAt:captured.capturedAt};
-    console.log('captured frozen dataset '+captured.snapshotId+' '+captured.sha256);
+    datasetInfo={mode:'captured-live',file:captureDatasetFile,sha256:captured.sha256,dataSha256:captured.dataSha256,snapshotId:captured.snapshotId,capturedAt:captured.capturedAt,period1,period2};
+    console.log('captured frozen dataset '+captured.snapshotId+' '+captured.sha256+' data '+captured.dataSha256);
   }
 }
 
