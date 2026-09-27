@@ -242,3 +242,49 @@
   .stage-summary b{font-size:13px}
   .stage-summary span{font-size:11.5px}
 }
+
+
+/* Home consolidation + portfolio backup */
+.change-list{
+  display:grid;
+  gap:7px;
+  margin:13px 0 12px;
+}
+.change-item{
+  display:grid;
+  grid-template-columns:72px 1fr;
+  gap:9px;
+  align-items:start;
+  padding:8px 9px;
+  border:1px solid var(--line-soft);
+  border-radius:10px;
+  background:rgba(255,255,255,.018);
+  color:var(--muted);
+  font-size:8px;
+  line-height:1.45;
+}
+.change-market{
+  color:var(--text);
+  font-weight:850;
+  letter-spacing:.02em;
+}
+.change-empty{color:var(--muted);font-size:8px;padding:8px 0}
+.section-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.market-row{border-bottom:1px solid rgba(255,255,255,.045)}
+.market-row:last-child{border-bottom:0}
+
+@media(max-width:760px){
+  .change-list{gap:8px;margin:14px 0 13px}
+  .change-item{
+    grid-template-columns:64px 1fr;
+    gap:10px;
+    padding:10px;
+    font-size:12px;
+    line-height:1.5;
+  }
+  .change-market{font-size:12px}
+  .change-empty{font-size:12px}
+  .report-details .report-title{font-size:17px;margin:10px 0 8px}
+  .section-actions{gap:6px;width:100%;justify-content:flex-start;margin-top:8px}
+  .section-actions .btn{flex:0 0 auto}
+}

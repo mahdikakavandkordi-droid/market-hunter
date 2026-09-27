@@ -122,6 +122,7 @@ async function load(){
 function homeHtml(){
   const d=state.daily,p=state.pulse,picks=stageLeaders();
   const s=portfolioSummary();
+  const changes=(d?.keyDevelopments||[]).slice(0,3).map(x=>`<div class="change-item"><span class="change-market">${esc(x.market)}</span><span>${esc(stripMarketPrefix(x.text))}</span></div>`).join('');
   const groups=(d?.groups||[]).slice(0,3).map(g=>`<div class="group-card"><small>${esc(g.label)}</small><b>${esc(g.state)}</b><p>${esc(g.detail)}</p></div>`).join('');
   const developmentByMarket=new Map((d?.keyDevelopments||[]).map(x=>[x.market,x]));
   const marketKeyByName={'TSX Composite':'TSX','S&P 500':'SP500','Nasdaq-100':'NASDAQ100','Gold':'GOLD','Silver':'SILVER','Bitcoin':'BTC','Ethereum':'ETH'};
@@ -135,11 +136,6 @@ function homeHtml(){
       <div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div>
       ${context?`<div class="market-context">${esc(stripMarketPrefix(context))}</div>`:''}
     </div>`;
-  }).join('');
-  const pulse=(p?.markets||[]).map(x=>{
-    const direction=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'up':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'down':'flat';
-    const tone=direction==='up'?'good':direction==='down'?'bad':'';
-    return `<article class="pulse-card"><div class="pulse-top"><div><h4>${esc(x.name)}</h4><span class="badge ${tone}">${esc(x.regime||'Neutral')}</span></div></div><div class="price">${fmt(x.price)}</div><div class="sub">${esc(x.condition||'No short-term condition')}</div></article>`;
   }).join('');
   const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
@@ -163,31 +159,27 @@ function homeHtml(){
       <section class="panel report-panel"><div class="panel-inner report-shell">
         <div class="report-topline">
           <div>
-            <div class="eyebrow">Daily Market Brief</div>
+            <div class="eyebrow">What Changed Today</div>
             <div class="report-tone">${esc(String(d?.headline||'Daily market brief').split(':')[0])}</div>
           </div>
           <span class="report-date">${esc(d?.asOf?.latest||'')}</span>
         </div>
-        <div class="report-title">${esc(d?.headline||'Market report unavailable')}</div>
+        <div class="change-list">${changes||'<div class="change-empty">No material market-state change flagged today.</div>'}</div>
         <div class="report-badges">
           ${(d?.groups||[]).slice(0,3).map(g=>`<span class="badge"><b>${esc(g.label)}</b> · ${esc(g.state)}</span>`).join('')}
         </div>
         <details class="report-details">
-          <summary>Read full brief</summary>
-          <div class="report-copy">${esc(d?.summary||d?.keyDevelopments?.[0]?.text||'Trend regime, short-term condition and the daily shortlist are loaded from the research engine.')}</div>
+          <summary>Read full market brief</summary>
+          <div class="report-title">${esc(d?.headline||'Market report unavailable')}</div>
+          <div class="report-copy">${esc(d?.executiveSummary?.[0]||d?.summary||d?.headline||'')}</div>
         </details>
-        <div class="group-grid">${groups}</div>
       </div></section>
       <section class="panel soft">
-        <div class="panel-head"><div><h3>Market board</h3><p>Fast read before opening details.</p></div></div>
+        <div class="panel-head"><div><h3>Markets</h3><p>Price · regime · condition · today’s context.</p></div></div>
         <div class="market-list">${markets||'<div class="empty">Market Pulse unavailable.</div>'}</div>
       </section>
     </div>
 
-    <section class="panel soft">
-      <div class="panel-head"><div><h2>Market Pulse</h2><p>Trend regime + short-term condition. No prediction layer.</p></div></div>
-      <div class="pulse-strip">${pulse||'<div class="empty">Pulse unavailable.</div>'}</div>
-    </section>
 
     <div class="grid home-lower">
       <section class="panel soft">
@@ -273,12 +265,43 @@ function positionCard(p,x,total){
     <div class="actions"><button class="btn" data-chart="${p.symbol}">Chart ↗</button><button class="btn" data-edit="${p.symbol}">Edit</button><button class="btn danger" data-remove="${p.symbol}">Remove</button></div>
   </article>`;
 }
+function exportBackup(){
+  const payload={
+    kind:'market-hunter-backup',
+    version:1,
+    exportedAt:new Date().toISOString(),
+    positions:[...state.positions.values()],
+    watchlist:[...state.watch],
+    portfolioDaily:(()=>{try{return JSON.parse(localStorage.getItem('marketHunterPortfolioDaily')||'null')}catch{return null}})()
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='market-hunter-backup-'+today()+'.json';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  toast('Backup exported');
+}
+async function importBackupFile(file){
+  if(!file)return;
+  let data;
+  try{data=JSON.parse(await file.text())}catch{toast('Invalid backup file');return}
+  if(data?.kind!=='market-hunter-backup'||!Array.isArray(data.positions)||!Array.isArray(data.watchlist)){
+    toast('Backup format not recognized');return;
+  }
+  const valid=data.positions.filter(p=>p&&typeof p.symbol==='string'&&Number(p.quantity)>0&&Number(p.entryPrice)>0);
+  if(!confirm('Restore '+valid.length+' position(s) and '+data.watchlist.length+' watchlist item(s)? Current local data will be replaced.'))return;
+  state.positions=new Map(valid.map(p=>[p.symbol,p]));
+  state.watch=new Set(data.watchlist.filter(Boolean));
+  savePositions();saveWatch();
+  if(data.portfolioDaily)localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify(data.portfolioDaily));
+  else localStorage.removeItem('marketHunterPortfolioDaily');
+  await loadPortfolio();renderAll();setView('portfolio');toast('Backup restored');
+}
 function portfolioHtml(){
   const s=portfolioSummary();
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
   const attentionBlock=s.attention.length?`<section class="panel soft"><div class="sectionhead"><div><h3>Current attention</h3><p>Context to inspect, not trade instructions.</p></div></div><div class="devs">${s.attention.map(({p,x})=>{const h=health(x);return`<div class="dev"><b>${short(p.symbol)}</b><span>${esc(h.label+' · '+h.notes[0])}</span></div>`}).join('')}</div></section>`:'';
   return `<div class="stack">
-    <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><button class="btn primary" data-add>+ Add</button></div>
+    <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
       <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention</small><b>${s.attention.length}</b></div></div>
       <div class="read">${s.attention.length?s.attention.length+' holding(s) deserve closer review.':'No material structural warning across covered holdings.'}</div>
     </section>
@@ -337,10 +360,19 @@ document.addEventListener('click',async e=>{
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}
   const watch=e.target.closest('[data-watch]');if(watch){const s=watch.dataset.watch;state.watch.has(s)?state.watch.delete(s):state.watch.add(s);saveWatch();renderAll();toast(state.watch.has(s)?'Saved':'Removed');return}
   const buy=e.target.closest('[data-buy]');if(buy){openPosition(buy.dataset.buy,'market-hunter');return}
+  if(e.target.closest('[data-backup]')){exportBackup();return}
+  if(e.target.closest('[data-restore]')){q('#backupFile')?.click();return}
   if(e.target.closest('[data-add]')){openPosition('','manual');return}
   const edit=e.target.closest('[data-edit]');if(edit){openPosition(edit.dataset.edit,state.positions.get(edit.dataset.edit)?.source||'manual');return}
   const remove=e.target.closest('[data-remove]');if(remove&&confirm('Remove '+remove.dataset.remove+' from Portfolio Monitor?')){state.positions.delete(remove.dataset.remove);savePositions();await loadPortfolio();renderAll();toast('Removed');return}
   if(e.target.closest('[data-close]')||e.target===q('#positionModal'))closeModal();
 });
 q('#refreshBtn').addEventListener('click',load);
+q('#backupFile')?.addEventListener('change',async e=>{
+  const file=e.target.files?.[0];e.target.value='';
+  await importBackupFile(file);
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
+}
 load();

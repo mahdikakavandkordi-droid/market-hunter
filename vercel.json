@@ -11,5 +11,16 @@
       "destination": "/api/scan.js"
     }
   ],
-  "ignoreCommand": "if { [ \"$VERCEL_GIT_COMMIT_REF\" = \"research/market-hunter-ui-work\" ] || [ \"$VERCEL_GIT_COMMIT_REF\" = \"research/market-hunter-ui-lite\" ]; } && ! printf '%s' \"$VERCEL_GIT_COMMIT_MESSAGE\" | grep -q '\\[deploy\\]'; then exit 0; else exit 1; fi"
+  "ignoreCommand": "if { [ \"$VERCEL_GIT_COMMIT_REF\" = \"research/market-hunter-ui-work\" ] || [ \"$VERCEL_GIT_COMMIT_REF\" = \"research/market-hunter-ui-lite\" ]; } && ! printf '%s' \"$VERCEL_GIT_COMMIT_MESSAGE\" | grep -q '\\[deploy\\]'; then exit 0; else exit 1; fi",
+  "headers": [
+    {
+      "source": "/service-worker.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
 }
