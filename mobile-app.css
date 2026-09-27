@@ -1,0 +1,636 @@
+/* Market Hunter native-mobile layer
+   Inspired by iOS summary/highlight patterns while preserving Market Hunter's dark identity. */
+@media (max-width:760px){
+  :root{
+    --mh-app-bg:#05090e;
+    --mh-card:#101821;
+    --mh-card-2:#151f2a;
+    --mh-card-3:#192532;
+    --mh-separator:rgba(255,255,255,.075);
+    --mh-shadow:0 12px 34px rgba(0,0,0,.18);
+  }
+
+  *{-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--mh-app-bg)!important}
+  body{
+    color:#f7f9fb;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",Inter,system-ui,sans-serif!important;
+    letter-spacing:-.005em;
+  }
+
+  /* Large native header */
+  .topbar{
+    position:relative!important;
+    min-height:126px!important;
+    padding:calc(22px + env(safe-area-inset-top)) 20px 13px!important;
+    align-items:flex-end!important;
+    background:transparent!important;
+    border:0!important;
+    backdrop-filter:none!important;
+  }
+  .kicker{display:none!important}
+  .topbar h1{
+    margin:0 0 3px!important;
+    font-size:34px!important;
+    line-height:1.05!important;
+    font-weight:800!important;
+    letter-spacing:-.045em!important;
+  }
+  .topbar p{
+    font-size:13px!important;
+    color:#7f8d9d!important;
+    line-height:1.35!important;
+  }
+  .top-actions{padding-bottom:2px}
+  .iconbtn{
+    width:44px!important;height:44px!important;
+    display:grid!important;place-items:center!important;
+    border:0!important;border-radius:50%!important;
+    background:#141e29!important;
+    color:#f4f7fb!important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)!important;
+  }
+  .iconbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .iconbtn.busy svg{animation:mh-spin .7s linear infinite}
+  @keyframes mh-spin{to{transform:rotate(360deg)}}
+
+  /* Page rhythm */
+  .main{
+    padding:5px 16px calc(104px + env(safe-area-inset-bottom))!important;
+    max-width:none!important;
+  }
+  .stack,.grid{gap:20px!important}
+  .home-hero,.home-lower{display:grid!important;grid-template-columns:1fr!important;gap:20px!important}
+
+  .panel,.panel.soft{
+    border:0!important;
+    border-radius:22px!important;
+    background:var(--mh-card)!important;
+    box-shadow:var(--mh-shadow)!important;
+    overflow:hidden;
+  }
+  .panel-head,.sectionhead{
+    padding:18px 18px 0!important;
+    align-items:center!important;
+  }
+  .panel-head h2,.sectionhead h2{
+    font-size:22px!important;
+    line-height:1.15!important;
+    font-weight:780!important;
+    letter-spacing:-.035em!important;
+  }
+  .panel-head h3,.sectionhead h3{
+    font-size:20px!important;
+    line-height:1.2!important;
+    font-weight:760!important;
+    letter-spacing:-.03em!important;
+  }
+  .panel-head p,.sectionhead p{
+    margin-top:5px!important;
+    font-size:13px!important;
+    color:#7f8e9e!important;
+    line-height:1.45!important;
+  }
+
+  /* Today / highlight card */
+  .report-panel{
+    background:
+      radial-gradient(circle at 100% 0%,rgba(85,167,255,.21),transparent 42%),
+      linear-gradient(155deg,#142131 0%,#0d1722 74%)!important;
+    border-radius:26px!important;
+  }
+  .report-panel:before{display:none!important}
+  .report-shell{padding:20px!important}
+  .report-topline .eyebrow{
+    font-size:12px!important;
+    letter-spacing:.02em!important;
+    text-transform:none!important;
+    color:#9cacbc!important;
+  }
+  .report-tone{
+    margin-top:8px!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+    font-size:24px!important;
+    line-height:1.18!important;
+    font-weight:780!important;
+    letter-spacing:-.035em!important;
+    color:#f7f9fb!important;
+  }
+  .report-date{font-size:12px!important;color:#7890a4!important;padding-top:3px!important}
+  .change-list{gap:0!important;margin:16px 0 8px!important;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.035)}
+  .change-item{
+    grid-template-columns:62px 1fr!important;
+    gap:11px!important;
+    padding:12px 13px!important;
+    border:0!important;
+    border-bottom:1px solid rgba(255,255,255,.06)!important;
+    border-radius:0!important;
+    background:transparent!important;
+    font-size:13px!important;
+  }
+  .change-item:last-child{border-bottom:0!important}
+  .change-market{font-size:12px!important;color:#9ecbff!important}
+  .report-badges{gap:7px!important;margin-top:12px!important}
+  .report-badges .badge{
+    border:0!important;
+    background:rgba(255,255,255,.06)!important;
+    padding:7px 10px!important;
+    font-size:11.5px!important;
+  }
+  .report-details{
+    margin-top:14px!important;
+    padding-top:13px!important;
+    border-top:1px solid rgba(255,255,255,.07)!important;
+  }
+
+  /* Market highlights — swipeable cards */
+  .home-hero>.panel.soft:nth-child(2){background:transparent!important;box-shadow:none!important;overflow:visible!important}
+  .home-hero>.panel.soft:nth-child(2) .panel-head{padding:0 2px 10px!important}
+  .market-list{
+    display:grid!important;
+    grid-auto-flow:column!important;
+    grid-auto-columns:84%!important;
+    gap:12px!important;
+    overflow-x:auto!important;
+    overscroll-behavior-inline:contain;
+    scroll-snap-type:x mandatory;
+    padding:0 2px 3px!important;
+    scrollbar-width:none;
+  }
+  .market-list::-webkit-scrollbar{display:none}
+  .market-row{
+    scroll-snap-align:start;
+    display:grid!important;
+    grid-template-columns:1fr auto!important;
+    grid-template-areas:
+      "title state"
+      "value value"
+      "context context"!important;
+    gap:8px 10px!important;
+    min-height:168px!important;
+    padding:17px!important;
+    border:0!important;
+    border-radius:22px!important;
+    background:var(--mh-card)!important;
+    box-shadow:var(--mh-shadow)!important;
+  }
+  .market-row>div:first-child{grid-area:title}
+  .market-row>div:first-child b{font-size:17px!important;line-height:1.2!important}
+  .market-row>div:first-child small{font-size:12px!important;margin-top:4px!important}
+  .market-value{
+    grid-area:value;
+    text-align:left!important;
+    align-self:end;
+    margin-top:8px;
+    font-size:29px!important;
+    line-height:1!important;
+    font-weight:780!important;
+    letter-spacing:-.035em;
+  }
+  .market-state{
+    grid-area:state;
+    justify-self:end;
+    align-self:start;
+    padding:5px 8px;
+    border-radius:999px;
+    background:rgba(255,255,255,.055);
+    font-size:11px!important;
+    font-weight:760;
+  }
+  .market-context{
+    grid-area:context!important;
+    padding:0!important;
+    margin:8px 0 0!important;
+    color:#8e9cab!important;
+    font-size:12.5px!important;
+    line-height:1.45!important;
+  }
+
+  /* Native grouped list for Home review */
+  .home-lower>.panel.soft:first-child{background:transparent!important;box-shadow:none!important;overflow:visible!important}
+  .home-lower>.panel.soft:first-child .panel-head{padding:0 2px 10px!important}
+  .home-lower>.panel.soft:first-child .table-wrap{overflow:visible!important}
+  .home-lower .review-table{display:block!important}
+  .home-lower .review-table thead{display:none!important}
+  .home-lower .review-table tbody{
+    display:grid!important;
+    gap:10px!important;
+  }
+  .home-lower .review-table tr{
+    display:grid!important;
+    grid-template-columns:36px minmax(0,1fr) auto!important;
+    grid-template-areas:
+      "rank symbol action"
+      "rank stage action"!important;
+    gap:2px 10px!important;
+    align-items:center!important;
+    padding:12px!important;
+    border:0!important;
+    border-radius:18px!important;
+    background:var(--mh-card)!important;
+    box-shadow:var(--mh-shadow)!important;
+  }
+  .home-lower .review-table td{
+    display:block!important;
+    padding:0!important;
+    border:0!important;
+  }
+  .home-lower .review-table td:nth-child(1){grid-area:rank}
+  .home-lower .review-table td:nth-child(2){grid-area:symbol}
+  .home-lower .review-table td:nth-child(3){grid-area:stage}
+  .home-lower .review-table td:nth-child(4){display:none!important}
+  .home-lower .review-table td:nth-child(5){grid-area:action}
+  .home-lower .review-table .rank-dot{width:32px;height:32px;border-radius:11px;font-size:12px!important}
+  .home-lower .review-table .symbol-cell b{font-size:16px!important}
+  .home-lower .review-table .symbol-cell small{font-size:11.5px!important}
+  .home-lower .review-table .stage-pill{
+    margin-top:4px;
+    border:0!important;
+    background:transparent!important;
+    padding:0!important;
+    font-size:11.5px!important;
+    color:#78b8ff!important;
+  }
+  .home-lower .review-table .btn{
+    width:42px;height:42px;padding:0!important;
+    border:0!important;border-radius:50%!important;
+    background:#172331!important;font-size:0!important;
+  }
+  .home-lower .review-table .btn:after{content:"↗";font-size:18px;color:#79b8ff}
+
+  /* Portfolio summary card */
+  .home-lower>.panel.soft:nth-child(2){
+    background:linear-gradient(150deg,#142131,#0f1822)!important;
+  }
+  .portfolio-glance{padding:18px!important}
+  .portfolio-glance .eyebrow{text-transform:none!important;letter-spacing:0!important;font-size:12px!important}
+  .portfolio-value{font-size:37px!important;font-weight:790!important;line-height:1!important;margin:10px 0 6px!important}
+  .portfolio-pnl{font-size:14px!important}
+  .glance-grid{
+    margin-top:18px!important;
+    gap:0!important;
+    border-radius:15px;
+    overflow:hidden;
+    background:rgba(255,255,255,.035);
+  }
+  .glance-stat{
+    border:0!important;
+    border-right:1px solid rgba(255,255,255,.055)!important;
+    border-radius:0!important;
+    background:transparent!important;
+    padding:12px 10px!important;
+  }
+  .glance-stat:last-child{border-right:0!important}
+  .glance-stat small{font-size:11px!important}
+  .glance-stat b{font-size:16px!important}
+
+  /* Outlook highlight cards */
+  .outlook-panel{background:transparent!important;box-shadow:none!important;overflow:visible!important}
+  .outlook-panel>.panel-head{padding:0 2px 10px!important}
+  .outlook-track{grid-auto-columns:86%!important;gap:12px!important;padding:0 2px 3px!important}
+  .outlook-card{
+    border:0!important;
+    border-radius:22px!important;
+    background:var(--mh-card)!important;
+    padding:17px!important;
+    box-shadow:var(--mh-shadow)!important;
+  }
+  .outlook-head b{font-size:17px!important}
+  .outlook-head small{font-size:12px!important}
+  .outlook-grid>div{
+    border:0!important;
+    background:rgba(255,255,255,.035)!important;
+    border-radius:14px!important;
+    padding:11px!important;
+  }
+
+  /* Portfolio app hierarchy */
+  #portfolioView>.stack{gap:20px!important}
+  #portfolioView>.stack>section:first-child{
+    background:
+      radial-gradient(circle at 95% 0%,rgba(85,167,255,.17),transparent 36%),
+      linear-gradient(150deg,#152231,#0f1822)!important;
+  }
+  #portfolioView>.stack>section:first-child .sectionhead{padding-bottom:4px!important}
+  .section-actions{
+    width:auto!important;
+    margin-top:0!important;
+    gap:8px!important;
+  }
+  .section-actions .btn{
+    border:0!important;
+    background:rgba(255,255,255,.06)!important;
+    border-radius:999px!important;
+    padding:8px 11px!important;
+    font-size:12px!important;
+  }
+  .section-actions .btn.primary{background:#e9f3ff!important;color:#07111b!important}
+
+  .summarygrid{
+    grid-template-columns:1fr 1fr!important;
+    gap:0!important;
+    padding:16px 18px 8px!important;
+  }
+  .summarygrid .sum{
+    border:0!important;
+    border-top:1px solid rgba(255,255,255,.055)!important;
+    border-radius:0!important;
+    background:transparent!important;
+    padding:12px 0!important;
+  }
+  .summarygrid .sum:nth-child(odd){padding-right:12px!important}
+  .summarygrid .sum:nth-child(even){padding-left:12px!important;border-left:1px solid rgba(255,255,255,.055)!important}
+  .summarygrid .sum:first-child{
+    grid-column:1/-1!important;
+    border-top:0!important;
+    border-left:0!important;
+    padding:3px 0 15px!important;
+  }
+  .summarygrid .sum:first-child small{font-size:12px!important;text-transform:none!important}
+  .summarygrid .sum:first-child b{font-size:34px!important;letter-spacing:-.04em!important;margin-top:7px!important}
+  .summarygrid .sum small{font-size:11px!important;text-transform:none!important}
+  .summarygrid .sum b{font-size:16px!important;margin-top:4px!important}
+  .summarygrid .sum:last-child{grid-column:auto!important}
+  .read{
+    margin:4px 18px 18px!important;
+    padding:12px 13px!important;
+    border:0!important;
+    border-radius:14px!important;
+    background:rgba(85,167,255,.09)!important;
+    color:#cfe6ff!important;
+    font-size:13px!important;
+  }
+
+  /* Portfolio Read becomes one grouped summary instead of five boxed paragraphs */
+  .portfolio-read-panel{background:transparent!important;box-shadow:none!important;overflow:visible!important}
+  .portfolio-read-panel>.sectionhead{padding:0 2px 10px!important}
+  .health-breadth{
+    padding:16px!important;
+    border-radius:22px 22px 0 0;
+    background:var(--mh-card);
+    box-shadow:var(--mh-shadow);
+  }
+  .health-segments{height:9px!important}
+  .health-legend{font-size:11.5px!important}
+  .portfolio-read-copy{
+    gap:0!important;
+    padding:0 16px 4px!important;
+    background:var(--mh-card);
+    border-radius:0 0 22px 22px;
+    box-shadow:0 16px 34px rgba(0,0,0,.15);
+  }
+  .portfolio-read-copy p{
+    margin:0!important;
+    padding:13px 0!important;
+    border:0!important;
+    border-top:1px solid rgba(255,255,255,.06)!important;
+    border-radius:0!important;
+    background:transparent!important;
+    font-size:13.5px!important;
+  }
+  .portfolio-read-copy strong{font-size:12px!important;color:#f6f8fb!important;margin-bottom:4px!important}
+
+  /* Attention and holdings are clean grouped cards */
+  .attention-panel{background:transparent!important;box-shadow:none!important;overflow:visible!important}
+  .attention-panel>.sectionhead{padding:0 2px 10px!important}
+  .attention-cards{padding:0 2px 3px!important;gap:12px!important}
+  .attention-card{
+    border:0!important;
+    border-radius:22px!important;
+    background:var(--mh-card)!important;
+    padding:16px!important;
+    box-shadow:var(--mh-shadow)!important;
+  }
+  .attention-head>b{font-size:18px!important}
+  .insight-rows{gap:0!important;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.03)}
+  .insight-row{
+    grid-template-columns:86px 1fr!important;
+    gap:10px!important;
+    border:0!important;
+    border-bottom:1px solid rgba(255,255,255,.055)!important;
+    border-radius:0!important;
+    background:transparent!important;
+    padding:11px 12px!important;
+  }
+  .insight-row:last-child{border-bottom:0!important}
+  .insight-row.change{background:rgba(85,167,255,.045)!important}
+  .insight-row>span{font-size:11.5px!important}
+  .insight-row p{font-size:13px!important}
+
+  #portfolioView>.stack>section:last-child{background:transparent!important;box-shadow:none!important;overflow:visible!important}
+  #portfolioView>.stack>section:last-child>.sectionhead{padding:0 2px 10px!important}
+  #portfolioView .cards{padding:0 2px 3px!important;gap:12px!important}
+  #portfolioView .card{
+    border:0!important;
+    border-radius:22px!important;
+    background:var(--mh-card)!important;
+    padding:16px!important;
+    box-shadow:var(--mh-shadow)!important;
+  }
+
+  /* Review screen: segmented stage control + clean stock cards */
+  #shortlistView .panel{background:transparent!important;box-shadow:none!important;overflow:visible!important}
+  #shortlistView .sectionhead{padding:0 2px 8px!important}
+  .stage-tabs{
+    gap:7px!important;
+    padding:4px!important;
+    margin:4px 2px 0;
+    border-radius:16px;
+    background:#101821;
+    overflow-x:auto!important;
+  }
+  .stage-tab{
+    border:0!important;
+    background:transparent!important;
+    min-height:39px;
+    border-radius:12px!important;
+    padding:8px 11px!important;
+    font-size:12.5px!important;
+  }
+  .stage-tab.active{
+    color:#fff!important;
+    background:#22364b!important;
+    box-shadow:0 1px 1px rgba(0,0,0,.28);
+  }
+  .stage-tab b{background:rgba(255,255,255,.06)!important}
+  .stage-summary{padding:12px 4px 4px!important}
+  #shortlistView .cards{padding:8px 2px 3px!important;gap:12px!important}
+  #shortlistView .card,#watchlistView .card{
+    border:0!important;
+    border-radius:22px!important;
+    background:var(--mh-card)!important;
+    padding:16px!important;
+    box-shadow:var(--mh-shadow)!important;
+  }
+  .metrics{gap:6px!important}
+  .metric{
+    border:0!important;
+    background:rgba(255,255,255,.035)!important;
+    border-radius:13px!important;
+    padding:10px 7px!important;
+  }
+  .metric small{font-size:10.5px!important}
+  .metric b{font-size:14px!important}
+  .why{
+    border:0!important;
+    background:rgba(255,255,255,.025)!important;
+    border-radius:14px!important;
+    padding:12px!important;
+  }
+  details{
+    border-top:1px solid rgba(255,255,255,.06)!important;
+    padding-top:11px!important;
+  }
+  details summary{
+    min-height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    color:#7ebcff!important;
+  }
+  details summary:after{content:"›";font-size:20px;line-height:1;color:#71869a;transform:rotate(90deg)}
+  details[open] summary:after{transform:rotate(-90deg)}
+  .actions{gap:8px!important}
+  .actions .btn{
+    min-height:42px;
+    border:0!important;
+    border-radius:13px!important;
+    background:#172330!important;
+  }
+  .actions .btn.primary{background:#e7f2ff!important}
+  .actions .btn.danger{background:rgba(255,119,130,.08)!important}
+
+  /* Allocation and risk as native sections */
+  #portfolioView .panel.soft:not(.portfolio-read-panel):not(.attention-panel):not(.risk-snapshot){
+    box-shadow:var(--mh-shadow)!important;
+  }
+  .risk-snapshot{overflow:visible!important}
+  .risk-grid{gap:10px!important;padding:14px 16px 10px!important}
+  .risk-card{
+    border:0!important;
+    border-radius:18px!important;
+    background:var(--mh-card-2)!important;
+    min-height:128px!important;
+  }
+  .risk-card>strong{font-size:26px!important}
+  .risk-lens{
+    border:0!important;
+    border-radius:16px!important;
+    background:var(--mh-card-2)!important;
+  }
+  .risk-footer{padding:11px 16px 16px!important}
+  .quick-read-rows{
+    gap:0!important;
+    border-radius:15px;
+    overflow:hidden;
+    background:rgba(255,255,255,.03);
+  }
+  .quick-read-rows>div{
+    grid-template-columns:96px 1fr!important;
+    border:0!important;
+    border-bottom:1px solid rgba(255,255,255,.055)!important;
+    border-radius:0!important;
+    background:transparent!important;
+    padding:11px 12px!important;
+  }
+  .quick-read-rows>div:last-child{border-bottom:0!important}
+
+  /* Buttons */
+  .btn{
+    min-height:40px;
+    border:0!important;
+    border-radius:12px!important;
+    background:#172330!important;
+    color:#f3f6f9!important;
+    font-size:13px!important;
+  }
+  .btn.ghost{color:#75b6ff!important;background:rgba(85,167,255,.07)!important}
+  .btn.primary{background:#e6f2ff!important;color:#07111b!important}
+
+  /* Native bottom sheet */
+  .modal{padding:0!important;background:rgba(0,0,0,.55)!important;backdrop-filter:blur(8px)!important}
+  .modal.open{align-items:flex-end!important;justify-content:center!important}
+  .sheet{
+    width:100%!important;
+    max-width:none!important;
+    max-height:91vh;
+    overflow:auto;
+    margin:0!important;
+    padding:20px 18px calc(20px + env(safe-area-inset-bottom))!important;
+    border:0!important;
+    border-radius:26px 26px 0 0!important;
+    background:#111922!important;
+    box-shadow:0 -18px 60px rgba(0,0,0,.38)!important;
+  }
+  .sheet:before{
+    content:"";
+    display:block;
+    width:38px;height:5px;border-radius:999px;
+    background:#45515e;
+    margin:-8px auto 16px;
+  }
+  .sheethead h2{font-size:22px!important}
+  .sheethead p{font-size:13px!important}
+  .field{gap:7px!important}
+  .field label{
+    font-size:12px!important;
+    text-transform:none!important;
+    letter-spacing:0!important;
+    color:#8d9ba9!important;
+  }
+  .field input,.field select,.field textarea{
+    min-height:48px;
+    border:0!important;
+    border-radius:13px!important;
+    background:#1a2531!important;
+    padding:12px 13px!important;
+    font-size:16px!important;
+  }
+
+  /* iOS-like bottom tab bar */
+  .mobile-nav{
+    left:0!important;right:0!important;bottom:0!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,1fr)!important;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom))!important;
+    background:rgba(7,11,16,.84)!important;
+    border-top:1px solid rgba(255,255,255,.08)!important;
+    backdrop-filter:blur(30px) saturate(150%)!important;
+    -webkit-backdrop-filter:blur(30px) saturate(150%)!important;
+  }
+  .mobile-nav .navbtn{
+    display:grid!important;
+    place-items:center!important;
+    gap:4px!important;
+    min-height:54px!important;
+    padding:4px 2px!important;
+    border-radius:0!important;
+    background:transparent!important;
+    color:#728092!important;
+  }
+  .mobile-nav .navbtn.active{background:transparent!important;color:#58a8ff!important}
+  .mobile-nav .navbtn small{
+    font-size:10.5px!important;
+    line-height:1!important;
+    font-weight:650!important;
+    color:currentColor!important;
+  }
+  .tab-icon{display:grid;place-items:center;width:26px;height:26px}
+  .tab-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .mobile-nav .navbtn.active .tab-icon svg{stroke-width:2.1}
+
+  .toast{
+    bottom:calc(86px + env(safe-area-inset-bottom))!important;
+    padding:10px 14px!important;
+    border-radius:999px!important;
+    font-size:12px!important;
+  }
+}
+
+@media (max-width:390px){
+  .topbar h1{font-size:32px!important}
+  .market-list,.outlook-track{grid-auto-columns:90%!important}
+  .section-actions{width:100%!important;justify-content:flex-start!important;margin-top:10px!important}
+}
