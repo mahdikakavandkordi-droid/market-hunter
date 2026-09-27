@@ -590,3 +590,41 @@
 @media(max-width:760px){
   .insight-row.change{margin-top:1px}
 }
+
+
+/* Compact position quick read */
+.quick-read-rows{
+  display:grid;
+  gap:8px;
+  margin:0 0 16px;
+}
+.quick-read-rows>div{
+  display:grid;
+  grid-template-columns:86px 1fr;
+  gap:10px;
+  padding:9px 10px;
+  border:1px solid var(--line-soft);
+  border-radius:10px;
+  background:rgba(255,255,255,.014);
+}
+.quick-read-rows span{
+  color:var(--muted2);
+  font-size:8px;
+  font-weight:800;
+}
+.quick-read-rows b{
+  color:var(--text);
+  font-size:8.5px;
+  line-height:1.45;
+  font-weight:700;
+}
+@media(max-width:760px){
+  .quick-read-rows{gap:9px;margin-bottom:18px}
+  .quick-read-rows>div{
+    grid-template-columns:92px 1fr;
+    gap:10px;
+    padding:10px 11px;
+  }
+  .quick-read-rows span{font-size:12px!important}
+  .quick-read-rows b{font-size:13px!important;line-height:1.5}
+}
