@@ -12,26 +12,33 @@ assert.deepEqual(validateFixedCalendar(calendar),calendar);
 assert.throws(()=>validateFixedCalendar({...calendar,validationStart:'bad'}),/Invalid validation calendar/);
 assert.throws(()=>validateFixedCalendar({developmentStart:'2025-01-01',validationStart:'2024-01-01',finalStart:'2026-01-01'}),/must satisfy/);
 
-const row=(id,date,outcomeDate)=>({
-  id,symbol:id,date,outcomeDate,stage:'Early Watch',horizon:5,sessionIndex:Number(id.replace(/\D/g,''))||1,rankScore:70,
-  features:{rs20:1,rs60:1,upDownVolumeRatio:1,higherLow:true,swingTrend:'Structure improving',atr14Pct:3,freshReclaimAge:1,sellingFading:true,downsideDecel:true,volumeShockNearLow:true,momentumShift:2,highBroken:true,freshHighBreakAge:1,dist20:1,ret20:5,ret60:15,ma20Slope5:1,ma50Slope10:1,rsi14:55},
+const features=()=>({
+  rs20:1,rs60:1,upDownVolumeRatio:1,higherLow:true,swingTrend:'Structure improving',atr14Pct:3,
+  freshReclaimAge:1,sellingFading:true,downsideDecel:true,volumeShockNearLow:true,momentumShift:2,
+  highBroken:true,freshHighBreakAge:1,dist20:1,ret20:5,ret60:15,ma20Slope5:1,ma50Slope10:1,rsi14:55
+});
+
+const row=(id,date,outcomeDate,{stage='Early Watch',horizon=5,index}={})=>({
+  id,symbol:id,date,outcomeDate,stage,horizon,
+  sessionIndex:index??(Number(id.replace(/\D/g,''))||1),
+  rankScore:70,features:features(),
   forwardReturn:1,benchmarkReturn:0,excessReturn:1,mae:-1,mfe:2,hitPlus7:false,hitMinus7:false
 });
 
-const full=[
+const splitFixture=[
   row('r1','2022-01-03','2022-01-10'),
   row('r2','2023-01-03','2023-01-10'),
-  row('r3','2024-09-19','2024-09-20'), // outcome exactly at validation boundary: purge from train
-  row('r4','2024-09-19','2024-09-25'), // crossing validation boundary: purge
+  row('r3','2024-09-19','2024-09-20'), // equality at validation boundary => purge from train
+  row('r4','2024-09-19','2024-09-25'), // crosses validation boundary => purge from train
   row('r5','2024-09-20','2024-09-27'), // validation
   row('r6','2025-03-01','2025-03-08'), // validation
-  row('r7','2025-12-20','2026-01-01'), // final-boundary crossing: exclude
-  {...row('badDate','bad','2024-01-01')},
-  {...row('badOutcome','2024-01-01','bad')}
+  row('r7','2025-12-20','2026-01-01'), // equality at final boundary => purge from validation
+  {...row('badDate','2024-01-01','2024-01-08'),date:'bad'},
+  {...row('badOutcome','2024-01-01','2024-01-08'),outcomeDate:'bad'}
 ];
 
-const sparse=full.filter(x=>['r1','r5'].includes(x.id));
-const a=fixedCalendarSplit(full,calendar);
+const sparse=splitFixture.filter(x=>['r1','r5'].includes(x.id));
+const a=fixedCalendarSplit(splitFixture,calendar);
 const b=fixedCalendarSplit(sparse,calendar);
 
 assert.deepEqual(a.calendar,b.calendar);
@@ -45,7 +52,7 @@ assert.deepEqual(b.train.map(x=>x.id),['r1']);
 assert.deepEqual(b.test.map(x=>x.id),['r5']);
 
 const overlap=row('same','2024-09-20','2024-09-27');
-assert.equal(fixedCalendarSplit([overlap,...full],calendar).test.some(x=>x.id==='same'),true);
+assert.equal(fixedCalendarSplit([overlap,...splitFixture],calendar).test.some(x=>x.id==='same'),true);
 assert.equal(fixedCalendarSplit([overlap],calendar).test.some(x=>x.id==='same'),true);
 
 const emptyTrain=fixedCalendarSplit([row('v1','2025-01-01','2025-01-08')],calendar);
@@ -56,31 +63,85 @@ const emptyValidation=fixedCalendarSplit([row('t1','2023-01-01','2023-01-08')],c
 assert.equal(emptyValidation.status,'insufficient_data');
 assert.equal(emptyValidation.insufficientReason,'empty_validation');
 
-function reportFor(rawEvents,batchIndex){
+const emptyBoth=fixedCalendarSplit([],calendar);
+assert.equal(emptyBoth.status,'insufficient_data');
+assert.equal(emptyBoth.insufficientReason,'empty_train_and_validation');
+
+function stageRows(stage,prefix,horizon=5){
+  return [
+    row(prefix+'1','2022-06-01','2022-06-08',{stage,horizon,index:10}),
+    row(prefix+'2','2023-06-01','2023-06-08',{stage,horizon,index:20}),
+    row(prefix+'3','2024-09-19','2024-09-25',{stage,horizon,index:30}), // purged
+    row(prefix+'4','2024-10-01','2024-10-08',{stage,horizon,index:40}),
+    row(prefix+'5','2025-06-01','2025-06-08',{stage,horizon,index:50})
+  ];
+}
+
+const allStages=['Early Watch','Recovery','Attractive Growth','Established Move'];
+const fullRaw=[];
+for(const h of [5,20]){
+  for(const stage of allStages){
+    fullRaw.push(...stageRows(stage,stage.replace(/\s+/g,'_')+'_'+h+'_',h));
+  }
+}
+
+function reportFor(rawEvents,batchIndex,horizons=[5,20]){
   return buildResearchReport({
-    version:'test',generatedAt:'2026-09-27T00:00:00Z',batchIndex,batchCount:4,range:'5y',horizons:[5],assumptions:{},
+    version:'test',generatedAt:'2026-09-27T00:00:00Z',batchIndex,batchCount:4,range:'5y',horizons,assumptions:{},
     validation:{method:'fixed calendar synthetic'},dataset:{id:'same'},symbols:['SYNTH'+batchIndex],rawEvents,
     surfaceReplayCandidates:[],recoverySurfaceReplayCandidates:[],attractiveGrowthSurfaceReplayCandidates:[],establishedMoveSurfaceReplayCandidates:[],
     latestPicks:[],finalTestStart:calendar.finalStart,openFinalTest:false,validationCalendar:calendar
   });
 }
 
-const reportA=reportFor(full.filter(x=>x.date!=='bad'&&x.outcomeDate!=='bad'),0);
-const reportB=reportFor([
-  row('b1','2022-06-01','2022-06-08'),
-  row('b2','2025-06-01','2025-06-08')
-],3);
+// Four symbol partitions with intentionally different coverage must retain identical dates.
+const batchInputs=[
+  fullRaw,
+  fullRaw.filter((_,i)=>i%2===0),
+  fullRaw.filter(x=>x.date>='2023-01-01'),
+  fullRaw.filter(x=>x.date<'2025-01-01'||x.stage==='Recovery')
+];
+const reports=batchInputs.map((rows,i)=>reportFor(rows,i));
 
-assert.deepEqual(reportA.validation.calendar,reportB.validation.calendar);
-assert.deepEqual(reportA.horizons[5].byStage['Early Watch'].fold.calendar,calendar);
-assert.deepEqual(reportB.horizons[5].byStage['Early Watch'].fold.calendar,calendar);
+for(const report of reports){
+  assert.deepEqual(
+    {
+      developmentStart:report.validation.calendar.developmentStart,
+      validationStart:report.validation.calendar.validationStart,
+      finalStart:report.validation.calendar.finalStart
+    },
+    calendar
+  );
+  for(const h of [5,20]){
+    for(const stage of allStages){
+      assert.deepEqual(report.horizons[h].byStage[stage].fold.calendar,calendar);
+    }
+  }
+}
 
-const ew=reportA.horizons[5].byStage['Early Watch'];
-for(const variant of Object.values(ew.rewriteDiagnostic.inclusion)){
-  assert.deepEqual(variant.fold,calendar);
+// Changing horizon must never move the experiment boundary.
+for(const stage of allStages){
+  assert.deepEqual(reports[0].horizons[5].byStage[stage].fold.calendar,reports[0].horizons[20].byStage[stage].fold.calendar);
 }
-for(const variant of Object.values(ew.rewriteDiagnostic.ranking)){
-  assert.deepEqual(variant.fold,calendar);
-}
+
+// Variant filtering inside every diagnostic must retain the common calendar.
+const ew=reports[0].horizons[5].byStage['Early Watch'];
+for(const variant of Object.values(ew.rewriteDiagnostic.inclusion))assert.deepEqual(variant.fold,calendar);
+for(const variant of Object.values(ew.rewriteDiagnostic.ranking))assert.deepEqual(variant.fold,calendar);
+
+const recovery=reports[0].horizons[5].byStage['Recovery'];
+for(const variant of Object.values(recovery.structureDiagnostic.variants))assert.deepEqual(variant.fold,calendar);
+for(const variant of Object.values(recovery.structureDiagnostic.ranking))assert.deepEqual(variant.fold,calendar);
+
+const growth=reports[0].horizons[5].byStage['Attractive Growth'];
+for(const variant of Object.values(growth.riskDiagnostic.variants))assert.deepEqual(variant.fold,calendar);
+
+// A heavily filtered variant cannot cause an overlapping date to switch partitions.
+const commonObservation=row('common','2024-10-15','2024-10-22');
+const dense=fixedCalendarSplit([row('old1','2022-01-01','2022-01-08'),commonObservation,row('late1','2025-01-01','2025-01-08')],calendar);
+const filtered=fixedCalendarSplit([commonObservation],calendar);
+assert.equal(dense.test.some(x=>x.id==='common'),true);
+assert.equal(filtered.test.some(x=>x.id==='common'),true);
+assert.deepEqual(dense.calendar,filtered.calendar);
 
 console.log('Common fixed-calendar validation tests passed');
