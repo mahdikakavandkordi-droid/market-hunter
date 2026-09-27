@@ -113,7 +113,7 @@ function homeHtml(){
   const pulse=(p?.markets||[]).map(x=>{
     const direction=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'up':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'down':'flat';
     const tone=direction==='up'?'good':direction==='down'?'bad':'';
-    return `<article class="pulse-card"><div class="pulse-top"><div><h4>${esc(x.name)}</h4><span class="badge ${tone}">${esc(x.regime||'Neutral')}</span></div></div><div class="price">${fmt(x.price)}</div><div class="sub">${esc(x.condition||'No short-term condition')}</div><div class="trendline ${direction}"></div></article>`;
+    return `<article class="pulse-card"><div class="pulse-top"><div><h4>${esc(x.name)}</h4><span class="badge ${tone}">${esc(x.regime||'Neutral')}</span></div></div><div class="price">${fmt(x.price)}</div><div class="sub">${esc(x.condition||'No short-term condition')}</div></article>`;
   }).join('');
   const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
   const devs=(d?.keyDevelopments||[]).slice(0,4).map(x=>`<div class="development"><b>${esc(x.market)}</b><span>${esc(x.text)}</span></div>`).join('');
@@ -122,13 +122,22 @@ function homeHtml(){
 
   return `<div class="stack">
     <div class="grid home-hero">
-      <section class="panel"><div class="panel-inner">
-        <div class="eyebrow">Daily Market Report</div>
-        <div class="report-title">${esc(d?.headline||'Market report unavailable')}</div>
-        <div class="report-copy">${esc(d?.summary||d?.keyDevelopments?.[0]?.text||'Trend regime, short-term condition and the daily shortlist are loaded from the research engine.')}</div>
-        <div class="report-badges">
-          ${(d?.groups||[]).slice(0,3).map(g=>`<span class="badge">${esc(g.label)} · ${esc(g.state)}</span>`).join('')}
+      <section class="panel report-panel"><div class="panel-inner report-shell">
+        <div class="report-topline">
+          <div>
+            <div class="eyebrow">Daily Market Brief</div>
+            <div class="report-tone">${esc(String(d?.headline||'Daily market brief').split(':')[0])}</div>
+          </div>
+          <span class="report-date">${esc(d?.asOf?.latest||'')}</span>
         </div>
+        <div class="report-title">${esc(d?.headline||'Market report unavailable')}</div>
+        <div class="report-badges">
+          ${(d?.groups||[]).slice(0,3).map(g=>`<span class="badge"><b>${esc(g.label)}</b> · ${esc(g.state)}</span>`).join('')}
+        </div>
+        <details class="report-details">
+          <summary>Read full brief</summary>
+          <div class="report-copy">${esc(d?.summary||d?.keyDevelopments?.[0]?.text||'Trend regime, short-term condition and the daily shortlist are loaded from the research engine.')}</div>
+        </details>
         <div class="group-grid">${groups}</div>
       </div></section>
       <section class="panel soft">
