@@ -22,17 +22,20 @@ for(let batch=0;batch<4;batch++){
       const n=newFiles[batch]?.horizons?.[h]?.byStage?.[stage];
       if(!o||!n)throw new Error('Missing stage/horizon comparison cell: batch '+batch+' '+stage+' '+h);
       const op=o.ranking?.trainThresholds||{},np=n.ranking?.trainThresholds||{};
-      const purge=n.ranking?.purge||{};
+      const counts=n.ranking?.fold?.counts;
+      if(!counts||!['trainCount','validationCount','validationBoundaryPurgedCount'].every(k=>Number.isInteger(counts[k])&&counts[k]>=0)){
+        throw new Error('Missing fixed-calendar fold counts: batch '+batch+' '+stage+' '+h);
+      }
       rows.push({
         batch,horizon:Number(h),stage,
         validationStart:newFiles[batch]?.validation?.calendar?.validationStart||null,
         finalStart:newFiles[batch]?.validation?.calendar?.finalStart||null,
         snapshotId:newFiles[batch]?.dataset?.snapshotId||null,
         dataSha256:newFiles[batch]?.dataset?.dataSha256||null,
-        prePurgeTrainCount:purge.prePurgeTrainCount??null,
-        purgedTrainCount:purge.purgedTrainCount??null,
-        trainCount:purge.trainCount??null,
-        testCount:purge.testCount??null,
+        prePurgeTrainCount:counts.trainCount+counts.validationBoundaryPurgedCount,
+        purgedTrainCount:counts.validationBoundaryPurgedCount,
+        trainCount:counts.trainCount,
+        testCount:counts.validationCount,
         q80Before:op.q80??null,q80After:np.q80??null,q80Delta:delta(op.q80,np.q80),
         q90Before:op.q90??null,q90After:np.q90??null,q90Delta:delta(op.q90,np.q90),
         testMeanBefore:o.test?.mean??null,testMeanAfter:n.test?.mean??null,testMeanDelta:delta(o.test?.mean,n.test?.mean),
@@ -68,3 +71,4 @@ fs.mkdirSync('data',{recursive:true});
 fs.writeFileSync('data/purged-split-impact.json',JSON.stringify(report,null,2));
 console.log('Controlled comparison identity guard PASS');
 console.log(JSON.stringify(report.summary,null,2));
+

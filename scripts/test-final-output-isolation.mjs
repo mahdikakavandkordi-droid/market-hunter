@@ -45,12 +45,13 @@ const baseArgs={
   recoverySurfaceReplayCandidates:replayBase('Recovery'),
   attractiveGrowthSurfaceReplayCandidates:replayBase('Attractive Growth'),
   establishedMoveSurfaceReplayCandidates:replayBase('Established Move'),
-  latestPicks:[{symbol:'CURRENT_ONLY',score:1}],finalTestStart:finalStart,
+  latestPicks:[{symbol:'FINAL_LATEST_SENTINEL',date:'2026-09-25',score:1,ret5:999,ret20:777}],finalTestStart:finalStart,
   validationCalendar:{developmentStart:'2021-09-27',validationStart:'2024-09-20',finalStart}
 };
 
 const closed=buildResearchReport({...baseArgs,openFinalTest:false});
 assert.equal(closed.validation.finalTestOpened,false);
+assert.deepEqual(closed.latestPicks,[]);
 assert.equal('finalEvaluation' in closed,false);
 assert.equal(closed.validation.outputBoundary.rawEvents.finalCount,4);
 assert.equal(closed.validation.outputBoundary.rawEvents.crossingCount,4);
@@ -95,3 +96,4 @@ const p=partitionResearchRows([
 assert.equal(p.counts.invalidOrderCount,1);
 
 console.log('Final-period output isolation integration tests passed');
+

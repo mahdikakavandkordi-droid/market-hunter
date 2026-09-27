@@ -145,3 +145,42 @@ assert.equal(filtered.test.some(x=>x.id==='common'),true);
 assert.deepEqual(dense.calendar,filtered.calendar);
 
 console.log('Common fixed-calendar validation tests passed');
+
+
+// Empty training data must never manufacture Top buckets from null thresholds.
+const validationOnly=reportFor([row('vOnly','2025-01-01','2025-01-08')],0,[5]);
+const ranking=validationOnly.horizons[5].byStage['Early Watch'].ranking;
+assert.equal(ranking.fold.status,'insufficient_data');
+assert.deepEqual(ranking.test,{Top:null,Middle:null,Lower:null});
+assert.equal(ranking.highPriority.q80.test,null);
+
+// Preserve a completed empty scan between appearances, plus horizon-specific maturity.
+const scanCalendar=[
+  ...['2025-06-02','2025-06-03','2025-06-04'].flatMap(date=>[5,20].map(horizon=>({date,horizon,outcomeDate:'2025-07-02'}))),
+  {date:'2025-12-20',horizon:5,outcomeDate:'2025-12-29'},
+  {date:'2025-12-20',horizon:20,outcomeDate:'2026-01-20'},
+  {date:'2026-02-02',horizon:5,outcomeDate:'2026-02-09'},
+  {date:'2020-01-02',horizon:5,outcomeDate:'2020-01-09'}
+];
+const candidates=['2025-06-02','2025-06-04'].map(date=>row('same',date,'2025-06-12'));
+const replayReport=buildResearchReport({
+ version:'test',batchIndex:0,batchCount:4,symbols:['same'],horizons:[5,20],validation:{},dataset:{},rawEvents:[],
+ validationCalendar:calendar,finalTestStart:calendar.finalStart,openFinalTest:false,scanCalendar,
+ surfaceReplayCandidates:candidates,recoverySurfaceReplayCandidates:candidates,
+ attractiveGrowthSurfaceReplayCandidates:candidates,establishedMoveSurfaceReplayCandidates:candidates
+});
+for(const key of ['surfaceReplay','recoverySurfaceReplay','attractiveGrowthSurfaceReplay','establishedMoveSurfaceReplay']){
+ const section=replayReport[key];
+ assert.deepEqual(section.datesByHorizon[5],['2025-06-02','2025-06-03','2025-06-04','2025-12-20']);
+ assert.deepEqual(section.datesByHorizon[20],['2025-06-02','2025-06-03','2025-06-04']);
+ let previous=new Set(),episodes=0,zeroDays=0;
+ for(const date of section.datesByHorizon[5]){
+   const current=new Set(section.candidates.filter(x=>x.date===date).map(x=>x.symbol));
+   if(!current.size)zeroDays++;
+   for(const symbol of current)if(!previous.has(symbol))episodes++;
+   previous=current;
+ }
+ assert.equal(episodes,2);
+ assert.equal(zeroDays,2);
+}
+console.log('Empty-training and complete replay-calendar regressions passed');

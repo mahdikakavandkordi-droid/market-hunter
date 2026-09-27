@@ -27,7 +27,6 @@ const datasetMode=frozenDatasetFile?'frozen':'live';
 const horizons=(process.env.V2_HORIZONS||'5,10,20').split(',').map(Number).filter(x=>x>0);
 const maxH=Math.max(...horizons);
 const allSymbols=UNIVERSE.map(x=>x[0]);
-const symbolMeta=new Map(UNIVERSE.map(x=>[x[0],{name:x[1],sector:x[2]}]));
 const symbols=allSymbols.filter((_,i)=>i%batchCount===batchIndex);
 const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
 const benchSymbol=s=>CDR.has(s)?'^IXIC':'^GSPTSE';
@@ -136,7 +135,7 @@ if(frozenDatasetFile){
   }
 }
 
-const rawEvents=[],surfaceReplayCandidates=[],recoverySurfaceReplayCandidates=[],attractiveGrowthSurfaceReplayCandidates=[],establishedMoveSurfaceReplayCandidates=[],surfaceReplayDates=new Set(),latest=[];
+const rawEvents=[],surfaceReplayCandidates=[],recoverySurfaceReplayCandidates=[],attractiveGrowthSurfaceReplayCandidates=[],establishedMoveSurfaceReplayCandidates=[],scanCalendar=[];
 for(const symbol of symbols){
   const pack=data[symbol],rows=pack.rows,benchPack=data[benchSymbol(symbol)],benchRows=benchPack?.rows||[];
   if(rows.length<120||benchRows.length<80)continue;
@@ -146,12 +145,12 @@ for(const symbol of symbols){
     const date=dayKey(rows[i].t),hist=rows.slice(0,i+1),bh=benchmarkHist(benchRows,date);
     if(!bh||bh.length<65)continue;
     const m=metrics(hist,bh);if(!m)continue;
+    for(const h of horizons)scanCalendar.push({date,outcomeDate:dayKey(rows[i+h].t),horizon:h});
     if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){prevStage=null;prevStageAge=-1;continue}
     const stage=classify(m);
     const score=stage?rank(m,stage):null;
     const surfaceScore=stage?surfaceRank(m,stage,score):null;
     const stageAge=stage?(stage===prevStage?prevStageAge+1:0):null;
-    surfaceReplayDates.add(date);
     if(stage==='Established Move'&&priorityBand(stage,score)==='Review First'){
       const flags=riskFlags(m);
       for(const h of horizons){
@@ -242,20 +241,6 @@ for(const symbol of symbols){
   }
 }
 
-for(const symbol of symbols){
-  const pack=data[symbol],rows=pack?.rows||[],benchRows=data[benchSymbol(symbol)]?.rows||[];
-  if(rows.length<120||benchRows.length<80)continue;
-  const i=rows.length-1;
-  if(hadRecentSplit(rows,pack.splitDays,i))continue;
-  const date=dayKey(rows[i].t),bh=benchmarkHist(benchRows,date);
-  if(!bh||bh.length<65)continue;
-  const m=metrics(rows,bh);if(!m)continue;
-  if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20)continue;
-  const stage=classify(m);if(!stage)continue;
-  const score=rank(m,stage),surfaceScore=surfaceRank(m,stage,score);
-  latest.push({symbol,name:symbolMeta.get(symbol)?.name,sector:symbolMeta.get(symbol)?.sector,stage,score:round(score,1),surfaceScore:round(surfaceScore,1),date,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),rs20:round(m.rs20),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),swingTrend:m.swingTrend});
-}
-
 const report=buildResearchReport({
   version:VERSION,
   generatedAt:new Date().toISOString(),
@@ -273,7 +258,7 @@ const report=buildResearchReport({
   recoverySurfaceReplayCandidates,
   attractiveGrowthSurfaceReplayCandidates,
   establishedMoveSurfaceReplayCandidates,
-  latestPicks:latest,
+  scanCalendar,
   finalTestStart,
   openFinalTest,
   validationCalendar:{developmentStart,validationStart,finalStart:finalTestStart}
@@ -285,6 +270,6 @@ fs.writeFileSync(out,JSON.stringify(report,null,2));
 console.log('wrote '+out);
 console.log(JSON.stringify({
   version:VERSION,batchIndex,
-  early:Object.fromEntries(horizons.map(h=>[h,report.horizons[h].byStage['Early Watch']])),
-  latestPicks:report.latestPicks.slice(0,20)
+  early:Object.fromEntries(horizons.map(h=>[h,report.horizons[h].byStage['Early Watch']]))
 },null,2));
+
