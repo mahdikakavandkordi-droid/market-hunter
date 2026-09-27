@@ -3,6 +3,7 @@ import {captureFrozenDataset,loadFrozenDataset,frozenDataDigest,structuralDataDi
 import {UNIVERSE} from '../lib/universe.js';
 import {purgedChronSplit,sealedChronSplit} from '../lib/validation-split.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,riskFlags,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
+import {buildResearchReport} from '../lib/backtest-report-builder.js';
 
 const batchIndex=Number(process.env.V2_BATCH_INDEX||0);
 const batchCount=Math.max(1,Number(process.env.V2_BATCH_COUNT||4));
@@ -477,75 +478,26 @@ for(const symbol of symbols){
   latest.push({symbol,name:symbolMeta.get(symbol)?.name,sector:symbolMeta.get(symbol)?.sector,stage,score:round(score,1),surfaceScore:round(surfaceScore,1),date,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),rs20:round(m.rs20),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),swingTrend:m.swingTrend});
 }
 
-const report={
-  version:VERSION,generatedAt:new Date().toISOString(),batchIndex,batchCount,range,horizons,assumptions:ASSUMPTIONS,
+const report=buildResearchReport({
+  version:VERSION,
+  generatedAt:new Date().toISOString(),
+  batchIndex,batchCount,range,horizons,assumptions:ASSUMPTIONS,
   validation:{
     method:'purged chronological development split + sealed historical final period',
     trainFraction:.7,
-    finalTestStart,
-    finalTestOpened:openFinalTest,
     note:'Historical final period is sealed from this point forward but is not claimed to be a virgin holdout because earlier project iterations had already observed this history. A truly untouched forward sample begins after 2026-09-27.'
   },
   dataset:datasetInfo,
-  symbolCount:symbols.length,symbols,
-  horizons:{},
-  surfaceReplay:{
-    mode:'daily-review-first-candidates-before-global-cap',
-    maxVisible:6,
-    dates:[...surfaceReplayDates].sort(),
-    candidates:surfaceReplayCandidates
-  },
-  recoverySurfaceReplay:{
-    mode:'daily-recovery-review-first-candidates-with-stage-age-and-minor-high-confirmation',
-    maxVisible:6,
-    dates:[...surfaceReplayDates].sort(),
-    candidates:recoverySurfaceReplayCandidates
-  },
-  attractiveGrowthSurfaceReplay:{
-    mode:'daily-attractive-growth-review-first-candidates-with-clean-review-flag',
-    maxVisible:6,
-    dates:[...surfaceReplayDates].sort(),
-    candidates:attractiveGrowthSurfaceReplayCandidates
-  },
-  establishedMoveSurfaceReplay:{
-    mode:'daily-established-move-review-first-candidates-with-current-health-features',
-    maxVisible:6,
-    dates:[...surfaceReplayDates].sort(),
-    candidates:establishedMoveSurfaceReplayCandidates
-  },
-  latestPicks:latest.sort((a,b)=>b.score-a.score)
-};
-for(const h of horizons){
-  const ev=dedupe(rawEvents.filter(x=>x.horizon===h),h);
-  report.horizons[h]={overall:summary(ev),byStage:{}};
-  for(const stage of ['Early Watch','Recovery','Attractive Growth','Established Move']){
-    const x=ev.filter(e=>e.stage===stage);
-    const sp=splitChron(x);
-    const review=e=>priorityBand(stage,e.rankScore)==='Review First';
-    const cleanReview=e=>review(e)&&riskFlags(e.features).length===0;
-    const heatedReview=e=>review(e)&&riskFlags(e.features).length>0;
-    // Backend-only display polish candidate for Early Watch.
-    // It does NOT redefine stage membership or ranking. It only removes clearly
-    // deteriorating / deeply weak names after they already passed Review First.
-    const earlyPolish=e=>review(e)
-      &&(!Number.isFinite(e.features.momentumShift)||e.features.momentumShift>-5)
-      &&(!Number.isFinite(e.features.rs20)||e.features.rs20>=-10);
-    report.horizons[h].byStage[stage]={
-      overall:summary(x),train:summary(sp.train),test:summary(sp.test),ranking:rankingReport(x),
-      fixedPriority:{
-        floors:PRIORITY_FLOORS[stage],
-        reviewFirst:{train:summary(sp.train.filter(review)),test:summary(sp.test.filter(review))},
-        cleanReview:{train:summary(sp.train.filter(cleanReview)),test:summary(sp.test.filter(cleanReview))},
-        heatedReview:{train:summary(sp.train.filter(heatedReview)),test:summary(sp.test.filter(heatedReview))},
-        ...(stage==='Early Watch'?{polishGuard:{train:summary(sp.train.filter(earlyPolish)),test:summary(sp.test.filter(earlyPolish))}}:{})
-      },
-      evidence:evidenceSlices(stage,x),
-      ...(stage==='Early Watch'?{rewriteDiagnostic:earlyWatchRewriteDiagnostic(x)}:{}),
-      ...(stage==='Recovery'?{structureDiagnostic:recoveryStructureDiagnostic(x)}:{}),
-      ...(stage==='Attractive Growth'?{riskDiagnostic:attractiveGrowthRiskDiagnostic(x)}:{})
-    };
-  }
-}
+  symbols,
+  rawEvents,
+  surfaceReplayCandidates,
+  recoverySurfaceReplayCandidates,
+  attractiveGrowthSurfaceReplayCandidates,
+  establishedMoveSurfaceReplayCandidates,
+  latestPicks:latest,
+  finalTestStart,
+  openFinalTest
+});
 
 fs.mkdirSync('data',{recursive:true});
 const out='data/v2-backtest-batch-'+batchIndex+'.json';
