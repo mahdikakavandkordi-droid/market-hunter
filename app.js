@@ -10,6 +10,19 @@ const readSet=k=>{try{return new Set(JSON.parse(localStorage.getItem(k)||'[]'))}
 const readPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
 const state={view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),portfolioItems:new Map(),analytics:null,previous:new Map()};
 
+function applyTheme(theme){
+  const next=theme==='light'?'light':'dark';
+  document.documentElement.dataset.theme=next;
+  try{localStorage.setItem('marketHunterTheme',next)}catch{}
+  const b=q('#themeBtn');
+  if(b){
+    b.textContent=next==='dark'?'☼':'☾';
+    b.title=next==='dark'?'Switch to light theme':'Switch to dark theme';
+    b.setAttribute('aria-label',b.title);
+  }
+  const meta=q('#themeColor');
+  if(meta)meta.setAttribute('content',next==='light'?'#f4f6f8':'#08111d');
+}
 function saveWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]))}
 function savePositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
 function toast(msg){const e=q('#toast');e.textContent=msg;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),1400)}
@@ -657,6 +670,11 @@ document.addEventListener('click',async e=>{
   const remove=e.target.closest('[data-remove]');if(remove&&confirm('Remove '+remove.dataset.remove+' from Portfolio Monitor?')){state.positions.delete(remove.dataset.remove);savePositions();await loadPortfolio();renderAll();toast('Removed');return}
   if(e.target.closest('[data-close]')||e.target===q('#positionModal'))closeModal();
 });
+q('#themeBtn')?.addEventListener('click',()=>{
+  const current=document.documentElement.dataset.theme||'dark';
+  applyTheme(current==='dark'?'light':'dark');
+});
+applyTheme(document.documentElement.dataset.theme||'dark');
 q('#refreshBtn').addEventListener('click',load);
 q('#backupFile')?.addEventListener('change',async e=>{
   const file=e.target.files?.[0];e.target.value='';

@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#08111d">
+  <meta name="theme-color" content="#08111d" id="themeColor">
+  <script>
+    try{
+      const saved=localStorage.getItem('marketHunterTheme')||'dark';
+      document.documentElement.dataset.theme=saved;
+    }catch{document.documentElement.dataset.theme='dark'}
+  </script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Market Hunter">
@@ -12,7 +18,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
   <link rel="stylesheet" href="/app.css">
   <link rel="stylesheet" href="/mobile-polish.css">
-  <link rel="stylesheet" href="/mobile-app.css">
+  <link rel="stylesheet" href="/theme.css">
   <title>Market Hunter</title>
 </head>
 <body>
@@ -51,7 +57,8 @@
         </div>
         <div class="top-actions">
           <div class="market-status"><span></span><b>Market Hunter</b></div>
-          <button class="iconbtn" id="refreshBtn" aria-label="Refresh data" title="Refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.34 5.66M20 4v7h-7"/></svg></button>
+          <button class="iconbtn themebtn" id="themeBtn" aria-label="Switch theme" title="Switch theme">☼</button>
+          <button class="iconbtn" id="refreshBtn" aria-label="Refresh data" title="Refresh">↻</button>
         </div>
       </header>
 
@@ -65,10 +72,10 @@
   </div>
 
   <nav class="mobile-nav" aria-label="Mobile primary">
-    <button class="navbtn active" data-view="home"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3l8.5 7.5V21h-6v-6h-5v6h-6z"/></svg></span><small>Home</small></button>
-    <button class="navbtn" data-view="shortlist"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8v8"/></svg></span><small>Review</small></button>
-    <button class="navbtn" data-view="portfolio"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg></span><small>Portfolio</small></button>
-    <button class="navbtn" data-view="watchlist"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03 6.5 19.92l1.05-6.12L3.1 9.47l6.15-.9z"/></svg></span><small>Watchlist</small></button>
+    <button class="navbtn active" data-view="home"><span>⌂</span><small>Home</small></button>
+    <button class="navbtn" data-view="shortlist"><span>◎</span><small>Review</small></button>
+    <button class="navbtn" data-view="portfolio"><span>▣</span><small>Portfolio</small></button>
+    <button class="navbtn" data-view="watchlist"><span>☆</span><small>Watchlist</small></button>
   </nav>
 
   <input id="backupFile" type="file" accept="application/json,.json" hidden>\n  <div class="modal" id="positionModal" aria-hidden="true"></div>
