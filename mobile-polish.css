@@ -513,3 +513,70 @@
   .risk-footer strong{display:block;margin-bottom:4px}
   .risk-method{margin:0 15px 14px}
 }
+
+
+/* Structured holding insights */
+.insight-rows{
+  display:grid;
+  gap:7px;
+  margin-top:11px;
+}
+.insight-row{
+  display:grid;
+  grid-template-columns:64px 1fr;
+  gap:9px;
+  align-items:start;
+  padding:8px 9px;
+  border-radius:10px;
+  border:1px solid var(--line-soft);
+  background:rgba(255,255,255,.014);
+}
+.insight-row>span{
+  font-size:7.5px;
+  font-weight:850;
+  line-height:1.4;
+}
+.insight-row p{
+  margin:0;
+  color:var(--muted);
+  font-size:8px;
+  line-height:1.48;
+}
+.insight-row.strength>span{color:#68dda0}
+.insight-row.weakness>span{color:#ff8b94}
+.insight-row.watch>span{color:#efc565}
+.attention-cards{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  padding:14px 16px 16px;
+}
+.attention-card{
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.018);
+}
+.attention-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.attention-head>b{font-size:11px}
+.attention-card>.btn{margin-top:10px}
+
+@media(max-width:760px){
+  .insight-rows{gap:8px;margin-top:12px}
+  .insight-row{
+    grid-template-columns:74px 1fr;
+    gap:10px;
+    padding:10px 11px;
+  }
+  .insight-row>span{font-size:12px!important}
+  .insight-row p{font-size:13px!important;line-height:1.5}
+  .attention-cards{grid-template-columns:1fr;gap:10px;padding:14px 15px 15px}
+  .attention-card{padding:13px}
+  .attention-head>b{font-size:16px!important}
+  .attention-card>.btn{margin-top:11px}
+}

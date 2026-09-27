@@ -119,6 +119,54 @@ function positionNarrative(p,x,weight){
   }
   return parts.join(' ');
 }
+function holdingInsights(x){
+  if(!x)return {
+    strength:'No reliable strength read — current market data is unavailable.',
+    weakness:'No reliable weakness read — current market data is unavailable.',
+    watch:'Wait for fresh market data before interpreting the chart.'
+  };
+
+  const strengths=[],weaknesses=[],watch=[];
+  if(x.swingTrend==='Higher highs + higher lows')strengths.push('Trend structure is intact with higher highs and higher lows');
+  else if(x.swingTrend==='Structure improving')strengths.push('Swing structure is improving');
+  if(Number.isFinite(x.momentumShift)&&x.momentumShift>=4)strengths.push('Momentum is improving clearly');
+  else if(Number.isFinite(x.momentumShift)&&x.momentumShift>=1)strengths.push('Momentum is improving');
+  if(Number.isFinite(x.rs20)&&x.rs20>=8)strengths.push('Relative strength is well ahead of the TSX');
+  else if(Number.isFinite(x.rs20)&&x.rs20>=3)strengths.push('Relative strength is ahead of the TSX');
+  if(x.lowState==='failed_low_break')strengths.push('A recent low break was reclaimed');
+  else if(x.lowState==='local_low_held')strengths.push('The recent local low is still holding');
+  if(x.highBroken===true)strengths.push('A recent local high has been broken');
+
+  if(x.swingTrend==='Lower highs + lower lows')weaknesses.push('Swing structure is still weak with lower highs and lower lows');
+  else if(x.swingTrend==='Structure weakening')weaknesses.push('Swing structure is starting to weaken');
+  if(Number.isFinite(x.momentumShift)&&x.momentumShift<=-4)weaknesses.push('Momentum has cooled noticeably');
+  else if(Number.isFinite(x.momentumShift)&&x.momentumShift<0)weaknesses.push('Momentum is slightly softer');
+  if(Number.isFinite(x.rs20)&&x.rs20<=-8)weaknesses.push('Relative strength is materially lagging the TSX');
+  else if(Number.isFinite(x.rs20)&&x.rs20<=-3)weaknesses.push('Relative strength is lagging the TSX');
+  if(x.lowBroken===true)weaknesses.push('The recent local low has been broken');
+
+  if(Number.isFinite(x.rsi14)&&x.rsi14>=80)watch.push('RSI is extremely elevated, so watch for momentum loss');
+  else if(Number.isFinite(x.rsi14)&&x.rsi14>=72)watch.push('RSI is elevated, so watch for momentum loss');
+  if(Number.isFinite(x.localLow))watch.push('Keep the recent support area near '+money(x.localLow,x.currency||'CAD')+' on the radar');
+  else if(Number.isFinite(x.support))watch.push('Keep support near '+money(x.support,x.currency||'CAD')+' on the radar');
+  if(Number.isFinite(x.localHigh)&&x.highBroken!==true)watch.push('A move through the recent high near '+money(x.localHigh,x.currency||'CAD')+' would improve the structure');
+  else if(Number.isFinite(x.resistance)&&x.highBroken!==true)watch.push('Watch resistance near '+money(x.resistance,x.currency||'CAD'));
+  if(!x.stage)watch.push('A return to an active Hunter stage would require stronger structure or momentum');
+
+  return {
+    strength:strengths[0]||'No clear positive edge is standing out yet',
+    weakness:weaknesses[0]||'No material technical weakness is currently flagged',
+    watch:watch[0]||'Watch for a meaningful change in structure, momentum or relative strength'
+  };
+}
+function insightRowsHtml(x){
+  const r=holdingInsights(x);
+  return `<div class="insight-rows">
+    <div class="insight-row strength"><span>Strength</span><p>${esc(r.strength)}</p></div>
+    <div class="insight-row weakness"><span>Weakness</span><p>${esc(r.weakness)}</p></div>
+    <div class="insight-row watch"><span>Watch</span><p>${esc(r.watch)}</p></div>
+  </div>`;
+}
 function changeReasons(cur,prev){
   if(!cur||!prev)return[];
   const out=[];
@@ -435,8 +483,8 @@ function positionCard(p,x,total){
     <div class="cardtop"><div class="name"><b>${short(p.symbol)}</b><small>${esc(x?.name||p.symbol)}</small></div><span class="health ${h.tone}">${h.label}</span></div>
     <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span></div>
     <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
-    <div class="why analysis-copy">${esc(read)}</div>
-    <details><summary>Position details</summary><div class="copy"><strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
+    ${insightRowsHtml(x)}
+    <details><summary>Position details</summary><div class="copy"><strong>Quick read</strong><br>${esc(read)}<br><br><strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
     <div class="actions"><button class="btn" data-chart="${p.symbol}">Chart ↗</button><button class="btn" data-edit="${p.symbol}">Edit</button><button class="btn danger" data-remove="${p.symbol}">Remove</button></div>
   </article>`;
 }
@@ -474,7 +522,7 @@ async function importBackupFile(file){
 function portfolioHtml(){
   const s=portfolioSummary();
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
-  const attentionBlock=s.attention.length?`<section class="panel soft"><div class="sectionhead"><div><h3>Current attention</h3><p>Why these holdings deserve a closer chart review.</p></div></div><div class="devs">${s.attention.map(({p,x})=>`<div class="dev"><b>${short(p.symbol)}</b><span>${esc(stockNarrative(x))}</span></div>`).join('')}</div></section>`:'';
+  const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness and the next thing worth watching.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>`<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`).join('')}</div></section>`:'';
   return `<div class="stack">
     <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
       <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention weight</small><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
