@@ -119,6 +119,33 @@ function positionNarrative(p,x,weight){
   }
   return parts.join(' ');
 }
+function positionQuickRead(p,x,weight){
+  if(!x)return {now:'Fresh market data is unavailable.',since:'Entry comparison is unavailable.',impact:'Portfolio impact unavailable.'};
+  const now=[];
+  if(x.swingTrend==='Higher highs + higher lows')now.push('Trend structure is healthy');
+  else if(x.swingTrend==='Structure improving')now.push('Structure is improving');
+  else if(x.swingTrend==='Lower highs + lower lows')now.push('Structure is still weak');
+  else if(x.swingTrend==='Structure weakening')now.push('Structure is weakening');
+  if(Number.isFinite(x.momentumShift)&&x.momentumShift>=3)now.push('momentum is improving');
+  else if(Number.isFinite(x.momentumShift)&&x.momentumShift<=-3)now.push('momentum is cooling');
+  if(Number.isFinite(x.rs20)&&x.rs20>=3)now.push('RS is ahead of TSX');
+  else if(Number.isFinite(x.rs20)&&x.rs20<=-3)now.push('RS is lagging TSX');
+
+  const e=x.entryStats;
+  let since='Entry comparison unavailable.';
+  if(e&&Number.isFinite(e.sinceEntryReturn)){
+    since=pct(e.sinceEntryReturn);
+    if(Number.isFinite(e.excessVsBenchmarkPct))since+=' · '+Math.abs(e.excessVsBenchmarkPct).toFixed(1)+'pp '+(e.excessVsBenchmarkPct>=0?'ahead of':'behind')+' benchmark';
+  }
+
+  let impact='Portfolio weight unavailable.';
+  if(Number.isFinite(weight)){
+    impact=weight.toFixed(1)+'% of portfolio value';
+    if(weight>=30)impact+=' · large influence';
+    else if(weight>=15)impact+=' · meaningful influence';
+  }
+  return {now:now.length?now.slice(0,3).join(' · '):'No major structural change stands out.',since,impact};
+}
 function holdingInsights(x){
   if(!x)return {
     strength:'No reliable strength read — current market data is unavailable.',
@@ -511,7 +538,7 @@ function positionCard(p,x,total){
     <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span></div>
     <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
     ${insightRowsHtml(x)}
-    <details><summary>Position details</summary><div class="copy"><strong>Quick read</strong><br>${esc(read)}<br><br><strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
+    <details><summary>Position details</summary><div class="copy">${(()=>{const q=positionQuickRead(p,x,weight);return '<div class="quick-read-rows"><div><span>Now</span><b>'+esc(q.now)+'</b></div><div><span>Since entry</span><b>'+esc(q.since)+'</b></div><div><span>Portfolio impact</span><b>'+esc(q.impact)+'</b></div></div>';})()}<strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry details</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
     <div class="actions"><button class="btn" data-chart="${p.symbol}">Chart ↗</button><button class="btn" data-edit="${p.symbol}">Edit</button><button class="btn danger" data-remove="${p.symbol}">Remove</button></div>
   </article>`;
 }
