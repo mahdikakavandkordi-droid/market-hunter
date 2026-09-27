@@ -1,0 +1,70 @@
+name: Purged Split Validation Backtest
+on:
+  push:
+    branches:
+      - research/market-hunter-ui-lite
+    paths:
+      - 'lib/validation-split.js'
+      - 'scripts/backtest-market-hunter-v2.mjs'
+      - 'scripts/test-validation-split.mjs'
+      - 'scripts/compare-purged-backtest.mjs'
+      - '.github/workflows/purged-split-validation.yml'
+permissions:
+  contents: write
+concurrency:
+  group: purged-split-validation
+  cancel-in-progress: true
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        batch: [0,1,2,3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Contract tests
+        run: npm test
+      - name: Run purged historical backtest
+        env:
+          V2_BATCH_INDEX: ${{ matrix.batch }}
+          V2_BATCH_COUNT: 4
+          V2_RANGE: 5y
+          V2_HORIZONS: 5,10,20
+        run: node scripts/backtest-market-hunter-v2.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: purged-v2-backtest-batch-${{ matrix.batch }}
+          path: data/v2-backtest-batch-${{ matrix.batch }}.json
+          retention-days: 2
+
+  compare:
+    needs: backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: purged-v2-backtest-batch-*
+          path: tmp-purged
+          merge-multiple: true
+      - name: Compare frozen baseline with purged evaluation
+        run: node scripts/compare-purged-backtest.mjs
+      - name: Replace research batch outputs with purged outputs
+        run: cp tmp-purged/v2-backtest-batch-*.json data/
+      - name: Commit validation results
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/v2-backtest-batch-*.json data/purged-split-impact.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "research: record purged split validation"
+          git pull --rebase origin research/market-hunter-ui-lite
+          git push origin HEAD:research/market-hunter-ui-lite
