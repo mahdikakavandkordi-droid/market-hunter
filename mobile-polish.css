@@ -1,116 +1,193 @@
-/* Mobile-first polish for the personal dashboard.
-   Desktop system remains untouched; this layer only reduces mobile density. */
+/* Market Hunter mobile dashboard v2 */
 @media (max-width:760px){
+  body{
+    background:#07101a;
+    overflow-x:hidden;
+  }
   .topbar{
     min-height:64px;
-    padding:calc(8px + env(safe-area-inset-top)) 12px 8px;
+    padding:calc(8px + env(safe-area-inset-top)) 14px 8px;
+    background:rgba(7,16,26,.96);
+    border-bottom:1px solid rgba(255,255,255,.05);
   }
+  .kicker{font-size:6.5px;letter-spacing:.16em}
   .topbar h1{font-size:17px;margin:2px 0 1px}
   .topbar p{font-size:7.5px}
-  .kicker{font-size:6.5px;letter-spacing:.14em}
   .iconbtn{width:32px;height:32px;border-radius:10px;font-size:16px}
-
   .main{
-    padding:10px 10px calc(68px + env(safe-area-inset-bottom));
+    padding:10px 10px calc(72px + env(safe-area-inset-bottom));
+    max-width:none;
   }
-  .stack,.grid{gap:10px}
-  .panel{border-radius:14px}
-  .panel-inner{padding:12px}
-  .panel-head{padding:11px 12px 0}
-  .panel-head h2{font-size:14px}
-  .panel-head h3{font-size:12px}
-  .panel-head p{font-size:8px;margin-top:3px}
 
-  /* The report must read like a dashboard brief, not an article. */
-  .report-title{
+  .mh-mobile-home{display:grid;gap:10px}
+  .mh-brief-card,
+  .mh-section,
+  .mh-portfolio-card{
+    border:1px solid #1d3145;
+    border-radius:16px;
+    background:linear-gradient(180deg,#0d1926,#0a1520);
+    overflow:hidden;
+  }
+
+  .mh-brief-card{padding:13px 13px 11px}
+  .mh-card-label{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    font-size:6.5px;font-weight:900;letter-spacing:.14em;color:#71869a;
+  }
+  .mh-card-label small{font-size:6.5px;letter-spacing:0;color:#617386}
+  .mh-brief-card h2{
+    margin:7px 0 9px;
     font-size:15px;
-    line-height:1.25;
+    line-height:1.28;
     letter-spacing:-.03em;
-    margin:7px 0 6px;
     display:-webkit-box;
-    -webkit-box-orient:vertical;
-    -webkit-line-clamp:3;
-    overflow:hidden;
-  }
-  .report-copy{
-    font-size:8.5px;
-    line-height:1.45;
-    display:-webkit-box;
-    -webkit-box-orient:vertical;
     -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
     overflow:hidden;
   }
-  .report-badges{
-    margin-top:10px;
-    gap:5px;
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    scrollbar-width:none;
-    padding-bottom:1px;
+  .mh-chip-row{
+    display:flex;gap:5px;overflow-x:auto;
+    scrollbar-width:none;padding-bottom:1px;
   }
-  .report-badges::-webkit-scrollbar{display:none}
-  .report-badges .badge{
-    flex:0 0 auto;
-    font-size:7px;
-    padding:4px 7px;
+  .mh-chip-row::-webkit-scrollbar{display:none}
+  .mh-chip{
+    display:flex;align-items:center;gap:5px;flex:0 0 auto;
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:999px;padding:4px 7px;
+    background:rgba(255,255,255,.025);
+    white-space:nowrap;
+  }
+  .mh-chip b{font-size:6.5px;color:#8da0b4}
+  .mh-chip span{font-size:6.5px;color:#d9e5ef}
+  .mh-brief-more{
+    margin-top:8px;padding-top:7px;
+    border-top:1px solid rgba(255,255,255,.05);
+  }
+  .mh-brief-more summary{
+    font-size:7px;color:#72b8ff;font-weight:850;
+  }
+  .mh-brief-more p{
+    margin:7px 0 0;font-size:8px;line-height:1.5;color:#91a0b2;
   }
 
-  /* These repeat the same high-level read already expressed in the badges. */
-  .home-hero .group-grid{display:none}
+  .mh-section-head{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:11px 12px 8px;
+  }
+  .mh-section-head h3{margin:0;font-size:13px;letter-spacing:-.025em}
+  .mh-section-head p{margin:2px 0 0;font-size:7px;color:#75879a}
+  .mh-section-tag{
+    font-size:6.5px;color:#788b9e;
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:999px;padding:4px 7px;
+  }
+  .mh-text-btn{
+    border:0;background:transparent;color:#62adff;
+    font-size:7px;font-weight:850;padding:5px;
+  }
 
-  /* On phone this duplicates Market Pulse and pushes decisions below the fold. */
-  .home-hero > .panel.soft{display:none}
-
-  /* Market Pulse becomes the compact visual scan immediately after the brief. */
-  .pulse-strip{
-    grid-auto-columns:58%;
+  .mh-pulse-track{
+    display:grid;
+    grid-auto-flow:column;
+    grid-auto-columns:128px;
     gap:7px;
-    padding:10px 11px 12px;
+    overflow-x:auto;
+    padding:0 12px 12px;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;
   }
-  .pulse-card{
-    padding:9px;
+  .mh-pulse-track::-webkit-scrollbar{display:none}
+  .mh-pulse-card{
+    scroll-snap-align:start;
+    min-height:80px;
+    border:1px solid #1d3043;
     border-radius:12px;
+    padding:9px;
+    background:#0b1723;
   }
-  .pulse-card h4{font-size:9px}
-  .pulse-card .price{font-size:14px;margin:6px 0 3px}
-  .pulse-card .sub{font-size:6.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .pulse-card .badge{font-size:6.5px;padding:3px 6px}
-  .trendline{height:15px;margin-top:5px}
+  .mh-pulse-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .mh-pulse-head b{font-size:8px}
+  .mh-dot{width:6px;height:6px;border-radius:50%;background:#7f8fa0}
+  .mh-pulse-card.good .mh-dot{background:#43d68f;box-shadow:0 0 0 3px rgba(67,214,143,.08)}
+  .mh-pulse-card.bad .mh-dot{background:#ff7782;box-shadow:0 0 0 3px rgba(255,119,130,.08)}
+  .mh-pulse-card strong{display:block;margin-top:8px;font-size:15px;letter-spacing:-.03em}
+  .mh-pulse-card small{
+    display:block;margin-top:2px;font-size:6.5px;font-weight:800;
+    color:#9cacc0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .mh-pulse-card.good small{color:#56d99a}
+  .mh-pulse-card.bad small{color:#ff8993}
+  .mh-pulse-card em{
+    display:block;margin-top:3px;font-size:6px;font-style:normal;
+    color:#64778a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
 
-  /* Make the actual daily shortlist visible sooner. */
-  .review-table th{font-size:6.5px;padding:7px 8px}
-  .review-table td{font-size:8.5px;padding:8px}
-  .rank-dot{width:20px;height:20px;font-size:7px}
-  .symbol-cell b{font-size:9px}
-  .symbol-cell small{font-size:6.5px}
-  .stage-pill{font-size:6.5px;padding:3px 6px}
+  .mh-review-list{border-top:1px solid rgba(255,255,255,.05)}
+  .mh-review-row{
+    display:grid;
+    grid-template-columns:24px minmax(0,1fr) auto 30px;
+    align-items:center;gap:8px;
+    min-height:58px;padding:7px 10px;
+    border-bottom:1px solid rgba(255,255,255,.055);
+  }
+  .mh-review-row:last-child{border-bottom:0}
+  .mh-rank{
+    width:22px;height:22px;display:grid;place-items:center;
+    border-radius:7px;background:rgba(85,167,255,.09);
+    color:#58aaff;font-size:7px;font-weight:900;
+  }
+  .mh-symbol{min-width:0}
+  .mh-symbol b{display:block;font-size:9px}
+  .mh-symbol small{
+    display:block;margin-top:2px;font-size:6.3px;color:#64778a;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .mh-stage{text-align:right}
+  .mh-stage span{
+    display:block;font-size:6.5px;color:#9dcbff;font-weight:850;
+    white-space:nowrap;
+  }
+  .mh-stage small{display:block;margin-top:2px;font-size:6px;color:#677b8f}
+  .mh-chart-btn{
+    width:28px;height:28px;border-radius:9px;
+    border:1px solid rgba(85,167,255,.18);
+    background:rgba(85,167,255,.06);
+    color:#61adff;font-size:14px;
+  }
 
-  .portfolio-glance{padding:12px}
-  .portfolio-value{font-size:23px;margin:5px 0 2px}
-  .glance-grid{margin-top:10px;gap:5px}
-  .glance-stat{padding:7px}
-  .glance-stat small{font-size:6.5px}
-  .glance-stat b{font-size:9px}
+  .mh-portfolio-card{padding-bottom:10px}
+  .mh-portfolio-main{
+    display:grid;grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;align-items:end;padding:0 12px 2px;
+  }
+  .mh-portfolio-main > div:first-child small{
+    display:block;font-size:6.5px;color:#718497;text-transform:uppercase;letter-spacing:.08em;
+  }
+  .mh-portfolio-main strong{display:block;margin-top:4px;font-size:20px;letter-spacing:-.04em}
+  .mh-portfolio-main span.good{color:#43d68f}
+  .mh-portfolio-main span.bad{color:#ff7782}
+  .mh-portfolio-main span.flat{color:#91a0b2}
+  .mh-portfolio-main > div:first-child span{display:block;margin-top:2px;font-size:7px;font-weight:800}
+  .mh-portfolio-stats{display:grid;grid-template-columns:repeat(3,42px);gap:5px}
+  .mh-portfolio-stats span{
+    display:block;text-align:center;padding:6px 4px;
+    border:1px solid rgba(255,255,255,.05);
+    border-radius:9px;background:rgba(255,255,255,.018);
+  }
+  .mh-portfolio-stats small{display:block;font-size:5.5px;color:#65798c}
+  .mh-portfolio-stats b{display:block;margin-top:2px;font-size:8px}
 
-  .developments{padding:10px 12px 12px;gap:5px}
-  .development{padding:7px;grid-template-columns:62px 1fr}
-  .development b,.development span{font-size:7px}
+  .mh-empty{padding:16px;text-align:center;color:#7b8ea1;font-size:8px}
 
   .mobile-nav{
-    padding:4px 6px calc(4px + env(safe-area-inset-bottom));
+    padding:4px 7px calc(4px + env(safe-area-inset-bottom));
+    background:rgba(6,15,25,.97);
   }
-  .mobile-nav .navbtn{
-    gap:1px;
-    padding:4px 2px;
-    border-radius:8px;
-    font-size:13px;
-  }
-  .mobile-nav .navbtn small{font-size:6.5px}
-
+  .mobile-nav .navbtn{padding:4px 2px;font-size:13px;border-radius:8px}
+  .mobile-nav .navbtn small{font-size:6.2px}
   .toast{bottom:calc(62px + env(safe-area-inset-bottom))}
 }
 
-@media (max-width:390px){
-  .report-title{font-size:14px}
-  .pulse-strip{grid-auto-columns:64%}
+@media (min-width:761px){
+  .mh-mobile-home{display:none}
 }
