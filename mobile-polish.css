@@ -628,3 +628,109 @@
   .quick-read-rows span{font-size:12px!important}
   .quick-read-rows b{font-size:13px!important;line-height:1.5}
 }
+
+
+/* Market cards — app-like browsing instead of a long table */
+.market-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  padding:14px 16px 16px;
+}
+.market-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-areas:
+    "identity state"
+    "price price"
+    "context context";
+  gap:7px 10px;
+  align-content:start;
+  min-height:136px;
+  padding:13px;
+  border:1px solid var(--line-soft)!important;
+  border-radius:14px;
+  background:rgba(255,255,255,.018);
+}
+.market-row>div:first-child{grid-area:identity}
+.market-row>div:first-child b{
+  display:block;
+  font-size:11px;
+  line-height:1.25;
+}
+.market-row>div:first-child small{
+  display:block;
+  margin-top:4px;
+  font-size:8px;
+  line-height:1.35;
+}
+.market-value{
+  grid-area:price;
+  text-align:left;
+  font-size:19px;
+  line-height:1.1;
+  font-weight:900;
+  letter-spacing:-.025em;
+  margin-top:4px;
+}
+.market-state{
+  grid-area:state;
+  align-self:start;
+  justify-self:end;
+  text-align:right;
+  font-size:8px;
+  font-weight:850;
+  padding:5px 7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.04);
+}
+.market-context{
+  grid-area:context!important;
+  margin:5px 0 0!important;
+  padding:8px 0 0!important;
+  border-top:1px solid var(--line-soft);
+  font-size:8px;
+  line-height:1.45;
+}
+
+@media(max-width:760px){
+  .market-list{
+    display:grid!important;
+    grid-auto-flow:column;
+    grid-auto-columns:84%;
+    grid-template-columns:none!important;
+    gap:11px!important;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scroll-snap-type:x mandatory;
+    padding:13px 15px 16px!important;
+    scrollbar-width:none;
+  }
+  .market-list::-webkit-scrollbar{display:none}
+  .market-row{
+    scroll-snap-align:start;
+    min-height:190px!important;
+    padding:16px!important;
+    border-radius:18px!important;
+    background:rgba(255,255,255,.025);
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
+  }
+  .market-row>div:first-child b{font-size:17px!important}
+  .market-row>div:first-child small{font-size:12.5px!important;margin-top:5px}
+  .market-value{
+    font-size:30px!important;
+    line-height:1!important;
+    margin-top:12px;
+  }
+  .market-state{
+    font-size:11.5px!important;
+    padding:6px 9px;
+  }
+  .market-context{
+    margin-top:11px!important;
+    padding-top:11px!important;
+    font-size:13px!important;
+    line-height:1.5!important;
+    align-self:end;
+  }
+}
