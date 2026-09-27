@@ -423,3 +423,93 @@
   .portfolio-read-copy strong{display:block;margin:0 0 4px;font-size:13px}
   .analysis-copy{font-size:13.5px!important;line-height:1.62!important}
 }
+
+
+/* Risk snapshot redesign */
+.risk-snapshot{overflow:visible}
+.risk-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+  padding:14px 16px 8px;
+}
+.risk-card{
+  position:relative;
+  min-width:0;
+  padding:12px;
+  border:1px solid var(--line-soft);
+  border-radius:13px;
+  background:rgba(255,255,255,.018);
+}
+.risk-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.risk-card-top>span{color:var(--muted2);font-size:8px;font-weight:750}
+.risk-card>strong{display:block;margin-top:9px;color:var(--text);font-size:17px;letter-spacing:-.02em}
+.risk-card>small{display:block;margin-top:5px;color:var(--muted);font-size:7.5px;line-height:1.4}
+.risk-info{position:relative;margin:0}
+.risk-info>summary{
+  list-style:none;
+  display:grid;place-items:center;
+  width:18px;height:18px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  color:var(--muted);
+  font-size:10px;font-weight:850;
+  cursor:pointer;
+}
+.risk-info>summary::-webkit-details-marker{display:none}
+.risk-info[open]>summary{color:var(--blue);border-color:rgba(85,167,255,.38);background:rgba(85,167,255,.08)}
+.risk-popover{
+  position:absolute;
+  z-index:15;
+  top:24px;right:0;
+  width:230px;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#0d1926;
+  box-shadow:0 14px 38px rgba(0,0,0,.38);
+  color:var(--muted);
+  font-size:8px;
+  line-height:1.5;
+}
+.risk-lenses{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:4px 16px 8px}
+.risk-lens{
+  padding:11px 12px;
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  background:rgba(85,167,255,.035);
+}
+.risk-lens div{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.risk-lens span{color:var(--muted2);font-size:7.5px}
+.risk-lens b{color:var(--text);font-size:9px;text-align:right}
+.risk-lens small{display:block;margin-top:6px;color:var(--muted);font-size:7.5px;line-height:1.45}
+.risk-footer{display:flex;gap:8px;padding:8px 16px 13px;color:var(--muted);font-size:8px;line-height:1.45}
+.risk-footer strong{color:var(--text);white-space:nowrap}
+.risk-method{margin:0 16px 14px;padding-top:9px;border-top:1px solid var(--line-soft)}
+
+@media(max-width:760px){
+  .risk-grid{grid-template-columns:1fr 1fr;gap:10px;padding:14px 15px 9px}
+  .risk-card{padding:13px;min-height:126px}
+  .risk-card-top>span{font-size:12.5px!important}
+  .risk-card>strong{font-size:23px!important;margin-top:11px}
+  .risk-card>small{font-size:12px!important;line-height:1.45;margin-top:7px}
+  .risk-info>summary{width:24px;height:24px;font-size:13px!important}
+  .risk-popover{
+    position:fixed;
+    left:18px;right:18px;top:auto;bottom:calc(92px + env(safe-area-inset-bottom));
+    width:auto;
+    padding:14px;
+    font-size:13.5px!important;
+    line-height:1.6;
+    border-radius:14px;
+  }
+  .risk-lenses{grid-template-columns:1fr;gap:9px;padding:4px 15px 10px}
+  .risk-lens{padding:12px}
+  .risk-lens div{display:block}
+  .risk-lens span{display:block;font-size:12px!important}
+  .risk-lens b{display:block;margin-top:4px;font-size:14px!important;text-align:left}
+  .risk-lens small{font-size:12.5px!important;line-height:1.5;margin-top:7px}
+  .risk-footer{display:block;padding:9px 15px 14px;font-size:12.5px!important;line-height:1.55}
+  .risk-footer strong{display:block;margin-bottom:4px}
+  .risk-method{margin:0 15px 14px}
+}

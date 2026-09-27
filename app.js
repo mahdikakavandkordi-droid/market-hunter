@@ -327,14 +327,13 @@ function portfolioReadHtml(s){
     const excess=Number.isFinite(a.excessReturnPct)?` (${Math.abs(a.excessReturnPct).toFixed(1)}pp ${a.excessReturnPct>=0?'ahead':'behind'})`:'';
     performance=`Over the last ${a.windowSessions||'recent'} common sessions, the portfolio returned ${pct(a.portfolioReturnPct)} versus ${pct(a.benchmarkReturnPct)} for the TSX${excess}.`;
   }
-  let risk='Portfolio-level risk estimates are not available yet.';
+  let risk='Detailed risk metrics need more common history.';
   if(a&&Number.isFinite(a.betaVsTsx)){
-    const stress=(a.stressLens||[]).find(x=>x.marketShockPct===-5);
-    risk=`Beta to the TSX is ${a.betaVsTsx.toFixed(2)}`;
-    if(Number.isFinite(a.annualizedVolPct))risk+=`, recent annualized volatility is ${a.annualizedVolPct.toFixed(1)}%`;
-    if(Number.isFinite(a.maxDrawdownPct))risk+=`, and recent max drawdown is ${a.maxDrawdownPct.toFixed(1)}%`;
-    if(stress&&Number.isFinite(stress.estimatedPortfolioMovePct))risk+=`. A simple beta-based TSX -5% stress maps to roughly ${stress.estimatedPortfolioMovePct.toFixed(1)}% for the portfolio`;
-    risk+='.';
+    risk=a.betaVsTsx>=1.2
+      ?`Recent sensitivity to TSX moves has been higher than the index (beta ${a.betaVsTsx.toFixed(2)}).`
+      :a.betaVsTsx<=0.8
+        ?`Recent sensitivity to TSX moves has been lower than the index (beta ${a.betaVsTsx.toFixed(2)}).`
+        :`Recent sensitivity to TSX moves has been close to the index (beta ${a.betaVsTsx.toFixed(2)}).`;
   }
   const topRisk=a?.topRiskContributor;
   let diversification=a?.diversificationRead||'Diversification analytics need more common history.';
@@ -364,7 +363,69 @@ function allocationHtml(s){
 }
 function riskHtml(){
   const a=state.analytics;if(!a)return'';
-  return `<section class="panel soft"><details><summary>Advanced risk & diversification</summary><div class="metrics"><div class="metric"><small>Volatility</small><b>${pct(a.annualizedVolPct)}</b></div><div class="metric"><small>Beta vs TSX</small><b>${Number.isFinite(a.betaVsTsx)?a.betaVsTsx.toFixed(2):'—'}</b></div><div class="metric"><small>Max drawdown</small><b>${pct(a.maxDrawdownPct)}</b></div><div class="metric"><small>Avg correlation</small><b>${Number.isFinite(a.avgPairwiseCorrelation)?a.avgPairwiseCorrelation.toFixed(2):'—'}</b></div></div><div class="copy">${a.diversificationRead?'<strong>Diversification</strong><br>'+esc(a.diversificationRead):''}${a.note?'<br><br>'+esc(a.note):''}</div></details></section>`;
+  const volValue=Number.isFinite(a.annualizedVolPct)?pct(a.annualizedVolPct):'—';
+  const betaValue=Number.isFinite(a.betaVsTsx)?a.betaVsTsx.toFixed(2):'—';
+  const drawdownValue=Number.isFinite(a.maxDrawdownPct)?pct(a.maxDrawdownPct):'—';
+  const corrValue=Number.isFinite(a.avgPairwiseCorrelation)?a.avgPairwiseCorrelation.toFixed(2):'—';
+
+  const volRead=!Number.isFinite(a.volatilityRatio)?'Needs more history'
+    :a.volatilityRatio>=1.25?'More volatile than TSX recently'
+    :a.volatilityRatio<=0.8?'Less volatile than TSX recently'
+    :'Similar volatility to TSX';
+  const betaRead=!Number.isFinite(a.betaVsTsx)?'Needs more history'
+    :a.betaVsTsx>=1.2?'Higher market sensitivity'
+    :a.betaVsTsx<=0.8?'Lower market sensitivity'
+    :'Market sensitivity near TSX';
+  const drawdownRead=!Number.isFinite(a.maxDrawdownPct)?'Needs more history'
+    :Math.abs(a.maxDrawdownPct)>=15?'A deeper recent peak-to-trough decline'
+    :Math.abs(a.maxDrawdownPct)>=8?'A moderate recent peak-to-trough decline'
+    :'A relatively contained recent peak-to-trough decline';
+  const corrRead=!Number.isFinite(a.avgPairwiseCorrelation)?'Needs more pair history'
+    :a.avgPairwiseCorrelation>=0.75?'Holdings moved very similarly'
+    :a.avgPairwiseCorrelation>=0.5?'Fairly high co-movement'
+    :a.avgPairwiseCorrelation>=0.25?'Moderate co-movement'
+    :'Low average co-movement';
+
+  const cards=[
+    {
+      label:'Volatility',value:volValue,read:volRead,
+      info:'Annualized volatility estimates how widely daily portfolio returns have varied recently. It does not mean the portfolio is expected to gain or lose this percentage in a year.'
+    },
+    {
+      label:'Beta vs TSX',value:betaValue,read:betaRead,
+      info:'Beta measures how sensitive the portfolio has been to TSX moves in the recent sample. A beta of 1 means similar sensitivity; above 1 means larger moves on average. It is historical, not a forecast.'
+    },
+    {
+      label:'Max drawdown',value:drawdownValue,read:drawdownRead,
+      info:'Max drawdown is the largest fall from a portfolio peak to a later trough inside the recent analysis window. It describes what happened, not the worst loss that could happen in the future.'
+    },
+    {
+      label:'Avg correlation',value:corrValue,read:corrRead,
+      info:'Average correlation summarizes how similarly the holdings moved. Near 1 means they moved together more often; near 0 means their day-to-day movements were less related.'
+    }
+  ];
+  const metricCards=cards.map((m,i)=>`<article class="risk-card">
+    <div class="risk-card-top"><span>${esc(m.label)}</span><details class="risk-info"><summary aria-label="About ${esc(m.label)}">i</summary><div class="risk-popover">${esc(m.info)}</div></details></div>
+    <strong>${m.value}</strong>
+    <small>${esc(m.read)}</small>
+  </article>`).join('');
+
+  const stress=(a.stressLens||[]).find(x=>x.marketShockPct===-5);
+  const stressHtml=stress&&Number.isFinite(stress.estimatedPortfolioMovePct)
+    ?`<div class="risk-lens"><div><span>Stress lens</span><b>TSX -5% → Portfolio ~${stress.estimatedPortfolioMovePct.toFixed(1)}%</b></div><small>Simple beta-based sensitivity check — not a forecast.</small></div>`
+    :'';
+  const top=a.topRiskContributor;
+  const topRiskHtml=top&&Number.isFinite(top.riskContributionPct)
+    ?`<div class="risk-lens"><div><span>Largest modeled risk contributor</span><b>${short(top.symbol)} · ${top.riskContributionPct.toFixed(1)}% of variance</b></div><small>${Number.isFinite(top.weightPct)?top.weightPct.toFixed(1)+'% of portfolio value · ':''}Risk contribution reflects weight, volatility and co-movement with the rest of the portfolio.</small></div>`
+    :'';
+
+  return `<section class="panel soft risk-snapshot">
+    <div class="sectionhead"><div><h3>Risk snapshot</h3><p>Recent ${a.windowSessions||'common'}-session behavior · historical, not a forecast.</p></div></div>
+    <div class="risk-grid">${metricCards}</div>
+    <div class="risk-lenses">${stressHtml}${topRiskHtml}</div>
+    ${a.diversificationRead?`<div class="risk-footer"><strong>Diversification</strong><span>${esc(a.diversificationRead)}</span></div>`:''}
+    ${a.note?`<details class="risk-method"><summary>Method & coverage</summary><div class="copy">${esc(a.note)}</div></details>`:''}
+  </section>`;
 }
 function positionCard(p,x,total){
   const h=health(x),qty=Number(p.quantity)||0,value=x&&qty>0?qty*x.price:null,ret=x&&Number(p.entryPrice)>0?(x.price/Number(p.entryPrice)-1)*100:null;
