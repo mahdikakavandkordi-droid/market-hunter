@@ -378,3 +378,48 @@
   .mobile-nav .navbtn small{font-size:12px!important}
   .toast{font-size:13px!important}
 }
+
+
+/* Portfolio Read + natural-language analysis */
+.portfolio-read-panel{overflow:hidden}
+.health-breadth{padding:14px 16px 4px}
+.health-segments{
+  display:flex;
+  width:100%;
+  height:10px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,.04);
+}
+.health-segments span{height:100%}
+.health-segments .healthy,.health-legend i.healthy{background:#43d68f}
+.health-segments .cooling,.health-legend i.cooling{background:#e2b451}
+.health-segments .warning,.health-legend i.warning{background:#ff7782}
+.health-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:8px}
+.health-legend span{display:flex;align-items:center;gap:5px}
+.health-legend i{display:inline-block;width:7px;height:7px;border-radius:50%}
+.health-legend b{color:var(--text)}
+.portfolio-read-copy{display:grid;gap:8px;padding:12px 16px 16px}
+.portfolio-read-copy p{
+  margin:0;
+  padding:9px 10px;
+  border:1px solid var(--line-soft);
+  border-radius:10px;
+  background:rgba(255,255,255,.015);
+  color:var(--muted);
+  font-size:8px;
+  line-height:1.5;
+}
+.portfolio-read-copy strong{color:var(--text);display:inline-block;margin-right:5px}
+.analysis-copy{line-height:1.58}
+
+@media(max-width:760px){
+  .health-breadth{padding:15px 15px 5px}
+  .health-segments{height:12px}
+  .health-legend{gap:10px;font-size:12px;line-height:1.4}
+  .health-legend i{width:8px;height:8px}
+  .portfolio-read-copy{gap:9px;padding:13px 15px 15px}
+  .portfolio-read-copy p{font-size:13.5px!important;line-height:1.58;padding:11px}
+  .portfolio-read-copy strong{display:block;margin:0 0 4px;font-size:13px}
+  .analysis-copy{font-size:13.5px!important;line-height:1.62!important}
+}
