@@ -83,5 +83,5 @@ const manifest={
   verification:{contractPassed:true,offlineReplayCount:2,networkForbidden:true,substantiveReportHash:h1,matched:true}
 };
 fs.writeFileSync(path.join(pub,'manifest.json'),JSON.stringify(manifest,null,2));
-fs.writeFileSync(path.join(root,'public','index.html'),'<pre>Task 3 batch 0 snapshot PASS</pre>');
+fs.writeFileSync(path.join(root,'public','index.html'),JSON.stringify(manifest));
 console.log('TASK3_BATCH0 '+JSON.stringify(manifest));
