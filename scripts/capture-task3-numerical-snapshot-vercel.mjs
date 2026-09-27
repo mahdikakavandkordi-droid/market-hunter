@@ -77,20 +77,19 @@ const captures=await Promise.all(Array.from({length:batchCount},async(_,batchInd
   return {batchIndex,snapshot};
 }));
 
-const batches=[];
-for(const {batchIndex,snapshot} of captures){
-  const s=JSON.parse(fs.readFileSync(snapshot,'utf8'));
+const batches=await Promise.all(captures.map(async({batchIndex,snapshot})=>{
+  const snap=JSON.parse(fs.readFileSync(snapshot,'utf8'));
   const commonEnv={
     V2_BATCH_INDEX:String(batchIndex),
     V2_BATCH_COUNT:String(batchCount),
     V2_RANGE:'5y',
     V2_HORIZONS:'5,10,20',
     V2_DATASET_FILE:snapshot,
-    V2_EXPECT_SNAPSHOT_ID:s.snapshotId,
-    V2_EXPECT_DATA_SHA256:s.dataSha256,
-    V2_EXPECT_STRUCTURE_SHA256:s.structureSha256,
-    V2_EXPECT_NORMALIZATION_VERSION:s.normalizationVersion,
-    V2_EXPECT_SOURCE_JSON:JSON.stringify(s.source),
+    V2_EXPECT_SNAPSHOT_ID:snap.snapshotId,
+    V2_EXPECT_DATA_SHA256:snap.dataSha256,
+    V2_EXPECT_STRUCTURE_SHA256:snap.structureSha256,
+    V2_EXPECT_NORMALIZATION_VERSION:snap.normalizationVersion,
+    V2_EXPECT_SOURCE_JSON:JSON.stringify(snap.source),
     V2_FORBID_NETWORK:'1',
     V2_DATASET_ARTIFACT_ID:'task3-capture-verification',
     V2_DEVELOPMENT_START:validationCalendar.developmentStart,
@@ -99,38 +98,40 @@ for(const {batchIndex,snapshot} of captures){
     V2_OPEN_FINAL_TEST:'0'
   };
 
-  const runDirs=[];
-  for(let n=1;n<=2;n++){
+  const runDirs=[1,2].map(n=>{
     const cwd=path.join(tmp,'offline-b'+batchIndex+'-run'+n);
     fs.mkdirSync(path.join(cwd,'data'),{recursive:true});
-    await runNode([path.join(root,'scripts/backtest-market-hunter-v2.mjs')],{cwd,env:commonEnv});
-    runDirs.push(cwd);
-  }
+    return cwd;
+  });
+  await Promise.all(runDirs.map(cwd=>
+    runNode([path.join(root,'scripts/backtest-market-hunter-v2.mjs')],{cwd,env:commonEnv})
+  ));
 
   const a=sanitizedReport(path.join(runDirs[0],'data','v2-backtest-batch-'+batchIndex+'.json'));
   const b=sanitizedReport(path.join(runDirs[1],'data','v2-backtest-batch-'+batchIndex+'.json'));
   assertSame(a,b,'offline substantive report mismatch for batch '+batchIndex);
 
-  batches.push({
+  return {
     batchIndex,
     file:'batch-'+batchIndex+'.json',
-    snapshotId:s.snapshotId,
-    capturedAt:s.capturedAt,
-    sha256:s.sha256,
-    dataSha256:s.dataSha256,
-    structureSha256:s.structureSha256,
-    normalizationVersion:s.normalizationVersion,
-    source:s.source,
-    engineVersion:s.engineVersion,
-    captureRevision:s.captureRevision,
-    symbolCount:(s.symbols||[]).length,
-    symbols:s.symbols||[],
+    snapshotId:snap.snapshotId,
+    capturedAt:snap.capturedAt,
+    sha256:snap.sha256,
+    dataSha256:snap.dataSha256,
+    structureSha256:snap.structureSha256,
+    normalizationVersion:snap.normalizationVersion,
+    source:snap.source,
+    engineVersion:snap.engineVersion,
+    captureRevision:snap.captureRevision,
+    symbolCount:(snap.symbols||[]).length,
+    symbols:snap.symbols||[],
     bytes:fs.statSync(snapshot).size,
     offlineReplayTwice:true,
     networkForbidden:true,
     substantiveReportsMatched:true
-  });
-}
+  };
+}));
+batches.sort((a,b)=>a.batchIndex-b.batchIndex);
 
 function assertSame(a,b,message){
   const ah=crypto.createHash('sha256').update(JSON.stringify(a)).digest('hex');
