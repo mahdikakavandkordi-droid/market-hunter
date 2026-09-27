@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import {captureFrozenDataset,loadFrozenDataset,frozenDataDigest} from '../lib/frozen-dataset.js';
+import {captureFrozenDataset,loadFrozenDataset,frozenDataDigest,structuralDataDigest} from '../lib/frozen-dataset.js';
 import {UNIVERSE} from '../lib/universe.js';
 import {purgedChronSplit,sealedChronSplit} from '../lib/validation-split.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,riskFlags,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
@@ -12,6 +12,7 @@ const captureDatasetFile=process.env.V2_DATASET_CAPTURE||null;
 const period1=process.env.V2_PERIOD1||null;
 const period2=process.env.V2_PERIOD2||null;
 const expectedDataSha256=process.env.V2_EXPECT_DATA_SHA256||null;
+const expectedStructureSha256=process.env.V2_EXPECT_STRUCTURE_SHA256||null;
 const finalTestStart=process.env.V2_FINAL_TEST_START||'2026-01-01';
 const openFinalTest=process.env.V2_OPEN_FINAL_TEST==='1';
 if((period1&&!period2)||(!period1&&period2))throw new Error('V2_PERIOD1 and V2_PERIOD2 must be provided together');
@@ -32,12 +33,27 @@ async function fetchRows(symbol){
   const res=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 MarketHunterV2Research/1.0'}});
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
-  const splitDays=new Set(Object.values(z?.events?.splits||{}).map(x=>dayKey(Number(x.date))));
+  const splitEvents=Object.values(z?.events?.splits||{}).map(x=>({
+    date:dayKey(Number(x.date)),
+    numerator:Number(x.numerator),
+    denominator:Number(x.denominator),
+    splitRatio:String(x.splitRatio||'')
+  })).sort((a,b)=>a.date.localeCompare(b.date));
+  const dividends=Object.values(z?.events?.dividends||{}).map(x=>({
+    date:dayKey(Number(x.date)),
+    amount:Number(x.amount)
+  })).sort((a,b)=>a.date.localeCompare(b.date));
+  const splitDays=new Set(splitEvents.map(x=>x.date));
   const rows=(z?.timestamp||[]).map((t,i)=>{
-    const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
-    return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
-  }).filter(x=>[x.close,x.rawClose,x.high,x.low,x.volume].every(Number.isFinite)&&x.volume>0);
-  return {rows,splitDays};
+    const rawClose=q.close?.[i],rawHigh=q.high?.[i],rawLow=q.low?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
+    return {
+      t,close:adj[i],rawClose,rawHigh,rawLow,
+      high:Number.isFinite(rawHigh)?rawHigh*factor:null,
+      low:Number.isFinite(rawLow)?rawLow*factor:null,
+      volume:q.volume?.[i]
+    };
+  }).filter(x=>[x.close,x.rawClose,x.rawHigh,x.rawLow,x.high,x.low,x.volume].every(Number.isFinite)&&x.volume>0);
+  return {rows,splitDays,splitEvents,dividends};
 }
 
 function hadRecentSplit(rows,splitDays,i,lookback=30){
@@ -304,7 +320,7 @@ function earlyWatchRewriteDiagnostic(a){
 
 const needed=[...new Set([...symbols,...symbols.map(benchSymbol)])];
 let data={};
-let datasetInfo={mode:datasetMode,file:frozenDatasetFile||captureDatasetFile||null,sha256:null,dataSha256:null,snapshotId:null,period1,period2};
+let datasetInfo={mode:datasetMode,file:frozenDatasetFile||captureDatasetFile||null,sha256:null,dataSha256:null,structureSha256:null,snapshotId:null,period1,period2};
 
 if(frozenDatasetFile){
   const loaded=loadFrozenDataset(frozenDatasetFile,{
@@ -314,25 +330,29 @@ if(frozenDatasetFile){
     expectedSymbols:needed
   });
   data=loaded.data;
-  datasetInfo={mode:'frozen',file:frozenDatasetFile,sha256:loaded.sha256,dataSha256:loaded.dataSha256,snapshotId:loaded.snapshotId,capturedAt:loaded.capturedAt,period1,period2};
+  datasetInfo={mode:'frozen',file:frozenDatasetFile,sha256:loaded.sha256,dataSha256:loaded.dataSha256,structureSha256:loaded.structureSha256,snapshotId:loaded.snapshotId,capturedAt:loaded.capturedAt,period1,period2};
   console.log('loaded frozen dataset '+loaded.snapshotId+' '+loaded.sha256);
 }else{
   for(const s of needed){
     process.stdout.write('fetch '+s+'... ');
     try{data[s]=await fetchRows(s);console.log(data[s].rows.length)}
-    catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set()}}
+    catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set(),splitEvents:[],dividends:[]}}
   }
   const dataSha256=frozenDataDigest({range,batchIndex,batchCount,symbols:needed,data});
-  datasetInfo={...datasetInfo,dataSha256};
+  const structureSha256=structuralDataDigest({range,batchIndex,batchCount,symbols:needed,data});
+  datasetInfo={...datasetInfo,dataSha256,structureSha256};
+  if(expectedStructureSha256&&structureSha256!==expectedStructureSha256){
+    throw new Error('Structural dataset drift detected for batch '+batchIndex+': '+structureSha256+' != '+expectedStructureSha256);
+  }
   if(expectedDataSha256&&dataSha256!==expectedDataSha256){
-    throw new Error('Dataset drift detected for batch '+batchIndex+': '+dataSha256+' != '+expectedDataSha256);
+    console.warn('Adjusted-price precision drift for batch '+batchIndex+': '+dataSha256+' != '+expectedDataSha256);
   }
   if(captureDatasetFile){
     const captured=captureFrozenDataset(captureDatasetFile,{
       range,batchIndex,batchCount,symbols:needed,data,
       engineVersion:VERSION
     });
-    datasetInfo={mode:'captured-live',file:captureDatasetFile,sha256:captured.sha256,dataSha256:captured.dataSha256,snapshotId:captured.snapshotId,capturedAt:captured.capturedAt,period1,period2};
+    datasetInfo={mode:'captured-live',file:captureDatasetFile,sha256:captured.sha256,dataSha256:captured.dataSha256,structureSha256:captured.structureSha256,snapshotId:captured.snapshotId,capturedAt:captured.capturedAt,period1,period2};
     console.log('captured frozen dataset '+captured.snapshotId+' '+captured.sha256+' data '+captured.dataSha256);
   }
 }
