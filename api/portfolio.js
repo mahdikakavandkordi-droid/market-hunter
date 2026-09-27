@@ -89,6 +89,7 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
   commonDates=commonDates.filter(d=>benchMap.has(d)).sort().slice(-60);
 
   const correlationMatrix=[],pairwise=[];
+  let highestCorrelationPair=null;
   if(commonDates.length>=20){
     for(let i=0;i<usable.length;i++){
       const row={symbol:usable[i],values:{}};
@@ -194,7 +195,6 @@ function portfolioAdvancedAnalytics(symbols,positionMap,seriesMap,benchmarkRows)
   if(Number.isFinite(avgPairwiseCorrelation))riskParts.push(avgPairwiseCorrelation>=0.75?'holdings are highly correlated':avgPairwiseCorrelation>=0.5?'holdings have moderate-to-high co-movement':avgPairwiseCorrelation>=0.25?'holdings have moderate diversification':'holdings are relatively differentiated');
   const riskRead=riskParts.length?riskParts.join(' · '):null;
 
-  let highestCorrelationPair=null;
   if(pairwise.length&&usable.length>1){
     let best=-Infinity;
     for(let i=0;i<usable.length;i++)for(let j=i+1;j<usable.length;j++){
