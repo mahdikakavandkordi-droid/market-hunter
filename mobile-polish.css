@@ -1,0 +1,116 @@
+/* Mobile-first polish for the personal dashboard.
+   Desktop system remains untouched; this layer only reduces mobile density. */
+@media (max-width:760px){
+  .topbar{
+    min-height:64px;
+    padding:calc(8px + env(safe-area-inset-top)) 12px 8px;
+  }
+  .topbar h1{font-size:17px;margin:2px 0 1px}
+  .topbar p{font-size:7.5px}
+  .kicker{font-size:6.5px;letter-spacing:.14em}
+  .iconbtn{width:32px;height:32px;border-radius:10px;font-size:16px}
+
+  .main{
+    padding:10px 10px calc(68px + env(safe-area-inset-bottom));
+  }
+  .stack,.grid{gap:10px}
+  .panel{border-radius:14px}
+  .panel-inner{padding:12px}
+  .panel-head{padding:11px 12px 0}
+  .panel-head h2{font-size:14px}
+  .panel-head h3{font-size:12px}
+  .panel-head p{font-size:8px;margin-top:3px}
+
+  /* The report must read like a dashboard brief, not an article. */
+  .report-title{
+    font-size:15px;
+    line-height:1.25;
+    letter-spacing:-.03em;
+    margin:7px 0 6px;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:3;
+    overflow:hidden;
+  }
+  .report-copy{
+    font-size:8.5px;
+    line-height:1.45;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    overflow:hidden;
+  }
+  .report-badges{
+    margin-top:10px;
+    gap:5px;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    scrollbar-width:none;
+    padding-bottom:1px;
+  }
+  .report-badges::-webkit-scrollbar{display:none}
+  .report-badges .badge{
+    flex:0 0 auto;
+    font-size:7px;
+    padding:4px 7px;
+  }
+
+  /* These repeat the same high-level read already expressed in the badges. */
+  .home-hero .group-grid{display:none}
+
+  /* On phone this duplicates Market Pulse and pushes decisions below the fold. */
+  .home-hero > .panel.soft{display:none}
+
+  /* Market Pulse becomes the compact visual scan immediately after the brief. */
+  .pulse-strip{
+    grid-auto-columns:58%;
+    gap:7px;
+    padding:10px 11px 12px;
+  }
+  .pulse-card{
+    padding:9px;
+    border-radius:12px;
+  }
+  .pulse-card h4{font-size:9px}
+  .pulse-card .price{font-size:14px;margin:6px 0 3px}
+  .pulse-card .sub{font-size:6.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pulse-card .badge{font-size:6.5px;padding:3px 6px}
+  .trendline{height:15px;margin-top:5px}
+
+  /* Make the actual daily shortlist visible sooner. */
+  .review-table th{font-size:6.5px;padding:7px 8px}
+  .review-table td{font-size:8.5px;padding:8px}
+  .rank-dot{width:20px;height:20px;font-size:7px}
+  .symbol-cell b{font-size:9px}
+  .symbol-cell small{font-size:6.5px}
+  .stage-pill{font-size:6.5px;padding:3px 6px}
+
+  .portfolio-glance{padding:12px}
+  .portfolio-value{font-size:23px;margin:5px 0 2px}
+  .glance-grid{margin-top:10px;gap:5px}
+  .glance-stat{padding:7px}
+  .glance-stat small{font-size:6.5px}
+  .glance-stat b{font-size:9px}
+
+  .developments{padding:10px 12px 12px;gap:5px}
+  .development{padding:7px;grid-template-columns:62px 1fr}
+  .development b,.development span{font-size:7px}
+
+  .mobile-nav{
+    padding:4px 6px calc(4px + env(safe-area-inset-bottom));
+  }
+  .mobile-nav .navbtn{
+    gap:1px;
+    padding:4px 2px;
+    border-radius:8px;
+    font-size:13px;
+  }
+  .mobile-nav .navbtn small{font-size:6.5px}
+
+  .toast{bottom:calc(62px + env(safe-area-inset-bottom))}
+}
+
+@media (max-width:390px){
+  .report-title{font-size:14px}
+  .pulse-strip{grid-auto-columns:64%}
+}
