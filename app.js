@@ -148,8 +148,8 @@ function homeHtml(){
     return `<article class="outlook-card">
       <div class="outlook-head"><div><b>${esc(m.name)}</b><small>${esc(m.regime||'—')} · ${esc(m.condition||'—')}</small></div><span>${esc(m.asOf||'')}</span></div>
       <div class="outlook-grid">
-        <div><small>5-session analog</small><b class="${toneClass(h5?.tone||h5?.label)}">${esc(h5?.label||h5?.tone||'—')}</b><em>${esc(h5?.confidence||'')} confidence</em></div>
-        <div><small>20-session analog</small><b class="${toneClass(h20?.tone||h20?.label)}">${esc(h20?.label||h20?.tone||'—')}</b><em>${esc(h20?.confidence||'')} confidence</em></div>
+        <div><small>Short term (~1 week)</small><b class="${toneClass(h5?.tone||h5?.label)}">${esc(h5?.label||h5?.tone||'—')}</b><em>${esc(h5?.confidence||'')} confidence</em></div>
+        <div><small>Medium term (~1 month)</small><b class="${toneClass(h20?.tone||h20?.label)}">${esc(h20?.label||h20?.tone||'—')}</b><em>${esc(h20?.confidence||'')} confidence</em></div>
       </div>
       <p>${esc(m.outlook||m.framing||'')}</p>
       ${m.watchNext?`<details><summary>What changes the view</summary><div class="outlook-watch">${esc(m.watchNext)}</div></details>`:''}
@@ -210,7 +210,7 @@ function homeHtml(){
       </section>
     </div>
 
-    ${outlook?`<section class="panel soft outlook-panel"><div class="panel-head"><div><h3>Model Outlook</h3><p>Historical analogs, not price targets · 5-session vs 20-session context.</p></div></div><div class="outlook-track">${outlook}</div></section>`:''}
+    ${outlook?`<section class="panel soft outlook-panel"><div class="panel-head"><div><h3>Model Outlook</h3><p>Based on historical analogs · short vs medium-term context · no price targets.</p></div></div><div class="outlook-track">${outlook}</div></section>`:''}
   </div>`;
 }
 function stockCard(x,rank=''){
