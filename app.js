@@ -62,6 +62,63 @@ function health(x){
   if(watch.length)return{label:watch.length>1?'Watch Closely':'Momentum Cooling',tone:'watch',notes:[...watch,...good]};
   return{label:'Trend Healthy',tone:'good',notes:good.length?good:['No material structural warning']};
 }
+function stockNarrative(x){
+  if(!x)return 'Current market data is unavailable, so the chart cannot be assessed reliably right now.';
+  const parts=[];
+  if(x.stage==='Early Watch'){
+    parts.push('Selling pressure is starting to ease near the recent low, but this is still an early setup rather than a confirmed reversal.');
+  }else if(x.stage==='Recovery'){
+    parts.push('The chart is rebuilding after prior weakness, with signs that momentum and structure are improving.');
+  }else if(x.stage==='Attractive Growth'){
+    parts.push('The broader trend is constructive and price is participating in a stronger growth phase.');
+  }else if(x.stage==='Established Move'){
+    parts.push('The longer-term uptrend is mature and still broadly intact, so the main question is whether the move can keep advancing without becoming too extended.');
+  }else{
+    parts.push('The chart is outside the active Hunter stages, so the current read is based on structure, momentum and relative strength rather than a stage label.');
+  }
+  const detail=[];
+  if(x.swingTrend==='Higher highs + higher lows')detail.push('higher highs and higher lows are intact');
+  else if(x.swingTrend==='Structure improving')detail.push('swing structure is improving');
+  else if(x.swingTrend==='Lower highs + lower lows')detail.push('the swing structure is still weak');
+  else if(x.swingTrend==='Structure weakening')detail.push('the swing structure has started to weaken');
+  if(Number.isFinite(x.momentumShift)){
+    if(x.momentumShift>=4)detail.push('momentum has improved clearly');
+    else if(x.momentumShift>=1)detail.push('momentum is improving');
+    else if(x.momentumShift<=-4)detail.push('momentum has cooled noticeably');
+    else if(x.momentumShift<0)detail.push('momentum is slightly softer');
+  }
+  if(Number.isFinite(x.rs20)){
+    if(x.rs20>=8)detail.push('20-day relative strength is well ahead of the TSX');
+    else if(x.rs20>=3)detail.push('20-day relative strength is ahead of the TSX');
+    else if(x.rs20<=-8)detail.push('20-day relative strength is materially lagging the TSX');
+    else if(x.rs20<=-3)detail.push('20-day relative strength is lagging the TSX');
+  }
+  if(detail.length)parts.push(detail.slice(0,3).join(', ')+'.');
+  const caution=[];
+  if(x.lowBroken===true)caution.push('the recent local low has been broken');
+  if(Number.isFinite(x.dist20)&&x.dist20>=10)caution.push('price is very extended above its 20-day average');
+  else if(Number.isFinite(x.dist20)&&x.dist20>=6)caution.push('price is extended above its 20-day average');
+  if(Number.isFinite(x.rsi14)&&x.rsi14>=80)caution.push('RSI is extremely elevated');
+  else if(Number.isFinite(x.rsi14)&&x.rsi14>=72)caution.push('RSI is elevated');
+  if(caution.length)parts.push('The main thing to watch is that '+caution.slice(0,2).join(' and ')+'.');
+  return parts.join(' ');
+}
+function positionNarrative(p,x,weight){
+  const parts=[stockNarrative(x)];
+  const e=x?.entryStats;
+  if(e&&Number.isFinite(e.sinceEntryReturn)){
+    let sentence='Since your entry, the position is '+pct(e.sinceEntryReturn);
+    if(Number.isFinite(e.excessVsBenchmarkPct)){
+      sentence+=' and is '+Math.abs(e.excessVsBenchmarkPct).toFixed(1)+' percentage points '+(e.excessVsBenchmarkPct>=0?'ahead of':'behind')+' its benchmark';
+    }
+    parts.push(sentence+'.');
+  }
+  if(Number.isFinite(weight)){
+    if(weight>=30)parts.push('At '+weight.toFixed(1)+'% of portfolio value, this position has a large influence on total portfolio movement.');
+    else if(weight>=15)parts.push('At '+weight.toFixed(1)+'% of portfolio value, this position has a meaningful influence on the portfolio.');
+  }
+  return parts.join(' ');
+}
 function changeReasons(cur,prev){
   if(!cur||!prev)return[];
   const out=[];
@@ -207,13 +264,13 @@ function homeHtml(){
 }
 function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
-  const why=(x.evidence||[]).slice(0,3).join(' · ')||'Selected by validated stage logic.';
+  const why=stockNarrative(x);
   return `<article class="card">
     <div class="cardtop"><div class="name"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice">${money(x.price,'CAD')}<small class="${cls(x.ret5)}">5D ${pct(x.ret5)}</small></div></div>
     <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
     <div class="metrics"><div class="metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></div><div class="metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></div><div class="metric"><small>RS20</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="metric"><small>Momentum</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div></div>
-    <div class="why">${esc(why)}</div>
-    <details><summary>More evidence</summary><div class="copy">Pullback ${pct(x.pullback60)} · ATR ${pct(x.atr14Pct)} · vs MA20 ${pct(x.dist20)} · vs MA50 ${pct(x.dist50)}${(x.riskFlags||[]).length?'<br><br><strong>Risk context</strong><br>'+esc(x.riskFlags.join(' · ')):''}</div></details>
+    <div class="why analysis-copy">${esc(why)}</div>
+    <details><summary>Technical details</summary><div class="copy"><strong>Why it qualified</strong><br>${esc((x.evidence||[]).join(' · ')||'Stage-specific review criteria passed.')}<br><br><strong>Positioning</strong><br>Pullback from 60-day high ${pct(x.pullback60)} · ATR ${pct(x.atr14Pct)} · vs MA20 ${pct(x.dist20)} · vs MA50 ${pct(x.dist50)}${(x.riskFlags||[]).length?'<br><br><strong>Risk context</strong><br>'+esc(x.riskFlags.join(' · ')):''}</div></details>
     <div class="actions"><button class="btn" data-chart="${x.symbol}">Chart ↗</button><button class="btn" data-watch="${x.symbol}">${watched?'♥ Saved':'♡ Watch'}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?'Edit':'Bought'}</button></div>
   </article>`;
 }
@@ -240,7 +297,63 @@ function portfolioSummary(){
   const attention=rows.filter(({x})=>health(x).tone!=='good');
   const changed=[];
   for(const {p,x} of rows){const reasons=changeReasons(x,state.previous.get(p.symbol));if(reasons.length)changed.push({symbol:p.symbol,reasons})}
-  return {rows,complete,currency,value,cost,pnl,pnlPct,attention,changed};
+  let breadth=null,top1=null,top3=null;
+  if(single&&Number.isFinite(value)&&value>0){
+    const weighted=complete.map(({p,x})=>{
+      const positionValue=Number(p.quantity)*x.price;
+      return {symbol:p.symbol,value:positionValue,weight:positionValue/value*100,tone:health(x).tone};
+    }).sort((a,b)=>b.value-a.value);
+    const healthy=weighted.filter(x=>x.tone==='good').reduce((sum,x)=>sum+x.weight,0);
+    const cooling=weighted.filter(x=>x.tone==='watch').reduce((sum,x)=>sum+x.weight,0);
+    const warning=weighted.filter(x=>x.tone==='warn').reduce((sum,x)=>sum+x.weight,0);
+    breadth={healthy,cooling,warning,attention:cooling+warning};
+    top1=weighted[0]||null;
+    top3=weighted.slice(0,3).reduce((sum,x)=>sum+x.weight,0);
+  }
+  return {rows,complete,currency,value,cost,pnl,pnlPct,attention,changed,breadth,top1,top3};
+}
+function portfolioReadHtml(s){
+  if(!s.rows.length)return '';
+  const a=state.analytics;
+  const breadth=s.breadth;
+  const healthCopy=breadth
+    ?`${breadth.healthy.toFixed(0)}% of portfolio value is structurally healthy, ${breadth.cooling.toFixed(0)}% is cooling or needs watching, and ${breadth.warning.toFixed(0)}% carries a structural warning.`
+    :'Weighted health is unavailable until holdings can be combined in one currency.';
+  const concentration=s.top1
+    ?`Largest holding: ${short(s.top1.symbol)} at ${s.top1.weight.toFixed(1)}%. Top three holdings account for ${s.top3.toFixed(1)}%.`
+    :'Concentration cannot be combined safely for the current holdings.';
+  let performance='Recent portfolio-vs-TSX comparison is not available yet.';
+  if(a&&Number.isFinite(a.portfolioReturnPct)&&Number.isFinite(a.benchmarkReturnPct)){
+    const excess=Number.isFinite(a.excessReturnPct)?` (${Math.abs(a.excessReturnPct).toFixed(1)}pp ${a.excessReturnPct>=0?'ahead':'behind'})`:'';
+    performance=`Over the last ${a.windowSessions||'recent'} common sessions, the portfolio returned ${pct(a.portfolioReturnPct)} versus ${pct(a.benchmarkReturnPct)} for the TSX${excess}.`;
+  }
+  let risk='Portfolio-level risk estimates are not available yet.';
+  if(a&&Number.isFinite(a.betaVsTsx)){
+    const stress=(a.stressLens||[]).find(x=>x.marketShockPct===-5);
+    risk=`Beta to the TSX is ${a.betaVsTsx.toFixed(2)}`;
+    if(Number.isFinite(a.annualizedVolPct))risk+=`, recent annualized volatility is ${a.annualizedVolPct.toFixed(1)}%`;
+    if(Number.isFinite(a.maxDrawdownPct))risk+=`, and recent max drawdown is ${a.maxDrawdownPct.toFixed(1)}%`;
+    if(stress&&Number.isFinite(stress.estimatedPortfolioMovePct))risk+=`. A simple beta-based TSX -5% stress maps to roughly ${stress.estimatedPortfolioMovePct.toFixed(1)}% for the portfolio`;
+    risk+='.';
+  }
+  const topRisk=a?.topRiskContributor;
+  let diversification=a?.diversificationRead||'Diversification analytics need more common history.';
+  if(topRisk&&Number.isFinite(topRisk.riskContributionPct))diversification+=`; ${short(topRisk.symbol)} is currently the largest modeled risk contributor at ${topRisk.riskContributionPct.toFixed(1)}% of portfolio variance`;
+  if(!diversification.endsWith('.'))diversification+='.';
+  return `<section class="panel soft portfolio-read-panel">
+    <div class="sectionhead"><div><h3>Portfolio Read</h3><p>Whole-portfolio context, weighted by what you actually own.</p></div></div>
+    ${breadth?`<div class="health-breadth">
+      <div class="health-segments"><span class="healthy" style="width:${Math.max(0,breadth.healthy)}%"></span><span class="cooling" style="width:${Math.max(0,breadth.cooling)}%"></span><span class="warning" style="width:${Math.max(0,breadth.warning)}%"></span></div>
+      <div class="health-legend"><span><i class="healthy"></i>Healthy <b>${breadth.healthy.toFixed(0)}%</b></span><span><i class="cooling"></i>Cooling / Watch <b>${breadth.cooling.toFixed(0)}%</b></span><span><i class="warning"></i>Warning <b>${breadth.warning.toFixed(0)}%</b></span></div>
+    </div>`:''}
+    <div class="portfolio-read-copy">
+      <p><strong>Health</strong> ${esc(healthCopy)}</p>
+      <p><strong>Concentration</strong> ${esc(concentration)}</p>
+      <p><strong>Recent performance</strong> ${esc(performance)}</p>
+      <p><strong>Risk</strong> ${esc(risk)}</p>
+      <p><strong>Diversification</strong> ${esc(diversification)}</p>
+    </div>
+  </section>`;
 }
 function allocationHtml(s){
   if(!s.complete.length)return'';
@@ -256,12 +369,13 @@ function riskHtml(){
 function positionCard(p,x,total){
   const h=health(x),qty=Number(p.quantity)||0,value=x&&qty>0?qty*x.price:null,ret=x&&Number(p.entryPrice)>0?(x.price/Number(p.entryPrice)-1)*100:null;
   const weight=Number.isFinite(total)&&Number.isFinite(value)&&total>0?value/total*100:null,e=x?.entryStats;
+  const read=positionNarrative(p,x,weight);
   return `<article class="card">
     <div class="cardtop"><div class="name"><b>${short(p.symbol)}</b><small>${esc(x?.name||p.symbol)}</small></div><span class="health ${h.tone}">${h.label}</span></div>
     <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span></div>
     <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
-    <div class="why">${esc(h.notes.slice(0,3).join(' · '))}</div>
-    <details><summary>Position details</summary><div class="copy">Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)}<br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')}<br>RS20 ${pct(x?.rs20)} · Momentum ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry</strong><br>Max gain '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Entry note</strong><br>'+esc(p.notes):''}</div></details>
+    <div class="why analysis-copy">${esc(read)}</div>
+    <details><summary>Position details</summary><div class="copy"><strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
     <div class="actions"><button class="btn" data-chart="${p.symbol}">Chart ↗</button><button class="btn" data-edit="${p.symbol}">Edit</button><button class="btn danger" data-remove="${p.symbol}">Remove</button></div>
   </article>`;
 }
@@ -299,13 +413,13 @@ async function importBackupFile(file){
 function portfolioHtml(){
   const s=portfolioSummary();
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
-  const attentionBlock=s.attention.length?`<section class="panel soft"><div class="sectionhead"><div><h3>Current attention</h3><p>Context to inspect, not trade instructions.</p></div></div><div class="devs">${s.attention.map(({p,x})=>{const h=health(x);return`<div class="dev"><b>${short(p.symbol)}</b><span>${esc(h.label+' · '+h.notes[0])}</span></div>`}).join('')}</div></section>`:'';
+  const attentionBlock=s.attention.length?`<section class="panel soft"><div class="sectionhead"><div><h3>Current attention</h3><p>Why these holdings deserve a closer chart review.</p></div></div><div class="devs">${s.attention.map(({p,x})=>`<div class="dev"><b>${short(p.symbol)}</b><span>${esc(stockNarrative(x))}</span></div>`).join('')}</div></section>`:'';
   return `<div class="stack">
     <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
-      <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention</small><b>${s.attention.length}</b></div></div>
-      <div class="read">${s.attention.length?s.attention.length+' holding(s) deserve closer review.':'No material structural warning across covered holdings.'}</div>
+      <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention weight</small><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
+      <div class="read">${s.breadth?s.breadth.attention.toFixed(0)+'% of portfolio value is currently in cooling/watch or warning conditions.':(s.attention.length?s.attention.length+' holding(s) deserve closer review.':'No material structural warning across covered holdings.')}</div>
     </section>
-    ${changeBlock}${attentionBlock}${allocationHtml(s)}${riskHtml()}
+    ${portfolioReadHtml(s)}${changeBlock}${attentionBlock}${allocationHtml(s)}${riskHtml()}
     <section class="panel soft"><div class="sectionhead"><div><h3>Holdings</h3><p>Health first. Details stay collapsed.</p></div></div><div class="cards">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty">No positions yet.</div>'}</div></section>
   </div>`;
 }
