@@ -138,3 +138,107 @@
   .pulse-strip{grid-auto-columns:78%}
   .market-row{grid-template-columns:minmax(108px,1fr) auto auto}
 }
+
+
+/* Market context + model outlook + stage review tabs */
+.market-context{
+  grid-column:1/-1;
+  padding:0 0 10px;
+  margin-top:-2px;
+  color:var(--muted);
+  font-size:8px;
+  line-height:1.45;
+}
+.outlook-track{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(245px,1fr);
+  gap:9px;
+  overflow-x:auto;
+  padding:14px 16px 16px;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+}
+.outlook-track::-webkit-scrollbar{display:none}
+.outlook-card{
+  scroll-snap-align:start;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.018);
+  padding:12px;
+  min-width:0;
+}
+.outlook-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.outlook-head b{font-size:10px}
+.outlook-head small{display:block;margin-top:3px;color:var(--muted2);font-size:7px}
+.outlook-head>span{font-size:7px;color:var(--muted2)}
+.outlook-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
+.outlook-grid>div{padding:8px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid var(--line-soft)}
+.outlook-grid small{display:block;color:var(--muted2);font-size:6.5px}
+.outlook-grid b{display:block;margin-top:4px;font-size:8px;line-height:1.3}
+.outlook-grid em{display:block;margin-top:3px;color:var(--muted2);font-size:6px;font-style:normal}
+.outlook-card p{margin:10px 0 0;color:var(--muted);font-size:8px;line-height:1.5}
+.outlook-card details{margin-top:9px}
+.outlook-watch{margin-top:7px;color:var(--muted);font-size:7px;line-height:1.5}
+
+.stage-tabs{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding:13px 16px 2px;
+  scrollbar-width:none;
+}
+.stage-tabs::-webkit-scrollbar{display:none}
+.stage-tab{
+  flex:0 0 auto;
+  display:flex;align-items:center;gap:7px;
+  padding:7px 9px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+  color:var(--muted);
+  font-size:8px;font-weight:850;
+}
+.stage-tab b{
+  display:grid;place-items:center;
+  min-width:18px;height:18px;padding:0 4px;
+  border-radius:999px;
+  background:rgba(255,255,255,.045);
+  color:var(--text);
+  font-size:7px;
+}
+.stage-tab.active{
+  color:#dcecff;
+  border-color:rgba(85,167,255,.28);
+  background:rgba(85,167,255,.10);
+}
+.stage-tab.active b{color:var(--blue);background:rgba(85,167,255,.10)}
+.stage-summary{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:10px 16px 0;
+}
+.stage-summary b{font-size:9px}
+.stage-summary span{font-size:8px;color:var(--muted)}
+
+@media(max-width:760px){
+  .market-row{grid-template-columns:minmax(120px,1fr) auto auto}
+  .market-context{font-size:12px;line-height:1.5;padding:0 0 12px}
+  .outlook-track{grid-auto-columns:86%;padding:13px 15px 15px}
+  .outlook-card{padding:14px}
+  .outlook-head b{font-size:15px}
+  .outlook-head small{font-size:11px}
+  .outlook-head>span{font-size:10px}
+  .outlook-grid{gap:8px;margin-top:13px}
+  .outlook-grid>div{padding:10px}
+  .outlook-grid small{font-size:10px}
+  .outlook-grid b{font-size:12px}
+  .outlook-grid em{font-size:10px}
+  .outlook-card p{font-size:12px;line-height:1.55}
+  .outlook-watch{font-size:11px;line-height:1.5}
+  .stage-tabs{padding:14px 15px 4px;gap:8px}
+  .stage-tab{font-size:12px;padding:8px 10px}
+  .stage-tab b{min-width:22px;height:22px;font-size:10px}
+  .stage-summary{padding:12px 15px 0}
+  .stage-summary b{font-size:13px}
+  .stage-summary span{font-size:11.5px}
+}

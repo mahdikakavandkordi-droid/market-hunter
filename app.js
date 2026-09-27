@@ -8,7 +8,7 @@ const money=(n,c='CAD')=>Number.isFinite(Number(n))?new Intl.NumberFormat(undefi
 const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
 const readSet=k=>{try{return new Set(JSON.parse(localStorage.getItem(k)||'[]'))}catch{return new Set()}};
 const readPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={view:'home',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),portfolioItems:new Map(),analytics:null,previous:new Map()};
+const state={view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),portfolioItems:new Map(),analytics:null,previous:new Map()};
 
 function saveWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]))}
 function savePositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
@@ -19,6 +19,23 @@ function allCandidates(){
   for(const x of state.v2?.integratedSurfacePicks||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(x)}}
   for(const list of Object.values(state.v2?.surfacePicks||{}))for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(x)}}
   return out;
+}
+const REVIEW_STAGES=['Early Watch','Recovery','Attractive Growth','Established Move'];
+function stageEligiblePicks(stage){
+  const rows=state.v2?.reviewFirst?.[stage]||state.v2?.surfacePicks?.[stage]||[];
+  const policy=state.v2?.surfacePolicy?.[stage]||{};
+  return [...rows].filter(x=>{
+    if(Number.isFinite(policy.minScore)&&(!Number.isFinite(x?.score)||x.score<policy.minScore))return false;
+    if(Number.isFinite(policy.maxStageAge)&&(!Number.isFinite(x?.stageAge)||x.stageAge>policy.maxStageAge))return false;
+    return true;
+  }).sort((x,y)=>(y?.surfaceScore??y?.score??-Infinity)-(x?.surfaceScore??x?.score??-Infinity)||String(x?.symbol||'').localeCompare(String(y?.symbol||'')));
+}
+function stageLeaders(){return REVIEW_STAGES.map(stage=>stageEligiblePicks(stage)[0]).filter(Boolean)}
+function toneClass(value){
+  return /constructive|favorable|strong|bull/i.test(value||'')?'metric-good':/cautious|weaker|risk|bear/i.test(value||'')?'metric-bad':'metric-flat';
+}
+function stripMarketPrefix(text){
+  return String(text||'').replace(/^[^:]+:\s*/,'');
 }
 function candidate(symbol){return allCandidates().find(x=>x.symbol===symbol)||null}
 function normalizeSymbol(raw){
@@ -103,12 +120,21 @@ async function load(){
   }finally{b.classList.remove('busy');b.disabled=false}
 }
 function homeHtml(){
-  const d=state.daily,p=state.pulse,picks=(state.v2?.integratedSurfacePicks||[]).slice(0,6);
+  const d=state.daily,p=state.pulse,picks=stageLeaders();
   const s=portfolioSummary();
   const groups=(d?.groups||[]).slice(0,3).map(g=>`<div class="group-card"><small>${esc(g.label)}</small><b>${esc(g.state)}</b><p>${esc(g.detail)}</p></div>`).join('');
+  const developmentByMarket=new Map((d?.keyDevelopments||[]).map(x=>[x.market,x]));
+  const marketKeyByName={'TSX Composite':'TSX','S&P 500':'SP500','Nasdaq-100':'NASDAQ100','Gold':'GOLD','Silver':'SILVER','Bitcoin':'BTC','Ethereum':'ETH'};
   const markets=(p?.markets||[]).map(x=>{
     const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
-    return `<div class="market-row"><div><b>${esc(x.name)}</b><small>${esc(x.condition||'')}</small></div><div class="market-value">${fmt(x.price)}</div><div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div></div>`;
+    const key=x.key||marketKeyByName[x.name]||'';
+    const context=developmentByMarket.get(key)?.text||'';
+    return `<div class="market-row">
+      <div><b>${esc(x.name)}</b><small>${esc(x.condition||'')}</small></div>
+      <div class="market-value">${fmt(x.price)}</div>
+      <div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div>
+      ${context?`<div class="market-context">${esc(stripMarketPrefix(context))}</div>`:''}
+    </div>`;
   }).join('');
   const pulse=(p?.markets||[]).map(x=>{
     const direction=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'up':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'down':'flat';
@@ -116,7 +142,19 @@ function homeHtml(){
     return `<article class="pulse-card"><div class="pulse-top"><div><h4>${esc(x.name)}</h4><span class="badge ${tone}">${esc(x.regime||'Neutral')}</span></div></div><div class="price">${fmt(x.price)}</div><div class="sub">${esc(x.condition||'No short-term condition')}</div></article>`;
   }).join('');
   const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
-  const devs=(d?.keyDevelopments||[]).slice(0,4).map(x=>`<div class="development"><b>${esc(x.market)}</b><span>${esc(x.text)}</span></div>`).join('');
+  const outlook=(d?.markets||[]).map(m=>{
+    const h5=m?.evidence?.horizons?.['5'];
+    const h20=m?.evidence?.horizons?.['20'];
+    return `<article class="outlook-card">
+      <div class="outlook-head"><div><b>${esc(m.name)}</b><small>${esc(m.regime||'—')} · ${esc(m.condition||'—')}</small></div><span>${esc(m.asOf||'')}</span></div>
+      <div class="outlook-grid">
+        <div><small>5-session analog</small><b class="${toneClass(h5?.tone||h5?.label)}">${esc(h5?.label||h5?.tone||'—')}</b><em>${esc(h5?.confidence||'')} confidence</em></div>
+        <div><small>20-session analog</small><b class="${toneClass(h20?.tone||h20?.label)}">${esc(h20?.label||h20?.tone||'—')}</b><em>${esc(h20?.confidence||'')} confidence</em></div>
+      </div>
+      <p>${esc(m.outlook||m.framing||'')}</p>
+      ${m.watchNext?`<details><summary>What changes the view</summary><div class="outlook-watch">${esc(m.watchNext)}</div></details>`:''}
+    </article>`;
+  }).join('');
   const portfolioValue=s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—';
   const pnl=s.currency?`${money(s.pnl,s.currency)} · ${pct(s.pnlPct)}`:'—';
 
@@ -153,7 +191,7 @@ function homeHtml(){
 
     <div class="grid home-lower">
       <section class="panel soft">
-        <div class="panel-head"><div><h2>Charts to Review Today</h2><p>Final integrated shortlist · quality over count · max six.</p></div><button class="btn ghost" data-open="shortlist">View all</button></div>
+        <div class="panel-head"><div><h2>Charts to Review Today</h2><p>One stage leader each · open Review for every qualified chart.</p></div><button class="btn ghost" data-open="shortlist">View all</button></div>
         <div class="table-wrap"><table class="review-table"><thead><tr><th>#</th><th>Symbol</th><th>Stage</th><th>Context</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="5">No current shortlist.</td></tr>'}</tbody></table></div>
       </section>
 
@@ -172,7 +210,7 @@ function homeHtml(){
       </section>
     </div>
 
-    ${devs?`<section class="panel soft"><div class="panel-head"><div><h3>Today’s context</h3><p>Evidence worth knowing before opening individual charts.</p></div></div><div class="developments">${devs}</div></section>`:''}
+    ${outlook?`<section class="panel soft outlook-panel"><div class="panel-head"><div><h3>Model Outlook</h3><p>Historical analogs, not price targets · 5-session vs 20-session context.</p></div></div><div class="outlook-track">${outlook}</div></section>`:''}
   </div>`;
 }
 function stockCard(x,rank=''){
@@ -188,8 +226,16 @@ function stockCard(x,rank=''){
   </article>`;
 }
 function shortlistHtml(){
-  const picks=state.v2?.integratedSurfacePicks||[];
-  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>Final Shortlist</h2><p>Quality over count. No global raw-score ranking.</p></div><span class="tag">${picks.length}/6</span></div><div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">No current shortlist.</div>'}</div></section></div>`;
+  const stage=REVIEW_STAGES.includes(state.reviewStage)?state.reviewStage:REVIEW_STAGES[0];
+  const counts=Object.fromEntries(REVIEW_STAGES.map(s=>[s,stageEligiblePicks(s).length]));
+  const picks=stageEligiblePicks(stage);
+  const tabs=REVIEW_STAGES.map(s=>`<button class="stage-tab ${s===stage?'active':''}" data-stage-tab="${esc(s)}"><span>${esc(s)}</span><b>${counts[s]}</b></button>`).join('');
+  return `<div class="stack"><section class="panel soft">
+    <div class="sectionhead"><div><h2>Charts to Review</h2><p>Stage-specific quality gates · no global Top-6 cap.</p></div><span class="tag">${Object.values(counts).reduce((x,y)=>x+y,0)} qualified</span></div>
+    <div class="stage-tabs">${tabs}</div>
+    <div class="stage-summary"><b>${esc(stage)}</b><span>${picks.length} chart${picks.length===1?'':'s'} currently pass this stage’s review surface.</span></div>
+    <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">No charts currently pass this stage’s review surface.</div>'}</div>
+  </section></div>`;
 }
 function portfolioSummary(){
   const rows=[...state.positions.values()].map(p=>({p,x:state.portfolioItems.get(p.symbol)}));
@@ -286,6 +332,7 @@ function openPosition(symbol='',source='manual'){
 }
 document.addEventListener('click',async e=>{
   const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return}
+  const stageTab=e.target.closest('[data-stage-tab]');if(stageTab){state.reviewStage=stageTab.dataset.stageTab;renderView('shortlist');return}
   const open=e.target.closest('[data-open]');if(open){setView(open.dataset.open);return}
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}
   const watch=e.target.closest('[data-watch]');if(watch){const s=watch.dataset.watch;state.watch.has(s)?state.watch.delete(s):state.watch.add(s);saveWatch();renderAll();toast(state.watch.has(s)?'Saved':'Removed');return}
