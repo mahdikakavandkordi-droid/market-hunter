@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
+import {purgedChronSplit} from '../lib/validation-split.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,riskFlags,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 
 const batchIndex=Number(process.env.V2_BATCH_INDEX||0);
@@ -55,8 +56,7 @@ function dedupe(a,h){
 
 function quantile(a,q){const x=a.filter(Number.isFinite).sort((a,b)=>a-b);if(!x.length)return null;return x[Math.min(x.length-1,Math.floor((x.length-1)*q))]}
 function splitChron(a){
-  const dates=[...new Set(a.map(x=>x.date))].sort(),cut=dates[Math.floor(dates.length*.7)]||null;
-  return {cut,train:a.filter(x=>!cut||x.date<cut),test:a.filter(x=>cut&&x.date>=cut)};
+  return purgedChronSplit(a,.7);
 }
 function rankingReport(a){
   const sp=splitChron(a),scores=sp.train.map(x=>x.rankScore);
@@ -66,6 +66,7 @@ function rankingReport(a){
   const above=(rows,t)=>Number.isFinite(t)?summary(rows.filter(e=>e.rankScore>=t)):null;
   return {
     cutDate:sp.cut,
+    purge:{prePurgeTrainCount:sp.prePurgeTrainCount,purgedTrainCount:sp.purgedTrainCount,missingOutcomeCount:sp.missingOutcomeCount,trainCount:sp.train.length,testCount:sp.test.length},
     trainThresholds:{q33:round(q33,1),q67:round(q67,1),q80:round(q80,1),q90:round(q90,1)},
     train:pack(sp.train),test:pack(sp.test),
     highPriority:{
@@ -304,7 +305,7 @@ for(const symbol of symbols){
         const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
         const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
         establishedMoveSurfaceReplayCandidates.push({
-          symbol,date,horizon:h,score:round(score,1),stageAge,cleanReview:flags.length===0,riskFlags:flags,
+          symbol,date,outcomeDate,horizon:h,score:round(score,1),stageAge,cleanReview:flags.length===0,riskFlags:flags,
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
           ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),dist20:round(m.dist20),
@@ -321,7 +322,7 @@ for(const symbol of symbols){
         const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
         const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
         attractiveGrowthSurfaceReplayCandidates.push({
-          symbol,date,horizon:h,score:round(score,1),stageAge,cleanReview:flags.length===0,riskFlags:flags,
+          symbol,date,outcomeDate,horizon:h,score:round(score,1),stageAge,cleanReview:flags.length===0,riskFlags:flags,
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
           ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),dist20:round(m.dist20),
@@ -337,7 +338,7 @@ for(const symbol of symbols){
         const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
         const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
         recoverySurfaceReplayCandidates.push({
-          symbol,date,horizon:h,score:round(score,1),surfaceScore:round(surfaceScore,1),stageAge,highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge,
+          symbol,date,outcomeDate,horizon:h,score:round(score,1),surfaceScore:round(surfaceScore,1),stageAge,highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge,
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
           ret5:round(m.ret5),ret20:round(m.ret20),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
@@ -352,7 +353,7 @@ for(const symbol of symbols){
         const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
         const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
         surfaceReplayCandidates.push({
-          symbol,date,horizon:h,score:round(score,1),
+          symbol,date,outcomeDate,horizon:h,score:round(score,1),
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
           ret5:round(m.ret5),ret20:round(m.ret20),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
@@ -378,7 +379,7 @@ for(const symbol of symbols){
       const outcomeDate=dayKey(rows[i+h].t),benchEntry=bh.at(-1)?.close,bf=benchmarkHist(benchRows,outcomeDate)?.at(-1)?.close;
       const fr=pct(rows[i+h].close,entry),br=pct(bf,benchEntry);
       rawEvents.push({
-        symbol,date,sessionIndex:i,horizon:h,stage,rankScore:round(score,1),features,
+        symbol,date,outcomeDate,sessionIndex:i,horizon:h,stage,rankScore:round(score,1),features,
         forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
         mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
         hitPlus7:path.some(x=>x>=7),hitMinus7:path.some(x=>x<=-7)
