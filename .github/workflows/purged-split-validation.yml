@@ -29,8 +29,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Contract tests
-        run: npm test
+      - name: Purged split contract test
+        run: node scripts/test-validation-split.mjs
       - name: Run purged historical backtest
         env:
           V2_BATCH_INDEX: ${{ matrix.batch }}
