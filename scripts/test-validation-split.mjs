@@ -33,3 +33,27 @@ assert.equal(missing.missingOutcomeCount,1);
 assert.deepEqual(missing.train.map(x=>x.id),['x']);
 
 console.log('Purged chronological split tests passed');
+
+
+import {sealedChronSplit} from '../lib/validation-split.js';
+
+const sealedRows=[
+  {id:'a',date:'2025-01-01',outcomeDate:'2025-01-05'},
+  {id:'b',date:'2025-02-01',outcomeDate:'2025-02-05'},
+  {id:'c',date:'2025-03-01',outcomeDate:'2025-04-10'},
+  {id:'d',date:'2025-04-01',outcomeDate:'2025-04-05'},
+  {id:'e',date:'2025-05-01',outcomeDate:'2025-05-05'},
+  {id:'f',date:'2025-06-01',outcomeDate:'2026-01-03'},
+  {id:'g',date:'2025-12-20',outcomeDate:'2026-01-10'},
+  {id:'h',date:'2026-01-05',outcomeDate:'2026-01-15'},
+  {id:'i',date:'2026-02-05',outcomeDate:'2026-02-15'}
+];
+const z=sealedChronSplit(sealedRows,{trainFraction:.6,finalStart:'2026-01-01'});
+assert.equal(z.finalStart,'2026-01-01');
+assert.deepEqual(z.final.map(x=>x.id),['h','i']);
+assert.equal(z.finalBoundaryPurgedCount,2);
+assert.ok(!z.train.some(x=>['f','g','h','i'].includes(x.id)));
+assert.ok(!z.test.some(x=>['f','g','h','i'].includes(x.id)));
+assert.ok(z.train.every(x=>x.outcomeDate<z.cut));
+assert.ok(z.test.every(x=>x.outcomeDate<'2026-01-01'));
+console.log('Sealed final-period split tests passed');

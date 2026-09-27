@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {captureFrozenDataset,loadFrozenDataset,frozenDataDigest} from '../lib/frozen-dataset.js';
 import {UNIVERSE} from '../lib/universe.js';
-import {purgedChronSplit} from '../lib/validation-split.js';
+import {purgedChronSplit,sealedChronSplit} from '../lib/validation-split.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,priorityBand,riskFlags,round,pct,avg,median,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 
 const batchIndex=Number(process.env.V2_BATCH_INDEX||0);
@@ -12,6 +12,8 @@ const captureDatasetFile=process.env.V2_DATASET_CAPTURE||null;
 const period1=process.env.V2_PERIOD1||null;
 const period2=process.env.V2_PERIOD2||null;
 const expectedDataSha256=process.env.V2_EXPECT_DATA_SHA256||null;
+const finalTestStart=process.env.V2_FINAL_TEST_START||'2026-01-01';
+const openFinalTest=process.env.V2_OPEN_FINAL_TEST==='1';
 if((period1&&!period2)||(!period1&&period2))throw new Error('V2_PERIOD1 and V2_PERIOD2 must be provided together');
 const datasetMode=frozenDatasetFile?'frozen':'live';
 const horizons=(process.env.V2_HORIZONS||'5,10,20').split(',').map(Number).filter(x=>x>0);
@@ -67,7 +69,7 @@ function dedupe(a,h){
 
 function quantile(a,q){const x=a.filter(Number.isFinite).sort((a,b)=>a-b);if(!x.length)return null;return x[Math.min(x.length-1,Math.floor((x.length-1)*q))]}
 function splitChron(a){
-  return purgedChronSplit(a,.7);
+  return sealedChronSplit(a,{trainFraction:.7,finalStart:finalTestStart});
 }
 function rankingReport(a){
   const sp=splitChron(a),scores=sp.train.map(x=>x.rankScore);
@@ -77,7 +79,21 @@ function rankingReport(a){
   const above=(rows,t)=>Number.isFinite(t)?summary(rows.filter(e=>e.rankScore>=t)):null;
   return {
     cutDate:sp.cut,
-    purge:{prePurgeTrainCount:sp.prePurgeTrainCount,purgedTrainCount:sp.purgedTrainCount,missingOutcomeCount:sp.missingOutcomeCount,trainCount:sp.train.length,testCount:sp.test.length},
+    purge:{
+      prePurgeTrainCount:sp.prePurgeTrainCount,
+      purgedTrainCount:sp.purgedTrainCount,
+      finalBoundaryPurgedCount:sp.finalBoundaryPurgedCount,
+      missingOutcomeBeforeFinal:sp.missingOutcomeBeforeFinal,
+      trainCount:sp.train.length,
+      testCount:sp.test.length,
+      finalSealedCount:sp.final.length
+    },
+    finalSealed:{
+      start:sp.finalStart,
+      count:sp.final.length,
+      opened:openFinalTest,
+      ...(openFinalTest?{summary:summary(sp.final)}:{})
+    },
     trainThresholds:{q33:round(q33,1),q67:round(q67,1),q80:round(q80,1),q90:round(q90,1)},
     train:pack(sp.train),test:pack(sp.test),
     highPriority:{
@@ -443,6 +459,13 @@ for(const symbol of symbols){
 
 const report={
   version:VERSION,generatedAt:new Date().toISOString(),batchIndex,batchCount,range,horizons,assumptions:ASSUMPTIONS,
+  validation:{
+    method:'purged chronological development split + sealed historical final period',
+    trainFraction:.7,
+    finalTestStart,
+    finalTestOpened:openFinalTest,
+    note:'Historical final period is sealed from this point forward but is not claimed to be a virgin holdout because earlier project iterations had already observed this history. A truly untouched forward sample begins after 2026-09-27.'
+  },
   dataset:datasetInfo,
   symbolCount:symbols.length,symbols,
   horizons:{},
