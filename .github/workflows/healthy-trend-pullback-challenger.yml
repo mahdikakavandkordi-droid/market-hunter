@@ -10,6 +10,7 @@ on:
       - 'lib/research-audit-guards.js'
       - 'scripts/analyze-healthy-trend-pullback.mjs'
       - 'scripts/audit-healthy-trend-pullback.mjs'
+      - 'scripts/summarize-healthy-trend-pullback-robustness.mjs'
       - 'scripts/test-healthy-trend-pullback.mjs'
       - 'scripts/test-research-audit-guards.mjs'
       - 'scripts/analyze-early-watch-episode-stability.mjs'
@@ -87,6 +88,9 @@ jobs:
 
       - name: Run predeclared challenger comparison
         run: node scripts/analyze-healthy-trend-pullback.mjs
+
+      - name: Derive robustness diagnostics
+        run: node scripts/summarize-healthy-trend-pullback-robustness.mjs
 
       - name: Independently audit challenger outputs
         id: challenger_audit
@@ -169,6 +173,7 @@ jobs:
           git add data/research/early-watch-episode-stability
           git add \
             data/research/healthy-trend-pullback/summary.json \
+            data/research/healthy-trend-pullback/robustness.json \
             data/research/healthy-trend-pullback/audit.json \
             data/research/healthy-trend-pullback/episodes.json \
             data/research/healthy-trend-pullback/episodes.csv \
