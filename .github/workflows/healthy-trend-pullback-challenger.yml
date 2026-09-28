@@ -150,7 +150,18 @@ jobs:
           set -euo pipefail
           git config user.name "market-hunter-research"
           git config user.email "actions@users.noreply.github.com"
-          git add data/research/healthy-trend-pullback data/research/early-watch-episode-stability
+          git add data/research/early-watch-episode-stability
+          git add \
+            data/research/healthy-trend-pullback/summary.json \
+            data/research/healthy-trend-pullback/audit.json \
+            data/research/healthy-trend-pullback/episodes.json \
+            data/research/healthy-trend-pullback/episodes.csv \
+            data/research/healthy-trend-pullback/cdr-early-watch-episodes.json \
+            data/research/healthy-trend-pullback/selections.json \
+            data/research/healthy-trend-pullback/selections.csv \
+            data/research/healthy-trend-pullback/comparison.csv \
+            data/research/healthy-trend-pullback/checksums.json \
+            data/research/healthy-trend-pullback/run-metadata.json
           if git diff --cached --quiet; then
             echo "Generated outputs unchanged."
             exit 0
