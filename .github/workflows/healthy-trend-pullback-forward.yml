@@ -1,0 +1,100 @@
+name: Healthy Trend Pullback Prospective Collector
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 22:45 UTC is after the regular Canadian market close year-round.
+    - cron: '45 22 * * 1-5'
+  push:
+    branches:
+      - research/healthy-trend-pullback-challenger-20260928
+    paths:
+      - 'lib/healthy-trend-pullback.js'
+      - 'lib/healthy-trend-pullback-forward.js'
+      - 'lib/market-hunter-v2-engine.js'
+      - 'lib/universe.js'
+      - 'scripts/collect-healthy-trend-pullback-forward.mjs'
+      - 'scripts/audit-healthy-trend-pullback-forward.mjs'
+      - 'scripts/test-healthy-trend-pullback-forward.mjs'
+      - 'docs/healthy-trend-pullback-forward-test-protocol-v1.md'
+      - '.github/workflows/healthy-trend-pullback-forward.yml'
+      - 'package.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: healthy-trend-pullback-forward-v1
+  cancel-in-progress: false
+
+env:
+  HTP_FORWARD_DIR: data/research/healthy-trend-pullback-forward
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run frozen model and forward-collector regressions
+        run: npm test
+      - name: Audit existing append-only forward store
+        run: node scripts/audit-healthy-trend-pullback-forward.mjs
+      - name: Upload verification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: healthy-trend-pullback-forward-verification
+          path: |
+            data/research/healthy-trend-pullback-forward/audit.json
+            docs/healthy-trend-pullback-forward-test-protocol-v1.md
+            lib/healthy-trend-pullback.js
+            lib/healthy-trend-pullback-forward.js
+            lib/market-hunter-v2-engine.js
+            scripts/collect-healthy-trend-pullback-forward.mjs
+            scripts/audit-healthy-trend-pullback-forward.mjs
+            scripts/test-healthy-trend-pullback-forward.mjs
+          retention-days: 90
+
+  collect:
+    if: github.event_name != 'push'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run prospective collector
+        id: collector
+        continue-on-error: true
+        run: node scripts/collect-healthy-trend-pullback-forward.mjs
+      - name: Audit append-only store after collection
+        id: audit
+        continue-on-error: true
+        run: node scripts/audit-healthy-trend-pullback-forward.mjs
+      - name: Commit prospective evidence and failures without rewriting observations
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-forward-research"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/research/healthy-trend-pullback-forward
+          if git diff --cached --quiet; then
+            echo "No forward-store change."
+            exit 0
+          fi
+          git commit -m "research: append HTP prospective evidence"
+          git push origin HEAD:"$GITHUB_REF_NAME"
+      - name: Fail workflow after preserving collector/audit failure evidence
+        if: always()
+        run: |
+          if [ "${{ steps.collector.outcome }}" != "success" ] || [ "${{ steps.audit.outcome }}" != "success" ]; then
+            exit 1
+          fi
