@@ -7,6 +7,7 @@
 **Analysis code commit:** `ce7e9b10ce52c3079ade401dee4eb33771d3ff1c`  
 **Analysis run:** `36439299651` — SUCCESS  
 **Generated-output commit:** `f3bb355b42bf71196f92855fe20cd73e4232622a`  
+**Reproduction verification run:** `36439800366` — SUCCESS  
 **Historical Final:** SEALED; `V2_OPEN_FINAL_TEST=0`
 
 ## Decision
