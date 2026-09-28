@@ -13,6 +13,10 @@ check('Historical Final is sealed in all batches',
 );
 check('summary declares Historical Final sealed',summary.finalTestOpened===false,{value:summary.finalTestOpened});
 check('current engine is h2p10',String(summary.engineVersion).includes('h2p10'),{engineVersion:summary.engineVersion});
+check('Recovery stage-start replay is sealed pre-Final',
+  reports.every(r=>(r?.recoveryEpisodeReplay?.rows||[]).every(x=>x.date<summary.calendar.finalStart&&x.outcomeDate<summary.calendar.finalStart)),
+  {counts:reports.map(r=>(r?.recoveryEpisodeReplay?.rows||[]).length)}
+);
 
 for(const h of [5,10,20]){
   const s=summary.horizons[String(h)]||summary.horizons[h];
