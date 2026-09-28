@@ -1,0 +1,93 @@
+/* Shared finishing layer. Keep financial rules and data presentation order intact. */
+:root{--touch-size:44px}
+body{font-size:14px;line-height:1.5}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation}
+button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.workspace,.view,.panel,.card,.name{min-width:0}
+.btn,.iconbtn,.close{min-height:var(--touch-size);min-width:var(--touch-size)}
+.btn{font-size:13px;padding:10px 14px;border-radius:12px}
+.iconbtn{width:44px;height:44px}
+.main{max-width:1500px;margin:0 auto}
+.topbar h1{letter-spacing:-.045em}
+.sectionhead h2,.panel-head h2{font-size:20px}
+.sectionhead p,.panel-head p{font-size:13px;line-height:1.55}
+.sectionhead{gap:12px;flex-wrap:wrap}
+.card{border-radius:18px;padding:20px}
+.cards{gap:16px}
+.cardtop{gap:12px;align-items:flex-start}
+.name small{font-size:13px!important;line-height:1.5;overflow-wrap:anywhere}
+.symbol-link{display:block;padding:0;min-height:44px;border:0;background:transparent;color:var(--text);font-size:23px;font-weight:800;letter-spacing:-.035em;text-align:left;cursor:pointer}
+.cardprice{font-size:22px!important;white-space:nowrap;letter-spacing:-.025em}
+.cardprice small{font-size:12px!important;letter-spacing:0}
+.tag,.tags .tag{font-size:12px!important;line-height:1.4;padding:6px 9px}
+.metrics{gap:8px;margin:16px 0;grid-template-columns:repeat(4,minmax(0,1fr))}
+.metric{padding:12px 8px;border-radius:12px;min-width:0}
+.metric small{font-size:11px!important}
+.metric b{font-size:16px!important}
+.why,.analysis-copy,.copy{font-size:14px!important;line-height:1.7!important}
+summary{font-size:13px;min-height:44px;align-content:center;cursor:pointer}
+.actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.actions .btn{padding:10px 6px;white-space:normal}
+.stage-tabs{gap:8px;padding-bottom:8px}
+.stage-tab{min-height:48px;font-size:13px!important;padding:10px 12px;border-radius:13px}
+.stage-tab b{font-size:12px;min-width:24px;height:24px}
+.stage-summary{padding-top:12px;gap:4px 10px}
+.stage-summary b{font-size:14px!important}.stage-summary span{font-size:13px!important}
+.empty{font-size:14px;line-height:1.65;padding:28px 20px}
+.review-table th{font-size:11px}.review-table td{font-size:13px}
+.symbol-cell b{font-size:15px}.symbol-cell small{font-size:12px}
+.outlook-head b{font-size:16px}.outlook-head small,.outlook-head>span{font-size:12px}
+.outlook-grid small,.outlook-grid em{font-size:11px}.outlook-grid b{font-size:14px}
+.outlook-card p,.outlook-watch{font-size:13px;line-height:1.65}
+.modal-open{overflow:hidden}
+.modal{overscroll-behavior:contain}
+.sheet{max-height:calc(100dvh - 40px);overflow-y:auto;overscroll-behavior:contain;padding:24px;border-radius:24px}
+.sheethead h2{font-size:24px;letter-spacing:-.035em}.sheethead p{font-size:13px}
+.close{flex-shrink:0;font-size:25px;border-radius:12px}
+.form{gap:16px;margin-top:24px}
+.field label{font-size:12px;text-transform:none;letter-spacing:0;color:var(--muted)}
+.field input,.field select,.field textarea{min-height:48px;font-size:16px;padding:12px;border-radius:12px;width:100%;min-width:0}
+.formactions{margin-top:8px}.formactions .btn{min-width:100px}
+.toast{font-size:13px;max-width:calc(100vw - 32px);text-align:center}
+@media(min-width:761px){
+ .navbtn{font-size:14px;min-height:48px}.brand strong{font-size:18px}.brand small,.side-note small{font-size:12px}
+ .stack{gap:22px}.topbar{padding:24px 28px}.main{padding:24px 28px}
+ .topbar p{font-size:13px}.report-title{font-size:24px}.report-copy{font-size:14px}
+ .market-row b{font-size:14px}.market-row small,.market-state,.market-context{font-size:12px}.market-value{font-size:18px}
+}
+@media(max-width:760px){
+ .topbar{position:relative!important;gap:12px;padding:calc(18px + env(safe-area-inset-top)) 18px 18px!important}
+ .topbar>div:first-child{min-width:0}.topbar h1{font-size:28px!important}.topbar p{font-size:12px!important;line-height:1.5}
+ .kicker{font-size:10px;letter-spacing:.14em}.market-status{display:none}.top-actions{gap:8px;flex-shrink:0}
+ .main{padding:16px 12px calc(100px + env(safe-area-inset-bottom))!important}
+ .stack,.grid{gap:16px}.panel{border-radius:20px}.sectionhead,.panel-head{padding:20px 18px 0}
+ .sectionhead h2,.panel-head h2{font-size:20px!important}.sectionhead p{font-size:13px!important}
+ .cards{padding:16px 12px!important;gap:14px}.card{padding:17px!important}
+ .metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .metric{padding:12px!important}.metric b{font-size:19px!important}
+ .stage-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;padding:18px 14px 8px!important}
+ .stage-tab{justify-content:space-between;gap:6px;font-size:12px!important;white-space:normal;text-align:left;line-height:1.3}
+ .stage-tab b{flex-shrink:0}.stage-summary{padding:10px 18px 0}
+ .report-shell{padding:20px 18px!important}.report-title{font-size:23px!important;line-height:1.35!important}
+ .report-date{white-space:normal;text-align:right}.report-badges{flex-wrap:wrap!important;overflow:visible!important}
+ .review-table thead{display:none}.review-table,.review-table tbody{display:block;width:100%}
+ .review-table tr{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:8px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line-soft)}
+ .review-table td{display:block!important;padding:0!important;border:0;min-width:0}
+ .review-table td:first-child{grid-column:1;grid-row:1}
+ .review-table td:nth-child(2){grid-column:2;grid-row:1}
+ .review-table td:nth-child(3){grid-column:2;grid-row:2}
+ .review-table td:nth-child(4){grid-column:2;grid-row:3;font-size:12px!important;color:var(--muted)}
+ .review-table td:nth-child(5){grid-column:3;grid-row:1 / span 3}
+ .review-table .stage-pill{white-space:normal;font-size:11px!important}.symbol-cell small{white-space:normal!important}
+ .table-wrap{overflow:visible}.review-table .btn{padding:10px;font-size:12px!important}
+ .mobile-nav{padding:8px 8px calc(8px + env(safe-area-inset-bottom))!important;gap:4px;border-top:1px solid var(--line);background:var(--bg)!important}
+ .mobile-nav .navbtn{min-height:54px;border-radius:14px;gap:4px}.mobile-nav .navbtn small{font-size:11px!important;font-weight:600}.mobile-nav .navbtn span{font-size:23px!important}
+ .mobile-nav .navbtn.active{background:rgba(85,167,255,.12)!important;color:var(--blue)!important}
+ .toast{bottom:calc(86px + env(safe-area-inset-bottom))}
+ .modal{padding:12px 8px calc(8px + env(safe-area-inset-bottom))}.modal.open{align-items:flex-end}
+ .sheet{margin:0!important;max-height:calc(100dvh - 24px - env(safe-area-inset-bottom));padding:22px 18px;border-radius:24px 24px 18px 18px}
+ .form{grid-template-columns:1fr}.formactions{display:grid;grid-template-columns:1fr 1fr}.formactions .btn{min-width:0}
+}
+@media(max-width:360px){.topbar{padding-left:14px!important;padding-right:14px!important}.topbar h1{font-size:24px!important}.top-actions{gap:4px}.cardprice{font-size:19px!important}.stage-tab{padding:10px 8px}.review-table tr{padding:14px 12px;column-gap:6px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
