@@ -89,9 +89,14 @@ jobs:
         run: node scripts/analyze-healthy-trend-pullback.mjs
 
       - name: Independently audit challenger outputs
+        id: challenger_audit
+        continue-on-error: true
         run: node scripts/audit-healthy-trend-pullback.mjs
 
       - name: Assert seals and audit passes
+        if: always()
+        continue-on-error: true
+        id: seal_assert
         run: |
           node - <<'NODE'
           const fs=require('fs');
@@ -105,6 +110,7 @@ jobs:
           NODE
 
       - name: Upload durable review evidence
+        if: always()
         id: evidence
         uses: actions/upload-artifact@v4
         with:
@@ -142,6 +148,16 @@ jobs:
               digest:process.env.ARTIFACT_DIGEST||null
             }
           },null,2)+'\n');
+          NODE
+
+      - name: Fail if audits did not pass
+        if: always()
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const a=JSON.parse(fs.readFileSync('data/research/healthy-trend-pullback/audit.json','utf8'));
+          const ew=JSON.parse(fs.readFileSync('data/research/early-watch-episode-stability/audit.json','utf8'));
+          if(a.failedChecks!==0||a.finalTestOpened!==false||ew.failedChecks!==0||ew.finalTestOpened!==false) process.exit(1);
           NODE
 
       - name: Commit manageable generated outputs
