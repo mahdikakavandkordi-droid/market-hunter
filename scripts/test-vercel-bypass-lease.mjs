@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {
-  fetchWithTimeout,writeLeaseFile,readLeaseFile,revokeLeaseFile,withCleanup
+  fetchWithTimeout,writeLeaseFile,readLeaseFile,revokeLease,revokeLeaseFile,withCleanup
 } from '../lib/vercel-bypass-lease.js';
 
 const token='test-token-never-log';
@@ -79,6 +79,38 @@ function makeRevokeFetch(active,revocations){
   await revokeLeaseFile({file:fileB,fetchImpl,token,timeoutMs:100});
   assert.equal(active.size,0);
   assert.deepEqual(revocations,['secret-A','secret-B']);
+}
+
+
+// Vercel live behavior regression: an HTTP-access secret may receive 400 on direct revoke.
+// Fallback must resolve exactly one matching run note and must not touch another run.
+{
+  const noteA='run A unique note',noteB='run B unique note';
+  const state={
+    'resolved-A':{note:noteA},
+    'resolved-B':{note:noteB}
+  };
+  const patched=[];
+  const fetchImpl=async (url,opts={})=>{
+    if(opts.method==='PATCH'){
+      const body=JSON.parse(opts.body);
+      const s=body?.revoke?.secret;
+      patched.push(s);
+      if(s==='local-A')return response(400,{error:{code:'invalid_secret'}});
+      if(state[s]){delete state[s];return response(200,{protectionBypass:{}})}
+      return response(400,{error:{code:'not_found'}});
+    }
+    if(String(url).includes('/v9/projects/'))return response(200,{protectionBypass:state});
+    return response(404,{});
+  };
+  const result=await revokeLease({
+    fetchImpl,token,timeoutMs:100,
+    lease:{secret:'local-A',projectId:'prj_test',teamId:'team_test',runId:'run-A',note:noteA}
+  });
+  assert.equal(result.method,'resolved_unique_note');
+  assert.equal(state['resolved-A'],undefined);
+  assert.ok(state['resolved-B'],'run A fallback cleanup removed run B');
+  assert.deepEqual(patched,['local-A','resolved-A']);
 }
 
 console.log('Vercel bypass lease cleanup tests passed');
