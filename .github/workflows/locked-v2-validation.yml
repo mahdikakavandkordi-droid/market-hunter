@@ -1,6 +1,9 @@
 name: Locked Market Hunter V2 Validation
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - research/early-watch-validation-close-20260928
 permissions:
   contents: read
 concurrency:
@@ -110,4 +113,77 @@ jobs:
           name: locked-v2-backtest-batch-${{ matrix.batch }}
           path: data/v2-backtest-batch-${{ matrix.batch }}.json
           retention-days: 7
+          if-no-files-found: error
+
+  aggregate-early-watch:
+    needs: backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/download-artifact@v4
+        with:
+          name: market-hunter-v2-numerical-snapshot
+          path: data/frozen/market-hunter-v2-numerical-snapshot
+      - uses: actions/download-artifact@v4
+        with:
+          name: locked-v2-backtest-batch-0
+          path: data
+      - uses: actions/download-artifact@v4
+        with:
+          name: locked-v2-backtest-batch-1
+          path: data
+      - uses: actions/download-artifact@v4
+        with:
+          name: locked-v2-backtest-batch-2
+          path: data
+      - uses: actions/download-artifact@v4
+        with:
+          name: locked-v2-backtest-batch-3
+          path: data
+      - name: Analyze Early Watch on locked outputs
+        run: node scripts/analyze-early-watch-surface-replay.mjs
+      - name: Record validation evidence identity
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          REPOSITORY: ${{ github.repository }}
+          CODE_SHA: ${{ github.sha }}
+          SERVER_URL: ${{ github.server_url }}
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const manifest=JSON.parse(fs.readFileSync(process.env.V2_DATASET_LOCK_MANIFEST,'utf8'));
+          const replay=JSON.parse(fs.readFileSync('data/v2-early-watch-surface-replay.json','utf8'));
+          const evidence={
+            codeSha:process.env.CODE_SHA,
+            runId:Number(process.env.RUN_ID),
+            runAttempt:Number(process.env.RUN_ATTEMPT),
+            runUrl:process.env.SERVER_URL+'/'+process.env.REPOSITORY+'/actions/runs/'+process.env.RUN_ID,
+            artifactId:manifest.artifact?.deploymentId||manifest.artifact?.id||null,
+            validationCalendar:manifest.validationCalendar,
+            finalTestOpened:replay.validationIdentity?.finalTestOpened===true,
+            batchIdentities:manifest.batches.map(b=>({
+              batchIndex:b.batchIndex,snapshotId:b.snapshotId,dataSha256:b.dataSha256,
+              structureSha256:b.structureSha256,symbolCount:Array.isArray(b.symbols)?b.symbols.length:null
+            }))
+          };
+          fs.writeFileSync('data/locked-validation-evidence.json',JSON.stringify(evidence,null,2)+'\n');
+          console.log(JSON.stringify(evidence,null,2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: locked-v2-validation-evidence
+          path: |
+            data/locked-validation-evidence.json
+            data/v2-early-watch-surface-replay.json
+            data/v2-backtest-batch-0.json
+            data/v2-backtest-batch-1.json
+            data/v2-backtest-batch-2.json
+            data/v2-backtest-batch-3.json
+            data/frozen/market-hunter-v2-numerical-snapshot/manifest.json
+          retention-days: 14
           if-no-files-found: error
