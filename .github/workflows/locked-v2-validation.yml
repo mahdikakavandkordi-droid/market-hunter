@@ -5,12 +5,14 @@ permissions:
   contents: read
 concurrency:
   group: locked-market-hunter-v2-validation
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   V2_DATASET_REGISTRY: data/frozen/market-hunter-v2-numerical-snapshot/registry.json
   V2_DATASET_LOCK_MANIFEST: data/frozen/market-hunter-v2-numerical-snapshot/manifest.json
   V2_SNAPSHOT_DIR: data/frozen/market-hunter-v2-numerical-snapshot/files
+  VERCEL_BYPASS_LEASE_FILE: .tmp/vercel-bypass-lease.json
+  VERCEL_HTTP_TIMEOUT_MS: 15000
 
 jobs:
   materialize-and-preflight:
@@ -37,6 +39,11 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
         run: node scripts/materialize-vercel-artifact-rest.mjs
+      - name: Ensure run-scoped Vercel bypass cleanup
+        if: always()
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+        run: node scripts/revoke-vercel-bypass-lease.mjs
       - name: Verify exact downloaded bytes and provenance
         run: node scripts/verify-locked-validation-inputs.mjs
       - uses: actions/upload-artifact@v4
