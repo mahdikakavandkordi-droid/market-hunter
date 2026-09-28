@@ -6,7 +6,7 @@ import {UNIVERSE} from '../lib/universe.js';
 import {loadFrozenDataset} from '../lib/frozen-dataset.js';
 import {assertHistoricalFinalSealedReport} from '../lib/research-audit-guards.js';
 import {
-  HTP_VERSION,HTP_PARAMS,setupAt,trendRsAt,genericEligibility,evaluateEpisode,buildEpisodes,
+  HTP_VERSION,HTP_PARAMS,setupAt,trendRsAt,genericEligibility,weeklyTrendState,evaluateEpisode,buildEpisodes,
   dayKey,lastAtOrBeforeIndex,sma,mean
 } from '../lib/healthy-trend-pullback.js';
 
@@ -85,16 +85,18 @@ for(const symbol of headlineSymbols){
   const pack=data[symbol];if(!pack)continue;
   const bench=data['^GSPTSE']?.rows||[];
   const idxMap=dateIndex.get(symbol);
+  const closeSeries=pack.rows.map(x=>x.close);
   for(const date of confirmedDates){
     const i=idxMap.get(date);if(!Number.isInteger(i))continue;
     const g=genericEligibility({pack,rows:pack.rows,i});
+    const weeklyState=g.eligible?weeklyTrendState(pack.rows,i):null;
     if(g.eligible){
       pools.get(date).push({
         symbol,date,decisionIndex:i,sector:meta.get(symbol)?.sector||'Unknown',
         atr14Pct:g.atr14Pct,score:0
       });
     }
-    const core=setupAt({pack,rows:pack.rows,i,benchmarkRows:bench,marketRows:data['^GSPTSE'].rows,variant:'core'});
+    const core=setupAt({pack,rows:pack.rows,i,benchmarkRows:bench,marketRows:data['^GSPTSE'].rows,variant:'core',genericState:g,weeklyState,closeSeries});
     if(core.eligible){
       const rec={
         symbol,date,decisionIndex:i,sector:meta.get(symbol)?.sector||'Unknown',atr14Pct:core.atr14Pct,
@@ -106,7 +108,7 @@ for(const symbol of headlineSymbols){
       if(Number.isFinite(core.volumeRatio)&&core.volumeRatio>=HTP_PARAMS.volumeRatioMin)candidateMaps.core_volume.get(date).push({...rec});
       if(core.marketAbove50===true)candidateMaps.core_market.get(date).push({...rec});
     }
-    const tr=trendRsAt({pack,rows:pack.rows,i,benchmarkRows:bench});
+    const tr=trendRsAt({pack,rows:pack.rows,i,benchmarkRows:bench,genericState:g,weeklyState,closeSeries});
     if(tr.eligible)candidateMaps.trend_rs.get(date).push({
       symbol,date,decisionIndex:i,sector:meta.get(symbol)?.sector||'Unknown',atr14Pct:tr.atr14Pct,score:tr.score,
       rs20:tr.rs20,weeklyLastCompleted:tr.weekly?.lastCompletedWeek
