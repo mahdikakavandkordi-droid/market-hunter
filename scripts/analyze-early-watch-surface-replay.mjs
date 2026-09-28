@@ -1,8 +1,57 @@
 import fs from 'node:fs';
+import {fixedCalendarSplit,validateFixedCalendar} from '../lib/validation-split.js';
+import {assertLockedValidationReport} from '../lib/validation-identity.js';
 
 const BATCH_COUNT=4;
 const MAX_VISIBLE=6;
-const reports=Array.from({length:BATCH_COUNT},(_,i)=>JSON.parse(fs.readFileSync('data/v2-backtest-batch-'+i+'.json','utf8')));
+const REPORT_DIR=process.env.V2_REPORT_DIR||'data';
+const MANIFEST_FILE=process.env.V2_DATASET_LOCK_MANIFEST||'data/frozen/market-hunter-v2-numerical-snapshot/manifest.json';
+const reports=Array.from({length:BATCH_COUNT},(_,i)=>JSON.parse(fs.readFileSync(REPORT_DIR+'/v2-backtest-batch-'+i+'.json','utf8')));
+
+const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
+const same=(a,b)=>JSON.stringify(stable(a))===JSON.stringify(stable(b));
+const must=(ok,message)=>{if(!ok)throw new Error(message)};
+function validateLockedInputs(){
+  must(fs.existsSync(MANIFEST_FILE),'Locked numerical snapshot manifest missing: '+MANIFEST_FILE);
+  const manifest=JSON.parse(fs.readFileSync(MANIFEST_FILE,'utf8'));
+  must(manifest.format==='market-hunter-v2-numerical-snapshot-manifest-v1','Unsupported locked numerical snapshot manifest');
+  must(manifest.batchCount===BATCH_COUNT,'Locked manifest batchCount mismatch');
+  must(Array.isArray(manifest.batches)&&manifest.batches.length===BATCH_COUNT,'Locked manifest must contain all four batches');
+  const ids=reports.map((r,i)=>assertLockedValidationReport(r,'batch '+i));
+  const first=ids[0];
+  const calendar=validateFixedCalendar(first.calendar);
+  const horizons=first.horizons;
+  const artifactId=manifest.artifact?.deploymentId||manifest.artifact?.id;
+  for(let i=0;i<BATCH_COUNT;i++){
+    const report=reports[i],id=ids[i],designated=manifest.batches.find(x=>x.batchIndex===i);
+    must(id.batchIndex===i,'Report file/batch index mismatch for batch '+i);
+    must(id.batchCount===BATCH_COUNT,'Batch '+i+' batchCount mismatch');
+    must(same(id.horizons,horizons),'Batch '+i+' horizons mismatch');
+    must(same(id.calendar,calendar),'Batch '+i+' fixed calendar mismatch');
+    must(same(id.dataset.source,first.dataset.source),'Batch '+i+' source mismatch');
+    must(id.dataset.normalizationVersion===first.dataset.normalizationVersion,'Batch '+i+' normalization mismatch');
+    must(id.dataset.artifactId===first.dataset.artifactId,'Batch '+i+' artifact mismatch');
+    must(!!designated,'Manifest missing designated batch '+i);
+    must(id.dataset.snapshotId===designated.snapshotId,'Batch '+i+' snapshotId mismatch');
+    must(id.dataset.dataSha256===designated.dataSha256,'Batch '+i+' numerical hash mismatch');
+    must(id.dataset.structureSha256===designated.structureSha256,'Batch '+i+' structure hash mismatch');
+    must(same(id.symbols,designated.symbols),'Batch '+i+' symbol membership mismatch');
+    must(id.dataset.artifactId===artifactId,'Batch '+i+' artifact does not match locked manifest');
+    const replay=report.surfaceReplay;
+    must(replay?.scope==='development','Batch '+i+' Early Watch replay scope must be development');
+    must(replay?.calendarSource==='completed-scans-with-mature-development-outcomes','Batch '+i+' Early Watch replay calendar coverage is stale');
+    must(replay?.datesByHorizon&&typeof replay.datesByHorizon==='object','Batch '+i+' Early Watch datesByHorizon missing');
+    for(const h of horizons)must(Array.isArray(replay.datesByHorizon[h]),'Batch '+i+' Early Watch horizon '+h+' calendar missing');
+  }
+  must(same(manifest.source,first.dataset.source),'Manifest/report source mismatch');
+  must(manifest.normalizationVersion===first.dataset.normalizationVersion,'Manifest/report normalization mismatch');
+  must(same(manifest.validationCalendar,calendar),'Manifest/report validation calendar mismatch');
+  return {manifest,calendar,horizons,identity:first};
+}
+const {manifest,calendar,horizons,identity}=validateLockedInputs();
+const intersection=arrays=>arrays.length?[...new Set(arrays[0])].filter(x=>arrays.slice(1).every(a=>new Set(a).has(x))).sort():[];
+const union=arrays=>[...new Set(arrays.flat())].sort();
+
 const round=(n,d=2)=>Number.isFinite(n)?Number(n.toFixed(d)):null;
 const avg=a=>{const x=a.filter(Number.isFinite);return x.length?x.reduce((s,v)=>s+v,0)/x.length:null};
 const median=a=>{const x=a.filter(Number.isFinite).sort((a,b)=>a-b);if(!x.length)return null;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2};
@@ -85,7 +134,7 @@ const rankingVariants={
   }
 };
 
-function rankingExperiment(byDate,dates,scoreFn){
+function rankingExperiment(byDate,dates,scoreFn,calendar){
   const selectedByDate=new Map(),observations=[],crowdedSelected=[],crowdedExcluded=[];
   for(const date of dates){
     const eligible=[...(byDate.get(date)||[])]
@@ -99,9 +148,7 @@ function rankingExperiment(byDate,dates,scoreFn){
       crowdedExcluded.push(...eligible.slice(MAX_VISIBLE));
     }
   }
-  const cut=dates[Math.floor(dates.length*.7)]||null;
-  const train=observations.filter(x=>!cut||x.date<cut);
-  const test=observations.filter(x=>cut&&x.date>=cut);
+  const fold=fixedCalendarSplit(observations,calendar);
   const pack=rows=>{
     const top=rows.filter(x=>x.rank<=3),bottom=rows.filter(x=>x.rank>=4);
     const ts=summary(top),bs=summary(bottom);
@@ -117,7 +164,7 @@ function rankingExperiment(byDate,dates,scoreFn){
   };
   const cs=summary(crowdedSelected),ce=summary(crowdedExcluded);
   return {
-    chronologicalSplit:{cutDate:cut,train:pack(train),recentHoldout:pack(test)},
+    chronologicalSplit:{mode:'fixed_calendar',cutDate:calendar.validationStart,counts:fold.counts,train:pack(fold.train),recentHoldout:pack(fold.test)},
     overall:pack(observations),
     crowdedDays:{
       selectedTop6:cs,excludedBelow6:ce,
@@ -130,9 +177,7 @@ function rankingExperiment(byDate,dates,scoreFn){
   };
 }
 
-const dates=[...new Set(reports.flatMap(r=>r.surfaceReplay?.dates||[]))].sort();
 const candidates=reports.flatMap(r=>r.surfaceReplay?.candidates||[]);
-const horizons=[...new Set(candidates.map(x=>x.horizon).filter(Number.isFinite))].sort((a,b)=>a-b);
 
 const result={
   version:reports[0]?.version||null,
@@ -142,16 +187,37 @@ const result={
     maxVisible:MAX_VISIBLE,
     candidateSource:'All daily Early Watch Review First candidates from all four universe batches.',
     repeatedNames:'pickDayObservations reflects what the user would actually see each day. firstSurfaceEpisodes removes consecutive-day repeats.',
-    holdout:'Recent holdout is the last 30% of chronological scan dates; no threshold is refit on holdout outcomes.',
+    holdout:'Train and recentHoldout use the locked fixed calendar. Rows whose outcome crosses the validation boundary are purged from training, and rows whose outcome crosses Historical Final are purged from validation.',
     capTest:'On days with more than six eligible names, topSixOnCrowdedDays is compared with excludedBelowSix to test whether score ordering adds value rather than merely reducing workload.',
     rankingTest:'Two small outcome-blind ranking variants are compared with the frozen baseline. Eligibility and max-six policy remain unchanged; success requires better top-3 vs ranks 4-6 separation, especially on the recent chronological holdout.'
   },
-  dateRange:{start:dates[0]||null,end:dates.at(-1)||null,scanDays:dates.length},
+  validationIdentity:{
+    artifactId:identity.dataset.artifactId,
+    source:identity.dataset.source,
+    normalizationVersion:identity.dataset.normalizationVersion,
+    calendar,
+    batchCount:BATCH_COUNT,
+    horizons,
+    historicalFinalOpened:false
+  },
+  dateRange:{start:calendar.developmentStart,end:calendar.finalStart},
+  coverage:{},
   horizons:{}
 };
 
 for(const h of horizons){
-  const pool=candidates.filter(x=>x.horizon===h);
+  const batchDates=reports.map(r=>r.surfaceReplay.datesByHorizon[h]);
+  const dates=intersection(batchDates);
+  const unionDates=union(batchDates);
+  const partialCoverageDates=unionDates.filter(d=>!dates.includes(d));
+  result.coverage[h]={
+    confirmedWholeUniverseSessions:dates.length,
+    unionSessions:unionDates.length,
+    partialCoverageSessionCount:partialCoverageDates.length,
+    partialCoverageDates,
+    byBatch:Object.fromEntries(reports.map(r=>[r.batchIndex,r.surfaceReplay.datesByHorizon[h].length]))
+  };
+  const pool=candidates.filter(x=>x.horizon===h&&dates.includes(x.date));
   const byDate=new Map();
   for(const x of pool){
     if(!byDate.has(x.date))byDate.set(x.date,[]);
@@ -179,9 +245,7 @@ for(const h of horizons){
 
   const activeDays=eligibleCounts.filter(n=>n>0).length;
   const capBindingDays=eligibleCounts.filter(n=>n>MAX_VISIBLE).length;
-  const cut=dates[Math.floor(dates.length*.7)]||null;
-  const train=observations.filter(x=>!cut||x.date<cut);
-  const test=observations.filter(x=>cut&&x.date>=cut);
+  const fold=fixedCalendarSplit(observations,calendar);
   const episodes=episodeStarts(dates,selectedByDate);
   const daily=dailyCohortRows(selectedByDate);
   const years=Object.fromEntries([...new Set(observations.map(x=>x.date.slice(0,4)))].sort().map(y=>[y,summary(observations.filter(x=>x.date.startsWith(y)))]));
@@ -204,7 +268,7 @@ for(const h of horizons){
     },
     pickDayObservations:{
       overall:summary(observations),
-      chronologicalSplit:{cutDate:cut,train:summary(train),recentHoldout:summary(test)},
+      chronologicalSplit:{mode:'fixed_calendar',cutDate:calendar.validationStart,counts:fold.counts,train:summary(fold.train),recentHoldout:summary(fold.test)},
       rank1:summary(observations.filter(x=>x.rank===1)),
       ranks1to3:summary(observations.filter(x=>x.rank<=3)),
       ranks4to6:summary(observations.filter(x=>x.rank>=4)),
@@ -223,7 +287,7 @@ for(const h of horizons){
     firstSurfaceEpisodes:summary(episodes),
     uniqueSymbols:new Set(observations.map(x=>x.symbol)).size,
     rankingExperiments:Object.fromEntries(
-      Object.entries(rankingVariants).map(([name,scoreFn])=>[name,rankingExperiment(byDate,dates,scoreFn)])
+      Object.entries(rankingVariants).map(([name,scoreFn])=>[name,rankingExperiment(byDate,dates,scoreFn,calendar)])
     )
   };
 }
