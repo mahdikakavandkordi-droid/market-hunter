@@ -15,7 +15,7 @@ on:
       - '.github/workflows/recovery-frozen-audit.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: recovery-frozen-audit-20260928
@@ -129,6 +129,21 @@ jobs:
           };
           fs.writeFileSync(dir+'/run-metadata.json',JSON.stringify(meta,null,2)+'\n');
           NODE
+      - name: Commit compact Recovery audit evidence
+        env:
+          TARGET_BRANCH: research/recovery-frozen-audit-20260928
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-recovery-research"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/research/recovery-frozen-audit
+          if git diff --cached --quiet; then
+            echo "No Recovery evidence change."
+          else
+            git commit -m "research: record frozen Recovery audit evidence"
+            git pull --rebase origin "$TARGET_BRANCH"
+            git push origin HEAD:"$TARGET_BRANCH"
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: recovery-frozen-audit-evidence
