@@ -196,9 +196,10 @@ for(const symbol of symbols){
           symbol,date,outcomeDate,horizon:h,score:round(score,1),surfaceScore:round(surfaceScore,1),stageAge,highBroken:m.highBroken===true,freshHighBreakAge:m.freshHighBreakAge,
           forwardReturn:round(fr),benchmarkReturn:round(br),excessReturn:round(Number.isFinite(br)?fr-br:null),
           mae:round(path.length?Math.min(...path):null),mfe:round(path.length?Math.max(...path):null),
-          ret5:round(m.ret5),ret20:round(m.ret20),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
-          rsi14:round(m.rsi14,1),swingTrend:m.swingTrend,higherLow:m.higherLow,
-          upDownVolumeRatio:round(m.upDownVolumeRatio,2),atr14Pct:round(m.atr14Pct)
+          ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),momentumShift:round(m.momentumShift),rs20:round(m.rs20),
+          rsi14:round(m.rsi14,1),dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),
+          swingTrend:m.swingTrend,higherLow:m.higherLow,
+          upDownVolumeRatio:round(m.upDownVolumeRatio,2),atr14Pct:round(m.atr14Pct),avgDollar20:round(m.avgDollar20)
         });
       }
     }
