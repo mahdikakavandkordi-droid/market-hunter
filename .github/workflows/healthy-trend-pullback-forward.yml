@@ -10,12 +10,12 @@ on:
       - research/healthy-trend-pullback-challenger-20260928
     paths:
       - 'lib/healthy-trend-pullback.js'
-      - 'lib/healthy-trend-pullback-forward.js'
+      - 'lib/healthy-trend-pullback-forward*.js'
       - 'lib/market-hunter-v2-engine.js'
       - 'lib/universe.js'
       - 'scripts/collect-healthy-trend-pullback-forward.mjs'
       - 'scripts/audit-healthy-trend-pullback-forward.mjs'
-      - 'scripts/test-healthy-trend-pullback-forward.mjs'
+      - 'scripts/test-healthy-trend-pullback-forward*.mjs'
       - 'docs/healthy-trend-pullback-forward-test-protocol-v1.md'
       - '.github/workflows/healthy-trend-pullback-forward.yml'
       - 'package.json'
@@ -51,11 +51,11 @@ jobs:
             data/research/healthy-trend-pullback-forward/audit.json
             docs/healthy-trend-pullback-forward-test-protocol-v1.md
             lib/healthy-trend-pullback.js
-            lib/healthy-trend-pullback-forward.js
+            lib/healthy-trend-pullback-forward*.js
             lib/market-hunter-v2-engine.js
             scripts/collect-healthy-trend-pullback-forward.mjs
             scripts/audit-healthy-trend-pullback-forward.mjs
-            scripts/test-healthy-trend-pullback-forward.mjs
+            scripts/test-healthy-trend-pullback-forward*.mjs
           retention-days: 90
 
   collect:
@@ -98,3 +98,4 @@ jobs:
           if [ "${{ steps.collector.outcome }}" != "success" ] || [ "${{ steps.audit.outcome }}" != "success" ]; then
             exit 1
           fi
+

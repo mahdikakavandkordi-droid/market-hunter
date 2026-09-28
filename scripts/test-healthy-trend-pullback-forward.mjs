@@ -5,7 +5,7 @@ import {
 
 const ts=d=>Math.floor(new Date(d+'T20:00:00Z').getTime()/1000);
 
-assert.equal(HTP_FORWARD_COLLECTOR_VERSION,'healthy-trend-pullback-forward-v1-2026-09-28');
+assert.equal(HTP_FORWARD_COLLECTOR_VERSION,'healthy-trend-pullback-forward-v2-2026-09-28');
 
 // Yahoo normalization must put adjusted close/high/low on one scale while preserving raw close.
 const payload={chart:{result:[{
@@ -54,7 +54,7 @@ rows[di+2]={...rows[di+2],close:102,high:103,low:101};
 rows[di+3]={...rows[di+3],close:106,high:107,low:101};
 const bench=rows.map(x=>({...x,close:200,rawClose:200,high:201,low:199}));
 const result=matureForwardPick({
-  pack:{rows,splitDays:[]},decisionDate,decisionAtr14:2,benchmarkRows:bench,maturedAt:'2026-02-10'
+  pack:{rows,splitDays:[]},decisionDate,decisionAtr14:2,decisionPriceAnchor:{close:100,rawClose:100},benchmarkRows:bench,maturedAt:'2026-02-10'
 });
 assert.equal(result.status,'evaluated');
 assert.equal(result.entryPrice,102);
@@ -64,7 +64,7 @@ assert.equal(result.timeToFavourable,2);
 // A split during the required path is explicitly excluded instead of mixing adjustment scales.
 const splitDay=new Date(rows[di+5].t*1000).toISOString().slice(0,10);
 const split=matureForwardPick({
-  pack:{rows,splitDays:[splitDay]},decisionDate,decisionAtr14:2,benchmarkRows:bench,maturedAt:'2026-02-10'
+  pack:{rows,splitDays:[splitDay]},decisionDate,decisionAtr14:2,decisionPriceAnchor:{close:100,rawClose:100},benchmarkRows:bench,maturedAt:'2026-02-10'
 });
 assert.equal(split.status,'corporate_action_during_horizon');
 assert.equal(split.primaryExcluded,true);
@@ -73,8 +73,24 @@ assert.equal(split.primaryExcluded,true);
 const ambiguousRows=rows.map(x=>({...x,high:103,low:101,close:102,rawClose:102}));
 ambiguousRows[di+2]={...ambiguousRows[di+2],high:107,low:99};
 const ambiguous=matureForwardPick({
-  pack:{rows:ambiguousRows,splitDays:[]},decisionDate,decisionAtr14:2,benchmarkRows:bench,maturedAt:'2026-02-10'
+  pack:{rows:ambiguousRows,splitDays:[]},decisionDate,decisionAtr14:2,decisionPriceAnchor:{close:102,rawClose:102},benchmarkRows:bench,maturedAt:'2026-02-10'
 });
 assert.equal(ambiguous.primaryLabel,'ambiguous_both_hit');
 
 console.log('Healthy-trend pullback forward collector regression tests passed');
+
+
+// Dividend/restatement regression: the same economic path must retain its label.
+const rebased=rows.map(x=>({...x,close:x.close*.9,high:x.high*.9,low:x.low*.9}));
+const restated=matureForwardPick({pack:{rows:rebased,splitDays:[]},decisionDate,decisionAtr14:2,
+  decisionPriceAnchor:{close:100,rawClose:100},decisionHistory:rows.slice(0,di+1),benchmarkRows:bench,maturedAt:'2026-02-10'});
+assert.equal(restated.primaryLabel,result.primaryLabel);
+assert.equal(restated.outcomeAtr14,1.8);
+assert.equal(restated.decisionAtr14,2);
+const corrupted=rebased.map(x=>({...x}));corrupted[di-1].high+=1;
+assert.equal(matureForwardPick({pack:{rows:corrupted,splitDays:[]},decisionDate,decisionAtr14:2,
+  decisionPriceAnchor:{close:100,rawClose:100},decisionHistory:rows.slice(0,di+1),benchmarkRows:bench,maturedAt:'2026-02-10'}).status,'decision_history_revision');
+assert.equal(matureForwardPick({pack:{rows,splitDays:[]},decisionDate,decisionAtr14:2,
+  benchmarkRows:bench,maturedAt:'2026-02-10'}).status,'missing_decision_price_anchor');
+
+await import('./test-healthy-trend-pullback-forward-store.mjs');

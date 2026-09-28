@@ -89,8 +89,9 @@ The dedicated store is:
 
 Semantic append-only files:
 
-- `inputs.jsonl` — one immutable daily source/input manifest;
-- `observations.jsonl` — immutable model observations and surfaced picks;
+- `inputs.jsonl` — immutable capture attempts, each journaling its full manifest and all three model results;
+- `observations.jsonl` — the first complete attempt per date, published as three immutable canonical model observations;
+- `snapshots/<sha256>.json.gz` — content-addressed normalized OHLCV histories, raw price fields, corporate-action events and vendor metadata for every fetched symbol and benchmark;
 - `outcomes.jsonl` — separately appended matured outcomes;
 - `runs.jsonl` — invocation status, including failures/no-new-session cases;
 - `status.json` — derived progress only;
@@ -119,7 +120,7 @@ The collector explicitly preserves:
 
 Only `complete_zero_pick` is a confirmed absence for future first-surface episode continuity.
 
-A partial/failure day must not reset an active episode.
+A partial/failure day must not reset an active episode. Partial model results remain in the input-attempt journal and are not eligible for primary outcomes. A retry may append a complete capture only within the same UTC decision date. The first complete attempt wins permanently; later captures cannot replace its picks. A crash after journaling can reconstruct those exact observations without refetching the decision inputs.
 
 No model is force-filled. Each model may surface from zero to six names.
 
@@ -210,7 +211,7 @@ During collection:
 - no rank-weight changes;
 - no adding/removing gates;
 - no deletion of bad days;
-- no replacement of partial/failure days;
+- no deletion or rewriting of partial/failure attempts; same-day completion is appended under the v2 attempt policy;
 - no historical backfill;
 - no retrospective relabelling;
 - no use of Historical Final as a substitute for prospective evidence;
@@ -244,3 +245,14 @@ The implementation gate has been technically satisfied in the research branch:
 However, **collection remains NOT ACTIVATED** until external review is complete and the scheduling mechanism is deliberately enabled from the default branch.
 
 That distinction is intentional: implementation verification is not the same thing as prospective evidence.
+
+
+## Collector v2 integrity amendment (2026-09-28)
+
+The model version and all selection rules remain unchanged. Collector/storage version is now `healthy-trend-pullback-forward-v2-2026-09-28`. This amendment applies before activation; v1 populated stores fail closed and require an explicit migration plan, not silent reinterpretation.
+
+Each pick freezes its adjusted/raw decision close, original ATR and the 15 rows covering the 14 true ranges. At maturity the original ATR is multiplied by the ratio of maturity-snapshot to decision-snapshot adjustment factors on the decision date. Barriers use that rebased ATR; the original remains in the observation. All lookback rows must be consistent with the same rescaling and unchanged raw prices. Missing anchors, raw-price revisions and nonuniform history revisions receive explicit excluded outcomes. Horizon splits retain the existing exclusion.
+
+Every outcome references the full snapshot actually used for maturity. The offline audit checks snapshot hashes, replays all attempted model selections, verifies first-complete canonical observations and recalculates matured outcomes without contacting Yahoo. Replay uses the frozen engine; it verifies persistence and reproducibility, not the economic validity of the strategy. Snapshots are committed alongside the journals and are not dependent on expiring workflow artifacts.
+
+An already complete date no longer prevents outcome processing on rerun. Workflow run attempts have distinct identities. Journal and derived-file publication use atomic rename; workflow concurrency serializes writers. Manual local writers must also run serially against a given store.
