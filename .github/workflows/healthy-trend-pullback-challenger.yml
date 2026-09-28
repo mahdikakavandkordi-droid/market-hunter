@@ -183,9 +183,4 @@ jobs:
             exit 0
           fi
           git commit -m "research: record healthy-trend pullback challenger evidence"
-          for attempt in 1 2 3 4 5; do
-            git pull --rebase origin research/healthy-trend-pullback-challenger-20260928
-            if git push origin HEAD:research/healthy-trend-pullback-challenger-20260928; then exit 0; fi
-            sleep $((attempt * 2))
-          done
-          exit 1
+          git push origin HEAD:research/healthy-trend-pullback-challenger-20260928
