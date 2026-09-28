@@ -1,0 +1,154 @@
+name: Recovery Frozen Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/recovery-frozen-audit-20260928
+    paths:
+      - 'lib/stage-continuity.js'
+      - 'scripts/backtest-market-hunter-v2.mjs'
+      - 'scripts/test-market-hunter-v2.mjs'
+      - 'scripts/analyze-recovery-frozen-audit.mjs'
+      - 'scripts/audit-recovery-frozen-audit.mjs'
+      - 'docs/recovery-frozen-audit-protocol-v1.md'
+      - '.github/workflows/recovery-frozen-audit.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: recovery-frozen-audit-20260928
+  cancel-in-progress: false
+
+env:
+  V2_DATASET_REGISTRY: data/frozen/market-hunter-v2-numerical-snapshot/registry.json
+  V2_DATASET_LOCK_MANIFEST: data/frozen/market-hunter-v2-numerical-snapshot/manifest.json
+  V2_SNAPSHOT_DIR: data/frozen/market-hunter-v2-numerical-snapshot/files
+  VERCEL_BYPASS_LEASE_FILE: .tmp/vercel-bypass-lease.json
+  VERCEL_HTTP_TIMEOUT_MS: 15000
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Contract tests
+        run: npm test
+      - name: Require immutable snapshot access
+        shell: bash
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${VERCEL_TOKEN:-}" || { echo "SECRET_VERCEL_TOKEN is required"; exit 1; }
+      - name: Materialize exact numerical snapshot
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+        run: node scripts/materialize-vercel-artifact-rest.mjs
+      - name: Revoke temporary bypass
+        if: always()
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+        run: node scripts/revoke-vercel-bypass-lease.mjs
+      - name: Verify exact snapshot identity
+        run: node scripts/verify-locked-validation-inputs.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recovery-frozen-snapshot
+          path: |
+            data/frozen/market-hunter-v2-numerical-snapshot/manifest.json
+            data/frozen/market-hunter-v2-numerical-snapshot/files/*.json
+          retention-days: 1
+          if-no-files-found: error
+
+  backtest:
+    needs: materialize
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        batch: [0,1,2,3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/download-artifact@v4
+        with:
+          name: recovery-frozen-snapshot
+          path: data/frozen/market-hunter-v2-numerical-snapshot
+      - name: Re-verify immutable input
+        run: node scripts/verify-locked-validation-inputs.mjs
+      - name: Run sealed Recovery batch
+        env:
+          V2_BATCH_INDEX: ${{ matrix.batch }}
+          V2_HORIZONS: 5,10,20
+          V2_OPEN_FINAL_TEST: 0
+        run: node scripts/run-locked-v2-backtest.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recovery-frozen-batch-${{ matrix.batch }}
+          path: data/v2-backtest-batch-${{ matrix.batch }}.json
+          retention-days: 7
+          if-no-files-found: error
+
+  analyze:
+    needs: backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Download all batch outputs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: recovery-frozen-batch-*
+          path: data
+          merge-multiple: true
+      - name: Fixed-calendar Recovery reconstruction
+        run: node scripts/analyze-recovery-frozen-audit.mjs
+      - name: Independent audit
+        run: node scripts/audit-recovery-frozen-audit.mjs
+      - name: Record run identity
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          CODE_SHA: ${{ github.sha }}
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const dir='data/research/recovery-frozen-audit';
+          const meta={
+            format:'market-hunter-recovery-frozen-run-v1',
+            runId:Number(process.env.RUN_ID),
+            runAttempt:Number(process.env.RUN_ATTEMPT),
+            codeSha:process.env.CODE_SHA,
+            finalTestOpened:false,
+            generatedAt:new Date().toISOString()
+          };
+          fs.writeFileSync(dir+'/run-metadata.json',JSON.stringify(meta,null,2)+'\n');
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recovery-frozen-audit-evidence
+          path: |
+            data/research/recovery-frozen-audit/*.json
+            data/v2-backtest-batch-0.json
+            data/v2-backtest-batch-1.json
+            data/v2-backtest-batch-2.json
+            data/v2-backtest-batch-3.json
+            docs/recovery-frozen-audit-protocol-v1.md
+            lib/stage-continuity.js
+            scripts/analyze-recovery-frozen-audit.mjs
+            scripts/audit-recovery-frozen-audit.mjs
+          retention-days: 30
+          if-no-files-found: error
