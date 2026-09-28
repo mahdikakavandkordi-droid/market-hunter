@@ -1,141 +1,246 @@
 # Healthy-Trend Pullback Prospective Collection Protocol v1
 
-**Status:** PROPOSED ONLY — not activated or verified as a live collector.  
-**Frozen on:** 2026-09-28  
-**Historical backfill:** prohibited.
+**Status:** IMPLEMENTED + VERIFIED — **NOT ACTIVATED** pending external review and default-branch activation.  
+**Protocol frozen:** 2026-09-28.  
+**Historical backfill:** prohibited.  
+**Prospective observations currently recorded:** none at the time of this protocol update.
 
-## What already exists
+## 1. What was implemented
 
-The repository already has an append-oriented daily collection pattern in:
+A dedicated collector now exists separately from the production scanner:
 
-- `.github/workflows/daily-snapshot.yml`
-- `scripts/update-history.mjs`
+- `lib/healthy-trend-pullback-forward.js`
+- `scripts/collect-healthy-trend-pullback-forward.mjs`
+- `scripts/audit-healthy-trend-pullback-forward.mjs`
+- `scripts/test-healthy-trend-pullback-forward.mjs`
+- `.github/workflows/healthy-trend-pullback-forward.yml`
 
-That path preserves a daily surfaced cohort and later appends matured outcomes. It is useful as an implementation pattern.
+The existing `.github/workflows/daily-snapshot.yml` / `scripts/update-history.mjs` path remains untouched and is **not** treated as challenger evidence.
 
-It is **not sufficient to claim prospective evidence for this challenger** because the current live scanner does not expose the exact challenger model version, exact challenger input identities, or the predeclared next-session-entry / 20-session ATR outcome schema. Existing historical records must not be relabelled as challenger prospective observations.
+The forward workflow is present on the research branch for verification. GitHub scheduled workflows execute from the repository default branch, so the scheduled collector is **not active while this package remains only on the research branch**. Activation requires explicit post-review promotion of the collector workflow/code to the default branch (or an explicitly approved manual dispatch). No earlier market session may be backfilled after activation.
 
-Accordingly, this document proposes a separate collector. No collector is activated by this research branch.
+Verification evidence:
 
-## Frozen model versions
+- workflow run: `36472921643`
+- verified code SHA: `0e71068e82e1d5fb1f93383896c81d4d25499bfd`
+- verification artifact ID: `10991588715`
+- artifact SHA-256: `11a603e3444ed9cb07b08ef032a66ad459c7366bf5f8de6260cb87a702269985`
 
-Collect all four deterministic comparison models without tuning:
+The verification run passed the frozen-model regression suite, forward-collector regression suite, and append-only store audit.
 
-1. `healthy-trend-pullback-v1-2026-09-28 / core`
-2. `healthy-trend-pullback-v1-2026-09-28 / core_volume`
-3. `healthy-trend-pullback-v1-2026-09-28 / core_market`
-4. current Early Watch production logic version present when prospective collection is activated, recorded by exact engine/version/commit identity.
+## 2. Frozen prospective models
 
-The simple trend+RS baseline should also be recorded under the exact implementation commit used in this research package.
+The prospective v1 comparison contains only three deterministic models:
 
-No threshold, rank weight, eligibility rule, universe rule, barrier convention, or random-control matching rule may change during the collection window.
+1. **Lead challenger — Core**
+   - model: `core`
+   - model version: `healthy-trend-pullback-v1-2026-09-28`
 
-## Universe policy
+2. **Simple baseline — Trend + RS**
+   - model: `trend_rs`
+   - implementation version: `healthy-trend-pullback-v1-2026-09-28`
 
-- Use the reviewed Canadian universe policy in force at activation and store its exact source identity, membership hash, code commit and sector map.
-- Headline challenger evidence remains non-CDR unless a defensible CAD-compatible benchmark/FX treatment is frozen before activation.
-- Any universe refresh during collection creates a new universe version. It must not silently rewrite prior records.
-- Each daily record stores the exact symbols attempted, successfully evaluated, failed, and excluded.
+3. **Current Early Watch reference**
+   - model: `early_watch`
+   - engine version: `market-hunter-v2-rebuild-h2p10-2026-09-26`
+   - uses the frozen V2 Early Watch classification/ranking/surface functions directly from `lib/market-hunter-v2-engine.js`.
 
-## Append-only daily record
+The predeclared historical variants **Core + volume** and **Core + market** are not collected prospectively in v1. Task 4 did not justify carrying either one forward. Reintroducing either variant would require a new separately versioned protocol; it cannot be added silently during this collection window.
 
-Use a dedicated append-only file or durable store, separate from existing `data/history.json`.
+## 3. Universe and source identity
 
-Suggested identity:
+Headline evidence uses the reviewed non-CDR Canadian universe.
 
-`modelVersion | universeVersion | marketAsOf | model | symbol`
+Each collection date stores:
 
-Each completed-market daily record must preserve:
+- the full universe definition;
+- `UNIVERSE_SOURCE`;
+- a SHA-256 universe-version hash;
+- intended and successfully evaluated symbol counts;
+- failed symbols and explicit failure reasons;
+- benchmark source identity;
+- per-symbol normalized source hashes;
+- exact Git commit and collector version.
 
-- collector timestamp in UTC;
-- `marketAsOf` / decision session;
-- Git commit and model version;
-- universe version and membership SHA-256;
-- input provider/source identity;
-- per-symbol source snapshot identity or immutable content hash;
-- model name;
-- full surfaced shortlist in rank order, including a genuine empty list;
-- natural eligible count;
-- zero-pick flag;
-- complete / partial / failed coverage status;
-- failed symbols and reasons;
-- decision-time values needed to audit eligibility/ranking;
-- pivot date **and pivot confirmation date**;
-- latest completed weekly-bar identity;
-- decision-time ATR14;
-- benchmark identity;
-- no outcome fields until the required horizon matures.
+Any universe change creates a new universe hash. Prior observations are immutable and are not rewritten.
 
-Daily records are immutable after append except for a separate outcome object keyed to the immutable observation identity.
+## 4. Live input normalization
 
-## Failures and zero picks
+The collector uses Yahoo Finance chart data through `query1` with `query2` fallback.
 
-The collector must explicitly distinguish:
+For research consistency:
 
-- `complete_zero_pick`: model ran on complete intended coverage and surfaced nothing;
-- `complete_nonzero`;
-- `partial_coverage`;
-- `collector_failure`;
-- `market_not_completed`.
+- adjusted close is the price scale;
+- adjusted high/low are reconstructed using `adjustedClose / rawClose`;
+- raw close × raw volume is retained for liquidity;
+- split-event dates are preserved;
+- current/incomplete trading sessions are excluded;
+- the TSX benchmark is `^GSPTSE`.
 
-Only `complete_zero_pick` is a genuine confirmed absence for episode continuity. Partial/failure records must not reset an active episode.
+The collector can create a prospective observation **only when the benchmark's latest completed `marketAsOf` equals the current UTC date**. Therefore a later run cannot backfill an older market date and label it prospective.
 
-## Outcome maturation
+A holiday, pre-close dispatch, or stale benchmark produces an explicit `market_not_completed` run state instead of a historical observation.
 
-Outcomes are appended only after they mature under the frozen convention:
+## 5. Append-only evidence layout
+
+The dedicated store is:
+
+`data/research/healthy-trend-pullback-forward/`
+
+Semantic append-only files:
+
+- `inputs.jsonl` — one immutable daily source/input manifest;
+- `observations.jsonl` — immutable model observations and surfaced picks;
+- `outcomes.jsonl` — separately appended matured outcomes;
+- `runs.jsonl` — invocation status, including failures/no-new-session cases;
+- `status.json` — derived progress only;
+- `audit.json` — derived independent integrity audit.
+
+Existing observation identities cannot be changed. A rerun that attempts to reuse an existing identity with different contents is rejected as an `append_only_conflict`.
+
+Daily observation identity:
+
+`modelVersion | marketAsOf | model`
+
+Pick identity:
+
+`modelVersion | marketAsOf | model | symbol`
+
+## 6. Complete, zero-pick, partial and failure states
+
+The collector explicitly preserves:
+
+- `complete_zero_pick`
+- `complete_nonzero`
+- `partial_coverage`
+- `collector_failure`
+- `market_not_completed`
+- `no_new_completed_market_session` at the run level.
+
+Only `complete_zero_pick` is a confirmed absence for future first-surface episode continuity.
+
+A partial/failure day must not reset an active episode.
+
+No model is force-filled. Each model may surface from zero to six names.
+
+## 7. Decision timestamp and model inputs
+
+A decision belongs to the completed market session D.
+
+Core remains frozen exactly as predeclared:
+
+- completed weekly trend only;
+- 4%–12% controlled pullback from prior 20-session closing high;
+- close >= MA50;
+- MA20 > MA50;
+- confirmed 2-left / 2-right pivot-high reclaim;
+- 20-session relative strength versus TSX >= 0;
+- same fixed 0–100 rank formula;
+- maximum six surfaced names; never quota-filled.
+
+Trend + RS remains the fixed simple baseline.
+
+Early Watch uses the frozen V2 engine surface directly and remains unchanged.
+
+Every surfaced pick stores its decision-time ATR14 and audit fields needed to reproduce eligibility/ranking.
+
+## 8. Outcome maturation
+
+No outcome is written at observation time.
+
+For each recorded pick, an outcome may be appended only after the required future path exists:
 
 - next symbol session adjusted close = entry reference;
-- decision-time ATR14 fixed at observation time;
-- barrier path begins with the session after entry close;
-- +2 ATR favourable / -1 ATR adverse;
-- 20 post-entry symbol sessions primary horizon;
-- same-day both-hit = `ambiguous_both_hit`, never success;
-- suspension/irregular-gap rule unchanged;
-- 5/10/20 close-return diagnostics use the same entry reference.
+- decision-time ATR14 is immutable;
+- D+1 high/low are not used for barrier ordering;
+- inspect D+2 through D+21;
+- favourable barrier = entry + 2 × decision ATR14;
+- adverse barrier = entry − 1 × decision ATR14;
+- first hit determines `success` or `adverse_first`;
+- same-bar both-hit = `ambiguous_both_hit`, never success;
+- >7 calendar-day path gap = `suspension_or_irregular_gap`;
+- 5/10/20 adjusted-close returns and TSX excess are retained.
 
-The outcome process may append an outcome object but may never rewrite the original observation/rank/input identity.
+### Corporate actions after the decision
 
-## Collection stopping rule
+Because the live vendor can revise historical adjusted scales after a later split, a split occurring between decision and the end of the required outcome window is labelled:
 
-Precommit the first review at the earlier of:
+`corporate_action_during_horizon`
 
-- **160 complete Canadian market sessions collected**, with every primary 20-session horizon matured; or
-- **at least 120 matured Core first-surface episodes**, provided at least 80 complete market sessions were collected.
+That observation is conservatively excluded from the primary barrier denominator rather than mixing an old decision-time ATR scale with a subsequently restated price scale.
 
-If neither condition is met by **2027-06-30**, review the data-quality/coverage problem only; do not tune the model on incomplete evidence.
+This rule is frozen before prospective activation.
 
-Planned administrative review date: **2027-07-30**, after allowing the final required horizons to mature.
+## 9. Prospective random controls
 
-## Random controls prospectively
+Prospective v1 does **not** collect new random-control draws.
 
-If random controls are collected prospectively:
+Reason: Task 4 identified the deterministic decision as Core versus Early Watch and Trend + RS. Historical repeated-random and sector/volatility-matched random experiments remain supporting diagnostics, not the prospective headline comparison.
 
-- use the same frozen random matching rules and fixed seed family;
-- store the eligible pool identity before drawing;
-- store unmatched picks explicitly;
-- never redraw a control because of a later missing or adverse outcome.
+Adding live random controls later would constitute a new protocol version and cannot be retroactively attached to v1 observations.
 
-## Review discipline
+## 10. Collection schedule
+
+The prepared workflow schedule is:
+
+- Monday–Friday
+- 22:45 UTC
+- after the regular Canadian market close year-round.
+
+The schedule is intentionally not considered active until the reviewed workflow exists on the repository default branch.
+
+The first same-day completed market session collected after approved activation defines the start of prospective evidence. There is no historical backfill.
+
+## 11. Stopping rule
+
+The first formal review occurs at the earlier of:
+
+- **160 complete Canadian market sessions**, with all required primary 20-session horizons matured; or
+- **120 matured Core first-surface episodes**, provided at least 80 complete market sessions have been collected.
+
+If neither condition is met by **2027-06-30**, review only the data-quality/coverage problem. Do not tune the model on incomplete evidence.
+
+Administrative review date: **2027-07-30**, allowing the final required horizons to mature.
+
+## 12. Review discipline
 
 During collection:
 
-- no tuning;
-- no deleting bad days;
-- no backfilling missing historical observations as if prospective;
-- no replacing a failed day with a later reconstruction;
-- no opening/using the historical Final period as a substitute for prospective evidence.
+- no threshold tuning;
+- no rank-weight changes;
+- no adding/removing gates;
+- no deletion of bad days;
+- no replacement of partial/failure days;
+- no historical backfill;
+- no retrospective relabelling;
+- no use of Historical Final as a substitute for prospective evidence;
+- no production replacement based on interim results.
 
-At review, report all complete records, zero-pick days, partial/failure days, matured/incomplete outcomes, and contributor concentration before considering any model change.
+At review, report:
 
-## Activation gate
+- complete sessions;
+- zero-pick days;
+- partial/failure days;
+- natural output volume;
+- first-surface episode counts;
+- matured/incomplete outcomes;
+- primary barrier labels;
+- 5/10/20 returns and excess;
+- concentration by symbol, year/time and sector;
+- Core versus the two frozen deterministic baselines.
 
-This protocol becomes **ACTIVE** only after a dedicated collector is implemented and independently verified to:
+## 13. Activation gate
 
-1. run the exact frozen model versions;
-2. persist exact input identities;
-3. preserve empty/failure days;
-4. append rather than rewrite observations;
-5. mature outcomes only after the horizon completes;
-6. pass a synthetic end-to-end test.
+The implementation gate has been technically satisfied in the research branch:
 
-Until that gate is satisfied, the prospective collector status is **PROPOSED, NOT ACTIVATED**.
+1. exact frozen model versions are referenced;
+2. exact input identities are persisted;
+3. empty/failure states are explicit;
+4. observations are append-only and outcomes are separate;
+5. outcomes mature only after the frozen horizon;
+6. synthetic and repository regression tests pass;
+7. an independent forward-store auditor passes on the empty pre-activation store.
+
+However, **collection remains NOT ACTIVATED** until external review is complete and the scheduling mechanism is deliberately enabled from the default branch.
+
+That distinction is intentional: implementation verification is not the same thing as prospective evidence.
