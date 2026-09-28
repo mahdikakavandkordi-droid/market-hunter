@@ -168,6 +168,28 @@ jobs:
           }));
           NODE
 
+      - name: Stamp operational activation metadata
+        if: always()
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file=process.env.HTP_FORWARD_DIR+'/status.json';
+          if(!fs.existsSync(file))process.exit(0);
+          const status=JSON.parse(fs.readFileSync(file,'utf8'));
+          status.operationalActivation={
+            state:'active',
+            workflow:'HTP Live Prospective Collection',
+            defaultBranch:'main',
+            evidenceBranch:'research/htp-forward-evidence',
+            pinnedCollectorSha:process.env.HTP_PINNED_COLLECTOR_SHA,
+            schedulesUtc:['22:45 Mon-Fri','23:35 Mon-Fri recovery'],
+            sameDayRetryAttempts:3,
+            updatedAt:new Date().toISOString()
+          };
+          fs.writeFileSync(file,JSON.stringify(status,null,2)+'\n');
+          NODE
+
       - name: Preserve capture and failure evidence
         if: always()
         working-directory: evidence
