@@ -760,15 +760,19 @@ async function importBackupFile(file){
 }
 function portfolioHtml(){
   const s=portfolioSummary();
+  const slides=s.rows.map(({p,x})=>'<div class="portfolio-slide">'+positionCard(p,x,s.value)+'</div>').join('');
+  const dots=s.rows.map((_,i)=>'<button class="portfolio-dot '+(i===0?'active':'')+'" type="button" data-portfolio-dot="'+i+'" aria-label="Holding '+(i+1)+'"></button>').join('');
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
   const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness, what to watch, and what would change the current read.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>`<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`).join('')}</div></section>`:'';
   return `<div class="stack">
     <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
+      ${cloudPanelHtml()}
       <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention weight</small><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
       <div class="read">${s.breadth?s.breadth.attention.toFixed(0)+'% of portfolio value is currently in cooling/watch or warning conditions.':(s.attention.length?s.attention.length+' holding(s) deserve closer review.':'No material structural warning across covered holdings.')}</div>
     </section>
     ${portfolioReadHtml(s)}${changeBlock}${attentionBlock}${allocationHtml(s)}${riskHtml()}
-    <section class="panel soft"><div class="sectionhead"><div><h3>Holdings</h3><p>Health first. Details stay collapsed.</p></div></div><div class="cards">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty">No positions yet.</div>'}</div></section>
+    <section class="panel soft"><div class="sectionhead"><div><h3>Holdings</h3><p>Swipe between positions. Health first; details stay collapsed.</p></div></div>${s.rows.length?'<div class="portfolio-carousel" data-portfolio-carousel>'+slides+'</div><div class="portfolio-dots">'+dots+'</div>':'<div class="empty">No positions yet.</div>'}</section>
+    ${archivedPositionsHtml()}
   </div>`;
 }
 function watchlistHtml(){
@@ -778,7 +782,7 @@ function watchlistHtml(){
 function renderView(view){
   if(view==='home')q('#homeView').innerHTML=homeHtml();
   if(view==='shortlist')q('#shortlistView').innerHTML=shortlistHtml();
-  if(view==='portfolio')q('#portfolioView').innerHTML=portfolioHtml();
+  if(view==='portfolio'){q('#portfolioView').innerHTML=portfolioHtml();bindPortfolioCarousel()}
   if(view==='watchlist')q('#watchlistView').innerHTML=watchlistHtml();
 }
 function renderAll(){['home','shortlist','portfolio','watchlist'].forEach(renderView)}
