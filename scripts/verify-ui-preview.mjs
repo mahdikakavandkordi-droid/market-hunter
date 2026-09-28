@@ -104,6 +104,18 @@ async function newContext(browser,{width,height,theme,label,isMobile=false}){
     deviceScaleFactor:isMobile?2:1,
     serviceWorkers:'allow'
   });
+  const previewOrigin=new URL(previewUrl).origin;
+  await context.route('**/*',async route=>{
+    const request=route.request();
+    let sameOrigin=false;
+    try{sameOrigin=new URL(request.url()).origin===previewOrigin}catch{}
+    if(!sameOrigin)return route.continue();
+    await route.continue({headers:{
+      ...request.headers(),
+      'x-vercel-protection-bypass':secret,
+      'x-vercel-set-bypass-cookie':'true'
+    }});
+  });
   await context.addInitScript(t=>{
     try{localStorage.setItem('marketHunterTheme',t)}catch{}
     window.__openedUrl=null;
@@ -111,9 +123,7 @@ async function newContext(browser,{width,height,theme,label,isMobile=false}){
   },theme);
   const page=await context.newPage();
   attachDiagnostics(page,label);
-  const bootstrap=previewUrl+(previewUrl.includes('?')?'&':'?')+
-    'x-vercel-protection-bypass='+encodeURIComponent(secret)+'&x-vercel-set-bypass-cookie=true';
-  await page.goto(bootstrap,{waitUntil:'domcontentloaded',timeout:60000});
+  await page.goto(previewUrl,{waitUntil:'domcontentloaded',timeout:60000});
   await ready(page,label);
   return {context,page};
 }
