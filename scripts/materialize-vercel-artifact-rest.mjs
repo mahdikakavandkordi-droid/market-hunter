@@ -67,9 +67,19 @@ diag('temporary automation bypass create',generated.r,generated.text);
 must(generated.r.ok,`cannot create temporary automation bypass HTTP ${generated.r.status}`);
 
 let materialized=false;
-try{
+async function fetchWithBypassRetry(url,label){
   const bypassHeaders={'x-vercel-protection-bypass':bypassSecret};
-  const m=await fetchText(manifestUrl,{headers:bypassHeaders,redirect:'follow'});
+  let last=null;
+  for(let attempt=1;attempt<=12;attempt++){
+    last=await fetchText(url,{headers:bypassHeaders,redirect:'follow'});
+    if(last.r.ok)return last;
+    if(![401,403].includes(last.r.status))return last;
+    if(attempt<12)await new Promise(r=>setTimeout(r,Math.min(1000,150*attempt)));
+  }
+  return last;
+}
+try{
+  const m=await fetchWithBypassRetry(manifestUrl,'manifest');
   diag('bypass static manifest',m.r,m.text);
   must(m.r.ok,`temporary bypass could not read manifest HTTP ${m.r.status}`);
   const manifest=JSON.parse(m.text);
@@ -80,7 +90,7 @@ try{
   const base=a.manifestPath.replace(/\/manifest\.json$/,'');
   for(const b of manifest.batches){
     const u=`https://${a.deploymentUrl}${base}/${b.file}`;
-    const got=await fetchText(u,{headers:bypassHeaders,redirect:'follow'});
+    const got=await fetchWithBypassRetry(u,'batch '+b.batchIndex);
     diag(`bypass static batch ${b.batchIndex}`,got.r,got.text);
     must(got.r.ok,`failed bypass batch ${b.batchIndex} HTTP ${got.r.status}`);
     fs.writeFileSync(path.join(snapshotDir,b.file),got.text);
