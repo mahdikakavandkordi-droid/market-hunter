@@ -53,6 +53,8 @@ const report={
   screenshots:[],
   pageErrors:[],
   consoleErrors:[],
+  network:[],
+  fatalError:null,
   limitations:[
     'Headless Chromium cannot summon the native iOS software keyboard; mobile position form is tested with a constrained 390x520 viewport to simulate keyboard-reduced usable height.'
   ]
@@ -62,14 +64,37 @@ async function check(name,fn){
   try{const detail=await fn();record(name,true,detail??'PASS');return true}
   catch(e){record(name,false,String(e?.message||e));return false}
 }
-async function ready(page){
+async function ready(page,label){
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(()=>document.querySelector('#refreshBtn')&&!document.querySelector('#refreshBtn').classList.contains('busy'),null,{timeout:60000});
-  await page.waitForSelector('#homeView .panel',{timeout:30000});
+  try{
+    await page.waitForFunction(()=>document.querySelector('#asOf')&&document.querySelector('#asOf').textContent!=='Loading market data…',null,{timeout:60000});
+    await page.waitForSelector('#homeView .panel',{timeout:10000});
+  }catch(error){
+    try{
+      fs.writeFileSync(path.join(outDir,label+'-startup.html'),await page.content());
+      await page.screenshot({path:path.join(outDir,label+'-startup.png'),fullPage:true});
+      report.screenshots.push(label+'-startup.png');
+    }catch{}
+    const state=await page.evaluate(()=>({
+      title:document.title,
+      asOf:document.querySelector('#asOf')?.textContent||null,
+      homeHtml:document.querySelector('#homeView')?.innerHTML?.slice(0,500)||null,
+      scripts:[...document.scripts].map(s=>s.src||'[inline]'),
+      theme:document.documentElement.dataset.theme||null
+    })).catch(()=>null);
+    throw new Error('UI did not finish startup: '+error.message+' state='+JSON.stringify(state));
+  }
 }
 function attachDiagnostics(page,label){
   page.on('pageerror',e=>report.pageErrors.push({label,message:String(e.message||e)}));
   page.on('console',m=>{if(m.type()==='error')report.consoleErrors.push({label,message:m.text()})});
+  page.on('response',res=>{
+    try{
+      const u=new URL(res.url());
+      const base=new URL(previewUrl);
+      if(u.origin===base.origin)report.network.push({label,path:u.pathname,status:res.status()});
+    }catch{}
+  });
 }
 async function newContext(browser,{width,height,theme,label,isMobile=false}){
   const context=await browser.newContext({
@@ -88,7 +113,7 @@ async function newContext(browser,{width,height,theme,label,isMobile=false}){
   const page=await context.newPage();
   attachDiagnostics(page,label);
   await page.goto(previewUrl,{waitUntil:'domcontentloaded',timeout:60000});
-  await ready(page);
+  await ready(page,label);
   return {context,page};
 }
 async function overflowDetail(page){
@@ -102,6 +127,7 @@ async function screenshot(page,name){
 
 // Baseline visual matrix: desktop/mobile × dark/light.
 const browser=await chromium.launch({headless:true});
+let fatal=null;
 try{
   for(const spec of [
     {width:1440,height:1000,theme:'dark',label:'desktop-dark',isMobile:false},
@@ -171,7 +197,7 @@ try{
       await watchBtn.click();
       let saved=await page.evaluate(s=>JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]').includes(s),watchSymbol);
       assert.ok(saved,'symbol not in localStorage after save');
-      await page.reload({waitUntil:'domcontentloaded'});await ready(page);
+      await page.reload({waitUntil:'domcontentloaded'});await ready(page,'interaction-reload');
       saved=await page.evaluate(s=>JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]').includes(s),watchSymbol);
       assert.ok(saved,'symbol missing after reload');
       await page.locator('.mobile-nav [data-view="watchlist"]').click();
@@ -219,7 +245,7 @@ try{
 
   // PWA install/update sanity on same origin.
   await page.setViewportSize({width:390,height:844});
-  await page.goto(previewUrl,{waitUntil:'domcontentloaded'});await ready(page);
+  await page.goto(previewUrl,{waitUntil:'domcontentloaded'});await ready(page,'interaction-reload');
   await check('service worker active and current shell cache present',async()=>{
     const pwa=await page.evaluate(async()=>{
       const reg=await navigator.serviceWorker.ready;
@@ -246,15 +272,17 @@ try{
   });
   await screenshot(page,'mobile-pwa-final.png');
   await context.close();
+} catch(error){
+  fatal=error;
+  report.fatalError=String(error?.stack||error);
 } finally {
   await browser.close();
   try{await revokeLeaseFile({file:leaseFile,token,timeoutMs})}catch(e){report.checks.push({name:'in-process Vercel preview bypass cleanup',pass:false,detail:String(e?.message||e)})}
+  record('no uncaught page errors',report.pageErrors.length===0,JSON.stringify(report.pageErrors));
+  record('no console errors',report.consoleErrors.length===0,JSON.stringify(report.consoleErrors));
+  const failed=report.checks.filter(x=>!x.pass);
+  report.summary={passed:report.checks.length-failed.length,failed:failed.length,total:report.checks.length,fatal:Boolean(fatal)};
+  fs.writeFileSync(path.join(outDir,'ui-verification-report.json'),JSON.stringify(report,null,2)+'\n');
+  console.log(JSON.stringify(report.summary));
 }
-
-record('no uncaught page errors',report.pageErrors.length===0,JSON.stringify(report.pageErrors));
-record('no console errors',report.consoleErrors.length===0,JSON.stringify(report.consoleErrors));
-const failed=report.checks.filter(x=>!x.pass);
-report.summary={passed:report.checks.length-failed.length,failed:failed.length,total:report.checks.length};
-fs.writeFileSync(path.join(outDir,'ui-verification-report.json'),JSON.stringify(report,null,2)+'\n');
-console.log(JSON.stringify(report.summary));
-if(failed.length)process.exitCode=1;
+if(fatal||report.checks.some(x=>!x.pass))process.exitCode=1;
