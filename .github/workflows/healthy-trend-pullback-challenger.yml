@@ -1,0 +1,164 @@
+name: Healthy Trend Pullback Challenger Research
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/healthy-trend-pullback-challenger-20260928
+    paths:
+      - 'lib/healthy-trend-pullback.js'
+      - 'lib/research-audit-guards.js'
+      - 'scripts/analyze-healthy-trend-pullback.mjs'
+      - 'scripts/audit-healthy-trend-pullback.mjs'
+      - 'scripts/test-healthy-trend-pullback.mjs'
+      - 'scripts/test-research-audit-guards.mjs'
+      - 'scripts/analyze-early-watch-episode-stability.mjs'
+      - 'scripts/audit-early-watch-episode-stability.mjs'
+      - 'docs/healthy-trend-pullback-challenger-protocol-v1.md'
+      - 'docs/healthy-trend-pullback-forward-test-protocol-v1.md'
+      - 'docs/early-watch-audit-closure-2026-09-28.md'
+      - 'package.json'
+      - '.github/workflows/healthy-trend-pullback-challenger.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: healthy-trend-pullback-challenger-20260928
+  cancel-in-progress: false
+
+env:
+  MH_ARCHIVE_REF: locked-v2-validation-36420714736-archive-v1
+  MH_ARCHIVE_ROOT: archive/locked-v2-validation/run-36420714736
+  V2_DATASET_LOCK_MANIFEST: data/frozen/market-hunter-v2-numerical-snapshot/manifest.json
+  V2_SNAPSHOT_DIR: data/frozen/market-hunter-v2-numerical-snapshot/files
+  PREVIOUS_EARLY_WATCH_REPLAY: data/v2-early-watch-surface-replay.json
+  EARLY_WATCH_STABILITY_OUT: data/research/early-watch-episode-stability
+  HTP_OUT_DIR: data/research/healthy-trend-pullback
+  V2_OPEN_FINAL_TEST: "0"
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Materialize exact locked archive inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$V2_SNAPSHOT_DIR" data
+          git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/snapshot/manifest.json" > "$V2_DATASET_LOCK_MANIFEST"
+          for i in 0 1 2 3; do
+            git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/snapshot/files/batch-$i.json" > "$V2_SNAPSHOT_DIR/batch-$i.json"
+            git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/raw-reports/batch-$i/v2-backtest-batch-$i.json" > "data/v2-backtest-batch-$i.json"
+          done
+          git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/evidence/v2-early-watch-surface-replay.json" > "$PREVIOUS_EARLY_WATCH_REPLAY"
+
+      - name: Verify archived snapshot checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          sums="$(git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/SHA256SUMS")"
+          for i in 0 1 2 3; do
+            expected="$(printf '%s\n' "$sums" | grep "snapshot/files/batch-$i.json" | awk '{print $1}')"
+            actual="$(sha256sum "$V2_SNAPSHOT_DIR/batch-$i.json" | awk '{print $1}')"
+            test "$actual" = "$expected"
+          done
+          expected="$(printf '%s\n' "$sums" | grep "snapshot/manifest.json" | tail -1 | awk '{print $1}')"
+          actual="$(sha256sum "$V2_DATASET_LOCK_MANIFEST" | awk '{print $1}')"
+          test "$actual" = "$expected"
+          echo "PASS: exact archived numerical inputs verified"
+
+      - name: Run repository and focused regression tests
+        run: npm test
+
+      - name: Recompute Early Watch audit closure outputs
+        run: |
+          node scripts/analyze-early-watch-episode-stability.mjs
+          node scripts/audit-early-watch-episode-stability.mjs
+
+      - name: Run predeclared challenger comparison
+        run: node scripts/analyze-healthy-trend-pullback.mjs
+
+      - name: Independently audit challenger outputs
+        run: node scripts/audit-healthy-trend-pullback.mjs
+
+      - name: Assert seals and audit passes
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const s=JSON.parse(fs.readFileSync('data/research/healthy-trend-pullback/summary.json','utf8'));
+          const a=JSON.parse(fs.readFileSync('data/research/healthy-trend-pullback/audit.json','utf8'));
+          const ew=JSON.parse(fs.readFileSync('data/research/early-watch-episode-stability/audit.json','utf8'));
+          if(s.evidence?.finalTestOpened!==false)throw new Error('Challenger summary Final seal failed');
+          if(a.finalTestOpened!==false||a.failedChecks!==0)throw new Error('Challenger independent audit failed');
+          if(ew.finalTestOpened!==false||ew.failedChecks!==0)throw new Error('Early Watch closure audit failed');
+          console.log('PASS: Historical Final sealed; independent audits passed');
+          NODE
+
+      - name: Upload durable review evidence
+        id: evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: healthy-trend-pullback-review-evidence
+          path: |
+            data/research/healthy-trend-pullback
+            data/research/early-watch-episode-stability
+            docs/healthy-trend-pullback-challenger-protocol-v1.md
+            docs/healthy-trend-pullback-forward-test-protocol-v1.md
+            docs/early-watch-audit-closure-2026-09-28.md
+          retention-days: 90
+          if-no-files-found: error
+          compression-level: 6
+
+      - name: Record workflow evidence identity
+        env:
+          ARTIFACT_ID: ${{ steps.evidence.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.evidence.outputs.artifact-url }}
+          ARTIFACT_DIGEST: ${{ steps.evidence.outputs.artifact-digest }}
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const p='data/research/healthy-trend-pullback/run-metadata.json';
+          fs.writeFileSync(p,JSON.stringify({
+            format:'market-hunter-healthy-trend-pullback-run-v1',
+            generatedAt:new Date().toISOString(),
+            codeSha:process.env.GITHUB_SHA,
+            runId:Number(process.env.GITHUB_RUN_ID),
+            archiveRef:process.env.MH_ARCHIVE_REF,
+            validationRunId:36420714736,
+            finalTestOpened:false,
+            artifact:{
+              id:process.env.ARTIFACT_ID||null,
+              url:process.env.ARTIFACT_URL||null,
+              digest:process.env.ARTIFACT_DIGEST||null
+            }
+          },null,2)+'\n');
+          NODE
+
+      - name: Commit manageable generated outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-research"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/research/healthy-trend-pullback data/research/early-watch-episode-stability
+          if git diff --cached --quiet; then
+            echo "Generated outputs unchanged."
+            exit 0
+          fi
+          git commit -m "research: record healthy-trend pullback challenger evidence"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin research/healthy-trend-pullback-challenger-20260928
+            if git push origin HEAD:research/healthy-trend-pullback-challenger-20260928; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          exit 1
