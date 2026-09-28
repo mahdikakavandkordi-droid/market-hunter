@@ -1,0 +1,41 @@
+name: Reconcile Vercel Bypass Probes
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/early-watch-validation-close-20260928
+    paths:
+      - scripts/reconcile-vercel-bypass-probes.mjs
+      - .github/workflows/reconcile-vercel-bypass-probes.yml
+
+permissions:
+  contents: read
+
+env:
+  V2_DATASET_REGISTRY: data/frozen/market-hunter-v2-numerical-snapshot/registry.json
+  VERCEL_HTTP_TIMEOUT_MS: 15000
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Reconcile Market Hunter probe bypasses
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+          VERCEL_BYPASS_NOTE_PREFIX: "MH cleanup probe "
+          VERCEL_RECONCILE_PROOF: data/vercel-bypass-reconcile-proof.json
+        run: node scripts/reconcile-vercel-bypass-probes.mjs
+      - name: Upload reconciliation proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-bypass-reconcile-proof
+          path: data/vercel-bypass-reconcile-proof.json
+          retention-days: 14
+          if-no-files-found: warn
