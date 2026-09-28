@@ -1,10 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import {
+  fetchWithTimeout,writeLeaseFile,revokeLeaseFile
+} from '../lib/vercel-bypass-lease.js';
 
 function must(v,m){ if(!v) throw new Error(m); }
 const token=process.env.VERCEL_TOKEN;
 must(token,'VERCEL_TOKEN is required');
+const httpTimeoutMs=Math.max(1000,Number(process.env.VERCEL_HTTP_TIMEOUT_MS||15000));
+const leaseFile=process.env.VERCEL_BYPASS_LEASE_FILE||'.tmp/vercel-bypass-lease.json';
 const registryFile=process.env.V2_DATASET_REGISTRY||'data/frozen/market-hunter-v2-numerical-snapshot/registry.json';
 const manifestFile=process.env.V2_DATASET_LOCK_MANIFEST||'data/frozen/market-hunter-v2-numerical-snapshot/manifest.json';
 const snapshotDir=process.env.V2_SNAPSHOT_DIR||'data/frozen/market-hunter-v2-numerical-snapshot/files';
@@ -12,16 +17,26 @@ const registry=JSON.parse(fs.readFileSync(registryFile,'utf8'));
 const a=registry.artifact||{};
 must(a.deploymentId&&a.deploymentUrl&&a.teamId&&a.manifestPath,'registry missing artifact metadata');
 
+const sensitive=[token];
+const redact=value=>{
+  let out=String(value??'');
+  for(const secret of sensitive)if(secret)out=out.split(secret).join('***');
+  return out;
+};
 const auth={Authorization:`Bearer ${token}`,'Content-Type':'application/json'};
 async function fetchText(url,opts={}){
-  const r=await fetch(url,{...opts,headers:{...auth,...(opts.headers||{})},redirect:opts.redirect||'manual'});
+  const r=await fetchWithTimeout(fetch,url,{
+    ...opts,
+    headers:{...auth,...(opts.headers||{})},
+    redirect:opts.redirect||'manual'
+  },httpTimeoutMs);
   const text=await r.text();
   return {r,text};
 }
 function diag(label,r,text){
   const loc=r.headers.get('location');
   console.log(`${label}: HTTP ${r.status}${loc?' redirect='+new URL(loc).origin:''}`);
-  if(r.status>=400) console.log(`${label} body: ${text.slice(0,500).replace(/\s+/g,' ')}`);
+  if(r.status>=400)console.log(`${label} body: ${redact(text).slice(0,500).replace(/\s+/g,' ')}`);
 }
 
 // Prove whether this token can see the exact immutable deployment without relying on CLI user lookup.
@@ -30,7 +45,7 @@ const detail=await fetchText(detailUrl,{redirect:'follow'});
 diag('deployment REST auth',detail.r,detail.text);
 must(detail.r.ok,`Vercel REST token cannot access registered deployment (HTTP ${detail.r.status})`);
 const dep=JSON.parse(detail.text);
-must(dep.uid===a.deploymentId||dep.id===a.deploymentId,`deployment identity mismatch`);
+must(dep.uid===a.deploymentId||dep.id===a.deploymentId,'deployment identity mismatch');
 
 // First try the immutable deployment URL directly with Bearer auth.
 const manifestUrl=`https://${a.deploymentUrl}${a.manifestPath}`;
@@ -55,19 +70,45 @@ if(direct.r.ok){
 }
 
 // Vercel Authentication does not accept a project API Bearer token directly on the deployment URL.
-// Create a short-lived-in-practice automation bypass, use it only for this materialization, then revoke it in finally.
+// Create one run-scoped automation bypass. The exact secret is kept only in a chmod-0600 workspace lease file.
 must(a.projectId,'registry missing projectId for temporary automation bypass');
 const bypassSecret=crypto.randomBytes(24).toString('hex').slice(0,32);
+sensitive.push(bypassSecret);
+const runId=process.env.GITHUB_RUN_ID||'local';
+const bypassNote=`Market Hunter locked validation run ${runId}; auto-revoke`;
+const lease={secret:bypassSecret,projectId:a.projectId,teamId:a.teamId,runId,note:bypassNote};
+writeLeaseFile(leaseFile,lease);
+
 const bypassApi=`https://api.vercel.com/v1/projects/${encodeURIComponent(a.projectId)}/protection-bypass?teamId=${encodeURIComponent(a.teamId)}`;
 async function patchBypass(body){
   return fetchText(bypassApi,{method:'PATCH',redirect:'follow',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 }
-const generated=await patchBypass({generate:{secret:bypassSecret,note:'Temporary locked Market Hunter validation; auto-revoke'}});
-diag('temporary automation bypass create',generated.r,generated.text);
-must(generated.r.ok,`cannot create temporary automation bypass HTTP ${generated.r.status}`);
+
+let cleanupStarted=false;
+async function cleanupBypass(reason){
+  if(cleanupStarted)return {status:'already_started'};
+  cleanupStarted=true;
+  try{
+    const result=await revokeLeaseFile({file:leaseFile,token,timeoutMs:httpTimeoutMs});
+    console.log(`temporary automation bypass cleanup (${reason}): ${result.status}`);
+    return result;
+  }catch(error){
+    console.error(`temporary automation bypass cleanup (${reason}) failed: ${redact(error?.message||error)}`);
+    throw error;
+  }
+}
+function installSignalCleanup(signal,exitCode){
+  process.once(signal,()=>{
+    void cleanupBypass(signal)
+      .catch(()=>{})
+      .finally(()=>process.exit(exitCode));
+  });
+}
+installSignalCleanup('SIGTERM',143);
+installSignalCleanup('SIGINT',130);
 
 let materialized=false;
-async function fetchWithBypassRetry(url,label){
+async function fetchWithBypassRetry(url){
   const bypassHeaders={'x-vercel-protection-bypass':bypassSecret};
   let last=null;
   for(let attempt=1;attempt<=12;attempt++){
@@ -78,8 +119,13 @@ async function fetchWithBypassRetry(url,label){
   }
   return last;
 }
+
 try{
-  const m=await fetchWithBypassRetry(manifestUrl,'manifest');
+  const generated=await patchBypass({generate:{secret:bypassSecret,note:bypassNote}});
+  diag('temporary automation bypass create',generated.r,generated.text);
+  must(generated.r.ok,`cannot create temporary automation bypass HTTP ${generated.r.status}`);
+
+  const m=await fetchWithBypassRetry(manifestUrl);
   diag('bypass static manifest',m.r,m.text);
   must(m.r.ok,`temporary bypass could not read manifest HTTP ${m.r.status}`);
   const manifest=JSON.parse(m.text);
@@ -90,16 +136,14 @@ try{
   const base=a.manifestPath.replace(/\/manifest\.json$/,'');
   for(const b of manifest.batches){
     const u=`https://${a.deploymentUrl}${base}/${b.file}`;
-    const got=await fetchWithBypassRetry(u,'batch '+b.batchIndex);
+    const got=await fetchWithBypassRetry(u);
     diag(`bypass static batch ${b.batchIndex}`,got.r,got.text);
     must(got.r.ok,`failed bypass batch ${b.batchIndex} HTTP ${got.r.status}`);
     fs.writeFileSync(path.join(snapshotDir,b.file),got.text);
   }
   materialized=true;
-  console.log('Materialized locked artifact through temporary automation bypass');
+  console.log('Materialized locked artifact through run-scoped automation bypass');
 } finally {
-  const revoked=await patchBypass({revoke:{secret:bypassSecret,regenerate:false}});
-  diag('temporary automation bypass revoke',revoked.r,revoked.text);
-  must(revoked.r.ok,`temporary automation bypass revoke failed HTTP ${revoked.r.status}`);
+  await cleanupBypass('finally');
 }
 must(materialized,'locked artifact was not materialized');
