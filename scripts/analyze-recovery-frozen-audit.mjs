@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
+import {PRIORITY_FLOORS} from '../lib/market-hunter-v2-engine.js';
 
 const reports=[0,1,2,3].map(i=>JSON.parse(fs.readFileSync('data/v2-backtest-batch-'+i+'.json','utf8')));
 const OUT='data/research/recovery-frozen-audit';
@@ -54,6 +55,8 @@ function splitRows(rows){
 }
 
 const allCandidates=reports.flatMap(r=>r.recoverySurfaceReplay?.candidates||[])
+  .map(x=>({...x,sector:meta.get(x.symbol)?.sector||'Unknown'}));
+const rawRecoveryEpisodes=reports.flatMap(r=>r.recoveryEpisodeReplay?.rows||[])
   .map(x=>({...x,sector:meta.get(x.symbol)?.sector||'Unknown'}));
 const horizons=[5,10,20];
 
@@ -198,7 +201,27 @@ for(const h of horizons){
   const baseKeys=new Set(baseRank.observations.map(x=>x.date+'|'+x.symbol));
   const surfKeys=new Set(current.observations.map(x=>x.date+'|'+x.symbol));
   const overlap=[...surfKeys].filter(k=>baseKeys.has(k)).length;
+  const rawStarts=rawRecoveryEpisodes.filter(x=>x.horizon===h);
+  const rawStartsSplit=splitRows(rawStarts);
+  const floor=PRIORITY_FLOORS['Recovery'].reviewFirst;
+  const rawReviewFirst=rawStarts.filter(x=>Number.isFinite(x.rankScore)&&x.rankScore>=floor);
+  const rawReviewSplit=splitRows(rawReviewFirst);
   result.horizons[h]={
+    stageStartBaseline:{
+      reviewFirstFloor:floor,
+      all:{
+        combined:summary(rawStarts),
+        development:summary(rawStartsSplit.development),
+        validation:summary(rawStartsSplit.validation),
+        purgedCount:rawStartsSplit.purged.length
+      },
+      reviewFirst:{
+        combined:summary(rawReviewFirst),
+        development:summary(rawReviewSplit.development),
+        validation:summary(rawReviewSplit.validation),
+        purgedCount:rawReviewSplit.purged.length
+      }
+    },
     coverage:{
       confirmedDates:current.dates.length,
       daysWithPicks:current.daily.filter(x=>x.pickCount>0).length,
