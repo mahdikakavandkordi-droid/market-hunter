@@ -13,6 +13,14 @@ const staticFiles=new Map([
   ['/index.html','index.html'],
   ['/app.js','app.js'],
   ['/app.css','app.css'],
+  ['/mobile-polish.css','mobile-polish.css'],
+  ['/theme.css','theme.css'],
+  ['/ui-polish.css','ui-polish.css'],
+  ['/service-worker.js','service-worker.js'],
+  ['/icons/icon-192.png','icons/icon-192.png'],
+  ['/icons/icon-512.png','icons/icon-512.png'],
+  ['/icons/apple-touch-icon.png','icons/apple-touch-icon.png'],
+
   ['/manifest.webmanifest','manifest.webmanifest'],
   ['/market-hunter-icon.svg','market-hunter-icon.svg']
 ]);
@@ -23,7 +31,8 @@ const mime={
   '.css':'text/css; charset=utf-8',
   '.json':'application/json; charset=utf-8',
   '.webmanifest':'application/manifest+json; charset=utf-8',
-  '.svg':'image/svg+xml'
+  '.svg':'image/svg+xml',
+  '.png':'image/png'
 };
 
 function makeResponse(res){
@@ -89,3 +98,4 @@ const server=http.createServer(async(req,res)=>{
 });
 
 server.listen(port,'0.0.0.0',()=>console.log(`Market Hunter listening on ${port}`));
+

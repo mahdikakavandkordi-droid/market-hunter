@@ -1,5 +1,5 @@
-const CACHE='market-hunter-shell-v4';
-const SHELL=['/','/index.html','/app.css','/mobile-polish.css','/theme.css','/app.js','/manifest.webmanifest','/market-hunter-icon.svg','/icons/icon-192.png','/icons/icon-512.png','/icons/apple-touch-icon.png'];
+const CACHE='market-hunter-shell-v5';
+const SHELL=['/','/index.html','/app.css','/mobile-polish.css','/theme.css','/ui-polish.css','/app.js','/manifest.webmanifest','/market-hunter-icon.svg','/icons/icon-192.png','/icons/icon-512.png','/icons/apple-touch-icon.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
 });
@@ -25,3 +25,4 @@ self.addEventListener('fetch',event=>{
     }).catch(()=>caches.match(req).then(hit=>hit||caches.match('/index.html')))
   );
 });
+

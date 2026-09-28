@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="/app.css">
   <link rel="stylesheet" href="/mobile-polish.css">
   <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/ui-polish.css">
   <title>Market Hunter</title>
 </head>
 <body>
@@ -33,7 +34,7 @@
       </div>
 
       <nav class="side-nav" aria-label="Primary">
-        <button class="navbtn active" data-view="home"><span>⌂</span>Home</button>
+        <button class="navbtn active" aria-current="page" data-view="home"><span>⌂</span>Home</button>
         <button class="navbtn" data-view="shortlist"><span>◎</span>Charts to Review</button>
         <button class="navbtn" data-view="portfolio"><span>▣</span>Portfolio</button>
         <button class="navbtn" data-view="watchlist"><span>☆</span>Watchlist</button>
@@ -72,13 +73,14 @@
   </div>
 
   <nav class="mobile-nav" aria-label="Mobile primary">
-    <button class="navbtn active" data-view="home"><span>⌂</span><small>Home</small></button>
+    <button class="navbtn active" aria-current="page" data-view="home"><span>⌂</span><small>Home</small></button>
     <button class="navbtn" data-view="shortlist"><span>◎</span><small>Review</small></button>
     <button class="navbtn" data-view="portfolio"><span>▣</span><small>Portfolio</small></button>
     <button class="navbtn" data-view="watchlist"><span>☆</span><small>Watchlist</small></button>
   </nav>
 
-  <input id="backupFile" type="file" accept="application/json,.json" hidden>\n  <div class="modal" id="positionModal" aria-hidden="true"></div>
+  <input id="backupFile" type="file" accept="application/json,.json" hidden>
+  <div class="modal" id="positionModal" aria-hidden="true"></div>
   <div class="toast" id="toast" aria-live="polite"></div>
   <script src="/app.js" defer></script>
 </body>

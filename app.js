@@ -381,24 +381,24 @@ function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
   const why=stockNarrative(x);
   return `<article class="card">
-    <div class="cardtop"><div class="name"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice">${money(x.price,'CAD')}<small class="${cls(x.ret5)}">5D ${pct(x.ret5)}</small></div></div>
+    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice">${money(x.price,'CAD')}<small class="${cls(x.ret5)}">5D ${pct(x.ret5)}</small></div></div>
     <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
     <div class="metrics"><div class="metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></div><div class="metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></div><div class="metric"><small>RS20</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="metric"><small>Momentum</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div></div>
     <div class="why analysis-copy">${esc(why)}</div>
     <details><summary>Technical details</summary><div class="copy"><strong>Why it qualified</strong><br>${esc((x.evidence||[]).join(' · ')||'Stage-specific review criteria passed.')}<br><br><strong>Positioning</strong><br>Pullback from 60-day high ${pct(x.pullback60)} · ATR ${pct(x.atr14Pct)} · vs MA20 ${pct(x.dist20)} · vs MA50 ${pct(x.dist50)}${(x.riskFlags||[]).length?'<br><br><strong>Risk context</strong><br>'+esc(x.riskFlags.join(' · ')):''}</div></details>
-    <div class="actions"><button class="btn" data-chart="${x.symbol}">Chart ↗</button><button class="btn" data-watch="${x.symbol}">${watched?'♥ Saved':'♡ Watch'}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?'Edit':'Bought'}</button></div>
+    <div class="actions"><button class="btn" data-chart="${x.symbol}">Chart ↗</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?'♥ Saved':'♡ Watch'}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?'Edit':'Bought'}</button></div>
   </article>`;
 }
 function shortlistHtml(){
   const stage=REVIEW_STAGES.includes(state.reviewStage)?state.reviewStage:REVIEW_STAGES[0];
   const counts=Object.fromEntries(REVIEW_STAGES.map(s=>[s,stageEligiblePicks(s).length]));
   const picks=stageEligiblePicks(stage);
-  const tabs=REVIEW_STAGES.map(s=>`<button class="stage-tab ${s===stage?'active':''}" data-stage-tab="${esc(s)}"><span>${esc(s)}</span><b>${counts[s]}</b></button>`).join('');
+  const tabs=REVIEW_STAGES.map(s=>`<button class="stage-tab ${s===stage?'active':''}" data-stage-tab="${esc(s)}" aria-pressed="${s===stage}"><span>${esc(s)}</span><b>${counts[s]}</b></button>`).join('');
   return `<div class="stack"><section class="panel soft">
-    <div class="sectionhead"><div><h2>Charts to Review</h2><p>Stage-specific quality gates · no global Top-6 cap.</p></div><span class="tag">${Object.values(counts).reduce((x,y)=>x+y,0)} qualified</span></div>
+    <div class="sectionhead"><div><h2>Charts to Review</h2><p>Explore qualified charts by stage.</p></div><span class="tag">${Object.values(counts).reduce((x,y)=>x+y,0)} qualified</span></div>
     <div class="stage-tabs">${tabs}</div>
-    <div class="stage-summary"><b>${esc(stage)}</b><span>${picks.length} chart${picks.length===1?'':'s'} currently pass this stage’s review surface.</span></div>
-    <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">No charts currently pass this stage’s review surface.</div>'}</div>
+    <div class="stage-summary"><b>${esc(stage)}</b><span>${picks.length} chart${picks.length===1?'':'s'} meet the criteria for this stage.</span></div>
+    <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">No charts meet the criteria for this stage.</div>'}</div>
   </section></div>`;
 }
 function portfolioSummary(){
@@ -613,26 +613,44 @@ function renderAll(){['home','shortlist','portfolio','watchlist'].forEach(render
 function setView(view){
   state.view=view;
   qa('.view').forEach(el=>el.classList.toggle('active',el.id===view+'View'));
-  qa('.navbtn').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
+  qa('.navbtn').forEach(el=>{const active=el.dataset.view===view;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')});
   const titles={home:'Home',shortlist:'Charts to Review',portfolio:'Portfolio Monitor',watchlist:'Watchlist'};
   const title=q('#pageTitle');if(title)title.textContent=titles[view]||'Market Hunter';
   renderView(view);window.scrollTo({top:0,behavior:'smooth'});
 }
-function closeModal(){q('#positionModal').classList.remove('open');q('#positionModal').setAttribute('aria-hidden','true')}
+let modalTrigger=null;
+function closeModal(){
+  q('#positionModal').classList.remove('open');q('#positionModal').setAttribute('aria-hidden','true');
+  document.body.classList.remove('modal-open');
+  qa('.app-shell,.mobile-nav').forEach(el=>el.inert=false);
+  if(modalTrigger?.isConnected)modalTrigger.focus();
+}
+document.addEventListener('keydown',e=>{
+  const modal=q('#positionModal');if(!modal.classList.contains('open'))return;
+  if(e.key==='Escape'){e.preventDefault();closeModal();return}
+  if(e.key!=='Tab')return;
+  const focusable=[...modal.querySelectorAll('button,input,select,textarea')].filter(el=>!el.disabled);
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(e.shiftKey&&(document.activeElement===first||document.activeElement===modal.querySelector('.sheet'))){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+});
 function openPosition(symbol='',source='manual'){
   const modal=q('#positionModal'),sym=normalizeSymbol(symbol),old=state.positions.get(sym),x=candidate(sym)||state.portfolioItems.get(sym),p=old||{},src=p.source||source;
   const entry=Number(p.entryPrice)>0?p.entryPrice:(src==='market-hunter'&&x?.price?x.price:'');
-  modal.innerHTML=`<div class="sheet"><div class="sheethead"><div><h2>${old?'Edit position':'Add position'}</h2><p>Use the real purchase details.</p></div><button class="close" data-close>×</button></div>
+  modalTrigger=document.activeElement;
+  modal.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="positionTitle" tabindex="-1"><div class="sheethead"><div><h2 id="positionTitle">${old?'Edit position':'Add position'}</h2><p>Use the real purchase details.</p></div><button class="close" aria-label="Close position form" data-close>×</button></div>
     <form class="form" id="positionForm">
-      <div class="field"><label>Symbol</label><input name="symbol" required value="${esc(p.symbol||sym)}" ${old?'readonly':''} placeholder="RY.TO"></div>
-      <div class="field"><label>Source</label><select name="source"><option value="market-hunter" ${src==='market-hunter'?'selected':''}>Market Hunter</option><option value="manual" ${src!=='market-hunter'?'selected':''}>Manual / External</option></select></div>
-      <div class="field"><label>Quantity</label><input name="quantity" type="number" step="any" min=".000001" required value="${Number(p.quantity)>0?p.quantity:''}"></div>
-      <div class="field"><label>Average purchase price</label><input name="entryPrice" type="number" step="any" min=".000001" required value="${entry}"></div>
-      <div class="field"><label>Purchase date</label><input name="boughtAt" type="date" required value="${String(p.boughtAt||today()).slice(0,10)}"></div>
-      <div class="field full"><label>Entry note (optional)</label><textarea name="notes">${esc(p.notes||'')}</textarea></div>
+      <div class="field"><label for="position-symbol">Symbol</label><input id="position-symbol" name="symbol" required value="${esc(p.symbol||sym)}" ${old?'readonly':''} placeholder="RY.TO"></div>
+      <div class="field"><label for="position-source">Source</label><select id="position-source" name="source"><option value="market-hunter" ${src==='market-hunter'?'selected':''}>Market Hunter</option><option value="manual" ${src!=='market-hunter'?'selected':''}>Manual / External</option></select></div>
+      <div class="field"><label for="position-quantity">Quantity</label><input id="position-quantity" name="quantity" type="number" step="any" min=".000001" required value="${Number(p.quantity)>0?p.quantity:''}"></div>
+      <div class="field"><label for="position-entryPrice">Average purchase price</label><input id="position-entryPrice" name="entryPrice" type="number" step="any" min=".000001" required value="${entry}"></div>
+      <div class="field"><label for="position-boughtAt">Purchase date</label><input id="position-boughtAt" name="boughtAt" type="date" required value="${String(p.boughtAt||today()).slice(0,10)}"></div>
+      <div class="field full"><label for="position-notes">Entry note (optional)</label><textarea id="position-notes" name="notes">${esc(p.notes||'')}</textarea></div>
       <div class="formactions"><button type="button" class="btn" data-close>Cancel</button><button class="btn primary" type="submit">Save</button></div>
     </form></div>`;
   modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+  document.body.classList.add('modal-open');qa('.app-shell,.mobile-nav').forEach(el=>el.inert=true);
+  modal.querySelector('.sheet').focus();
   q('#positionForm').onsubmit=async e=>{
     e.preventDefault();
     const fd=new FormData(e.currentTarget),s=normalizeSymbol(fd.get('symbol')),qty=Number(fd.get('quantity')),price=Number(fd.get('entryPrice')),date=String(fd.get('boughtAt')||''),chosen=fd.get('source')==='market-hunter'?'market-hunter':'manual',cur=candidate(s)||state.portfolioItems.get(s),prev=state.positions.get(s);
@@ -658,7 +676,7 @@ document.addEventListener('click',async e=>{
     closeRiskInfo();
   }
   const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return}
-  const stageTab=e.target.closest('[data-stage-tab]');if(stageTab){state.reviewStage=stageTab.dataset.stageTab;renderView('shortlist');return}
+  const stageTab=e.target.closest('[data-stage-tab]');if(stageTab){state.reviewStage=stageTab.dataset.stageTab;renderView('shortlist');qa('[data-stage-tab]').find(el=>el.dataset.stageTab===state.reviewStage)?.focus({preventScroll:true});return}
   const open=e.target.closest('[data-open]');if(open){setView(open.dataset.open);return}
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}
   const watch=e.target.closest('[data-watch]');if(watch){const s=watch.dataset.watch;state.watch.has(s)?state.watch.delete(s):state.watch.add(s);saveWatch();renderAll();toast(state.watch.has(s)?'Saved':'Removed');return}
@@ -685,3 +703,4 @@ if('serviceWorker' in navigator){
 }
 window.addEventListener('scroll',()=>closeRiskInfo(),{passive:true});
 load();
+
