@@ -61,12 +61,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$V2_SNAPSHOT_DIR"
-          vercel curl "$MANIFEST_PATH" --deployment "$DEPLOYMENT_URL" --token "$VERCEL_TOKEN" --scope "$TEAM_SLUG" > "$V2_DATASET_LOCK_MANIFEST"
+          vercel curl "$MANIFEST_PATH" --deployment "$DEPLOYMENT_URL" --token "$VERCEL_TOKEN" > "$V2_DATASET_LOCK_MANIFEST"
           node -e "JSON.parse(require('fs').readFileSync(process.env.V2_DATASET_LOCK_MANIFEST,'utf8')); console.log('Downloaded artifact manifest JSON')"
           for batch in 0 1 2 3; do
             file=$(node -e "const m=JSON.parse(require('fs').readFileSync(process.env.V2_DATASET_LOCK_MANIFEST,'utf8')); const b=m.batches.find(x=>x.batchIndex===Number(process.argv[1])); if(!b) process.exit(2); process.stdout.write(b.file)" "$batch")
             base=$(dirname "$MANIFEST_PATH")
-            vercel curl "$base/$file" --deployment "$DEPLOYMENT_URL" --token "$VERCEL_TOKEN" --scope "$TEAM_SLUG" > "$V2_SNAPSHOT_DIR/$file"
+            vercel curl "$base/$file" --deployment "$DEPLOYMENT_URL" --token "$VERCEL_TOKEN" > "$V2_SNAPSHOT_DIR/$file"
           done
       - name: Verify exact downloaded bytes and provenance
         run: node scripts/verify-locked-validation-inputs.mjs
