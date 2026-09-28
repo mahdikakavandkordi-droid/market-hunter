@@ -243,6 +243,32 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .brief-title{font-size:11px;font-weight:800;margin-bottom:5px}.brief-title span{font-size:8px;font-weight:500;color:var(--muted);margin-left:6px}.hunter-brief>p{font-size:10px;line-height:1.5;margin:0 0 7px;color:var(--text)}
 .brief-row{display:grid;grid-template-columns:105px 1fr;gap:7px;padding:4px 0;border-top:1px solid rgba(255,255,255,.045)}.brief-row small,.brief-check small{font-size:8px;color:var(--muted)}.brief-row b,.brief-check b{font-size:9px;line-height:1.45;font-weight:600}
 .brief-check{margin-top:7px;padding:8px;border-radius:8px;background:rgba(255,255,255,.035)}.brief-check small{display:block;margin-bottom:3px}.brief-check b{display:block}
+
+/* Portfolio v2: compact swipe cards + durable daily local history */
+.portfolio-shell{display:grid;gap:12px}
+.portfolio-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end}
+.portfolio-head h2{margin:0;font-size:18px}.portfolio-head p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+.portfolio-head-actions{display:flex;align-items:center;gap:7px}.portfolio-count{font-size:10px;color:var(--muted);padding:5px 8px;border:1px solid var(--line);border-radius:999px;white-space:nowrap}
+.portfolio-backup{background:transparent;color:var(--muted);border:1px solid var(--line);min-height:31px;padding:6px 9px;font-size:10px}
+.position-carousel-wrap{position:relative}
+.position-carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;padding:3px 3px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.position-carousel::-webkit-scrollbar{display:none}
+.position-card{flex:0 0 min(480px,calc(100vw - 54px));scroll-snap-align:center;scroll-snap-stop:always;cursor:default;min-height:0}
+.position-card:hover{transform:none}
+.position-card .position-main{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+.position-card .position-price{text-align:right}.position-card .position-price strong{display:block;font-size:22px;letter-spacing:-.035em}.position-card .position-price small{font-size:10px;color:var(--muted)}
+.position-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}.position-kpi{padding:8px;border:1px solid #202b36;background:var(--panel3);border-radius:10px;min-width:0}.position-kpi small{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em}.position-kpi b{display:block;margin-top:3px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.position-monitor{margin-top:9px;padding:10px;border-radius:10px;border:1px solid rgba(37,48,60,.75);background:rgba(255,255,255,.025);font-size:10.5px;line-height:1.45;color:#d8e0e8}
+.position-monitor strong{display:block;margin-bottom:3px;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.position-history{margin-top:10px}.position-history-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}.position-history-head span{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em}.position-history-head small{font-size:9px;color:var(--muted)}
+.position-history-strip{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.position-history-strip::-webkit-scrollbar{display:none}.position-day{flex:0 0 64px;padding:6px;border:1px solid var(--line);border-radius:9px;background:rgba(11,15,20,.38);text-align:center}.position-day small{display:block;color:var(--muted2);font-size:8px}.position-day b{display:block;margin-top:2px;font-size:10px}
+.position-more{margin-top:9px;border-top:1px solid var(--line);padding-top:8px}.position-more summary{cursor:pointer;color:var(--muted);font-size:10px;min-height:28px;display:flex;align-items:center}.position-more .detail-grid{margin-top:7px}
+.position-actions{display:flex;gap:6px;margin-top:10px}.position-actions .tv-link,.position-actions .position-close{flex:1;min-height:34px}.position-close{background:transparent;color:var(--muted);border:1px solid var(--line);font-size:10px}
+.portfolio-dots{display:flex;justify-content:center;gap:5px;margin-top:2px}.portfolio-dot{width:7px;height:7px;min-height:7px;padding:0;border-radius:999px;background:#354250;opacity:.55}.portfolio-dot.active{width:18px;background:var(--accent);opacity:1}
+.portfolio-note{font-size:9px;color:var(--muted2);line-height:1.45}.portfolio-empty{padding:22px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:11px;text-align:center}
+.portfolio-archive{margin-top:4px;border-top:1px solid rgba(37,48,60,.72);padding-top:9px}.portfolio-archive summary{cursor:pointer;color:var(--muted);font-size:10px}.portfolio-archive-row{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px solid rgba(37,48,60,.45);font-size:10px}.portfolio-archive-row span{color:var(--muted)}
+@media(min-width:900px){.position-card{flex-basis:430px}.position-carousel{padding-right:80px}}
+@media(max-width:620px){.portfolio-head{align-items:flex-start}.portfolio-head-actions{flex-direction:column;align-items:flex-end}.position-carousel{gap:10px;margin-left:-3px;margin-right:-3px;padding-left:3px;padding-right:18px}.position-card{flex-basis:calc(100vw - 38px);padding:13px}.position-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.position-kpi{padding:7px 5px}.position-kpi b{font-size:11px}.position-day{flex-basis:58px}}
 </style>
 <link rel="stylesheet" href="/intraday.css">
 <script type="module" src="/intraday.js"></script>
