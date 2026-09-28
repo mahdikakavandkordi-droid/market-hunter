@@ -678,6 +678,41 @@ function riskHtml(){
     ${a.note?`<details class="risk-method"><summary>Method & coverage</summary><div class="copy">${esc(a.note)}</div></details>`:''}
   </section>`;
 }
+function positionTrailHtml(symbol){
+  const rows=positionHistory(symbol).slice(-7);
+  if(!rows.length)return '<div class="portfolio-trail-empty">Daily trail starts after the next completed market snapshot.</div>';
+  return '<div class="portfolio-trail">'+rows.map(({date,item})=>{
+    const ret=item?.entryStats?.sinceEntryReturn;
+    return '<div class="trail-day"><small>'+esc(new Date(date+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'}))+'</small><b class="'+cls(ret)+'">'+pct(ret)+'</b></div>';
+  }).join('')+'</div>';
+}
+function cloudPanelHtml(){
+  const session=state.cloud.session,status=state.cloud.status||'local';
+  const badge=session?(status==='synced'?'Cloud synced':status==='syncing'?'Syncing…':status==='error'?'Sync issue':'Cloud connected'):'Local only';
+  if(session){
+    return '<div class="cloud-panel"><div><strong>Cloud portfolio</strong><small>'+esc(session.user?.email||'Signed in')+'</small></div><span class="cloud-badge '+esc(status)+'">'+esc(badge)+'</span><div class="cloud-actions"><button class="btn ghost" data-cloud-sync>Sync now</button><button class="btn" data-cloud-signout>Sign out</button></div>'+(state.cloud.message?'<p>'+esc(state.cloud.message)+'</p>':'')+'</div>';
+  }
+  if(!state.cloud.showAuth){
+    return '<div class="cloud-panel"><div><strong>Cloud backup & device sync</strong><small>Keep the local copy and sync the same portfolio across devices.</small></div><button class="btn primary" data-cloud-toggle>Connect cloud</button>'+(state.cloud.message?'<p>'+esc(state.cloud.message)+'</p>':'')+'</div>';
+  }
+  return '<div class="cloud-panel cloud-auth"><div><strong>Market Hunter cloud</strong><small>Create an account once, then use it on phone and computer.</small></div><div class="cloud-auth-fields"><input type="email" autocomplete="email" placeholder="Email" data-cloud-email><input type="password" autocomplete="current-password" minlength="6" placeholder="Password (6+)" data-cloud-password></div><div class="cloud-actions"><button class="btn primary" data-cloud-signin>Sign in</button><button class="btn" data-cloud-signup>Create account</button><button class="btn ghost" data-cloud-toggle>Cancel</button></div>'+(state.cloud.message?'<p>'+esc(state.cloud.message)+'</p>':'')+'</div>';
+}
+function archivedPositionsHtml(){
+  const rows=[...state.closedPositions.values()].sort((a,b)=>String(b.closedAt||'').localeCompare(String(a.closedAt||'')));
+  if(!rows.length)return '';
+  return '<details class="archive-panel"><summary>Archived positions ('+rows.length+')</summary><div class="archive-list">'+rows.slice(0,20).map(p=>'<div><b>'+esc(short(p.symbol))+'</b><span>'+esc(p.closedAt?new Date(p.closedAt).toLocaleDateString():'Closed')+' · '+esc(p.source==='market-hunter'?'Market Hunter':'Manual / External')+'</span></div>').join('')+'</div></details>';
+}
+function bindPortfolioCarousel(){
+  const rail=q('[data-portfolio-carousel]');if(!rail)return;
+  const cards=[...rail.querySelectorAll('.portfolio-slide')],dots=[...q('#portfolioView').querySelectorAll('[data-portfolio-dot]')];
+  const active=i=>dots.forEach((d,n)=>d.classList.toggle('active',n===i));
+  dots.forEach((d,i)=>d.addEventListener('click',()=>cards[i]?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})));
+  let raf=0;rail.addEventListener('scroll',()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{
+    const center=rail.scrollLeft+rail.clientWidth/2;let best=0,dist=Infinity;
+    cards.forEach((c,i)=>{const d=Math.abs(c.offsetLeft+c.offsetWidth/2-center);if(d<dist){dist=d;best=i}});
+    active(best);
+  })},{passive:true});
+}
 function positionCard(p,x,total){
   const h=health(x),qty=Number(p.quantity)||0,value=x&&qty>0?qty*x.price:null,ret=x&&Number(p.entryPrice)>0?(x.price/Number(p.entryPrice)-1)*100:null;
   const weight=Number.isFinite(total)&&Number.isFinite(value)&&total>0?value/total*100:null,e=x?.entryStats;
