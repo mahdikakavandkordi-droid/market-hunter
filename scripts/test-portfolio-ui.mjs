@@ -24,4 +24,20 @@ assert.match(html,/state\.portfolio\.positions\[symbol\]=closed/);
 // Legacy active-position storage remains synchronized for intraday.js compatibility.
 assert.match(html,/marketHunterPositions/);
 
-console.log('Portfolio persistence and swipe UI checks passed');
+// Cloud sync must use the dedicated Market Hunter project, a publishable browser key,
+// authenticated RLS tables, local/cloud merge, and must not expose any secret/service key.
+assert.match(html,/ivmpzyjxyfcefjyylybr\.supabase\.co/);
+assert.match(html,/sb_publishable_/);
+assert.doesNotMatch(html,/sb_secret_/);
+assert.doesNotMatch(html,/service_role/);
+assert.match(html,/market_hunter_portfolio_state/);
+assert.match(html,/market_hunter_portfolio_snapshots/);
+assert.match(html,/mergePortfolioPayload/);
+assert.match(html,/loadCloudPortfolio/);
+assert.match(html,/syncPortfolioCloud/);
+assert.match(html,/state\.cloud\.ready=false/);
+assert.match(html,/load\(\)\.then\(\(\)=>initializeCloudPortfolio\(\)\)/);
+assert.match(html,/Connect cloud/);
+assert.match(html,/Create account/);
+
+console.log('Portfolio local persistence, cloud sync, and swipe UI checks passed');
