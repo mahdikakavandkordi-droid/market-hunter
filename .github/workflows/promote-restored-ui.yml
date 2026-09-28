@@ -1,0 +1,33 @@
+name: Promote Restored UI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/restore-ui-lite-20260928
+    paths:
+      - '.github/workflows/promote-restored-ui.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Vercel CLI
+        run: npm install --global vercel
+      - name: Promote validated UI preview to production
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${VERCEL_TOKEN:-}" || { echo "SECRET_VERCEL_TOKEN is required"; exit 1; }
+          vercel promote https://market-hunter-5besiz5u0-mahdikakavandkordi-9201.vercel.app \
+            --token="$VERCEL_TOKEN" \
+            --scope=mahdikakavandkordi-9201 \
+            --yes
