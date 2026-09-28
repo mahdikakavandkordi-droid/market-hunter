@@ -3,7 +3,9 @@ name: HTP Live Prospective Collection
 on:
   workflow_dispatch:
   schedule:
+    # Primary post-close capture plus a later same-UTC-date recovery pass.
     - cron: '45 22 * * 1-5'
+    - cron: '35 23 * * 1-5'
   push:
     branches: [main]
     paths: ['.github/workflows/htp-live-prospective.yml']
@@ -21,6 +23,7 @@ jobs:
     timeout-minutes: 30
     env:
       HTP_FORWARD_DIR: ${{ github.workspace }}/evidence/data/research/healthy-trend-pullback-forward
+      HTP_PINNED_COLLECTOR_SHA: 1b967b798534525871efc6aff2f76a2582bf1fe9
     steps:
       - name: Checkout approved collector code
         uses: actions/checkout@v4
@@ -28,33 +31,145 @@ jobs:
           ref: 1b967b798534525871efc6aff2f76a2582bf1fe9
           path: collector
           persist-credentials: false
+
       - name: Checkout durable prospective evidence
         uses: actions/checkout@v4
         with:
           ref: research/htp-forward-evidence
           path: evidence
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Verify approved code
         working-directory: collector
         run: npm test
+
       - name: Audit existing evidence before collection
         working-directory: collector
         run: node scripts/audit-healthy-trend-pullback-forward.mjs
-      - name: Collect completed market session
+
+      - name: Check whether today's canonical capture already exists
+        id: precheck
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file=process.env.HTP_FORWARD_DIR+'/observations.jsonl';
+          const today=new Date().toISOString().slice(0,10);
+          const rows=fs.existsSync(file)
+            ? fs.readFileSync(file,'utf8').split('\n').filter(Boolean).map(JSON.parse)
+            : [];
+          const complete=rows.filter(x =>
+            x.marketAsOf===today &&
+            ['complete_nonzero','complete_zero_pick'].includes(x.status)
+          );
+          const models=new Set(complete.map(x=>x.model));
+          const ok=complete.length===3 &&
+            ['core','trend_rs','early_watch'].every(x=>models.has(x));
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'complete='+ok+'\n');
+          console.log(JSON.stringify({today,canonicalRecords:complete.length,complete:ok}));
+          NODE
+
+      - name: Collect with same-day recovery retries
         id: collector
+        if: steps.precheck.outputs.complete != 'true'
         continue-on-error: true
         working-directory: collector
-        run: GITHUB_SHA=1b967b798534525871efc6aff2f76a2582bf1fe9 node scripts/collect-healthy-trend-pullback-forward.mjs
+        shell: bash
+        run: |
+          set -u
+          for attempt in 1 2 3; do
+            echo "HTP live capture attempt $attempt/3"
+            GITHUB_SHA="$HTP_PINNED_COLLECTOR_SHA" node scripts/collect-healthy-trend-pullback-forward.mjs
+            rc=$?
+            echo "collector_exit_code=$rc"
+
+            complete="$(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file=process.env.HTP_FORWARD_DIR+'/observations.jsonl';
+          const today=new Date().toISOString().slice(0,10);
+          const rows=fs.existsSync(file)
+            ? fs.readFileSync(file,'utf8').split('\n').filter(Boolean).map(JSON.parse)
+            : [];
+          const complete=rows.filter(x =>
+            x.marketAsOf===today &&
+            ['complete_nonzero','complete_zero_pick'].includes(x.status)
+          );
+          const models=new Set(complete.map(x=>x.model));
+          process.stdout.write(String(
+            complete.length===3 &&
+            ['core','trend_rs','early_watch'].every(x=>models.has(x))
+          ));
+          NODE
+          )"
+
+            if [ "$complete" = "true" ]; then
+              echo "Canonical same-day capture is complete."
+              exit 0
+            fi
+
+            if [ "$attempt" -lt 3 ]; then
+              echo "Capture is still incomplete; retrying in 30 seconds."
+              sleep 30
+            fi
+          done
+
+          echo "No complete canonical capture after three same-day attempts."
+          exit 2
+
       - name: Replay and audit captured evidence
         id: audit
-        if: steps.collector.outcome == 'success' || steps.collector.outcome == 'failure'
+        if: always()
         continue-on-error: true
         working-directory: collector
         run: node scripts/audit-healthy-trend-pullback-forward.mjs
+
+      - name: Classify today's evidence state
+        id: state
+        if: always()
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const root=process.env.HTP_FORWARD_DIR;
+          const today=new Date().toISOString().slice(0,10);
+          const readJsonl=name=>{
+            const file=root+'/'+name;
+            return fs.existsSync(file)
+              ? fs.readFileSync(file,'utf8').split('\n').filter(Boolean).map(JSON.parse)
+              : [];
+          };
+          const observations=readJsonl('observations.jsonl');
+          const inputs=readJsonl('inputs.jsonl');
+          const runs=readJsonl('runs.jsonl');
+          const complete=observations.filter(x =>
+            x.marketAsOf===today &&
+            ['complete_nonzero','complete_zero_pick'].includes(x.status)
+          );
+          const models=new Set(complete.map(x=>x.model));
+          let state='unknown';
+          if(complete.length===3 && ['core','trend_rs','early_watch'].every(x=>models.has(x))){
+            state='complete';
+          }else if(inputs.some(x=>x.marketAsOf===today)){
+            state='partial';
+          }else{
+            const last=runs.at(-1);
+            if(last?.status==='market_not_completed')state='no_completed_market_session';
+            else if(last?.status==='collector_failure')state='collector_failure';
+          }
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'state='+state+'\n');
+          console.log(JSON.stringify({
+            today,state,
+            canonicalRecords:complete.length,
+            attemptsToday:inputs.filter(x=>x.marketAsOf===today).length,
+            lastRunStatus:runs.at(-1)?.status||null
+          }));
+          NODE
+
       - name: Preserve capture and failure evidence
-        if: always() && (steps.collector.outcome == 'success' || steps.collector.outcome == 'failure')
+        if: always()
         working-directory: evidence
         run: |
           set -euo pipefail
@@ -67,6 +182,7 @@ jobs:
           fi
           git commit -m "research: append pinned HTP prospective capture"
           git push origin HEAD:research/htp-forward-evidence
+
       - name: Upload run diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -76,11 +192,30 @@ jobs:
             evidence/data/research/healthy-trend-pullback-forward/audit.json
             evidence/data/research/healthy-trend-pullback-forward/status.json
             evidence/data/research/healthy-trend-pullback-forward/runs.jsonl
+            evidence/data/research/healthy-trend-pullback-forward/inputs.jsonl
+            evidence/data/research/healthy-trend-pullback-forward/observations.jsonl
           if-no-files-found: warn
           retention-days: 90
-      - name: Report collection or audit failure
+
+      - name: Report degraded or failed prospective collection
         if: always()
+        shell: bash
         run: |
-          if [ "${{ steps.collector.outcome }}" != "success" ] || [ "${{ steps.audit.outcome }}" != "success" ]; then
+          state="${{ steps.state.outputs.state }}"
+          audit="${{ steps.audit.outcome }}"
+          echo "HTP evidence state: $state"
+          echo "Audit outcome: $audit"
+
+          if [ "$audit" != "success" ]; then
+            echo "Forward evidence audit failed."
             exit 1
           fi
+
+          if [ "$state" = "partial" ] || [ "$state" = "collector_failure" ] || [ "$state" = "unknown" ]; then
+            echo "No valid canonical prospective observation was produced for today's attempted market session."
+            exit 1
+          fi
+
+          # A holiday / no completed market session is not a research failure.
+          # A complete capture (including three legitimate zero-pick records) passes.
+          exit 0
