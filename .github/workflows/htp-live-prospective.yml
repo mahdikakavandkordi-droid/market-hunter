@@ -1,0 +1,86 @@
+name: HTP Live Prospective Collection
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '45 22 * * 1-5'
+  push:
+    branches: [main]
+    paths: ['.github/workflows/htp-live-prospective.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: htp-live-prospective-evidence
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HTP_FORWARD_DIR: ${{ github.workspace }}/evidence/data/research/healthy-trend-pullback-forward
+    steps:
+      - name: Checkout approved collector code
+        uses: actions/checkout@v4
+        with:
+          ref: 1b967b798534525871efc6aff2f76a2582bf1fe9
+          path: collector
+          persist-credentials: false
+      - name: Checkout durable prospective evidence
+        uses: actions/checkout@v4
+        with:
+          ref: research/htp-forward-evidence
+          path: evidence
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify approved code
+        working-directory: collector
+        run: npm test
+      - name: Audit existing evidence before collection
+        working-directory: collector
+        run: node scripts/audit-healthy-trend-pullback-forward.mjs
+      - name: Collect completed market session
+        id: collector
+        continue-on-error: true
+        working-directory: collector
+        run: GITHUB_SHA=1b967b798534525871efc6aff2f76a2582bf1fe9 node scripts/collect-healthy-trend-pullback-forward.mjs
+      - name: Replay and audit captured evidence
+        id: audit
+        if: steps.collector.outcome == 'success' || steps.collector.outcome == 'failure'
+        continue-on-error: true
+        working-directory: collector
+        run: node scripts/audit-healthy-trend-pullback-forward.mjs
+      - name: Preserve capture and failure evidence
+        if: always() && (steps.collector.outcome == 'success' || steps.collector.outcome == 'failure')
+        working-directory: evidence
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-forward-research"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/research/healthy-trend-pullback-forward
+          if git diff --cached --quiet; then
+            echo "No new evidence."
+            exit 0
+          fi
+          git commit -m "research: append pinned HTP prospective capture"
+          git push origin HEAD:research/htp-forward-evidence
+      - name: Upload run diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: htp-live-prospective-diagnostics
+          path: |
+            evidence/data/research/healthy-trend-pullback-forward/audit.json
+            evidence/data/research/healthy-trend-pullback-forward/status.json
+            evidence/data/research/healthy-trend-pullback-forward/runs.jsonl
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Report collection or audit failure
+        if: always()
+        run: |
+          if [ "${{ steps.collector.outcome }}" != "success" ] || [ "${{ steps.audit.outcome }}" != "success" ]; then
+            exit 1
+          fi
