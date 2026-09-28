@@ -1,0 +1,110 @@
+name: Analyze Early Watch Episode Stability
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/early-watch-episode-stability-20260928
+    paths:
+      - lib/early-watch-episodes.js
+      - scripts/analyze-early-watch-episode-stability.mjs
+      - scripts/audit-early-watch-episode-stability.mjs
+      - scripts/test-early-watch-episode-stability.mjs
+      - package.json
+      - .github/workflows/analyze-early-watch-episode-stability.yml
+
+permissions:
+  contents: read
+
+env:
+  MH_ARCHIVE_REF: locked-v2-validation-36420714736-archive-v1
+  MH_ARCHIVE_ROOT: archive/locked-v2-validation/run-36420714736
+  V2_DATASET_LOCK_MANIFEST: data/frozen/market-hunter-v2-numerical-snapshot/manifest.json
+  PREVIOUS_EARLY_WATCH_REPLAY: data/v2-early-watch-surface-replay.json
+  EARLY_WATCH_STABILITY_OUT: data/research/early-watch-episode-stability
+  V2_OPEN_FINAL_TEST: "0"
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout focused research branch with archive tag history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Materialize pinned archive inputs only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p data/frozen/market-hunter-v2-numerical-snapshot
+          for i in 0 1 2 3; do
+            git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/raw-reports/batch-$i/v2-backtest-batch-$i.json" > "data/v2-backtest-batch-$i.json"
+          done
+          git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/snapshot/manifest.json" > "$V2_DATASET_LOCK_MANIFEST"
+          git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/evidence/v2-early-watch-surface-replay.json" > "$PREVIOUS_EARLY_WATCH_REPLAY"
+
+      - name: Verify archive checksums for materialized source files
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in 0 1 2 3; do
+            expected=$(git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/SHA256SUMS" | grep "raw-reports/batch-$i/v2-backtest-batch-$i.json" | awk '{print $1}')
+            actual=$(sha256sum "data/v2-backtest-batch-$i.json" | awk '{print $1}')
+            test "$actual" = "$expected"
+          done
+          expected=$(git show "$MH_ARCHIVE_REF:$MH_ARCHIVE_ROOT/SHA256SUMS" | grep "snapshot/manifest.json" | tail -1 | awk '{print $1}')
+          actual=$(sha256sum "$V2_DATASET_LOCK_MANIFEST" | awk '{print $1}')
+          test "$actual" = "$expected"
+
+      - name: Repository regression tests
+        run: npm test
+
+      - name: Analyze first-surface episode stability
+        run: node scripts/analyze-early-watch-episode-stability.mjs
+
+      - name: Independently audit exported episode rows
+        run: node scripts/audit-early-watch-episode-stability.mjs
+
+      - name: Assert Historical Final remains sealed
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const dir='data/research/early-watch-episode-stability';
+          const summary=JSON.parse(fs.readFileSync(dir+'/summary.json','utf8'));
+          const audit=JSON.parse(fs.readFileSync(dir+'/audit.json','utf8'));
+          if(summary.source?.finalTestOpened!==false)throw new Error('summary opened Historical Final');
+          if(audit.finalTestOpened!==false)throw new Error('audit opened Historical Final');
+          if(audit.failedChecks!==0)throw new Error('independent audit failed');
+          console.log('PASS: Historical Final sealed and independent audit clean');
+          NODE
+
+      - name: Write run metadata
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const p='data/research/early-watch-episode-stability/run-metadata.json';
+          fs.writeFileSync(p,JSON.stringify({
+            format:'market-hunter-early-watch-episode-stability-run-v1',
+            codeSha:process.env.GITHUB_SHA,
+            runId:Number(process.env.GITHUB_RUN_ID),
+            archiveRef:process.env.MH_ARCHIVE_REF,
+            validationRunId:36420714736,
+            finalTestOpened:false
+          },null,2)+'\n');
+          NODE
+
+      - name: Upload decision-analysis package
+        uses: actions/upload-artifact@v4
+        with:
+          name: early-watch-episode-stability-analysis
+          path: data/research/early-watch-episode-stability
+          retention-days: 14
+          if-no-files-found: error
