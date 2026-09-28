@@ -46,13 +46,18 @@ function quantile(a,q){const x=a.filter(Number.isFinite).sort((a,b)=>a-b);if(!x.
 function hashString(s){let h=2166136261>>>0;for(const ch of String(s)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0}return h>>>0}
 function rng32(seed){let x=seed>>>0||1;return()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return(x>>>0)/4294967296}}
 function shuffleTake(rows,n,random){const a=[...rows];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,n)}
-function intersectDates(lists){
+function calendarCoverage(lists){
   const sets=lists.map(x=>new Set(x));
   const union=[...new Set(lists.flat())].sort();
-  return union.filter(d=>sets.every(s=>s.has(d)));
+  return {
+    confirmed:union.filter(d=>sets.every(s=>s.has(d))),
+    partial:union.filter(d=>!sets.every(s=>s.has(d)))
+  };
 }
-const confirmedDates=intersectDates(reports.map(r=>r.surfaceReplay?.datesByHorizon?.['20']||r.surfaceReplay?.datesByHorizon?.[20]||[]))
-  .filter(d=>d>=calendar.developmentStart&&d<calendar.finalStart);
+const coverageLists=reports.map(r=>r.surfaceReplay?.datesByHorizon?.['20']||r.surfaceReplay?.datesByHorizon?.[20]||[]);
+const coverage=calendarCoverage(coverageLists);
+const confirmedDates=coverage.confirmed.filter(d=>d>=calendar.developmentStart&&d<calendar.finalStart);
+const partialCoverageDates=coverage.partial.filter(d=>d>=calendar.developmentStart&&d<calendar.finalStart);
 if(!confirmedDates.length)throw new Error('No confirmed pre-Final calendar');
 
 const dateIndex=new Map();
@@ -372,7 +377,11 @@ const summary={
     cdrBenchmark:'CAD CDR returns include FX effects while ^IXIC is USD; no FX/hedge series exists in the locked archive, so CDRs are excluded from headline comparison.',
     independentPriceVerification:'Pinned-source consistency is not independent market-price verification.'
   },
-  confirmedCalendar:{days:confirmedDates.length,first:confirmedDates[0],last:confirmedDates.at(-1)},
+  confirmedCalendar:{
+    days:confirmedDates.length,first:confirmedDates[0],last:confirmedDates.at(-1),
+    partialCoverageDays:partialCoverageDates.length,partialCoverageDates,
+    distinction:'Only confirmed intersection dates can create selections or zero-pick absences. Partial/missing-coverage dates are recorded separately and never reset an episode.'
+  },
   natural:naturalSummary,
   currentEarlyWatchNaturalAllInstrumentVolume:earlyAllVolume,
   cdrAssessment:{
@@ -428,7 +437,29 @@ for(const [target,x] of Object.entries(controlled)){
 const cc=Object.keys(compRows[0]);
 fs.writeFileSync(path.join(OUT_DIR,'comparison.csv'),[cc.join(','),...compRows.map(r=>cc.map(c=>esc(r[c])).join(','))].join('\n')+'\n');
 
-const files=['summary.json','episodes.json','episodes.csv','comparison.csv','random-controls.jsonl.gz'];
+const selectionRows=[];
+for(const [model,map] of Object.entries(naturalMaps)){
+  for(const date of confirmedDates){
+    selectionRows.push({
+      model,date,coverage:'confirmed',count:(map.get(date)||[]).length,
+      picks:(map.get(date)||[]).map(x=>({
+        symbol:x.symbol,rank:x.rank,score:round(x.score),sector:x.sector||null,
+        atr14Pct:round(x.atr14Pct),pivotDate:x.pivotDate||null,pivotConfirmedAt:x.pivotConfirmedAt||null,
+        weeklyLastCompleted:x.weeklyLastCompleted||null
+      }))
+    });
+  }
+}
+for(const date of partialCoverageDates)selectionRows.push({model:'coverage_only',date,coverage:'partial_or_missing',count:null,picks:[]});
+fs.writeFileSync(path.join(OUT_DIR,'selections.json'),JSON.stringify(selectionRows,null,2)+'\n');
+
+const selectionCols=['model','date','coverage','count','symbols'];
+const selectionCsv=[selectionCols.join(','),...selectionRows.map(r=>[
+  r.model,r.date,r.coverage,r.count,(r.picks||[]).map(x=>x.symbol).join('|')
+].map(esc).join(','))].join('\n')+'\n';
+fs.writeFileSync(path.join(OUT_DIR,'selections.csv'),selectionCsv);
+
+const files=['summary.json','episodes.json','episodes.csv','selections.json','selections.csv','comparison.csv','random-controls.jsonl.gz'];
 const checksums={};
 for(const f of files)checksums[f]=crypto.createHash('sha256').update(fs.readFileSync(path.join(OUT_DIR,f))).digest('hex');
 fs.writeFileSync(path.join(OUT_DIR,'checksums.json'),JSON.stringify({algorithm:'sha256',files:checksums},null,2)+'\n');
