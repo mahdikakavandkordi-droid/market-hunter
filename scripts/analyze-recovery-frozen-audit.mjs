@@ -101,6 +101,25 @@ function concentration(rows,key){
   return [...m.values()].map(x=>({...x,meanExcess:round(x.sumExcess/x.n)}))
     .sort((a,b)=>b.sumExcess-a.sumExcess||b.n-a.n);
 }
+function concentrationSensitivity(rows){
+  const symbol=concentration(rows,'symbol').filter(x=>x.sumExcess>0);
+  const removeTop=k=>{
+    const drop=new Set(symbol.slice(0,k).map(x=>x.key));
+    return {removed:[...drop],remaining:summary(rows.filter(x=>!drop.has(x.symbol)))};
+  };
+  return {
+    topPositiveSymbols:symbol.slice(0,10),
+    removeTop1:removeTop(1),
+    removeTop3:removeTop(3),
+    removeTop5:removeTop(5)
+  };
+}
+function familySummary(rows){
+  return {
+    nonCdr:summary(rows.filter(x=>x.sector!=='CDR')),
+    cdrDiagnostic:summary(rows.filter(x=>x.sector==='CDR'))
+  };
+}
 function byYear(rows){
   const years=[...new Set(rows.map(x=>x.date.slice(0,4)))].sort();
   return Object.fromEntries(years.map(y=>[y,summary(rows.filter(x=>x.date.startsWith(y))) ]));
@@ -165,7 +184,9 @@ for(const h of horizons){
       byYear:byYear(current.observations),
       features:featureSlices(current.observations),
       symbolConcentration:concentration(current.observations,'symbol').slice(0,15),
-      sectorConcentration:concentration(current.observations,'sector')
+      sectorConcentration:concentration(current.observations,'sector'),
+      concentrationSensitivity:concentrationSensitivity(current.observations),
+      familySummary:familySummary(current.observations)
     },
     firstSurfaceEpisodes:{
       all:summary(episodes),
@@ -175,7 +196,9 @@ for(const h of horizons){
       byYear:byYear(episodes),
       features:featureSlices(episodes),
       symbolConcentration:concentration(episodes,'symbol').slice(0,15),
-      sectorConcentration:concentration(episodes,'sector')
+      sectorConcentration:concentration(episodes,'sector'),
+      concentrationSensitivity:concentrationSensitivity(episodes),
+      familySummary:familySummary(episodes)
     },
     policyDiagnostics:{
       noAgeLimit:summary(noAgeLimit.observations),
