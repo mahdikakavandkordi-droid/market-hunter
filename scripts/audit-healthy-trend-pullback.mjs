@@ -95,18 +95,24 @@ function basic(rows){
   return {
     episodeCount:rows.length,primaryDenominator:x.length,distinctSymbols:new Set(rows.map(r=>r.symbol)).size,
     primaryLabels:labels,successRate:round(x.length?labels.success/x.length*100:null,2),
+    meanReturn5:round(mean(rows.map(r=>r.returns?.[5]))),medianReturn5:round(median(rows.map(r=>r.returns?.[5]))),
+    meanExcess5:round(mean(rows.map(r=>r.excessReturns?.[5]))),medianExcess5:round(median(rows.map(r=>r.excessReturns?.[5]))),
+    meanReturn10:round(mean(rows.map(r=>r.returns?.[10]))),medianReturn10:round(median(rows.map(r=>r.returns?.[10]))),
+    meanExcess10:round(mean(rows.map(r=>r.excessReturns?.[10]))),medianExcess10:round(median(rows.map(r=>r.excessReturns?.[10]))),
     meanReturn20:round(mean(rows.map(r=>r.returns?.[20]))),
     medianReturn20:round(median(rows.map(r=>r.returns?.[20]))),
     meanExcess20:round(mean(rows.map(r=>r.excessReturns?.[20]))),
     medianExcess20:round(median(rows.map(r=>r.excessReturns?.[20]))),
     meanFavourableExcursion:round(mean(rows.map(r=>r.favourableExcursionPct))),
+    medianFavourableExcursion:round(median(rows.map(r=>r.favourableExcursionPct))),
     meanAdverseExcursion:round(mean(rows.map(r=>r.adverseExcursionPct))),
+    medianAdverseExcursion:round(median(rows.map(r=>r.adverseExcursionPct))),
     medianTimeToFavourable:round(median(rows.filter(r=>r.primaryLabel==='success').map(r=>r.timeToFavourable)),2),
     irregularGapCount:rows.filter(r=>r.primaryLabel==='suspension_or_irregular_gap').length
   };
 }
 function subsetComparable(reported){
-  const keys=['episodeCount','primaryDenominator','distinctSymbols','primaryLabels','successRate','meanReturn20','medianReturn20','meanExcess20','medianExcess20','meanFavourableExcursion','meanAdverseExcursion','medianTimeToFavourable','irregularGapCount'];
+  const keys=['episodeCount','primaryDenominator','distinctSymbols','primaryLabels','successRate','meanReturn5','medianReturn5','meanExcess5','medianExcess5','meanReturn10','medianReturn10','meanExcess10','medianExcess10','meanReturn20','medianReturn20','meanExcess20','medianExcess20','meanFavourableExcursion','medianFavourableExcursion','meanAdverseExcursion','medianAdverseExcursion','medianTimeToFavourable','irregularGapCount'];
   return Object.fromEntries(keys.map(k=>[k,reported?.[k]]));
 }
 const checks=[],differences=[];
@@ -226,6 +232,18 @@ for(let i=0;i<randomRows.length;i+=stride){
   if(!nearly(e.entryDate,r.entryDate)||!nearly(e.entryPrice,r.entryPrice)||!nearly(e.atr14,r.atr14)||!nearly(e.primaryLabel,r.primaryLabel)||!nearly(e.excessReturns?.[20],r.excessReturns?.[20]))sampledRandomMismatch++;
 }
 check('fixed-spaced sample of random-control outcomes independently recomputes from frozen OHLC',sampledRandomMismatch===0,{sampled:Math.ceil(randomRows.length/stride),sampledRandomMismatch});
+
+// Separate CDR absolute-path diagnostic: benchmark excess is intentionally not audited/interpreted.
+const cdrFile=path.join(OUT_DIR,'cdr-early-watch-episodes.json');
+const cdrEpisodes=fs.existsSync(cdrFile)?JSON.parse(fs.readFileSync(cdrFile,'utf8')):[];
+let cdrMismatch=0;
+for(const e of cdrEpisodes){
+  const r=recompute(e);
+  for(const k of ['status','entryDate','entryPrice','atr14','finalDate','split','included','exclusionReason','primaryLabel','timeToFavourable']){
+    if(!nearly(e[k],r[k])){cdrMismatch++;break}
+  }
+}
+check('separate CDR Early Watch absolute paths independently recompute',cdrMismatch===0,{episodes:cdrEpisodes.length,cdrMismatch});
 
 // Metadata integrity.
 check('frozen evidence identity retained',summary.evidence?.tag==='locked-v2-validation-36420714736-archive-v1'&&summary.evidence?.validationRunId===36420714736,{evidence:summary.evidence});
