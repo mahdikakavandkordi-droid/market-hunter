@@ -30,6 +30,10 @@ for(const h of [5,10,20]){
   );
 
   const candidates=reports.flatMap(r=>r.recoverySurfaceReplay?.candidates||[]).filter(x=>x.horizon===h);
+  check(h+'D Recovery replay includes complete decision diagnostics',
+    candidates.every(x=>Number.isFinite(x.dist20)&&Number.isFinite(x.pullback60)&&Number.isFinite(x.avgDollar20)),
+    {candidateCount:candidates.length,missing:candidates.filter(x=>!Number.isFinite(x.dist20)||!Number.isFinite(x.pullback60)||!Number.isFinite(x.avgDollar20)).length}
+  );
   const dates=[...new Set(reports.flatMap(r=>r.recoverySurfaceReplay?.datesByHorizon?.[String(h)]||r.recoverySurfaceReplay?.datesByHorizon?.[h]||[]))].sort();
   const byDate=new Map();
   for(const x of candidates.filter(x=>x.stageAge<=2)){
