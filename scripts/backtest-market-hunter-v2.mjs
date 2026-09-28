@@ -267,6 +267,18 @@ const report=buildResearchReport({
   openFinalTest,
   validationCalendar:{developmentStart,validationStart,finalStart:finalTestStart}
 });
+const recoveryEpisodeRows=rawEvents.filter(x=>
+  x.stage==='Recovery' &&
+  x.date>=developmentStart &&
+  x.date<finalTestStart &&
+  x.outcomeDate<finalTestStart
+);
+report.recoveryEpisodeReplay={
+  scope:'pre-final-first-stage-episodes',
+  rows:recoveryEpisodeRows,
+  finalTestOpened:false,
+  excludedFinalOrCrossing:rawEvents.filter(x=>x.stage==='Recovery'&&(x.date>=finalTestStart||x.outcomeDate>=finalTestStart)).length
+};
 
 fs.mkdirSync('data',{recursive:true});
 const out='data/v2-backtest-batch-'+batchIndex+'.json';
