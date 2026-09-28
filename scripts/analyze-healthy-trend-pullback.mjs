@@ -299,7 +299,10 @@ function randomMap(targetMap,seed,matched=false){
     for(const t of target){
       const pool=(pools.get(date)||[]).filter(x=>x.symbol!==t.symbol&&!used.has(x.symbol)&&x.sector===t.sector&&x.volQuintile===t.volQuintile);
       if(!pool.length){stats.unmatchedPicks++;continue}
-      const x=pool[Math.floor(rnd()*pool.length)];used.add(x.symbol);chosen.push({...x,score:0,rank:chosen.length+1});
+      const x=pool[Math.floor(rnd()*pool.length)];used.add(x.symbol);chosen.push({
+        ...x,score:0,rank:chosen.length+1,
+        matchedTargetSymbol:t.symbol,matchedTargetSector:t.sector,matchedTargetVolQuintile:t.volQuintile
+      });
     }
     if(chosen.length<target.length)stats.insufficientDates++;
     out.set(date,chosen);
@@ -346,6 +349,9 @@ function compactRandomEvidence(control,target,seed,e){
     control,target,seed,
     episodeId:e.episodeId,model:e.model,symbol:e.symbol,firstSurfaceDate:e.firstSurfaceDate,
     entryDate:e.entryDate,entryPrice:e.entryPrice,atr14:e.atr14,
+    sector:e.sector,volQuintile:e.volQuintile,
+    matchedTargetSymbol:e.matchedTargetSymbol??null,matchedTargetSector:e.matchedTargetSector??null,
+    matchedTargetVolQuintile:e.matchedTargetVolQuintile??null,
     status:e.status,split:e.split,included:e.included,primaryLabel:e.primaryLabel,
     excessReturns:{20:e.excessReturns?.[20]??null}
   });
