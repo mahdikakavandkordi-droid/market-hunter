@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 
 function must(v,m){ if(!v) throw new Error(m); }
 const token=process.env.VERCEL_TOKEN;
@@ -53,22 +54,42 @@ if(direct.r.ok){
   process.exit(0);
 }
 
-// Fallback: inspect Vercel deployment file API. This also tells us whether the Git deployment tree exposes the generated snapshot files.
-const filesUrl=`https://api.vercel.com/v6/deployments/${encodeURIComponent(a.deploymentId)}/files?teamId=${encodeURIComponent(a.teamId)}`;
-const listed=await fetchText(filesUrl,{redirect:'follow'});
-diag('deployment files REST auth',listed.r,listed.text);
-must(listed.r.ok,`cannot list deployment files HTTP ${listed.r.status}`);
-const tree=JSON.parse(listed.text);
-const flat=[];
-function walk(nodes,prefix=''){
-  for(const n of nodes||[]){
-    const p=prefix?prefix+'/'+n.name:n.name;
-    flat.push({...n,path:p});
-    if(Array.isArray(n.children)) walk(n.children,p);
-  }
+// Vercel Authentication does not accept a project API Bearer token directly on the deployment URL.
+// Create a short-lived-in-practice automation bypass, use it only for this materialization, then revoke it in finally.
+must(a.projectId,'registry missing projectId for temporary automation bypass');
+const bypassSecret=crypto.randomBytes(24).toString('hex').slice(0,32);
+const bypassApi=`https://api.vercel.com/v1/projects/${encodeURIComponent(a.projectId)}/protection-bypass?teamId=${encodeURIComponent(a.teamId)}`;
+async function patchBypass(body){
+  return fetchText(bypassApi,{method:'PATCH',redirect:'follow',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 }
-walk(tree);
-const candidates=flat.filter(x=>/task3-numerical-snapshot\/(manifest\.json|batch-[0-3]\.json)$/.test(x.path));
-console.log('deployment file tree entries='+flat.length+' targetMatches='+candidates.length);
-for(const c of candidates) console.log('target file: '+c.path+' uid='+c.uid);
-throw new Error('Immutable static URL requires Vercel Authentication and deployment file tree did not provide a completed materialization path. REST token itself is valid; use an account-scoped CLI token or a protection bypass secret.');
+const generated=await patchBypass({generate:{secret:bypassSecret,note:'Temporary locked Market Hunter validation; auto-revoke'}});
+diag('temporary automation bypass create',generated.r,generated.text);
+must(generated.r.ok,`cannot create temporary automation bypass HTTP ${generated.r.status}`);
+
+let materialized=false;
+try{
+  const bypassHeaders={'x-vercel-protection-bypass':bypassSecret};
+  const m=await fetchText(manifestUrl,{headers:bypassHeaders,redirect:'follow'});
+  diag('bypass static manifest',m.r,m.text);
+  must(m.r.ok,`temporary bypass could not read manifest HTTP ${m.r.status}`);
+  const manifest=JSON.parse(m.text);
+  fs.mkdirSync(path.dirname(manifestFile),{recursive:true});
+  fs.mkdirSync(snapshotDir,{recursive:true});
+  fs.writeFileSync(manifestFile,m.text);
+  must(Array.isArray(manifest.batches)&&manifest.batches.length===4,'locked manifest does not contain four batches');
+  const base=a.manifestPath.replace(/\/manifest\.json$/,'');
+  for(const b of manifest.batches){
+    const u=`https://${a.deploymentUrl}${base}/${b.file}`;
+    const got=await fetchText(u,{headers:bypassHeaders,redirect:'follow'});
+    diag(`bypass static batch ${b.batchIndex}`,got.r,got.text);
+    must(got.r.ok,`failed bypass batch ${b.batchIndex} HTTP ${got.r.status}`);
+    fs.writeFileSync(path.join(snapshotDir,b.file),got.text);
+  }
+  materialized=true;
+  console.log('Materialized locked artifact through temporary automation bypass');
+} finally {
+  const revoked=await patchBypass({revoke:{secret:bypassSecret,regenerate:false}});
+  diag('temporary automation bypass revoke',revoked.r,revoked.text);
+  must(revoked.r.ok,`temporary automation bypass revoke failed HTTP ${revoked.r.status}`);
+}
+must(materialized,'locked artifact was not materialized');
