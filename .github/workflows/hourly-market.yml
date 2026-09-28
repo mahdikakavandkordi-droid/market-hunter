@@ -1,0 +1,51 @@
+name: Hourly Market Dashboard
+on:
+  schedule:
+    # Both EST and EDT; the collector checks Toronto time and fresh TSX metadata.
+    - cron: '47 13-20 * * 1-5'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hourly-market.yml', 'lib/intraday.js', 'scripts/capture-intraday.mjs', 'scripts/test-intraday.mjs']
+permissions:
+  contents: write
+concurrency:
+  group: hourly-market-quotes
+  cancel-in-progress: false
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: code
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: data/intraday-quotes
+          path: quotes
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify session and quote handling
+        working-directory: code
+        run: node scripts/test-intraday.mjs
+      - name: Capture hourly dashboard quotes
+        working-directory: code
+        env:
+          INTRADAY_OUTPUT: ${{ github.workspace }}/quotes/data/intraday.json
+          # A manual/initial run can publish a labelled closed-session snapshot.
+          INTRADAY_BOOTSTRAP: ${{ github.event_name != 'schedule' }}
+        run: node scripts/capture-intraday.mjs
+      - name: Publish quotes separately from daily research
+        working-directory: quotes
+        run: |
+          set -euo pipefail
+          if [ ! -f data/intraday.json ]; then exit 0; fi
+          git add data/intraday.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "market-hunter-quotes"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "data: refresh hourly dashboard quotes"
+          git push origin HEAD:data/intraday-quotes
