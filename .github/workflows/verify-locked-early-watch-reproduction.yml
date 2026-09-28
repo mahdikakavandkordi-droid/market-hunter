@@ -1,0 +1,50 @@
+name: Verify Locked Early Watch Reproduction
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/early-watch-validation-close-20260928
+    paths:
+      - scripts/reproduce-locked-early-watch-archive.mjs
+      - .github/workflows/verify-locked-early-watch-reproduction.yml
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout research branch with archive tag history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reproduce from durable archive tag
+        env:
+          MH_ARCHIVE_REF: locked-v2-validation-36420714736-archive-v1
+          MH_REPRO_OUTPUT: data/reproduced-v2-early-watch-surface-replay.json
+          MH_REPRO_REPORT: data/reproduced-v2-early-watch-handoff-comparison.json
+          V2_OPEN_FINAL_TEST: "0"
+        run: node scripts/reproduce-locked-early-watch-archive.mjs
+
+      - name: Assert sealed Final and exact handoff match
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const p=JSON.parse(fs.readFileSync('data/reproduced-v2-early-watch-handoff-comparison.json','utf8'));
+          if(p.finalTestOpened!==false) throw new Error('Historical Final is not sealed');
+          if(p.archiveReplayMatchIgnoringGeneratedAt!==true) throw new Error('Regenerated replay differs from archived replay');
+          if(p.handoffComparison?.discrepancyCount!==0) throw new Error('Handoff discrepancies detected');
+          console.log('PASS: durable archive reproduction matches archived replay and handoff with Final sealed');
+          NODE
+
+      - name: Upload reproduction proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: locked-early-watch-reproduction-proof
+          path: |
+            data/reproduced-v2-early-watch-surface-replay.json
+            data/reproduced-v2-early-watch-handoff-comparison.json
+          retention-days: 14
