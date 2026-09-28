@@ -94,14 +94,17 @@ for(const symbol of headlineSymbols){
         atr14Pct:g.atr14Pct,score:0
       });
     }
-    for(const [variant,key] of [['core','core'],['core_volume','core_volume'],['core_market','core_market']]){
-      const x=setupAt({pack,rows:pack.rows,i,benchmarkRows:bench,marketRows:data['^GSPTSE'].rows,variant});
-      if(x.eligible)candidateMaps[key].get(date).push({
-        symbol,date,decisionIndex:i,sector:meta.get(symbol)?.sector||'Unknown',atr14Pct:x.atr14Pct,
-        score:x.score,rs20:x.rs20,drawdownPct:x.drawdownPct,volumeRatio:x.volumeRatio,
-        marketAbove50:x.marketAbove50,pivotDate:x.pivot?.date,pivotConfirmedAt:x.pivot?.confirmedAt,
-        weeklyLastCompleted:x.weekly?.lastCompletedWeek
-      });
+    const core=setupAt({pack,rows:pack.rows,i,benchmarkRows:bench,marketRows:data['^GSPTSE'].rows,variant:'core'});
+    if(core.eligible){
+      const rec={
+        symbol,date,decisionIndex:i,sector:meta.get(symbol)?.sector||'Unknown',atr14Pct:core.atr14Pct,
+        score:core.score,rs20:core.rs20,drawdownPct:core.drawdownPct,volumeRatio:core.volumeRatio,
+        marketAbove50:core.marketAbove50,pivotDate:core.pivot?.date,pivotConfirmedAt:core.pivot?.confirmedAt,
+        weeklyLastCompleted:core.weekly?.lastCompletedWeek
+      };
+      candidateMaps.core.get(date).push(rec);
+      if(Number.isFinite(core.volumeRatio)&&core.volumeRatio>=HTP_PARAMS.volumeRatioMin)candidateMaps.core_volume.get(date).push({...rec});
+      if(core.marketAbove50===true)candidateMaps.core_market.get(date).push({...rec});
     }
     const tr=trendRsAt({pack,rows:pack.rows,i,benchmarkRows:bench});
     if(tr.eligible)candidateMaps.trend_rs.get(date).push({
@@ -175,11 +178,15 @@ function basicStats(rows){
     episodeCount:rows.length,primaryDenominator:x.length,distinctSymbols:new Set(rows.map(r=>r.symbol)).size,
     primaryLabels:labels,successRate:round(successRate,2),
     meanReturn5:round(mean(rows.map(r=>r.returns?.[5]))),medianReturn5:round(median(rows.map(r=>r.returns?.[5]))),
+    meanExcess5:round(mean(rows.map(r=>r.excessReturns?.[5]))),medianExcess5:round(median(rows.map(r=>r.excessReturns?.[5]))),
     meanReturn10:round(mean(rows.map(r=>r.returns?.[10]))),medianReturn10:round(median(rows.map(r=>r.returns?.[10]))),
+    meanExcess10:round(mean(rows.map(r=>r.excessReturns?.[10]))),medianExcess10:round(median(rows.map(r=>r.excessReturns?.[10]))),
     meanReturn20:round(mean(rows.map(r=>r.returns?.[20]))),medianReturn20:round(median(rows.map(r=>r.returns?.[20]))),
     meanExcess20:round(mean(rows.map(r=>r.excessReturns?.[20]))),medianExcess20:round(median(rows.map(r=>r.excessReturns?.[20]))),
     meanFavourableExcursion:round(mean(rows.map(r=>r.favourableExcursionPct))),
+    medianFavourableExcursion:round(median(rows.map(r=>r.favourableExcursionPct))),
     meanAdverseExcursion:round(mean(rows.map(r=>r.adverseExcursionPct))),
+    medianAdverseExcursion:round(median(rows.map(r=>r.adverseExcursionPct))),
     medianTimeToFavourable:round(median(rows.filter(r=>r.primaryLabel==='success').map(r=>r.timeToFavourable)),2),
     irregularGapCount:rows.filter(r=>r.primaryLabel==='suspension_or_irregular_gap').length
   };
@@ -242,7 +249,23 @@ for(const [model,rows] of Object.entries(naturalEpisodes)){
   };
 }
 const earlyAllVolume=outputVolume(earlyAll);
-const earlyCdrPicks=[...earlyAll.values()].flat().filter(x=>cdr.has(x.symbol));
+const earlyCdrMap=new Map(confirmedDates.map(d=>[d,(earlyAll.get(d)||[]).filter(x=>cdr.has(x.symbol))]));
+const earlyCdrPicks=[...earlyCdrMap.values()].flat();
+const earlyCdrEpisodes=episodesFor('early_watch_cdr_diagnostic',earlyCdrMap);
+const cdrIncluded=eligibleRows(earlyCdrEpisodes);
+const cdrAbsolutePath={
+  episodeCount:cdrIncluded.length,
+  distinctSymbols:new Set(cdrIncluded.map(x=>x.symbol)).size,
+  primaryDenominator:cdrIncluded.filter(x=>x.primaryLabel!=='suspension_or_irregular_gap').length,
+  successRate:round((()=>{
+    const q=cdrIncluded.filter(x=>x.primaryLabel!=='suspension_or_irregular_gap');
+    return q.length?q.filter(x=>x.primaryLabel==='success').length/q.length*100:null;
+  })(),2),
+  meanReturn5:round(mean(cdrIncluded.map(x=>x.returns?.[5]))),medianReturn5:round(median(cdrIncluded.map(x=>x.returns?.[5]))),
+  meanReturn10:round(mean(cdrIncluded.map(x=>x.returns?.[10]))),medianReturn10:round(median(cdrIncluded.map(x=>x.returns?.[10]))),
+  meanReturn20:round(mean(cdrIncluded.map(x=>x.returns?.[20]))),medianReturn20:round(median(cdrIncluded.map(x=>x.returns?.[20]))),
+  note:'Absolute CAD path diagnostic for current Early Watch CDR picks only. Benchmark excess is intentionally omitted because the locked archive lacks a CAD-compatible FX/hedged benchmark treatment.'
+};
 
 // Controlled deterministic maps against each challenger.
 function controlledBaselineMap(targetMap,baselineMap){
@@ -338,6 +361,9 @@ for(const targetName of ['core','core_volume','core_market']){
     excess20P05:round(quantile(arr.map(x=>x.meanExcess20),.05)),
     excess20P95:round(quantile(arr.map(x=>x.meanExcess20),.95)),
     totalUnmatchedPicks:arr.reduce((s,x)=>s+(x.unmatchedPicks||0),0),
+    meanUnmatchedPicksPerSeed:round(mean(arr.map(x=>x.unmatchedPicks||0)),2),
+    totalInsufficientDates:arr.reduce((s,x)=>s+(x.insufficientDates||0),0),
+    meanInsufficientDatesPerSeed:round(mean(arr.map(x=>x.insufficientDates||0)),2),
     seedSummaries:arr
   });
   controlled[targetName]={
@@ -388,8 +414,9 @@ const summary={
     cdrUniverseCount:cdr.size,
     currentEarlyWatchCdrPickDays:new Set(earlyCdrPicks.map(x=>x.date)).size,
     currentEarlyWatchCdrPickCount:earlyCdrPicks.length,
+    currentEarlyWatchAbsolutePath:cdrAbsolutePath,
     headlineComparison:'excluded due benchmark currency/hedging incompatibility',
-    separateRawChallengerComparison:'not used because it would not supply a defensible relative-strength benchmark'
+    challengerCdrResult:'not computed because the challenger itself requires benchmark-relative strength and the locked archive does not provide a defensible CAD-compatible/FX-aware comparator'
   },
   controlled,
   legacyCloseToClose:{
