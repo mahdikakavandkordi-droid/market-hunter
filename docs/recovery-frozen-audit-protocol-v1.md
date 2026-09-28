@@ -161,3 +161,7 @@ Historical Final remains sealed throughout this Recovery audit.
 Previously observed history may be used for reproducibility and diagnostics, but it must not be described as untouched out-of-sample evidence.
 
 The correct next source of genuinely new evidence is prospective collection after the historical audit is frozen.
+
+## Workflow activation marker
+
+The immutable-snapshot Recovery audit workflow is installed on this branch. This marker exists only to trigger the first branch-scoped audit run; it changes no research rule.
