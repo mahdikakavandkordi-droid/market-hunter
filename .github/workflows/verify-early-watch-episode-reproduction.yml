@@ -1,0 +1,41 @@
+name: Verify Early Watch Episode Reproduction Command
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/early-watch-episode-stability-20260928
+    paths:
+      - .github/workflows/verify-early-watch-episode-reproduction.yml
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run documented one-command reproduction
+        env:
+          EARLY_WATCH_STABILITY_OUT: data/research/early-watch-episode-stability-reproduced
+          V2_OPEN_FINAL_TEST: "0"
+        run: node scripts/reproduce-early-watch-episode-stability-archive.mjs
+      - name: Compare reproduced summary to committed summary
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const a=JSON.parse(fs.readFileSync('data/research/early-watch-episode-stability/summary.json','utf8'));
+          const b=JSON.parse(fs.readFileSync('data/research/early-watch-episode-stability-reproduced/summary.json','utf8'));
+          delete a.generatedAt; delete b.generatedAt;
+          if(JSON.stringify(a)!==JSON.stringify(b))throw new Error('Reproduced summary differs from committed summary');
+          const audit=JSON.parse(fs.readFileSync('data/research/early-watch-episode-stability-reproduced/audit.json','utf8'));
+          if(audit.failedChecks!==0||audit.finalTestOpened!==false)throw new Error('Reproduced audit failed or Final opened');
+          console.log('PASS: documented reproduction command matches committed summary with Historical Final sealed');
+          NODE
