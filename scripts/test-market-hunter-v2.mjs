@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {classify,rank,surfaceRank,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY} from '../lib/market-hunter-v2-engine.js';
+import {emptyStageContinuity,advanceStageContinuity} from '../lib/stage-continuity.js';
 
 const base={
   weeklyUp:false,last:100,ma20:100,ma50:100,ma20Slope5:0,ma50Slope10:0,
@@ -9,6 +10,23 @@ const base={
   higherLow:false,swingTrend:'Insufficient pivots',atr14Pct:2,dist20:0,rsi14:50
 };
 const m=x=>({...base,...x});
+
+let continuity=emptyStageContinuity();
+let step=advanceStageContinuity(continuity,'Recovery');
+assert.equal(step.stageAge,0);
+assert.equal(step.episodeStart,true);
+continuity=step.state;
+step=advanceStageContinuity(continuity,'Recovery');
+assert.equal(step.stageAge,1);
+assert.equal(step.episodeStart,false);
+// Any excluded interval (for example the 30-session post-split guard) must break continuity.
+continuity=emptyStageContinuity();
+step=advanceStageContinuity(continuity,'Recovery');
+assert.equal(step.stageAge,0);
+assert.equal(step.episodeStart,true);
+assert.deepEqual(advanceStageContinuity(step.state,null),{
+  stageAge:null,episodeStart:false,state:emptyStageContinuity()
+});
 
 assert.equal(classify(m({
   weeklyUp:true,last:120,ma20:110,ma50:100,ma20Slope5:2,ma50Slope10:1,
