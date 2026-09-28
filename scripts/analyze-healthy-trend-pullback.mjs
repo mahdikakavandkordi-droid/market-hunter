@@ -437,6 +437,7 @@ const summary={
 fs.mkdirSync(OUT_DIR,{recursive:true});
 fs.writeFileSync(path.join(OUT_DIR,'summary.json'),JSON.stringify(summary,null,2)+'\n');
 fs.writeFileSync(path.join(OUT_DIR,'episodes.json'),JSON.stringify(deterministicRows,null,2)+'\n');
+fs.writeFileSync(path.join(OUT_DIR,'cdr-early-watch-episodes.json'),JSON.stringify(earlyCdrEpisodes,null,2)+'\n');
 
 const cols=['episodeId','model','symbol','sector','firstSurfaceDate','priorConfirmedDate','rank','score','entryDate','entryPrice','atr14','finalDate','split','included','exclusionReason','primaryLabel','timeToFavourable','return5','return10','return20','excess20','favourableExcursionPct','adverseExcursionPct','marketContext'];
 const esc=v=>{const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s.replaceAll('"','""')+'"':s};
@@ -487,7 +488,7 @@ const selectionCsv=[selectionCols.join(','),...selectionRows.map(r=>[
 ].map(esc).join(','))].join('\n')+'\n';
 fs.writeFileSync(path.join(OUT_DIR,'selections.csv'),selectionCsv);
 
-const files=['summary.json','episodes.json','episodes.csv','selections.json','selections.csv','comparison.csv','random-controls.jsonl.gz'];
+const files=['summary.json','episodes.json','episodes.csv','cdr-early-watch-episodes.json','selections.json','selections.csv','comparison.csv','random-controls.jsonl.gz'];
 const checksums={};
 for(const f of files)checksums[f]=crypto.createHash('sha256').update(fs.readFileSync(path.join(OUT_DIR,f))).digest('hex');
 fs.writeFileSync(path.join(OUT_DIR,'checksums.json'),JSON.stringify({algorithm:'sha256',files:checksums},null,2)+'\n');
