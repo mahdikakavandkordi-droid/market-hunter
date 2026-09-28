@@ -125,6 +125,12 @@ for(const date of confirmedDates){
     for(const row of candidateMaps[key].get(date)||[])row.volQuintile=qBySymbol.get(row.symbol);
   }
 }
+const preCapEligibleCounts=Object.fromEntries(
+  Object.entries(candidateMaps).map(([model,m])=>[
+    model,
+    new Map(confirmedDates.map(date=>[date,(m.get(date)||[]).length]))
+  ])
+);
 function finalizeMap(m){
   const out=new Map();
   for(const date of confirmedDates){
@@ -164,13 +170,17 @@ const naturalMaps={
 const naturalEpisodes={};
 for(const [model,map] of Object.entries(naturalMaps))naturalEpisodes[model]=episodesFor(model,map);
 
-function outputVolume(map,eligibleMap=null){
+function outputVolume(map,preCapCounts=null){
   const counts=confirmedDates.map(d=>(map.get(d)||[]).length);
-  const eligibleCounts=eligibleMap?confirmedDates.map(d=>(eligibleMap.get(d)||[]).length):null;
+  const eligibleCounts=preCapCounts?confirmedDates.map(d=>preCapCounts.get(d)||0):null;
   return {
-    confirmedDays:confirmedDates.length,daysWithPicks:counts.filter(x=>x>0).length,zeroPickDays:counts.filter(x=>x===0).length,
-    totalPicks:counts.reduce((a,b)=>a+b,0),meanPicksPerConfirmedDay:round(mean(counts),3),
-    naturalEligibleTotal:eligibleCounts?eligibleCounts.reduce((a,b)=>a+b,0):null
+    confirmedDays:confirmedDates.length,
+    daysWithPicks:counts.filter(x=>x>0).length,
+    zeroPickDays:counts.filter(x=>x===0).length,
+    totalPicks:counts.reduce((a,b)=>a+b,0),
+    meanPicksPerConfirmedDay:round(mean(counts),3),
+    preCapEligibleTotal:eligibleCounts?eligibleCounts.reduce((a,b)=>a+b,0):null,
+    maxVisiblePerDay:HTP_PARAMS.maxVisible
   };
 }
 function eligibleRows(rows,split=null){
@@ -250,7 +260,7 @@ function summarizeEpisodes(rows,label){
 const naturalSummary={};
 for(const [model,rows] of Object.entries(naturalEpisodes)){
   naturalSummary[model]={
-    volume:outputVolume(naturalMaps[model],model.startsWith('core')?candidateMaps[model]:null),
+    volume:outputVolume(naturalMaps[model],preCapEligibleCounts[model]||null),
     outcomes:summarizeEpisodes(rows,'natural|'+model)
   };
 }
@@ -314,8 +324,8 @@ function pairedDateEffect(targetRows,baseRows){
   const tm=new Map(),bm=new Map();
   for(const r of t){if(!tm.has(r.firstSurfaceDate))tm.set(r.firstSurfaceDate,[]);tm.get(r.firstSurfaceDate).push(r)}
   for(const r of b){if(!bm.has(r.firstSurfaceDate))bm.set(r.firstSurfaceDate,[]);bm.get(r.firstSurfaceDate).push(r)}
-  const dates=confirmedDates.filter(d=>tm.has(d)&&bm.has(d));
-  const diffs=dates.map(d=>{
+  const sharedEpisodeDates=confirmedDates.filter(d=>tm.has(d)&&bm.has(d));
+  const diffs=sharedEpisodeDates.map(d=>{
     const ta=tm.get(d).filter(x=>x.primaryLabel!=='suspension_or_irregular_gap');
     const ba=bm.get(d).filter(x=>x.primaryLabel!=='suspension_or_irregular_gap');
     return {
@@ -324,21 +334,28 @@ function pairedDateEffect(targetRows,baseRows){
       excess:mean(ta.map(x=>x.excessReturns?.[20]))-mean(ba.map(x=>x.excessReturns?.[20]))
     };
   }).filter(x=>Number.isFinite(x.success)&&Number.isFinite(x.excess));
-  if(!diffs.length)return {sharedDates:0};
+  if(!diffs.length)return {sharedDates:0,sharedEpisodeFirstSurfaceDates:0};
+  const diffByDate=new Map(diffs.map(x=>[x.d,x]));
   const pointSuccess=mean(diffs.map(x=>x.success))*100,pointExcess=mean(diffs.map(x=>x.excess));
   const rnd=rng32((BOOTSTRAP_SEED^hashString('paired'+targetRows[0]?.model+baseRows[0]?.model))>>>0),bs=[],be=[];
   for(let rep=0;rep<BOOTSTRAP_REPS;rep++){
     let produced=0,sv=[],ev=[];
-    while(produced<diffs.length){
-      const start=Math.floor(rnd()*diffs.length);
-      for(let j=0;j<BLOCK_DATES&&produced<diffs.length;j++,produced++){
-        const x=diffs[(start+j)%diffs.length];sv.push(x.success);ev.push(x.excess);
+    while(produced<confirmedDates.length){
+      const start=Math.floor(rnd()*confirmedDates.length);
+      for(let j=0;j<BLOCK_DATES&&produced<confirmedDates.length;j++,produced++){
+        const d=confirmedDates[(start+j)%confirmedDates.length];
+        const x=diffByDate.get(d);
+        if(x){sv.push(x.success);ev.push(x.excess)}
       }
     }
-    bs.push(mean(sv)*100);be.push(mean(ev));
+    if(sv.length&&ev.length){bs.push(mean(sv)*100);be.push(mean(ev))}
   }
   return {
-    sharedDates:diffs.length,successRateDifferencePctPoints:round(pointSuccess,2),meanExcess20DifferencePctPoints:round(pointExcess),
+    sharedDates:diffs.length,
+    sharedEpisodeFirstSurfaceDates:diffs.length,
+    bootstrapCalendar:'20-session circular blocks sampled on the full confirmed calendar; only sampled shared episode dates contribute to paired effects',
+    bootstrapReplicationsUsed:Math.min(bs.length,be.length),
+    successRateDifferencePctPoints:round(pointSuccess,2),meanExcess20DifferencePctPoints:round(pointExcess),
     successDiff95:{lower:round(quantile(bs,.025),2),upper:round(quantile(bs,.975),2)},
     excessDiff95:{lower:round(quantile(be,.025)),upper:round(quantile(be,.975))}
   };
@@ -356,16 +373,48 @@ function compactRandomEvidence(control,target,seed,e){
     excessReturns:{20:e.excessReturns?.[20]??null}
   });
 }
-const controlled={},randomEvidenceLines=[];
+function compactRandomDailyEvidence(control,target,seed,date,targetRows,controlRows){
+  return JSON.stringify({
+    control,target,seed,date,
+    targetCount:targetRows.length,
+    targetSymbols:targetRows.map(x=>x.symbol),
+    selectedCount:controlRows.length,
+    unmatchedCount:Math.max(0,targetRows.length-controlRows.length),
+    selected:controlRows.map(x=>({
+      symbol:x.symbol,sector:x.sector,volQuintile:x.volQuintile,
+      matchedTargetSymbol:x.matchedTargetSymbol??null,
+      matchedTargetSector:x.matchedTargetSector??null,
+      matchedTargetVolQuintile:x.matchedTargetVolQuintile??null
+    }))
+  });
+}
+const controlled={},randomEvidenceLines=[],randomDailyEvidenceLines=[],controlledSelectionRecords=[];
 for(const targetName of ['core','core_volume','core_market']){
   const targetMap=naturalMaps[targetName],targetEpisodes=naturalEpisodes[targetName];
   const ew=controlledBaselineMap(targetMap,naturalMaps.early_watch);
   const tr=controlledBaselineMap(targetMap,naturalMaps.trend_rs);
+  for(const date of confirmedDates){
+    const targetRows=targetMap.get(date)||[];
+    if(!targetRows.length)continue;
+    const ewRows=ew.map.get(date)||[],trRows=tr.map.get(date)||[];
+    controlledSelectionRecords.push({
+      target:targetName,date,
+      targetCount:targetRows.length,targetSymbols:targetRows.map(x=>x.symbol),
+      earlyWatchCount:ewRows.length,earlyWatchSymbols:ewRows.map(x=>x.symbol),earlyWatchShortfall:targetRows.length-ewRows.length,
+      trendRsCount:trRows.length,trendRsSymbols:trRows.map(x=>x.symbol),trendRsShortfall:targetRows.length-trRows.length
+    });
+  }
   const ewEpisodes=episodesFor('controlled_'+targetName+'_early_watch',ew.map);
   const trEpisodes=episodesFor('controlled_'+targetName+'_trend_rs',tr.map);
   const seedSummaries=[],matchedSummaries=[];
   for(const seed of RANDOM_SEEDS){
     const rr=randomMap(targetMap,seed,false),mr=randomMap(targetMap,seed,true);
+    for(const date of confirmedDates){
+      const targetRows=targetMap.get(date)||[];
+      if(!targetRows.length)continue;
+      randomDailyEvidenceLines.push(compactRandomDailyEvidence('random',targetName,seed,date,targetRows,rr.map.get(date)||[]));
+      randomDailyEvidenceLines.push(compactRandomDailyEvidence('matched',targetName,seed,date,targetRows,mr.map.get(date)||[]));
+    }
     const re=episodesFor('random_'+targetName+'_'+seed,rr.map),me=episodesFor('matched_'+targetName+'_'+seed,mr.map);
     const rs=basicStats(eligibleRows(re)),ms=basicStats(eligibleRows(me));
     seedSummaries.push({seed,...rs,unmatchedPicks:rr.unmatchedPicks,insufficientDates:rr.insufficientDates});
@@ -408,6 +457,10 @@ const RANDOM_CHUNK_LINES=20000;
 const randomEvidenceFiles=Array.from(
   {length:Math.ceil(randomEvidenceLines.length/RANDOM_CHUNK_LINES)},
   (_,i)=>'random-controls-part-'+String(i+1).padStart(3,'0')+'.jsonl.gz'
+);
+const randomMatchingEvidenceFiles=Array.from(
+  {length:Math.ceil(randomDailyEvidenceLines.length/RANDOM_CHUNK_LINES)},
+  (_,i)=>'random-matching-part-'+String(i+1).padStart(3,'0')+'.jsonl.gz'
 );
 const deterministicRows=Object.values(naturalEpisodes).flat();
 const legacy=fs.existsSync(LEGACY_FILE)?JSON.parse(fs.readFileSync(LEGACY_FILE,'utf8')):null;
@@ -464,6 +517,18 @@ const summary={
     files:randomEvidenceFiles,
     note:'All generated random-control episode identities/outcome labels used for seed summaries are retained in chunked evidence; no seeds or observations are dropped.'
   },
+  randomDailyMatchingStorage:{
+    format:'compact JSONL gzip chunks',
+    recordCount:randomDailyEvidenceLines.length,
+    chunkLines:RANDOM_CHUNK_LINES,
+    files:randomMatchingEvidenceFiles,
+    note:'One record per challenger opportunity date × seed × control. Preserves target count, selected count and identities so daily matching can be independently audited.'
+  },
+  controlledSelectionAudit:{
+    file:'controlled-selections.json',
+    records:controlledSelectionRecords.length,
+    note:'Deterministic Early Watch and trend+RS baseline counts/identities on every challenger opportunity date.'
+  },
   uncertainty:{bootstrapSeed:BOOTSTRAP_SEED,reps:BOOTSTRAP_REPS,blockLengthConfirmedDates:BLOCK_DATES}
 };
 
@@ -471,6 +536,7 @@ fs.mkdirSync(OUT_DIR,{recursive:true});
 fs.writeFileSync(path.join(OUT_DIR,'summary.json'),JSON.stringify(summary,null,2)+'\n');
 fs.writeFileSync(path.join(OUT_DIR,'episodes.json'),JSON.stringify(deterministicRows,null,2)+'\n');
 fs.writeFileSync(path.join(OUT_DIR,'cdr-early-watch-episodes.json'),JSON.stringify(earlyCdrEpisodes,null,2)+'\n');
+fs.writeFileSync(path.join(OUT_DIR,'controlled-selections.json'),JSON.stringify(controlledSelectionRecords,null,2)+'\n');
 
 const cols=['episodeId','model','symbol','sector','firstSurfaceDate','priorConfirmedDate','rank','score','entryDate','entryPrice','atr14','finalDate','split','included','exclusionReason','primaryLabel','timeToFavourable','return5','return10','return20','excess20','favourableExcursionPct','adverseExcursionPct','marketContext'];
 const esc=v=>{const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s.replaceAll('"','""')+'"':s};
@@ -483,6 +549,11 @@ for(let part=0;part<randomEvidenceFiles.length;part++){
   const start=part*RANDOM_CHUNK_LINES,end=Math.min(randomEvidenceLines.length,start+RANDOM_CHUNK_LINES);
   const payload=randomEvidenceLines.slice(start,end).join('\n')+'\n';
   fs.writeFileSync(path.join(OUT_DIR,randomEvidenceFiles[part]),zlib.gzipSync(payload,{level:9}));
+}
+for(let part=0;part<randomMatchingEvidenceFiles.length;part++){
+  const start=part*RANDOM_CHUNK_LINES,end=Math.min(randomDailyEvidenceLines.length,start+RANDOM_CHUNK_LINES);
+  const payload=randomDailyEvidenceLines.slice(start,end).join('\n')+'\n';
+  fs.writeFileSync(path.join(OUT_DIR,randomMatchingEvidenceFiles[part]),zlib.gzipSync(payload,{level:9}));
 }
 
 const compRows=[];
@@ -524,7 +595,7 @@ const selectionCsv=[selectionCols.join(','),...selectionRows.map(r=>[
 ].map(esc).join(','))].join('\n')+'\n';
 fs.writeFileSync(path.join(OUT_DIR,'selections.csv'),selectionCsv);
 
-const files=['summary.json','episodes.json','episodes.csv','cdr-early-watch-episodes.json','selections.json','selections.csv','comparison.csv',...randomEvidenceFiles];
+const files=['summary.json','episodes.json','episodes.csv','cdr-early-watch-episodes.json','controlled-selections.json','selections.json','selections.csv','comparison.csv',...randomEvidenceFiles,...randomMatchingEvidenceFiles];
 const checksums={};
 for(const f of files)checksums[f]=crypto.createHash('sha256').update(fs.readFileSync(path.join(OUT_DIR,f))).digest('hex');
 fs.writeFileSync(path.join(OUT_DIR,'checksums.json'),JSON.stringify({algorithm:'sha256',files:checksums},null,2)+'\n');
