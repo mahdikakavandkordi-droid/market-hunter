@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import {captureFrozenDataset,loadFrozenDataset,frozenDataDigest,structuralDataDigest,NORMALIZATION_VERSION} from '../lib/frozen-dataset.js';
 import {UNIVERSE} from '../lib/universe.js';
 import {VERSION,ASSUMPTIONS,priorityBand,riskFlags,round,pct,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
+import {emptyStageContinuity,advanceStageContinuity} from '../lib/stage-continuity.js';
 import {buildResearchReport} from '../lib/backtest-report-builder.js';
 
 const batchIndex=Number(process.env.V2_BATCH_INDEX||0);
@@ -139,18 +140,19 @@ const rawEvents=[],surfaceReplayCandidates=[],recoverySurfaceReplayCandidates=[]
 for(const symbol of symbols){
   const pack=data[symbol],rows=pack.rows,benchPack=data[benchSymbol(symbol)],benchRows=benchPack?.rows||[];
   if(rows.length<120||benchRows.length<80)continue;
-  let prevStage=null,prevStageAge=-1;
+  let stageContinuity=emptyStageContinuity();
   for(let i=100;i<rows.length-maxH;i++){
-    if(hadRecentSplit(rows,pack.splitDays,i))continue;
+    if(hadRecentSplit(rows,pack.splitDays,i)){stageContinuity=emptyStageContinuity();continue}
     const date=dayKey(rows[i].t),hist=rows.slice(0,i+1),bh=benchmarkHist(benchRows,date);
     if(!bh||bh.length<65)continue;
     const m=metrics(hist,bh);if(!m)continue;
     for(const h of horizons)scanCalendar.push({date,outcomeDate:dayKey(rows[i+h].t),horizon:h});
-    if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){prevStage=null;prevStageAge=-1;continue}
+    if(rows[i].rawClose<ASSUMPTIONS.liquidity.minPrice||m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){stageContinuity=emptyStageContinuity();continue}
     const stage=classify(m);
     const score=stage?rank(m,stage):null;
     const surfaceScore=stage?surfaceRank(m,stage,score):null;
-    const stageAge=stage?(stage===prevStage?prevStageAge+1:0):null;
+    const continuityStep=advanceStageContinuity(stageContinuity,stage);
+    const stageAge=continuityStep.stageAge;
     if(stage==='Established Move'&&priorityBand(stage,score)==='Review First'){
       const flags=riskFlags(m);
       for(const h of horizons){
@@ -217,8 +219,9 @@ for(const symbol of symbols){
         });
       }
     }
-    if(!stage){prevStage=null;prevStageAge=-1;continue}
-    const episodeStart=stage!==prevStage;prevStage=stage;prevStageAge=stageAge;
+    stageContinuity=continuityStep.state;
+    if(!stage)continue;
+    const episodeStart=continuityStep.episodeStart;
     if(!episodeStart)continue;
     const features={
       freshReclaimAge:m.freshReclaimAge,sellingFading:m.sellingFading,downsideDecel:m.downsideDecel,volumeShockNearLow:m.volumeShockNearLow,
