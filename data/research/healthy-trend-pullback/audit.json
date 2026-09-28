@@ -1,6 +1,6 @@
 {
   "format": "market-hunter-healthy-trend-pullback-independent-audit-v1",
-  "generatedAt": "2026-09-28T18:37:22.999Z",
+  "generatedAt": "2026-09-28T19:13:13.406Z",
   "independentCalculation": true,
   "outcomeRecomputation": "Independent code path reads frozen OHLC directly and does not import challenger analysis/evaluation functions.",
   "evidenceTag": "locked-v2-validation-36420714736-archive-v1",
@@ -223,6 +223,47 @@
       "pass": true,
       "detail": {
         "volQuintileMissing": 0
+      }
+    },
+    {
+      "name": "controlled deterministic baselines exactly preserve challenger opportunity dates/counts and explicit shortfalls",
+      "pass": true,
+      "detail": {
+        "records": 68,
+        "controlledDuplicateKeys": 0,
+        "controlledIdentityMismatch": 0,
+        "missingControlledOpportunityRecords": 0,
+        "controlledSummaryMismatch": 0,
+        "controlledAgg": {
+          "core": {
+            "records": 37,
+            "ewShortfallDays": 17,
+            "ewShortfallPicks": 17,
+            "trShortfallDays": 0,
+            "trShortfallPicks": 0
+          },
+          "core_volume": {
+            "records": 9,
+            "ewShortfallDays": 3,
+            "ewShortfallPicks": 3,
+            "trShortfallDays": 0,
+            "trShortfallPicks": 0
+          },
+          "core_market": {
+            "records": 22,
+            "ewShortfallDays": 12,
+            "ewShortfallPicks": 12,
+            "trShortfallDays": 0,
+            "trShortfallPicks": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "paired uncertainty uses 20-session blocks on the full confirmed calendar rather than compressed shared-date order",
+      "pass": true,
+      "detail": {
+        "pairedCalendarMethodMismatch": 0
       }
     },
     {
@@ -563,6 +604,37 @@
       }
     },
     {
+      "name": "random control seed set is the predeclared fixed 100-seed sequence",
+      "pass": true,
+      "detail": {
+        "reportedCount": 100,
+        "first": 2026092800,
+        "last": 2026092899
+      }
+    },
+    {
+      "name": "random controls match challenger opportunity dates/counts using independently reconstructed eligible pools",
+      "pass": true,
+      "detail": {
+        "files": 1,
+        "rows": 13600,
+        "expected": 13600,
+        "randomDailyDuplicateKeys": 0,
+        "randomDailyCountMismatch": 0,
+        "randomPoolViolations": 0,
+        "missingRandomDailyKeys": 0,
+        "unexpectedRandomDailyKeys": 0,
+        "randomSeedMatchSummaryMismatch": 0
+      }
+    },
+    {
+      "name": "sector/volatility-matched random controls independently satisfy same-date sector and ATR-quintile constraints",
+      "pass": true,
+      "detail": {
+        "matchedDailyIdentityViolations": 0
+      }
+    },
+    {
       "name": "all random-control seed outcome summaries recompute from chunked exported rows",
       "pass": true,
       "detail": {
@@ -644,11 +716,13 @@
       }
     }
   ],
-  "totalChecks": 41,
-  "passedChecks": 41,
+  "totalChecks": 46,
+  "passedChecks": 46,
   "failedChecks": 0,
   "differences": [],
   "auditedDeterministicEpisodes": 2636,
   "auditedRandomRows": 15869,
-  "note": "Unit regressions separately exercise synthetic weekly-bar availability, pivot confirmation, next-session entry alignment, ambiguous same-bar barriers, irregular gaps, split-boundary purges, zero-pick continuity and cross-model timing identity."
+  "auditedRandomDailyMatchingRows": 13600,
+  "auditedControlledSelectionRecords": 68,
+  "note": "Unit regressions separately exercise synthetic weekly-bar availability, pivot confirmation, next-session entry alignment, ambiguous same-bar barriers, irregular gaps, split-boundary purges, zero-pick continuity and cross-model timing identity. Controlled deterministic and random daily count/opportunity matching are independently checked from exported identities and frozen eligibility pools."
 }
