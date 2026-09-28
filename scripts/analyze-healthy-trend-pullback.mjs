@@ -337,6 +337,15 @@ function pairedDateEffect(targetRows,baseRows){
   };
 }
 
+function compactRandomEvidence(control,target,seed,e){
+  return JSON.stringify({
+    control,target,seed,
+    episodeId:e.episodeId,model:e.model,symbol:e.symbol,firstSurfaceDate:e.firstSurfaceDate,
+    entryDate:e.entryDate,entryPrice:e.entryPrice,atr14:e.atr14,
+    status:e.status,split:e.split,included:e.included,primaryLabel:e.primaryLabel,
+    excessReturns:{20:e.excessReturns?.[20]??null}
+  });
+}
 const controlled={},randomEvidenceLines=[];
 for(const targetName of ['core','core_volume','core_market']){
   const targetMap=naturalMaps[targetName],targetEpisodes=naturalEpisodes[targetName];
@@ -351,8 +360,8 @@ for(const targetName of ['core','core_volume','core_market']){
     const rs=basicStats(eligibleRows(re)),ms=basicStats(eligibleRows(me));
     seedSummaries.push({seed,...rs,unmatchedPicks:rr.unmatchedPicks,insufficientDates:rr.insufficientDates});
     matchedSummaries.push({seed,...ms,unmatchedPicks:mr.unmatchedPicks,insufficientDates:mr.insufficientDates});
-    for(const e of re)randomEvidenceLines.push(JSON.stringify({control:'random',target:targetName,seed,...e}));
-    for(const e of me)randomEvidenceLines.push(JSON.stringify({control:'matched',target:targetName,seed,...e}));
+    for(const e of re)randomEvidenceLines.push(compactRandomEvidence('random',targetName,seed,e));
+    for(const e of me)randomEvidenceLines.push(compactRandomEvidence('matched',targetName,seed,e));
   }
   const dist=arr=>({
     seeds:arr.length,
@@ -385,6 +394,11 @@ for(const targetName of ['core','core_volume','core_market']){
   };
 }
 
+const RANDOM_CHUNK_LINES=20000;
+const randomEvidenceFiles=Array.from(
+  {length:Math.ceil(randomEvidenceLines.length/RANDOM_CHUNK_LINES)},
+  (_,i)=>'random-controls-part-'+String(i+1).padStart(3,'0')+'.jsonl.gz'
+);
 const deterministicRows=Object.values(naturalEpisodes).flat();
 const legacy=fs.existsSync(LEGACY_FILE)?JSON.parse(fs.readFileSync(LEGACY_FILE,'utf8')):null;
 const summary={
@@ -433,6 +447,13 @@ const summary={
     }])):null
   },
   randomSeeds:RANDOM_SEEDS,
+  randomEvidenceStorage:{
+    format:'compact JSONL gzip chunks',
+    recordCount:randomEvidenceLines.length,
+    chunkLines:RANDOM_CHUNK_LINES,
+    files:randomEvidenceFiles,
+    note:'All generated random-control episode identities/outcome labels used for seed summaries are retained in chunked evidence; no seeds or observations are dropped.'
+  },
   uncertainty:{bootstrapSeed:BOOTSTRAP_SEED,reps:BOOTSTRAP_REPS,blockLengthConfirmedDates:BLOCK_DATES}
 };
 
@@ -448,8 +469,11 @@ const csv=[cols.join(','),...deterministicRows.map(r=>cols.map(c=>esc(
 )).join(','))].join('\n')+'\n';
 fs.writeFileSync(path.join(OUT_DIR,'episodes.csv'),csv);
 
-const randomPayload=randomEvidenceLines.join('\n')+'\n';
-fs.writeFileSync(path.join(OUT_DIR,'random-controls.jsonl.gz'),zlib.gzipSync(randomPayload,{level:9}));
+for(let part=0;part<randomEvidenceFiles.length;part++){
+  const start=part*RANDOM_CHUNK_LINES,end=Math.min(randomEvidenceLines.length,start+RANDOM_CHUNK_LINES);
+  const payload=randomEvidenceLines.slice(start,end).join('\n')+'\n';
+  fs.writeFileSync(path.join(OUT_DIR,randomEvidenceFiles[part]),zlib.gzipSync(payload,{level:9}));
+}
 
 const compRows=[];
 for(const [model,x] of Object.entries(naturalSummary)){
@@ -490,7 +514,7 @@ const selectionCsv=[selectionCols.join(','),...selectionRows.map(r=>[
 ].map(esc).join(','))].join('\n')+'\n';
 fs.writeFileSync(path.join(OUT_DIR,'selections.csv'),selectionCsv);
 
-const files=['summary.json','episodes.json','episodes.csv','cdr-early-watch-episodes.json','selections.json','selections.csv','comparison.csv','random-controls.jsonl.gz'];
+const files=['summary.json','episodes.json','episodes.csv','cdr-early-watch-episodes.json','selections.json','selections.csv','comparison.csv',...randomEvidenceFiles];
 const checksums={};
 for(const f of files)checksums[f]=crypto.createHash('sha256').update(fs.readFileSync(path.join(OUT_DIR,f))).digest('hex');
 fs.writeFileSync(path.join(OUT_DIR,'checksums.json'),JSON.stringify({algorithm:'sha256',files:checksums},null,2)+'\n');
