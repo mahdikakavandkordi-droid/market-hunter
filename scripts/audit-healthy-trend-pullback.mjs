@@ -282,5 +282,9 @@ const audit={
   note:'Unit regressions separately exercise synthetic weekly-bar availability, pivot confirmation, next-session entry alignment, ambiguous same-bar barriers, irregular gaps, split-boundary purges, zero-pick continuity and cross-model timing identity.'
 };
 fs.writeFileSync(path.join(OUT_DIR,'audit.json'),JSON.stringify(audit,null,2)+'\n');
-console.log(JSON.stringify({totalChecks:audit.totalChecks,passed:audit.passedChecks,failed:audit.failedChecks,deterministicEpisodes:episodes.length,randomRows:randomRowCount},null,2));
+console.log(JSON.stringify({
+  totalChecks:audit.totalChecks,passed:audit.passedChecks,failed:audit.failedChecks,
+  deterministicEpisodes:episodes.length,randomRows:randomRowCount,
+  differences:audit.differences
+},null,2));
 if(audit.failedChecks)process.exitCode=1;
