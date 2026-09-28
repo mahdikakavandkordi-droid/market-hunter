@@ -141,6 +141,10 @@ jobs:
             echo "No Recovery evidence change."
           else
             git commit -m "research: record frozen Recovery audit evidence"
+            # Downloaded batch/snapshot files are disposable workflow inputs and may leave
+            # untracked/modified workspace state. Evidence is already committed above.
+            git reset --hard HEAD
+            git clean -fd
             git pull --rebase origin "$TARGET_BRANCH"
             git push origin HEAD:"$TARGET_BRANCH"
           fi
