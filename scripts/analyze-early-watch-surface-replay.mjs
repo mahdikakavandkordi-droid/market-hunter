@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {fixedCalendarSplit,validateFixedCalendar} from '../lib/validation-split.js';
+import {UNIVERSE} from '../lib/universe.js';
 
 const BATCH_COUNT=4;
 const MAX_VISIBLE=6;
@@ -12,6 +13,9 @@ const median=a=>{const x=a.filter(Number.isFinite).sort((a,b)=>a-b);if(!x.length
 const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
 const same=(a,b)=>JSON.stringify(stable(a))===JSON.stringify(stable(b));
 const must=(condition,message)=>{if(!condition)throw new Error(message)};
+const universeSymbols=new Set(UNIVERSE.map(x=>x[0]));
+const cdrSymbols=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
+const benchmarkForSymbol=s=>cdrSymbols.has(s)?'^IXIC':'^GSPTSE';
 
 function summary(a){
   if(!a.length)return null;
@@ -87,7 +91,10 @@ function validateInputs(){
     must(report?.dataset?.snapshotId===designated.snapshotId,'Report '+b+' snapshotId mismatch');
     must(report?.dataset?.dataSha256===designated.dataSha256,'Report '+b+' dataSha256 mismatch');
     must(report?.dataset?.structureSha256===designated.structureSha256,'Report '+b+' structureSha256 mismatch');
-    must(same(report?.symbols,designated.symbols),'Report '+b+' symbol membership mismatch');
+    must(Array.isArray(report?.symbols)&&report.symbols.length>0,'Report '+b+' missing tradable symbol membership');
+    must(report.symbols.every(s=>universeSymbols.has(s)),'Report '+b+' contains symbol outside current scan universe');
+    const expectedDatasetSymbols=[...new Set([...report.symbols,...report.symbols.map(benchmarkForSymbol)])];
+    must(same(expectedDatasetSymbols,designated.symbols),'Report '+b+' dataset symbol/benchmark membership mismatch');
 
     const horizons=Object.keys(report?.horizons||{}).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
     must(horizons.length>0,'Report '+b+' has no horizons');
