@@ -11,6 +11,7 @@ const SNAPSHOT_DIR=process.env.V2_SNAPSHOT_DIR||'data/frozen/market-hunter-v2-nu
 const summary=JSON.parse(fs.readFileSync(path.join(OUT_DIR,'summary.json'),'utf8'));
 const episodes=JSON.parse(fs.readFileSync(path.join(OUT_DIR,'episodes.json'),'utf8'));
 const selections=JSON.parse(fs.readFileSync(path.join(OUT_DIR,'selections.json'),'utf8'));
+const controlledSelections=JSON.parse(fs.readFileSync(path.join(OUT_DIR,'controlled-selections.json'),'utf8'));
 const manifest=JSON.parse(fs.readFileSync(MANIFEST_FILE,'utf8'));
 const reports=Array.from({length:4},(_,i)=>JSON.parse(fs.readFileSync('data/v2-backtest-batch-'+i+'.json','utf8')));
 for(const r of reports)assertHistoricalFinalSealedReport(r,'independent audit input batch '+r.batchIndex);
@@ -18,6 +19,7 @@ if(summary.evidence?.finalTestOpened!==false)throw new Error('Challenger summary
 
 const calendar=manifest.validationCalendar;
 const meta=new Map(UNIVERSE.map(([symbol,name,sector])=>[symbol,{name,sector}]));
+const cdr=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
 const data={};
 for(const b of manifest.batches){
   const ds=loadFrozenDataset(path.join(SNAPSHOT_DIR,b.file),{
@@ -37,6 +39,30 @@ function lastIndex(rows,date){let ans=-1;for(let i=0;i<rows.length;i++){if(day(r
 function exactIndex(rows,date){return rows.findIndex(x=>day(x.t)===date)}
 function tr(row,prev){return Math.max(row.high-row.low,Math.abs(row.high-prev.close),Math.abs(row.low-prev.close))}
 function atr14(rows,i){if(i<14)return null;const a=[];for(let j=i-13;j<=i;j++)a.push(tr(rows[j],rows[j-1]));return a.length===14?mean(a):null}
+function avgDollar20(rows,i){return i>=19?mean(rows.slice(i-19,i+1).map(x=>x.rawClose*x.volume)):null}
+function recentSplit(pack,rows,i){
+  const splitDays=pack?.splitDays instanceof Set?pack.splitDays:new Set(pack?.splitDays||[]);
+  for(let j=Math.max(0,i-30);j<=i;j++)if(splitDays.has(day(rows[j].t)))return true;
+  return false;
+}
+function independentPoolForDate(date){
+  const pool=[];
+  for(const [symbol,,sector] of UNIVERSE){
+    if(cdr.has(symbol))continue;
+    const pack=data[symbol];if(!pack)continue;
+    const i=exactIndex(pack.rows,date);
+    if(i<100)continue;
+    const a=atr14(pack.rows,i),adv=avgDollar20(pack.rows,i);
+    if(!Number.isFinite(pack.rows[i]?.rawClose)||pack.rows[i].rawClose<2)continue;
+    if(!Number.isFinite(adv)||adv<3000000)continue;
+    if(recentSplit(pack,pack.rows,i))continue;
+    if(!Number.isFinite(a)||a<=0)continue;
+    pool.push({symbol,sector,atr14Pct:pct(pack.rows[i].close+a,pack.rows[i].close)});
+  }
+  pool.sort((a,b)=>a.atr14Pct-b.atr14Pct||a.symbol.localeCompare(b.symbol));
+  pool.forEach((x,i)=>x.volQuintile=Math.min(4,Math.floor(i*5/Math.max(1,pool.length))));
+  return pool;
+}
 function gapDays(a,b){return Math.round((Number(b.t)-Number(a.t))/86400)}
 function classify(decisionDate,finalDate){
   if(decisionDate>=calendar.developmentStart&&decisionDate<calendar.validationStart){
@@ -179,6 +205,66 @@ check('completed weekly inputs precede decision week',weeklyLeak===0,{weeklyLeak
 check('all challenger pivots were confirmed by decision close',pivotLeak===0&&pivotMissing===0,{pivotLeak,pivotMissing});
 check('all challenger picks carry a frozen ATR-volatility quintile',volQuintileMissing===0,{volQuintileMissing});
 
+// Controlled deterministic baselines must preserve challenger opportunity dates and daily counts without forced fill.
+const naturalSelectionByKey=new Map(
+  selections.filter(x=>x.coverage==='confirmed'&&x.model!=='coverage_only').map(x=>[[x.model,x.date].join('|'),x])
+);
+const controlledByKey=new Map();
+let controlledDuplicateKeys=0,controlledIdentityMismatch=0;
+const controlledAgg={};
+for(const r of controlledSelections){
+  const key=[r.target,r.date].join('|');
+  if(controlledByKey.has(key))controlledDuplicateKeys++;
+  controlledByKey.set(key,r);
+  const target=naturalSelectionByKey.get([r.target,r.date].join('|'));
+  const ew=naturalSelectionByKey.get(['early_watch',r.date].join('|'));
+  const trsel=naturalSelectionByKey.get(['trend_rs',r.date].join('|'));
+  const targetSymbols=(target?.picks||[]).map(x=>x.symbol);
+  const expectedEw=(ew?.picks||[]).slice(0,targetSymbols.length).map(x=>x.symbol);
+  const expectedTr=(trsel?.picks||[]).slice(0,targetSymbols.length).map(x=>x.symbol);
+  if(
+    !target||targetSymbols.length===0||
+    r.targetCount!==targetSymbols.length||JSON.stringify(r.targetSymbols)!==JSON.stringify(targetSymbols)||
+    r.earlyWatchCount!==expectedEw.length||JSON.stringify(r.earlyWatchSymbols)!==JSON.stringify(expectedEw)||
+    r.trendRsCount!==expectedTr.length||JSON.stringify(r.trendRsSymbols)!==JSON.stringify(expectedTr)||
+    r.earlyWatchShortfall!==targetSymbols.length-expectedEw.length||
+    r.trendRsShortfall!==targetSymbols.length-expectedTr.length
+  )controlledIdentityMismatch++;
+  if(!controlledAgg[r.target])controlledAgg[r.target]={records:0,ewShortfallDays:0,ewShortfallPicks:0,trShortfallDays:0,trShortfallPicks:0};
+  const a=controlledAgg[r.target];a.records++;
+  if(r.earlyWatchShortfall>0)a.ewShortfallDays++;
+  a.ewShortfallPicks+=r.earlyWatchShortfall;
+  if(r.trendRsShortfall>0)a.trShortfallDays++;
+  a.trShortfallPicks+=r.trendRsShortfall;
+}
+let missingControlledOpportunityRecords=0,controlledSummaryMismatch=0;
+for(const target of ['core','core_volume','core_market']){
+  for(const d of selections.filter(x=>x.model===target&&x.coverage==='confirmed'&&x.count>0)){
+    if(!controlledByKey.has([target,d.date].join('|')))missingControlledOpportunityRecords++;
+  }
+  const a=controlledAgg[target]||{};
+  const rep=summary.controlled?.[target];
+  if(
+    a.ewShortfallDays!==rep?.currentEarlyWatch?.shortfallDays||
+    a.ewShortfallPicks!==rep?.currentEarlyWatch?.shortfallPicks||
+    a.trShortfallDays!==rep?.trendRs?.shortfallDays||
+    a.trShortfallPicks!==rep?.trendRs?.shortfallPicks
+  )controlledSummaryMismatch++;
+}
+check('controlled deterministic baselines exactly preserve challenger opportunity dates/counts and explicit shortfalls',
+  controlledDuplicateKeys===0&&controlledIdentityMismatch===0&&missingControlledOpportunityRecords===0&&controlledSummaryMismatch===0,
+  {records:controlledSelections.length,controlledDuplicateKeys,controlledIdentityMismatch,missingControlledOpportunityRecords,controlledSummaryMismatch,controlledAgg}
+);
+let pairedCalendarMethodMismatch=0;
+for(const target of ['core','core_volume','core_market']){
+  for(const x of [summary.controlled?.[target]?.currentEarlyWatch?.pairedEffectTargetMinusBaseline,summary.controlled?.[target]?.trendRs?.pairedEffectTargetMinusBaseline]){
+    if((x?.sharedDates||0)>0&&(x?.bootstrapReplicationsUsed!==5000||!String(x?.bootstrapCalendar||'').includes('full confirmed calendar')))pairedCalendarMethodMismatch++;
+  }
+}
+check('paired uncertainty uses 20-session blocks on the full confirmed calendar rather than compressed shared-date order',
+  pairedCalendarMethodMismatch===0,{pairedCalendarMethodMismatch}
+);
+
 // Summary recomputation from exported deterministic rows.
 for(const model of models){
   const rows=episodes.filter(x=>x.model===model&&x.status==='evaluated'&&x.included);
@@ -206,6 +292,69 @@ for(const g of groups.values()){
 check('identical evaluation conventions across deterministic models',conventionMismatch===0,{conventionMismatch});
 
 // Random-control seed summaries are audited chunk-by-chunk to avoid reusing the analysis path or loading all rows at once.
+const expectedSeeds=Array.from({length:100},(_,i)=>2026092800+i);
+check('random control seed set is the predeclared fixed 100-seed sequence',
+  JSON.stringify(summary.randomSeeds)===JSON.stringify(expectedSeeds),
+  {reportedCount:summary.randomSeeds?.length,first:summary.randomSeeds?.[0],last:summary.randomSeeds?.at?.(-1)}
+);
+
+// Independently verify daily random matching against frozen generic-eligibility pools.
+const opportunityDates=[...new Set(controlledSelections.map(x=>x.date))].sort();
+const independentPools=new Map(opportunityDates.map(d=>[d,independentPoolForDate(d)]));
+const poolLookup=new Map([...independentPools].map(([d,p])=>[d,new Map(p.map(x=>[x.symbol,x]))]));
+const randomMatchingFiles=fs.readdirSync(OUT_DIR).filter(x=>/^random-matching-part-\d+\.jsonl\.gz$/.test(x)).sort();
+const expectedDailyKeys=new Set();
+for(const r of controlledSelections)for(const seed of expectedSeeds)for(const control of ['random','matched'])expectedDailyKeys.add([control,r.target,seed,r.date].join('|'));
+const seenDailyKeys=new Set(),dailyMatchAgg=new Map();
+let randomDailyRows=0,randomDailyDuplicateKeys=0,randomDailyCountMismatch=0,randomPoolViolations=0,matchedDailyIdentityViolations=0;
+for(const file of randomMatchingFiles){
+  const payload=zlib.gunzipSync(fs.readFileSync(path.join(OUT_DIR,file))).toString('utf8');
+  for(const line of payload.split('\n')){
+    if(!line)continue;
+    const r=JSON.parse(line),key=[r.control,r.target,r.seed,r.date].join('|');
+    if(seenDailyKeys.has(key))randomDailyDuplicateKeys++;
+    seenDailyKeys.add(key);randomDailyRows++;
+    const ctl=controlledByKey.get([r.target,r.date].join('|'));
+    const pool=poolLookup.get(r.date)||new Map();
+    if(!ctl||r.targetCount!==ctl.targetCount||r.selectedCount!==(r.selected||[]).length||r.selectedCount+r.unmatchedCount!==r.targetCount)randomDailyCountMismatch++;
+    const selectedSymbols=(r.selected||[]).map(x=>x.symbol);
+    if(new Set(selectedSymbols).size!==selectedSymbols.length)randomPoolViolations++;
+    for(const x of r.selected||[]){
+      const p=pool.get(x.symbol);
+      if(!p){randomPoolViolations++;continue}
+      if(r.control==='matched'){
+        const targetPool=pool.get(x.matchedTargetSymbol);
+        if(!targetPool||x.symbol===x.matchedTargetSymbol||
+          p.sector!==targetPool.sector||p.volQuintile!==targetPool.volQuintile||
+          x.sector!==p.sector||x.volQuintile!==p.volQuintile||
+          x.matchedTargetSector!==targetPool.sector||x.matchedTargetVolQuintile!==targetPool.volQuintile
+        )matchedDailyIdentityViolations++;
+      }
+    }
+    const aggKey=[r.control,r.target,r.seed].join('|');
+    if(!dailyMatchAgg.has(aggKey))dailyMatchAgg.set(aggKey,{unmatchedPicks:0,insufficientDates:0});
+    const a=dailyMatchAgg.get(aggKey);a.unmatchedPicks+=r.unmatchedCount;if(r.unmatchedCount>0)a.insufficientDates++;
+  }
+}
+let missingRandomDailyKeys=0,unexpectedRandomDailyKeys=0,randomSeedMatchSummaryMismatch=0;
+for(const k of expectedDailyKeys)if(!seenDailyKeys.has(k))missingRandomDailyKeys++;
+for(const k of seenDailyKeys)if(!expectedDailyKeys.has(k))unexpectedRandomDailyKeys++;
+for(const target of ['core','core_volume','core_market']){
+  for(const [control,key] of [['random','repeatedRandom'],['matched','sectorVolMatchedRandom']]){
+    for(const seedSummary of summary.controlled?.[target]?.[key]?.seedSummaries||[]){
+      const a=dailyMatchAgg.get([control,target,seedSummary.seed].join('|'))||{unmatchedPicks:0,insufficientDates:0};
+      if(a.unmatchedPicks!==seedSummary.unmatchedPicks||a.insufficientDates!==seedSummary.insufficientDates)randomSeedMatchSummaryMismatch++;
+    }
+  }
+}
+check('random controls match challenger opportunity dates/counts using independently reconstructed eligible pools',
+  randomDailyDuplicateKeys===0&&randomDailyCountMismatch===0&&randomPoolViolations===0&&missingRandomDailyKeys===0&&unexpectedRandomDailyKeys===0&&randomSeedMatchSummaryMismatch===0,
+  {files:randomMatchingFiles.length,rows:randomDailyRows,expected:expectedDailyKeys.size,randomDailyDuplicateKeys,randomDailyCountMismatch,randomPoolViolations,missingRandomDailyKeys,unexpectedRandomDailyKeys,randomSeedMatchSummaryMismatch}
+);
+check('sector/volatility-matched random controls independently satisfy same-date sector and ATR-quintile constraints',
+  matchedDailyIdentityViolations===0,{matchedDailyIdentityViolations}
+);
+
 const randomFiles=fs.readdirSync(OUT_DIR).filter(x=>/^random-controls-part-\d+\.jsonl\.gz$/.test(x)).sort();
 const randomAgg=new Map(),randomSample=[];
 let randomRowCount=0,matchedIdentityViolations=0,matchedRows=0;
@@ -289,7 +438,9 @@ const audit={
   checks,totalChecks:checks.length,passedChecks:checks.filter(x=>x.pass).length,failedChecks:checks.filter(x=>!x.pass).length,differences,
   auditedDeterministicEpisodes:episodes.length,
   auditedRandomRows:randomRowCount,
-  note:'Unit regressions separately exercise synthetic weekly-bar availability, pivot confirmation, next-session entry alignment, ambiguous same-bar barriers, irregular gaps, split-boundary purges, zero-pick continuity and cross-model timing identity.'
+  auditedRandomDailyMatchingRows:randomDailyRows,
+  auditedControlledSelectionRecords:controlledSelections.length,
+  note:'Unit regressions separately exercise synthetic weekly-bar availability, pivot confirmation, next-session entry alignment, ambiguous same-bar barriers, irregular gaps, split-boundary purges, zero-pick continuity and cross-model timing identity. Controlled deterministic and random daily count/opportunity matching are independently checked from exported identities and frozen eligibility pools.'
 };
 fs.writeFileSync(path.join(OUT_DIR,'audit.json'),JSON.stringify(audit,null,2)+'\n');
 console.log(JSON.stringify({
