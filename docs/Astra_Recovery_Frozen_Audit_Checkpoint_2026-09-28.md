@@ -25,7 +25,7 @@ Recovery audit branch:
 
 `research/recovery-frozen-audit-20260928`
 
-Current branch head containing durable evidence:
+Durable evidence commit immediately before this review package:
 
 `501d0741bf7d14139febe620138ea5f9cc841d1d`
 
