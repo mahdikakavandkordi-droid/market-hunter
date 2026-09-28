@@ -39,22 +39,14 @@ jobs:
           node-version: '20'
       - name: Contract tests
         run: npm test
-      - name: Require immutable snapshot access
-        shell: bash
-        env:
-          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
-        run: |
-          set -euo pipefail
-          test -n "${VERCEL_TOKEN:-}" || { echo "SECRET_VERCEL_TOKEN is required"; exit 1; }
-      - name: Materialize exact numerical snapshot
-        env:
-          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
-        run: node scripts/materialize-vercel-artifact-rest.mjs
-      - name: Revoke temporary bypass
-        if: always()
-        env:
-          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
-        run: node scripts/revoke-vercel-bypass-lease.mjs
+      - name: Restore immutable snapshot from locked validation run
+        uses: actions/download-artifact@v4
+        with:
+          name: market-hunter-v2-numerical-snapshot
+          path: data/frozen/market-hunter-v2-numerical-snapshot
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 36420714736
       - name: Verify exact snapshot identity
         run: node scripts/verify-locked-validation-inputs.mjs
       - uses: actions/upload-artifact@v4
