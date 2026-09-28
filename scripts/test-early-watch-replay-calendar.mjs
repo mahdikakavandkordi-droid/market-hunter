@@ -47,7 +47,7 @@ function report(i){
     version:'fixture',batchIndex:i,batchCount:4,symbols:batchSymbols[i],
     dataset:{mode:'frozen',snapshotId:batchMeta[i].snapshotId,dataSha256:batchMeta[i].dataSha256,
       structureSha256:batchMeta[i].structureSha256,normalizationVersion,source,artifactId},
-    validation:{finalTestOpened:false,calendar},
+    validation:{finalTestOpened:false,calendar:{mode:'fixed_calendar',...calendar,note:'fixture metadata should not change canonical boundaries'}},
     horizons:{5:{scope:'development'},20:{scope:'development'}},
     surfaceReplay:{datesByHorizon:{5:coverage5,20:coverage20},candidates}
   };
