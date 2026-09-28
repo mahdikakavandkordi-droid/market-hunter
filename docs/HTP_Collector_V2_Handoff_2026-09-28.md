@@ -1,6 +1,6 @@
 # HTP collector v2: implementation and handoff
 
-Scope: repair prospective evidence collection before activation. No scanner rules, weights, model version, Historical Final access or production integration changed.
+Scope: repair prospective evidence collection and support reviewed activation. No scanner rules, weights, model version, Historical Final access or production integration changed.
 
 ## Implemented
 
@@ -26,16 +26,16 @@ Offline store verification:
 HTP_FORWARD_DIR=data/research/healthy-trend-pullback-forward node scripts/audit-healthy-trend-pullback-forward.mjs
 ```
 
-## Next steps for Sol
+## Operational status after review
 
-1. Confirm branch CI passes and review this collector/storage amendment. Preserve the frozen model and sealed Historical Final.
-2. Before activation, check whether any real v1 records exist. Do not delete them or relabel them as v2; a populated legacy store intentionally refuses collection and needs a separately reviewed migration plan.
-3. Activate prospectively through the agreed deployment process. A research-branch push verifies only. Scheduled GitHub execution requires the workflow on the default branch; no activation is performed by this change.
-4. After the first real completed session, confirm the committed store contains the snapshot files, attempt manifest, exactly three canonical observations when coverage is complete, run record, and passing audit. Partial coverage should have a journal entry but no canonical observations. Retry before the same UTC date ends.
-5. Monitor coverage, fetch failures, snapshot storage growth and excluded revision outcomes. After 21 symbol sessions, verify real matured outcomes reference committed snapshots and replay offline. Keep the existing stopping rule; do not tune on interim outcomes.
+1. The collector/storage amendment was reviewed and activation was deliberately performed from `main` using a workflow pinned to commit `1b967b798534525871efc6aff2f76a2582bf1fe9`.
+2. Durable evidence is isolated on `research/htp-forward-evidence`; production scanner and frontend behavior remain unchanged.
+3. The first live attempt on 2026-09-28 was partial: 226/227 symbols, with `ARX.TO` missing the market session. The attempt and snapshot were preserved, but no canonical observations were published.
+4. Operational recovery was hardened afterward: up to three same-day retries are attempted, a second 23:35 UTC recovery schedule exists, an already complete day is skipped, and a still-partial day fails/degrades the workflow instead of appearing successful.
+5. Continue monitoring coverage, fetch failures, snapshot storage growth and excluded revision outcomes. After 21 symbol sessions, verify real matured outcomes reference committed snapshots and replay offline. Keep the existing stopping rule; do not tune on interim outcomes.
 
 ## Operational limits
 
 Writers must be serialized (the workflow already has a concurrency group). Captures crossing the UTC date boundary are rejected. Compression and content addressing reduce storage, but daily full-universe history snapshots still grow the repository; monitor actual size before choosing a separate durable store. Expiring Actions artifacts are not the canonical snapshot store.
 
-Live Yahoo collection, sustained storage cost and actual corporate-action cases remain to be observed after activation. Synthetic passing tests do not establish predictive superiority over Early Watch or Trend+RS.
+Live Yahoo collection is now active; sustained storage cost and actual corporate-action cases remain to be observed. Synthetic passing tests do not establish predictive superiority over Early Watch or Trend+RS.
