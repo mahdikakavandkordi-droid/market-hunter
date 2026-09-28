@@ -9,12 +9,13 @@ on:
       - lib/early-watch-episodes.js
       - scripts/analyze-early-watch-episode-stability.mjs
       - scripts/audit-early-watch-episode-stability.mjs
+      - scripts/reproduce-early-watch-episode-stability-archive.mjs
       - scripts/test-early-watch-episode-stability.mjs
       - package.json
       - .github/workflows/analyze-early-watch-episode-stability.yml
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   MH_ARCHIVE_REF: locked-v2-validation-36420714736-archive-v1
@@ -108,3 +109,17 @@ jobs:
           path: data/research/early-watch-episode-stability
           retention-days: 14
           if-no-files-found: error
+
+      - name: Commit generated research outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-research"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/research/early-watch-episode-stability
+          if git diff --cached --quiet; then
+            echo "Generated outputs unchanged."
+          else
+            git commit -m "research: record Early Watch episode stability outputs"
+            git push origin "HEAD:research/early-watch-episode-stability-20260928"
+          fi
