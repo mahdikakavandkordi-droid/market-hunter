@@ -399,7 +399,8 @@ const summary={
     horizons:legacy?.horizons?Object.fromEntries(Object.entries(legacy.horizons).map(([h,x])=>[h,{
       Development:x.samples?.Development?.summary,
       Validation:x.samples?.Validation?.summary,
-      Combined:x.samples?.Combined?.summary
+      CombinedPooledPreFinal:x.samples?.CombinedPooledPreFinal?.summary||x.samples?.Combined?.summary,
+      CombinedIncludedPurged:x.samples?.CombinedIncludedPurged?.summary||null
     }])):null
   },
   randomSeeds:RANDOM_SEEDS,
