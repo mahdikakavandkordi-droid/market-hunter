@@ -405,14 +405,56 @@ function renderPositions(){
   const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
   const current=allHunterCandidates(),by=new Map([...(state.data.availableItems||[]),...current].map(x=>[x.symbol,x]));
   const rows=[...state.positions.values()].map(p=>({p,x:by.get(p.symbol)}));
-  root.innerHTML=`<section class="watchlist"><div class="section-title"><div><h2>Positions</h2><p>Post-purchase monitoring. Hunter reports trend health and warnings; it does not issue hold/sell orders.</p></div><span class="shown">${rows.length}</span></div><div class="grid">${rows.length?rows.map(({p,x})=>{
-    if(!x)return `<article class="card"><div class="ticker">${p.symbol}</div><div class="why"><strong>Position monitor</strong>Current market data unavailable.</div><button class="position-btn" data-position="${p.symbol}">Remove</button></article>`;
-    const h=positionHealth(x,p),ret=Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null;
-    const tone=h.status==='Structure Warning'?'down':h.status==='Watch Closely'?'flat':'up';
-    return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${x.company}</div><div class="sector">Bought ${new Date(p.boughtAt).toLocaleDateString()} · Entry ${fmt(p.entryPrice)}</div></div><div><div class="price">${fmt(x.price)}</div><div class="${cls(ret)}">Since entry ${pct(ret)}</div></div></div><div class="why"><strong>Monitor says</strong>${h.warnings.concat(h.watch,h.healthy).slice(0,4).join(' · ')||'No material structural change detected.'}</div><div class="detail open"><div class="detail-grid"><div class="pill">Entry stage<b>${p.entryStage}</b></div><div class="pill">Current stage<b>${x.stage||'Outside active candidate stages'}</b></div><div class="pill">RS20<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="pill">Momentum<b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div><div class="pill">Support<b>${fmt(x.support)}</b></div><div class="pill">Resistance<b>${fmt(x.resistance)}</b></div></div></div><div class="card-actions"><button class="tv-link" data-tv="${x.symbol}">Chart ↗</button><button class="position-btn" data-position="${x.symbol}">Close / remove</button></div></article>`;
-  }).join(''):'<div class="watch-empty">No positions yet. On a Hunter card tap “Bought” after you actually purchase it.</div>'}</div></section>`;
-  root.querySelectorAll('.position-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();markBought(b.dataset.position)}));
-  root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openTradingView(b.dataset.tv)}));
+  const archived=Object.values(state.portfolio.positions||{}).filter(p=>p?.status==='closed').sort((a,b)=>String(b.closedAt||'').localeCompare(String(a.closedAt||'')));
+  const cardHtml=({p,x},idx)=>{
+    const h=x?positionHealth(x,p):{status:'Data unavailable',warnings:[],watch:[],healthy:[]};
+    const ret=x&&Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null;
+    const tone=h.status==='Structure Warning'?'down':h.status==='Watch Closely'||h.status==='Data unavailable'?'flat':'up';
+    const hist=positionHistory(p.symbol).slice(-7);
+    const historyHtml=hist.length?hist.map(d=>`<div class="position-day"><small>${new Date(d.date+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})}</small><b class="${cls(d.returnPct)}">${pct(d.returnPct)}</b></div>`).join(''):'<span class="portfolio-note">Daily history starts automatically from the next completed scan.</span>';
+    const monitor=x?h.warnings.concat(h.watch,h.healthy).slice(0,3).join(' / '):'Current market data unavailable; the position and prior daily history are still saved.';
+    return `<article class="card position-card" data-position-index="${idx}">
+      <div class="position-main">
+        <div><div class="ticker-line"><div class="ticker">${p.symbol.replace(/\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${x?.company||p.symbol}</div><div class="sector">Entry ${new Date(p.boughtAt).toLocaleDateString()} &middot; ${fmt(p.entryPrice)} &middot; ${p.source||'Portfolio'}</div></div>
+        <div class="position-price"><strong>${fmt(x?.price)}</strong><small class="${cls(ret)}">Since entry ${pct(ret)}</small></div>
+      </div>
+      <div class="position-kpis">
+        <div class="position-kpi"><small>Stage</small><b>${x?.stage||p.entryStage||'Outside scan'}</b></div>
+        <div class="position-kpi"><small>RS20</small><b class="${cls(x?.rs20)}">${pct(x?.rs20)}</b></div>
+        <div class="position-kpi"><small>Momentum</small><b class="${cls(x?.momentumShift)}">${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'--'}</b></div>
+      </div>
+      <div class="position-monitor"><strong>Today</strong>${monitor||'No material structural change detected.'}</div>
+      <div class="position-history"><div class="position-history-head"><span>Daily trail</span><small>${hist.length} saved day${hist.length===1?'':'s'}</small></div><div class="position-history-strip">${historyHtml}</div></div>
+      <details class="position-more"><summary>More detail</summary><div class="detail-grid">
+        <div class="pill">Entry stage<b>${p.entryStage||'--'}</b></div><div class="pill">Current stage<b>${x?.stage||'Outside active candidate stages'}</b></div>
+        <div class="pill">Support<b>${fmt(x?.support)}</b></div><div class="pill">Resistance<b>${fmt(x?.resistance)}</b></div>
+        <div class="pill">Entry RS20<b class="${cls(p.entryRs20)}">${pct(p.entryRs20)}</b></div><div class="pill">Current RS20<b class="${cls(x?.rs20)}">${pct(x?.rs20)}</b></div>
+      </div></details>
+      <div class="position-actions">${x?`<button class="tv-link" data-tv="${p.symbol}">Chart</button>`:''}<button class="position-close" data-close-position="${p.symbol}">Close &amp; archive</button></div>
+    </article>`;
+  };
+  const archiveHtml=archived.length?`<details class="portfolio-archive"><summary>Archived positions (${archived.length})</summary>${archived.slice(0,12).map(p=>`<div class="portfolio-archive-row"><b>${p.symbol.replace(/\.(TO|NE|V)$/,'')}</b><span>${p.closedAt?new Date(p.closedAt).toLocaleDateString():'Closed'} &middot; ${fmt(p.closedPrice)}</span></div>`).join('')}</details>`:'';
+  root.innerHTML=`<section class="portfolio-shell">
+    <div class="portfolio-head"><div><h2>Portfolio</h2><p>Swipe between holdings. Each completed market day is saved locally instead of replacing yesterday.</p></div><div class="portfolio-head-actions"><span class="portfolio-count">${rows.length} open</span><button class="portfolio-backup" type="button">Backup JSON</button></div></div>
+    ${rows.length?`<div class="position-carousel-wrap"><div class="position-carousel" id="positionCarousel">${rows.map(cardHtml).join('')}</div><div class="portfolio-dots">${rows.map((_,i)=>`<button class="portfolio-dot ${i===0?'active':''}" type="button" data-position-dot="${i}" aria-label="Position ${i+1}"></button>`).join('')}</div></div>`:'<div class="portfolio-empty">No open positions yet. Tap Bought on a Hunter/Watchlist card after you actually purchase it.</div>'}
+    <div class="portfolio-note">Saved in this browser across refreshes and days. Closing a position archives it instead of deleting its history.</div>
+    ${archiveHtml}
+  </section>`;
+  root.querySelectorAll('.position-close').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();closePosition(b.dataset.closePosition)}));
+  root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openTradingView(b.dataset.tv)}));
+  root.querySelector('.portfolio-backup')?.addEventListener('click',downloadPortfolioBackup);
+  bindPositionCarousel(root);
+}
+function bindPositionCarousel(root){
+  const rail=root.querySelector('#positionCarousel');if(!rail)return;
+  const cards=[...rail.querySelectorAll('.position-card')],dots=[...root.querySelectorAll('.portfolio-dot')];
+  const setActive=i=>dots.forEach((d,n)=>d.classList.toggle('active',n===i));
+  dots.forEach((d,i)=>d.addEventListener('click',()=>cards[i]?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})));
+  let raf=0;rail.addEventListener('scroll',()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{
+    const center=rail.scrollLeft+rail.clientWidth/2;
+    let best=0,dist=Infinity;cards.forEach((c,i)=>{const cc=c.offsetLeft+c.offsetWidth/2,dd=Math.abs(cc-center);if(dd<dist){dist=dd;best=i}});
+    setActive(best);
+  })},{passive:true});
 }
 function toggleWatch(symbol){
   state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);
