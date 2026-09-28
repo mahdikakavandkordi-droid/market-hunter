@@ -120,6 +120,38 @@ function familySummary(rows){
     cdrDiagnostic:summary(rows.filter(x=>x.sector==='CDR'))
   };
 }
+function rngFactory(seed){
+  let x=seed>>>0;
+  return ()=>{x=(1664525*x+1013904223)>>>0;return x/4294967296};
+}
+function percentile(a,p){
+  const x=a.filter(Number.isFinite).sort((a,b)=>a-b);
+  if(!x.length)return null;
+  const pos=(x.length-1)*p,lo=Math.floor(pos),hi=Math.ceil(pos);
+  return lo===hi?x[lo]:x[lo]+(x[hi]-x[lo])*(pos-lo);
+}
+function blockBootstrap(rows,dates,seed,reps=5000,block=20){
+  const byDate=new Map();
+  for(const r of rows){if(!byDate.has(r.date))byDate.set(r.date,[]);byDate.get(r.date).push(r)}
+  const rand=rngFactory(seed),means=[],excesses=[],positiveRates=[];
+  if(!dates.length)return {reps:0,block,seed,mean95:null,meanExcess95:null,positiveRate95:null};
+  for(let rep=0;rep<reps;rep++){
+    const sampled=[];
+    let drawn=0;
+    while(drawn<dates.length){
+      const start=Math.floor(rand()*dates.length);
+      for(let k=0;k<block&&drawn<dates.length;k++,drawn++){
+        const d=dates[(start+k)%dates.length];
+        sampled.push(...(byDate.get(d)||[]));
+      }
+    }
+    if(!sampled.length)continue;
+    const sr=summary(sampled);
+    means.push(sr.mean);excesses.push(sr.meanExcess);positiveRates.push(sr.positiveRate);
+  }
+  const ci=a=>[round(percentile(a,.025)),round(percentile(a,.975))];
+  return {requestedReps:reps,validReps:means.length,block,seed,mean95:ci(means),meanExcess95:ci(excesses),positiveRate95:ci(positiveRates)};
+}
 function byYear(rows){
   const years=[...new Set(rows.map(x=>x.date.slice(0,4)))].sort();
   return Object.fromEntries(years.map(y=>[y,summary(rows.filter(x=>x.date.startsWith(y))) ]));
@@ -198,7 +230,21 @@ for(const h of horizons){
       symbolConcentration:concentration(episodes,'symbol').slice(0,15),
       sectorConcentration:concentration(episodes,'sector'),
       concentrationSensitivity:concentrationSensitivity(episodes),
-      familySummary:familySummary(episodes)
+      familySummary:familySummary(episodes),
+      uncertainty:{
+        method:'20-confirmed-session circular block bootstrap on the fixed calendar',
+        all:blockBootstrap(episodes,current.dates,20260928+h*101),
+        development:blockBootstrap(
+          episodeSplit.development,
+          current.dates.filter(d=>d<cal.validationStart),
+          20260928+h*101+1
+        ),
+        validation:blockBootstrap(
+          episodeSplit.validation,
+          current.dates.filter(d=>d>=cal.validationStart&&d<cal.finalStart),
+          20260928+h*101+2
+        )
+      }
     },
     policyDiagnostics:{
       noAgeLimit:summary(noAgeLimit.observations),
