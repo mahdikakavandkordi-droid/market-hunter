@@ -1,0 +1,32 @@
+name: Market Pulse State Backtest
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'lib/market-pulse-engine.js'
+      - 'scripts/backtest-market-pulse.mjs'
+      - '.github/workflows/market-pulse-state-backtest.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node --check lib/market-pulse-engine.js
+      - run: node --check scripts/backtest-market-pulse.mjs
+      - run: node scripts/backtest-market-pulse.mjs
+      - name: Commit Market Pulse state backtest
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/market-pulse-state-backtest.json
+          git commit -m "research: save Market Pulse state backtest" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild

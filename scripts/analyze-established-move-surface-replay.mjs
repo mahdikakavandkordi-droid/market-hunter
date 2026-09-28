@@ -1,0 +1,67 @@
+import fs from 'node:fs';
+
+const reports=[0,1,2,3].map(i=>JSON.parse(fs.readFileSync('data/v2-backtest-batch-'+i+'.json','utf8')));
+const MAX_VISIBLE=6;
+const dates=[...new Set(reports.flatMap(r=>r.establishedMoveSurfaceReplay?.dates||[]))].sort();
+const candidates=reports.flatMap(r=>r.establishedMoveSurfaceReplay?.candidates||[]);
+const round=(n,d=2)=>Number.isFinite(n)?Number(n.toFixed(d)):null;
+const avg=a=>{const x=a.filter(Number.isFinite);return x.length?x.reduce((s,v)=>s+v,0)/x.length:null};
+const median=a=>{const x=a.filter(Number.isFinite).sort((a,b)=>a-b);if(!x.length)return null;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2};
+const scale=(x,lo,hi)=>Number.isFinite(x)?Math.max(0,Math.min(1,(x-lo)/(hi-lo))):0;
+function summary(a){
+  if(!a.length)return null;
+  const r=a.map(x=>x.forwardReturn).filter(Number.isFinite),ex=a.map(x=>x.excessReturn).filter(Number.isFinite);
+  return {n:r.length,mean:round(avg(r)),median:round(median(r)),positiveRate:round(r.filter(x=>x>0).length/r.length*100,1),
+    benchmarkBeatRate:ex.length?round(ex.filter(x=>x>0).length/ex.length*100,1):null,meanExcess:round(avg(ex)),
+    avgMAE:round(avg(a.map(x=>x.mae))),avgMFE:round(avg(a.map(x=>x.mfe)))};
+}
+function dailyEqualWeight(byDate){
+  const rows=[];
+  for(const [date,xs] of byDate){if(xs.length)rows.push({date,forwardReturn:avg(xs.map(x=>x.forwardReturn)),excessReturn:avg(xs.map(x=>x.excessReturn)),mae:avg(xs.map(x=>x.mae)),mfe:avg(xs.map(x=>x.mfe))});}
+  return summary(rows);
+}
+function replay(h,filterFn=()=>true,scoreFn=x=>x.score){
+  const pool=candidates.filter(x=>x.horizon===h&&filterFn(x));
+  const byDateRaw=new Map();
+  for(const x of pool){if(!byDateRaw.has(x.date))byDateRaw.set(x.date,[]);byDateRaw.get(x.date).push(x);}
+  const byDateSelected=new Map(),obs=[],counts=[],crowdedSelected=[],crowdedExcluded=[];
+  for(const date of dates){
+    const eligible=[...(byDateRaw.get(date)||[])].map(x=>({...x,policyScore:scoreFn(x)}))
+      .sort((a,b)=>b.policyScore-a.policyScore||b.score-a.score||a.symbol.localeCompare(b.symbol));
+    const sel=eligible.slice(0,MAX_VISIBLE);
+    byDateSelected.set(date,sel);counts.push(sel.length);obs.push(...sel);
+    if(eligible.length>MAX_VISIBLE){crowdedSelected.push(...sel);crowdedExcluded.push(...eligible.slice(MAX_VISIBLE));}
+  }
+  const active=counts.filter(n=>n>0).length,cut=dates[Math.floor(dates.length*.7)]||null;
+  return {
+    selection:{scanDays:dates.length,daysWithPicks:active,zeroPickDays:dates.length-active,pctDaysWithPicks:round(active/dates.length*100,1),averageVisibleAllDays:round(obs.length/dates.length,2),averageVisibleActiveDays:active?round(obs.length/active,2):null,maxVisibleObserved:Math.max(0,...counts)},
+    overall:summary(obs),recentHoldout:summary(obs.filter(x=>cut&&x.date>=cut)),dailyEqualWeight:dailyEqualWeight(byDateSelected),
+    crowdedDays:{selectedTop6:summary(crowdedSelected),excludedBelow6:summary(crowdedExcluded)}
+  };
+}
+const healthyStructure=x=>['Structure improving','Higher highs + higher lows'].includes(x.swingTrend);
+const noRs60Reward=x=>x.score-scale(x.rs60,0,25)*5;
+const healthPenalty=x=>x.score-(Number.isFinite(x.ret20)&&x.ret20<0?6:0)-(healthyStructure(x)?0:6);
+const result={generatedAt:new Date().toISOString(),note:'Established Move daily replay diagnostic only. Production logic unchanged.',dateRange:{start:dates[0]||null,end:dates.at(-1)||null,scanDays:dates.length},horizons:{}};
+for(const h of [5,10,20]){
+  const pool=candidates.filter(x=>x.horizon===h);
+  result.horizons[h]={
+    currentReviewFirst:replay(h),
+    ret20Nonnegative:replay(h,x=>!Number.isFinite(x.ret20)||x.ret20>=0),
+    healthyStructureOnly:replay(h,healthyStructure),
+    currentHealthOnly:replay(h,x=>(!Number.isFinite(x.ret20)||x.ret20>=0)&&healthyStructure(x)),
+    cleanReview:replay(h,x=>x.cleanReview===true),
+    noRs60Reward:replay(h,()=>true,noRs60Reward),
+    healthPenalty6:replay(h,()=>true,healthPenalty),
+    ageBuckets:{
+      age0to2:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge<=2)),
+      age3to5:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge>=3&&x.stageAge<=5)),
+      age6to10:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge>=6&&x.stageAge<=10)),
+      age11to20:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge>=11&&x.stageAge<=20)),
+      age21plus:summary(pool.filter(x=>Number.isFinite(x.stageAge)&&x.stageAge>=21))
+    }
+  };
+}
+fs.mkdirSync('data',{recursive:true});
+fs.writeFileSync('data/established-move-surface-replay.json',JSON.stringify(result,null,2));
+console.log(JSON.stringify(result,null,2));

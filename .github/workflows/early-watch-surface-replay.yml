@@ -1,0 +1,13 @@
+name: Deprecated Early Watch Replay Workflow
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  use-locked-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require locked validation workflow
+        run: |
+          echo "Use locked-v2-validation.yml on the research branch. It materializes and verifies the snapshot, runs all four batches, and then analyzes Early Watch. Committed legacy reports are not valid inputs."
+          exit 1

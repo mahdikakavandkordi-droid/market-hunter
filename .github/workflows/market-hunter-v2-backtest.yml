@@ -1,0 +1,13 @@
+name: DEPRECATED - Live Fetch V2 Backtest
+on:
+  workflow_dispatch:
+jobs:
+  blocked:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block unsafe historical validation path
+        run: |
+          echo "This workflow is intentionally disabled for controlled research."
+          echo "Direct Yahoo refetches are not valid comparison inputs."
+          echo "Use locked-v2-validation.yml with the immutable full numerical snapshot."
+          exit 1

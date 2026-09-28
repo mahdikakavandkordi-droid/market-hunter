@@ -125,10 +125,11 @@ function weeklyCloses(rows){
     key=k; last=r;
   }
   if(last) buckets.push({key,close:last.close});
-  const now=new Date();
-  const todayDay=(now.getUTCDay()+6)%7;
-  const currentMonday=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-todayDay)).toISOString().slice(0,10);
-  return buckets.filter(x=>x.key!==currentMonday).map(x=>x.close);
+  // Treat the week containing the dataset's final row as the current/incomplete
+  // week. This keeps historical as-of replays consistent with the live scanner,
+  // which excludes the in-progress week from weekly trend calculations.
+  const asOfWeek=buckets.at(-1)?.key??null;
+  return buckets.filter(x=>x.key!==asOfWeek).map(x=>x.close);
 }
 
 function downVolumeAverage(rows,start,end){

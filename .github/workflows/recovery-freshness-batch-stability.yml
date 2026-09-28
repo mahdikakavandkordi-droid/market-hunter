@@ -1,0 +1,26 @@
+name: Recovery Freshness Batch Stability
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'scripts/analyze-recovery-freshness-batches.mjs'
+      - '.github/workflows/recovery-freshness-batch-stability.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/analyze-recovery-freshness-batches.mjs
+      - name: Commit freshness report
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/recovery-freshness-batch-stability.json
+          git commit -m "research: save Recovery freshness batch stability" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild

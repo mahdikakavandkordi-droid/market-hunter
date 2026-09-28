@@ -1,0 +1,56 @@
+{
+  "format": "market-hunter-v2-numerical-snapshot-registry-v1",
+  "setId": "mhv2-numerical-2026-09-27",
+  "status": "VERIFIED_READY",
+  "createdAt": "2026-09-27",
+  "purpose": "Registry for the immutable full normalized numerical input artifact used by controlled Market Hunter V2 validation experiments.",
+  "source": {
+    "provider": "Yahoo Finance chart endpoint",
+    "interval": "1d",
+    "period1": "1632700800",
+    "period2": "1790380800",
+    "range": null,
+    "includePrePost": false,
+    "events": [
+      "div",
+      "splits"
+    ]
+  },
+  "normalizationVersion": "market-hunter-yahoo-normalization-v2-2026-09-27",
+  "validationCalendar": {
+    "developmentStart": "2021-09-27",
+    "validationStart": "2024-09-20",
+    "finalStart": "2026-01-01"
+  },
+  "batchCount": 4,
+  "captureCodeCommit": "47494e8a1416ca8d0ee4715e9381a2607348bb30",
+  "captureBuildCommit": "fa2669bb4f7484e29a5e824a08023ec56cb725f2",
+  "artifact": {
+    "provider": "Vercel",
+    "projectId": "prj_dCf2aFKXUWXnXzPIxchL7t4aTSo1",
+    "teamId": "team_GJzme4AYjcfqu3B67IzSWYAo",
+    "deploymentId": "dpl_5yFyrve6byxA6McmfE5pvsokga4Y",
+    "deploymentUrl": "market-hunter-oyq7flbua-mahdikakavandkordi-9201.vercel.app",
+    "manifestPath": "/task3-numerical-snapshot/manifest.json",
+    "batchPathTemplate": "/task3-numerical-snapshot/batch-{batchIndex}.json",
+    "protection": "Vercel Authentication; use authorized Vercel access/CLI to retrieve. Do not rely on temporary share URLs as artifact identity.",
+    "teamSlug": "mahdikakavandkordi-9201",
+    "materialization": "Use authenticated Vercel CLI against the immutable deployment ID/URL, then verify every downloaded byte via the snapshot's internal numerical and structural hashes before any backtest."
+  },
+  "verification": {
+    "deploymentState": "READY",
+    "contractTestsPassed": true,
+    "allFourBatchesCaptured": true,
+    "offlineReplayCountPerBatch": 2,
+    "offlineNetworkForbidden": true,
+    "substantiveReportsMatched": true,
+    "finalPeriodOpened": false,
+    "rationale": "The capture build script throws on any contract failure, snapshot verification failure, network-dependent replay, or substantive mismatch. The deployment reached READY."
+  },
+  "identityPolicy": {
+    "canonicalIdentity": "Each batch snapshot carries snapshotId, file integrity sha256, full numerical dataSha256, structural structureSha256, exact symbol membership/order, source metadata and normalizationVersion.",
+    "numericalHashIncludes": "Adjusted calculation inputs plus all normalized rows/events actually consumed by the backtest.",
+    "structuralHashRole": "Secondary diagnostic only; it is not sufficient for numerical experiment identity.",
+    "comparisonRule": "Baseline and candidate must consume the same exact local snapshot files. No Yahoo refetch is permitted during a controlled comparison."
+  }
+}

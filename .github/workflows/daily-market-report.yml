@@ -1,0 +1,33 @@
+name: Daily Market Report
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'data/market-pulse-report.json'
+      - 'scripts/build-daily-market-report.mjs'
+      - '.github/workflows/daily-market-report.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/market-hunter-v2-rebuild
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node --check scripts/build-daily-market-report.mjs
+      - run: node scripts/build-daily-market-report.mjs
+      - name: Commit Daily Market Report
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/daily-market-report.json data/daily-market-report.md
+          git commit -m "research: refresh Daily Market Report" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild

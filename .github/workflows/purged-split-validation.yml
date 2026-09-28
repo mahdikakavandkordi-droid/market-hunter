@@ -1,0 +1,13 @@
+name: DEPRECATED - Purged Split Live Fetch Validation
+on:
+  workflow_dispatch:
+jobs:
+  blocked:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block unsafe validation path
+        run: |
+          echo "This workflow is intentionally disabled."
+          echo "Live Yahoo refetches are not permitted for controlled validation."
+          echo "Use locked-v2-validation.yml with the immutable numerical snapshot."
+          exit 1

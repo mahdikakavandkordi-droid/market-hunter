@@ -1,0 +1,50 @@
+{
+  "format": "market-hunter-v2-numerical-artifact-registry-v1",
+  "status": "VERIFIED_ARTIFACT_READY_HASH_MIRROR_PENDING",
+  "recordedAt": "2026-09-27",
+  "purpose": "Authoritative reference to the READY Task 3 full numerical snapshot artifact while repository-side hash mirroring is pending.",
+  "contractCommit": "47494e8a1416ca8d0ee4715e9381a2607348bb30",
+  "artifact": {
+    "provider": "Vercel",
+    "deploymentId": "dpl_5yFyrve6byxA6McmfE5pvsokga4Y",
+    "deploymentUrl": "https://market-hunter-oyq7flbua-mahdikakavandkordi-9201.vercel.app",
+    "sourceBranch": "research/task3-numerical-snapshot-20260927",
+    "sourceCommit": "fa2669bb4f7484e29a5e824a08023ec56cb725f2",
+    "manifestPath": "/task3-numerical-snapshot/manifest.json",
+    "snapshotPathPattern": "/task3-numerical-snapshot/batch-{0..3}.json",
+    "readyState": "READY"
+  },
+  "source": {
+    "provider": "Yahoo Finance chart endpoint",
+    "interval": "1d",
+    "period1": "1632700800",
+    "period2": "1790380800",
+    "period1Utc": "2021-09-27T00:00:00Z",
+    "period2ExclusiveUtc": "2026-09-26T00:00:00Z",
+    "includePrePost": false,
+    "events": [
+      "div",
+      "splits"
+    ]
+  },
+  "validationCalendar": {
+    "developmentStart": "2021-09-27",
+    "validationStart": "2024-09-20",
+    "finalStart": "2026-01-01"
+  },
+  "verification": {
+    "contractTestsPassed": true,
+    "allFourBatchesCaptured": true,
+    "adjustedCalculationInputsIncludedInFullNumericalHash": true,
+    "offlineReplayCountPerBatch": 2,
+    "offlineNetworkForbidden": true,
+    "substantiveReportsMatched": true,
+    "finalPeriodOpened": false,
+    "note": "The Vercel deployment reached READY only after the capture script completed these assertions without throwing."
+  },
+  "hashRegistry": {
+    "status": "PENDING_MIRROR_FROM_ARTIFACT_MANIFEST",
+    "authoritativeLocation": "artifact.manifestPath",
+    "reason": "Current Vercel connector can verify the deployment is READY but cannot read the protected static manifest path; queued helper deployments are waiting behind a long-running Vercel build."
+  }
+}

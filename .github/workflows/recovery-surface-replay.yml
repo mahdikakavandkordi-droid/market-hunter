@@ -1,0 +1,28 @@
+name: Recovery Surface Replay Diagnostic
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'scripts/analyze-recovery-surface-replay.mjs'
+      - '.github/workflows/recovery-surface-replay.yml'
+      - 'data/v2-backtest-batch-*.json'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Analyze Recovery surfaced shortlist policies
+        run: node scripts/analyze-recovery-surface-replay.mjs
+      - name: Commit diagnostic
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/recovery-surface-replay-diagnostic.json
+          git commit -m "research: save Recovery surface replay diagnostic" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild

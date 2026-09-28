@@ -1,0 +1,54 @@
+{
+  "format": "market-hunter-v2-structural-lock-v1",
+  "createdAt": "2026-09-27T16:56:30.879Z",
+  "source": {
+    "provider": "Yahoo Finance chart endpoint",
+    "interval": "1d",
+    "period1": "1632700800",
+    "period2": "1790380800",
+    "period1Utc": "2021-09-27T00:00:00Z",
+    "period2ExclusiveUtc": "2026-09-26T00:00:00Z",
+    "includePrePost": false,
+    "events": [
+      "div",
+      "splits"
+    ]
+  },
+  "policy": {
+    "structuralFingerprint": "Exact SHA-256 over timestamp, raw OHLC, volume, split events and dividend events.",
+    "adjustedPrice": "Yahoo adjusted-price values are used for calculations but excluded from the structural fingerprint because repeated requests showed sub-mill precision noise without raw-data changes.",
+    "experimentRule": "Baseline and candidate variants must run from one fetched data object in the same process."
+  },
+  "batchCount": 4,
+  "engineCommit": "0af837f4388e0f9734f9d28e67800fcf4e1603c1",
+  "batches": [
+    {
+      "batchIndex": 0,
+      "capturedAt": "2026-09-27T16:51:07.453Z",
+      "structureSha256": "895b3a5c5d32bdbfa794780842d804eaa31b29b16cc140094621ecbc0a3c69bb",
+      "adjustedDataSha256": "b6d452bb9e9c207f728edcf944dd8d839c0952150fde2eff5b0f845106a2a204",
+      "symbolCount": 61
+    },
+    {
+      "batchIndex": 1,
+      "capturedAt": "2026-09-27T16:51:06.538Z",
+      "structureSha256": "177254b4dce55369428ef1eac6f5f3afe60b337659a90f02e70b3b754284ba6d",
+      "adjustedDataSha256": "bc84b30fdcddf86b9fa7a98709cc375f1d79352f43e5c5259adf2ed77c6b0a43",
+      "symbolCount": 61
+    },
+    {
+      "batchIndex": 2,
+      "capturedAt": "2026-09-27T16:51:06.843Z",
+      "structureSha256": "1dd05b5433b128257ada41d37d6889da012d6a878396caa6cec07bd8a917d2ac",
+      "adjustedDataSha256": "b3fa0707d83cf4acf85718c431d7a843c640699483c89568fc52dd3fb0935859",
+      "symbolCount": 61
+    },
+    {
+      "batchIndex": 3,
+      "capturedAt": "2026-09-27T16:51:07.457Z",
+      "structureSha256": "b42deb01b94611d7d5460e68a385378d24ffc9c98335db6ed4751e3116684838",
+      "adjustedDataSha256": "2191aa175b12877152a65778b912df4e10bdbea5f089e2b2eafa457ab04e9cc8",
+      "symbolCount": 61
+    }
+  ]
+}

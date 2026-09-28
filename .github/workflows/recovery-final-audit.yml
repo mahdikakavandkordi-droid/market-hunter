@@ -1,0 +1,27 @@
+name: Recovery Final Audit
+on:
+  push:
+    branches:
+      - research/market-hunter-v2-rebuild
+    paths:
+      - 'scripts/audit-recovery-final.mjs'
+      - '.github/workflows/recovery-final-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Recovery final audit
+        run: node scripts/audit-recovery-final.mjs
+      - name: Commit final audit
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/recovery-final-audit.json
+          git commit -m "research: save Recovery final audit" || exit 0
+          git pull --rebase origin research/market-hunter-v2-rebuild
+          git push origin HEAD:research/market-hunter-v2-rebuild

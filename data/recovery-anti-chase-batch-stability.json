@@ -1,0 +1,1309 @@
+{
+  "generatedAt": "2026-09-26T13:55:19.121Z",
+  "note": "Batch-stability diagnostic only. Production Recovery logic unchanged.",
+  "antiChaseRule": "score - 1.5 * max(0, ret20 - 3)",
+  "horizons": {
+    "5": [
+      {
+        "batch": 0,
+        "baseline": {
+          "overall": {
+            "n": 1098,
+            "mean": 0.26,
+            "median": 0.2,
+            "positiveRate": 51,
+            "benchmarkBeatRate": 49.5,
+            "meanExcess": -0.08,
+            "avgMAE": -2.75,
+            "avgMFE": 2.98
+          },
+          "recentHoldout": {
+            "n": 295,
+            "mean": 0.27,
+            "median": 0.28,
+            "positiveRate": 51.9,
+            "benchmarkBeatRate": 44.7,
+            "meanExcess": -0.44,
+            "avgMAE": -3.09,
+            "avgMFE": 3.49
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 84,
+              "mean": -0.18,
+              "median": -0.32,
+              "positiveRate": 45.2,
+              "benchmarkBeatRate": 60.7,
+              "meanExcess": 0.29,
+              "avgMAE": -2.92,
+              "avgMFE": 1.86
+            },
+            "excludedBelow6": {
+              "n": 19,
+              "mean": -0.89,
+              "median": -2.15,
+              "positiveRate": 47.4,
+              "benchmarkBeatRate": 26.3,
+              "meanExcess": -0.71,
+              "avgMAE": -2.82,
+              "avgMFE": 1.72
+            },
+            "selectedMinusExcluded": {
+              "mean": 0.71,
+              "meanExcess": 1,
+              "positiveRate": -2.2
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1098,
+            "mean": 0.26,
+            "median": 0.21,
+            "positiveRate": 51.2,
+            "benchmarkBeatRate": 49.3,
+            "meanExcess": -0.08,
+            "avgMAE": -2.73,
+            "avgMFE": 2.99
+          },
+          "recentHoldout": {
+            "n": 295,
+            "mean": 0.27,
+            "median": 0.27,
+            "positiveRate": 51.9,
+            "benchmarkBeatRate": 44.4,
+            "meanExcess": -0.44,
+            "avgMAE": -3.09,
+            "avgMFE": 3.51
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 84,
+              "mean": -0.14,
+              "median": -0.08,
+              "positiveRate": 47.6,
+              "benchmarkBeatRate": 58.3,
+              "meanExcess": 0.33,
+              "avgMAE": -2.6,
+              "avgMFE": 2.04
+            },
+            "excludedBelow6": {
+              "n": 19,
+              "mean": -1.06,
+              "median": -2.5,
+              "positiveRate": 36.8,
+              "benchmarkBeatRate": 36.8,
+              "meanExcess": -0.88,
+              "avgMAE": -4.23,
+              "avgMFE": 0.95
+            },
+            "selectedMinusExcluded": {
+              "mean": 0.92,
+              "meanExcess": 1.21,
+              "positiveRate": 10.8
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0,
+          "holdoutMean": 0,
+          "holdoutExcess": 0,
+          "crowdedSpreadMean": 0.21,
+          "crowdedSpreadExcess": 0.21
+        }
+      },
+      {
+        "batch": 1,
+        "baseline": {
+          "overall": {
+            "n": 1089,
+            "mean": 0.35,
+            "median": 0.51,
+            "positiveRate": 54.5,
+            "benchmarkBeatRate": 51.4,
+            "meanExcess": 0.08,
+            "avgMAE": -2.58,
+            "avgMFE": 2.85
+          },
+          "recentHoldout": {
+            "n": 359,
+            "mean": -0.08,
+            "median": 0.39,
+            "positiveRate": 52.1,
+            "benchmarkBeatRate": 49.9,
+            "meanExcess": -0.56,
+            "avgMAE": -3.02,
+            "avgMFE": 2.93
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": 1.74,
+              "median": 2.19,
+              "positiveRate": 69.4,
+              "benchmarkBeatRate": 50,
+              "meanExcess": 0.03,
+              "avgMAE": -1.99,
+              "avgMFE": 4.89
+            },
+            "excludedBelow6": {
+              "n": 17,
+              "mean": 2.15,
+              "median": 2.95,
+              "positiveRate": 76.5,
+              "benchmarkBeatRate": 58.8,
+              "meanExcess": 0.47,
+              "avgMAE": -1.16,
+              "avgMFE": 4.07
+            },
+            "selectedMinusExcluded": {
+              "mean": -0.41,
+              "meanExcess": -0.44,
+              "positiveRate": -7.1
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1089,
+            "mean": 0.34,
+            "median": 0.52,
+            "positiveRate": 54.6,
+            "benchmarkBeatRate": 51.4,
+            "meanExcess": 0.07,
+            "avgMAE": -2.59,
+            "avgMFE": 2.81
+          },
+          "recentHoldout": {
+            "n": 359,
+            "mean": -0.07,
+            "median": 0.43,
+            "positiveRate": 52.6,
+            "benchmarkBeatRate": 50.4,
+            "meanExcess": -0.54,
+            "avgMAE": -3.03,
+            "avgMFE": 2.87
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": 1.39,
+              "median": 2.56,
+              "positiveRate": 72.2,
+              "benchmarkBeatRate": 50,
+              "meanExcess": -0.3,
+              "avgMAE": -2.13,
+              "avgMFE": 3.75
+            },
+            "excludedBelow6": {
+              "n": 17,
+              "mean": 2.89,
+              "median": 2.95,
+              "positiveRate": 70.6,
+              "benchmarkBeatRate": 58.8,
+              "meanExcess": 1.17,
+              "avgMAE": -0.87,
+              "avgMFE": 6.47
+            },
+            "selectedMinusExcluded": {
+              "mean": -1.5,
+              "meanExcess": -1.47,
+              "positiveRate": 1.6
+            }
+          }
+        },
+        "delta": {
+          "overallMean": -0.01,
+          "holdoutMean": 0.01,
+          "holdoutExcess": 0.02,
+          "crowdedSpreadMean": -1.09,
+          "crowdedSpreadExcess": -1.03
+        }
+      },
+      {
+        "batch": 2,
+        "baseline": {
+          "overall": {
+            "n": 960,
+            "mean": 0.22,
+            "median": 0.33,
+            "positiveRate": 52.6,
+            "benchmarkBeatRate": 48.9,
+            "meanExcess": -0.14,
+            "avgMAE": -2.58,
+            "avgMFE": 2.81
+          },
+          "recentHoldout": {
+            "n": 347,
+            "mean": 0.28,
+            "median": 0.52,
+            "positiveRate": 53.6,
+            "benchmarkBeatRate": 47,
+            "meanExcess": -0.34,
+            "avgMAE": -2.74,
+            "avgMFE": 3.31
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": -1.36,
+              "median": 0.24,
+              "positiveRate": 50,
+              "benchmarkBeatRate": 38.9,
+              "meanExcess": -2.21,
+              "avgMAE": -4.02,
+              "avgMFE": 2.29
+            },
+            "excludedBelow6": {
+              "n": 8,
+              "mean": 0.42,
+              "median": 1.38,
+              "positiveRate": 62.5,
+              "benchmarkBeatRate": 37.5,
+              "meanExcess": -0.71,
+              "avgMAE": -1.73,
+              "avgMFE": 3.35
+            },
+            "selectedMinusExcluded": {
+              "mean": -1.78,
+              "meanExcess": -1.5,
+              "positiveRate": -12.5
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 960,
+            "mean": 0.23,
+            "median": 0.33,
+            "positiveRate": 52.6,
+            "benchmarkBeatRate": 48.6,
+            "meanExcess": -0.14,
+            "avgMAE": -2.57,
+            "avgMFE": 2.81
+          },
+          "recentHoldout": {
+            "n": 347,
+            "mean": 0.3,
+            "median": 0.52,
+            "positiveRate": 53.6,
+            "benchmarkBeatRate": 46.7,
+            "meanExcess": -0.32,
+            "avgMAE": -2.71,
+            "avgMFE": 3.3
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": -1.24,
+              "median": 0.24,
+              "positiveRate": 50,
+              "benchmarkBeatRate": 33.3,
+              "meanExcess": -2.09,
+              "avgMAE": -3.8,
+              "avgMFE": 2.25
+            },
+            "excludedBelow6": {
+              "n": 8,
+              "mean": -0.13,
+              "median": 2.48,
+              "positiveRate": 62.5,
+              "benchmarkBeatRate": 62.5,
+              "meanExcess": -1.27,
+              "avgMAE": -2.74,
+              "avgMFE": 3.52
+            },
+            "selectedMinusExcluded": {
+              "mean": -1.11,
+              "meanExcess": -0.82,
+              "positiveRate": -12.5
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.01,
+          "holdoutMean": 0.02,
+          "holdoutExcess": 0.02,
+          "crowdedSpreadMean": 0.67,
+          "crowdedSpreadExcess": 0.68
+        }
+      },
+      {
+        "batch": 3,
+        "baseline": {
+          "overall": {
+            "n": 1013,
+            "mean": -0.08,
+            "median": 0.09,
+            "positiveRate": 50.3,
+            "benchmarkBeatRate": 48.6,
+            "meanExcess": -0.32,
+            "avgMAE": -2.65,
+            "avgMFE": 2.6
+          },
+          "recentHoldout": {
+            "n": 273,
+            "mean": -0.2,
+            "median": -0.24,
+            "positiveRate": 48.4,
+            "benchmarkBeatRate": 42.9,
+            "meanExcess": -0.96,
+            "avgMAE": -3.01,
+            "avgMFE": 3.22
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 60,
+              "mean": -2.37,
+              "median": -0.3,
+              "positiveRate": 46.7,
+              "benchmarkBeatRate": 55,
+              "meanExcess": -2.08,
+              "avgMAE": -4.49,
+              "avgMFE": 1.97
+            },
+            "excludedBelow6": {
+              "n": 21,
+              "mean": -1.74,
+              "median": -0.61,
+              "positiveRate": 28.6,
+              "benchmarkBeatRate": 38.1,
+              "meanExcess": -1.48,
+              "avgMAE": -3.27,
+              "avgMFE": 0.86
+            },
+            "selectedMinusExcluded": {
+              "mean": -0.63,
+              "meanExcess": -0.6,
+              "positiveRate": 18.1
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1013,
+            "mean": -0.07,
+            "median": 0.09,
+            "positiveRate": 50.3,
+            "benchmarkBeatRate": 48.6,
+            "meanExcess": -0.3,
+            "avgMAE": -2.63,
+            "avgMFE": 2.59
+          },
+          "recentHoldout": {
+            "n": 273,
+            "mean": -0.12,
+            "median": -0.24,
+            "positiveRate": 48.4,
+            "benchmarkBeatRate": 42.9,
+            "meanExcess": -0.88,
+            "avgMAE": -2.94,
+            "avgMFE": 3.22
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 60,
+              "mean": -2.14,
+              "median": -0.3,
+              "positiveRate": 46.7,
+              "benchmarkBeatRate": 55,
+              "meanExcess": -1.84,
+              "avgMAE": -4.17,
+              "avgMFE": 1.83
+            },
+            "excludedBelow6": {
+              "n": 21,
+              "mean": -2.41,
+              "median": -0.61,
+              "positiveRate": 28.6,
+              "benchmarkBeatRate": 38.1,
+              "meanExcess": -2.16,
+              "avgMAE": -4.19,
+              "avgMFE": 1.27
+            },
+            "selectedMinusExcluded": {
+              "mean": 0.27,
+              "meanExcess": 0.32,
+              "positiveRate": 18.1
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.01,
+          "holdoutMean": 0.08,
+          "holdoutExcess": 0.08,
+          "crowdedSpreadMean": 0.9,
+          "crowdedSpreadExcess": 0.92
+        }
+      }
+    ],
+    "10": [
+      {
+        "batch": 0,
+        "baseline": {
+          "overall": {
+            "n": 1098,
+            "mean": 0.77,
+            "median": 0.7,
+            "positiveRate": 53.2,
+            "benchmarkBeatRate": 49.4,
+            "meanExcess": 0.18,
+            "avgMAE": -4.37,
+            "avgMFE": 5.2
+          },
+          "recentHoldout": {
+            "n": 295,
+            "mean": 2.03,
+            "median": 0.67,
+            "positiveRate": 52.5,
+            "benchmarkBeatRate": 47.1,
+            "meanExcess": 0.67,
+            "avgMAE": -4.7,
+            "avgMFE": 6.55
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 84,
+              "mean": -0.24,
+              "median": 1.11,
+              "positiveRate": 56,
+              "benchmarkBeatRate": 63.1,
+              "meanExcess": 0.82,
+              "avgMAE": -4.55,
+              "avgMFE": 4.05
+            },
+            "excludedBelow6": {
+              "n": 19,
+              "mean": -0.12,
+              "median": -1.71,
+              "positiveRate": 47.4,
+              "benchmarkBeatRate": 47.4,
+              "meanExcess": 0.8,
+              "avgMAE": -4.24,
+              "avgMFE": 3.95
+            },
+            "selectedMinusExcluded": {
+              "mean": -0.12,
+              "meanExcess": 0.02,
+              "positiveRate": 8.6
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1098,
+            "mean": 0.81,
+            "median": 0.7,
+            "positiveRate": 53.2,
+            "benchmarkBeatRate": 49.4,
+            "meanExcess": 0.21,
+            "avgMAE": -4.32,
+            "avgMFE": 5.22
+          },
+          "recentHoldout": {
+            "n": 295,
+            "mean": 2.03,
+            "median": 0.64,
+            "positiveRate": 52.2,
+            "benchmarkBeatRate": 46.8,
+            "meanExcess": 0.68,
+            "avgMAE": -4.7,
+            "avgMFE": 6.62
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 84,
+              "mean": 0.21,
+              "median": 1.11,
+              "positiveRate": 56,
+              "benchmarkBeatRate": 63.1,
+              "meanExcess": 1.28,
+              "avgMAE": -3.95,
+              "avgMFE": 4.32
+            },
+            "excludedBelow6": {
+              "n": 19,
+              "mean": -2.13,
+              "median": -2.69,
+              "positiveRate": 47.4,
+              "benchmarkBeatRate": 47.4,
+              "meanExcess": -1.21,
+              "avgMAE": -6.86,
+              "avgMFE": 2.75
+            },
+            "selectedMinusExcluded": {
+              "mean": 2.34,
+              "meanExcess": 2.49,
+              "positiveRate": 8.6
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.04,
+          "holdoutMean": 0,
+          "holdoutExcess": 0.01,
+          "crowdedSpreadMean": 2.46,
+          "crowdedSpreadExcess": 2.47
+        }
+      },
+      {
+        "batch": 1,
+        "baseline": {
+          "overall": {
+            "n": 1089,
+            "mean": 1.19,
+            "median": 0.95,
+            "positiveRate": 55.3,
+            "benchmarkBeatRate": 50,
+            "meanExcess": 0.59,
+            "avgMAE": -4.16,
+            "avgMFE": 5.22
+          },
+          "recentHoldout": {
+            "n": 359,
+            "mean": 1.4,
+            "median": 1.55,
+            "positiveRate": 56.3,
+            "benchmarkBeatRate": 49.3,
+            "meanExcess": 0.23,
+            "avgMAE": -4.79,
+            "avgMFE": 5.54
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": 5,
+              "median": 5.06,
+              "positiveRate": 72.2,
+              "benchmarkBeatRate": 58.3,
+              "meanExcess": 3.5,
+              "avgMAE": -3.25,
+              "avgMFE": 8.06
+            },
+            "excludedBelow6": {
+              "n": 17,
+              "mean": 6.13,
+              "median": 5.26,
+              "positiveRate": 64.7,
+              "benchmarkBeatRate": 58.8,
+              "meanExcess": 5.15,
+              "avgMAE": -2.58,
+              "avgMFE": 8.24
+            },
+            "selectedMinusExcluded": {
+              "mean": -1.13,
+              "meanExcess": -1.65,
+              "positiveRate": 7.5
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1089,
+            "mean": 1.19,
+            "median": 0.92,
+            "positiveRate": 55.2,
+            "benchmarkBeatRate": 50,
+            "meanExcess": 0.6,
+            "avgMAE": -4.15,
+            "avgMFE": 5.2
+          },
+          "recentHoldout": {
+            "n": 359,
+            "mean": 1.42,
+            "median": 1.4,
+            "positiveRate": 56,
+            "benchmarkBeatRate": 49.3,
+            "meanExcess": 0.27,
+            "avgMAE": -4.76,
+            "avgMFE": 5.55
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": 5.13,
+              "median": 3.88,
+              "positiveRate": 69.4,
+              "benchmarkBeatRate": 55.6,
+              "meanExcess": 3.76,
+              "avgMAE": -3.1,
+              "avgMFE": 7.61
+            },
+            "excludedBelow6": {
+              "n": 17,
+              "mean": 5.87,
+              "median": 8.06,
+              "positiveRate": 70.6,
+              "benchmarkBeatRate": 64.7,
+              "meanExcess": 4.61,
+              "avgMAE": -2.91,
+              "avgMFE": 9.19
+            },
+            "selectedMinusExcluded": {
+              "mean": -0.74,
+              "meanExcess": -0.85,
+              "positiveRate": -1.2
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0,
+          "holdoutMean": 0.02,
+          "holdoutExcess": 0.04,
+          "crowdedSpreadMean": 0.39,
+          "crowdedSpreadExcess": 0.8
+        }
+      },
+      {
+        "batch": 2,
+        "baseline": {
+          "overall": {
+            "n": 960,
+            "mean": 0.84,
+            "median": 1.07,
+            "positiveRate": 55.1,
+            "benchmarkBeatRate": 51.2,
+            "meanExcess": -0.09,
+            "avgMAE": -4.34,
+            "avgMFE": 5.09
+          },
+          "recentHoldout": {
+            "n": 347,
+            "mean": 1.22,
+            "median": 1.64,
+            "positiveRate": 56.5,
+            "benchmarkBeatRate": 51.3,
+            "meanExcess": -0.28,
+            "avgMAE": -4.78,
+            "avgMFE": 5.87
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": -3.24,
+              "median": -4.34,
+              "positiveRate": 38.9,
+              "benchmarkBeatRate": 36.1,
+              "meanExcess": -3.93,
+              "avgMAE": -7.26,
+              "avgMFE": 4
+            },
+            "excludedBelow6": {
+              "n": 8,
+              "mean": -0.23,
+              "median": -0.4,
+              "positiveRate": 50,
+              "benchmarkBeatRate": 37.5,
+              "meanExcess": -0.98,
+              "avgMAE": -3.44,
+              "avgMFE": 4.97
+            },
+            "selectedMinusExcluded": {
+              "mean": -3.01,
+              "meanExcess": -2.95,
+              "positiveRate": -11.1
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 960,
+            "mean": 0.85,
+            "median": 1,
+            "positiveRate": 55.1,
+            "benchmarkBeatRate": 51.1,
+            "meanExcess": -0.07,
+            "avgMAE": -4.32,
+            "avgMFE": 5.1
+          },
+          "recentHoldout": {
+            "n": 347,
+            "mean": 1.29,
+            "median": 1.64,
+            "positiveRate": 56.5,
+            "benchmarkBeatRate": 51.3,
+            "meanExcess": -0.2,
+            "avgMAE": -4.71,
+            "avgMFE": 5.89
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": -2.78,
+              "median": -3.95,
+              "positiveRate": 38.9,
+              "benchmarkBeatRate": 33.3,
+              "meanExcess": -3.47,
+              "avgMAE": -6.65,
+              "avgMFE": 4.19
+            },
+            "excludedBelow6": {
+              "n": 8,
+              "mean": -2.32,
+              "median": 0.08,
+              "positiveRate": 50,
+              "benchmarkBeatRate": 50,
+              "meanExcess": -3.07,
+              "avgMAE": -6.19,
+              "avgMFE": 4.11
+            },
+            "selectedMinusExcluded": {
+              "mean": -0.46,
+              "meanExcess": -0.4,
+              "positiveRate": -11.1
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.01,
+          "holdoutMean": 0.07,
+          "holdoutExcess": 0.08,
+          "crowdedSpreadMean": 2.55,
+          "crowdedSpreadExcess": 2.55
+        }
+      },
+      {
+        "batch": 3,
+        "baseline": {
+          "overall": {
+            "n": 1013,
+            "mean": 0.72,
+            "median": 0.74,
+            "positiveRate": 55.5,
+            "benchmarkBeatRate": 49.8,
+            "meanExcess": 0.06,
+            "avgMAE": -4.41,
+            "avgMFE": 4.76
+          },
+          "recentHoldout": {
+            "n": 273,
+            "mean": 1.79,
+            "median": 1.01,
+            "positiveRate": 56,
+            "benchmarkBeatRate": 48.7,
+            "meanExcess": 0.26,
+            "avgMAE": -4.83,
+            "avgMFE": 6.13
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 60,
+              "mean": -0.9,
+              "median": -0.89,
+              "positiveRate": 46.7,
+              "benchmarkBeatRate": 63.3,
+              "meanExcess": -0.48,
+              "avgMAE": -5.98,
+              "avgMFE": 4.07
+            },
+            "excludedBelow6": {
+              "n": 21,
+              "mean": -0.48,
+              "median": 0.08,
+              "positiveRate": 57.1,
+              "benchmarkBeatRate": 66.7,
+              "meanExcess": 0.38,
+              "avgMAE": -4.88,
+              "avgMFE": 3.35
+            },
+            "selectedMinusExcluded": {
+              "mean": -0.42,
+              "meanExcess": -0.86,
+              "positiveRate": -10.4
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1013,
+            "mean": 0.74,
+            "median": 0.74,
+            "positiveRate": 55.5,
+            "benchmarkBeatRate": 49.8,
+            "meanExcess": 0.08,
+            "avgMAE": -4.39,
+            "avgMFE": 4.75
+          },
+          "recentHoldout": {
+            "n": 273,
+            "mean": 1.85,
+            "median": 1.01,
+            "positiveRate": 56,
+            "benchmarkBeatRate": 48.7,
+            "meanExcess": 0.33,
+            "avgMAE": -4.76,
+            "avgMFE": 6.13
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 60,
+              "mean": -0.61,
+              "median": -0.89,
+              "positiveRate": 46.7,
+              "benchmarkBeatRate": 63.3,
+              "meanExcess": -0.19,
+              "avgMAE": -5.66,
+              "avgMFE": 3.93
+            },
+            "excludedBelow6": {
+              "n": 21,
+              "mean": -1.31,
+              "median": 0.08,
+              "positiveRate": 57.1,
+              "benchmarkBeatRate": 66.7,
+              "meanExcess": -0.45,
+              "avgMAE": -5.81,
+              "avgMFE": 3.75
+            },
+            "selectedMinusExcluded": {
+              "mean": 0.7,
+              "meanExcess": 0.26,
+              "positiveRate": -10.4
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.02,
+          "holdoutMean": 0.06,
+          "holdoutExcess": 0.07,
+          "crowdedSpreadMean": 1.12,
+          "crowdedSpreadExcess": 1.12
+        }
+      }
+    ],
+    "20": [
+      {
+        "batch": 0,
+        "baseline": {
+          "overall": {
+            "n": 1098,
+            "mean": 2.04,
+            "median": 2.79,
+            "positiveRate": 59.9,
+            "benchmarkBeatRate": 54,
+            "meanExcess": 0.65,
+            "avgMAE": -6.2,
+            "avgMFE": 8.14
+          },
+          "recentHoldout": {
+            "n": 295,
+            "mean": 3.43,
+            "median": 3.14,
+            "positiveRate": 58.6,
+            "benchmarkBeatRate": 51.2,
+            "meanExcess": 1.23,
+            "avgMAE": -6.56,
+            "avgMFE": 10.39
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 84,
+              "mean": 3.16,
+              "median": 4.66,
+              "positiveRate": 77.4,
+              "benchmarkBeatRate": 67.9,
+              "meanExcess": 1.8,
+              "avgMAE": -5.58,
+              "avgMFE": 7.28
+            },
+            "excludedBelow6": {
+              "n": 19,
+              "mean": 2.52,
+              "median": 3.62,
+              "positiveRate": 63.2,
+              "benchmarkBeatRate": 52.6,
+              "meanExcess": 0.97,
+              "avgMAE": -5.42,
+              "avgMFE": 6.13
+            },
+            "selectedMinusExcluded": {
+              "mean": 0.64,
+              "meanExcess": 0.83,
+              "positiveRate": 14.2
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1098,
+            "mean": 2.05,
+            "median": 2.79,
+            "positiveRate": 59.7,
+            "benchmarkBeatRate": 53.8,
+            "meanExcess": 0.66,
+            "avgMAE": -6.15,
+            "avgMFE": 8.13
+          },
+          "recentHoldout": {
+            "n": 295,
+            "mean": 3.43,
+            "median": 3.14,
+            "positiveRate": 58.3,
+            "benchmarkBeatRate": 50.8,
+            "meanExcess": 1.23,
+            "avgMAE": -6.56,
+            "avgMFE": 10.38
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 84,
+              "mean": 3.27,
+              "median": 4.54,
+              "positiveRate": 75,
+              "benchmarkBeatRate": 65.5,
+              "meanExcess": 1.9,
+              "avgMAE": -5,
+              "avgMFE": 7.09
+            },
+            "excludedBelow6": {
+              "n": 19,
+              "mean": 2.05,
+              "median": 3.62,
+              "positiveRate": 73.7,
+              "benchmarkBeatRate": 63.2,
+              "meanExcess": 0.5,
+              "avgMAE": -8,
+              "avgMFE": 6.94
+            },
+            "selectedMinusExcluded": {
+              "mean": 1.22,
+              "meanExcess": 1.4,
+              "positiveRate": 1.3
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.01,
+          "holdoutMean": 0,
+          "holdoutExcess": 0,
+          "crowdedSpreadMean": 0.58,
+          "crowdedSpreadExcess": 0.57
+        }
+      },
+      {
+        "batch": 1,
+        "baseline": {
+          "overall": {
+            "n": 1089,
+            "mean": 2.2,
+            "median": 2.16,
+            "positiveRate": 57.3,
+            "benchmarkBeatRate": 50.5,
+            "meanExcess": 0.76,
+            "avgMAE": -6.28,
+            "avgMFE": 8.77
+          },
+          "recentHoldout": {
+            "n": 359,
+            "mean": 2.04,
+            "median": 2,
+            "positiveRate": 56.5,
+            "benchmarkBeatRate": 47.1,
+            "meanExcess": 0.06,
+            "avgMAE": -6.88,
+            "avgMFE": 9.4
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": 4.22,
+              "median": 4.79,
+              "positiveRate": 75,
+              "benchmarkBeatRate": 61.1,
+              "meanExcess": 2.39,
+              "avgMAE": -4.17,
+              "avgMFE": 13.27
+            },
+            "excludedBelow6": {
+              "n": 17,
+              "mean": 7.28,
+              "median": 7.24,
+              "positiveRate": 82.4,
+              "benchmarkBeatRate": 70.6,
+              "meanExcess": 5.75,
+              "avgMAE": -3.01,
+              "avgMFE": 14.72
+            },
+            "selectedMinusExcluded": {
+              "mean": -3.06,
+              "meanExcess": -3.36,
+              "positiveRate": -7.4
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1089,
+            "mean": 2.21,
+            "median": 2.21,
+            "positiveRate": 57.4,
+            "benchmarkBeatRate": 50.5,
+            "meanExcess": 0.77,
+            "avgMAE": -6.29,
+            "avgMFE": 8.75
+          },
+          "recentHoldout": {
+            "n": 359,
+            "mean": 2.1,
+            "median": 2.09,
+            "positiveRate": 56.5,
+            "benchmarkBeatRate": 47.1,
+            "meanExcess": 0.12,
+            "avgMAE": -6.87,
+            "avgMFE": 9.38
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": 4.61,
+              "median": 5.6,
+              "positiveRate": 77.8,
+              "benchmarkBeatRate": 61.1,
+              "meanExcess": 2.78,
+              "avgMAE": -4.18,
+              "avgMFE": 12.79
+            },
+            "excludedBelow6": {
+              "n": 17,
+              "mean": 6.46,
+              "median": 7.24,
+              "positiveRate": 76.5,
+              "benchmarkBeatRate": 70.6,
+              "meanExcess": 4.92,
+              "avgMAE": -2.98,
+              "avgMFE": 15.74
+            },
+            "selectedMinusExcluded": {
+              "mean": -1.85,
+              "meanExcess": -2.14,
+              "positiveRate": 1.3
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.01,
+          "holdoutMean": 0.06,
+          "holdoutExcess": 0.06,
+          "crowdedSpreadMean": 1.21,
+          "crowdedSpreadExcess": 1.22
+        }
+      },
+      {
+        "batch": 2,
+        "baseline": {
+          "overall": {
+            "n": 960,
+            "mean": 1.7,
+            "median": 1.87,
+            "positiveRate": 55.7,
+            "benchmarkBeatRate": 49.7,
+            "meanExcess": 0.18,
+            "avgMAE": -6.73,
+            "avgMFE": 8.6
+          },
+          "recentHoldout": {
+            "n": 347,
+            "mean": 3.39,
+            "median": 2.62,
+            "positiveRate": 56.8,
+            "benchmarkBeatRate": 50.1,
+            "meanExcess": 0.97,
+            "avgMAE": -6.9,
+            "avgMFE": 10.8
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": -1.85,
+              "median": -5.23,
+              "positiveRate": 38.9,
+              "benchmarkBeatRate": 38.9,
+              "meanExcess": -2.27,
+              "avgMAE": -9.21,
+              "avgMFE": 6.94
+            },
+            "excludedBelow6": {
+              "n": 8,
+              "mean": 0.27,
+              "median": -0.65,
+              "positiveRate": 50,
+              "benchmarkBeatRate": 50,
+              "meanExcess": -0.38,
+              "avgMAE": -6.08,
+              "avgMFE": 8.23
+            },
+            "selectedMinusExcluded": {
+              "mean": -2.12,
+              "meanExcess": -1.89,
+              "positiveRate": -11.1
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 960,
+            "mean": 1.72,
+            "median": 1.89,
+            "positiveRate": 55.8,
+            "benchmarkBeatRate": 49.8,
+            "meanExcess": 0.19,
+            "avgMAE": -6.71,
+            "avgMFE": 8.61
+          },
+          "recentHoldout": {
+            "n": 347,
+            "mean": 3.45,
+            "median": 2.83,
+            "positiveRate": 57.1,
+            "benchmarkBeatRate": 50.4,
+            "meanExcess": 1.02,
+            "avgMAE": -6.81,
+            "avgMFE": 10.83
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 36,
+              "mean": -1.43,
+              "median": -4.07,
+              "positiveRate": 41.7,
+              "benchmarkBeatRate": 41.7,
+              "meanExcess": -1.84,
+              "avgMAE": -8.69,
+              "avgMFE": 7.06
+            },
+            "excludedBelow6": {
+              "n": 8,
+              "mean": -1.63,
+              "median": -5.37,
+              "positiveRate": 37.5,
+              "benchmarkBeatRate": 37.5,
+              "meanExcess": -2.29,
+              "avgMAE": -8.43,
+              "avgMFE": 7.67
+            },
+            "selectedMinusExcluded": {
+              "mean": 0.2,
+              "meanExcess": 0.45,
+              "positiveRate": 4.2
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.02,
+          "holdoutMean": 0.06,
+          "holdoutExcess": 0.05,
+          "crowdedSpreadMean": 2.32,
+          "crowdedSpreadExcess": 2.34
+        }
+      },
+      {
+        "batch": 3,
+        "baseline": {
+          "overall": {
+            "n": 1013,
+            "mean": 1.84,
+            "median": 2.29,
+            "positiveRate": 59.5,
+            "benchmarkBeatRate": 50.6,
+            "meanExcess": 0.39,
+            "avgMAE": -6.27,
+            "avgMFE": 7.96
+          },
+          "recentHoldout": {
+            "n": 273,
+            "mean": 2.72,
+            "median": 4.1,
+            "positiveRate": 63.4,
+            "benchmarkBeatRate": 49.1,
+            "meanExcess": 0.12,
+            "avgMAE": -6.52,
+            "avgMFE": 9.91
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 60,
+              "mean": -0.11,
+              "median": 3.22,
+              "positiveRate": 56.7,
+              "benchmarkBeatRate": 51.7,
+              "meanExcess": -1.45,
+              "avgMAE": -7.46,
+              "avgMFE": 7.1
+            },
+            "excludedBelow6": {
+              "n": 21,
+              "mean": 1.33,
+              "median": 3.41,
+              "positiveRate": 66.7,
+              "benchmarkBeatRate": 66.7,
+              "meanExcess": 0.33,
+              "avgMAE": -6.05,
+              "avgMFE": 6.09
+            },
+            "selectedMinusExcluded": {
+              "mean": -1.44,
+              "meanExcess": -1.78,
+              "positiveRate": -10
+            }
+          }
+        },
+        "antiChase": {
+          "overall": {
+            "n": 1013,
+            "mean": 1.86,
+            "median": 2.29,
+            "positiveRate": 59.5,
+            "benchmarkBeatRate": 50.6,
+            "meanExcess": 0.42,
+            "avgMAE": -6.25,
+            "avgMFE": 7.95
+          },
+          "recentHoldout": {
+            "n": 273,
+            "mean": 2.81,
+            "median": 4.1,
+            "positiveRate": 63.4,
+            "benchmarkBeatRate": 49.1,
+            "meanExcess": 0.21,
+            "avgMAE": -6.42,
+            "avgMFE": 9.91
+          },
+          "crowdedDays": {
+            "selectedTop6": {
+              "n": 60,
+              "mean": 0.37,
+              "median": 3.22,
+              "positiveRate": 56.7,
+              "benchmarkBeatRate": 51.7,
+              "meanExcess": -0.98,
+              "avgMAE": -7.02,
+              "avgMFE": 7.05
+            },
+            "excludedBelow6": {
+              "n": 21,
+              "mean": -0.03,
+              "median": 3.41,
+              "positiveRate": 66.7,
+              "benchmarkBeatRate": 66.7,
+              "meanExcess": -1.03,
+              "avgMAE": -7.31,
+              "avgMFE": 6.23
+            },
+            "selectedMinusExcluded": {
+              "mean": 0.4,
+              "meanExcess": 0.05,
+              "positiveRate": -10
+            }
+          }
+        },
+        "delta": {
+          "overallMean": 0.02,
+          "holdoutMean": 0.09,
+          "holdoutExcess": 0.09,
+          "crowdedSpreadMean": 1.84,
+          "crowdedSpreadExcess": 1.83
+        }
+      }
+    ]
+  }
+}
