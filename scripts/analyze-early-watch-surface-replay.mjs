@@ -76,7 +76,8 @@ function validateInputs(){
     must(report.batchCount===BATCH_COUNT,'Report '+b+' has unexpected batchCount');
     must(report?.dataset?.mode==='frozen','Report '+b+' must use dataset.mode=frozen');
     must(report?.validation?.finalTestOpened!==true,'Report '+b+' opened Historical Final');
-    must(same(report?.validation?.calendar,calendar),'Report '+b+' validation calendar mismatch');
+    const reportCalendar=validateFixedCalendar(report?.validation?.calendar);
+    must(same(reportCalendar,calendar),'Report '+b+' validation calendar mismatch');
     must(same(report?.dataset?.source,manifest.source),'Report '+b+' source mismatch');
     must(report?.dataset?.normalizationVersion===manifest.normalizationVersion,'Report '+b+' normalization mismatch');
     must(report?.dataset?.artifactId===artifactId,'Report '+b+' artifact mismatch');
