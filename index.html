@@ -1136,6 +1136,7 @@ async function load(){
     const j=await r.json();
     if(!r.ok)throw new Error(j.message||'Scan failed');
     state.data=j;
+    recordPortfolioDailySnapshot();
     if(historyRes.status==='fulfilled'&&historyRes.value.ok){
       try{state.history=await historyRes.value.json()}catch{state.history={snapshots:[]}}
     } else state.history={snapshots:[]};
