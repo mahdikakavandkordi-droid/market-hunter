@@ -1,0 +1,42 @@
+name: Verify Vercel Bypass Cleanup Live
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/early-watch-validation-close-20260928
+    paths:
+      - scripts/verify-vercel-bypass-cleanup-live.mjs
+      - lib/vercel-bypass-lease.js
+      - scripts/revoke-vercel-bypass-lease.mjs
+      - .github/workflows/verify-vercel-bypass-cleanup-live.yml
+
+permissions:
+  contents: read
+
+env:
+  V2_DATASET_REGISTRY: data/frozen/market-hunter-v2-numerical-snapshot/registry.json
+  VERCEL_HTTP_TIMEOUT_MS: 15000
+
+jobs:
+  live-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run live cleanup and concurrency probe
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+          VERCEL_BYPASS_PROOF: data/vercel-bypass-cleanup-proof.json
+        run: node scripts/verify-vercel-bypass-cleanup-live.mjs
+      - name: Upload non-secret proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-bypass-cleanup-proof
+          path: data/vercel-bypass-cleanup-proof.json
+          retention-days: 14
+          if-no-files-found: warn
