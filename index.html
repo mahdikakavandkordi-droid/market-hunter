@@ -493,6 +493,26 @@ function positionHealth(x,p){
   const status=warnings.length?'Structure Warning':watch.length>=2?'Watch Closely':'Trend Healthy';
   return {status,warnings,watch,healthy};
 }
+function cloudPanelHtml(){
+  const session=state.cloud.session,status=state.cloud.status||'local';
+  const badgeClass=status==='synced'?'synced':status==='syncing'?'syncing':status==='error'?'error':'';
+  const badgeText=session?(status==='synced'?'Cloud synced':status==='syncing'?'Syncing...':status==='error'?'Sync issue':'Cloud connected'):'Local only';
+  if(session){
+    return `<div class="portfolio-cloud"><div class="portfolio-cloud-row"><div class="portfolio-cloud-copy"><b>Cloud portfolio</b><small>${String(session.user?.email||'Signed in').replace(/</g,'&lt;')}</small></div><span class="portfolio-cloud-badge ${badgeClass}">${badgeText}</span></div><div class="portfolio-cloud-actions"><button class="portfolio-cloud-btn primary" type="button" data-cloud-sync-now>Sync now</button><button class="portfolio-cloud-btn" type="button" data-cloud-signout>Sign out</button></div>${state.cloud.message?`<div class="portfolio-cloud-message">${String(state.cloud.message).replace(/</g,'&lt;')}</div>`:''}</div>`;
+  }
+  if(!state.cloud.showAuth){
+    return `<div class="portfolio-cloud"><div class="portfolio-cloud-row"><div class="portfolio-cloud-copy"><b>Cloud backup & device sync</b><small>Local data stays here until you sign in.</small></div><button class="portfolio-cloud-btn primary" type="button" data-cloud-toggle>Connect cloud</button></div>${state.cloud.message?`<div class="portfolio-cloud-message">${String(state.cloud.message).replace(/</g,'&lt;')}</div>`:''}</div>`;
+  }
+  return `<div class="portfolio-cloud"><div class="portfolio-cloud-row"><div class="portfolio-cloud-copy"><b>Sign in to Market Hunter cloud</b><small>Use the same account on your phone and computer.</small></div><button class="portfolio-cloud-btn" type="button" data-cloud-toggle>Cancel</button></div><div class="portfolio-auth-form"><input type="email" autocomplete="email" placeholder="Email" data-cloud-email><input type="password" autocomplete="current-password" minlength="6" placeholder="Password (6+ chars)" data-cloud-password><button class="portfolio-cloud-btn primary" type="button" data-cloud-signin>Sign in</button><button class="portfolio-cloud-btn" type="button" data-cloud-signup>Create account</button></div>${state.cloud.message?`<div class="portfolio-cloud-message">${String(state.cloud.message).replace(/</g,'&lt;')}</div>`:''}</div>`;
+}
+function bindCloudControls(root){
+  root.querySelectorAll('[data-cloud-toggle]').forEach(b=>b.addEventListener('click',()=>{state.cloud.showAuth=!state.cloud.showAuth;state.cloud.message='';renderPositions()}));
+  const credentials=()=>({email:root.querySelector('[data-cloud-email]')?.value.trim()||'',password:root.querySelector('[data-cloud-password]')?.value||''});
+  root.querySelector('[data-cloud-signin]')?.addEventListener('click',()=>{const {email,password}=credentials();if(!email||password.length<6){state.cloud.status='error';state.cloud.message='Enter a valid email and a password with at least 6 characters.';renderPositions();return}cloudSignIn(email,password)});
+  root.querySelector('[data-cloud-signup]')?.addEventListener('click',()=>{const {email,password}=credentials();if(!email||password.length<6){state.cloud.status='error';state.cloud.message='Enter a valid email and a password with at least 6 characters.';renderPositions();return}cloudSignUp(email,password)});
+  root.querySelector('[data-cloud-sync-now]')?.addEventListener('click',()=>syncPortfolioCloud());
+  root.querySelector('[data-cloud-signout]')?.addEventListener('click',()=>cloudSignOut());
+}
 function renderPositions(){
   const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
   const current=allHunterCandidates(),by=new Map([...(state.data.availableItems||[]),...current].map(x=>[x.symbol,x]));
@@ -527,14 +547,16 @@ function renderPositions(){
   };
   const archiveHtml=archived.length?`<details class="portfolio-archive"><summary>Archived positions (${archived.length})</summary>${archived.slice(0,12).map(p=>`<div class="portfolio-archive-row"><b>${p.symbol.replace(/\.(TO|NE|V)$/,'')}</b><span>${p.closedAt?new Date(p.closedAt).toLocaleDateString():'Closed'} &middot; ${fmt(p.closedPrice)}</span></div>`).join('')}</details>`:'';
   root.innerHTML=`<section class="portfolio-shell">
-    <div class="portfolio-head"><div><h2>Portfolio</h2><p>Swipe between holdings. Each completed market day is saved locally instead of replacing yesterday.</p></div><div class="portfolio-head-actions"><span class="portfolio-count">${rows.length} open</span><button class="portfolio-backup" type="button">Backup JSON</button></div></div>
+    <div class="portfolio-head"><div><h2>Portfolio</h2><p>Swipe between holdings. Daily history is preserved instead of replacing yesterday.</p></div><div class="portfolio-head-actions"><span class="portfolio-count">${rows.length} open</span><button class="portfolio-backup" type="button">Backup JSON</button></div></div>
+    ${cloudPanelHtml()}
     ${rows.length?`<div class="position-carousel-wrap"><div class="position-carousel" id="positionCarousel">${rows.map(cardHtml).join('')}</div><div class="portfolio-dots">${rows.map((_,i)=>`<button class="portfolio-dot ${i===0?'active':''}" type="button" data-position-dot="${i}" aria-label="Position ${i+1}"></button>`).join('')}</div></div>`:'<div class="portfolio-empty">No open positions yet. Tap Bought on a Hunter/Watchlist card after you actually purchase it.</div>'}
-    <div class="portfolio-note">Saved in this browser across refreshes and days. Closing a position archives it instead of deleting its history.</div>
+    <div class="portfolio-note">${state.cloud.session?'Saved locally and synchronized to your private cloud account.':'Saved locally across refreshes and days. Connect cloud to sync across devices.'} Closing a position archives it instead of deleting its history.</div>
     ${archiveHtml}
   </section>`;
   root.querySelectorAll('.position-close').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();closePosition(b.dataset.closePosition)}));
   root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openTradingView(b.dataset.tv)}));
   root.querySelector('.portfolio-backup')?.addEventListener('click',downloadPortfolioBackup);
+  bindCloudControls(root);
   bindPositionCarousel(root);
 }
 function bindPositionCarousel(root){
