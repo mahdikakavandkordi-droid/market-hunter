@@ -23,12 +23,12 @@ jobs:
     timeout-minutes: 30
     env:
       HTP_FORWARD_DIR: ${{ github.workspace }}/evidence/data/research/healthy-trend-pullback-forward
-      HTP_PINNED_COLLECTOR_SHA: 1b967b798534525871efc6aff2f76a2582bf1fe9
+      HTP_PINNED_COLLECTOR_SHA: df4cdb289f3f111a6c7dcbe1d73e0d694bf25405
     steps:
       - name: Checkout approved collector code
         uses: actions/checkout@v4
         with:
-          ref: 1b967b798534525871efc6aff2f76a2582bf1fe9
+          ref: df4cdb289f3f111a6c7dcbe1d73e0d694bf25405
           path: collector
           persist-credentials: false
 
