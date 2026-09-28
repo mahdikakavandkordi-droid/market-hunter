@@ -15,9 +15,10 @@ const normalizationVersion='fixture-norm-v1';
 const calendar={developmentStart:'2021-09-27',validationStart:'2024-09-20',finalStart:'2026-01-01'};
 const artifactId='dpl_fixture_locked_artifact';
 const horizons=[5,20];
-const batchSymbols=Array.from({length:4},(_,i)=>['B'+i+'.TO']);
+const batchSymbols=[['RY.TO','AAPL.TO'],['TD.TO','NVDA.TO'],['SHOP.TO','AMZN.TO'],['BMO.TO','GOOG.TO']];
+const datasetSymbols=batchSymbols.map(xs=>[...xs,'^GSPTSE','^IXIC']);
 const batchMeta=Array.from({length:4},(_,i)=>({
-  batchIndex:i,file:'batch-'+i+'.json',symbols:batchSymbols[i],snapshotId:'snap-'+i,
+  batchIndex:i,file:'batch-'+i+'.json',symbols:datasetSymbols[i],snapshotId:'snap-'+i,
   dataSha256:String(i+1).repeat(64).slice(0,64),structureSha256:String(i+5).repeat(64).slice(0,64)
 }));
 const manifest={
@@ -84,6 +85,16 @@ writeReports((x,i)=>{if(i===1)delete x.surfaceReplay.datesByHorizon[5]});
 r=run();
 assert.notEqual(r.status,0,'missing coverage should fail');
 assert.match((r.stderr||'')+(r.stdout||''),/missing surfaceReplay\.datesByHorizon\[5\]/);
+
+writeReports();
+const savedSymbols=manifest.batches[0].symbols;
+manifest.batches[0].symbols=savedSymbols.filter(s=>s!=='^IXIC');
+fs.writeFileSync(path.join(manifestDir,'manifest.json'),JSON.stringify(manifest));
+r=run();
+assert.notEqual(r.status,0,'missing locked benchmark membership should fail');
+assert.match((r.stderr||'')+(r.stdout||''),/dataset symbol\/benchmark membership mismatch/);
+manifest.batches[0].symbols=savedSymbols;
+fs.writeFileSync(path.join(manifestDir,'manifest.json'),JSON.stringify(manifest));
 
 writeReports((x,i)=>{if(i===3)x.surfaceReplay.datesByHorizon[5]=x.surfaceReplay.datesByHorizon[5].filter(d=>d!=='2024-10-02')});
 r=run();
