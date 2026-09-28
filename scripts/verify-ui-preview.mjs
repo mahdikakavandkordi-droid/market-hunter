@@ -102,7 +102,6 @@ async function newContext(browser,{width,height,theme,label,isMobile=false}){
     isMobile,
     hasTouch:isMobile,
     deviceScaleFactor:isMobile?2:1,
-    extraHTTPHeaders:{'x-vercel-protection-bypass':secret},
     serviceWorkers:'allow'
   });
   await context.addInitScript(t=>{
@@ -112,7 +111,9 @@ async function newContext(browser,{width,height,theme,label,isMobile=false}){
   },theme);
   const page=await context.newPage();
   attachDiagnostics(page,label);
-  await page.goto(previewUrl,{waitUntil:'domcontentloaded',timeout:60000});
+  const bootstrap=previewUrl+(previewUrl.includes('?')?'&':'?')+
+    'x-vercel-protection-bypass='+encodeURIComponent(secret)+'&x-vercel-set-bypass-cookie=true';
+  await page.goto(bootstrap,{waitUntil:'domcontentloaded',timeout:60000});
   await ready(page,label);
   return {context,page};
 }
