@@ -338,7 +338,10 @@ function pairedDateEffect(targetRows,baseRows){
   const diffByDate=new Map(diffs.map(x=>[x.d,x]));
   const pointSuccess=mean(diffs.map(x=>x.success))*100,pointExcess=mean(diffs.map(x=>x.excess));
   const rnd=rng32((BOOTSTRAP_SEED^hashString('paired'+targetRows[0]?.model+baseRows[0]?.model))>>>0),bs=[],be=[];
-  for(let rep=0;rep<BOOTSTRAP_REPS;rep++){
+  let bootstrapAttempts=0;
+  const maxBootstrapAttempts=BOOTSTRAP_REPS*20;
+  while(bs.length<BOOTSTRAP_REPS&&bootstrapAttempts<maxBootstrapAttempts){
+    bootstrapAttempts++;
     let produced=0,sv=[],ev=[];
     while(produced<confirmedDates.length){
       const start=Math.floor(rnd()*confirmedDates.length);
@@ -354,7 +357,9 @@ function pairedDateEffect(targetRows,baseRows){
     sharedDates:diffs.length,
     sharedEpisodeFirstSurfaceDates:diffs.length,
     bootstrapCalendar:'20-session circular blocks sampled on the full confirmed calendar; only sampled shared episode dates contribute to paired effects',
+    bootstrapReplicationsRequested:BOOTSTRAP_REPS,
     bootstrapReplicationsUsed:Math.min(bs.length,be.length),
+    bootstrapAttempts,
     successRateDifferencePctPoints:round(pointSuccess,2),meanExcess20DifferencePctPoints:round(pointExcess),
     successDiff95:{lower:round(quantile(bs,.025),2),upper:round(quantile(bs,.975),2)},
     excessDiff95:{lower:round(quantile(be,.025)),upper:round(quantile(be,.975))}
