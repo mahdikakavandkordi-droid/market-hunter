@@ -243,6 +243,32 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .brief-title{font-size:11px;font-weight:800;margin-bottom:5px}.brief-title span{font-size:8px;font-weight:500;color:var(--muted);margin-left:6px}.hunter-brief>p{font-size:10px;line-height:1.5;margin:0 0 7px;color:var(--text)}
 .brief-row{display:grid;grid-template-columns:105px 1fr;gap:7px;padding:4px 0;border-top:1px solid rgba(255,255,255,.045)}.brief-row small,.brief-check small{font-size:8px;color:var(--muted)}.brief-row b,.brief-check b{font-size:9px;line-height:1.45;font-weight:600}
 .brief-check{margin-top:7px;padding:8px;border-radius:8px;background:rgba(255,255,255,.035)}.brief-check small{display:block;margin-bottom:3px}.brief-check b{display:block}
+
+/* Portfolio v2: compact swipe cards + durable daily local history */
+.portfolio-shell{display:grid;gap:12px}
+.portfolio-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end}
+.portfolio-head h2{margin:0;font-size:18px}.portfolio-head p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+.portfolio-head-actions{display:flex;align-items:center;gap:7px}.portfolio-count{font-size:10px;color:var(--muted);padding:5px 8px;border:1px solid var(--line);border-radius:999px;white-space:nowrap}
+.portfolio-backup{background:transparent;color:var(--muted);border:1px solid var(--line);min-height:31px;padding:6px 9px;font-size:10px}
+.position-carousel-wrap{position:relative}
+.position-carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;padding:3px 3px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.position-carousel::-webkit-scrollbar{display:none}
+.position-card{flex:0 0 min(480px,calc(100vw - 54px));scroll-snap-align:center;scroll-snap-stop:always;cursor:default;min-height:0}
+.position-card:hover{transform:none}
+.position-card .position-main{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+.position-card .position-price{text-align:right}.position-card .position-price strong{display:block;font-size:22px;letter-spacing:-.035em}.position-card .position-price small{font-size:10px;color:var(--muted)}
+.position-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}.position-kpi{padding:8px;border:1px solid #202b36;background:var(--panel3);border-radius:10px;min-width:0}.position-kpi small{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em}.position-kpi b{display:block;margin-top:3px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.position-monitor{margin-top:9px;padding:10px;border-radius:10px;border:1px solid rgba(37,48,60,.75);background:rgba(255,255,255,.025);font-size:10.5px;line-height:1.45;color:#d8e0e8}
+.position-monitor strong{display:block;margin-bottom:3px;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.position-history{margin-top:10px}.position-history-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}.position-history-head span{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em}.position-history-head small{font-size:9px;color:var(--muted)}
+.position-history-strip{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.position-history-strip::-webkit-scrollbar{display:none}.position-day{flex:0 0 64px;padding:6px;border:1px solid var(--line);border-radius:9px;background:rgba(11,15,20,.38);text-align:center}.position-day small{display:block;color:var(--muted2);font-size:8px}.position-day b{display:block;margin-top:2px;font-size:10px}
+.position-more{margin-top:9px;border-top:1px solid var(--line);padding-top:8px}.position-more summary{cursor:pointer;color:var(--muted);font-size:10px;min-height:28px;display:flex;align-items:center}.position-more .detail-grid{margin-top:7px}
+.position-actions{display:flex;gap:6px;margin-top:10px}.position-actions .tv-link,.position-actions .position-close{flex:1;min-height:34px}.position-close{background:transparent;color:var(--muted);border:1px solid var(--line);font-size:10px}
+.portfolio-dots{display:flex;justify-content:center;gap:5px;margin-top:2px}.portfolio-dot{width:7px;height:7px;min-height:7px;padding:0;border-radius:999px;background:#354250;opacity:.55}.portfolio-dot.active{width:18px;background:var(--accent);opacity:1}
+.portfolio-note{font-size:9px;color:var(--muted2);line-height:1.45}.portfolio-empty{padding:22px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:11px;text-align:center}
+.portfolio-archive{margin-top:4px;border-top:1px solid rgba(37,48,60,.72);padding-top:9px}.portfolio-archive summary{cursor:pointer;color:var(--muted);font-size:10px}.portfolio-archive-row{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px solid rgba(37,48,60,.45);font-size:10px}.portfolio-archive-row span{color:var(--muted)}
+@media(min-width:900px){.position-card{flex-basis:430px}.position-carousel{padding-right:80px}}
+@media(max-width:620px){.portfolio-head{align-items:flex-start}.portfolio-head-actions{flex-direction:column;align-items:flex-end}.position-carousel{gap:10px;margin-left:-3px;margin-right:-3px;padding-left:3px;padding-right:18px}.position-card{flex-basis:calc(100vw - 38px);padding:13px}.position-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.position-kpi{padding:7px 5px}.position-kpi b{font-size:11px}.position-day{flex-basis:58px}}
 </style>
 <link rel="stylesheet" href="/intraday.css">
 <script type="module" src="/intraday.js"></script>
@@ -301,14 +327,65 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
-const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
+const PORTFOLIO_KEY='marketHunterPortfolioV2';
+function loadPortfolio(){
+  try{
+    const parsed=JSON.parse(localStorage.getItem(PORTFOLIO_KEY)||'null');
+    if(parsed&&parsed.version===2&&parsed.positions&&parsed.dailySnapshots)return parsed;
+  }catch{}
+  let legacy=[];
+  try{legacy=JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')}catch{}
+  const positions={};
+  for(const p of Array.isArray(legacy)?legacy:[])if(p?.symbol)positions[p.symbol]={...p,status:'open'};
+  const migrated={version:2,positions,dailySnapshots:{},createdAt:new Date().toISOString()};
+  try{localStorage.setItem(PORTFOLIO_KEY,JSON.stringify(migrated))}catch{}
+  return migrated;
+}
+const portfolio=loadPortfolio();
+const savedPositions=()=>new Map(Object.values(portfolio.positions||{}).filter(x=>x?.status!=='closed').map(x=>[x.symbol,x]));
+const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),portfolio,compare:new Set()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
-function persistPositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
+function persistPortfolio(){
+  try{
+    localStorage.setItem(PORTFOLIO_KEY,JSON.stringify(state.portfolio));
+    localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));
+  }catch(e){console.warn('Portfolio persistence unavailable',e)}
+}
+function persistPositions(){persistPortfolio()}
+function closePosition(symbol){
+  const p=state.positions.get(symbol);if(!p)return;
+  const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);
+  const closed={...p,status:'closed',closedAt:new Date().toISOString(),closedMarketAsOf:state.data?.marketAsOf||null,closedPrice:Number.isFinite(x?.price)?x.price:null};
+  state.portfolio.positions[symbol]=closed;
+  state.positions.delete(symbol);
+  persistPortfolio();render();
+}
 function markBought(symbol){
   const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);if(!x)return;
-  if(state.positions.has(symbol)){state.positions.delete(symbol)}else state.positions.set(symbol,{symbol,boughtAt:new Date().toISOString(),entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance});
-  persistPositions();render();
+  if(state.positions.has(symbol))return;
+  const p={symbol,boughtAt:new Date().toISOString(),entryMarketAsOf:state.data?.marketAsOf||null,entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance,status:'open',source:'Market Hunter'};
+  state.positions.set(symbol,p);state.portfolio.positions[symbol]=p;
+  persistPortfolio();recordPortfolioDailySnapshot();render();
+}
+function positionSnapshot(x,p){
+  if(!x)return {symbol:p.symbol,price:null,returnPct:null,status:'Data unavailable',stage:null,rs20:null,momentumShift:null,support:null,resistance:null};
+  const h=positionHealth(x,p);
+  return {symbol:p.symbol,price:Number.isFinite(x.price)?x.price:null,returnPct:Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null,status:h.status,stage:x.stage||null,rs20:Number.isFinite(x.rs20)?x.rs20:null,momentumShift:Number.isFinite(x.momentumShift)?x.momentumShift:null,support:Number.isFinite(x.support)?x.support:null,resistance:Number.isFinite(x.resistance)?x.resistance:null};
+}
+function recordPortfolioDailySnapshot(){
+  const day=state.data?.marketAsOf;if(!day||!state.positions.size)return;
+  const current=allHunterCandidates(),by=new Map([...(state.data?.availableItems||[]),...current].map(x=>[x.symbol,x]));
+  state.portfolio.dailySnapshots=state.portfolio.dailySnapshots||{};
+  const prev=state.portfolio.dailySnapshots[day];
+  state.portfolio.dailySnapshots[day]={marketAsOf:day,firstCapturedAt:prev?.firstCapturedAt||new Date().toISOString(),lastCapturedAt:new Date().toISOString(),positions:[...state.positions.values()].map(p=>positionSnapshot(by.get(p.symbol),p))};
+  persistPortfolio();
+}
+function positionHistory(symbol){
+  return Object.values(state.portfolio.dailySnapshots||{}).sort((a,b)=>a.marketAsOf.localeCompare(b.marketAsOf)).map(d=>({date:d.marketAsOf,...(d.positions||[]).find(x=>x.symbol===symbol)})).filter(x=>x.symbol);
+}
+function downloadPortfolioBackup(){
+  const blob=new Blob([JSON.stringify(state.portfolio,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='market-hunter-portfolio-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 function positionHealth(x,p){
   const warnings=[],watch=[],healthy=[];
@@ -328,14 +405,56 @@ function renderPositions(){
   const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
   const current=allHunterCandidates(),by=new Map([...(state.data.availableItems||[]),...current].map(x=>[x.symbol,x]));
   const rows=[...state.positions.values()].map(p=>({p,x:by.get(p.symbol)}));
-  root.innerHTML=`<section class="watchlist"><div class="section-title"><div><h2>Positions</h2><p>Post-purchase monitoring. Hunter reports trend health and warnings; it does not issue hold/sell orders.</p></div><span class="shown">${rows.length}</span></div><div class="grid">${rows.length?rows.map(({p,x})=>{
-    if(!x)return `<article class="card"><div class="ticker">${p.symbol}</div><div class="why"><strong>Position monitor</strong>Current market data unavailable.</div><button class="position-btn" data-position="${p.symbol}">Remove</button></article>`;
-    const h=positionHealth(x,p),ret=Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null;
-    const tone=h.status==='Structure Warning'?'down':h.status==='Watch Closely'?'flat':'up';
-    return `<article class="card"><div class="top"><div><div class="ticker-line"><div class="ticker">${x.symbol.replace(/\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${x.company}</div><div class="sector">Bought ${new Date(p.boughtAt).toLocaleDateString()} · Entry ${fmt(p.entryPrice)}</div></div><div><div class="price">${fmt(x.price)}</div><div class="${cls(ret)}">Since entry ${pct(ret)}</div></div></div><div class="why"><strong>Monitor says</strong>${h.warnings.concat(h.watch,h.healthy).slice(0,4).join(' · ')||'No material structural change detected.'}</div><div class="detail open"><div class="detail-grid"><div class="pill">Entry stage<b>${p.entryStage}</b></div><div class="pill">Current stage<b>${x.stage||'Outside active candidate stages'}</b></div><div class="pill">RS20<b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="pill">Momentum<b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div><div class="pill">Support<b>${fmt(x.support)}</b></div><div class="pill">Resistance<b>${fmt(x.resistance)}</b></div></div></div><div class="card-actions"><button class="tv-link" data-tv="${x.symbol}">Chart ↗</button><button class="position-btn" data-position="${x.symbol}">Close / remove</button></div></article>`;
-  }).join(''):'<div class="watch-empty">No positions yet. On a Hunter card tap “Bought” after you actually purchase it.</div>'}</div></section>`;
-  root.querySelectorAll('.position-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();markBought(b.dataset.position)}));
-  root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openTradingView(b.dataset.tv)}));
+  const archived=Object.values(state.portfolio.positions||{}).filter(p=>p?.status==='closed').sort((a,b)=>String(b.closedAt||'').localeCompare(String(a.closedAt||'')));
+  const cardHtml=({p,x},idx)=>{
+    const h=x?positionHealth(x,p):{status:'Data unavailable',warnings:[],watch:[],healthy:[]};
+    const ret=x&&Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null;
+    const tone=h.status==='Structure Warning'?'down':h.status==='Watch Closely'||h.status==='Data unavailable'?'flat':'up';
+    const hist=positionHistory(p.symbol).slice(-7);
+    const historyHtml=hist.length?hist.map(d=>`<div class="position-day"><small>${new Date(d.date+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})}</small><b class="${cls(d.returnPct)}">${pct(d.returnPct)}</b></div>`).join(''):'<span class="portfolio-note">Daily history starts automatically from the next completed scan.</span>';
+    const monitor=x?h.warnings.concat(h.watch,h.healthy).slice(0,3).join(' / '):'Current market data unavailable; the position and prior daily history are still saved.';
+    return `<article class="card position-card" data-position-index="${idx}">
+      <div class="position-main">
+        <div><div class="ticker-line"><div class="ticker">${p.symbol.replace(/\.(TO|NE|V)$/,'')}</div><span class="history-note ${tone}">${h.status}</span></div><div class="company">${x?.company||p.symbol}</div><div class="sector">Entry ${new Date(p.boughtAt).toLocaleDateString()} &middot; ${fmt(p.entryPrice)} &middot; ${p.source||'Portfolio'}</div></div>
+        <div class="position-price"><strong>${fmt(x?.price)}</strong><small class="${cls(ret)}">Since entry ${pct(ret)}</small></div>
+      </div>
+      <div class="position-kpis">
+        <div class="position-kpi"><small>Stage</small><b>${x?.stage||p.entryStage||'Outside scan'}</b></div>
+        <div class="position-kpi"><small>RS20</small><b class="${cls(x?.rs20)}">${pct(x?.rs20)}</b></div>
+        <div class="position-kpi"><small>Momentum</small><b class="${cls(x?.momentumShift)}">${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'--'}</b></div>
+      </div>
+      <div class="position-monitor"><strong>Today</strong>${monitor||'No material structural change detected.'}</div>
+      <div class="position-history"><div class="position-history-head"><span>Daily trail</span><small>${hist.length} saved day${hist.length===1?'':'s'}</small></div><div class="position-history-strip">${historyHtml}</div></div>
+      <details class="position-more"><summary>More detail</summary><div class="detail-grid">
+        <div class="pill">Entry stage<b>${p.entryStage||'--'}</b></div><div class="pill">Current stage<b>${x?.stage||'Outside active candidate stages'}</b></div>
+        <div class="pill">Support<b>${fmt(x?.support)}</b></div><div class="pill">Resistance<b>${fmt(x?.resistance)}</b></div>
+        <div class="pill">Entry RS20<b class="${cls(p.entryRs20)}">${pct(p.entryRs20)}</b></div><div class="pill">Current RS20<b class="${cls(x?.rs20)}">${pct(x?.rs20)}</b></div>
+      </div></details>
+      <div class="position-actions">${x?`<button class="tv-link" data-tv="${p.symbol}">Chart</button>`:''}<button class="position-close" data-close-position="${p.symbol}">Close &amp; archive</button></div>
+    </article>`;
+  };
+  const archiveHtml=archived.length?`<details class="portfolio-archive"><summary>Archived positions (${archived.length})</summary>${archived.slice(0,12).map(p=>`<div class="portfolio-archive-row"><b>${p.symbol.replace(/\.(TO|NE|V)$/,'')}</b><span>${p.closedAt?new Date(p.closedAt).toLocaleDateString():'Closed'} &middot; ${fmt(p.closedPrice)}</span></div>`).join('')}</details>`:'';
+  root.innerHTML=`<section class="portfolio-shell">
+    <div class="portfolio-head"><div><h2>Portfolio</h2><p>Swipe between holdings. Each completed market day is saved locally instead of replacing yesterday.</p></div><div class="portfolio-head-actions"><span class="portfolio-count">${rows.length} open</span><button class="portfolio-backup" type="button">Backup JSON</button></div></div>
+    ${rows.length?`<div class="position-carousel-wrap"><div class="position-carousel" id="positionCarousel">${rows.map(cardHtml).join('')}</div><div class="portfolio-dots">${rows.map((_,i)=>`<button class="portfolio-dot ${i===0?'active':''}" type="button" data-position-dot="${i}" aria-label="Position ${i+1}"></button>`).join('')}</div></div>`:'<div class="portfolio-empty">No open positions yet. Tap Bought on a Hunter/Watchlist card after you actually purchase it.</div>'}
+    <div class="portfolio-note">Saved in this browser across refreshes and days. Closing a position archives it instead of deleting its history.</div>
+    ${archiveHtml}
+  </section>`;
+  root.querySelectorAll('.position-close').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();closePosition(b.dataset.closePosition)}));
+  root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openTradingView(b.dataset.tv)}));
+  root.querySelector('.portfolio-backup')?.addEventListener('click',downloadPortfolioBackup);
+  bindPositionCarousel(root);
+}
+function bindPositionCarousel(root){
+  const rail=root.querySelector('#positionCarousel');if(!rail)return;
+  const cards=[...rail.querySelectorAll('.position-card')],dots=[...root.querySelectorAll('.portfolio-dot')];
+  const setActive=i=>dots.forEach((d,n)=>d.classList.toggle('active',n===i));
+  dots.forEach((d,i)=>d.addEventListener('click',()=>cards[i]?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})));
+  let raf=0;rail.addEventListener('scroll',()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{
+    const center=rail.scrollLeft+rail.clientWidth/2;
+    let best=0,dist=Infinity;cards.forEach((c,i)=>{const cc=c.offsetLeft+c.offsetWidth/2,dd=Math.abs(cc-center);if(dd<dist){dist=dd;best=i}});
+    setActive(best);
+  })},{passive:true});
 }
 function toggleWatch(symbol){
   state.watchlist.has(symbol)?state.watchlist.delete(symbol):state.watchlist.add(symbol);
@@ -1017,6 +1136,7 @@ async function load(){
     const j=await r.json();
     if(!r.ok)throw new Error(j.message||'Scan failed');
     state.data=j;
+    recordPortfolioDailySnapshot();
     if(historyRes.status==='fulfilled'&&historyRes.value.ok){
       try{state.history=await historyRes.value.json()}catch{state.history={snapshots:[]}}
     } else state.history={snapshots:[]};
