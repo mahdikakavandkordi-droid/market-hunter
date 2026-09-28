@@ -81,18 +81,18 @@ try{
   const aSecret=secret(),bSecret=secret();
   secrets.push(aSecret,bSecret);
   const noteA=prefix+' A',noteB=prefix+' B';
-  await generate(aSecret,noteA); cleanup.push({secret:aSecret,projectId:a.projectId,teamId:a.teamId});
-  await generate(bSecret,noteB); cleanup.push({secret:bSecret,projectId:a.projectId,teamId:a.teamId});
+  await generate(aSecret,noteA); cleanup.push({secret:aSecret,projectId:a.projectId,teamId:a.teamId,note:noteA});
+  await generate(bSecret,noteB); cleanup.push({secret:bSecret,projectId:a.projectId,teamId:a.teamId,note:noteB});
   await verifyAccess(aSecret,true); proof.concurrency.aWorked=true;
   await verifyAccess(bSecret,true); proof.concurrency.bWorked=true;
 
-  await revokeLease({token,lease:{secret:aSecret,projectId:a.projectId,teamId:a.teamId},timeoutMs});
+  await revokeLease({token,lease:{secret:aSecret,projectId:a.projectId,teamId:a.teamId,note:noteA},timeoutMs});
   proof.concurrency.aRevoked=true;
   cleanup.splice(cleanup.findIndex(x=>x.secret===aSecret),1);
   await verifyAccess(aSecret,false);
   await verifyAccess(bSecret,true); proof.concurrency.bSurvivedA=true;
 
-  await revokeLease({token,lease:{secret:bSecret,projectId:a.projectId,teamId:a.teamId},timeoutMs});
+  await revokeLease({token,lease:{secret:bSecret,projectId:a.projectId,teamId:a.teamId,note:noteB},timeoutMs});
   proof.concurrency.bRevoked=true;
   cleanup.splice(cleanup.findIndex(x=>x.secret===bSecret),1);
   await verifyAccess(bSecret,false);
@@ -103,7 +103,7 @@ try{
   const noteC=prefix+' cancellation-fallback';
   await generate(cSecret,noteC);
   proof.cancellationFallback.created=true;
-  cleanup.push({secret:cSecret,projectId:a.projectId,teamId:a.teamId});
+  cleanup.push({secret:cSecret,projectId:a.projectId,teamId:a.teamId,note:noteC});
   const leaseFile=path.join('.tmp','probe-cancellation-'+runId+'.json');
   writeLeaseFile(leaseFile,{secret:cSecret,projectId:a.projectId,teamId:a.teamId,runId,note:noteC});
   proof.cancellationFallback.leaseWritten=true;
