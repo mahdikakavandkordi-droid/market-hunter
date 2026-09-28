@@ -399,11 +399,12 @@ async function syncPortfolioCloud(){
   }catch(e){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed';
   }finally{cloudSyncBusy=false;if(cloudSyncQueued){cloudSyncQueued=false;queueCloudPortfolioSync()}if(state.data)renderPositions()}
 }
-function queueCloudPortfolioSync(){if(!state?.cloud?.session)return;clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>syncPortfolioCloud(),700)}
+function queueCloudPortfolioSync(){if(!state?.cloud?.session||!state.cloud.ready)return;clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>syncPortfolioCloud(),700)}
 async function initializeCloudPortfolio(){
-  if(!state.cloud.session)return;
+  state.cloud.ready=false;
+  if(!state.cloud.session){state.cloud.ready=true;return}
   state.cloud.status='syncing';state.cloud.message='Loading cloud portfolio...';if(state.data)renderPositions();
-  try{await loadCloudPortfolio();await syncPortfolioCloud();}catch(e){state.cloud.status='error';state.cloud.message=e.message||'Cloud load failed';if(state.data)renderPositions()}
+  try{await loadCloudPortfolio();state.cloud.ready=true;await syncPortfolioCloud();}catch(e){state.cloud.ready=true;state.cloud.status='error';state.cloud.message=e.message||'Cloud load failed';if(state.data)renderPositions()}
 }
 async function cloudSignIn(email,password){
   state.cloud.message='Signing in...';renderPositions();
@@ -417,7 +418,7 @@ async function cloudSignUp(email,password){
 }
 async function cloudSignOut(){
   const session=await ensureCloudSession();if(session){try{await cloudAuthRequest('logout',{},session.access_token)}catch{}}
-  saveCloudSession(null);state.cloud.status='local';state.cloud.message='Local portfolio remains on this device.';state.cloud.showAuth=false;renderPositions();
+  saveCloudSession(null);state.cloud.ready=true;state.cloud.status='local';state.cloud.message='Local portfolio remains on this device.';state.cloud.showAuth=false;renderPositions();
 }
 function loadPortfolio(){
   try{
@@ -434,7 +435,7 @@ function loadPortfolio(){
 }
 const portfolio=loadPortfolio();
 const savedPositions=()=>new Map(Object.values(portfolio.positions||{}).filter(x=>x?.status!=='closed').map(x=>[x.symbol,x]));
-const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),portfolio,cloud:{session:loadCloudSession(),status:'local',message:'',showAuth:false},compare:new Set()};
+const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),portfolio,cloud:{session:loadCloudSession(),status:'local',message:'',showAuth:false,ready:false},compare:new Set()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function persistPortfolio(){
   try{
@@ -1276,7 +1277,7 @@ document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>
 document.querySelector('#refresh').addEventListener('click',load);
 document.querySelector('#liq').addEventListener('change',load);
 document.querySelector('#topN').addEventListener('change',()=>{state.expanded.clear();renderHunter()});
-load();
+load().then(()=>initializeCloudPortfolio());
 </script>
 </body>
 </html>
