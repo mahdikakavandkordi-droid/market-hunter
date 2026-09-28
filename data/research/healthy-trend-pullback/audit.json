@@ -1,0 +1,654 @@
+{
+  "format": "market-hunter-healthy-trend-pullback-independent-audit-v1",
+  "generatedAt": "2026-09-28T18:37:22.999Z",
+  "independentCalculation": true,
+  "outcomeRecomputation": "Independent code path reads frozen OHLC directly and does not import challenger analysis/evaluation functions.",
+  "evidenceTag": "locked-v2-validation-36420714736-archive-v1",
+  "validationRunId": 36420714736,
+  "finalTestOpened": false,
+  "checks": [
+    {
+      "name": "deterministic episode outcomes independently recompute from frozen OHLC",
+      "pass": true,
+      "detail": {
+        "episodes": 2636,
+        "rowMismatches": 0,
+        "mismatchExamples": []
+      }
+    },
+    {
+      "name": "Development full-window purge",
+      "pass": true,
+      "detail": {
+        "n": 1748
+      }
+    },
+    {
+      "name": "Validation full-window purge",
+      "pass": true,
+      "detail": {
+        "n": 826
+      }
+    },
+    {
+      "name": "no deterministic episode starts in Historical Final",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "core has exactly one selection record per confirmed date",
+      "pass": true,
+      "detail": {
+        "expected": 950,
+        "actual": 950
+      }
+    },
+    {
+      "name": "core zero-pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 913,
+        "reported": 913
+      }
+    },
+    {
+      "name": "core total pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 44,
+        "reported": 44
+      }
+    },
+    {
+      "name": "core episode identities independently reconstruct from selections",
+      "pass": true,
+      "detail": {
+        "reconstructed": 44,
+        "exported": 44
+      }
+    },
+    {
+      "name": "core_volume has exactly one selection record per confirmed date",
+      "pass": true,
+      "detail": {
+        "expected": 950,
+        "actual": 950
+      }
+    },
+    {
+      "name": "core_volume zero-pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 941,
+        "reported": 941
+      }
+    },
+    {
+      "name": "core_volume total pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 10,
+        "reported": 10
+      }
+    },
+    {
+      "name": "core_volume episode identities independently reconstruct from selections",
+      "pass": true,
+      "detail": {
+        "reconstructed": 10,
+        "exported": 10
+      }
+    },
+    {
+      "name": "core_market has exactly one selection record per confirmed date",
+      "pass": true,
+      "detail": {
+        "expected": 950,
+        "actual": 950
+      }
+    },
+    {
+      "name": "core_market zero-pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 928,
+        "reported": 928
+      }
+    },
+    {
+      "name": "core_market total pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 28,
+        "reported": 28
+      }
+    },
+    {
+      "name": "core_market episode identities independently reconstruct from selections",
+      "pass": true,
+      "detail": {
+        "reconstructed": 28,
+        "exported": 28
+      }
+    },
+    {
+      "name": "trend_rs has exactly one selection record per confirmed date",
+      "pass": true,
+      "detail": {
+        "expected": 950,
+        "actual": 950
+      }
+    },
+    {
+      "name": "trend_rs zero-pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 15,
+        "reported": 15
+      }
+    },
+    {
+      "name": "trend_rs total pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 5596,
+        "reported": 5596
+      }
+    },
+    {
+      "name": "trend_rs episode identities independently reconstruct from selections",
+      "pass": true,
+      "detail": {
+        "reconstructed": 1343,
+        "exported": 1343
+      }
+    },
+    {
+      "name": "early_watch has exactly one selection record per confirmed date",
+      "pass": true,
+      "detail": {
+        "expected": 950,
+        "actual": 950
+      }
+    },
+    {
+      "name": "early_watch zero-pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 336,
+        "reported": 336
+      }
+    },
+    {
+      "name": "early_watch total pick count independently matches summary",
+      "pass": true,
+      "detail": {
+        "recomputed": 1593,
+        "reported": 1593
+      }
+    },
+    {
+      "name": "early_watch episode identities independently reconstruct from selections",
+      "pass": true,
+      "detail": {
+        "reconstructed": 1211,
+        "exported": 1211
+      }
+    },
+    {
+      "name": "partial/missing coverage is separate from confirmed zero-pick records",
+      "pass": true,
+      "detail": {
+        "recomputed": 0,
+        "reported": 0
+      }
+    },
+    {
+      "name": "completed weekly inputs precede decision week",
+      "pass": true,
+      "detail": {
+        "weeklyLeak": 0
+      }
+    },
+    {
+      "name": "all challenger pivots were confirmed by decision close",
+      "pass": true,
+      "detail": {
+        "pivotLeak": 0,
+        "pivotMissing": 0
+      }
+    },
+    {
+      "name": "all challenger picks carry a frozen ATR-volatility quintile",
+      "pass": true,
+      "detail": {
+        "volQuintileMissing": 0
+      }
+    },
+    {
+      "name": "core combined summary independently recomputes from episode rows",
+      "pass": true,
+      "detail": {
+        "recomputed": {
+          "episodeCount": 44,
+          "primaryDenominator": 44,
+          "distinctSymbols": 35,
+          "primaryLabels": {
+            "success": 15,
+            "adverse_first": 28,
+            "neither": 1,
+            "ambiguous_both_hit": 0
+          },
+          "successRate": 34.09,
+          "meanReturn5": 0.1776,
+          "medianReturn5": -0.4297,
+          "meanExcess5": 0.2292,
+          "medianExcess5": 0.5308,
+          "meanReturn10": 2.9192,
+          "medianReturn10": 3.0076,
+          "meanExcess10": 2.0865,
+          "medianExcess10": 0.3154,
+          "meanReturn20": 6.3056,
+          "medianReturn20": 7.2934,
+          "meanExcess20": 4.8511,
+          "medianExcess20": 3.3948,
+          "meanFavourableExcursion": 14.3393,
+          "medianFavourableExcursion": 13.471,
+          "meanAdverseExcursion": -8.3117,
+          "medianAdverseExcursion": -6.4865,
+          "medianTimeToFavourable": 8,
+          "irregularGapCount": 0
+        },
+        "reported": {
+          "episodeCount": 44,
+          "primaryDenominator": 44,
+          "distinctSymbols": 35,
+          "primaryLabels": {
+            "success": 15,
+            "adverse_first": 28,
+            "neither": 1,
+            "ambiguous_both_hit": 0
+          },
+          "successRate": 34.09,
+          "meanReturn5": 0.1776,
+          "medianReturn5": -0.4297,
+          "meanExcess5": 0.2292,
+          "medianExcess5": 0.5308,
+          "meanReturn10": 2.9192,
+          "medianReturn10": 3.0076,
+          "meanExcess10": 2.0865,
+          "medianExcess10": 0.3154,
+          "meanReturn20": 6.3056,
+          "medianReturn20": 7.2934,
+          "meanExcess20": 4.8511,
+          "medianExcess20": 3.3948,
+          "meanFavourableExcursion": 14.3393,
+          "medianFavourableExcursion": 13.471,
+          "meanAdverseExcursion": -8.3117,
+          "medianAdverseExcursion": -6.4865,
+          "medianTimeToFavourable": 8,
+          "irregularGapCount": 0
+        }
+      }
+    },
+    {
+      "name": "core_volume combined summary independently recomputes from episode rows",
+      "pass": true,
+      "detail": {
+        "recomputed": {
+          "episodeCount": 10,
+          "primaryDenominator": 10,
+          "distinctSymbols": 10,
+          "primaryLabels": {
+            "success": 4,
+            "adverse_first": 6,
+            "neither": 0,
+            "ambiguous_both_hit": 0
+          },
+          "successRate": 40,
+          "meanReturn5": 1.0056,
+          "medianReturn5": 1.4666,
+          "meanExcess5": 1.1679,
+          "medianExcess5": 2.692,
+          "meanReturn10": 6.5046,
+          "medianReturn10": 8.397,
+          "meanExcess10": 5.8143,
+          "medianExcess10": 6.769,
+          "meanReturn20": 9.282,
+          "medianReturn20": 12.3923,
+          "meanExcess20": 7.1561,
+          "medianExcess20": 10.2481,
+          "meanFavourableExcursion": 17.7458,
+          "medianFavourableExcursion": 17.8343,
+          "meanAdverseExcursion": -10.2619,
+          "medianAdverseExcursion": -7.8903,
+          "medianTimeToFavourable": 4,
+          "irregularGapCount": 0
+        },
+        "reported": {
+          "episodeCount": 10,
+          "primaryDenominator": 10,
+          "distinctSymbols": 10,
+          "primaryLabels": {
+            "success": 4,
+            "adverse_first": 6,
+            "neither": 0,
+            "ambiguous_both_hit": 0
+          },
+          "successRate": 40,
+          "meanReturn5": 1.0056,
+          "medianReturn5": 1.4666,
+          "meanExcess5": 1.1679,
+          "medianExcess5": 2.692,
+          "meanReturn10": 6.5046,
+          "medianReturn10": 8.397,
+          "meanExcess10": 5.8143,
+          "medianExcess10": 6.769,
+          "meanReturn20": 9.282,
+          "medianReturn20": 12.3923,
+          "meanExcess20": 7.1561,
+          "medianExcess20": 10.2481,
+          "meanFavourableExcursion": 17.7458,
+          "medianFavourableExcursion": 17.8343,
+          "meanAdverseExcursion": -10.2619,
+          "medianAdverseExcursion": -7.8903,
+          "medianTimeToFavourable": 4,
+          "irregularGapCount": 0
+        }
+      }
+    },
+    {
+      "name": "core_market combined summary independently recomputes from episode rows",
+      "pass": true,
+      "detail": {
+        "recomputed": {
+          "episodeCount": 28,
+          "primaryDenominator": 28,
+          "distinctSymbols": 27,
+          "primaryLabels": {
+            "success": 7,
+            "adverse_first": 21,
+            "neither": 0,
+            "ambiguous_both_hit": 0
+          },
+          "successRate": 25,
+          "meanReturn5": -0.8299,
+          "medianReturn5": -0.5886,
+          "meanExcess5": -0.0775,
+          "medianExcess5": 0.4745,
+          "meanReturn10": 1.8638,
+          "medianReturn10": 2.2009,
+          "meanExcess10": 1.6822,
+          "medianExcess10": 1.3637,
+          "meanReturn20": 5.5863,
+          "medianReturn20": 2.2222,
+          "meanExcess20": 4.5225,
+          "medianExcess20": 2.2325,
+          "meanFavourableExcursion": 13.2677,
+          "medianFavourableExcursion": 10.8114,
+          "meanAdverseExcursion": -9.344,
+          "medianAdverseExcursion": -7.0295,
+          "medianTimeToFavourable": 6,
+          "irregularGapCount": 0
+        },
+        "reported": {
+          "episodeCount": 28,
+          "primaryDenominator": 28,
+          "distinctSymbols": 27,
+          "primaryLabels": {
+            "success": 7,
+            "adverse_first": 21,
+            "neither": 0,
+            "ambiguous_both_hit": 0
+          },
+          "successRate": 25,
+          "meanReturn5": -0.8299,
+          "medianReturn5": -0.5886,
+          "meanExcess5": -0.0775,
+          "medianExcess5": 0.4745,
+          "meanReturn10": 1.8638,
+          "medianReturn10": 2.2009,
+          "meanExcess10": 1.6822,
+          "medianExcess10": 1.3637,
+          "meanReturn20": 5.5863,
+          "medianReturn20": 2.2222,
+          "meanExcess20": 4.5225,
+          "medianExcess20": 2.2325,
+          "meanFavourableExcursion": 13.2677,
+          "medianFavourableExcursion": 10.8114,
+          "meanAdverseExcursion": -9.344,
+          "medianAdverseExcursion": -7.0295,
+          "medianTimeToFavourable": 6,
+          "irregularGapCount": 0
+        }
+      }
+    },
+    {
+      "name": "trend_rs combined summary independently recomputes from episode rows",
+      "pass": true,
+      "detail": {
+        "recomputed": {
+          "episodeCount": 1305,
+          "primaryDenominator": 1305,
+          "distinctSymbols": 181,
+          "primaryLabels": {
+            "success": 474,
+            "adverse_first": 792,
+            "neither": 35,
+            "ambiguous_both_hit": 4
+          },
+          "successRate": 36.32,
+          "meanReturn5": 0.4942,
+          "medianReturn5": 0.3892,
+          "meanExcess5": 0.263,
+          "medianExcess5": 0.0505,
+          "meanReturn10": 0.8986,
+          "medianReturn10": 0.6833,
+          "meanExcess10": 0.4328,
+          "medianExcess10": 0.0711,
+          "meanReturn20": 1.7165,
+          "medianReturn20": 1.5609,
+          "meanExcess20": 0.9099,
+          "medianExcess20": 0.4425,
+          "meanFavourableExcursion": 9.597,
+          "medianFavourableExcursion": 7.3511,
+          "meanAdverseExcursion": -7.6507,
+          "medianAdverseExcursion": -5.805,
+          "medianTimeToFavourable": 5,
+          "irregularGapCount": 0
+        },
+        "reported": {
+          "episodeCount": 1305,
+          "primaryDenominator": 1305,
+          "distinctSymbols": 181,
+          "primaryLabels": {
+            "success": 474,
+            "adverse_first": 792,
+            "neither": 35,
+            "ambiguous_both_hit": 4
+          },
+          "successRate": 36.32,
+          "meanReturn5": 0.4942,
+          "medianReturn5": 0.3892,
+          "meanExcess5": 0.263,
+          "medianExcess5": 0.0505,
+          "meanReturn10": 0.8986,
+          "medianReturn10": 0.6833,
+          "meanExcess10": 0.4328,
+          "medianExcess10": 0.0711,
+          "meanReturn20": 1.7165,
+          "medianReturn20": 1.5609,
+          "meanExcess20": 0.9099,
+          "medianExcess20": 0.4425,
+          "meanFavourableExcursion": 9.597,
+          "medianFavourableExcursion": 7.3511,
+          "meanAdverseExcursion": -7.6507,
+          "medianAdverseExcursion": -5.805,
+          "medianTimeToFavourable": 5,
+          "irregularGapCount": 0
+        }
+      }
+    },
+    {
+      "name": "early_watch combined summary independently recomputes from episode rows",
+      "pass": true,
+      "detail": {
+        "recomputed": {
+          "episodeCount": 1187,
+          "primaryDenominator": 1187,
+          "distinctSymbols": 203,
+          "primaryLabels": {
+            "success": 457,
+            "adverse_first": 673,
+            "neither": 55,
+            "ambiguous_both_hit": 2
+          },
+          "successRate": 38.5,
+          "meanReturn5": 0.5052,
+          "medianReturn5": 0.6135,
+          "meanExcess5": 0.2626,
+          "medianExcess5": 0.1001,
+          "meanReturn10": 1.1295,
+          "medianReturn10": 0.9034,
+          "meanExcess10": 0.5727,
+          "medianExcess10": 0.0635,
+          "meanReturn20": 2.0781,
+          "medianReturn20": 1.4778,
+          "meanExcess20": 0.7859,
+          "medianExcess20": 0.0291,
+          "meanFavourableExcursion": 8.6863,
+          "medianFavourableExcursion": 6.5375,
+          "meanAdverseExcursion": -6.5323,
+          "medianAdverseExcursion": -4.7883,
+          "medianTimeToFavourable": 6,
+          "irregularGapCount": 0
+        },
+        "reported": {
+          "episodeCount": 1187,
+          "primaryDenominator": 1187,
+          "distinctSymbols": 203,
+          "primaryLabels": {
+            "success": 457,
+            "adverse_first": 673,
+            "neither": 55,
+            "ambiguous_both_hit": 2
+          },
+          "successRate": 38.5,
+          "meanReturn5": 0.5052,
+          "medianReturn5": 0.6135,
+          "meanExcess5": 0.2626,
+          "medianExcess5": 0.1001,
+          "meanReturn10": 1.1295,
+          "medianReturn10": 0.9034,
+          "meanExcess10": 0.5727,
+          "medianExcess10": 0.0635,
+          "meanReturn20": 2.0781,
+          "medianReturn20": 1.4778,
+          "meanExcess20": 0.7859,
+          "medianExcess20": 0.0291,
+          "meanFavourableExcursion": 8.6863,
+          "medianFavourableExcursion": 6.5375,
+          "meanAdverseExcursion": -6.5323,
+          "medianAdverseExcursion": -4.7883,
+          "medianTimeToFavourable": 6,
+          "irregularGapCount": 0
+        }
+      }
+    },
+    {
+      "name": "identical evaluation conventions across deterministic models",
+      "pass": true,
+      "detail": {
+        "conventionMismatch": 0
+      }
+    },
+    {
+      "name": "all random-control seed outcome summaries recompute from chunked exported rows",
+      "pass": true,
+      "detail": {
+        "files": 1,
+        "rows": 15869,
+        "groups": 600,
+        "seedSummaryMismatch": 0
+      }
+    },
+    {
+      "name": "matched random controls preserve same-date sector and ATR-quintile identities",
+      "pass": true,
+      "detail": {
+        "matchedRows": 7672,
+        "matchedIdentityViolations": 0
+      }
+    },
+    {
+      "name": "fixed-stride sample of random-control outcomes independently recomputes from frozen OHLC",
+      "pass": true,
+      "detail": {
+        "sampled": 8,
+        "sampledRandomMismatch": 0
+      }
+    },
+    {
+      "name": "separate CDR Early Watch absolute paths independently recompute",
+      "pass": true,
+      "detail": {
+        "episodes": 38,
+        "cdrMismatch": 0
+      }
+    },
+    {
+      "name": "frozen evidence identity retained",
+      "pass": true,
+      "detail": {
+        "evidence": {
+          "tag": "locked-v2-validation-36420714736-archive-v1",
+          "validationRunId": 36420714736,
+          "finalTestOpened": false,
+          "calendar": {
+            "developmentStart": "2021-09-27",
+            "validationStart": "2024-09-20",
+            "finalStart": "2026-01-01"
+          }
+        }
+      }
+    },
+    {
+      "name": "Historical Final metadata is exact boolean false",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "CDR headline exclusion is explicit",
+      "pass": true,
+      "detail": {
+        "cdrAssessment": {
+          "cdrUniverseCount": 9,
+          "currentEarlyWatchCdrPickDays": 47,
+          "currentEarlyWatchCdrPickCount": 56,
+          "currentEarlyWatchAbsolutePath": {
+            "episodeCount": 35,
+            "distinctSymbols": 8,
+            "primaryDenominator": 35,
+            "successRate": 20,
+            "meanReturn5": -0.3441,
+            "medianReturn5": 1.7589,
+            "meanReturn10": -0.5028,
+            "medianReturn10": 0.1917,
+            "meanReturn20": -4.0178,
+            "medianReturn20": -3.8903,
+            "note": "Absolute CAD path diagnostic for current Early Watch CDR picks only. Benchmark excess is intentionally omitted because the locked archive lacks a CAD-compatible FX/hedged benchmark treatment."
+          },
+          "headlineComparison": "excluded due benchmark currency/hedging incompatibility",
+          "challengerCdrResult": "not computed because the challenger itself requires benchmark-relative strength and the locked archive does not provide a defensible CAD-compatible/FX-aware comparator"
+        }
+      }
+    }
+  ],
+  "totalChecks": 41,
+  "passedChecks": 41,
+  "failedChecks": 0,
+  "differences": [],
+  "auditedDeterministicEpisodes": 2636,
+  "auditedRandomRows": 15869,
+  "note": "Unit regressions separately exercise synthetic weekly-bar availability, pivot confirmation, next-session entry alignment, ambiguous same-bar barriers, irregular gaps, split-boundary purges, zero-pick continuity and cross-model timing identity."
+}
