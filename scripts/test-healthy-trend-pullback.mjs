@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {
-  completedWeeklyCloses,latestConfirmedPivotHigh,evaluateEpisode,buildEpisodes,dayKey
+  completedWeeklyCloses,latestConfirmedPivotHigh,evaluateEpisode,buildEpisodes,dayKey,setupAt,trendRsAt
 } from '../lib/healthy-trend-pullback.js';
 
 const ts=d=>Math.floor(new Date(d+'T20:00:00Z').getTime()/1000);
@@ -25,6 +25,33 @@ assert.equal(latestConfirmedPivotHigh(pRows,3),null);
 const p=latestConfirmedPivotHigh(pRows,4);
 assert.equal(p.index,2);
 assert.equal(p.confirmedAt,'2026-02-06');
+
+// Failed gates must remain ineligible even when reusable generic state is eligible.
+const gateRows=Array.from({length:110},(_,i)=>row(
+  new Date(Date.UTC(2025,0,1+i)).toISOString().slice(0,10),100,101,99,1000000
+));
+const genericPass={eligible:true,reason:null,avgDollar20:10000000,atr14:2,atr14Pct:2};
+const weeklyFail={eligible:false,weeklyCount:30,lastCompletedWeek:'2025-03-03',slope4:-1};
+const setupWeeklyFail=setupAt({
+  pack:{splitDays:new Set()},rows:gateRows,i:100,benchmarkRows:gateRows,marketRows:gateRows,
+  genericState:genericPass,weeklyState:weeklyFail,closeSeries:gateRows.map(x=>x.close)
+});
+assert.equal(setupWeeklyFail.eligible,false);
+assert.equal(setupWeeklyFail.reason,'weekly_trend');
+const trendWeeklyFail=trendRsAt({
+  pack:{splitDays:new Set()},rows:gateRows,i:100,benchmarkRows:gateRows,
+  genericState:genericPass,weeklyState:weeklyFail,closeSeries:gateRows.map(x=>x.close)
+});
+assert.equal(trendWeeklyFail.eligible,false);
+assert.equal(trendWeeklyFail.reason,'weekly_trend');
+
+const weeklyPass={eligible:true,weeklyCount:30,lastCompletedWeek:'2025-03-03',slope4:1,sma10:100,sma20:95};
+const controlledFail=setupAt({
+  pack:{splitDays:new Set()},rows:gateRows,i:100,benchmarkRows:gateRows,marketRows:gateRows,
+  genericState:genericPass,weeklyState:weeklyPass,closeSeries:gateRows.map(x=>x.close)
+});
+assert.equal(controlledFail.eligible,false);
+assert.equal(controlledFail.reason,'controlled_pullback');
 
 // Outcome alignment and barrier ordering.
 const dates=[];
