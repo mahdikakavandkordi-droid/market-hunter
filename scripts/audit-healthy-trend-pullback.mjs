@@ -166,16 +166,18 @@ check('partial/missing coverage is separate from confirmed zero-pick records',
 
 // Weekly/pivot availability on exported challenger picks.
 function monday(date){const d=new Date(date+'T00:00:00Z'),shift=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-shift);return d.toISOString().slice(0,10)}
-let weeklyLeak=0,pivotLeak=0,pivotMissing=0;
+let weeklyLeak=0,pivotLeak=0,pivotMissing=0,volQuintileMissing=0;
 for(const r of selections.filter(x=>['core','core_volume','core_market'].includes(x.model))){
   for(const p of r.picks||[]){
     if(!p.weeklyLastCompleted||p.weeklyLastCompleted>=monday(r.date))weeklyLeak++;
     if(!p.pivotConfirmedAt)pivotMissing++;
     else if(p.pivotConfirmedAt>r.date)pivotLeak++;
+    if(!Number.isInteger(p.volQuintile)||p.volQuintile<0||p.volQuintile>4)volQuintileMissing++;
   }
 }
 check('completed weekly inputs precede decision week',weeklyLeak===0,{weeklyLeak});
 check('all challenger pivots were confirmed by decision close',pivotLeak===0&&pivotMissing===0,{pivotLeak,pivotMissing});
+check('all challenger picks carry a frozen ATR-volatility quintile',volQuintileMissing===0,{volQuintileMissing});
 
 // Summary recomputation from exported deterministic rows.
 for(const model of models){
@@ -206,12 +208,17 @@ check('identical evaluation conventions across deterministic models',conventionM
 // Random-control seed summaries are audited chunk-by-chunk to avoid reusing the analysis path or loading all rows at once.
 const randomFiles=fs.readdirSync(OUT_DIR).filter(x=>/^random-controls-part-\d+\.jsonl\.gz$/.test(x)).sort();
 const randomAgg=new Map(),randomSample=[];
-let randomRowCount=0;
+let randomRowCount=0,matchedIdentityViolations=0,matchedRows=0;
 for(const file of randomFiles){
   const payload=zlib.gunzipSync(fs.readFileSync(path.join(OUT_DIR,file))).toString('utf8');
   for(const line of payload.split('\n')){
     if(!line)continue;
     const r=JSON.parse(line),k=[r.control,r.target,r.seed].join('|');
+    if(r.control==='matched'){
+      matchedRows++;
+      if(!r.matchedTargetSymbol||r.symbol===r.matchedTargetSymbol||r.sector!==r.matchedTargetSector||
+         !Number.isInteger(r.volQuintile)||r.volQuintile!==r.matchedTargetVolQuintile)matchedIdentityViolations++;
+    }
     if(!randomAgg.has(k))randomAgg.set(k,{successDenom:0,successCount:0,excessCount:0,excessSum:0});
     const a=randomAgg.get(k);
     if(r.status==='evaluated'&&r.included){
@@ -241,6 +248,9 @@ for(const target of ['core','core_volume','core_market']){
 check('all random-control seed outcome summaries recompute from chunked exported rows',seedSummaryMismatch===0,{
   files:randomFiles.length,rows:randomRowCount,groups:randomAgg.size,seedSummaryMismatch
 });
+check('matched random controls preserve same-date sector and ATR-quintile identities',
+  matchedRows>0&&matchedIdentityViolations===0,
+  {matchedRows,matchedIdentityViolations});
 
 let sampledRandomMismatch=0;
 for(const e of randomSample){
