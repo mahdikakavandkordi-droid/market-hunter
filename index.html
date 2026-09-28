@@ -269,6 +269,12 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 .portfolio-archive{margin-top:4px;border-top:1px solid rgba(37,48,60,.72);padding-top:9px}.portfolio-archive summary{cursor:pointer;color:var(--muted);font-size:10px}.portfolio-archive-row{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px solid rgba(37,48,60,.45);font-size:10px}.portfolio-archive-row span{color:var(--muted)}
 @media(min-width:900px){.position-card{flex-basis:430px}.position-carousel{padding-right:80px}}
 @media(max-width:620px){.portfolio-head{align-items:flex-start}.portfolio-head-actions{flex-direction:column;align-items:flex-end}.position-carousel{gap:10px;margin-left:-3px;margin-right:-3px;padding-left:3px;padding-right:18px}.position-card{flex-basis:calc(100vw - 38px);padding:13px}.position-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.position-kpi{padding:7px 5px}.position-kpi b{font-size:11px}.position-day{flex-basis:58px}}
+.portfolio-cloud{display:grid;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
+.portfolio-cloud-row{display:flex;justify-content:space-between;gap:10px;align-items:center}.portfolio-cloud-copy{min-width:0}.portfolio-cloud-copy b{display:block;font-size:10px}.portfolio-cloud-copy small{display:block;margin-top:2px;color:var(--muted);font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.portfolio-cloud-actions{display:flex;gap:6px;flex-wrap:wrap}.portfolio-cloud-btn{min-height:31px;padding:6px 9px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:10px}.portfolio-cloud-btn.primary{color:#dcecff;border-color:rgba(103,168,255,.45);background:rgba(103,168,255,.08)}
+.portfolio-cloud-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--line);border-radius:999px;font-size:9px;color:var(--muted);white-space:nowrap}.portfolio-cloud-badge.synced{color:#bde5c7;border-color:rgba(123,210,147,.35)}.portfolio-cloud-badge.syncing{color:#f1d88b;border-color:rgba(241,199,91,.35)}.portfolio-cloud-badge.error{color:#f5a6a6;border-color:rgba(240,112,112,.35)}
+.portfolio-auth-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto auto;gap:6px}.portfolio-auth-form input{min-width:0;padding:8px 9px;border-radius:9px;border:1px solid var(--line);background:var(--panel3);color:var(--text);font-size:11px}.portfolio-cloud-message{font-size:9px;line-height:1.45;color:var(--muted)}
+@media(max-width:620px){.portfolio-cloud-row{align-items:flex-start}.portfolio-auth-form{grid-template-columns:1fr 1fr}.portfolio-auth-form .portfolio-cloud-btn{width:100%}}
 </style>
 <link rel="stylesheet" href="/intraday.css">
 <script type="module" src="/intraday.js"></script>
@@ -328,6 +334,92 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
 const PORTFOLIO_KEY='marketHunterPortfolioV2';
+const CLOUD_SESSION_KEY='marketHunterCloudSessionV1';
+const SUPABASE_URL='https://ivmpzyjxyfcefjyylybr.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yy1QKQRcgf2ny3aWhhHSkw_Z7Y0Fa55';
+let cloudSyncTimer=0,cloudSyncBusy=false,cloudSyncQueued=false;
+function loadCloudSession(){try{return JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{return null}}
+function saveCloudSession(session){
+  if(session){localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(session));state.cloud.session=session}else{localStorage.removeItem(CLOUD_SESSION_KEY);state.cloud.session=null}
+}
+async function cloudAuthRequest(path,body,token){
+  const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'};
+  if(token)headers.Authorization='Bearer '+token;
+  const r=await fetch(SUPABASE_URL+'/auth/v1/'+path,{method:'POST',headers,body:JSON.stringify(body||{})});
+  const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.msg||data.message||data.error_description||'Cloud authentication failed');return data;
+}
+async function ensureCloudSession(){
+  let session=state.cloud.session;if(!session)return null;
+  if(Number(session.expires_at||0)>Math.floor(Date.now()/1000)+90)return session;
+  if(!session.refresh_token){saveCloudSession(null);return null}
+  try{
+    const data=await cloudAuthRequest('token?grant_type=refresh_token',{refresh_token:session.refresh_token});
+    session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user||session.user};
+    saveCloudSession(session);return session;
+  }catch(e){saveCloudSession(null);state.cloud.status='local';state.cloud.message='Cloud session expired. Sign in again.';return null}
+}
+async function cloudRest(table,{method='GET',query='',body=null,prefer=''}={}){
+  const session=await ensureCloudSession();if(!session)throw new Error('Sign in to use cloud sync');
+  const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'};
+  if(prefer)headers.Prefer=prefer;
+  const r=await fetch(SUPABASE_URL+'/rest/v1/'+table+(query?'?'+query:''),{method,headers,body:body===null?undefined:JSON.stringify(body),cache:'no-store'});
+  if(!r.ok){const data=await r.json().catch(()=>({}));throw new Error(data.message||data.hint||'Cloud data request failed')}
+  if(r.status===204)return null;const text=await r.text();return text?JSON.parse(text):null;
+}
+function cloudPositionStamp(p){return Date.parse(p?.updatedAt||p?.closedAt||p?.boughtAt||0)||0}
+function mergePortfolioPayload(local,remote){
+  const a=local&&typeof local==='object'?local:{},b=remote&&typeof remote==='object'?remote:{};
+  const merged={version:2,positions:{},dailySnapshots:{},createdAt:a.createdAt||b.createdAt||new Date().toISOString()};
+  const symbols=new Set([...Object.keys(b.positions||{}),...Object.keys(a.positions||{})]);
+  for(const symbol of symbols){const lp=a.positions?.[symbol],rp=b.positions?.[symbol];merged.positions[symbol]=!lp?rp:!rp?lp:(cloudPositionStamp(lp)>=cloudPositionStamp(rp)?lp:rp)}
+  const days=new Set([...Object.keys(b.dailySnapshots||{}),...Object.keys(a.dailySnapshots||{})]);
+  for(const day of days){const l=a.dailySnapshots?.[day],r=b.dailySnapshots?.[day];const ls=Date.parse(l?.lastCapturedAt||l?.firstCapturedAt||0)||0,rs=Date.parse(r?.lastCapturedAt||r?.firstCapturedAt||0)||0;merged.dailySnapshots[day]=!l?r:!r?l:(ls>=rs?l:r)}
+  return merged;
+}
+function hydrateOpenPositions(){state.positions=new Map(Object.values(state.portfolio.positions||{}).filter(x=>x?.status!=='closed').map(x=>[x.symbol,x]))}
+async function loadCloudPortfolio(){
+  const stateRows=await cloudRest('market_hunter_portfolio_state',{query:'select=payload,updated_at&limit=1'});
+  const snapshotRows=await cloudRest('market_hunter_portfolio_snapshots',{query:'select=market_as_of,payload,updated_at&order=market_as_of.asc'});
+  const remote=stateRows?.[0]?.payload||{version:2,positions:{},dailySnapshots:{}};
+  remote.dailySnapshots=remote.dailySnapshots||{};
+  for(const row of snapshotRows||[])if(row?.market_as_of&&row?.payload)remote.dailySnapshots[row.market_as_of]=row.payload;
+  state.portfolio=mergePortfolioPayload(state.portfolio,remote);hydrateOpenPositions();
+  try{localStorage.setItem(PORTFOLIO_KEY,JSON.stringify(state.portfolio));localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}catch{}
+}
+async function syncPortfolioCloud(){
+  if(cloudSyncBusy){cloudSyncQueued=true;return}
+  const session=await ensureCloudSession();if(!session)return;
+  cloudSyncBusy=true;state.cloud.status='syncing';state.cloud.message='Saving portfolio to cloud...';if(state.data)renderPositions();
+  try{
+    const now=new Date().toISOString();
+    await cloudRest('market_hunter_portfolio_state',{method:'POST',query:'on_conflict=user_id',prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:session.user.id,version:2,payload:state.portfolio,updated_at:now}});
+    const snaps=Object.values(state.portfolio.dailySnapshots||{}).filter(x=>x?.marketAsOf).map(x=>({user_id:session.user.id,market_as_of:x.marketAsOf,payload:x,updated_at:x.lastCapturedAt||now}));
+    if(snaps.length)await cloudRest('market_hunter_portfolio_snapshots',{method:'POST',query:'on_conflict=user_id,market_as_of',prefer:'resolution=merge-duplicates,return=minimal',body:snaps});
+    state.cloud.status='synced';state.cloud.message='Cloud copy is up to date.';
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed';
+  }finally{cloudSyncBusy=false;if(cloudSyncQueued){cloudSyncQueued=false;queueCloudPortfolioSync()}if(state.data)renderPositions()}
+}
+function queueCloudPortfolioSync(){if(!state?.cloud?.session||!state.cloud.ready)return;clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>syncPortfolioCloud(),700)}
+async function initializeCloudPortfolio(){
+  state.cloud.ready=false;
+  if(!state.cloud.session){state.cloud.ready=true;return}
+  state.cloud.status='syncing';state.cloud.message='Loading cloud portfolio...';if(state.data)renderPositions();
+  try{await loadCloudPortfolio();state.cloud.ready=true;await syncPortfolioCloud();}catch(e){state.cloud.ready=true;state.cloud.status='error';state.cloud.message=e.message||'Cloud load failed';if(state.data)renderPositions()}
+}
+async function cloudSignIn(email,password){
+  state.cloud.message='Signing in...';renderPositions();
+  try{const data=await cloudAuthRequest('token?grant_type=password',{email,password});const session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user};saveCloudSession(session);state.cloud.status='syncing';state.cloud.showAuth=false;await initializeCloudPortfolio();}
+  catch(e){state.cloud.status='error';state.cloud.message=e.message;renderPositions()}
+}
+async function cloudSignUp(email,password){
+  state.cloud.message='Creating account...';renderPositions();
+  try{const data=await cloudAuthRequest('signup',{email,password});if(data.access_token){const session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user};saveCloudSession(session);state.cloud.showAuth=false;await initializeCloudPortfolio();}else{state.cloud.status='local';state.cloud.message='Account created. Check your confirmation email, then return here and sign in.';renderPositions()}}
+  catch(e){state.cloud.status='error';state.cloud.message=e.message;renderPositions()}
+}
+async function cloudSignOut(){
+  const session=await ensureCloudSession();if(session){try{await cloudAuthRequest('logout',{},session.access_token)}catch{}}
+  saveCloudSession(null);state.cloud.ready=true;state.cloud.status='local';state.cloud.message='Local portfolio remains on this device.';state.cloud.showAuth=false;renderPositions();
+}
 function loadPortfolio(){
   try{
     const parsed=JSON.parse(localStorage.getItem(PORTFOLIO_KEY)||'null');
@@ -343,19 +435,20 @@ function loadPortfolio(){
 }
 const portfolio=loadPortfolio();
 const savedPositions=()=>new Map(Object.values(portfolio.positions||{}).filter(x=>x?.status!=='closed').map(x=>[x.symbol,x]));
-const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),portfolio,compare:new Set()};
+const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),portfolio,cloud:{session:loadCloudSession(),status:'local',message:'',showAuth:false,ready:false},compare:new Set()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function persistPortfolio(){
   try{
     localStorage.setItem(PORTFOLIO_KEY,JSON.stringify(state.portfolio));
     localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));
   }catch(e){console.warn('Portfolio persistence unavailable',e)}
+  queueCloudPortfolioSync();
 }
 function persistPositions(){persistPortfolio()}
 function closePosition(symbol){
   const p=state.positions.get(symbol);if(!p)return;
   const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);
-  const closed={...p,status:'closed',closedAt:new Date().toISOString(),closedMarketAsOf:state.data?.marketAsOf||null,closedPrice:Number.isFinite(x?.price)?x.price:null};
+  const closed={...p,status:'closed',closedAt:new Date().toISOString(),closedMarketAsOf:state.data?.marketAsOf||null,closedPrice:Number.isFinite(x?.price)?x.price:null,updatedAt:new Date().toISOString()};
   state.portfolio.positions[symbol]=closed;
   state.positions.delete(symbol);
   persistPortfolio();render();
@@ -363,7 +456,7 @@ function closePosition(symbol){
 function markBought(symbol){
   const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);if(!x)return;
   if(state.positions.has(symbol))return;
-  const p={symbol,boughtAt:new Date().toISOString(),entryMarketAsOf:state.data?.marketAsOf||null,entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance,status:'open',source:'Market Hunter'};
+  const p={symbol,boughtAt:new Date().toISOString(),entryMarketAsOf:state.data?.marketAsOf||null,entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance,status:'open',source:'Market Hunter',updatedAt:new Date().toISOString()};
   state.positions.set(symbol,p);state.portfolio.positions[symbol]=p;
   persistPortfolio();recordPortfolioDailySnapshot();render();
 }
@@ -401,6 +494,26 @@ function positionHealth(x,p){
   const status=warnings.length?'Structure Warning':watch.length>=2?'Watch Closely':'Trend Healthy';
   return {status,warnings,watch,healthy};
 }
+function cloudPanelHtml(){
+  const session=state.cloud.session,status=state.cloud.status||'local';
+  const badgeClass=status==='synced'?'synced':status==='syncing'?'syncing':status==='error'?'error':'';
+  const badgeText=session?(status==='synced'?'Cloud synced':status==='syncing'?'Syncing...':status==='error'?'Sync issue':'Cloud connected'):'Local only';
+  if(session){
+    return `<div class="portfolio-cloud"><div class="portfolio-cloud-row"><div class="portfolio-cloud-copy"><b>Cloud portfolio</b><small>${String(session.user?.email||'Signed in').replace(/</g,'&lt;')}</small></div><span class="portfolio-cloud-badge ${badgeClass}">${badgeText}</span></div><div class="portfolio-cloud-actions"><button class="portfolio-cloud-btn primary" type="button" data-cloud-sync-now>Sync now</button><button class="portfolio-cloud-btn" type="button" data-cloud-signout>Sign out</button></div>${state.cloud.message?`<div class="portfolio-cloud-message">${String(state.cloud.message).replace(/</g,'&lt;')}</div>`:''}</div>`;
+  }
+  if(!state.cloud.showAuth){
+    return `<div class="portfolio-cloud"><div class="portfolio-cloud-row"><div class="portfolio-cloud-copy"><b>Cloud backup & device sync</b><small>Local data stays here until you sign in.</small></div><button class="portfolio-cloud-btn primary" type="button" data-cloud-toggle>Connect cloud</button></div>${state.cloud.message?`<div class="portfolio-cloud-message">${String(state.cloud.message).replace(/</g,'&lt;')}</div>`:''}</div>`;
+  }
+  return `<div class="portfolio-cloud"><div class="portfolio-cloud-row"><div class="portfolio-cloud-copy"><b>Sign in to Market Hunter cloud</b><small>Use the same account on your phone and computer.</small></div><button class="portfolio-cloud-btn" type="button" data-cloud-toggle>Cancel</button></div><div class="portfolio-auth-form"><input type="email" autocomplete="email" placeholder="Email" data-cloud-email><input type="password" autocomplete="current-password" minlength="6" placeholder="Password (6+ chars)" data-cloud-password><button class="portfolio-cloud-btn primary" type="button" data-cloud-signin>Sign in</button><button class="portfolio-cloud-btn" type="button" data-cloud-signup>Create account</button></div>${state.cloud.message?`<div class="portfolio-cloud-message">${String(state.cloud.message).replace(/</g,'&lt;')}</div>`:''}</div>`;
+}
+function bindCloudControls(root){
+  root.querySelectorAll('[data-cloud-toggle]').forEach(b=>b.addEventListener('click',()=>{state.cloud.showAuth=!state.cloud.showAuth;state.cloud.message='';renderPositions()}));
+  const credentials=()=>({email:root.querySelector('[data-cloud-email]')?.value.trim()||'',password:root.querySelector('[data-cloud-password]')?.value||''});
+  root.querySelector('[data-cloud-signin]')?.addEventListener('click',()=>{const {email,password}=credentials();if(!email||password.length<6){state.cloud.status='error';state.cloud.message='Enter a valid email and a password with at least 6 characters.';renderPositions();return}cloudSignIn(email,password)});
+  root.querySelector('[data-cloud-signup]')?.addEventListener('click',()=>{const {email,password}=credentials();if(!email||password.length<6){state.cloud.status='error';state.cloud.message='Enter a valid email and a password with at least 6 characters.';renderPositions();return}cloudSignUp(email,password)});
+  root.querySelector('[data-cloud-sync-now]')?.addEventListener('click',()=>syncPortfolioCloud());
+  root.querySelector('[data-cloud-signout]')?.addEventListener('click',()=>cloudSignOut());
+}
 function renderPositions(){
   const root=document.querySelector('#positionsContent');if(!root||!state.data)return;
   const current=allHunterCandidates(),by=new Map([...(state.data.availableItems||[]),...current].map(x=>[x.symbol,x]));
@@ -435,14 +548,16 @@ function renderPositions(){
   };
   const archiveHtml=archived.length?`<details class="portfolio-archive"><summary>Archived positions (${archived.length})</summary>${archived.slice(0,12).map(p=>`<div class="portfolio-archive-row"><b>${p.symbol.replace(/\.(TO|NE|V)$/,'')}</b><span>${p.closedAt?new Date(p.closedAt).toLocaleDateString():'Closed'} &middot; ${fmt(p.closedPrice)}</span></div>`).join('')}</details>`:'';
   root.innerHTML=`<section class="portfolio-shell">
-    <div class="portfolio-head"><div><h2>Portfolio</h2><p>Swipe between holdings. Each completed market day is saved locally instead of replacing yesterday.</p></div><div class="portfolio-head-actions"><span class="portfolio-count">${rows.length} open</span><button class="portfolio-backup" type="button">Backup JSON</button></div></div>
+    <div class="portfolio-head"><div><h2>Portfolio</h2><p>Swipe between holdings. Daily history is preserved instead of replacing yesterday.</p></div><div class="portfolio-head-actions"><span class="portfolio-count">${rows.length} open</span><button class="portfolio-backup" type="button">Backup JSON</button></div></div>
+    ${cloudPanelHtml()}
     ${rows.length?`<div class="position-carousel-wrap"><div class="position-carousel" id="positionCarousel">${rows.map(cardHtml).join('')}</div><div class="portfolio-dots">${rows.map((_,i)=>`<button class="portfolio-dot ${i===0?'active':''}" type="button" data-position-dot="${i}" aria-label="Position ${i+1}"></button>`).join('')}</div></div>`:'<div class="portfolio-empty">No open positions yet. Tap Bought on a Hunter/Watchlist card after you actually purchase it.</div>'}
-    <div class="portfolio-note">Saved in this browser across refreshes and days. Closing a position archives it instead of deleting its history.</div>
+    <div class="portfolio-note">${state.cloud.session?'Saved locally and synchronized to your private cloud account.':'Saved locally across refreshes and days. Connect cloud to sync across devices.'} Closing a position archives it instead of deleting its history.</div>
     ${archiveHtml}
   </section>`;
   root.querySelectorAll('.position-close').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();closePosition(b.dataset.closePosition)}));
   root.querySelectorAll('.tv-link').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openTradingView(b.dataset.tv)}));
   root.querySelector('.portfolio-backup')?.addEventListener('click',downloadPortfolioBackup);
+  bindCloudControls(root);
   bindPositionCarousel(root);
 }
 function bindPositionCarousel(root){
@@ -1162,7 +1277,7 @@ document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>
 document.querySelector('#refresh').addEventListener('click',load);
 document.querySelector('#liq').addEventListener('change',load);
 document.querySelector('#topN').addEventListener('change',()=>{state.expanded.clear();renderHunter()});
-load();
+load().then(()=>initializeCloudPortfolio());
 </script>
 </body>
 </html>
