@@ -382,6 +382,20 @@ function savePortfolioSnapshot(items){
     state.previous=new Map();
     localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify({previousDate:null,previousItems:[],currentDate:date,currentItems:items}));
   }
+  if(date){
+    state.portfolioHistory[date]={marketAsOf:date,updatedAt:new Date().toISOString(),items};
+    localStorage.setItem(PORTFOLIO_HISTORY_KEY,JSON.stringify(state.portfolioHistory));
+    queueCloudPortfolioSync();
+  }
+}
+function positionHistory(symbol){
+  return Object.entries(state.portfolioHistory||{}).sort(([a],[b])=>a.localeCompare(b)).map(([date,snap])=>({date,item:(snap.items||[]).find(x=>x.symbol===symbol)})).filter(x=>x.item);
+}
+function closePosition(symbol){
+  const p=state.positions.get(symbol);if(!p)return;
+  state.positions.delete(symbol);
+  state.closedPositions.set(symbol,{...p,status:'closed',closedAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  savePositions();renderAll();setView('portfolio');toast('Position archived');
 }
 async function loadPortfolio(){
   const positions=[...state.positions.values()].filter(p=>p?.symbol);
@@ -777,7 +791,8 @@ function openPosition(symbol='',source='manual'){
     e.preventDefault();
     const fd=new FormData(e.currentTarget),s=normalizeSymbol(fd.get('symbol')),qty=Number(fd.get('quantity')),price=Number(fd.get('entryPrice')),date=String(fd.get('boughtAt')||''),chosen=fd.get('source')==='market-hunter'?'market-hunter':'manual',cur=candidate(s)||state.portfolioItems.get(s),prev=state.positions.get(s);
     if(!s||!(qty>0)||!(price>0)||!date)return;
-    const rec={...(prev||{}),symbol:s,quantity:qty,entryPrice:price,boughtAt:date,source:chosen,notes:String(fd.get('notes')||'').trim(),updatedAt:new Date().toISOString(),createdAt:prev?.createdAt||new Date().toISOString()};
+    const rec={...(prev||{}),symbol:s,quantity:qty,entryPrice:price,boughtAt:date,source:chosen,notes:String(fd.get('notes')||'').trim(),status:'open',updatedAt:new Date().toISOString(),createdAt:prev?.createdAt||new Date().toISOString()};
+    state.closedPositions.delete(s);
     if(chosen==='market-hunter'&&cur&&!rec.entryStage){rec.entryStage=cur.stage||'Unstaged';rec.entrySnapshotAt=new Date().toISOString()}
     if(chosen!=='market-hunter')rec.entryStage=null;
     state.positions.set(s,rec);savePositions();closeModal();await loadPortfolio();renderAll();setView('portfolio');toast('Position saved');
@@ -807,7 +822,7 @@ document.addEventListener('click',async e=>{
   if(e.target.closest('[data-restore]')){q('#backupFile')?.click();return}
   if(e.target.closest('[data-add]')){openPosition('','manual');return}
   const edit=e.target.closest('[data-edit]');if(edit){openPosition(edit.dataset.edit,state.positions.get(edit.dataset.edit)?.source||'manual');return}
-  const remove=e.target.closest('[data-remove]');if(remove&&confirm('Remove '+remove.dataset.remove+' from Portfolio Monitor?')){state.positions.delete(remove.dataset.remove);savePositions();await loadPortfolio();renderAll();toast('Removed');return}
+  const remove=e.target.closest('[data-remove]');if(remove&&confirm('Close and archive '+remove.dataset.remove+'?')){closePosition(remove.dataset.remove);return}
   if(e.target.closest('[data-close]')||e.target===q('#positionModal'))closeModal();
 });
 q('#themeBtn')?.addEventListener('click',()=>{
