@@ -254,3 +254,14 @@ Each pick freezes its adjusted/raw decision close, original ATR and the 15 rows 
 Every outcome references the full snapshot actually used for maturity. The offline audit checks snapshot hashes, replays all attempted model selections, verifies first-complete canonical observations and recalculates matured outcomes without contacting Yahoo. Replay uses the frozen engine; it verifies persistence and reproducibility, not the economic validity of the strategy. Snapshots are committed alongside the journals and are not dependent on expiring workflow artifacts.
 
 An already complete date no longer prevents outcome processing on rerun. Workflow run attempts have distinct identities. Journal and derived-file publication use atomic rename; workflow concurrency serializes writers. Manual local writers must also run serially against a given store.
+
+## Live activation record — 2026-09-28
+
+- The first live attempt preserved a partial 226/227 journal entry because `ARX.TO` had no 2026-09-28 market session.
+- Independent current-status review confirmed ARC Resources had already completed its acquisition into Shell earlier in September 2026, so `ARX.TO` was stale in the active universe rather than a temporary Yahoo lag.
+- `ARX.TO` was moved into the retired/unavailable list; no model thresholds, ranks, outcomes, or Historical Final data were used to make that universe-maintenance decision.
+- The reviewed active universe became 226 non-CDR symbols with a new universe hash.
+- Live recovery run `36485740641` then completed 226/226 coverage with zero failures and published the first three canonical observations for 2026-09-28.
+- That run recorded Core as a legitimate zero-pick day, Trend + RS with six picks, and Early Watch with two picks.
+- The forward audit passed 56/56 checks after publication.
+- Earlier partial attempts remain permanently in the append-only journal and were not rewritten or deleted.
