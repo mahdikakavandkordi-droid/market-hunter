@@ -1,9 +1,9 @@
 # Healthy-Trend Pullback Prospective Collection Protocol v1
 
-**Status:** IMPLEMENTED + VERIFIED — **NOT ACTIVATED** pending external review and default-branch activation.  
+**Status:** IMPLEMENTED + VERIFIED + **ACTIVATED ON MAIN** with pinned collector code.  
 **Protocol frozen:** 2026-09-28.  
 **Historical backfill:** prohibited.  
-**Prospective observations currently recorded:** none at the time of this protocol update.
+**Prospective observations currently recorded:** activation began 2026-09-28. The first live attempt was partial (226/227 symbols) and therefore produced no canonical observations; same-day recovery retry logic is now enforced operationally.
 
 ## 1. What was implemented
 
@@ -17,7 +17,7 @@ A dedicated collector now exists separately from the production scanner:
 
 The existing `.github/workflows/daily-snapshot.yml` / `scripts/update-history.mjs` path remains untouched and is **not** treated as challenger evidence.
 
-The forward workflow is present on the research branch for verification. GitHub scheduled workflows execute from the repository default branch, so the scheduled collector is **not active while this package remains only on the research branch**. Activation requires explicit post-review promotion of the collector workflow/code to the default branch (or an explicitly approved manual dispatch). No earlier market session may be backfilled after activation.
+The reviewed collector remains version-pinned on the research branch, and a separate operational workflow on `main` now runs that exact approved collector SHA (`1b967b798534525871efc6aff2f76a2582bf1fe9`) while writing evidence only to `research/htp-forward-evidence`. Production scanner/front-end code is not used as the evidence store. No earlier market session may be backfilled after activation.
 
 Verification evidence:
 
@@ -182,15 +182,13 @@ Adding live random controls later would constitute a new protocol version and ca
 
 ## 10. Collection schedule
 
-The prepared workflow schedule is:
+The active workflow schedule is:
 
-- Monday–Friday
-- 22:45 UTC
-- after the regular Canadian market close year-round.
+- Monday–Friday at 22:45 UTC (primary capture);
+- Monday–Friday at 23:35 UTC (same-UTC-date recovery pass if needed);
+- each run performs up to three short same-day retries when canonical coverage is still incomplete.
 
-The schedule is intentionally not considered active until the reviewed workflow exists on the repository default branch.
-
-The first same-day completed market session collected after approved activation defines the start of prospective evidence. There is no historical backfill.
+If the day remains partial after retries, the workflow is intentionally marked failed/degraded rather than green. A holiday or genuinely absent completed market session is neutral, not a research failure. The first complete same-day capture becomes canonical. There is no historical backfill.
 
 ## 11. Stopping rule
 
@@ -242,9 +240,9 @@ The implementation gate has been technically satisfied in the research branch:
 6. synthetic and repository regression tests pass;
 7. an independent forward-store auditor passes on the empty pre-activation store.
 
-However, **collection remains NOT ACTIVATED** until external review is complete and the scheduling mechanism is deliberately enabled from the default branch.
+External review was completed and the scheduling mechanism has now been deliberately enabled from `main`. The live workflow is pinned to the approved collector commit rather than following a moving branch. The first 2026-09-28 attempt was partial because `ARX.TO` lacked that market session, so no canonical observations were published. Subsequent same-day retry behavior is operationally enforced and partial days are surfaced as failures/degraded runs rather than silent success.
 
-That distinction is intentional: implementation verification is not the same thing as prospective evidence.
+Activation does not imply predictive validation: model rules remain frozen and production promotion remains prohibited.
 
 
 ## Collector v2 integrity amendment (2026-09-28)
