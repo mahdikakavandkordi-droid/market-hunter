@@ -327,14 +327,65 @@ footer{color:var(--muted2);font-size:10px;margin:24px 0 6px;line-height:1.5}
 
 <script>
 const savedWatch=()=>{try{return new Set(JSON.parse(localStorage.getItem('marketHunterWatchlist')||'[]'))}catch{return new Set()}};
-const savedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),compare:new Set()};
+const PORTFOLIO_KEY='marketHunterPortfolioV2';
+function loadPortfolio(){
+  try{
+    const parsed=JSON.parse(localStorage.getItem(PORTFOLIO_KEY)||'null');
+    if(parsed&&parsed.version===2&&parsed.positions&&parsed.dailySnapshots)return parsed;
+  }catch{}
+  let legacy=[];
+  try{legacy=JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')}catch{}
+  const positions={};
+  for(const p of Array.isArray(legacy)?legacy:[])if(p?.symbol)positions[p.symbol]={...p,status:'open'};
+  const migrated={version:2,positions,dailySnapshots:{},createdAt:new Date().toISOString()};
+  try{localStorage.setItem(PORTFOLIO_KEY,JSON.stringify(migrated))}catch{}
+  return migrated;
+}
+const portfolio=loadPortfolio();
+const savedPositions=()=>new Map(Object.values(portfolio.positions||{}).filter(x=>x?.status!=='closed').map(x=>[x.symbol,x]));
+const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),portfolio,compare:new Set()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
-function persistPositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
+function persistPortfolio(){
+  try{
+    localStorage.setItem(PORTFOLIO_KEY,JSON.stringify(state.portfolio));
+    localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));
+  }catch(e){console.warn('Portfolio persistence unavailable',e)}
+}
+function persistPositions(){persistPortfolio()}
+function closePosition(symbol){
+  const p=state.positions.get(symbol);if(!p)return;
+  const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);
+  const closed={...p,status:'closed',closedAt:new Date().toISOString(),closedMarketAsOf:state.data?.marketAsOf||null,closedPrice:Number.isFinite(x?.price)?x.price:null};
+  state.portfolio.positions[symbol]=closed;
+  state.positions.delete(symbol);
+  persistPortfolio();render();
+}
 function markBought(symbol){
   const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);if(!x)return;
-  if(state.positions.has(symbol)){state.positions.delete(symbol)}else state.positions.set(symbol,{symbol,boughtAt:new Date().toISOString(),entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance});
-  persistPositions();render();
+  if(state.positions.has(symbol))return;
+  const p={symbol,boughtAt:new Date().toISOString(),entryMarketAsOf:state.data?.marketAsOf||null,entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance,status:'open',source:'Market Hunter'};
+  state.positions.set(symbol,p);state.portfolio.positions[symbol]=p;
+  persistPortfolio();recordPortfolioDailySnapshot();render();
+}
+function positionSnapshot(x,p){
+  if(!x)return {symbol:p.symbol,price:null,returnPct:null,status:'Data unavailable',stage:null,rs20:null,momentumShift:null,support:null,resistance:null};
+  const h=positionHealth(x,p);
+  return {symbol:p.symbol,price:Number.isFinite(x.price)?x.price:null,returnPct:Number.isFinite(p.entryPrice)&&Number.isFinite(x.price)?(x.price/p.entryPrice-1)*100:null,status:h.status,stage:x.stage||null,rs20:Number.isFinite(x.rs20)?x.rs20:null,momentumShift:Number.isFinite(x.momentumShift)?x.momentumShift:null,support:Number.isFinite(x.support)?x.support:null,resistance:Number.isFinite(x.resistance)?x.resistance:null};
+}
+function recordPortfolioDailySnapshot(){
+  const day=state.data?.marketAsOf;if(!day||!state.positions.size)return;
+  const current=allHunterCandidates(),by=new Map([...(state.data?.availableItems||[]),...current].map(x=>[x.symbol,x]));
+  state.portfolio.dailySnapshots=state.portfolio.dailySnapshots||{};
+  const prev=state.portfolio.dailySnapshots[day];
+  state.portfolio.dailySnapshots[day]={marketAsOf:day,firstCapturedAt:prev?.firstCapturedAt||new Date().toISOString(),lastCapturedAt:new Date().toISOString(),positions:[...state.positions.values()].map(p=>positionSnapshot(by.get(p.symbol),p))};
+  persistPortfolio();
+}
+function positionHistory(symbol){
+  return Object.values(state.portfolio.dailySnapshots||{}).sort((a,b)=>a.marketAsOf.localeCompare(b.marketAsOf)).map(d=>({date:d.marketAsOf,...(d.positions||[]).find(x=>x.symbol===symbol)})).filter(x=>x.symbol);
+}
+function downloadPortfolioBackup(){
+  const blob=new Blob([JSON.stringify(state.portfolio,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='market-hunter-portfolio-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 function positionHealth(x,p){
   const warnings=[],watch=[],healthy=[];
