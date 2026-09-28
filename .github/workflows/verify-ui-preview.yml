@@ -1,0 +1,66 @@
+name: Verify UI Preview 8f3388b
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/ui-verification-20260928
+    paths:
+      - scripts/verify-ui-preview.mjs
+      - lib/vercel-bypass-lease.js
+      - scripts/revoke-vercel-bypass-lease.mjs
+      - .github/workflows/verify-ui-preview.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-ui-preview-8f3388b
+  cancel-in-progress: false
+
+env:
+  PREVIEW_URL: https://market-hunter-bi0mc8hkv-mahdikakavandkordi-9201.vercel.app
+  PREVIEW_COMMIT: 8f3388b5791e214e9cd11dfac8cc9c8cb98ba10b
+  VERCEL_PROJECT_ID: prj_dCf2aFKXUWXnXzPIxchL7t4aTSo1
+  VERCEL_TEAM_ID: team_GJzme4AYjcfqu3B67IzSWYAo
+  VERCEL_BYPASS_LEASE_FILE: .tmp/ui-preview-bypass.json
+  VERCEL_HTTP_TIMEOUT_MS: 15000
+  UI_ARTIFACT_DIR: artifacts/ui-verification
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Existing repository tests
+        run: npm test
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Verify exact research preview
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+        run: node scripts/verify-ui-preview.mjs
+
+      - name: Ensure preview bypass cleanup
+        if: always()
+        env:
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
+        run: node scripts/revoke-vercel-bypass-lease.mjs
+
+      - name: Upload screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-hunter-ui-verification-8f3388b
+          path: artifacts/ui-verification
+          retention-days: 14
+          if-no-files-found: warn
