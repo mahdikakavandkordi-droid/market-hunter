@@ -434,19 +434,20 @@ function loadPortfolio(){
 }
 const portfolio=loadPortfolio();
 const savedPositions=()=>new Map(Object.values(portfolio.positions||{}).filter(x=>x?.status!=='closed').map(x=>[x.symbol,x]));
-const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),portfolio,compare:new Set()};
+const state={data:null,history:[],backtest:null,tab:'market',hunterStage:'Early Watch',expanded:new Set(),watchlist:savedWatch(),positions:savedPositions(),portfolio,cloud:{session:loadCloudSession(),status:'local',message:'',showAuth:false},compare:new Set()};
 function persistWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watchlist]))}
 function persistPortfolio(){
   try{
     localStorage.setItem(PORTFOLIO_KEY,JSON.stringify(state.portfolio));
     localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));
   }catch(e){console.warn('Portfolio persistence unavailable',e)}
+  queueCloudPortfolioSync();
 }
 function persistPositions(){persistPortfolio()}
 function closePosition(symbol){
   const p=state.positions.get(symbol);if(!p)return;
   const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);
-  const closed={...p,status:'closed',closedAt:new Date().toISOString(),closedMarketAsOf:state.data?.marketAsOf||null,closedPrice:Number.isFinite(x?.price)?x.price:null};
+  const closed={...p,status:'closed',closedAt:new Date().toISOString(),closedMarketAsOf:state.data?.marketAsOf||null,closedPrice:Number.isFinite(x?.price)?x.price:null,updatedAt:new Date().toISOString()};
   state.portfolio.positions[symbol]=closed;
   state.positions.delete(symbol);
   persistPortfolio();render();
@@ -454,7 +455,7 @@ function closePosition(symbol){
 function markBought(symbol){
   const x=allHunterCandidates().find(v=>v.symbol===symbol)||(state.data?.availableItems||[]).find(v=>v.symbol===symbol);if(!x)return;
   if(state.positions.has(symbol))return;
-  const p={symbol,boughtAt:new Date().toISOString(),entryMarketAsOf:state.data?.marketAsOf||null,entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance,status:'open',source:'Market Hunter'};
+  const p={symbol,boughtAt:new Date().toISOString(),entryMarketAsOf:state.data?.marketAsOf||null,entryPrice:x.price,entryStage:x.stage||'Unstaged',entryRs20:x.rs20,entryMomentumShift:x.momentumShift,entryLowState:x.lowState,entryHighState:x.highState,entrySupport:x.support,entryResistance:x.resistance,status:'open',source:'Market Hunter',updatedAt:new Date().toISOString()};
   state.positions.set(symbol,p);state.portfolio.positions[symbol]=p;
   persistPortfolio();recordPortfolioDailySnapshot();render();
 }
