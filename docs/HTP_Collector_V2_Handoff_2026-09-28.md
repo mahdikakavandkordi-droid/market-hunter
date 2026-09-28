@@ -39,3 +39,9 @@ HTP_FORWARD_DIR=data/research/healthy-trend-pullback-forward node scripts/audit-
 Writers must be serialized (the workflow already has a concurrency group). Captures crossing the UTC date boundary are rejected. Compression and content addressing reduce storage, but daily full-universe history snapshots still grow the repository; monitor actual size before choosing a separate durable store. Expiring Actions artifacts are not the canonical snapshot store.
 
 Live Yahoo collection is now active; sustained storage cost and actual corporate-action cases remain to be observed. Synthetic passing tests do not establish predictive superiority over Early Watch or Trend+RS.
+
+## First live canonical capture
+
+The activation-day partial was traced to stale universe membership rather than transient provider delay: `ARX.TO` no longer represented an active listed decision opportunity after ARC Resources' completed Shell transaction. The universe was versioned to retire ARX without using model outcomes.
+
+After the universe correction, live run `36485740641` completed 226/226 evaluated symbols with no failures and produced the first canonical 2026-09-28 observations. The audit passed 56/56 checks. Partial pre-correction attempts remain preserved in the journal for provenance.
