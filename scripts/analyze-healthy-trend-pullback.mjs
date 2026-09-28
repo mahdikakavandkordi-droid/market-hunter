@@ -120,6 +120,10 @@ for(const symbol of headlineSymbols){
 for(const date of confirmedDates){
   const p=pools.get(date).filter(x=>Number.isFinite(x.atr14Pct)).sort((a,b)=>a.atr14Pct-b.atr14Pct||a.symbol.localeCompare(b.symbol));
   p.forEach((x,i)=>x.volQuintile=Math.min(4,Math.floor(i*5/Math.max(1,p.length))));
+  const qBySymbol=new Map(p.map(x=>[x.symbol,x.volQuintile]));
+  for(const key of ['core','core_volume','core_market','trend_rs']){
+    for(const row of candidateMaps[key].get(date)||[])row.volQuintile=qBySymbol.get(row.symbol);
+  }
 }
 function finalizeMap(m){
   const out=new Map();
@@ -499,7 +503,7 @@ for(const [model,map] of Object.entries(naturalMaps)){
       model,date,coverage:'confirmed',count:(map.get(date)||[]).length,
       picks:(map.get(date)||[]).map(x=>({
         symbol:x.symbol,rank:x.rank,score:round(x.score),sector:x.sector||null,
-        atr14Pct:round(x.atr14Pct),pivotDate:x.pivotDate||null,pivotConfirmedAt:x.pivotConfirmedAt||null,
+        atr14Pct:round(x.atr14Pct),volQuintile:Number.isInteger(x.volQuintile)?x.volQuintile:null,pivotDate:x.pivotDate||null,pivotConfirmedAt:x.pivotConfirmedAt||null,
         weeklyLastCompleted:x.weeklyLastCompleted||null
       }))
     });
