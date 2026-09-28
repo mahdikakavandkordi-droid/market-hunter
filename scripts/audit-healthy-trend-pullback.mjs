@@ -203,35 +203,53 @@ for(const g of groups.values()){
 }
 check('identical evaluation conventions across deterministic models',conventionMismatch===0,{conventionMismatch});
 
-// Random-control exported seed summaries recompute from exported rows; fixed sample also recomputes from OHLC.
-const gz=path.join(OUT_DIR,'random-controls.jsonl.gz');
-const randomRows=fs.existsSync(gz)?zlib.gunzipSync(fs.readFileSync(gz)).toString('utf8').trim().split('\n').filter(Boolean).map(JSON.parse):[];
-const randomGroups=new Map();
-for(const r of randomRows){
-  const k=[r.control,r.target,r.seed].join('|');
-  if(!randomGroups.has(k))randomGroups.set(k,[]);
-  randomGroups.get(k).push(r);
+// Random-control seed summaries are audited chunk-by-chunk to avoid reusing the analysis path or loading all rows at once.
+const randomFiles=fs.readdirSync(OUT_DIR).filter(x=>/^random-controls-part-\d+\.jsonl\.gz$/.test(x)).sort();
+const randomAgg=new Map(),randomSample=[];
+let randomRowCount=0;
+for(const file of randomFiles){
+  const payload=zlib.gunzipSync(fs.readFileSync(path.join(OUT_DIR,file))).toString('utf8');
+  for(const line of payload.split('\n')){
+    if(!line)continue;
+    const r=JSON.parse(line),k=[r.control,r.target,r.seed].join('|');
+    if(!randomAgg.has(k))randomAgg.set(k,{successDenom:0,successCount:0,excessCount:0,excessSum:0});
+    const a=randomAgg.get(k);
+    if(r.status==='evaluated'&&r.included){
+      if(r.primaryLabel!=='suspension_or_irregular_gap'){
+        a.successDenom++;
+        if(r.primaryLabel==='success')a.successCount++;
+      }
+      const ex=r.excessReturns?.[20];
+      if(Number.isFinite(ex)){a.excessCount++;a.excessSum+=ex}
+    }
+    if(randomRowCount%2000===0)randomSample.push(r);
+    randomRowCount++;
+  }
 }
 let seedSummaryMismatch=0;
 for(const target of ['core','core_volume','core_market']){
   for(const [control,key] of [['random','repeatedRandom'],['matched','sectorVolMatchedRandom']]){
     const reported=summary.controlled?.[target]?.[key]?.seedSummaries||[];
-    for(const s of reported){
-      const rows=(randomGroups.get([control,target,s.seed].join('|'))||[]).filter(x=>x.status==='evaluated'&&x.included);
-      const re=basic(rows);
-      if(!nearly(re.successRate,s.successRate,1e-7)||!nearly(re.meanExcess20,s.meanExcess20,1e-7))seedSummaryMismatch++;
+    for(const seedSummary of reported){
+      const a=randomAgg.get([control,target,seedSummary.seed].join('|'))||{successDenom:0,successCount:0,excessCount:0,excessSum:0};
+      const successRate=a.successDenom?round(a.successCount/a.successDenom*100,2):null;
+      const meanExcess20=a.excessCount?round(a.excessSum/a.excessCount):null;
+      if(!nearly(successRate,seedSummary.successRate,1e-7)||!nearly(meanExcess20,seedSummary.meanExcess20,1e-7))seedSummaryMismatch++;
     }
   }
 }
-check('all random-control seed outcome summaries recompute from exported rows',seedSummaryMismatch===0,{groups:randomGroups.size,seedSummaryMismatch});
+check('all random-control seed outcome summaries recompute from chunked exported rows',seedSummaryMismatch===0,{
+  files:randomFiles.length,rows:randomRowCount,groups:randomAgg.size,seedSummaryMismatch
+});
 
 let sampledRandomMismatch=0;
-const stride=Math.max(1,Math.floor(randomRows.length/250));
-for(let i=0;i<randomRows.length;i+=stride){
-  const e=randomRows[i],r=recompute(e);
+for(const e of randomSample){
+  const r=recompute(e);
   if(!nearly(e.entryDate,r.entryDate)||!nearly(e.entryPrice,r.entryPrice)||!nearly(e.atr14,r.atr14)||!nearly(e.primaryLabel,r.primaryLabel)||!nearly(e.excessReturns?.[20],r.excessReturns?.[20]))sampledRandomMismatch++;
 }
-check('fixed-spaced sample of random-control outcomes independently recomputes from frozen OHLC',sampledRandomMismatch===0,{sampled:Math.ceil(randomRows.length/stride),sampledRandomMismatch});
+check('fixed-stride sample of random-control outcomes independently recomputes from frozen OHLC',sampledRandomMismatch===0,{
+  sampled:randomSample.length,sampledRandomMismatch
+});
 
 // Separate CDR absolute-path diagnostic: benchmark excess is intentionally not audited/interpreted.
 const cdrFile=path.join(OUT_DIR,'cdr-early-watch-episodes.json');
@@ -260,9 +278,9 @@ const audit={
   finalTestOpened:false,
   checks,totalChecks:checks.length,passedChecks:checks.filter(x=>x.pass).length,failedChecks:checks.filter(x=>!x.pass).length,differences,
   auditedDeterministicEpisodes:episodes.length,
-  auditedRandomRows:randomRows.length,
+  auditedRandomRows:randomRowCount,
   note:'Unit regressions separately exercise synthetic weekly-bar availability, pivot confirmation, next-session entry alignment, ambiguous same-bar barriers, irregular gaps, split-boundary purges, zero-pick continuity and cross-model timing identity.'
 };
 fs.writeFileSync(path.join(OUT_DIR,'audit.json'),JSON.stringify(audit,null,2)+'\n');
-console.log(JSON.stringify({totalChecks:audit.totalChecks,passed:audit.passedChecks,failed:audit.failedChecks,deterministicEpisodes:episodes.length,randomRows:randomRows.length},null,2));
+console.log(JSON.stringify({totalChecks:audit.totalChecks,passed:audit.passedChecks,failed:audit.failedChecks,deterministicEpisodes:episodes.length,randomRows:randomRowCount},null,2));
 if(audit.failedChecks)process.exitCode=1;
