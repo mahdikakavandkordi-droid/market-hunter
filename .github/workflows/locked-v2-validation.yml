@@ -26,11 +26,11 @@ jobs:
       - name: Require Vercel artifact access
         shell: bash
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
         run: |
           set -euo pipefail
           if [ -z "${VERCEL_TOKEN:-}" ]; then
-            echo "VERCEL_TOKEN GitHub secret is required to retrieve the registered immutable numerical snapshot."
+            echo "SECRET_VERCEL_TOKEN GitHub secret is required to retrieve the registered immutable numerical snapshot."
             exit 1
           fi
       - name: Install Vercel CLI
@@ -54,7 +54,7 @@ jobs:
       - name: Materialize exact numerical snapshot artifact
         shell: bash
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_TOKEN: ${{ secrets.SECRET_VERCEL_TOKEN }}
           DEPLOYMENT_URL: ${{ steps.registered.outputs.deployment_url }}
           MANIFEST_PATH: ${{ steps.registered.outputs.manifest_path }}
           TEAM_SLUG: ${{ steps.registered.outputs.team_slug }}
