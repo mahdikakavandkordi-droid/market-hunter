@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {UNIVERSE} from '../lib/universe.js';
+import {assertHistoricalFinalSealedReport} from '../lib/research-audit-guards.js';
 
 const OUT_DIR=process.env.EARLY_WATCH_STABILITY_OUT||'data/research/early-watch-episode-stability';
 const MANIFEST_FILE=process.env.V2_DATASET_LOCK_MANIFEST||'data/frozen/market-hunter-v2-numerical-snapshot/manifest.json';
@@ -64,8 +65,7 @@ function stable(v){return Array.isArray(v)?v.map(stable):v&&typeof v==='object'?
 function same(a,b){return JSON.stringify(stable(a))===JSON.stringify(stable(b))}
 
 assert(process.env.V2_OPEN_FINAL_TEST!=='1','audit refuses V2_OPEN_FINAL_TEST=1');
-assert(reports.every(r=>r.validation?.finalTestOpened!==true),'input report opened Historical Final');
-assert(reports.every(r=>!r.finalEvaluation),'input report contains Historical Final output');
+for(const report of reports)assertHistoricalFinalSealedReport(report,'audit input report batch '+report.batchIndex);
 assert(summary.source?.finalTestOpened===false,'analysis summary says Historical Final opened');
 
 const allCandidates=reports.flatMap(r=>r.surfaceReplay?.candidates||[]);
@@ -158,16 +158,17 @@ for(const h of [5,10,20]){
 
   const expectedDev=expected.filter(x=>x.split==='Development'&&x.included);
   const expectedVal=expected.filter(x=>x.split==='Validation'&&x.included);
-  const expectedCombined=expected.filter(x=>
+  const expectedCombinedPooledPreFinal=expected.filter(x=>
     x.firstSurfaceDate>=calendar.developmentStart&&x.firstSurfaceDate<calendar.finalStart&&
     x.outcomeDate>=x.firstSurfaceDate&&x.outcomeDate<calendar.finalStart&&
     !['Invalid','Outside','Historical Final'].includes(x.split)
   );
+  const expectedCombinedIncludedPurged=expected.filter(x=>(x.split==='Development'||x.split==='Validation')&&x.included);
 
   check(h+'D Development outcome purge',expectedDev.every(x=>x.outcomeDate<calendar.validationStart),{included:expectedDev.length});
   check(h+'D Validation Historical Final seal',expectedVal.every(x=>x.outcomeDate<calendar.finalStart),{included:expectedVal.length});
 
-  for(const [name,rows] of [['Development',expectedDev],['Validation',expectedVal],['Combined',expectedCombined]]){
+  for(const [name,rows] of [['Development',expectedDev],['Validation',expectedVal],['CombinedPooledPreFinal',expectedCombinedPooledPreFinal],['CombinedIncludedPurged',expectedCombinedIncludedPurged]]){
     const recomputed=independentStats(rows);
     const reported=summary.horizons?.[h]?.samples?.[name]?.summary;
     const ok=same(recomputed,comparableStats(reported));
@@ -181,7 +182,8 @@ for(const h of [5,10,20]){
     reconstructedEpisodes:expected.length,
     DevelopmentIncluded:expectedDev.length,
     ValidationIncluded:expectedVal.length,
-    CombinedDescriptive:expectedCombined.length
+    CombinedPooledPreFinal:expectedCombinedPooledPreFinal.length,
+    CombinedIncludedPurged:expectedCombinedIncludedPurged.length
   };
 }
 
