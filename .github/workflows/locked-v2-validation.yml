@@ -111,3 +111,37 @@ jobs:
           path: data/v2-backtest-batch-${{ matrix.batch }}.json
           retention-days: 7
           if-no-files-found: error
+
+
+  early-watch-replay:
+    needs: backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Download locked numerical snapshot
+        uses: actions/download-artifact@v4
+        with:
+          name: market-hunter-v2-numerical-snapshot
+          path: data/frozen/market-hunter-v2-numerical-snapshot
+      - name: Download all four locked backtest reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: locked-v2-backtest-batch-*
+          path: data
+          merge-multiple: true
+      - name: Re-verify exact snapshot identity
+        run: node scripts/verify-locked-validation-inputs.mjs
+      - name: Check Early Watch replay analyzer
+        run: node --check scripts/analyze-early-watch-surface-replay.mjs
+      - name: Run locked Early Watch replay analysis
+        run: node scripts/analyze-early-watch-surface-replay.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: locked-v2-early-watch-replay
+          path: data/v2-early-watch-surface-replay.json
+          retention-days: 7
+          if-no-files-found: error
