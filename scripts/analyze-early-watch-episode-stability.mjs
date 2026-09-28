@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {validateFixedCalendar,fixedCalendarSplit} from '../lib/validation-split.js';
 import {UNIVERSE} from '../lib/universe.js';
+import {assertHistoricalFinalSealedReport} from '../lib/research-audit-guards.js';
 import {
   confirmedCoverage,selectedByConfirmedDate,firstSurfaceEpisodes,attachSplitStatus,sameValue
 } from '../lib/early-watch-episodes.js';
@@ -99,8 +100,7 @@ function validateLockedInputs(){
   const manifestByBatch=new Map(manifest.batches.map(x=>[x.batchIndex,x]));
   const horizons=null;
   for(const report of reports){
-    must(report?.validation?.finalTestOpened!==true,'Historical Final was opened in an input report');
-    must(!report?.finalEvaluation,'Input report contains Historical Final evaluation output');
+    assertHistoricalFinalSealedReport(report,'locked backtest report batch '+report.batchIndex);
     must(report?.dataset?.mode==='frozen','analysis requires frozen reports');
     must(report?.dataset?.artifactId===artifactId,'artifact identity mismatch');
     const b=manifestByBatch.get(report.batchIndex);
@@ -361,16 +361,24 @@ for(const h of horizons){
 
   const dev=classified.filter(x=>x.split==='Development'&&x.included);
   const val=classified.filter(x=>x.split==='Validation'&&x.included);
-  const combined=combinedIncluded(classified);
+  const combinedPooledPreFinal=combinedIncluded(classified);
+  const combinedIncludedPurged=classified.filter(x=>(x.split==='Development'||x.split==='Validation')&&x.included);
   must(dev.every(x=>x.outcomeDate<calendar.validationStart),'Development outcome crossed into Validation');
   must(val.every(x=>x.outcomeDate<calendar.finalStart),'Validation outcome entered Historical Final');
-  must(combined.every(x=>x.outcomeDate<calendar.finalStart),'Combined included outcome entered Historical Final');
+  must(combinedPooledPreFinal.every(x=>x.outcomeDate<calendar.finalStart),'Pooled pre-Final outcome entered Historical Final');
+  must(combinedIncludedPurged.every(x=>x.included===true),'Purged combined sample contains an excluded episode');
 
-  const combinedStats=descriptiveSummary(combined);
+  const combinedStats=descriptiveSummary(combinedPooledPreFinal);
+  const combinedPurgedStats=descriptiveSummary(combinedIncludedPurged);
   const devStats=descriptiveSummary(dev);
   const valStats=descriptiveSummary(val);
 
-  const samples={Development:dev,Validation:val,Combined:combined};
+  const samples={
+    Development:dev,
+    Validation:val,
+    CombinedPooledPreFinal:combinedPooledPreFinal,
+    CombinedIncludedPurged:combinedIncludedPurged
+  };
   const sampleOutputs={};
   for(const [name,rows] of Object.entries(samples)){
     const concentration=symbolConcentration(rows);
@@ -379,9 +387,14 @@ for(const h of horizons){
       byCalendarYear:byYear(rows),
       concentration,
       sensitivity:concentrationSensitivity(rows,concentration),
+      label:name==='CombinedPooledPreFinal'
+        ?'Pooled pre-Final first-surface episodes; includes Development episodes whose outcomes cross the Development/Validation boundary, while still excluding Historical Final outcomes.'
+        :name==='CombinedIncludedPurged'
+          ?'Only included, purged Development and Validation first-surface episodes; no boundary-crossing outcomes.'
+          :name+' included first-surface episodes after required boundary purge.',
       uncertainty:blockBootstrapMeanExcess({
         rows,
-        calendarDates:splitCalendarDates(coverage.confirmedDates,name),
+        calendarDates:splitCalendarDates(coverage.confirmedDates,name.startsWith('Combined')?'Combined':name),
         label:h+'|'+name
       })
     };
@@ -411,6 +424,10 @@ for(const h of horizons){
       splitCounts:splitCounts(classified)
     },
     samples:sampleOutputs,
+    combinedSampleDefinitions:{
+      pooledPreFinal:'Includes all valid pre-Final episodes with outcomes before finalStart, including Development/Validation boundary-crossing outcomes.',
+      includedPurged:'Includes only Development and Validation episodes with included === true after each split boundary purge.'
+    },
     previousReportReconciliation:previousReconciliation(h,combinedStats,devStats,valStats)
   };
 }
@@ -431,7 +448,8 @@ console.log(JSON.stringify({
     constructed:summary.horizons[h].episodeConstruction.constructedBeforeSplit,
     Development:summary.horizons[h].samples.Development.summary,
     Validation:summary.horizons[h].samples.Validation.summary,
-    Combined:summary.horizons[h].samples.Combined.summary,
+    CombinedPooledPreFinal:summary.horizons[h].samples.CombinedPooledPreFinal.summary,
+    CombinedIncludedPurged:summary.horizons[h].samples.CombinedIncludedPurged.summary,
     partialCoverageDays:summary.horizons[h].coverage.partialCoverageDays
   }]))
 },null,2));
