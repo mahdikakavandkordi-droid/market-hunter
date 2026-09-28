@@ -37,7 +37,7 @@ function writeFixture({mode='episodes'}={}){
     const snapshotId='snap-'+i;
     const dataSha256=hash(String(i+1));
     const structureSha256=hash(String(i+5));
-    manifest.batches.push({batchIndex:i,snapshotId,dataSha256,structureSha256,symbols:[symbol]});
+    manifest.batches.push({batchIndex:i,snapshotId,dataSha256,structureSha256,symbols:[symbol,'^GSPTSE']});
     const datesByHorizon=mode==='episodes'
       ? {5:['2025-06-02','2025-06-03','2025-06-04','2025-12-20'],20:['2025-06-02','2025-06-03','2025-06-04']}
       : {5:['2025-06-02','2025-06-29','2025-09-01'],20:['2025-06-02','2025-06-29','2025-09-01']};
@@ -48,15 +48,15 @@ function writeFixture({mode='episodes'}={}){
     }
     if(i===0&&mode==='purge'){
       candidates.push(row('SAME','2025-06-02','2025-06-09',5));
-      candidates.push(row('CROSS','2025-06-29','2025-07-07',5));
-      candidates.push(row('VALID','2025-09-01','2025-09-08',5));
+      candidates.push(row('SAME','2025-06-29','2025-07-07',5));
+      candidates.push(row('SAME','2025-09-01','2025-09-08',5));
       candidates.push(row('SAME','2025-06-02','2025-06-30',20));
-      candidates.push(row('CROSS','2025-06-29','2025-07-29',20));
-      candidates.push(row('VALID','2025-09-01','2025-09-30',20));
+      candidates.push(row('SAME','2025-06-29','2025-07-29',20));
+      candidates.push(row('SAME','2025-09-01','2025-09-30',20));
     }
     const report={
       version:'fixture',batchIndex:i,batchCount:4,symbols:[symbol],
-      dataset:{mode:'frozen',snapshotId,dataSha256,structureSha256,normalizationVersion:'fixture-norm-v1',source,artifactId},
+      dataset:{mode:'frozen',snapshotId,dataSha256,structureSha256,normalizationVersion:'fixture-norm-v1',source,artifactId,symbols:[symbol,'^GSPTSE']},
       validation:{calendar,finalTestOpened:false},
       horizons:{5:{scope:'development'},20:{scope:'development'}},
       surfaceReplay:{scope:'development',calendarSource:'completed-scans-with-mature-development-outcomes',datesByHorizon,candidates}
@@ -137,3 +137,28 @@ function runFixture(f){
 }
 
 console.log('Early Watch fixed-calendar replay regression tests passed');
+
+
+// Real snapshots include benchmark series; reports contain only tradable symbols.
+// Reject mismatched identity, stale coverage, and outcomes from sealed Final.
+for(const [label,mutate,pattern] of [
+ ['snapshot symbols',r=>r.dataset.symbols=['SAME'],/snapshot symbol membership/],
+ ['traded symbols',r=>r.symbols=['WRONG'],/traded symbol membership/],
+ ['numerical hash',r=>r.dataset.dataSha256='f'.repeat(64),/numerical hash mismatch/],
+ ['opened final',r=>r.validation.finalTestOpened=true,/final test must remain closed/],
+ ['missing closed flag',r=>delete r.validation.finalTestOpened,/explicitly false/],
+ ['final outcome',r=>r.surfaceReplay.candidates[0].outcomeDate='2026-01-01',/outside mature Development/],
+ ['final calendar',r=>r.surfaceReplay.datesByHorizon[5].push('2026-02-01'),/outside Development calendar/],
+ ['unknown candidate',r=>r.surfaceReplay.candidates[0].symbol='UNKNOWN',/outside traded membership/],
+ ['duplicate candidate',r=>r.surfaceReplay.candidates.push(r.surfaceReplay.candidates[0]),/duplicate candidate/],
+ ['missing candidate coverage',r=>r.surfaceReplay.datesByHorizon[5]=[],/lacks completed scan coverage/]
+]){
+ const f=writeFixture();
+ const file=path.join(f.reportsDir,'v2-backtest-batch-0.json');
+ const report=JSON.parse(fs.readFileSync(file,'utf8'));mutate(report);
+ fs.writeFileSync(file,JSON.stringify(report));
+ const result=runFixture(f);
+ assert.notEqual(result.status,0,label);
+ assert.match(result.stderr+result.stdout,pattern,label);
+}
+console.log('Early Watch real-schema and sealed-input guards passed');

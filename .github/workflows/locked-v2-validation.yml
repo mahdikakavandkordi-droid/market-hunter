@@ -1,6 +1,18 @@
 name: Locked Market Hunter V2 Validation
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - research/market-hunter-ui-lite
+    paths:
+      - '.github/workflows/locked-v2-validation.yml'
+      - 'lib/backtest-report-builder.js'
+      - 'lib/validation-*.js'
+      - 'scripts/*locked*.mjs'
+      - 'scripts/backtest-market-hunter-v2.mjs'
+      - 'scripts/analyze-early-watch-surface-replay.mjs'
+      - 'scripts/test-early-watch-fixed-calendar.mjs'
+      - 'package.json'
 permissions:
   contents: read
 concurrency:
@@ -145,3 +157,4 @@ jobs:
           path: data/v2-early-watch-surface-replay.json
           retention-days: 7
           if-no-files-found: error
+

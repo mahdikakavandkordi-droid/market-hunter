@@ -98,7 +98,7 @@ if(frozenDatasetFile){
     mode:'frozen',file:frozenDatasetFile,artifactId:datasetArtifactId,
     sha256:loaded.sha256,dataSha256:loaded.dataSha256,structureSha256:loaded.structureSha256,
     snapshotId:loaded.snapshotId,capturedAt:loaded.capturedAt,
-    normalizationVersion:loaded.normalizationVersion,source:loaded.source,
+    normalizationVersion:loaded.normalizationVersion,source:loaded.source,symbols:loaded.symbols,
     captureRevision:loaded.captureRevision
   };
   console.log('loaded frozen dataset '+loaded.snapshotId+' '+loaded.sha256);

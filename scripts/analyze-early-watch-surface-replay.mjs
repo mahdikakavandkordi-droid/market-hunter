@@ -10,6 +10,8 @@ const reports=Array.from({length:BATCH_COUNT},(_,i)=>JSON.parse(fs.readFileSync(
 
 const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
 const same=(a,b)=>JSON.stringify(stable(a))===JSON.stringify(stable(b));
+const benchmarkSymbols=new Set(['^GSPTSE','^IXIC']);
+const isoDay=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&Number.isFinite(Date.parse(x+'T00:00:00Z'))&&new Date(x+'T00:00:00Z').toISOString().slice(0,10)===x;
 const must=(ok,message)=>{if(!ok)throw new Error(message)};
 function validateLockedInputs(){
   must(fs.existsSync(MANIFEST_FILE),'Locked numerical snapshot manifest missing: '+MANIFEST_FILE);
@@ -35,13 +37,31 @@ function validateLockedInputs(){
     must(id.dataset.snapshotId===designated.snapshotId,'Batch '+i+' snapshotId mismatch');
     must(id.dataset.dataSha256===designated.dataSha256,'Batch '+i+' numerical hash mismatch');
     must(id.dataset.structureSha256===designated.structureSha256,'Batch '+i+' structure hash mismatch');
-    must(same(id.symbols,designated.symbols),'Batch '+i+' symbol membership mismatch');
+    // Snapshot membership includes benchmark series; tradable report membership does not.
+    must(Array.isArray(designated.symbols),'Manifest batch '+i+' missing symbols');
+    must(same(report.dataset.symbols,designated.symbols),'Batch '+i+' snapshot symbol membership/order mismatch');
+    must(same(id.symbols,designated.symbols.filter(s=>!benchmarkSymbols.has(s))),'Batch '+i+' traded symbol membership/order mismatch');
     must(id.dataset.artifactId===artifactId,'Batch '+i+' artifact does not match locked manifest');
     const replay=report.surfaceReplay;
     must(replay?.scope==='development','Batch '+i+' Early Watch replay scope must be development');
     must(replay?.calendarSource==='completed-scans-with-mature-development-outcomes','Batch '+i+' Early Watch replay calendar coverage is stale');
     must(replay?.datesByHorizon&&typeof replay.datesByHorizon==='object','Batch '+i+' Early Watch datesByHorizon missing');
-    for(const h of horizons)must(Array.isArray(replay.datesByHorizon[h]),'Batch '+i+' Early Watch horizon '+h+' calendar missing');
+    for(const h of horizons){
+      const dates=replay.datesByHorizon[h];
+      must(Array.isArray(dates),'Batch '+i+' Early Watch horizon '+h+' calendar missing');
+      must(dates.every(d=>isoDay(d)&&d>=calendar.developmentStart&&d<calendar.finalStart),'Batch '+i+' invalid/outside Development calendar date');
+      must(same(dates,[...new Set(dates)].sort()),'Batch '+i+' calendar must be unique and sorted');
+    }
+    must(Array.isArray(replay.candidates),'Batch '+i+' replay candidates missing');
+    const seen=new Set();
+    for(const row of replay.candidates){
+      must(id.symbols.includes(row.symbol),'Batch '+i+' candidate symbol outside traded membership');
+      must(horizons.includes(row.horizon),'Batch '+i+' candidate horizon mismatch');
+      must(isoDay(row.date)&&isoDay(row.outcomeDate)&&row.date>=calendar.developmentStart&&row.outcomeDate>=row.date&&row.outcomeDate<calendar.finalStart,'Batch '+i+' candidate outside mature Development');
+      must(replay.datesByHorizon[row.horizon].includes(row.date),'Batch '+i+' candidate lacks completed scan coverage');
+      const key=[row.symbol,row.date,row.horizon].join('|');
+      must(!seen.has(key),'Batch '+i+' duplicate candidate');seen.add(key);
+    }
   }
   must(same(manifest.source,first.dataset.source),'Manifest/report source mismatch');
   must(manifest.normalizationVersion===first.dataset.normalizationVersion,'Manifest/report normalization mismatch');
@@ -164,7 +184,7 @@ function rankingExperiment(byDate,dates,scoreFn,calendar){
   };
   const cs=summary(crowdedSelected),ce=summary(crowdedExcluded);
   return {
-    chronologicalSplit:{mode:'fixed_calendar',cutDate:calendar.validationStart,counts:fold.counts,train:pack(fold.train),recentHoldout:pack(fold.test)},
+    chronologicalSplit:{mode:'fixed_calendar',status:fold.status,insufficientReason:fold.insufficientReason,cutDate:calendar.validationStart,counts:fold.counts,train:pack(fold.train),recentHoldout:pack(fold.test)},
     overall:pack(observations),
     crowdedDays:{
       selectedTop6:cs,excludedBelow6:ce,
@@ -189,7 +209,7 @@ const result={
     repeatedNames:'pickDayObservations reflects what the user would actually see each day. firstSurfaceEpisodes removes consecutive-day repeats.',
     holdout:'Train and recentHoldout use the locked fixed calendar. Rows whose outcome crosses the validation boundary are purged from training, and rows whose outcome crosses Historical Final are purged from validation.',
     capTest:'On days with more than six eligible names, topSixOnCrowdedDays is compared with excludedBelowSix to test whether score ordering adds value rather than merely reducing workload.',
-    rankingTest:'Two small outcome-blind ranking variants are compared with the frozen baseline. Eligibility and max-six policy remain unchanged; success requires better top-3 vs ranks 4-6 separation, especially on the recent chronological holdout.'
+    rankingTest:'Three existing diagnostic ranking variants are compared with the frozen baseline. Eligibility and max-six policy remain unchanged; success requires better top-3 vs ranks 4-6 separation, especially on the recent chronological holdout.'
   },
   validationIdentity:{
     artifactId:identity.dataset.artifactId,
@@ -198,7 +218,9 @@ const result={
     calendar,
     batchCount:BATCH_COUNT,
     horizons,
-    historicalFinalOpened:false
+    historicalFinalOpened:false,
+    codeRevision:process.env.GITHUB_SHA||process.env.V2_CODE_REVISION||null,
+    batches:reports.map(r=>({batchIndex:r.batchIndex,snapshotId:r.dataset.snapshotId,dataSha256:r.dataset.dataSha256,structureSha256:r.dataset.structureSha256,symbols:r.symbols,snapshotSymbols:r.dataset.symbols}))
   },
   dateRange:{start:calendar.developmentStart,end:calendar.finalStart},
   coverage:{},
@@ -211,7 +233,8 @@ for(const h of horizons){
   const unionDates=union(batchDates);
   const partialCoverageDates=unionDates.filter(d=>!dates.includes(d));
   result.coverage[h]={
-    confirmedWholeUniverseSessions:dates.length,
+    sessionsWithCoverageInEveryBatch:dates.length,
+    limitation:'A covered batch has at least one completed eligible-history scan. This is not proof of complete coverage for every symbol.',
     unionSessions:unionDates.length,
     partialCoverageSessionCount:partialCoverageDates.length,
     partialCoverageDates,
@@ -268,7 +291,7 @@ for(const h of horizons){
     },
     pickDayObservations:{
       overall:summary(observations),
-      chronologicalSplit:{mode:'fixed_calendar',cutDate:calendar.validationStart,counts:fold.counts,train:summary(fold.train),recentHoldout:summary(fold.test)},
+      chronologicalSplit:{mode:'fixed_calendar',status:fold.status,insufficientReason:fold.insufficientReason,cutDate:calendar.validationStart,counts:fold.counts,train:summary(fold.train),recentHoldout:summary(fold.test)},
       rank1:summary(observations.filter(x=>x.rank===1)),
       ranks1to3:summary(observations.filter(x=>x.rank<=3)),
       ranks4to6:summary(observations.filter(x=>x.rank>=4)),
@@ -295,3 +318,4 @@ for(const h of horizons){
 fs.mkdirSync('data',{recursive:true});
 fs.writeFileSync('data/v2-early-watch-surface-replay.json',JSON.stringify(result,null,2));
 console.log(JSON.stringify(result,null,2));
+
