@@ -8,7 +8,15 @@ const money=(n,c='CAD')=>Number.isFinite(Number(n))?new Intl.NumberFormat(undefi
 const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
 const readSet=k=>{try{return new Set(JSON.parse(localStorage.getItem(k)||'[]'))}catch{return new Set()}};
 const readPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),portfolioItems:new Map(),analytics:null,previous:new Map()};
+const readClosedPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterClosedPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
+const PORTFOLIO_HISTORY_KEY='marketHunterPortfolioHistoryV1';
+const CLOUD_SESSION_KEY='marketHunterCloudSessionV1';
+const SUPABASE_URL='https://ivmpzyjxyfcefjyylybr.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yy1QKQRcgf2ny3aWhhHSkw_Z7Y0Fa55';
+const readPortfolioHistory=()=>{try{const x=JSON.parse(localStorage.getItem(PORTFOLIO_HISTORY_KEY)||'{}');return x&&typeof x==='object'?x:{}}catch{return {}}};
+const readCloudSession=()=>{try{return JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{return null}};
+const state={view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),closedPositions:readClosedPositions(),portfolioHistory:readPortfolioHistory(),portfolioItems:new Map(),analytics:null,previous:new Map(),cloud:{session:readCloudSession(),ready:false,status:'local',message:'',showAuth:false}};
+let cloudSyncTimer=0,cloudSyncBusy=false,cloudSyncQueued=false;
 
 function applyTheme(theme){
   const next=theme==='light'?'light':'dark';
@@ -23,8 +31,122 @@ function applyTheme(theme){
   const meta=q('#themeColor');
   if(meta)meta.setAttribute('content',next==='light'?'#f4f6f8':'#08111d');
 }
-function saveWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]))}
-function savePositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
+function saveWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]));queueCloudPortfolioSync()}
+function savePositions(){
+  localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));
+  localStorage.setItem('marketHunterClosedPositions',JSON.stringify([...state.closedPositions.values()]));
+  queueCloudPortfolioSync();
+}
+function saveCloudSession(session){
+  if(session){localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(session));state.cloud.session=session}
+  else{localStorage.removeItem(CLOUD_SESSION_KEY);state.cloud.session=null}
+}
+async function cloudAuthRequest(path,body={},token=''){
+  const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'};
+  if(token)headers.Authorization='Bearer '+token;
+  const r=await fetch(SUPABASE_URL+'/auth/v1/'+path,{method:'POST',headers,body:JSON.stringify(body)});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(data.msg||data.message||data.error_description||'Cloud authentication failed');
+  return data;
+}
+async function ensureCloudSession(){
+  let session=state.cloud.session;if(!session)return null;
+  if(Number(session.expires_at||0)>Math.floor(Date.now()/1000)+90)return session;
+  if(!session.refresh_token){saveCloudSession(null);return null}
+  try{
+    const data=await cloudAuthRequest('token?grant_type=refresh_token',{refresh_token:session.refresh_token});
+    session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user||session.user};
+    saveCloudSession(session);return session;
+  }catch{
+    saveCloudSession(null);state.cloud.status='local';state.cloud.message='Cloud session expired. Sign in again.';return null;
+  }
+}
+async function cloudRest(table,{method='GET',query='',body=null,prefer=''}={}){
+  const session=await ensureCloudSession();if(!session)throw new Error('Sign in to use cloud sync');
+  const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'};
+  if(prefer)headers.Prefer=prefer;
+  const r=await fetch(SUPABASE_URL+'/rest/v1/'+table+(query?'?'+query:''),{method,headers,body:body===null?undefined:JSON.stringify(body),cache:'no-store'});
+  if(!r.ok){const data=await r.json().catch(()=>({}));throw new Error(data.message||data.hint||'Cloud data request failed')}
+  if(r.status===204)return null;const text=await r.text();return text?JSON.parse(text):null;
+}
+function positionStamp(p){return Date.parse(p?.updatedAt||p?.closedAt||p?.createdAt||p?.boughtAt||0)||0}
+function mergePositionLists(localList=[],remoteList=[]){
+  const map=new Map();
+  for(const p of remoteList||[])if(p?.symbol)map.set(p.symbol,p);
+  for(const p of localList||[])if(p?.symbol){const r=map.get(p.symbol);if(!r||positionStamp(p)>=positionStamp(r))map.set(p.symbol,p)}
+  return [...map.values()];
+}
+function cloudStatePayload(){
+  let portfolioDaily=null;try{portfolioDaily=JSON.parse(localStorage.getItem('marketHunterPortfolioDaily')||'null')}catch{}
+  return {version:3,updatedAt:new Date().toISOString(),positions:[...state.positions.values()],closedPositions:[...state.closedPositions.values()],watchlist:[...state.watch],portfolioDaily};
+}
+async function loadCloudPortfolio(){
+  const [rows,snapshots]=await Promise.all([
+    cloudRest('market_hunter_portfolio_state',{query:'select=payload,updated_at&limit=1'}),
+    cloudRest('market_hunter_portfolio_snapshots',{query:'select=market_as_of,payload,updated_at&order=market_as_of.asc'})
+  ]);
+  const remote=rows?.[0]?.payload||{};
+  const mergedOpen=mergePositionLists([...state.positions.values()],remote.positions||[]);
+  const mergedClosed=mergePositionLists([...state.closedPositions.values()],remote.closedPositions||[]);
+  const closedSymbols=new Set(mergedClosed.map(x=>x.symbol));
+  state.positions=new Map(mergedOpen.filter(x=>!closedSymbols.has(x.symbol)||positionStamp(x)>positionStamp(mergedClosed.find(c=>c.symbol===x.symbol))).map(x=>[x.symbol,x]));
+  state.closedPositions=new Map(mergedClosed.map(x=>[x.symbol,x]));
+  state.watch=new Set([...state.watch,...(remote.watchlist||[])]);
+  const history={...state.portfolioHistory};
+  for(const row of snapshots||[]){
+    if(!row?.market_as_of||!row?.payload)continue;
+    const local=history[row.market_as_of],ls=Date.parse(local?.updatedAt||0)||0,rs=Date.parse(row.updated_at||0)||0;
+    if(!local||rs>ls)history[row.market_as_of]=row.payload;
+  }
+  state.portfolioHistory=history;
+  localStorage.setItem(PORTFOLIO_HISTORY_KEY,JSON.stringify(history));
+  localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));
+  localStorage.setItem('marketHunterClosedPositions',JSON.stringify([...state.closedPositions.values()]));
+  localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]));
+}
+async function syncPortfolioCloud(){
+  if(cloudSyncBusy){cloudSyncQueued=true;return}
+  const session=await ensureCloudSession();if(!session||!state.cloud.ready)return;
+  cloudSyncBusy=true;state.cloud.status='syncing';state.cloud.message='Saving to cloud…';if(state.view==='portfolio')renderView('portfolio');
+  try{
+    const now=new Date().toISOString();
+    await cloudRest('market_hunter_portfolio_state',{method:'POST',query:'on_conflict=user_id',prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:session.user.id,version:3,payload:cloudStatePayload(),updated_at:now}});
+    const snaps=Object.entries(state.portfolioHistory||{}).map(([day,payload])=>({user_id:session.user.id,market_as_of:day,payload,updated_at:payload.updatedAt||now}));
+    if(snaps.length)await cloudRest('market_hunter_portfolio_snapshots',{method:'POST',query:'on_conflict=user_id,market_as_of',prefer:'resolution=merge-duplicates,return=minimal',body:snaps});
+    state.cloud.status='synced';state.cloud.message='Cloud copy is up to date.';
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed'}
+  finally{cloudSyncBusy=false;if(cloudSyncQueued){cloudSyncQueued=false;queueCloudPortfolioSync()}if(state.view==='portfolio')renderView('portfolio')}
+}
+function queueCloudPortfolioSync(){if(!state.cloud.session||!state.cloud.ready)return;clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>syncPortfolioCloud(),700)}
+async function initializeCloudPortfolio(){
+  state.cloud.ready=false;
+  if(!state.cloud.session){state.cloud.ready=true;return}
+  state.cloud.status='syncing';state.cloud.message='Loading cloud portfolio…';
+  try{await loadCloudPortfolio();state.cloud.ready=true;await syncPortfolioCloud()}
+  catch(e){state.cloud.ready=true;state.cloud.status='error';state.cloud.message=e.message||'Cloud load failed'}
+}
+async function cloudSignIn(email,password){
+  state.cloud.status='syncing';state.cloud.message='Signing in…';renderView('portfolio');
+  try{
+    const data=await cloudAuthRequest('token?grant_type=password',{email,password});
+    saveCloudSession({access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user});
+    state.cloud.showAuth=false;await initializeCloudPortfolio();await loadPortfolio();renderAll();setView('portfolio');toast('Cloud connected');
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+}
+async function cloudSignUp(email,password){
+  state.cloud.status='syncing';state.cloud.message='Creating account…';renderView('portfolio');
+  try{
+    const data=await cloudAuthRequest('signup',{email,password});
+    if(data.access_token){
+      saveCloudSession({access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user});
+      state.cloud.showAuth=false;await initializeCloudPortfolio();await loadPortfolio();renderAll();setView('portfolio');toast('Cloud connected');
+    }else{state.cloud.status='local';state.cloud.message='Account created. Confirm the email, then sign in.';renderView('portfolio')}
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+}
+async function cloudSignOut(){
+  const session=await ensureCloudSession();if(session){try{await cloudAuthRequest('logout',{},session.access_token)}catch{}}
+  saveCloudSession(null);state.cloud.ready=true;state.cloud.status='local';state.cloud.message='Local portfolio stays on this device.';state.cloud.showAuth=false;renderView('portfolio');
+}
 function toast(msg){const e=q('#toast');e.textContent=msg;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),1400)}
 async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url);return r.json()}
 function allCandidates(){
