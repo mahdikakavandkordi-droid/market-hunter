@@ -1,0 +1,511 @@
+{
+  "format": "market-hunter-healthy-trend-pullback-robustness-v1",
+  "generatedAt": "2026-09-28T19:18:51.813Z",
+  "evidenceTag": "locked-v2-validation-36420714736-archive-v1",
+  "validationRunId": 36420714736,
+  "finalTestOpened": false,
+  "note": "Derived only from the audited challenger summary and exported deterministic episode rows. Validation is previously observed history and is not treated as untouched out-of-sample evidence.",
+  "models": {
+    "core": {
+      "splitStability": {
+        "development": {
+          "episodes": 18,
+          "successRate": 22.22,
+          "meanExcess20": -0.0289,
+          "medianExcess20": -1.7539
+        },
+        "validationPreviouslyObserved": {
+          "episodes": 26,
+          "successRate": 42.31,
+          "meanExcess20": 8.2295,
+          "medianExcess20": 9.0921
+        },
+        "validationMinusDevelopment": {
+          "successRatePctPoints": 20.09,
+          "meanExcess20PctPoints": 8.2584
+        }
+      },
+      "combined": {
+        "episodes": 44,
+        "successRate": 34.09,
+        "meanExcess20": 4.8511,
+        "medianExcess20": 3.3948,
+        "successRate95": {
+          "lower": 20.69,
+          "upper": 50
+        },
+        "meanExcess20_95": {
+          "lower": 0.5898,
+          "upper": 8.4511
+        }
+      },
+      "rankOneLift": {
+        "rankOneEpisodes": 37,
+        "successRatePctPoints": 1.05,
+        "meanExcess20PctPoints": -0.7831
+      },
+      "concentration": {
+        "combined": {
+          "episodes": 44,
+          "distinctSymbols": 35,
+          "totalExcess20": 213.447,
+          "meanExcess20": 4.8511,
+          "top1": {
+            "symbol": "ARIS.TO",
+            "sumExcess20": 38.438854475528416
+          },
+          "top3ShareOfNetExcess": 46.6,
+          "top5ShareOfNetExcess": 67,
+          "leaveTop1": {
+            "episodes": 43,
+            "meanExcess20": 4.07
+          },
+          "leaveTop3": {
+            "episodes": 40,
+            "meanExcess20": 2.8514
+          },
+          "leaveTop5": {
+            "episodes": 37,
+            "meanExcess20": 1.9048
+          }
+        },
+        "Development": {
+          "episodes": 18,
+          "distinctSymbols": 15,
+          "totalExcess20": -0.5208,
+          "meanExcess20": -0.0289,
+          "top1": {
+            "symbol": "AGI.TO",
+            "sumExcess20": 25.40581779902085
+          },
+          "top3ShareOfNetExcess": -11058.8,
+          "top5ShareOfNetExcess": -13011.7,
+          "leaveTop1": {
+            "episodes": 16,
+            "meanExcess20": -1.6204
+          },
+          "leaveTop3": {
+            "episodes": 14,
+            "meanExcess20": -4.1514
+          },
+          "leaveTop5": {
+            "episodes": 12,
+            "meanExcess20": -5.6909
+          }
+        },
+        "ValidationPreviouslyObserved": {
+          "episodes": 26,
+          "distinctSymbols": 23,
+          "totalExcess20": 213.9679,
+          "meanExcess20": 8.2295,
+          "top1": {
+            "symbol": "ARIS.TO",
+            "sumExcess20": 38.438854475528416
+          },
+          "top3ShareOfNetExcess": 46.5,
+          "top5ShareOfNetExcess": 61.9,
+          "leaveTop1": {
+            "episodes": 25,
+            "meanExcess20": 7.0212
+          },
+          "leaveTop3": {
+            "episodes": 22,
+            "meanExcess20": 5.208
+          },
+          "leaveTop5": {
+            "episodes": 19,
+            "meanExcess20": 4.2931
+          }
+        }
+      },
+      "controlPosition": {
+        "repeatedRandom": {
+          "excess20Percentile": 100,
+          "successRatePercentile": 44.5
+        },
+        "sectorVolMatchedRandom": {
+          "excess20Percentile": 94,
+          "successRatePercentile": 12
+        }
+      },
+      "deterministicControlledComparisons": {
+        "EarlyWatch": {
+          "sharedDates": 22,
+          "sharedEpisodeFirstSurfaceDates": 22,
+          "bootstrapCalendar": "20-session circular blocks sampled on the full confirmed calendar; only sampled shared episode dates contribute to paired effects",
+          "bootstrapReplicationsRequested": 5000,
+          "bootstrapReplicationsUsed": 5000,
+          "bootstrapAttempts": 5000,
+          "successRateDifferencePctPoints": -11.36,
+          "meanExcess20DifferencePctPoints": 1.4711,
+          "successDiff95": {
+            "lower": -40.48,
+            "upper": 18.18
+          },
+          "excessDiff95": {
+            "lower": -5.8313,
+            "upper": 8.3894
+          }
+        },
+        "TrendRs": {
+          "sharedDates": 36,
+          "sharedEpisodeFirstSurfaceDates": 36,
+          "bootstrapCalendar": "20-session circular blocks sampled on the full confirmed calendar; only sampled shared episode dates contribute to paired effects",
+          "bootstrapReplicationsRequested": 5000,
+          "bootstrapReplicationsUsed": 5000,
+          "bootstrapAttempts": 5000,
+          "successRateDifferencePctPoints": -2.78,
+          "meanExcess20DifferencePctPoints": 5.2173,
+          "successDiff95": {
+            "lower": -23.81,
+            "upper": 21.21
+          },
+          "excessDiff95": {
+            "lower": -0.887,
+            "upper": 11.2194
+          }
+        }
+      }
+    },
+    "core_volume": {
+      "splitStability": {
+        "development": {
+          "episodes": 4,
+          "successRate": 0,
+          "meanExcess20": -3.9276,
+          "medianExcess20": -6.9086
+        },
+        "validationPreviouslyObserved": {
+          "episodes": 6,
+          "successRate": 66.67,
+          "meanExcess20": 14.5453,
+          "medianExcess20": 12.4942
+        },
+        "validationMinusDevelopment": {
+          "successRatePctPoints": 66.67,
+          "meanExcess20PctPoints": 18.4729
+        }
+      },
+      "combined": {
+        "episodes": 10,
+        "successRate": 40,
+        "meanExcess20": 7.1561,
+        "medianExcess20": 10.2481,
+        "successRate95": {
+          "lower": 0,
+          "upper": 75
+        },
+        "meanExcess20_95": {
+          "lower": -3.2339,
+          "upper": 17.0047
+        }
+      },
+      "rankOneLift": {
+        "rankOneEpisodes": 9,
+        "successRatePctPoints": -6.67,
+        "meanExcess20PctPoints": -0.0802
+      },
+      "concentration": {
+        "combined": {
+          "episodes": 10,
+          "distinctSymbols": 10,
+          "totalExcess20": 71.5612,
+          "meanExcess20": 7.1561,
+          "top1": {
+            "symbol": "BTE.TO",
+            "sumExcess20": 31.5977322361257
+          },
+          "top3ShareOfNetExcess": 83.7,
+          "top5ShareOfNetExcess": 118.6,
+          "leaveTop1": {
+            "episodes": 9,
+            "meanExcess20": 4.4404
+          },
+          "leaveTop3": {
+            "episodes": 7,
+            "meanExcess20": 1.6692
+          },
+          "leaveTop5": {
+            "episodes": 5,
+            "meanExcess20": -2.6608
+          }
+        },
+        "Development": {
+          "episodes": 4,
+          "distinctSymbols": 4,
+          "totalExcess20": -15.7104,
+          "meanExcess20": -3.9276,
+          "top1": {
+            "symbol": "SKE.TO",
+            "sumExcess20": 14.18833182405206
+          },
+          "top3ShareOfNetExcess": -2.4,
+          "top5ShareOfNetExcess": 100,
+          "leaveTop1": {
+            "episodes": 3,
+            "meanExcess20": -9.9663
+          },
+          "leaveTop3": {
+            "episodes": 1,
+            "meanExcess20": -16.0815
+          },
+          "leaveTop5": {
+            "episodes": 0,
+            "meanExcess20": null
+          }
+        },
+        "ValidationPreviouslyObserved": {
+          "episodes": 6,
+          "distinctSymbols": 6,
+          "totalExcess20": 87.2716,
+          "meanExcess20": 14.5453,
+          "top1": {
+            "symbol": "BTE.TO",
+            "sumExcess20": 31.5977322361257
+          },
+          "top3ShareOfNetExcess": 67.5,
+          "top5ShareOfNetExcess": 91,
+          "leaveTop1": {
+            "episodes": 5,
+            "meanExcess20": 11.1348
+          },
+          "leaveTop3": {
+            "episodes": 3,
+            "meanExcess20": 9.4581
+          },
+          "leaveTop5": {
+            "episodes": 1,
+            "meanExcess20": 7.8783
+          }
+        }
+      },
+      "controlPosition": {
+        "repeatedRandom": {
+          "excess20Percentile": 100,
+          "successRatePercentile": 62.5
+        },
+        "sectorVolMatchedRandom": {
+          "excess20Percentile": 97,
+          "successRatePercentile": 66
+        }
+      },
+      "deterministicControlledComparisons": {
+        "EarlyWatch": {
+          "sharedDates": 6,
+          "sharedEpisodeFirstSurfaceDates": 6,
+          "bootstrapCalendar": "20-session circular blocks sampled on the full confirmed calendar; only sampled shared episode dates contribute to paired effects",
+          "bootstrapReplicationsRequested": 5000,
+          "bootstrapReplicationsUsed": 5000,
+          "bootstrapAttempts": 5010,
+          "successRateDifferencePctPoints": -41.67,
+          "meanExcess20DifferencePctPoints": 1.9109,
+          "successDiff95": {
+            "lower": -100,
+            "upper": 16.67
+          },
+          "excessDiff95": {
+            "lower": -17.561,
+            "upper": 20.0986
+          }
+        },
+        "TrendRs": {
+          "sharedDates": 9,
+          "sharedEpisodeFirstSurfaceDates": 9,
+          "bootstrapCalendar": "20-session circular blocks sampled on the full confirmed calendar; only sampled shared episode dates contribute to paired effects",
+          "bootstrapReplicationsRequested": 5000,
+          "bootstrapReplicationsUsed": 5000,
+          "bootstrapAttempts": 5001,
+          "successRateDifferencePctPoints": 11.11,
+          "meanExcess20DifferencePctPoints": 7.7343,
+          "successDiff95": {
+            "lower": -28.57,
+            "upper": 50
+          },
+          "excessDiff95": {
+            "lower": -4.0232,
+            "upper": 19.5559
+          }
+        }
+      }
+    },
+    "core_market": {
+      "splitStability": {
+        "development": {
+          "episodes": 10,
+          "successRate": 10,
+          "meanExcess20": -3.6529,
+          "medianExcess20": -5.9329
+        },
+        "validationPreviouslyObserved": {
+          "episodes": 18,
+          "successRate": 33.33,
+          "meanExcess20": 9.0644,
+          "medianExcess20": 8.2973
+        },
+        "validationMinusDevelopment": {
+          "successRatePctPoints": 23.33,
+          "meanExcess20PctPoints": 12.7173
+        }
+      },
+      "combined": {
+        "episodes": 28,
+        "successRate": 25,
+        "meanExcess20": 4.5225,
+        "medianExcess20": 2.2325,
+        "successRate95": {
+          "lower": 6.9,
+          "upper": 43.48
+        },
+        "meanExcess20_95": {
+          "lower": -1.9022,
+          "upper": 9.2886
+        }
+      },
+      "rankOneLift": {
+        "rankOneEpisodes": 22,
+        "successRatePctPoints": -2.27,
+        "meanExcess20PctPoints": -1.9085
+      },
+      "concentration": {
+        "combined": {
+          "episodes": 28,
+          "distinctSymbols": 27,
+          "totalExcess20": 126.6306,
+          "meanExcess20": 4.5225,
+          "top1": {
+            "symbol": "ARIS.TO",
+            "sumExcess20": 38.438854475528416
+          },
+          "top3ShareOfNetExcess": 69.7,
+          "top5ShareOfNetExcess": 95.2,
+          "leaveTop1": {
+            "episodes": 27,
+            "meanExcess20": 3.2664
+          },
+          "leaveTop3": {
+            "episodes": 25,
+            "meanExcess20": 1.5366
+          },
+          "leaveTop5": {
+            "episodes": 23,
+            "meanExcess20": 0.2633
+          }
+        },
+        "Development": {
+          "episodes": 10,
+          "distinctSymbols": 10,
+          "totalExcess20": -36.5294,
+          "meanExcess20": -3.6529,
+          "top1": {
+            "symbol": "SKE.TO",
+            "sumExcess20": 14.18833182405206
+          },
+          "top3ShareOfNetExcess": -46.6,
+          "top5ShareOfNetExcess": -27,
+          "leaveTop1": {
+            "episodes": 9,
+            "meanExcess20": -5.6353
+          },
+          "leaveTop3": {
+            "episodes": 7,
+            "meanExcess20": -7.6506
+          },
+          "leaveTop5": {
+            "episodes": 5,
+            "meanExcess20": -9.2764
+          }
+        },
+        "ValidationPreviouslyObserved": {
+          "episodes": 18,
+          "distinctSymbols": 18,
+          "totalExcess20": 163.16,
+          "meanExcess20": 9.0644,
+          "top1": {
+            "symbol": "ARIS.TO",
+            "sumExcess20": 38.438854475528416
+          },
+          "top3ShareOfNetExcess": 54.1,
+          "top5ShareOfNetExcess": 73.8,
+          "leaveTop1": {
+            "episodes": 17,
+            "meanExcess20": 7.3365
+          },
+          "leaveTop3": {
+            "episodes": 15,
+            "meanExcess20": 4.9963
+          },
+          "leaveTop5": {
+            "episodes": 13,
+            "meanExcess20": 3.2833
+          }
+        }
+      },
+      "controlPosition": {
+        "repeatedRandom": {
+          "excess20Percentile": 99,
+          "successRatePercentile": 27.5
+        },
+        "sectorVolMatchedRandom": {
+          "excess20Percentile": 51,
+          "successRatePercentile": 11
+        }
+      },
+      "deterministicControlledComparisons": {
+        "EarlyWatch": {
+          "sharedDates": 12,
+          "sharedEpisodeFirstSurfaceDates": 12,
+          "bootstrapCalendar": "20-session circular blocks sampled on the full confirmed calendar; only sampled shared episode dates contribute to paired effects",
+          "bootstrapReplicationsRequested": 5000,
+          "bootstrapReplicationsUsed": 5000,
+          "bootstrapAttempts": 5000,
+          "successRateDifferencePctPoints": -29.17,
+          "meanExcess20DifferencePctPoints": 1.6337,
+          "successDiff95": {
+            "lower": -60,
+            "upper": 0
+          },
+          "excessDiff95": {
+            "lower": -11.2824,
+            "upper": 12.8036
+          }
+        },
+        "TrendRs": {
+          "sharedDates": 22,
+          "sharedEpisodeFirstSurfaceDates": 22,
+          "bootstrapCalendar": "20-session circular blocks sampled on the full confirmed calendar; only sampled shared episode dates contribute to paired effects",
+          "bootstrapReplicationsRequested": 5000,
+          "bootstrapReplicationsUsed": 5000,
+          "bootstrapAttempts": 5000,
+          "successRateDifferencePctPoints": -13.64,
+          "meanExcess20DifferencePctPoints": 4.0699,
+          "successDiff95": {
+            "lower": -40,
+            "upper": 10.53
+          },
+          "excessDiff95": {
+            "lower": -3.863,
+            "upper": 10.8862
+          }
+        }
+      }
+    }
+  },
+  "coreMarketContextDiagnostic": {
+    "TSXAboveMA50": {
+      "episodes": 28,
+      "successRate": 25,
+      "meanExcess20": 4.5225
+    },
+    "TSXNotAboveMA50": {
+      "episodes": 16,
+      "successRate": 50,
+      "meanExcess20": 5.426
+    }
+  },
+  "interpretationConstraints": [
+    "Combined results mix Development with previously observed Validation history and must not be used alone to claim generalization.",
+    "Percentiles against 100 fixed random seeds describe this frozen experiment only; they are not probabilities of future outperformance.",
+    "Contributor concentration is reported because a small number of large historical moves can materially change mean excess return.",
+    "No Historical Final data was opened."
+  ]
+}
