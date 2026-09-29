@@ -6,6 +6,8 @@ const source=fs.readFileSync('app.js','utf8');
 const cut=source.indexOf('async function load(){');
 assert.ok(cut>0,'app test seam not found');
 const core=source.slice(0,cut)+`
+function renderAll(){}
+function setView(){}
 globalThis.__mh={
   state,numeric,fmt,pct,money,loadCloudSession,ensureCloudSession,
   scopeId,stateStorageKey,dailyStorageKey,normalizeEnvelope,mergeEnvelopes,
