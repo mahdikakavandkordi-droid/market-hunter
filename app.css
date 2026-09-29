@@ -190,6 +190,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   color:#9fcbff;font-size:7px;font-weight:850;border:1px solid rgba(85,167,255,.10)
 }
 .metric-good{color:var(--green)!important}.metric-bad{color:var(--red)!important}.metric-flat{color:var(--muted)!important}
+.day-change{font-weight:850}.day-change.up,.up{color:var(--green)!important}.day-change.down,.down{color:var(--red)!important}.day-change.flat,.flat{color:var(--muted)!important}
+.market-value small.day-change{display:block;margin-top:3px;font-size:7px;text-align:right}
+.symbol-cell .day-change{margin-top:3px}
+.swipe-hint{color:var(--muted2);font-size:8px;font-weight:800;white-space:nowrap}
+.portfolio-carousel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;padding:14px 16px 16px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.portfolio-carousel::-webkit-scrollbar{display:none}
+.portfolio-slide{flex:0 0 min(420px,86vw);scroll-snap-align:start;scroll-snap-stop:always}
+.cloud-panel{margin:12px 16px 0;padding:11px;border:1px solid var(--line-soft);border-radius:12px;background:rgba(85,167,255,.035);display:grid;gap:8px}
+.cloud-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.cloud-row>div{min-width:0}.cloud-row b{display:block;font-size:9px}.cloud-row small{display:block;color:var(--muted2);font-size:7px;margin-top:3px;line-height:1.35}
+.cloud-badge{display:inline-flex;padding:4px 7px;border-radius:999px;border:1px solid var(--line-soft);font-size:7px;font-weight:850;color:var(--muted);white-space:nowrap}.cloud-badge.synced{color:var(--green);border-color:rgba(67,214,143,.2)}.cloud-badge.syncing{color:var(--amber);border-color:rgba(242,198,111,.2)}.cloud-badge.error{color:var(--red);border-color:rgba(255,119,130,.2)}
+.cloud-actions{display:flex;gap:6px;flex-wrap:wrap}.cloud-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto auto;gap:6px}.cloud-form input{min-width:0;border:1px solid var(--line);border-radius:9px;background:#09131e;color:var(--text);padding:8px 9px;font-size:9px}.cloud-message{font-size:7.5px;color:var(--muted);line-height:1.4}
 .portfolio-glance{padding:16px}
 .portfolio-value{font-size:28px;letter-spacing:-.045em;font-weight:900;margin:7px 0 3px}
 .portfolio-pnl{font-size:9px;font-weight:800}
@@ -334,5 +345,7 @@ summary::-webkit-details-marker{display:none}
   .summarygrid{grid-template-columns:repeat(2,1fr);padding:12px 13px 10px}.summarygrid .sum:last-child{grid-column:1/-1}
   .devs{padding:12px 13px 13px}.dev{grid-template-columns:70px 1fr}.scroll{padding:12px 13px 13px}.pulse{flex-basis:74%}
   .cards{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}
+  .portfolio-carousel{gap:9px;padding:12px 13px 13px}.portfolio-slide{flex-basis:calc(100vw - 50px)}
+  .cloud-panel{margin:10px 13px 0}.cloud-form{grid-template-columns:1fr 1fr}.cloud-form .btn{width:100%}
   .formactions{grid-column:1}.stage{display:none}
 }
