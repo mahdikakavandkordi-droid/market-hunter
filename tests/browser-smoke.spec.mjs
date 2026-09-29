@@ -95,9 +95,9 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await expect(allocation.locator('.allocation-item')).toContainText('100.0%');
   await allocation.locator('.allocation-item').click();
   await expect(allocation.locator('.allocation-center')).toContainText('100.0%');
-  await allocation.getByRole('button',{name:'Sectors',exact:true}).click();
+  await allocation.getByRole('button',{name:'Exposure',exact:true}).click();
   await expect(allocation.locator('.allocation-item')).toContainText('Test');
-  await expect(allocation.getByRole('button',{name:'Sectors',exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect(allocation.getByRole('button',{name:'Exposure',exact:true})).toHaveAttribute('aria-pressed','true');
   await page.evaluate(()=>{
     state.positions.set('ENB.TO',{symbol:'ENB.TO',quantity:10,entryPrice:40,source:'manual'});
     state.portfolioItems.set('ENB.TO',{symbol:'ENB.TO',name:'Enbridge',sector:'Energy',price:50,currency:'CAD'});
