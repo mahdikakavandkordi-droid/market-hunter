@@ -72,16 +72,22 @@ jobs:
           console.log(JSON.stringify({today,canonicalRecords:complete.length,complete:ok}));
           NODE
 
-      - name: Collect with same-day recovery retries
+      - name: Collect decisions if needed and reconcile matured outcomes
         id: collector
-        if: steps.precheck.outputs.complete != 'true'
         continue-on-error: true
         working-directory: collector
         shell: bash
+        env:
+          CAPTURE_WAS_COMPLETE: ${{ steps.precheck.outputs.complete }}
         run: |
           set -u
           for attempt in 1 2 3; do
-            echo "HTP live capture attempt $attempt/3"
+            if [ "$CAPTURE_WAS_COMPLETE" = "true" ]; then
+              echo "HTP outcome reconciliation attempt $attempt/3; today's canonical decisions already exist and remain immutable."
+            else
+              echo "HTP live capture attempt $attempt/3"
+            fi
+
             GITHUB_SHA="$HTP_PINNED_COLLECTOR_SHA" node scripts/collect-healthy-trend-pullback-forward.mjs
             rc=$?
             echo "collector_exit_code=$rc"
@@ -105,18 +111,39 @@ jobs:
           NODE
           )"
 
-            if [ "$complete" = "true" ]; then
+            last_failures="$(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file=process.env.HTP_FORWARD_DIR+'/runs.jsonl';
+          const rows=fs.existsSync(file)
+            ? fs.readFileSync(file,'utf8').split('\n').filter(Boolean).map(JSON.parse)
+            : [];
+          const last=rows.at(-1);
+          process.stdout.write(String(last?.status==='collected' ? Number(last?.coverage?.failures ?? 0) : -1));
+          NODE
+          )"
+            echo "latest_collector_failure_count=$last_failures"
+
+            if [ "$CAPTURE_WAS_COMPLETE" = "true" ]; then
+              if [ "$rc" -eq 0 ] && [ "$last_failures" = "0" ]; then
+                echo "Matured-outcome reconciliation completed with full fetch coverage; canonical observations were not replaced."
+                exit 0
+              fi
+            elif [ "$complete" = "true" ]; then
               echo "Canonical same-day capture is complete."
               exit 0
             fi
 
             if [ "$attempt" -lt 3 ]; then
-              echo "Capture is still incomplete; retrying in 30 seconds."
+              echo "Collection or outcome reconciliation is incomplete; retrying in 30 seconds."
               sleep 30
             fi
           done
 
-          echo "No complete canonical capture after three same-day attempts."
+          if [ "$CAPTURE_WAS_COMPLETE" = "true" ]; then
+            echo "Outcome reconciliation remained degraded after three attempts."
+          else
+            echo "No complete canonical capture after three same-day attempts."
+          fi
           exit 2
 
       - name: Replay and audit captured evidence
