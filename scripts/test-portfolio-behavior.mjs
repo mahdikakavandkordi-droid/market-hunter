@@ -12,7 +12,7 @@ globalThis.__mh={
   visiblePositions,visibleWatch,hasVisibleData,readEnvelopeFor,readDailyFor,
   switchLocalScope,hydrateEnvelope,persistEnvelope,setPositionRecord,
   removePositionRecord,setWatchMembership,guestMigrationAvailable,
-  snapshotAttempt,savePortfolioSnapshot,currentDailyPayload,persistDaily,
+  quoteFor,quoteTimeLabel,snapshotAttempt,savePortfolioSnapshot,currentDailyPayload,persistDaily,
   syncPortfolioCloud
 };
 `;
@@ -59,6 +59,24 @@ const plain=x=>JSON.parse(JSON.stringify(x));
   assert.equal(h.fmt(0),'0');
   assert.equal(h.money(''),'—');
   assert.match(h.money(0,'CAD'),/0/);
+}
+
+
+// Quote presentation must distinguish provisional/stale/hourly coverage from completed-session fallback.
+{
+  const {h}=boot();
+  const now=new Date().toISOString();
+  h.state.intraday={marketOpen:true,capturedAt:now,quotes:{
+    'RY.TO':{price:111.25,changePct:1.2,currency:'CAD',quoteAt:now,stale:false},
+    'TD.TO':{price:170,changePct:-0.4,currency:'CAD',quoteAt:now,stale:true}
+  }};
+  const provisional=h.quoteFor('RY.TO',{price:110,dayChangePct:0.3,currency:'CAD',asOf:'2026-09-25'});
+  assert.equal(provisional.state,'provisional');assert.equal(provisional.price,111.25);assert.equal(provisional.changePct,1.2);
+  const stale=h.quoteFor('TD.TO',{price:169,dayChangePct:0.1,currency:'CAD',asOf:'2026-09-25'});
+  assert.equal(stale.state,'stale');
+  const fallback=h.quoteFor('ENB.TO',{price:50,dayChangePct:-0.5,currency:'CAD',asOf:'2026-09-25'});
+  assert.equal(fallback.state,'fallback');assert.match(fallback.label,/Not covered by hourly feed/);assert.match(fallback.label,/completed-session fallback/);
+  assert.equal(h.quoteTimeLabel('2026-09-25'),'2026-09-25');
 }
 
 // Persisted valid session is restored during script initialization.
