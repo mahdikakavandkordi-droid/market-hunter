@@ -57,7 +57,7 @@ function boot(initial={},fetchImpl=async()=>response(500,{message:'unexpected fe
 const parse=(storage,key)=>JSON.parse(storage.getItem(key)||'null');
 const tick=()=>new Promise(r=>setTimeout(r,0));
 async function settleStale(promise){
-  try{return await promise}catch(e){assert.equal(e?.code,'STALE_CLOUD_OPERATION','only generation invalidation may abort this operation');return null}
+  try{return await promise}catch(e){assert.equal(e?.code,'STALE_SESSION_OPERATION','only session-generation invalidation may abort this operation');return null}
 }
 
 // A -> B while A's initial cloud load is pending.
@@ -259,6 +259,25 @@ async function settleStale(promise){
   });
   await h.syncCloudSnapshot(A);
   assert.equal(writes.length,1,'current composition after intentional deletion should be allowed to replace old context');
+}
+
+
+// Deleting the final holding creates an explicit empty context for the existing session date.
+{
+  const A=session('user-a');
+  const initial={
+    marketHunterCloudSessionV1:JSON.stringify(A),
+    'marketHunterPortfolioV3:user:user-a':JSON.stringify({version:3,positions:{},watchlist:{}}),
+    'marketHunterPortfolioDailyV3:user:user-a':JSON.stringify(dailyFor('RY.TO',{capturedAt:'2026-09-29T01:00:00Z'}))
+  };
+  const {h,storage}=boot(initial);
+  const changed=h.savePortfolioSnapshot({items:[],failures:[]},[]);
+  assert.equal(changed,true);
+  const daily=parse(storage,'marketHunterPortfolioDailyV3:user:user-a');
+  assert.equal(daily.currentDate,'2026-09-28');
+  assert.deepEqual(daily.currentItems,[]);
+  assert.equal(daily.currentMeta.portfolioEmpty,true);
+  assert.deepEqual(daily.currentMeta.portfolioSymbols,[]);
 }
 
 // Revision conflict must re-read and retain a better remote snapshot.
