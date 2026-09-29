@@ -8,7 +8,133 @@ const money=(n,c='CAD')=>Number.isFinite(Number(n))?new Intl.NumberFormat(undefi
 const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
 const readSet=k=>{try{return new Set(JSON.parse(localStorage.getItem(k)||'[]'))}catch{return new Set()}};
 const readPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),portfolioItems:new Map(),analytics:null,previous:new Map()};
+const state={view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),portfolioItems:new Map(),liveItems:new Map(),analytics:null,previous:new Map(),cloud:{session:loadCloudSession(),status:'local',message:'',showAuth:false,ready:false}};
+
+
+const CLOUD_SESSION_KEY='marketHunterCloudSessionV1';
+const SUPABASE_URL='https://ivmpzyjxyfcefjyylybr.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yy1QKQRcgf2ny3aWhhHSkw_Z7Y0Fa55';
+let cloudSyncTimer=0,cloudSyncBusy=false,cloudSyncQueued=false;
+
+function loadCloudSession(){try{return JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{return null}}
+function saveCloudSession(session){
+  if(session){localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(session));state.cloud.session=session}
+  else{localStorage.removeItem(CLOUD_SESSION_KEY);state.cloud.session=null}
+}
+async function cloudAuthRequest(path,body,token){
+  const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'};
+  if(token)headers.Authorization='Bearer '+token;
+  const r=await fetch(SUPABASE_URL+'/auth/v1/'+path,{method:'POST',headers,body:JSON.stringify(body||{})});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(data.msg||data.message||data.error_description||'Cloud authentication failed');
+  return data;
+}
+async function ensureCloudSession(){
+  let session=state.cloud.session;if(!session)return null;
+  if(Number(session.expires_at||0)>Math.floor(Date.now()/1000)+90)return session;
+  if(!session.refresh_token){saveCloudSession(null);return null}
+  try{
+    const data=await cloudAuthRequest('token?grant_type=refresh_token',{refresh_token:session.refresh_token});
+    session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user||session.user};
+    saveCloudSession(session);return session;
+  }catch{
+    saveCloudSession(null);state.cloud.status='local';state.cloud.message='Cloud session expired. Sign in again.';return null;
+  }
+}
+async function cloudRest(table,{method='GET',query='',body=null,prefer=''}={}){
+  const session=await ensureCloudSession();if(!session)throw new Error('Sign in to use cloud sync');
+  const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'};
+  if(prefer)headers.Prefer=prefer;
+  const r=await fetch(SUPABASE_URL+'/rest/v1/'+table+(query?'?'+query:''),{method,headers,body:body===null?undefined:JSON.stringify(body),cache:'no-store'});
+  if(!r.ok){const data=await r.json().catch(()=>({}));throw new Error(data.message||data.hint||'Cloud data request failed')}
+  if(r.status===204)return null;
+  const text=await r.text();return text?JSON.parse(text):null;
+}
+function positionStamp(p){return Date.parse(p?.updatedAt||p?.createdAt||0)||0}
+function mergeCloudState(remote){
+  const local=[...state.positions.values()],remotePositions=Array.isArray(remote?.positions)?remote.positions:[];
+  const by=new Map();
+  for(const p of [...remotePositions,...local]){
+    if(!p?.symbol)continue;
+    const old=by.get(p.symbol);
+    if(!old||positionStamp(p)>=positionStamp(old))by.set(p.symbol,p);
+  }
+  state.positions=by;
+  state.watch=new Set([...(Array.isArray(remote?.watchlist)?remote.watchlist:[]),...state.watch]);
+  localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));
+  localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]));
+}
+function currentDailyPayload(){
+  try{return JSON.parse(localStorage.getItem('marketHunterPortfolioDaily')||'null')}catch{return null}
+}
+async function loadCloudPortfolio(){
+  const [rows,snaps]=await Promise.all([
+    cloudRest('market_hunter_portfolio_state',{query:'select=payload,updated_at&limit=1'}),
+    cloudRest('market_hunter_portfolio_snapshots',{query:'select=market_as_of,payload,updated_at&order=market_as_of.desc&limit=2'})
+  ]);
+  mergeCloudState(rows?.[0]?.payload||{});
+  const local=currentDailyPayload(),cloudRows=snaps||[];
+  const cloudLatest=cloudRows[0],localDate=local?.currentDate||'';
+  if(cloudLatest?.market_as_of&&cloudLatest.market_as_of>=localDate){
+    const prev=cloudRows[1];
+    localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify({
+      previousDate:prev?.market_as_of||null,previousItems:prev?.payload?.items||[],
+      currentDate:cloudLatest.market_as_of,currentItems:cloudLatest.payload?.items||[]
+    }));
+  }
+}
+async function syncPortfolioCloud(){
+  if(cloudSyncBusy){cloudSyncQueued=true;return}
+  const session=await ensureCloudSession();if(!session||!state.cloud.ready)return;
+  cloudSyncBusy=true;state.cloud.status='syncing';state.cloud.message='Saving cloud copy...';
+  try{
+    const now=new Date().toISOString(),payload={positions:[...state.positions.values()],watchlist:[...state.watch]};
+    await cloudRest('market_hunter_portfolio_state',{method:'POST',query:'on_conflict=user_id',prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:session.user.id,version:2,payload,updated_at:now}});
+    const daily=currentDailyPayload();
+    if(daily?.currentDate){
+      await cloudRest('market_hunter_portfolio_snapshots',{method:'POST',query:'on_conflict=user_id,market_as_of',prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:session.user.id,market_as_of:daily.currentDate,payload:{marketAsOf:daily.currentDate,items:daily.currentItems||[]},updated_at:now}});
+    }
+    state.cloud.status='synced';state.cloud.message='Cloud copy is up to date.';
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed'}
+  finally{
+    cloudSyncBusy=false;
+    if(cloudSyncQueued){cloudSyncQueued=false;queueCloudSync()}
+    if(state.view==='portfolio')renderView('portfolio');
+  }
+}
+function queueCloudSync(){
+  if(!state?.cloud?.session||!state.cloud.ready)return;
+  clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>syncPortfolioCloud(),600);
+}
+async function initializeCloudPortfolio(){
+  state.cloud.ready=false;
+  if(!state.cloud.session){state.cloud.ready=true;return}
+  state.cloud.status='syncing';state.cloud.message='Loading cloud portfolio...';
+  try{await loadCloudPortfolio();state.cloud.ready=true;await syncPortfolioCloud()}
+  catch(e){state.cloud.ready=true;state.cloud.status='error';state.cloud.message=e.message||'Cloud load failed'}
+}
+async function cloudSignIn(email,password){
+  state.cloud.status='syncing';state.cloud.message='Signing in...';renderView('portfolio');
+  try{
+    const data=await cloudAuthRequest('token?grant_type=password',{email,password});
+    saveCloudSession({access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user});
+    state.cloud.showAuth=false;await initializeCloudPortfolio();await loadPortfolio();renderAll();setView('portfolio');
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+}
+async function cloudSignUp(email,password){
+  state.cloud.status='syncing';state.cloud.message='Creating account...';renderView('portfolio');
+  try{
+    const data=await cloudAuthRequest('signup',{email,password});
+    if(data.access_token){
+      saveCloudSession({access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user});
+      state.cloud.showAuth=false;await initializeCloudPortfolio();await loadPortfolio();renderAll();setView('portfolio');
+    }else{state.cloud.status='local';state.cloud.message='Account created. Confirm the email, then sign in.';renderView('portfolio')}
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+}
+async function cloudSignOut(){
+  const session=await ensureCloudSession();if(session){try{await cloudAuthRequest('logout',{},session.access_token)}catch{}}
+  saveCloudSession(null);state.cloud.ready=true;state.cloud.status='local';state.cloud.message='Local copy remains on this device.';state.cloud.showAuth=false;renderView('portfolio');
+}
 
 function applyTheme(theme){
   const next=theme==='light'?'light':'dark';
@@ -23,15 +149,33 @@ function applyTheme(theme){
   const meta=q('#themeColor');
   if(meta)meta.setAttribute('content',next==='light'?'#f4f6f8':'#08111d');
 }
-function saveWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]))}
-function savePositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
+function saveWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]));queueCloudSync()}
+function savePositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));queueCloudSync()}
 function toast(msg){const e=q('#toast');e.textContent=msg;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),1400)}
 async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url);return r.json()}
+function enrichCandidate(x){
+  const live=state.liveItems.get(x?.symbol);if(!live)return x;
+  return {...x,price:Number.isFinite(live.price)?live.price:x.price,dayChangePct:live.dayChangePct};
+}
 function allCandidates(){
   const out=[],seen=new Set();
-  for(const x of state.v2?.integratedSurfacePicks||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(x)}}
-  for(const list of Object.values(state.v2?.surfacePicks||{}))for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(x)}}
+  for(const x of state.v2?.integratedSurfacePicks||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
+  for(const list of Object.values(state.v2?.surfacePicks||{}))for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
   return out;
+}
+async function loadCandidateLiveData(){
+  state.liveItems=new Map();
+  const raw=[...(state.v2?.integratedSurfacePicks||[]),...Object.values(state.v2?.surfacePicks||{}).flat()];
+  const symbols=[...new Set([
+    ...raw.map(x=>x?.symbol),
+    ...state.watch,
+    ...[...state.positions.values()].map(x=>x?.symbol)
+  ].filter(Boolean))].slice(0,30);
+  if(!symbols.length)return;
+  try{
+    const data=await getJson('/api/portfolio?symbols='+encodeURIComponent(symbols.join(',')));
+    state.liveItems=new Map((data.items||[]).map(x=>[x.symbol,x]));
+  }catch{}
 }
 const REVIEW_STAGES=['Early Watch','Recovery','Attractive Growth','Established Move'];
 function stageEligiblePicks(stage){
@@ -260,6 +404,7 @@ function savePortfolioSnapshot(items){
     state.previous=new Map();
     localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify({previousDate:null,previousItems:[],currentDate:date,currentItems:items}));
   }
+  queueCloudSync();
 }
 async function loadPortfolio(){
   const positions=[...state.positions.values()].filter(p=>p?.symbol);
@@ -286,6 +431,8 @@ async function load(){
     state.daily=daily.status==='fulfilled'?daily.value:null;
     state.pulse=pulse.status==='fulfilled'?pulse.value:null;
     state.v2=v2.status==='fulfilled'?v2.value:null;
+    await initializeCloudPortfolio();
+    await loadCandidateLiveData();
     await loadPortfolio();
     q('#asOf').textContent=state.daily?.asOf?.latest?'Data through '+state.daily.asOf.latest:'Research dashboard';
     renderAll();
@@ -302,14 +449,15 @@ function homeHtml(){
     const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
     const key=x.key||marketKeyByName[x.name]||'';
     const context=developmentByMarket.get(key)?.text||'';
+    const d1=x.current?.returns?.d1??x.returns?.d1;
     return `<div class="market-row">
       <div><b>${esc(x.name)}</b><small>${esc(x.condition||'')}</small></div>
-      <div class="market-value">${fmt(x.price)}</div>
+      <div class="market-value">${fmt(x.price)}<small class="day-change ${cls(d1)}">Day ${pct(d1)}</small></div>
       <div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div>
       ${context?`<div class="market-context">${esc(stripMarketPrefix(context))}</div>`:''}
     </div>`;
   }).join('');
-  const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
+  const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small><small class="day-change ${cls(x.dayChangePct)}">Day ${pct(x.dayChangePct)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
     const h5=m?.evidence?.horizons?.['5'];
     const h20=m?.evidence?.horizons?.['20'];
@@ -381,7 +529,7 @@ function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
   const why=stockNarrative(x);
   return `<article class="card">
-    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice">${money(x.price,'CAD')}<small class="${cls(x.ret5)}">5D ${pct(x.ret5)}</small></div></div>
+    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice">${money(x.price,'CAD')}<small class="day-change ${cls(x.dayChangePct)}">Day ${pct(x.dayChangePct)}</small><small class="${cls(x.ret5)}">5D ${pct(x.ret5)}</small></div></div>
     <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
     <div class="metrics"><div class="metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></div><div class="metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></div><div class="metric"><small>RS20</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="metric"><small>Momentum</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div></div>
     <div class="why analysis-copy">${esc(why)}</div>
@@ -546,10 +694,10 @@ function positionCard(p,x,total){
   const h=health(x),qty=Number(p.quantity)||0,value=x&&qty>0?qty*x.price:null,ret=x&&Number(p.entryPrice)>0?(x.price/Number(p.entryPrice)-1)*100:null;
   const weight=Number.isFinite(total)&&Number.isFinite(value)&&total>0?value/total*100:null,e=x?.entryStats;
   const read=positionNarrative(p,x,weight);
-  return `<article class="card">
-    <div class="cardtop"><div class="name"><b>${short(p.symbol)}</b><small>${esc(x?.name||p.symbol)}</small></div><span class="health ${h.tone}">${h.label}</span></div>
+  return `<article class="card portfolio-slide">
+    <div class="cardtop"><div class="name"><b>${short(p.symbol)}</b><small>${esc(x?.name||p.symbol)}</small><small class="day-change ${cls(x?.dayChangePct)}">Day ${pct(x?.dayChangePct)}</small></div><span class="health ${h.tone}">${h.label}</span></div>
     <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span></div>
-    <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
+    <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Today</small><b class="${cls(x?.dayChangePct)}">${pct(x?.dayChangePct)}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
     ${insightRowsHtml(x)}
     <details><summary>Position details</summary><div class="copy">${(()=>{const q=positionQuickRead(p,x,weight);return '<div class="quick-read-rows"><div><span>Now</span><b>'+esc(q.now)+'</b></div><div><span>Since entry</span><b>'+esc(q.since)+'</b></div><div><span>Portfolio impact</span><b>'+esc(q.impact)+'</b></div></div>';})()}<strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry details</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
     <div class="actions"><button class="btn" data-chart="${p.symbol}">Chart ↗</button><button class="btn" data-edit="${p.symbol}">Edit</button><button class="btn danger" data-remove="${p.symbol}">Remove</button></div>
@@ -586,22 +734,40 @@ async function importBackupFile(file){
   else localStorage.removeItem('marketHunterPortfolioDaily');
   await loadPortfolio();renderAll();setView('portfolio');toast('Backup restored');
 }
+function cloudPanelHtml(){
+  const session=state.cloud.session,status=state.cloud.status||'local';
+  const badgeClass=status==='synced'?'synced':status==='syncing'?'syncing':status==='error'?'error':'';
+  const badgeText=session?(status==='synced'?'Cloud synced':status==='syncing'?'Syncing…':status==='error'?'Sync issue':'Cloud connected'):'Local only';
+  const message=state.cloud.message?`<div class="cloud-message">${esc(state.cloud.message)}</div>`:'';
+  if(session){
+    return `<div class="cloud-panel"><div class="cloud-row"><div><b>Cloud portfolio</b><small>${esc(session.user?.email||'Signed in')}</small></div><span class="cloud-badge ${badgeClass}">${badgeText}</span></div><div class="cloud-actions"><button class="btn ghost" data-cloud-sync>Sync now</button><button class="btn" data-cloud-signout>Sign out</button></div>${message}</div>`;
+  }
+  if(!state.cloud.showAuth){
+    return `<div class="cloud-panel"><div class="cloud-row"><div><b>Protect this portfolio</b><small>Keep a private cloud copy and restore it on another device.</small></div><button class="btn primary" data-cloud-toggle>Connect cloud</button></div>${message}</div>`;
+  }
+  return `<div class="cloud-panel"><div class="cloud-row"><div><b>Market Hunter cloud</b><small>Your existing local holdings will be merged, not replaced.</small></div><button class="btn" data-cloud-toggle>Cancel</button></div><div class="cloud-form"><input type="email" autocomplete="email" placeholder="Email" data-cloud-email><input type="password" autocomplete="current-password" minlength="6" placeholder="Password (6+ chars)" data-cloud-password><button class="btn primary" data-cloud-signin>Sign in</button><button class="btn" data-cloud-signup>Create account</button></div>${message}</div>`;
+}
 function portfolioHtml(){
   const s=portfolioSummary();
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
-  const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness, what to watch, and what would change the current read.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>`<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`).join('')}</div></section>`:'';
+  const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness, what to watch, and what would change the current read.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>`<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(x?.dayChangePct)}">Day ${pct(x?.dayChangePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`).join('')}</div></section>`:'';
   return `<div class="stack">
     <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
+      ${cloudPanelHtml()}
       <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention weight</small><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
       <div class="read">${s.breadth?s.breadth.attention.toFixed(0)+'% of portfolio value is currently in cooling/watch or warning conditions.':(s.attention.length?s.attention.length+' holding(s) deserve closer review.':'No material structural warning across covered holdings.')}</div>
     </section>
     ${portfolioReadHtml(s)}${changeBlock}${attentionBlock}${allocationHtml(s)}${riskHtml()}
-    <section class="panel soft"><div class="sectionhead"><div><h3>Holdings</h3><p>Health first. Details stay collapsed.</p></div></div><div class="cards">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty">No positions yet.</div>'}</div></section>
+    <section class="panel soft"><div class="sectionhead"><div><h3>Holdings</h3><p>Swipe left/right between positions. Details stay collapsed.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty">No positions yet.</div>'}</div></section>
   </div>`;
 }
 function watchlistHtml(){
   const by=new Map(allCandidates().map(x=>[x.symbol,x])),items=[...state.watch];
-  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>Watchlist</h2><p>Saved charts remain even after leaving the shortlist.</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>by.get(symbol)?stockCard(by.get(symbol)):`<article class="card"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`).join(''):'<div class="empty">Save a chart from the shortlist.</div>'}</div></section></div>`;
+  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>Watchlist</h2><p>Saved charts remain even after leaving the shortlist.</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>{
+    const current=by.get(symbol),live=state.liveItems.get(symbol);
+    if(current)return stockCard(current);
+    return `<article class="card"><div class="cardtop"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="cardprice">${live?money(live.price,live.currency||'CAD'):'—'}<small class="day-change ${cls(live?.dayChangePct)}">Day ${pct(live?.dayChangePct)}</small></div></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`;
+  }).join(''):'<div class="empty">Save a chart from the shortlist.</div>'}</div></section></div>`;
 }
 function renderView(view){
   if(view==='home')q('#homeView').innerHTML=homeHtml();
@@ -680,6 +846,15 @@ document.addEventListener('click',async e=>{
   const open=e.target.closest('[data-open]');if(open){setView(open.dataset.open);return}
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}
   const watch=e.target.closest('[data-watch]');if(watch){const s=watch.dataset.watch;state.watch.has(s)?state.watch.delete(s):state.watch.add(s);saveWatch();renderAll();toast(state.watch.has(s)?'Saved':'Removed');return}
+  if(e.target.closest('[data-cloud-toggle]')){state.cloud.showAuth=!state.cloud.showAuth;state.cloud.message='';renderView('portfolio');return}
+  if(e.target.closest('[data-cloud-sync]')){await syncPortfolioCloud();return}
+  if(e.target.closest('[data-cloud-signout]')){await cloudSignOut();return}
+  if(e.target.closest('[data-cloud-signin]')||e.target.closest('[data-cloud-signup]')){
+    const email=q('[data-cloud-email]')?.value.trim()||'',password=q('[data-cloud-password]')?.value||'';
+    if(!email||password.length<6){state.cloud.status='error';state.cloud.message='Enter a valid email and a password with at least 6 characters.';renderView('portfolio');return}
+    if(e.target.closest('[data-cloud-signin]'))await cloudSignIn(email,password);else await cloudSignUp(email,password);
+    return;
+  }
   const buy=e.target.closest('[data-buy]');if(buy){openPosition(buy.dataset.buy,'market-hunter');return}
   if(e.target.closest('[data-backup]')){exportBackup();return}
   if(e.target.closest('[data-restore]')){q('#backupFile')?.click();return}

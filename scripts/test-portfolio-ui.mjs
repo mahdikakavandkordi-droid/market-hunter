@@ -6,6 +6,7 @@ const app=fs.readFileSync('app.js','utf8');
 const css=fs.readFileSync('app.css','utf8');
 const mobile=fs.readFileSync('mobile-polish.css','utf8');
 const theme=fs.readFileSync('theme.css','utf8');
+const portfolioApi=fs.readFileSync('api/portfolio.js','utf8');
 
 assert.match(html,/class="app-shell"/);
 assert.match(html,/id="homeView"/);
@@ -23,8 +24,24 @@ assert.match(app,/function openPosition\(/);
 assert.match(app,/data-buy/);
 assert.match(app,/api\/portfolio/);
 assert.match(app,/serviceWorker/);
+assert.match(app,/marketHunterPositions/); // preserve the user's existing local portfolio key
+assert.match(app,/marketHunterCloudSessionV1/);
+assert.match(app,/market_hunter_portfolio_state/);
+assert.match(app,/market_hunter_portfolio_snapshots/);
+assert.match(app,/dayChangePct/);
+assert.match(app,/portfolio-carousel/);
+assert.match(app,/Connect cloud/);
+assert.match(app,/Your existing local holdings will be merged, not replaced/);
+assert.doesNotMatch(app,/sb_secret_/);
+assert.doesNotMatch(app,/service_role/);
 
 assert.match(css,/\.app-shell/);
+assert.match(css,/\.portfolio-carousel/);
+assert.match(css,/scroll-snap-type:x mandatory/);
+assert.match(css,/\.day-change/);
+assert.match(css,/\.cloud-panel/);
+assert.match(portfolioApi,/dayChangePct/);
+assert.match(portfolioApi,/r\.value\.rows\.at\(-2\)/);
 assert.match(mobile,/@media/);
 assert.match(theme,/data-theme="light"/);
 
