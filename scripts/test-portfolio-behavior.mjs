@@ -198,8 +198,8 @@ const plain=x=>JSON.parse(JSON.stringify(x));
   assert.equal(h.savePortfolioSnapshot({generatedAt:'2026-09-28T22:00:00Z',items:[item('RY.TO','2026-09-28',103),item('ENB.TO','2026-09-28',52)],failures:[]},symbols),true);
   d=h.currentDailyPayload();assert.equal(d.previousDate,'2026-09-25');assert.equal(d.currentDate,'2026-09-28');assert.equal(d.previousItems[0].price,102);
 
-  assert.equal(h.savePortfolioSnapshot({items:[],failures:[]},[]),false);
-  d=h.currentDailyPayload();assert.equal(d.currentDate,'2026-09-28');assert.equal(d.lastAttempt.status,'empty_portfolio');
+  assert.equal(h.savePortfolioSnapshot({items:[],failures:[]},[]),true);
+  d=h.currentDailyPayload();assert.equal(d.currentDate,'2026-09-28');assert.equal(d.currentItems.length,0);assert.equal(d.currentMeta.portfolioEmpty,true);assert.equal(d.lastAttempt.status,'empty_portfolio');
 }
 
 // Exercise server-revision reconciliation with two device contexts sharing one remote row.
