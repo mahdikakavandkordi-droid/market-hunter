@@ -4,6 +4,8 @@ import {INDEX_QUOTES} from '../lib/intraday.js';
 
 const app=fs.readFileSync('app.js','utf8');
 const pulse=JSON.parse(fs.readFileSync('data/market-pulse-report.json','utf8'));
+const expected={TSX:'^GSPTSE',SP500:'^GSPC',NASDAQ100:'^NDX',GOLD:'GC=F',SILVER:'SI=F',BTC:'BTC-USD',ETH:'ETH-USD'};
+for(const [key,symbol] of Object.entries(expected))assert.equal(pulse.markets.find(x=>x.key===key)?.symbol,symbol,key+' Market Pulse instrument mismatch');
 const nasdaq=pulse.markets.find(x=>x.key==='NASDAQ100');
 assert.equal(nasdaq?.name,'Nasdaq-100');
 assert.equal(nasdaq?.symbol,'^NDX');
