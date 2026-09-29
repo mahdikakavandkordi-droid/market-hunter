@@ -7,6 +7,8 @@ const css=fs.readFileSync('app.css','utf8');
 const mobile=fs.readFileSync('mobile-polish.css','utf8');
 const theme=fs.readFileSync('theme.css','utf8');
 const portfolioApi=fs.readFileSync('api/portfolio.js','utf8');
+const researchApi=fs.readFileSync('api/research-data.js','utf8');
+const server=fs.readFileSync('server.js','utf8');
 
 assert.match(html,/class="app-shell"/);
 assert.match(html,/id="homeView"/);
@@ -30,6 +32,9 @@ assert.match(app,/market_hunter_portfolio_state/);
 assert.match(app,/market_hunter_portfolio_snapshots/);
 assert.match(app,/dayChangePct/);
 assert.match(app,/getJson\('\/api\/intraday'\)/);
+assert.match(app,/getJsonFallback\('\/api\/research-data\?kind=daily'/);
+assert.match(app,/getJsonFallback\('\/api\/research-data\?kind=pulse'/);
+assert.match(app,/getJsonFallback\('\/api\/research-data\?kind=v2'/);
 assert.match(app,/Hourly quote · provisional/);
 assert.match(app,/Not covered by hourly feed/);
 assert.match(app,/completed-session fallback/);
@@ -53,6 +58,10 @@ assert.match(css,/\.quote-meta/);
 assert.match(css,/\.cloud-panel/);
 assert.match(portfolioApi,/dayChangePct/);
 assert.match(portfolioApi,/r\.value\.rows\.at\(-2\)/); // completed-session fallback only; UI prefers /api/intraday
+assert.match(researchApi,/raw\.githubusercontent\.com\/mahdikakavandkordi-droid\/market-hunter\/main\/data/);
+assert.match(researchApi,/X-Market-Hunter-Source/);
+assert.match(researchApi,/s-maxage=60/);
+assert.match(server,/\/api\/research-data/);
 assert.match(mobile,/@media/);
 assert.match(theme,/data-theme="light"/);
 
