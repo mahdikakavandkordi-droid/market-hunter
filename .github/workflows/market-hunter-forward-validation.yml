@@ -2,6 +2,11 @@ name: Market Hunter Forward Validation
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/market-hunter-forward-validation.yml'
   schedule:
     # Primary post-close capture after the validated daily refresh, plus recovery.
     - cron: '15 23 * * 1-5'
