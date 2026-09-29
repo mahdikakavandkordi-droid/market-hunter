@@ -516,7 +516,8 @@ function applyTheme(theme){
   if(meta)meta.setAttribute('content',next==='light'?'#f4f6f8':'#08111d');
 }
 function toast(msg){const e=q('#toast');e.textContent=msg;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),1400)}
-async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url);return r.json()}\nasync function getJsonFallback(primary,fallback){try{return await getJson(primary)}catch{return getJson(fallback)}}
+async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url);return r.json()}
+async function getJsonFallback(primary,fallback){try{return await getJson(primary)}catch{return getJson(fallback)}}
 function quoteTimeLabel(value){
   const raw=String(value||'');if(/^\d{4}-\d{2}-\d{2}$/.test(raw))return raw;
   const t=Date.parse(raw);if(!Number.isFinite(t))return '';
