@@ -164,7 +164,7 @@ const plain=x=>JSON.parse(JSON.stringify(x));
   const {h}=boot();
   const item=(symbol,asOf,price)=>({symbol,asOf,price});
   const symbols=['RY.TO','ENB.TO'];
-  assert.equal(h.savePortfolioSnapshot({items:[item('RY.TO','2026-09-25',100),item('ENB.TO','2026-09-25',50)],failures:[]},symbols),true);
+  assert.equal(h.savePortfolioSnapshot({generatedAt:'2026-09-25T21:00:00Z',items:[item('RY.TO','2026-09-25',100),item('ENB.TO','2026-09-25',50)],failures:[]},symbols),true);
   let d=h.currentDailyPayload();
   assert.equal(d.currentDate,'2026-09-25');assert.equal(d.currentItems.length,2);
 
@@ -180,10 +180,10 @@ const plain=x=>JSON.parse(JSON.stringify(x));
   assert.equal(h.savePortfolioSnapshot({items:[item('RY.TO','2026-09-24',99),item('ENB.TO','2026-09-24',49)],failures:[]},symbols),false);
   d=h.currentDailyPayload();assert.equal(d.currentDate,'2026-09-25');assert.equal(d.lastAttempt.status,'older_complete_response');
 
-  assert.equal(h.savePortfolioSnapshot({items:[item('RY.TO','2026-09-25',102),item('ENB.TO','2026-09-25',51)],failures:[]},symbols),true);
+  assert.equal(h.savePortfolioSnapshot({generatedAt:'2026-09-25T22:00:00Z',items:[item('RY.TO','2026-09-25',102),item('ENB.TO','2026-09-25',51)],failures:[]},symbols),true);
   d=h.currentDailyPayload();assert.equal(d.currentDate,'2026-09-25');assert.equal(d.currentItems[0].price,102);assert.equal(d.previousDate,null);
 
-  assert.equal(h.savePortfolioSnapshot({items:[item('RY.TO','2026-09-28',103),item('ENB.TO','2026-09-28',52)],failures:[]},symbols),true);
+  assert.equal(h.savePortfolioSnapshot({generatedAt:'2026-09-28T22:00:00Z',items:[item('RY.TO','2026-09-28',103),item('ENB.TO','2026-09-28',52)],failures:[]},symbols),true);
   d=h.currentDailyPayload();assert.equal(d.previousDate,'2026-09-25');assert.equal(d.currentDate,'2026-09-28');assert.equal(d.previousItems[0].price,102);
 
   assert.equal(h.savePortfolioSnapshot({items:[],failures:[]},[]),false);
