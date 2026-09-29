@@ -877,7 +877,10 @@ async function load(){
     await initializeCloudPortfolio(accountCtx);
     if(contextActive(accountCtx))await loadCandidateLiveData(accountCtx);
     if(contextActive(accountCtx))await loadPortfolio(accountCtx);
-    q('#asOf').textContent=state.daily?.asOf?.latest?'Data through '+state.daily.asOf.latest:'Research dashboard';
+    const asOf=state.daily?.asOf;
+    q('#asOf').textContent=asOf?.mixedDates&&asOf?.earliest&&asOf?.latest
+      ?'Completed markets through '+asOf.earliest+' · 24/7 through '+asOf.latest
+      :asOf?.latest?'Completed-session data through '+asOf.latest:'Research dashboard';
     renderAll();
   }finally{b.classList.remove('busy');b.disabled=false}
 }

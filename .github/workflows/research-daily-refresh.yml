@@ -3,12 +3,12 @@ name: Research Daily Refresh
 on:
   push:
     branches:
-      - research/market-hunter-v2-rebuild
+      - main
     paths:
       - '.github/workflows/research-daily-refresh.yml'
   workflow_dispatch:
   # GitHub schedules run only from the repository default branch.
-  # This becomes an automatic daily cadence only after an explicitly approved merge.
+  # Run after North American market close and publish only validated latest-data artifacts.
   schedule:
     - cron: '45 22 * * *'
 
@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/market-hunter-v2-rebuild
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
@@ -117,7 +117,7 @@ jobs:
           console.log('Validated coherent source → Pulse report → Daily report → audit chain.');
           NODE
 
-      - name: Commit validated daily research package
+      - name: Commit validated daily production package
         shell: bash
         run: |
           set -euo pipefail
@@ -130,8 +130,8 @@ jobs:
           fi
           git commit -m "research: refresh validated daily market package"
           for attempt in 1 2 3 4 5; do
-            git pull --rebase origin research/market-hunter-v2-rebuild
-            if git push origin HEAD:research/market-hunter-v2-rebuild; then exit 0; fi
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
             sleep $((attempt * 2))
           done
           exit 1
