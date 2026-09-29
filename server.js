@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import scanHandler from './api/scan.js';
 import portfolioHandler from './api/portfolio.js';
+import intradayHandler from './api/intraday.js';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 const port=Number(process.env.PORT||3000);
@@ -76,6 +77,7 @@ const server=http.createServer(async(req,res)=>{
     }
     if(url.pathname==='/api/scan') return await scanHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/portfolio') return await portfolioHandler(wrappedReq,makeResponse(res));
+    if(url.pathname==='/api/intraday') return await intradayHandler(wrappedReq,makeResponse(res));
 
     if(url.pathname.startsWith('/data/')){
       const rel=url.pathname.replace(/^\//,'');
