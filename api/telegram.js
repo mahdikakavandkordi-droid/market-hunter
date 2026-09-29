@@ -3,7 +3,7 @@ import {
   marketBrief,statusReport,portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty
 } from '../lib/telegram-fa.js';
 import {
-  loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadPortfolioSnapshot,loadBotBundle
+  loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadPortfolioSnapshot,loadBotBundle,loadStockLive
 } from '../lib/telegram-data.js';
 
 const TELEGRAM_API='https://api.telegram.org';
@@ -130,8 +130,8 @@ async function routeCallback(update,data){
   }
   if(data.startsWith('stock:')){
     const symbol=data.slice('stock:'.length).toUpperCase();
-    const scan=await loadScan();
-    return render(update,stockReport(scan,symbol));
+    const [scan,live]=await Promise.all([loadScan(),loadStockLive(symbol)]);
+    return render(update,stockReport(scan,symbol,live));
   }
   if(data==='brief:hunter'){
     const [scan,previous]=await Promise.all([loadScan(),loadPreviousScan()]);
