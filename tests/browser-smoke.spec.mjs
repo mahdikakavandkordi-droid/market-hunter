@@ -91,6 +91,33 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('Hourly quote · provisional');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('111.25');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('+1.2%');
+  const allocation=page.locator('#portfolioAllocation');
+  await expect(allocation.locator('.allocation-item')).toContainText('100.0%');
+  await allocation.locator('.allocation-item').click();
+  await expect(allocation.locator('.allocation-center')).toContainText('100.0%');
+  await allocation.getByRole('button',{name:'Sectors',exact:true}).click();
+  await expect(allocation.locator('.allocation-item')).toContainText('Test');
+  await expect(allocation.getByRole('button',{name:'Sectors',exact:true})).toHaveAttribute('aria-pressed','true');
+  await page.evaluate(()=>{
+    state.positions.set('ENB.TO',{symbol:'ENB.TO',quantity:10,entryPrice:40,source:'manual'});
+    state.portfolioItems.set('ENB.TO',{symbol:'ENB.TO',name:'Enbridge',sector:'Energy',price:50,currency:'CAD'});
+    state.portfolioItems.get('RY.TO').sector='Financials';
+    renderView('portfolio');
+  });
+  await expect(allocation.locator('.allocation-item')).toHaveCount(2);
+  await expect(allocation.locator('.allocation-item').first()).toContainText('69.0%');
+  await allocation.locator('.allocation-item').last().click();
+  await expect(allocation.locator('.allocation-center')).toContainText('Energy');
+  for(const width of [320,390,1440]){
+    await page.setViewportSize({width,height:844});
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+  await page.setViewportSize({width:390,height:844});
+  await allocation.scrollIntoViewIfNeeded();
+  await page.screenshot({path:'/tmp/market-hunter-allocation-dark.png'});
+  await page.evaluate(()=>document.documentElement.dataset.theme='light');
+  await page.screenshot({path:'/tmp/market-hunter-allocation-light.png'});
+  await page.evaluate(()=>document.documentElement.dataset.theme='dark');
 
   // A reload must restore the persisted session instead of silently falling back to local-only mode.
   await page.reload();
