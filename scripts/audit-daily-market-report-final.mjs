@@ -46,7 +46,9 @@ fail('markdown_all_markets',expected.every(k=>{
   const name=pulse.markets.find(x=>x.key===k)?.name;
   return name&&md.includes('### '+name);
 }),expected);
-fail('ui_fetches_daily_report',app.includes("getJson('/data/daily-market-report.json')"),null);
+fail('ui_fetches_daily_report',
+  app.includes("getJsonFallback('/api/research-data?kind=daily','/data/daily-market-report.json')"),
+  null);
 fail('ui_renders_daily_report',app.includes('function homeHtml()')&&app.includes('What Changed Today')&&app.includes('keyDevelopments'),null);
 fail('ui_daily_before_pulse',app.indexOf('What Changed Today')<app.indexOf('<h3>Markets</h3>'),null);
 
