@@ -1053,13 +1053,13 @@ function portfolioReadHtml(s){
       <div class="health-segments"><span class="healthy" style="width:${Math.max(0,breadth.healthy)}%"></span><span class="cooling" style="width:${Math.max(0,breadth.cooling)}%"></span><span class="warning" style="width:${Math.max(0,breadth.warning)}%"></span></div>
       <div class="health-legend"><span><i class="healthy"></i>Healthy <b>${breadth.healthy.toFixed(0)}%</b></span><span><i class="cooling"></i>Cooling / Watch <b>${breadth.cooling.toFixed(0)}%</b></span><span><i class="warning"></i>Warning <b>${breadth.warning.toFixed(0)}%</b></span></div>
     </div>`:''}
-    <div class="portfolio-read-copy">
+    <details class="portfolio-narrative"><summary>Full portfolio assessment</summary><div class="portfolio-read-copy">
       <p><strong>Health</strong> ${esc(healthCopy)}</p>
       <p><strong>Concentration</strong> ${esc(concentration)}</p>
       <p><strong>Recent performance</strong> ${esc(performance)}</p>
       <p><strong>Risk</strong> ${esc(risk)}</p>
       <p><strong>Diversification</strong> ${esc(diversification)}</p>
-    </div>
+    </div></details>
   </section>`;
 }
 function allocationHtml(s){
@@ -1140,10 +1140,12 @@ function positionCard(p,x,total){
   const weight=Number.isFinite(total)&&Number.isFinite(value)&&total>0?value/total*100:null,e=x?.entryStats;
   const read=positionNarrative(p,x,weight);
   return `<article class="card portfolio-slide">
-    <div class="cardtop"><div class="name"><b>${short(p.symbol)}</b><small>${esc(x?.name||p.symbol)}</small><small class="inline-quote">${money(display.price,display.currency||x?.currency||'CAD')} <span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span></small>${quoteMetaHtml(display)}</div><span class="health ${h.tone}">${h.label}</span></div>
+    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(p.symbol)}" aria-label="Open ${esc(p.symbol)} chart">${esc(short(p.symbol))} <span aria-hidden="true">↗</span></button><small>${esc(x?.name||p.symbol)}</small></div><span class="health ${h.tone}">${h.label}</span></div>
+    <div class="holding-quote"><div class="holding-price">${money(display.price,display.currency||x?.currency||'CAD')}</div><div class="holding-change ${cls(display.changePct)}">${pct(display.changePct)}<small>Daily change</small></div></div>${quoteMetaHtml(display)}
     <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span></div>
-    <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Today</small><b class="${cls(display.changePct)}">${pct(display.changePct)}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
-    ${insightRowsHtml(x)}
+    <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
+    <p class="holding-status">${esc(h.notes[0])}</p>
+    <details class="holding-analysis"><summary>Chart read <span>Strength, risks & levels</span></summary>${insightRowsHtml(x)}</details>
     <details><summary>Position details</summary><div class="copy">${(()=>{const q=positionQuickRead(p,x,weight);return '<div class="quick-read-rows"><div><span>Now</span><b>'+esc(q.now)+'</b></div><div><span>Since entry</span><b>'+esc(q.since)+'</b></div><div><span>Portfolio impact</span><b>'+esc(q.impact)+'</b></div></div>';})()}<strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry details</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
     <div class="actions"><button class="btn" data-chart="${p.symbol}">Chart ↗</button><button class="btn" data-edit="${p.symbol}">Edit</button><button class="btn danger" data-remove="${p.symbol}">Remove</button></div>
   </article>`;
@@ -1198,17 +1200,21 @@ function cloudPanelHtml(){
 function portfolioHtml(){
   const s=portfolioSummary();
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
-  const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness, what to watch, and what would change the current read.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>{const display=quoteFor(p.symbol,x);return `<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${quoteMetaHtml(display)}${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`}).join('')}</div></section>`:'';
-  return `<div class="stack">
-    <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
+  const attentionBlock=s.attention.length?`<details class="panel soft attention-panel portfolio-disclosure"><summary>Current attention <span>${s.attention.length} holding(s) to review</span></summary><div class="attention-cards">${s.attention.map(({p,x})=>{const display=quoteFor(p.symbol,x);return `<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${quoteMetaHtml(display)}${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`}).join('')}</div></details>`:'';
+  return `<div class="stack portfolio-layout">
+    <section class="panel portfolio-overview"><div class="sectionhead"><div><div class="eyebrow">YOUR ACCOUNT</div><h2>At a glance</h2><p>Your holdings, in perspective.</p></div><button class="btn primary" data-add>+ Add holding</button></div>
+      <div class="portfolio-hero"><div><span class="hero-label">Portfolio value</span><strong class="hero-value">${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</strong></div><div class="hero-return"><span class="hero-label">Total P/L</span><strong class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency):'—'}</strong><span class="return-percent ${cls(s.pnlPct)}">${s.currency?pct(s.pnlPct):'—'}</span></div></div>
+      <div class="portfolio-stats"><div><span>Cost basis</span><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div><span>Holdings</span><b>${s.rows.length}</b></div><div><span>Attention weight</span><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
+      <div class="read">${s.breadth?s.breadth.attention.toFixed(0)+'% of portfolio value is currently in cooling/watch or warning conditions.':(s.attention.length?s.attention.length+' holding(s) deserve closer review.':s.rows.length?'Waiting for enough data to assess your holdings.':'Add your first holding to start monitoring your portfolio.')}</div>
       ${cloudPanelHtml()}
-      <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention weight</small><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
-      <div class="read">${s.breadth?s.breadth.attention.toFixed(0)+'% of portfolio value is currently in cooling/watch or warning conditions.':(s.attention.length?s.attention.length+' holding(s) deserve closer review.':'No material structural warning across covered holdings.')}</div>
+      <div class="portfolio-tools"><span>Keep a copy of your holdings</span><div><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button></div></div>
     </section>
-    ${portfolioReadHtml(s)}${changeBlock}${attentionBlock}${allocationHtml(s)}${riskHtml()}
-    <section class="panel soft"><div class="sectionhead"><div><h3>Holdings</h3><p>Swipe left/right between positions. Details stay collapsed.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty">No positions yet.</div>'}</div></section>
+    <section class="panel soft holdings-panel"><div class="sectionhead"><div><h3>Your holdings <span class="holdings-count">${s.rows.length}</span></h3><p>Price, performance and the next thing to watch.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe to browse ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty portfolio-empty"><span aria-hidden="true">＋</span><strong>Your portfolio starts here</strong><p>Add a holding with your purchase price and date to see its progress.</p><button class="btn primary" data-add>Add your first holding</button></div>'}</div></section>
+    ${changeBlock}${attentionBlock}
+    <div class="portfolio-context">${portfolioReadHtml(s)}${riskHtml()}${allocationHtml(s)}</div>
   </div>`;
 }
+
 function watchlistHtml(){
   const by=new Map(allCandidates().map(x=>[x.symbol,x])),items=[...state.watch];
   return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>Watchlist</h2><p>Saved charts remain even after leaving the shortlist.</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>{
