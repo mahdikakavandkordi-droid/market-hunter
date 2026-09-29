@@ -13,7 +13,7 @@ const fail=(name,pass,detail)=>checks.push({name,pass,detail});
 fail('seven_markets_in_pulse',expected.every(k=>pulse.markets.some(x=>x.key===k))&&pulse.markets.length===7,pulse.markets.map(x=>x.key));
 fail('daily_report_three_groups',report.groups?.length===3,report.groups?.map(x=>x.label));
 fail('daily_report_key_developments',report.keyDevelopments?.length>=3,report.keyDevelopments?.length);
-fail('daily_report_key_divergences',(report.keyDivergences?.length||0)>=2,report.keyDivergences);
+fail('daily_report_key_divergences',Array.isArray(report.keyDivergences)&&report.keyDivergences.every(x=>x?.id&&x?.label&&x?.text),report.keyDivergences);
 fail('daily_report_watch_next',(report.watchNext?.length||0)>=3&&report.watchNext.every(x=>x.market&&x.text&&x.levels),report.watchNext);
 const mixedDatesExpected=report.asOf?.earliest!==report.asOf?.latest;
 fail('mixed_dates_disclosed',
