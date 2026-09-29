@@ -31,7 +31,7 @@ assert.match(app,/market_hunter_portfolio_snapshots/);
 assert.match(app,/dayChangePct/);
 assert.match(app,/portfolio-carousel/);
 assert.match(app,/Connect cloud/);
-assert.match(app,/Your existing local holdings will be merged, not replaced/);
+assert.match(app,/Account data stays isolated/);\nassert.match(app,/Import local data into this account/);\nassert.match(app,/revision=eq/);\nassert.match(app,/deleted:true/);\nassert.match(app,/partial_mixed_dates/);
 assert.doesNotMatch(app,/sb_secret_/);
 assert.doesNotMatch(app,/service_role/);
 
@@ -50,4 +50,4 @@ for(const secretPattern of [/sb_secret_/,/service_role/,/SUPABASE_SERVICE_ROLE/i
   assert.doesNotMatch(html,secretPattern);
 }
 
-console.log('Current Market Hunter UI shell, portfolio workflow, PWA, and theme checks passed');
+console.log('Current Market Hunter UI shell, scoped cloud workflow, snapshot guards, PWA, and theme checks passed');
