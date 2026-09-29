@@ -191,6 +191,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 }
 .metric-good{color:var(--green)!important}.metric-bad{color:var(--red)!important}.metric-flat{color:var(--muted)!important}
 .day-change{font-weight:850}.day-change.up,.up{color:var(--green)!important}.day-change.down,.down{color:var(--red)!important}.day-change.flat,.flat{color:var(--muted)!important}
+.price-line{display:flex;align-items:baseline;justify-content:flex-end;gap:7px;white-space:nowrap}
+.price-line .day-change{display:inline-block!important;margin:0!important;font-size:8px!important}
+.inline-quote{display:flex!important;align-items:baseline;gap:6px;color:var(--text)!important;font-weight:850}
+.inline-quote .day-change{display:inline!important;margin:0!important}
+.quote-meta{display:block;color:var(--muted2)!important;font-size:6.5px!important;line-height:1.3;margin-top:4px!important;font-weight:650!important;max-width:220px}
+.quote-meta.provisional{color:var(--amber)!important}.quote-meta.stale,.quote-meta.fallback{color:var(--muted)!important}.quote-meta.hourly{color:var(--green)!important}.quote-meta.unavailable{color:var(--red)!important}
+.symbol-cell .quote-meta{margin-top:2px!important}.market-value .quote-meta{text-align:right;white-space:normal}
+
 .market-value small.day-change{display:block;margin-top:3px;font-size:7px;text-align:right}
 .symbol-cell .day-change{margin-top:3px}
 .swipe-hint{color:var(--muted2);font-size:8px;font-weight:800;white-space:nowrap}
@@ -269,6 +277,7 @@ summary::-webkit-details-marker{display:none}
   .topbar{padding-left:20px;padding-right:20px}
   .cards{grid-template-columns:1fr}
 }
+@media(max-width:760px){.cardprice{min-width:108px}.quote-meta{max-width:180px;font-size:6px!important}.price-line{gap:5px}.inline-quote{gap:5px}}
 @media(max-width:760px){
   body{background:linear-gradient(180deg,#07101a,#08131e)}
   .app-shell{display:block}
@@ -333,6 +342,8 @@ summary::-webkit-details-marker{display:none}
 .rank{width:23px;height:23px;display:grid;place-items:center;border-radius:7px;background:rgba(85,167,255,.08);color:var(--blue);font-size:8px;font-weight:900}
 .sym b{font-size:10px}.sym small{display:block;color:var(--muted2);font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stage{font-size:7px;color:#9fcbff;font-weight:800}
 .cardtop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.name b{font-size:13px}.name small{display:block;color:var(--muted2);font-size:8px;margin-top:2px}.cardprice{text-align:right;font-size:12px;font-weight:900}.cardprice small{display:block;font-size:8px;margin-top:3px}
+.cardprice{min-width:118px}.cardprice .quote-meta{white-space:normal;text-align:right}
+
 .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
 .why{margin-top:9px;padding:9px;border-radius:10px;background:#0b1622;color:var(--muted);font-size:8px;line-height:1.5;border:1px solid rgba(255,255,255,.03)}
 .up{color:var(--green)!important}.down{color:var(--red)!important}.flat{color:var(--muted)!important}
