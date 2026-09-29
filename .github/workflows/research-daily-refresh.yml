@@ -6,6 +6,14 @@ on:
       - main
     paths:
       - '.github/workflows/research-daily-refresh.yml'
+      - 'lib/completed-daily-session.js'
+      - 'lib/market-pulse-engine.js'
+      - 'scripts/scan-market-pulse.mjs'
+      - 'scripts/backtest-market-pulse.mjs'
+      - 'scripts/scan-market-hunter-v2.mjs'
+      - 'scripts/build-market-pulse-report.mjs'
+      - 'scripts/build-daily-market-report.mjs'
+      - 'scripts/audit-daily-market-report-final.mjs'
   workflow_dispatch:
   # GitHub schedules run only from the repository default branch.
   # Run after North American market close and publish only validated latest-data artifacts.
