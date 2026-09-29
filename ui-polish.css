@@ -243,3 +243,10 @@ html[data-theme="light"] .insight-row.change>span{color:var(--blue)}
  .portfolio-slide .metric b{font-size:14px!important;letter-spacing:-.035em}
  .portfolio-slide .actions{gap:5px}.portfolio-slide .actions .btn{font-size:11px;padding:8px 4px}
 }
+@media(max-width:360px){
+ .portfolio-slide .metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .portfolio-slide .metric:first-child{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px}
+ .portfolio-slide .metric:first-child b{margin:0;font-size:17px!important}
+ .portfolio-slide .metric:not(:first-child){padding:10px 5px!important}
+ .portfolio-slide .metric small{font-size:10px!important}
+}
