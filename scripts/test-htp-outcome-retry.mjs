@@ -16,7 +16,13 @@ function run(cmd,args,options={}){
   if(r.status!==0)throw new Error([cmd,...args].join(' ')+' failed\nSTDOUT:\n'+r.stdout+'\nSTDERR:\n'+r.stderr);
   return r;
 }
-run('git',['cat-file','-e',PIN+'^{commit}']);
+{
+  const present=spawnSync('git',['cat-file','-e',PIN+'^{commit}'],{encoding:'utf8'});
+  if(present.status!==0){
+    run('git',['fetch','--quiet','--no-tags','--depth=1','origin',PIN]);
+    run('git',['cat-file','-e',PIN+'^{commit}']);
+  }
+}
 
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'mh-htp-integration-'));
 const pinned=path.join(root,'pinned'),evidence=path.join(root,'evidence');
