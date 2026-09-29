@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {regularWindow,normalizeQuote,benchmarkOpen,torontoClock} from '../lib/intraday.js';
+import {INDEX_QUOTES,regularWindow,normalizeQuote,benchmarkOpen,torontoClock} from '../lib/intraday.js';
 const d=s=>new Date(s),secs=s=>Date.parse(s)/1000;
 assert.equal(regularWindow(d('2026-09-28T13:47:00Z')),true);
 assert.equal(regularWindow(d('2026-01-05T13:47:00Z')),false);
@@ -7,6 +7,8 @@ assert.equal(regularWindow(d('2026-01-05T14:47:00Z')),true);
 assert.equal(regularWindow(d('2026-09-28T20:00:00Z')),false);
 assert.equal(regularWindow(d('2026-09-27T15:47:00Z')),false);
 assert.equal(torontoClock(d('2026-09-29T01:00:00Z')).date,'2026-09-28');
+assert.ok(INDEX_QUOTES.some(([symbol,name])=>symbol==='^NDX'&&name==='Nasdaq-100'));
+assert.equal(INDEX_QUOTES.some(([symbol])=>symbol==='^IXIC'),false,'Nasdaq Composite must not be substituted for the Nasdaq-100 presentation feed');
 const now=d('2026-09-28T15:47:00Z');
 const meta={regularMarketPrice:101,chartPreviousClose:100,regularMarketTime:secs('2026-09-28T15:32:00Z'),regularMarketVolume:12345,currency:'CAD',currentTradingPeriod:{regular:{start:secs('2026-09-28T13:30:00Z'),end:secs('2026-09-28T20:00:00Z')}}};
 const q=normalizeQuote({meta},'^GSPTSE','TSX',now);
