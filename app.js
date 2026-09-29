@@ -27,7 +27,10 @@ function saveCloudSessionRaw(session){
   else localStorage.removeItem(CLOUD_SESSION_KEY);
   state.cloud.session=session||null;
 }
-function saveCloudSession(session){saveCloudSessionRaw(session)}
+function saveCloudSession(session){
+  if(session)return activateSession(session);
+  const ctx=captureSessionContext();clearActiveSession(ctx);return captureSessionContext();
+}
 function sessionUserId(session){return session?.user?.id||null}
 function scopeId(session){return sessionUserId(session)?'user:'+sessionUserId(session):'guest'}
 function stateStorageKey(session){return LOCAL_STATE_PREFIX+scopeId(session)}
@@ -283,6 +286,7 @@ async function writeCloudStateCas(session,row,payload,ctx){
 }
 function sortedSymbols(values){return [...new Set((values||[]).filter(Boolean).map(x=>String(x).toUpperCase()))].sort()}
 function sameSymbols(a,b){const aa=sortedSymbols(a),bb=sortedSymbols(b);return aa.length===bb.length&&aa.every((x,i)=>x===bb[i])}
+function validSessionDate(value){return /^\d{4}-\d{2}-\d{2}$/.test(String(value||''))}
 function portfolioSymbols(){return [...state.positions.keys()].sort()}
 function snapshotSourceMs(meta){
   for(const value of [meta?.sourceGeneratedAt,meta?.capturedAt]){
@@ -290,15 +294,27 @@ function snapshotSourceMs(meta){
   }
   return null;
 }
+function declaredSnapshotSymbols(meta,items){
+  if(Array.isArray(meta?.portfolioSymbols))return sortedSymbols(meta.portfolioSymbols);
+  if(Array.isArray(meta?.requestedSymbols))return sortedSymbols(meta.requestedSymbols);
+  return sortedSymbols((items||[]).map(x=>x?.symbol));
+}
 function inspectSnapshot(date,items,complete,meta,expectedSymbols){
-  const expected=sortedSymbols(expectedSymbols),list=Array.isArray(items)?items:[],symbols=list.map(x=>x?.symbol).filter(Boolean);
-  const exactCoverage=expected.length>0&&list.length===expected.length&&sameSymbols(symbols,expected);
-  const dated=list.length>0&&list.every(x=>typeof x?.asOf==='string'&&x.asOf===date);
-  const metaCoverage=!Array.isArray(meta?.requestedSymbols)||sameSymbols(meta.requestedSymbols,expected);
+  const expected=sortedSymbols(expectedSymbols),list=Array.isArray(items)?items:[],symbols=sortedSymbols(list.map(x=>x?.symbol));
+  const declared=declaredSnapshotSymbols(meta,list);
+  const uniqueSymbols=symbols.length===list.length;
+  const exactCoverage=list.length===expected.length&&sameSymbols(symbols,expected);
+  const contextMatches=sameSymbols(declared,expected);
+  const dated=expected.length===0
+    ?list.length===0
+    :list.length>0&&list.every(x=>validSessionDate(x?.asOf)&&x.asOf===date);
+  const explicitEmpty=expected.length===0&&list.length===0&&
+    (meta?.portfolioEmpty===true||Array.isArray(meta?.portfolioSymbols)||Array.isArray(meta?.requestedSymbols));
   return {
-    date:date||null,items:list,meta:meta||null,complete:Boolean(complete),expected,
-    valid:Boolean(date)&&Boolean(complete)&&exactCoverage&&dated&&metaCoverage,
-    sourceMs:snapshotSourceMs(meta),exactCoverage,dated,metaCoverage
+    date:date||null,items:list,meta:meta||null,complete:Boolean(complete),expected,declared,
+    valid:Boolean(validSessionDate(date))&&Boolean(complete)&&uniqueSymbols&&exactCoverage&&contextMatches&&dated&&
+      (expected.length>0||explicitEmpty),
+    sourceMs:snapshotSourceMs(meta),exactCoverage,contextMatches,dated
   };
 }
 function dailySnapshotCandidate(daily,expectedSymbols){
@@ -316,6 +332,7 @@ function chooseSameDaySnapshot(local,remote,incumbent='local'){
     if(local.sourceMs>remote.sourceMs)return 'local';
     if(remote.sourceMs>local.sourceMs)return 'remote';
   }
+  // Unknown/equal source freshness never displaces the incumbent.
   return incumbent;
 }
 function applyRemoteSnapshot(row,ctx,cloudRows=[]){
@@ -339,8 +356,7 @@ function applyRemoteSnapshot(row,ctx,cloudRows=[]){
 }
 function mergeCloudSnapshots(rows,ctx=captureSessionContext()){
   assertSessionContext(ctx);
-  const expected=portfolioSymbols();if(!expected.length)return;
-  const session=contextSession(ctx),localDaily=currentDailyPayloadFor(session);
+  const expected=portfolioSymbols(),session=contextSession(ctx),localDaily=currentDailyPayloadFor(session);
   const local=dailySnapshotCandidate(localDaily,expected);
   const remotes=(rows||[]).map(row=>({row,candidate:cloudSnapshotCandidate(row,expected)}))
     .filter(x=>x.candidate.valid).sort((a,b)=>String(b.candidate.date).localeCompare(String(a.candidate.date)));
@@ -362,7 +378,7 @@ async function loadCloudPortfolio(ctx=captureSessionContext()){
 }
 async function syncCloudSnapshot(session,ctx=captureSessionContext()){
   assertSessionContext(ctx);
-  const expected=portfolioSymbols();if(!expected.length)return;
+  const expected=portfolioSymbols();
   const daily=currentDailyPayloadFor(contextSession(ctx)),local=dailySnapshotCandidate(daily,expected);
   if(!local.valid)return;
   const date=local.date,payload={marketAsOf:date,items:local.items,complete:true,meta:local.meta||null};
@@ -541,20 +557,20 @@ function allCandidates(){
   for(const list of Object.values(state.v2?.surfacePicks||{}))for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
   return out;
 }
-async function loadCandidateLiveData(ctx=captureCloudContext()){
-  if(!cloudContextActive(ctx))return;
+async function loadCandidateLiveData(ctx=captureSessionContext()){
+  if(!contextActive(ctx))return;
   const raw=[...(state.v2?.integratedSurfacePicks||[]),...Object.values(state.v2?.surfacePicks||{}).flat()];
   const symbols=[...new Set([
     ...raw.map(x=>x?.symbol),
     ...state.watch,
     ...[...state.positions.values()].map(x=>x?.symbol)
   ].filter(Boolean))].slice(0,30);
-  if(!symbols.length){if(cloudContextActive(ctx))state.liveItems=new Map();return}
+  if(!symbols.length){if(contextActive(ctx))state.liveItems=new Map();return}
   try{
     const data=await getJson('/api/portfolio?symbols='+encodeURIComponent(symbols.join(',')));
-    if(!cloudContextActive(ctx))return;
+    if(!contextActive(ctx))return;
     state.liveItems=new Map((data.items||[]).map(x=>[x.symbol,x]));
-  }catch(e){if(cloudContextActive(ctx))state.liveItems=new Map()}
+  }catch(e){if(contextActive(ctx))state.liveItems=new Map()}
 }
 const REVIEW_STAGES=['Early Watch','Recovery','Attractive Growth','Established Move'];
 function stageEligiblePicks(stage){
@@ -770,68 +786,10 @@ function changeReasons(cur,prev){
   if(cur.lowState!==prev.lowState&&cur.lowState==='failed_low_break')out.push('Local low reclaimed');
   return out;
 }
-function normalizedSymbolList(values){return [...new Set((values||[]).map(x=>String(x||'').trim().toUpperCase()).filter(Boolean))].sort()}
-function sameSymbolSet(a,b){const x=normalizedSymbolList(a),y=normalizedSymbolList(b);return x.length===y.length&&x.every((v,i)=>v===y[i])}
-function validSessionDate(value){return /^\d{4}-\d{2}-\d{2}$/.test(String(value||''))}
-function dailySnapshotPayload(daily){
-  if(!daily?.currentDate||!Array.isArray(daily?.currentItems))return null;
-  return {marketAsOf:daily.currentDate,items:daily.currentItems,complete:daily.currentComplete!==false,meta:daily.currentMeta||null};
-}
-function snapshotDescriptor(payload,expectedSymbols=null){
-  const date=String(payload?.marketAsOf||''),items=Array.isArray(payload?.items)?payload.items:[],meta=payload?.meta||{};
-  const itemSymbols=normalizedSymbolList(items.map(x=>x?.symbol));
-  const declared=Array.isArray(meta.portfolioSymbols)?normalizedSymbolList(meta.portfolioSymbols)
-    :Array.isArray(meta.requestedSymbols)?normalizedSymbolList(meta.requestedSymbols)
-    :itemSymbols;
-  const uniqueItems=itemSymbols.length===items.length;
-  const exactDates=validSessionDate(date)&&items.every(x=>validSessionDate(x?.asOf)&&x.asOf===date);
-  const explicitEmpty=declared.length===0&&items.length===0&&(meta.portfolioEmpty===true||Array.isArray(meta.portfolioSymbols)||Array.isArray(meta.requestedSymbols));
-  const coverage=sameSymbolSet(itemSymbols,declared);
-  const complete=payload?.complete!==false&&meta?.complete!==false;
-  const valid=Boolean(complete&&validSessionDate(date)&&uniqueItems&&exactDates&&coverage&&(items.length>0||explicitEmpty));
-  const contextMatches=expectedSymbols===null?true:sameSymbolSet(declared,expectedSymbols);
-  const sourceAt=meta.sourceGeneratedAt||meta.capturedAt||null,sourceMs=Date.parse(sourceAt||'');
-  return {valid,usable:valid&&contextMatches,date,items,itemSymbols,declared,contextMatches,sourceAt,sourceMs:Number.isFinite(sourceMs)?sourceMs:null};
-}
-function compareSnapshotPayloads(a,b,expectedSymbols){
-  const A=snapshotDescriptor(a,expectedSymbols),B=snapshotDescriptor(b,expectedSymbols);
-  if(A.usable!==B.usable)return A.usable?1:-1;
-  if(!A.usable&&!B.usable)return 0;
-  if(A.date!==B.date)return A.date>B.date?1:-1;
-  if(Number.isFinite(A.sourceMs)&&Number.isFinite(B.sourceMs)&&A.sourceMs!==B.sourceMs)return A.sourceMs>B.sourceMs?1:-1;
-  if(Number.isFinite(A.sourceMs)!==Number.isFinite(B.sourceMs))return Number.isFinite(A.sourceMs)?1:-1;
-  return 0;
-}
-function bestHistoricalPrior(cloudRows,date){
-  const candidates=(cloudRows||[]).filter(r=>r?.market_as_of&&r.market_as_of<date&&Array.isArray(r?.payload?.items))
-    .map(r=>({marketAsOf:r.market_as_of,...r.payload}))
-    .filter(x=>snapshotDescriptor(x,null).valid)
-    .sort((a,b)=>b.marketAsOf.localeCompare(a.marketAsOf));
-  return candidates[0]||null;
-}
-function adoptSnapshotPayload(payload,session=state.cloud.session,cloudRows=[]){
-  const d=snapshotDescriptor(payload,null);if(!d.valid)return false;
-  const saved=currentDailyPayload(session)||{previousDate:null,previousItems:[],currentDate:null,currentItems:[],currentComplete:false};
-  let next={...saved};
-  if(!saved.currentDate||d.date>saved.currentDate){
-    const prior=bestHistoricalPrior(cloudRows,d.date);
-    next={
-      ...next,
-      previousDate:prior?.marketAsOf||saved.currentDate||null,
-      previousItems:prior?.items||saved.currentItems||[],
-      currentDate:d.date,currentItems:d.items,currentComplete:true,currentMeta:payload.meta||null
-    };
-  }else if(d.date===saved.currentDate){
-    next={...next,currentDate:d.date,currentItems:d.items,currentComplete:true,currentMeta:payload.meta||null};
-  }else return false;
-  persistDaily(next,session);
-  if(scopeId(session)===scopeId(state.cloud.session))state.previous=previousMapFromDaily(next);
-  return true;
-}
 function snapshotAttempt(data,requestedSymbols){
   const items=Array.isArray(data?.items)?data.items:[],failures=Array.isArray(data?.failures)?data.failures:[];
   const expected=sortedSymbols(requestedSymbols),returned=sortedSymbols(items.map(x=>x?.symbol));
-  const missingDates=items.some(x=>!x?.asOf),dates=[...new Set(items.map(x=>x?.asOf).filter(Boolean))].sort();
+  const missingDates=items.some(x=>!validSessionDate(x?.asOf)),dates=[...new Set(items.map(x=>x?.asOf).filter(validSessionDate))].sort();
   const capturedAt=new Date().toISOString(),sourceGeneratedAt=Number.isFinite(Date.parse(data?.generatedAt||''))?new Date(Date.parse(data.generatedAt)).toISOString():capturedAt;
   if(expected.length===0)return {status:'empty_portfolio',complete:false,date:null,items:[],failures:[],requestedSymbols:[],capturedAt,sourceGeneratedAt};
   if(!items.length)return {status:'partial_empty_response',complete:false,date:null,items,failures,requestedSymbols:expected,capturedAt,sourceGeneratedAt};
@@ -846,6 +804,14 @@ function savePortfolioSnapshot(data,requestedSymbols,ctx=captureSessionContext()
   const attempt=snapshotAttempt(data,requestedSymbols);
   let next={...saved,lastAttempt:{status:attempt.status,complete:attempt.complete,date:attempt.date,requestedSymbols:attempt.requestedSymbols,returnedSymbols:attempt.items.map(x=>x.symbol),failures:attempt.failures,dates:attempt.dates||undefined,capturedAt:attempt.capturedAt,sourceGeneratedAt:attempt.sourceGeneratedAt}};
   if(attempt.status==='empty_portfolio'){
+    if(saved.currentDate&&validSessionDate(saved.currentDate)){
+      const emptyMeta={
+        complete:true,requestedSymbols:[],portfolioSymbols:[],portfolioEmpty:true,portfolioContextKey:'',
+        capturedAt:attempt.capturedAt,sourceGeneratedAt:attempt.sourceGeneratedAt
+      };
+      next={...next,currentDate:saved.currentDate,currentItems:[],currentComplete:true,currentMeta:emptyMeta};
+      assertSessionContext(ctx);persistDailyFor(session,next);state.previous=previousMapFromDaily(next);queueCloudSync(ctx);return true;
+    }
     assertSessionContext(ctx);persistDailyFor(session,next);state.previous=previousMapFromDaily(next);return false;
   }
   if(!attempt.complete||!attempt.date){
@@ -854,7 +820,7 @@ function savePortfolioSnapshot(data,requestedSymbols,ctx=captureSessionContext()
   if(saved.currentDate&&attempt.date<saved.currentDate){
     next.lastAttempt={...next.lastAttempt,status:'older_complete_response'};assertSessionContext(ctx);persistDailyFor(session,next);state.previous=previousMapFromDaily(next);return false;
   }
-  const meta={complete:true,requestedSymbols:attempt.requestedSymbols,portfolioContextKey:attempt.requestedSymbols.join('|'),capturedAt:attempt.capturedAt,sourceGeneratedAt:attempt.sourceGeneratedAt};
+  const meta={complete:true,requestedSymbols:attempt.requestedSymbols,portfolioSymbols:attempt.requestedSymbols,portfolioEmpty:attempt.requestedSymbols.length===0,portfolioContextKey:attempt.requestedSymbols.join('|'),capturedAt:attempt.capturedAt,sourceGeneratedAt:attempt.sourceGeneratedAt};
   const incoming=inspectSnapshot(attempt.date,attempt.items,true,meta,attempt.requestedSymbols);
   if(saved.currentDate===attempt.date){
     const current=dailySnapshotCandidate(saved,attempt.requestedSymbols);
@@ -916,7 +882,7 @@ function homeHtml(){
   const groups=(d?.groups||[]).slice(0,3).map(g=>`<div class="group-card"><small>${esc(g.label)}</small><b>${esc(g.state)}</b><p>${esc(g.detail)}</p></div>`).join('');
   const developmentByMarket=new Map((d?.keyDevelopments||[]).map(x=>[x.market,x]));
   const marketKeyByName={'TSX Composite':'TSX','S&P 500':'SP500','Nasdaq-100':'NASDAQ100','Gold':'GOLD','Silver':'SILVER','Bitcoin':'BTC','Ethereum':'ETH'};
-  const intradaySymbolByKey={TSX:'^GSPTSE',SP500:'^GSPC',NASDAQ100:'^NDX',GOLD:'GC=F',SILVER:'SI=F',BTC:'BTC-USD',ETH:'ETH-USD'};
+  const intradaySymbolByKey=MARKET_PULSE_INTRADAY_SYMBOLS;
   const markets=(p?.markets||[]).map(x=>{
     const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
     const key=x.key||marketKeyByName[x.name]||'';
