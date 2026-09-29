@@ -71,6 +71,8 @@ assert.match(app,/Not covered by hourly feed/);
 assert.match(app,/completed-session fallback/);
 assert.match(app,/quoteMetaHtml/);
 assert.match(app,/portfolio-carousel/);
+assert.match(app,/Swipe to browse ↔/);
+assert.doesNotMatch(css,/\.portfolio-layout \.portfolio-carousel\{display:grid!important/,'mobile holdings must remain horizontally swipeable');
 assert.match(app,/Connect cloud/);
 assert.match(app,/Account data stays isolated/);
 assert.match(app,/Import local data into this account/);
