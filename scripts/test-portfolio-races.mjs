@@ -9,7 +9,7 @@ const core=source.slice(0,cut)+`
 globalThis.__mh={
   state,saveCloudSession,ensureCloudSession,scopeId,stateStorageKey,dailyStorageKey,
   readEnvelopeFor,readDailyFor,switchLocalScope,persistDaily,loadCloudPortfolio,
-  syncCloudSnapshot,syncPortfolioCloud,queueCloudSync,loadPortfolio,snapshotAttempt,currentDailyPayload
+  syncCloudSnapshot,syncPortfolioCloud,queueCloudSync,loadPortfolio,snapshotAttempt,savePortfolioSnapshot,currentDailyPayload
 };
 `;
 
