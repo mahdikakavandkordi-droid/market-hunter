@@ -116,11 +116,6 @@ async function collect(){
     return {status:'no_completed_market_session',latestBenchmarkDate};
   }
   if(candidateSession.marketDate!==latestBenchmarkDate){
-    appendRun({
-      runId:rid,collectorVersion:FORWARD_VALIDATION_VERSION,attemptedAt,
-      status:'stale_source_report',todayUtc:today,latestBenchmarkDate,
-      sourceMarketDate:candidateSession.marketDate,sourceReportHash:candidateSession.sourceReportHash
-    });
     throw new Error('stale_source_report:'+candidateSession.marketDate+' expected '+latestBenchmarkDate);
   }
 
@@ -194,11 +189,12 @@ try{
   const result=await collect();
   console.log(JSON.stringify(result,null,2));
 }catch(error){
-  const attemptedAt=nowIso();
+  const attemptedAt=nowIso(),message=String(error?.message||error);
+  const status=message.startsWith('stale_source_report:')?'stale_source_report':'collector_failure';
   try{
     appendRun({
       runId:runId('failure|'+attemptedAt),collectorVersion:FORWARD_VALIDATION_VERSION,
-      attemptedAt,status:'collector_failure',error:String(error?.stack||error?.message||error)
+      attemptedAt,status,error:String(error?.stack||error?.message||error)
     });
   }catch{}
   console.error(error);
