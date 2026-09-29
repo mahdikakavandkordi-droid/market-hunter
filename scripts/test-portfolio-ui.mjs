@@ -28,7 +28,7 @@ assert.match(app,/marketHunterPositions/); // preserve the user's existing local
 assert.match(app,/marketHunterCloudSessionV1/);
 assert.match(app,/market_hunter_portfolio_state/);
 assert.match(app,/market_hunter_portfolio_snapshots/);
-assert.match(app,/dayChangePct/);
+assert.match(app,/dayChangePct/);\nassert.match(app,/getJson\('\/api\/intraday'\)/);\nassert.match(app,/Hourly quote · provisional/);\nassert.match(app,/Not covered by hourly feed/);\nassert.match(app,/completed-session fallback/);\nassert.match(app,/quoteMetaHtml/);
 assert.match(app,/portfolio-carousel/);
 assert.match(app,/Connect cloud/);
 assert.match(app,/Account data stays isolated/);\nassert.match(app,/Import local data into this account/);\nassert.match(app,/revision=eq/);\nassert.match(app,/deleted:true/);\nassert.match(app,/partial_mixed_dates/);
@@ -38,10 +38,10 @@ assert.doesNotMatch(app,/service_role/);
 assert.match(css,/\.app-shell/);
 assert.match(css,/\.portfolio-carousel/);
 assert.match(css,/scroll-snap-type:x mandatory/);
-assert.match(css,/\.day-change/);
+assert.match(css,/\.day-change/);\nassert.match(css,/\.price-line/);\nassert.match(css,/\.quote-meta/);
 assert.match(css,/\.cloud-panel/);
 assert.match(portfolioApi,/dayChangePct/);
-assert.match(portfolioApi,/r\.value\.rows\.at\(-2\)/);
+assert.match(portfolioApi,/r\.value\.rows\.at\(-2\)/); // completed-session fallback only; UI prefers /api/intraday
 assert.match(mobile,/@media/);
 assert.match(theme,/data-theme="light"/);
 
