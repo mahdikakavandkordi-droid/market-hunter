@@ -279,7 +279,7 @@ const plain=x=>JSON.parse(JSON.stringify(x));
   h.activateSession(b);
   stateWait.resolve(response(200,[{payload:envelopeFor('RY.TO'),revision:2,updated_at:'2026-09-29T00:00:00Z'}]));
   snapWait.resolve(response(200,[]));
-  await assert.rejects(pending,/stale_session_operation/);
+  await assert.rejects(pending,{code:'STALE_SESSION_OPERATION'});
   assert.deepEqual([...h.state.positions.keys()],['ENB.TO']);
   const stored=JSON.parse(storage.getItem('marketHunterPortfolioV3:user:user-b'));
   assert.equal(Boolean(stored.positions['RY.TO']),false);
@@ -299,7 +299,7 @@ const plain=x=>JSON.parse(JSON.stringify(x));
   await h.cloudSignOut();
   stateWait.resolve(response(200,[{payload:envelopeFor('RY.TO'),revision:1,updated_at:'2026-09-29T00:00:00Z'}]));
   snapWait.resolve(response(200,[]));
-  await assert.rejects(pending,/stale_session_operation/);
+  await assert.rejects(pending,{code:'STALE_SESSION_OPERATION'});
   assert.equal(h.state.cloud.session,null);
   assert.equal(Boolean(JSON.parse(storage.getItem('marketHunterPortfolioV3:guest')||'{"positions":{}}').positions?.['RY.TO']),false);
 }
@@ -319,7 +319,7 @@ const plain=x=>JSON.parse(JSON.stringify(x));
   h.activateSession(a2);
   stateWait.resolve(response(200,[{payload:envelopeFor('RY.TO'),revision:1,updated_at:'2026-09-29T00:00:00Z'}]));
   snapWait.resolve(response(200,[]));
-  await assert.rejects(pending,/stale_session_operation/);
+  await assert.rejects(pending,{code:'STALE_SESSION_OPERATION'});
   assert.equal(h.state.cloud.session.access_token,'access-user-a-new');
   assert.equal(Boolean(JSON.parse(storage.getItem('marketHunterPortfolioV3:user:user-a')||'{"positions":{}}').positions?.['RY.TO']),false);
 }

@@ -10,7 +10,7 @@ const core=source.slice(0,cut)+`
 globalThis.__mh={
   state,saveCloudSession,ensureCloudSession,scopeId,stateStorageKey,dailyStorageKey,
   readEnvelopeFor,readDailyFor,switchLocalScope,persistDaily,loadCloudPortfolio,
-  syncCloudSnapshot,syncPortfolioCloud,queueCloudSync,loadPortfolio,snapshotAttempt,savePortfolioSnapshot,currentDailyPayload
+  syncCloudSnapshot,syncPortfolioCloud,queueCloudSync,loadPortfolio,snapshotAttempt,savePortfolioSnapshot,currentDailyPayload,setPositionRecord
 };
 `;
 
@@ -217,7 +217,7 @@ async function settleStale(promise){
   };
   const {h}=boot(initial,async(url,opts={})=>{
     const method=opts.method||'GET';
-    if(method==='GET')return response(200,[{payload:remote,revision:8,updated_at:'2026-09-29T02:05:00Z'}]);
+    if(method==='GET')return response(200,[{market_as_of:remote.marketAsOf,payload:remote,revision:8,updated_at:'2026-09-29T02:05:00Z'}]);
     patches.push(JSON.parse(opts.body||'{}'));return response(200,[{revision:9}]);
   });
   await h.syncCloudSnapshot(A);
@@ -255,7 +255,7 @@ async function settleStale(promise){
   };
   const {h}=boot(initial,async(url,opts={})=>{
     const method=opts.method||'GET';
-    if(method==='GET')return response(200,[{payload:remote,revision:3,updated_at:'2026-09-29T02:05:00Z'}]);
+    if(method==='GET')return response(200,[{market_as_of:remote.marketAsOf,payload:remote,revision:3,updated_at:'2026-09-29T02:05:00Z'}]);
     writes.push(JSON.parse(opts.body||'{}'));return response(200,[{revision:4}]);
   });
   await h.syncCloudSnapshot(A);
@@ -297,13 +297,58 @@ async function settleStale(promise){
   };
   const {h}=boot(initial,async(url,opts={})=>{
     const method=opts.method||'GET';
-    if(method==='GET'){gets++;return response(200,[{payload:gets===1?oldRemote:betterRemote,revision:gets===1?5:6,updated_at:'2026-09-29T03:01:00Z'}])}
+    if(method==='GET'){gets++;return response(200,[{market_as_of:oldRemote.marketAsOf,payload:gets===1?oldRemote:betterRemote,revision:gets===1?5:6,updated_at:'2026-09-29T03:01:00Z'}])}
     patches.push(JSON.parse(opts.body||'{}'));
     if(patches.length===1)return response(200,[]); // CAS conflict
     return response(200,[{revision:7}]);
   });
   await h.syncCloudSnapshot(A);
   assert.equal(patches.length,1,'after conflict, better remote must stop stale retry overwrite');
+}
+
+
+
+// Account-specific computed data must disappear immediately on scope change.
+{
+  const A=session('user-a'),B=session('user-b');
+  const {h}=boot({marketHunterCloudSessionV1:JSON.stringify(A)});
+  h.state.portfolioItems.set('RY.TO',{symbol:'RY.TO',entryStats:{sinceEntryReturn:42}});
+  h.state.analytics={privateAccountMetric:42};
+  h.state.liveItems.set('RY.TO',{symbol:'RY.TO'});
+  h.saveCloudSession(B);
+  assert.equal(h.state.portfolioItems.size,0,'account A computed entries must not survive into B');
+  assert.equal(h.state.analytics,null);
+  assert.equal(h.state.liveItems.size,0);
+}
+
+// A holding added while a snapshot GET is pending invalidates the captured subset.
+{
+  const A=session('user-a'),wait=deferred(),started=deferred(),writes=[];
+  const {h}=boot({marketHunterCloudSessionV1:JSON.stringify(A),
+    'marketHunterPortfolioV3:user:user-a':JSON.stringify(envFor('RY.TO')),
+    'marketHunterPortfolioDailyV3:user:user-a':JSON.stringify(dailyFor('RY.TO'))
+  },async(url,opts={})=>{
+    if((opts.method||'GET')==='GET'){started.resolve();return wait.promise}
+    writes.push(opts);return response(201,[]);
+  });
+  const pending=h.syncCloudSnapshot(A);await started.promise;
+  h.setPositionRecord({symbol:'ENB.TO',quantity:1,entryPrice:50});
+  wait.resolve(response(200,[]));await pending;
+  assert.equal(writes.length,0,'composition must be revalidated after awaited snapshot read');
+}
+
+// Editing quantity while a portfolio response is pending invalidates old analytics.
+{
+  const A=session('user-a'),wait=deferred();
+  const {h,storage}=boot({marketHunterCloudSessionV1:JSON.stringify(A),
+    'marketHunterPortfolioV3:user:user-a':JSON.stringify(envFor('RY.TO'))
+  },async()=>wait.promise);
+  const pending=h.loadPortfolio();
+  h.setPositionRecord({symbol:'RY.TO',quantity:99,entryPrice:100});
+  wait.resolve(response(200,{generatedAt:'2026-09-29T01:00:00Z',items:[{symbol:'RY.TO',asOf:'2026-09-28',price:100}],portfolioAnalytics:{quantity:1},failures:[]}));
+  await pending;
+  assert.equal(h.state.analytics,null,'old portfolio composition must not supply current analytics');
+  assert.equal(storage.getItem('marketHunterPortfolioDailyV3:user:user-a'),null);
 }
 
 console.log('PASS: async account isolation and deterministic same-day snapshot replacement');

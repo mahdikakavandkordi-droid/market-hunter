@@ -4,6 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 
+const FIXTURE_NOW='2026-09-29T22:00:00.000Z';
 const PIN='df4cdb289f3f111a6c7dcbe1d73e0d694bf25405';
 const workflow=fs.readFileSync('.github/workflows/htp-live-prospective.yml','utf8');
 assert.doesNotMatch(workflow,/if:\s*steps\.precheck\.outputs\.complete\s*!=\s*'true'/,'completed daily capture must not skip outcome processing');
@@ -34,6 +35,12 @@ run('tar',['-xf',archive,'-C',pinned]);
 
 const preload=path.join(root,'fixture-provider.mjs');
 fs.writeFileSync(preload,`
+const NativeDate=Date;
+const fixtureTime=NativeDate.parse('${FIXTURE_NOW}');
+globalThis.Date=class extends NativeDate {
+  constructor(...args){super(...(args.length?args:[fixtureTime]))}
+  static now(){return fixtureTime}
+};
 const mode=process.env.HTP_FIXTURE_MODE||'initial';
 const today=new Date().toISOString().slice(0,10);
 const end=new Date(today+'T01:00:00Z').getTime();
@@ -71,7 +78,7 @@ globalThis.fetch=async url=>{
 `);
 
 function fixtureRows(symbol='RY.TO'){
-  const today=new Date().toISOString().slice(0,10),end=new Date(today+'T01:00:00Z').getTime();
+  const today=new Date(FIXTURE_NOW).toISOString().slice(0,10),end=new Date(today+'T01:00:00Z').getTime();
   const h=[...symbol].reduce((a,c)=>(a*33+c.charCodeAt(0))>>>0,5381),base=40+(h%120);
   return Array.from({length:180},(_,i)=>{
     const t=Math.floor((end-(179-i)*86400000)/1000),wave=Math.sin((i+(h%13))/7)*0.008,close=base*(1+i*0.0012+wave);
@@ -83,7 +90,7 @@ const earlierPickId=['fixture-model-v1',decisionDate,'core','RY.TO'].join('|');
 const seedObservation={
   observationId:['fixture-model-v1',decisionDate,'core'].join('|'),
   collectorVersion:'fixture-seed',model:'core',modelVersion:'fixture-model-v1',marketAsOf:decisionDate,
-  capturedAt:new Date().toISOString(),status:'complete_nonzero',
+  capturedAt:FIXTURE_NOW,status:'complete_nonzero',
   picks:[{symbol:'RY.TO',pickObservationId:earlierPickId,decisionAtr14:2,
     decisionPriceAnchor:{close:decision.close,rawClose:decision.rawClose},
     decisionHistory:full.slice(di-14,di+1)}]
@@ -100,7 +107,7 @@ function collect(mode,runId){
 const readJsonl=name=>{
   const file=path.join(evidence,name);return fs.existsSync(file)?fs.readFileSync(file,'utf8').split('\n').filter(Boolean).map(JSON.parse):[];
 };
-const today=new Date().toISOString().slice(0,10);
+const today=new Date(FIXTURE_NOW).toISOString().slice(0,10);
 
 collect('initial','fixture-1');
 let observations=readJsonl('observations.jsonl'),outcomes=readJsonl('outcomes.jsonl');

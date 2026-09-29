@@ -18,7 +18,7 @@ const LEGACY_WATCH_KEY='marketHunterWatchlist';
 const LEGACY_DAILY_KEY='marketHunterPortfolioDaily';
 const LEGACY_GUEST_MIGRATION_KEY='marketHunterLegacyGuestMigrationV3';
 const MARKET_PULSE_INTRADAY_SYMBOLS=Object.freeze({TSX:'^GSPTSE',SP500:'^GSPC',NASDAQ100:'^NDX',GOLD:'GC=F',SILVER:'SI=F',BTC:'BTC-USD',ETH:'ETH-USD'});
-let cloudSyncTimer=0,authAttempt=0;
+let cloudSyncTimer=0,authAttempt=0,portfolioLoadSequence=0;
 const cloudSyncBusyEpochs=new Set(),cloudSyncQueuedEpochs=new Set();
 
 function loadCloudSession(){try{return JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{return null}}
@@ -168,6 +168,7 @@ function persistDaily(payload){persistDailyFor(state.cloud.session,payload)}
 function switchLocalScope(session){
   state.envelope=readEnvelopeFor(session);hydrateEnvelope();
   state.previous=previousMapFromDaily(readDailyFor(session));
+  state.portfolioItems=new Map();state.liveItems=new Map();state.analytics=null;
 }
 function activateSession(session){
   advanceSessionEpoch();
@@ -379,14 +380,16 @@ async function loadCloudPortfolio(ctx=captureSessionContext()){
 }
 async function syncCloudSnapshot(session,ctx=captureSessionContext()){
   assertSessionContext(ctx);
-  const expected=portfolioSymbols();
-  const daily=currentDailyPayloadFor(contextSession(ctx)),local=dailySnapshotCandidate(daily,expected);
-  if(!local.valid)return;
-  const date=local.date,payload={marketAsOf:date,items:local.items,complete:true,meta:local.meta||null};
   for(let attempt=0;attempt<3;attempt++){
     assertSessionContext(ctx);
+    const expected=portfolioSymbols();
+    const daily=currentDailyPayloadFor(contextSession(ctx)),local=dailySnapshotCandidate(daily,expected);
+    if(!local.valid)return;
+    const date=local.date,payload={marketAsOf:date,items:local.items,complete:true,meta:local.meta||null};
     const rows=await cloudRest('market_hunter_portfolio_snapshots',{query:'market_as_of=eq.'+date+'&select=market_as_of,payload,revision,updated_at&limit=1'},ctx);
     assertSessionContext(ctx);
+    // Same-account edits and newer local captures can arrive during the GET too.
+    if(!sameSymbols(expected,portfolioSymbols())||JSON.stringify(daily)!==JSON.stringify(currentDailyPayloadFor(contextSession(ctx))))continue;
     const row=rows?.[0]||null;
     if(row){
       const remote=cloudSnapshotCandidate(row,expected),choice=chooseSameDaySnapshot(local,remote,'remote');
@@ -839,6 +842,8 @@ function savePortfolioSnapshot(data,requestedSymbols,ctx=captureSessionContext()
 async function loadPortfolio(ctx=captureSessionContext()){
   if(!contextActive(ctx))return;
   const positions=[...state.positions.values()].filter(p=>p?.symbol),requested=positions.map(p=>p.symbol);
+  const sequence=++portfolioLoadSequence,signature=JSON.stringify(positions);
+  const requestActive=()=>contextActive(ctx)&&sequence===portfolioLoadSequence&&signature===JSON.stringify([...state.positions.values()].filter(p=>p?.symbol));
   state.portfolioItems=new Map();state.analytics=null;
   if(!positions.length){savePortfolioSnapshot({items:[],failures:[]},[],ctx);return}
   const symbols=requested.join(',');
@@ -846,12 +851,12 @@ async function loadPortfolio(ctx=captureSessionContext()){
   const quantities=positions.filter(p=>Number(p.quantity)>0).map(p=>[p.symbol,Number(p.quantity)].join('|')).join(',');
   try{
     const data=await getJson('/api/portfolio?symbols='+encodeURIComponent(symbols)+(entries?'&entries='+encodeURIComponent(entries):'')+(quantities?'&positions='+encodeURIComponent(quantities):''));
-    if(!contextActive(ctx))return;
+    if(!requestActive())return;
     state.portfolioItems=new Map((data.items||[]).map(x=>[x.symbol,x]));
     state.analytics=data.portfolioAnalytics||null;
     savePortfolioSnapshot(data,requested,ctx);
   }catch(e){
-    if(contextActive(ctx))savePortfolioSnapshot({items:[],failures:requested.map(symbol=>({symbol,reason:'request_failed'}))},requested,ctx);
+    if(requestActive())savePortfolioSnapshot({items:[],failures:requested.map(symbol=>({symbol,reason:'request_failed'}))},requested,ctx);
   }
 }
 async function load(){
@@ -1322,4 +1327,3 @@ if('serviceWorker' in navigator){
 }
 window.addEventListener('scroll',()=>closeRiskInfo(),{passive:true});
 load();
-
