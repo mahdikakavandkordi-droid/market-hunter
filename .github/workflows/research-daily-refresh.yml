@@ -35,6 +35,7 @@ jobs:
       - name: Validate refresh and report scripts
         run: |
           node --check lib/market-pulse-engine.js
+          node --check lib/completed-daily-session.js
           node --check scripts/scan-market-pulse.mjs
           node --check scripts/backtest-market-pulse.mjs
           node --check scripts/scan-market-hunter-v2.mjs
