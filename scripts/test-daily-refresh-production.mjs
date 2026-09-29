@@ -28,5 +28,7 @@ assert.match(app,/24\/7 through/);
 assert.match(app,/Completed-session data through/);
 assert.match(audit,/keyDivergences\.every/,'audit should validate divergence structure without forcing a quota');
 assert.doesNotMatch(audit,/keyDivergences\?\.length\|\|0\)>=2/,'audit must not force at least two divergences');
+assert.match(audit,/api\/research-data\?kind=daily/,'audit must recognize the live daily-report endpoint');
+assert.match(audit,/daily-market-report\.json/,'audit must require the static daily-report fallback');
 
 console.log('PASS: validated daily refresh publishes to main and mixed-date labels are explicit');
