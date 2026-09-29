@@ -104,6 +104,8 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
     state.portfolioItems.get('RY.TO').sector='Financials';
     renderView('portfolio');
   });
+  await expect(page.locator('#portfolioView .swipe-hint')).toContainText('Swipe to browse');
+  expect(await page.locator('#portfolioView .portfolio-carousel').evaluate(el=>el.scrollWidth>el.clientWidth)).toBe(true);
   await expect(allocation.locator('.allocation-item')).toHaveCount(2);
   await expect(allocation.locator('.allocation-item').first()).toContainText('69.0%');
   await allocation.locator('.allocation-item').last().click();
