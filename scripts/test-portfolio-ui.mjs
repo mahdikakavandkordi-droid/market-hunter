@@ -9,6 +9,22 @@ const theme=fs.readFileSync('theme.css','utf8');
 const portfolioApi=fs.readFileSync('api/portfolio.js','utf8');
 const researchApi=fs.readFileSync('api/research-data.js','utf8');
 const server=fs.readFileSync('server.js','utf8');
+const {allocationData,holdingSector}=new Function('short',app.slice(app.indexOf("let allocationMode="),app.indexOf('function riskHtml()'))+';return {allocationData,holdingSector};')(s=>s.replace('.TO',''));
+const allocationRows=[
+  {p:{symbol:'RY.TO',quantity:2},x:{sector:'Financials'},display:{price:100}},
+  {p:{symbol:'TD.TO',quantity:1},x:{sector:'Financials'},display:{price:50}},
+  {p:{symbol:'TEST.TO',quantity:1},x:{sector:'CDR'},display:{price:250}}
+];
+const allocationFixture={rows:allocationRows,complete:allocationRows,currency:'CAD',value:500};
+assert.deepEqual(allocationData(allocationFixture,'holdings').items.map(x=>x.weight),[50,40,10]);
+assert.deepEqual(allocationData(allocationFixture,'sectors').items.map(x=>[x.name,x.weight]),[['Financials',50],['Unknown',50]]);
+assert.equal(holdingSector({sector:'  '}),'Unknown');
+assert.equal(holdingSector({sector:'CDR'}),'Unknown');
+assert.ok(allocationData({...allocationFixture,complete:allocationRows.slice(1)},'holdings').reason);
+assert.ok(allocationData({...allocationFixture,currency:null},'holdings').reason);
+assert.ok(allocationData({...allocationFixture,value:0},'holdings').reason);
+assert.ok(allocationData({rows:[],complete:[]},'holdings').reason);
+assert.equal(allocationData({rows:[allocationRows[0]],complete:[allocationRows[0]],currency:'CAD',value:200},'holdings').items[0].weight,100);
 
 assert.match(html,/class="app-shell"/);
 assert.match(html,/id="homeView"/);

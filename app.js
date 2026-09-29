@@ -1066,12 +1066,43 @@ function portfolioReadHtml(s){
     </div></details>
   </section>`;
 }
+let allocationMode='holdings',allocationSelected=null;
+const ALLOCATION_COLORS=['#35cfa0','#42bfea','#658cf5','#ad86ee','#edac65','#e77fa9','#76bdb3','#b6bc69'];
+function holdingSector(x){
+  const sector=typeof x?.sector==='string'?x.sector.trim():'';
+  return !sector||/^(cdr|unknown|other|n\/a)$/i.test(sector)?'Unknown':sector;
+}
+function allocationData(s,mode){
+  // Do not normalize a partially priced portfolio to a misleading 100%.
+  if(!s.rows.length)return {items:[],reason:'Add a holding to see your allocation.'};
+  if(s.complete.length!==s.rows.length)return {items:[],reason:'Allocation is unavailable until every holding has a valid quantity, cost and price.'};
+  if(!s.currency||!Number.isFinite(s.value))return {items:[],reason:'Combined weights are hidden because holdings use multiple or unknown currencies. Individual positions are still monitored.'};
+  if(s.value<=0||s.complete.some(({display})=>Number(display.price)<=0))return {items:[],reason:'Allocation needs positive market values for every holding.'};
+  const groups=new Map();
+  for(const {p,x,display} of s.complete){
+    const key=mode==='sectors'?holdingSector(x):p.symbol;
+    const item=groups.get(key)||{key,name:mode==='sectors'?key:short(p.symbol),value:0};
+    item.value+=Number(p.quantity)*Number(display.price);groups.set(key,item);
+  }
+  const items=[...groups.values()].sort((a,b)=>b.value-a.value||a.key.localeCompare(b.key));
+  items.forEach((item,i)=>{item.weight=item.value/s.value*100;item.color=item.key==='Unknown'?'#94a3b8':ALLOCATION_COLORS[i%ALLOCATION_COLORS.length]});
+  return {items,reason:null};
+}
 function allocationHtml(s){
-  if(!s.complete.length)return'';
-  if(!s.currency||!Number.isFinite(s.value))return '<div class="notice">Combined weights are hidden because holdings use multiple or unknown currencies. Individual positions are still monitored.</div>';
-  const holdings=s.complete.map(({p,display})=>({name:short(p.symbol),value:Number(p.quantity)*Number(display.price)})).sort((a,b)=>b.value-a.value);
-  const lines=holdings.map(h=>{const w=h.value/s.value*100;return `<div class="allocrow"><span>${esc(h.name)}</span><div class="bar"><span style="width:${Math.max(2,w)}%"></span></div><b>${w.toFixed(1)}%</b></div>`}).join('');
-  return `<section class="panel soft"><div class="sectionhead"><div><h3>Allocation & concentration</h3><p>Current market-value weights.</p></div></div><details><summary>Open weights</summary><div class="allocation">${lines}</div></details></section>`;
+  const {items,reason}=allocationData(s,allocationMode);
+  const tabs=`<div class="allocation-tabs" role="group" aria-label="Allocation breakdown"><button type="button" data-allocation-mode="holdings" aria-pressed="${allocationMode==='holdings'}">Holdings</button><button type="button" data-allocation-mode="sectors" aria-pressed="${allocationMode==='sectors'}">Sectors</button></div>`;
+  const heading='<div class="sectionhead"><div><h3>Your allocation</h3><p>See how your portfolio fits together.</p></div></div>';
+  if(reason)return `<section class="panel soft allocation-panel" id="portfolioAllocation">${heading}${tabs}<p class="read">${esc(reason)}</p></section>`;
+  const selected=items.find(item=>item.key===allocationSelected);
+  let angle=-Math.PI/2;
+  const arcs=items.map((item,i)=>{
+    const end=angle+item.weight/100*Math.PI*2,mid=(angle+end)/2;
+    const point=a=>`${100+76*Math.cos(a)},${100+76*Math.sin(a)}`;
+    const d=`M ${point(angle)} A 76 76 0 0 1 ${point(mid)} A 76 76 0 0 1 ${point(end)}`;angle=end;
+    return `<path d="${d}" fill="none" stroke="${item.color}" stroke-width="${selected?.key===item.key?24:19}" data-allocation-item="${i}" class="allocation-arc"><title>${esc(item.name)}: ${item.weight.toFixed(1)}%</title></path>`;
+  }).join('');
+  const legend=items.map((item,i)=>`<button type="button" class="allocation-item" data-allocation-item="${i}" aria-pressed="${selected?.key===item.key}"><i style="background:${item.color}" aria-hidden="true"></i><span>${esc(item.name)}<small>${money(item.value,s.currency)}</small></span><b>${item.weight.toFixed(1)}%</b></button>`).join('');
+  return `<section class="panel soft allocation-panel" id="portfolioAllocation">${heading}${tabs}<div class="allocation-body"><div class="allocation-chart"><svg viewBox="0 0 200 200" aria-hidden="true">${arcs}</svg><div class="allocation-center" aria-live="polite"><strong>${selected?selected.weight.toFixed(1)+'%':items.length}</strong><span>${selected?esc(selected.name):allocationMode==='sectors'?'sector groups':'holdings'}</span>${selected?`<small>${money(selected.value,s.currency)}</small>`:''}</div></div><div class="allocation-legend">${legend}</div></div><p class="allocation-caption">Market-value weights · ${esc(s.currency)} · Tap a segment or row for details. Quotes may have different timestamps; see each holding.</p><div class="allocation-summary">Largest ${allocationMode==='sectors'?'sector group':'holding'}: <strong>${esc(items[0].name)} · ${items[0].weight.toFixed(1)}%</strong></div>${allocationMode==='sectors'?'<p class="allocation-caption">Uses the existing broad sector classification, not a detailed industry breakdown. Missing classifications and CDR-only labels appear as Unknown.</p>':''}</section>`;
 }
 function riskHtml(){
   const a=state.analytics;if(!a)return'';
@@ -1146,7 +1177,7 @@ function positionCard(p,x,total){
   return `<article class="card portfolio-slide">
     <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(p.symbol)}" aria-label="Open ${esc(p.symbol)} chart">${esc(short(p.symbol))} <span aria-hidden="true">↗</span></button><small>${esc(x?.name||p.symbol)}</small></div><span class="health ${h.tone}">${h.label}</span></div>
     <div class="holding-quote"><div class="holding-price">${money(display.price,display.currency||x?.currency||'CAD')}</div><div class="holding-change ${cls(display.changePct)}">${pct(display.changePct)}<small>Daily change</small></div></div>${quoteMetaHtml(display)}
-    <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span></div>
+    <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span><span class="tag">${esc(holdingSector(x))}</span></div>
     <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
     <p class="holding-status">${esc(h.notes[0])}</p>
     <details class="holding-analysis"><summary>Chart read <span>Strength, risks & levels</span></summary>${insightRowsHtml(x)}</details>
@@ -1213,9 +1244,10 @@ function portfolioHtml(){
       ${cloudPanelHtml()}
       <div class="portfolio-tools"><span>Keep a copy of your holdings</span><div><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button></div></div>
     </section>
+    ${allocationHtml(s)}
     <section class="panel soft holdings-panel"><div class="sectionhead"><div><h3>Your holdings <span class="holdings-count">${s.rows.length}</span></h3><p>Price, performance and the next thing to watch.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe to browse ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty portfolio-empty"><span aria-hidden="true">＋</span><strong>Your portfolio starts here</strong><p>Add a holding with your purchase price and date to see its progress.</p><button class="btn primary" data-add>Add your first holding</button></div>'}</div></section>
     ${changeBlock}${attentionBlock}
-    <div class="portfolio-context">${portfolioReadHtml(s)}${riskHtml()}${allocationHtml(s)}</div>
+    <div class="portfolio-context">${portfolioReadHtml(s)}${riskHtml()}</div>
   </div>`;
 }
 
@@ -1289,6 +1321,15 @@ function closeRiskInfo(except=null){
   qa('.risk-info[open]').forEach(d=>{if(d!==except)d.open=false});
 }
 document.addEventListener('click',async e=>{
+  const allocationControl=e.target.closest('[data-allocation-mode],[data-allocation-item]');
+  if(allocationControl){
+    const mode=allocationControl.dataset.allocationMode;
+    if(mode){allocationMode=mode==='sectors'?'sectors':'holdings';allocationSelected=null}
+    else {const item=allocationData(portfolioSummary(),allocationMode).items[Number(allocationControl.dataset.allocationItem)];allocationSelected=item?.key===allocationSelected?null:item?.key}
+    q('#portfolioAllocation').outerHTML=allocationHtml(portfolioSummary());
+    const selector=mode?`[data-allocation-mode="${allocationMode}"]`:`button[data-allocation-item="${allocationControl.dataset.allocationItem}"]`;
+    q('#portfolioAllocation').querySelector(selector)?.focus({preventScroll:true});return;
+  }
   const riskInfo=e.target.closest('.risk-info');
   if(riskInfo){
     if(e.target.closest('summary')){
