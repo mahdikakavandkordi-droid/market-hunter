@@ -293,8 +293,9 @@ export default async function handler(req,res){
       if(!m){failures.push({symbol,reason:'insufficient_history'});return}
       const stage=classify(m),meta=UNIVERSE_META.get(symbol)||{};
       const entryStats=sinceEntryStats(r.value.rows,bench,entryMap.get(symbol));
+      const dayChangePct=r.value.rows.length>1?pct(r.value.rows.at(-1).close,r.value.rows.at(-2).close):null;
       items.push({
-        symbol,name:meta.name||symbol,sector:meta.sector||null,price:m.last,currency:r.value.currency,benchmark,entryStats,
+        symbol,name:meta.name||symbol,sector:meta.sector||null,price:m.last,dayChangePct,currency:r.value.currency,benchmark,entryStats,
         stage:stage||null,
         ret5:m.ret5,ret20:m.ret20,ret60:m.ret60,
         momentumShift:m.momentumShift,rs20:m.rs20,rs60:m.rs60,rsi14:m.rsi14,atr14Pct:m.atr14Pct,
