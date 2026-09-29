@@ -734,22 +734,40 @@ async function importBackupFile(file){
   else localStorage.removeItem('marketHunterPortfolioDaily');
   await loadPortfolio();renderAll();setView('portfolio');toast('Backup restored');
 }
+function cloudPanelHtml(){
+  const session=state.cloud.session,status=state.cloud.status||'local';
+  const badgeClass=status==='synced'?'synced':status==='syncing'?'syncing':status==='error'?'error':'';
+  const badgeText=session?(status==='synced'?'Cloud synced':status==='syncing'?'Syncing…':status==='error'?'Sync issue':'Cloud connected'):'Local only';
+  const message=state.cloud.message?`<div class="cloud-message">${esc(state.cloud.message)}</div>`:'';
+  if(session){
+    return `<div class="cloud-panel"><div class="cloud-row"><div><b>Cloud portfolio</b><small>${esc(session.user?.email||'Signed in')}</small></div><span class="cloud-badge ${badgeClass}">${badgeText}</span></div><div class="cloud-actions"><button class="btn ghost" data-cloud-sync>Sync now</button><button class="btn" data-cloud-signout>Sign out</button></div>${message}</div>`;
+  }
+  if(!state.cloud.showAuth){
+    return `<div class="cloud-panel"><div class="cloud-row"><div><b>Protect this portfolio</b><small>Keep a private cloud copy and restore it on another device.</small></div><button class="btn primary" data-cloud-toggle>Connect cloud</button></div>${message}</div>`;
+  }
+  return `<div class="cloud-panel"><div class="cloud-row"><div><b>Market Hunter cloud</b><small>Your existing local holdings will be merged, not replaced.</small></div><button class="btn" data-cloud-toggle>Cancel</button></div><div class="cloud-form"><input type="email" autocomplete="email" placeholder="Email" data-cloud-email><input type="password" autocomplete="current-password" minlength="6" placeholder="Password (6+ chars)" data-cloud-password><button class="btn primary" data-cloud-signin>Sign in</button><button class="btn" data-cloud-signup>Create account</button></div>${message}</div>`;
+}
 function portfolioHtml(){
   const s=portfolioSummary();
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
   const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness, what to watch, and what would change the current read.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>`<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(x?.dayChangePct)}">Day ${pct(x?.dayChangePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`).join('')}</div></section>`:'';
   return `<div class="stack">
     <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
+      ${cloudPanelHtml()}
       <div class="summarygrid"><div class="sum"><small>Value</small><b>${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</b></div><div class="sum"><small>Cost basis</small><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div class="sum"><small>Total P/L</small><b class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency)+' · '+pct(s.pnlPct):'—'}</b></div><div class="sum"><small>Holdings</small><b>${s.rows.length}</b></div><div class="sum"><small>Attention weight</small><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
       <div class="read">${s.breadth?s.breadth.attention.toFixed(0)+'% of portfolio value is currently in cooling/watch or warning conditions.':(s.attention.length?s.attention.length+' holding(s) deserve closer review.':'No material structural warning across covered holdings.')}</div>
     </section>
     ${portfolioReadHtml(s)}${changeBlock}${attentionBlock}${allocationHtml(s)}${riskHtml()}
-    <section class="panel soft"><div class="sectionhead"><div><h3>Holdings</h3><p>Health first. Details stay collapsed.</p></div></div><div class="cards">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty">No positions yet.</div>'}</div></section>
+    <section class="panel soft"><div class="sectionhead"><div><h3>Holdings</h3><p>Swipe left/right between positions. Details stay collapsed.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty">No positions yet.</div>'}</div></section>
   </div>`;
 }
 function watchlistHtml(){
   const by=new Map(allCandidates().map(x=>[x.symbol,x])),items=[...state.watch];
-  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>Watchlist</h2><p>Saved charts remain even after leaving the shortlist.</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>by.get(symbol)?stockCard(by.get(symbol)):`<article class="card"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`).join(''):'<div class="empty">Save a chart from the shortlist.</div>'}</div></section></div>`;
+  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>Watchlist</h2><p>Saved charts remain even after leaving the shortlist.</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>{
+    const current=by.get(symbol),live=state.liveItems.get(symbol);
+    if(current)return stockCard(current);
+    return `<article class="card"><div class="cardtop"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="cardprice">${live?money(live.price,live.currency||'CAD'):'—'}<small class="day-change ${cls(live?.dayChangePct)}">Day ${pct(live?.dayChangePct)}</small></div></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`;
+  }).join(''):'<div class="empty">Save a chart from the shortlist.</div>'}</div></section></div>`;
 }
 function renderView(view){
   if(view==='home')q('#homeView').innerHTML=homeHtml();
