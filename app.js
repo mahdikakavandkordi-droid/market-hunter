@@ -449,14 +449,15 @@ function homeHtml(){
     const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
     const key=x.key||marketKeyByName[x.name]||'';
     const context=developmentByMarket.get(key)?.text||'';
+    const d1=x.current?.returns?.d1??x.returns?.d1;
     return `<div class="market-row">
       <div><b>${esc(x.name)}</b><small>${esc(x.condition||'')}</small></div>
-      <div class="market-value">${fmt(x.price)}</div>
+      <div class="market-value">${fmt(x.price)}<small class="day-change ${cls(d1)}">Day ${pct(d1)}</small></div>
       <div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div>
       ${context?`<div class="market-context">${esc(stripMarketPrefix(context))}</div>`:''}
     </div>`;
   }).join('');
-  const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
+  const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small><small class="day-change ${cls(x.dayChangePct)}">Day ${pct(x.dayChangePct)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
     const h5=m?.evidence?.horizons?.['5'];
     const h20=m?.evidence?.horizons?.['20'];
@@ -528,7 +529,7 @@ function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
   const why=stockNarrative(x);
   return `<article class="card">
-    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice">${money(x.price,'CAD')}<small class="${cls(x.ret5)}">5D ${pct(x.ret5)}</small></div></div>
+    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice">${money(x.price,'CAD')}<small class="day-change ${cls(x.dayChangePct)}">Day ${pct(x.dayChangePct)}</small><small class="${cls(x.ret5)}">5D ${pct(x.ret5)}</small></div></div>
     <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
     <div class="metrics"><div class="metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></div><div class="metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></div><div class="metric"><small>RS20</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="metric"><small>Momentum</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div></div>
     <div class="why analysis-copy">${esc(why)}</div>
