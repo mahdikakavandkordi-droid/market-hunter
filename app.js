@@ -166,7 +166,11 @@ function allCandidates(){
 async function loadCandidateLiveData(){
   state.liveItems=new Map();
   const raw=[...(state.v2?.integratedSurfacePicks||[]),...Object.values(state.v2?.surfacePicks||{}).flat()];
-  const symbols=[...new Set(raw.map(x=>x?.symbol).filter(Boolean))].slice(0,30);
+  const symbols=[...new Set([
+    ...raw.map(x=>x?.symbol),
+    ...state.watch,
+    ...[...state.positions.values()].map(x=>x?.symbol)
+  ].filter(Boolean))].slice(0,30);
   if(!symbols.length)return;
   try{
     const data=await getJson('/api/portfolio?symbols='+encodeURIComponent(symbols.join(',')));
