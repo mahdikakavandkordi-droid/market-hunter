@@ -6,6 +6,7 @@ const app=fs.readFileSync('app.js','utf8');
 const css=fs.readFileSync('app.css','utf8');
 const mobile=fs.readFileSync('mobile-polish.css','utf8');
 const theme=fs.readFileSync('theme.css','utf8');
+const portfolioApi=fs.readFileSync('api/portfolio.js','utf8');
 
 assert.match(html,/class="app-shell"/);
 assert.match(html,/id="homeView"/);
@@ -39,6 +40,8 @@ assert.match(css,/\.portfolio-carousel/);
 assert.match(css,/scroll-snap-type:x mandatory/);
 assert.match(css,/\.day-change/);
 assert.match(css,/\.cloud-panel/);
+assert.match(portfolioApi,/dayChangePct/);
+assert.match(portfolioApi,/r\.value\.rows\.at\(-2\)/);
 assert.match(mobile,/@media/);
 assert.match(theme,/data-theme="light"/);
 
