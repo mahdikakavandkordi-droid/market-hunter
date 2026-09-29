@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {MARKET_PULSE_VERSION,MARKET_PULSE_UNIVERSE,round,dayKey,pulseMetrics,descriptiveState,scenarioLevels} from '../lib/market-pulse-engine.js';
+import {completedDailyRows} from '../lib/completed-daily-session.js';
 
 const range=process.env.MARKET_PULSE_RANGE||'10y';
 
@@ -9,10 +10,10 @@ async function fetchRows(symbol){
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
   if(!z)throw new Error(symbol+': unavailable');
-  const rows=(z.timestamp||[]).map((t,i)=>{
+  const rows=completedDailyRows((z.timestamp||[]).map((t,i)=>{
     const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
     return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
-  }).filter(x=>Number.isFinite(x.close)&&x.close>0&&Number.isFinite(x.high)&&Number.isFinite(x.low));
+  }).filter(x=>Number.isFinite(x.close)&&x.close>0&&Number.isFinite(x.high)&&Number.isFinite(x.low)),z.meta);
   return {rows,currency:z.meta?.currency||null,exchange:z.meta?.exchangeName||null};
 }
 
