@@ -9,7 +9,7 @@ const core=source.slice(0,cut)+`
 globalThis.__mh={
   state,saveCloudSession,ensureCloudSession,scopeId,stateStorageKey,dailyStorageKey,
   readEnvelopeFor,readDailyFor,switchLocalScope,persistDaily,loadCloudPortfolio,
-  syncCloudSnapshot,syncPortfolioCloud,loadPortfolio,snapshotAttempt,currentDailyPayload
+  syncCloudSnapshot,syncPortfolioCloud,queueCloudSync,loadPortfolio,snapshotAttempt,currentDailyPayload
 };
 `;
 
@@ -56,6 +56,9 @@ function boot(initial={},fetchImpl=async()=>response(500,{message:'unexpected fe
 }
 const parse=(storage,key)=>JSON.parse(storage.getItem(key)||'null');
 const tick=()=>new Promise(r=>setTimeout(r,0));
+async function settleStale(promise){
+  try{return await promise}catch(e){assert.equal(e?.code,'STALE_CLOUD_OPERATION','only generation invalidation may abort this operation');return null}
+}
 
 // A -> B while A's initial cloud load is pending.
 {
@@ -71,7 +74,7 @@ const tick=()=>new Promise(r=>setTimeout(r,0));
   h.saveCloudSession(B);h.switchLocalScope(B);
   stateReq.resolve(response(200,[{payload:envFor('RY.TO'),revision:4,updated_at:'2026-09-29T01:00:00Z'}]));
   snapReq.resolve(response(200,[]));
-  await pending;
+  await settleStale(pending);
   const b=parse(storage,'marketHunterPortfolioV3:user:user-b');
   assert.equal(Boolean(b?.positions?.['RY.TO']),false,'A response must not be persisted into B local scope');
 }
@@ -89,7 +92,7 @@ const tick=()=>new Promise(r=>setTimeout(r,0));
   h.saveCloudSession(null);h.switchLocalScope(null);
   stateReq.resolve(response(200,[{payload:envFor('RY.TO'),revision:2,updated_at:'2026-09-29T01:00:00Z'}]));
   snapReq.resolve(response(200,[]));
-  await pending;
+  await settleStale(pending);
   const guest=parse(storage,'marketHunterPortfolioV3:guest');
   assert.equal(Boolean(guest?.positions?.['RY.TO']),false,'signed-out guest scope must not receive A response');
 }
@@ -112,7 +115,7 @@ const tick=()=>new Promise(r=>setTimeout(r,0));
   h.saveCloudSession(A2);h.switchLocalScope(A2);
   stateReq.resolve(response(200,[{payload:envFor('RY.TO','2026-09-29T00:30:00Z'),revision:1,updated_at:'2026-09-29T00:30:00Z'}]));
   snapReq.resolve(response(200,[]));
-  await pending;
+  await settleStale(pending);
   const current=parse(storage,'marketHunterPortfolioV3:user:user-a');
   assert.equal(Boolean(current?.positions?.['RY.TO']),false,'old A generation must not mutate later A generation');
   assert.equal(Boolean(current?.positions?.['ENB.TO']),true);
@@ -132,6 +135,18 @@ const tick=()=>new Promise(r=>setTimeout(r,0));
   await pending;
   assert.equal(h.state.cloud.session.user.id,'user-b','stale refresh must not restore A');
   assert.equal(parse(storage,'marketHunterCloudSessionV1').user.id,'user-b');
+}
+
+
+// Debounced sync scheduled by A must be invalidated when the active account changes.
+{
+  const A=session('user-a'),B=session('user-b');let requests=0;
+  const {h}=boot({marketHunterCloudSessionV1:JSON.stringify(A)},async()=>{requests++;return response(200,[])});
+  h.state.cloud.ready=true;
+  h.queueCloudSync();
+  h.saveCloudSession(B);h.switchLocalScope(B);
+  await new Promise(r=>setTimeout(r,700));
+  assert.equal(requests,0,'account change must cancel A queued synchronization work');
 }
 
 // Portfolio API response must not apply after account change.
@@ -174,7 +189,7 @@ const tick=()=>new Promise(r=>setTimeout(r,0));
   const pending=h.syncCloudSnapshot(A);
   h.saveCloudSession(B);h.switchLocalScope(B);
   get.resolve(response(200,[]));
-  await pending;
+  await settleStale(pending);
   assert.equal(writes.length,0,'stale snapshot operation must not continue into cloud writes');
 }
 
