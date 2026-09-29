@@ -400,6 +400,7 @@ function savePortfolioSnapshot(items){
     state.previous=new Map();
     localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify({previousDate:null,previousItems:[],currentDate:date,currentItems:items}));
   }
+  queueCloudSync();
 }
 async function loadPortfolio(){
   const positions=[...state.positions.values()].filter(p=>p?.symbol);
@@ -426,6 +427,8 @@ async function load(){
     state.daily=daily.status==='fulfilled'?daily.value:null;
     state.pulse=pulse.status==='fulfilled'?pulse.value:null;
     state.v2=v2.status==='fulfilled'?v2.value:null;
+    await initializeCloudPortfolio();
+    await loadCandidateLiveData();
     await loadPortfolio();
     q('#asOf').textContent=state.daily?.asOf?.latest?'Data through '+state.daily.asOf.latest:'Research dashboard';
     renderAll();
