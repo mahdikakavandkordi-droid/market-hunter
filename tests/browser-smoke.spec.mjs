@@ -41,7 +41,8 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
     await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
       version:'intraday-v1',capturedAt:now,sessionDate:now.slice(0,10),marketOpen:true,provisional:true,
       intended:1,received:1,failures:[],quotes:{
-        'RY.TO':{symbol:'RY.TO',name:'Royal Bank of Canada',price:111.25,currency:'CAD',previousClose:109.9,changePct:1.234,quoteAt:now,sessionDate:now.slice(0,10),stale:false}
+        'RY.TO':{symbol:'RY.TO',name:'Royal Bank of Canada',price:111.25,currency:'CAD',previousClose:109.9,changePct:1.234,quoteAt:now,sessionDate:now.slice(0,10),stale:false},
+        '^IXIC':{symbol:'^IXIC',name:'Nasdaq Composite sentinel',price:99999,currency:'USD',previousClose:90000,changePct:11.11,quoteAt:now,sessionDate:now.slice(0,10),stale:false}
       }
     })});
   });
@@ -78,6 +79,12 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
 
   await page.goto('/');
   await page.waitForLoadState('networkidle');
+
+  const nasdaq100=page.locator('.market-row').filter({hasText:'Nasdaq-100'}).first();
+  await expect(nasdaq100).toBeVisible();
+  await expect(nasdaq100).not.toContainText('99,999');
+  await expect(nasdaq100).toContainText('completed-session fallback');
+
   await page.locator('[data-view="portfolio"]:visible').first().click();
   await expect(page.locator('#portfolioView')).toContainText('smoke@example.test');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('RY');
