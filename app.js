@@ -359,7 +359,8 @@ function applyTheme(theme){
 function toast(msg){const e=q('#toast');e.textContent=msg;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),1400)}
 async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url);return r.json()}
 function quoteTimeLabel(value){
-  const t=Date.parse(value||'');if(!Number.isFinite(t))return '';
+  const raw=String(value||'');if(/^\d{4}-\d{2}-\d{2}$/.test(raw))return raw;
+  const t=Date.parse(raw);if(!Number.isFinite(t))return '';
   return new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
 }
 function quoteFor(symbol,fallback=null){
