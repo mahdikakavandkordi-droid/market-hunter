@@ -275,3 +275,27 @@ html[data-theme="light"] .insight-row.change>span{color:var(--blue)}
 .allocation-summary{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;font-size:12px;color:var(--muted)}
 .allocation-summary strong{color:var(--text);font-weight:600}
 @media(max-width:600px){.allocation-body{grid-template-columns:1fr;gap:6px}.allocation-chart{max-width:190px}.allocation-center strong{font-size:24px}.allocation-legend{max-height:285px}.allocation-panel{padding:18px!important}}
+/* Focus the mobile flow on value, exposure and holdings. */
+.allocation-method{margin-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.allocation-method summary{min-height:44px;display:flex;align-items:center;font-size:12px}
+.allocation-method p{line-height:1.65;margin:4px 0 12px}
+.allocation-legend{max-height:none;overflow:visible}
+.allocation-item small{line-height:1.5}
+.exposure-tag{border-color:rgba(53,207,160,.3);background:rgba(53,207,160,.07)}
+.portfolio-account .cloud-panel{margin-top:0}
+.portfolio-account details{margin-top:12px}
+.portfolio-account summary{min-height:44px}
+.portfolio-overview .read{font-size:12px;margin-bottom:0}
+@media(max-width:700px){
+ .portfolio-layout .portfolio-carousel{display:grid!important;grid-template-columns:minmax(0,1fr)!important;overflow:visible!important;scroll-snap-type:none;gap:14px;padding-bottom:0}
+ .portfolio-layout .portfolio-slide{width:100%!important;min-width:0!important;max-width:none!important;margin:0}
+ .portfolio-layout .swipe-hint{display:none}
+ .portfolio-overview .sectionhead{align-items:center;gap:10px}
+ .portfolio-overview .sectionhead p{display:none}
+ .portfolio-overview .sectionhead .btn{min-height:44px;white-space:nowrap;padding:10px 12px}
+ .allocation-legend{max-height:none}
+ .portfolio-slide .actions .btn{min-height:44px}
+}
+.portfolio-sync-link{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;padding:0 8px;min-height:32px;align-items:center;text-decoration:none}
+.portfolio-sync-link span{color:var(--blue)}
+#portfolioAccount{scroll-margin-top:85px}

@@ -1069,6 +1069,7 @@ function portfolioReadHtml(s){
 let allocationMode='holdings',allocationSelected=null;
 const ALLOCATION_COLORS=['#35cfa0','#42bfea','#658cf5','#ad86ee','#edac65','#e77fa9','#76bdb3','#b6bc69'];
 function holdingSector(x){
+  if(typeof x?.exposure?.group==='string'&&x.exposure.group.trim())return x.exposure.group.trim();
   const sector=typeof x?.sector==='string'?x.sector.trim():'';
   return !sector||/^(cdr|unknown|other|n\/a)$/i.test(sector)?'Unknown':sector;
 }
@@ -1081,8 +1082,8 @@ function allocationData(s,mode){
   const groups=new Map();
   for(const {p,x,display} of s.complete){
     const key=mode==='sectors'?holdingSector(x):p.symbol;
-    const item=groups.get(key)||{key,name:mode==='sectors'?key:short(p.symbol),value:0};
-    item.value+=Number(p.quantity)*Number(display.price);groups.set(key,item);
+    const item=groups.get(key)||{key,name:mode==='sectors'?key:short(p.symbol),value:0,members:[]};
+    item.value+=Number(p.quantity)*Number(display.price);item.members.push(short(p.symbol));groups.set(key,item);
   }
   const items=[...groups.values()].sort((a,b)=>b.value-a.value||a.key.localeCompare(b.key));
   items.forEach((item,i)=>{item.weight=item.value/s.value*100;item.color=item.key==='Unknown'?'#94a3b8':ALLOCATION_COLORS[i%ALLOCATION_COLORS.length]});
@@ -1090,7 +1091,7 @@ function allocationData(s,mode){
 }
 function allocationHtml(s){
   const {items,reason}=allocationData(s,allocationMode);
-  const tabs=`<div class="allocation-tabs" role="group" aria-label="Allocation breakdown"><button type="button" data-allocation-mode="holdings" aria-pressed="${allocationMode==='holdings'}">Holdings</button><button type="button" data-allocation-mode="sectors" aria-pressed="${allocationMode==='sectors'}">Sectors</button></div>`;
+  const tabs=`<div class="allocation-tabs" role="group" aria-label="Allocation breakdown"><button type="button" data-allocation-mode="holdings" aria-pressed="${allocationMode==='holdings'}">Holdings</button><button type="button" data-allocation-mode="sectors" aria-pressed="${allocationMode==='sectors'}">Exposure</button></div>`;
   const heading='<div class="sectionhead"><div><h3>Your allocation</h3><p>See how your portfolio fits together.</p></div></div>';
   if(reason)return `<section class="panel soft allocation-panel" id="portfolioAllocation">${heading}${tabs}<p class="read">${esc(reason)}</p></section>`;
   const selected=items.find(item=>item.key===allocationSelected);
@@ -1101,8 +1102,8 @@ function allocationHtml(s){
     const d=`M ${point(angle)} A 76 76 0 0 1 ${point(mid)} A 76 76 0 0 1 ${point(end)}`;angle=end;
     return `<path d="${d}" fill="none" stroke="${item.color}" stroke-width="${selected?.key===item.key?24:19}" data-allocation-item="${i}" class="allocation-arc"><title>${esc(item.name)}: ${item.weight.toFixed(1)}%</title></path>`;
   }).join('');
-  const legend=items.map((item,i)=>`<button type="button" class="allocation-item" data-allocation-item="${i}" aria-pressed="${selected?.key===item.key}"><i style="background:${item.color}" aria-hidden="true"></i><span>${esc(item.name)}<small>${money(item.value,s.currency)}</small></span><b>${item.weight.toFixed(1)}%</b></button>`).join('');
-  return `<section class="panel soft allocation-panel" id="portfolioAllocation">${heading}${tabs}<div class="allocation-body"><div class="allocation-chart"><svg viewBox="0 0 200 200" aria-hidden="true">${arcs}</svg><div class="allocation-center" aria-live="polite"><strong>${selected?selected.weight.toFixed(1)+'%':items.length}</strong><span>${selected?esc(selected.name):allocationMode==='sectors'?'sector groups':'holdings'}</span>${selected?`<small>${money(selected.value,s.currency)}</small>`:''}</div></div><div class="allocation-legend">${legend}</div></div><p class="allocation-caption">Market-value weights · ${esc(s.currency)} · Tap a segment or row for details. Quotes may have different timestamps; see each holding.</p><div class="allocation-summary">Largest ${allocationMode==='sectors'?'sector group':'holding'}: <strong>${esc(items[0].name)} · ${items[0].weight.toFixed(1)}%</strong></div>${allocationMode==='sectors'?'<p class="allocation-caption">Uses the existing broad sector classification, not a detailed industry breakdown. Missing classifications and CDR-only labels appear as Unknown.</p>':''}</section>`;
+  const legend=items.map((item,i)=>`<button type="button" class="allocation-item" data-allocation-item="${i}" aria-pressed="${selected?.key===item.key}"><i style="background:${item.color}" aria-hidden="true"></i><span>${esc(item.name)}<small>${money(item.value,s.currency)}${allocationMode==='sectors'?' · '+esc(item.members.join(', ')):''}</small></span><b>${item.weight.toFixed(1)}%</b></button>`).join('');
+  return `<section class="panel soft allocation-panel" id="portfolioAllocation">${heading}${tabs}<div class="allocation-body"><div class="allocation-chart"><svg viewBox="0 0 200 200" aria-hidden="true">${arcs}</svg><div class="allocation-center" aria-live="polite"><strong>${selected?selected.weight.toFixed(1)+'%':items.length}</strong><span>${selected?esc(selected.name):allocationMode==='sectors'?'exposures':'holdings'}</span>${selected?`<small>${money(selected.value,s.currency)}</small>`:''}</div></div><div class="allocation-legend">${legend}</div></div><p class="allocation-caption">${esc(s.currency)} · Market value · Tap to explore</p><div class="allocation-summary">Largest ${allocationMode==='sectors'?'exposure':'holding'}: <strong>${esc(items[0].name)} · ${items[0].weight.toFixed(1)}%</strong></div><details class="allocation-method"><summary>About this breakdown</summary><p>Exposure groups describe the underlying asset: company sectors, gold or silver. CDRs follow the underlying company. Funds use verified mandates; this is not a full look-through of every fund holding. Mixed gold-and-silver funds remain a separate group.</p><p>Weights use current holding values, not leverage-adjusted risk exposure. Quotes can have different timestamps. Unverified classifications remain Unknown.</p></details></section>`;
 }
 function riskHtml(){
   const a=state.analytics;if(!a)return'';
@@ -1177,11 +1178,11 @@ function positionCard(p,x,total){
   return `<article class="card portfolio-slide">
     <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(p.symbol)}" aria-label="Open ${esc(p.symbol)} chart">${esc(short(p.symbol))} <span aria-hidden="true">↗</span></button><small>${esc(x?.name||p.symbol)}</small></div><span class="health ${h.tone}">${h.label}</span></div>
     <div class="holding-quote"><div class="holding-price">${money(display.price,display.currency||x?.currency||'CAD')}</div><div class="holding-change ${cls(display.changePct)}">${pct(display.changePct)}<small>Daily change</small></div></div>${quoteMetaHtml(display)}
-    <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span><span class="tag">${esc(holdingSector(x))}</span></div>
+    <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span><span class="tag exposure-tag">${esc(holdingSector(x))}${x?.exposure?.instrument&&x.exposure.instrument!=='Unknown'?' · '+esc(x.exposure.instrument):''}</span></div>
     <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
     <p class="holding-status">${esc(h.notes[0])}</p>
     <details class="holding-analysis"><summary>Chart read <span>Strength, risks & levels</span></summary>${insightRowsHtml(x)}</details>
-    <details><summary>Position details</summary><div class="copy">${(()=>{const q=positionQuickRead(p,x,weight);return '<div class="quick-read-rows"><div><span>Now</span><b>'+esc(q.now)+'</b></div><div><span>Since entry</span><b>'+esc(q.since)+'</b></div><div><span>Portfolio impact</span><b>'+esc(q.impact)+'</b></div></div>';})()}<strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry details</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
+    <details><summary>Position details</summary><div class="copy">${(()=>{const q=positionQuickRead(p,x,weight);return '<div class="quick-read-rows"><div><span>Now</span><b>'+esc(q.now)+'</b></div><div><span>Since entry</span><b>'+esc(q.since)+'</b></div><div><span>Portfolio impact</span><b>'+esc(q.impact)+'</b></div></div>';})()}${x?.exposure?`<strong>Exposure</strong><br>${esc(x.exposure.assetClass)} · ${esc(x.exposure.group)}<br>${esc(x.exposure.detail)}${x.exposure.source&&x.exposure.source.startsWith('https://')?`<br><a href="${esc(x.exposure.source)}" target="_blank" rel="noopener noreferrer">Issuer details ↗</a>`:''}<br><br>`:''}<strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry details</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
     <div class="actions"><button class="btn" data-chart="${p.symbol}">Chart ↗</button><button class="btn" data-edit="${p.symbol}">Edit</button><button class="btn danger" data-remove="${p.symbol}">Remove</button></div>
   </article>`;
 }
@@ -1234,6 +1235,7 @@ function cloudPanelHtml(){
 }
 function portfolioHtml(){
   const s=portfolioSummary();
+  const syncLabel=state.cloud.session?(state.cloud.status==='error'?'Sync issue':state.cloud.status==='synced'?'Cloud synced':state.cloud.status==='syncing'?'Syncing…':'Cloud connected'):'Local only';
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
   const attentionBlock=s.attention.length?`<details class="panel soft attention-panel portfolio-disclosure"><summary>Current attention <span>${s.attention.length} holding(s) to review</span></summary><div class="attention-cards">${s.attention.map(({p,x})=>{const display=quoteFor(p.symbol,x);return `<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${quoteMetaHtml(display)}${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`}).join('')}</div></details>`:'';
   return `<div class="stack portfolio-layout">
@@ -1241,13 +1243,15 @@ function portfolioHtml(){
       <div class="portfolio-hero"><div><span class="hero-label">Portfolio value</span><strong class="hero-value">${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</strong></div><div class="hero-return"><span class="hero-label">Total P/L</span><strong class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency):'—'}</strong><span class="return-percent ${cls(s.pnlPct)}">${s.currency?pct(s.pnlPct):'—'}</span></div></div>
       <div class="portfolio-stats"><div><span>Cost basis</span><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div><span>Holdings</span><b>${s.rows.length}</b></div><div><span>Attention weight</span><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
       <div class="read">${s.breadth?s.breadth.attention.toFixed(0)+'% of portfolio value is currently in cooling/watch or warning conditions.':(s.attention.length?s.attention.length+' holding(s) deserve closer review.':s.rows.length?'Waiting for enough data to assess your holdings.':'Add your first holding to start monitoring your portfolio.')}</div>
-      ${cloudPanelHtml()}
-      <div class="portfolio-tools"><span>Keep a copy of your holdings</span><div><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button></div></div>
+
+
     </section>
+    <a class="portfolio-sync-link" href="#portfolioAccount">${esc(syncLabel)} <span>Manage account ↗</span></a>
     ${allocationHtml(s)}
-    <section class="panel soft holdings-panel"><div class="sectionhead"><div><h3>Your holdings <span class="holdings-count">${s.rows.length}</span></h3><p>Price, performance and the next thing to watch.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe to browse ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty portfolio-empty"><span aria-hidden="true">＋</span><strong>Your portfolio starts here</strong><p>Add a holding with your purchase price and date to see its progress.</p><button class="btn primary" data-add>Add your first holding</button></div>'}</div></section>
+    <section class="panel soft holdings-panel"><div class="sectionhead"><div><h3>Your holdings <span class="holdings-count">${s.rows.length}</span></h3><p>Price, performance and the next thing to watch.</p></div><span class="swipe-hint">${s.rows.length>1?'Scroll to explore':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty portfolio-empty"><span aria-hidden="true">＋</span><strong>Your portfolio starts here</strong><p>Add a holding with your purchase price and date to see its progress.</p><button class="btn primary" data-add>Add your first holding</button></div>'}</div></section>
     ${changeBlock}${attentionBlock}
     <div class="portfolio-context">${portfolioReadHtml(s)}${riskHtml()}</div>
+    <section class="panel soft portfolio-account" id="portfolioAccount"><div class="sectionhead"><div><h3>Account & backup</h3><p>Manage sync and keep a copy.</p></div></div>${cloudPanelHtml()}<details><summary>Backup & restore</summary><div class="portfolio-tools"><button class="btn" data-backup>Export backup</button><button class="btn" data-restore>Restore backup</button></div></details></section>
   </div>`;
 }
 

@@ -1,5 +1,18 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
+import {portfolioExposure} from '../lib/portfolio-exposure.js';
+
+assert.equal(portfolioExposure('AAPL.TO',{sector:'CDR'}).group,'Technology');
+assert.equal(portfolioExposure('AAPL.TO').instrument,'CDR');
+assert.equal(portfolioExposure('PSLV.TO').group,'Silver');
+assert.equal(portfolioExposure('CGL-C.TO').group,'Gold');
+assert.equal(portfolioExposure('SVR.C.TO').group,'Silver');
+assert.match(portfolioExposure('HUZ.TO').detail,/futures/);
+assert.equal(portfolioExposure('CEF.TO').group,'Gold & silver');
+assert.equal(portfolioExposure('AEM.TO',{sector:'Materials'}).group,'Materials');
+assert.equal(portfolioExposure('FAKE-GOLD.TO').group,'Unknown');
+assert.equal(portfolioExposure('AAPL.NE').group,'Unknown');
+assert.equal(portfolioExposure('UNKNOWN.TO',{sector:'CDR'}).group,'Unknown');
 
 const html=fs.readFileSync('index.html','utf8');
 const app=fs.readFileSync('app.js','utf8');
@@ -20,6 +33,8 @@ assert.deepEqual(allocationData(allocationFixture,'holdings').items.map(x=>x.wei
 assert.deepEqual(allocationData(allocationFixture,'sectors').items.map(x=>[x.name,x.weight]),[['Financials',50],['Unknown',50]]);
 assert.equal(holdingSector({sector:'  '}),'Unknown');
 assert.equal(holdingSector({sector:'CDR'}),'Unknown');
+assert.equal(holdingSector({sector:'CDR',exposure:portfolioExposure('AAPL.TO')}),'Technology');
+assert.equal(holdingSector({sector:null,exposure:portfolioExposure('PHYS.TO')}),'Gold');
 assert.ok(allocationData({...allocationFixture,complete:allocationRows.slice(1)},'holdings').reason);
 assert.ok(allocationData({...allocationFixture,currency:null},'holdings').reason);
 assert.ok(allocationData({...allocationFixture,value:0},'holdings').reason);
