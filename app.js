@@ -8,7 +8,133 @@ const money=(n,c='CAD')=>Number.isFinite(Number(n))?new Intl.NumberFormat(undefi
 const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
 const readSet=k=>{try{return new Set(JSON.parse(localStorage.getItem(k)||'[]'))}catch{return new Set()}};
 const readPositions=()=>{try{return new Map((JSON.parse(localStorage.getItem('marketHunterPositions')||'[]')).map(x=>[x.symbol,x]))}catch{return new Map()}};
-const state={view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),portfolioItems:new Map(),analytics:null,previous:new Map()};
+const state={view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,watch:readSet('marketHunterWatchlist'),positions:readPositions(),portfolioItems:new Map(),liveItems:new Map(),analytics:null,previous:new Map(),cloud:{session:loadCloudSession(),status:'local',message:'',showAuth:false,ready:false}};
+
+
+const CLOUD_SESSION_KEY='marketHunterCloudSessionV1';
+const SUPABASE_URL='https://ivmpzyjxyfcefjyylybr.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yy1QKQRcgf2ny3aWhhHSkw_Z7Y0Fa55';
+let cloudSyncTimer=0,cloudSyncBusy=false,cloudSyncQueued=false;
+
+function loadCloudSession(){try{return JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{return null}}
+function saveCloudSession(session){
+  if(session){localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(session));state.cloud.session=session}
+  else{localStorage.removeItem(CLOUD_SESSION_KEY);state.cloud.session=null}
+}
+async function cloudAuthRequest(path,body,token){
+  const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'};
+  if(token)headers.Authorization='Bearer '+token;
+  const r=await fetch(SUPABASE_URL+'/auth/v1/'+path,{method:'POST',headers,body:JSON.stringify(body||{})});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(data.msg||data.message||data.error_description||'Cloud authentication failed');
+  return data;
+}
+async function ensureCloudSession(){
+  let session=state.cloud.session;if(!session)return null;
+  if(Number(session.expires_at||0)>Math.floor(Date.now()/1000)+90)return session;
+  if(!session.refresh_token){saveCloudSession(null);return null}
+  try{
+    const data=await cloudAuthRequest('token?grant_type=refresh_token',{refresh_token:session.refresh_token});
+    session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user||session.user};
+    saveCloudSession(session);return session;
+  }catch{
+    saveCloudSession(null);state.cloud.status='local';state.cloud.message='Cloud session expired. Sign in again.';return null;
+  }
+}
+async function cloudRest(table,{method='GET',query='',body=null,prefer=''}={}){
+  const session=await ensureCloudSession();if(!session)throw new Error('Sign in to use cloud sync');
+  const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'};
+  if(prefer)headers.Prefer=prefer;
+  const r=await fetch(SUPABASE_URL+'/rest/v1/'+table+(query?'?'+query:''),{method,headers,body:body===null?undefined:JSON.stringify(body),cache:'no-store'});
+  if(!r.ok){const data=await r.json().catch(()=>({}));throw new Error(data.message||data.hint||'Cloud data request failed')}
+  if(r.status===204)return null;
+  const text=await r.text();return text?JSON.parse(text):null;
+}
+function positionStamp(p){return Date.parse(p?.updatedAt||p?.createdAt||0)||0}
+function mergeCloudState(remote){
+  const local=[...state.positions.values()],remotePositions=Array.isArray(remote?.positions)?remote.positions:[];
+  const by=new Map();
+  for(const p of [...remotePositions,...local]){
+    if(!p?.symbol)continue;
+    const old=by.get(p.symbol);
+    if(!old||positionStamp(p)>=positionStamp(old))by.set(p.symbol,p);
+  }
+  state.positions=by;
+  state.watch=new Set([...(Array.isArray(remote?.watchlist)?remote.watchlist:[]),...state.watch]);
+  localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));
+  localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]));
+}
+function currentDailyPayload(){
+  try{return JSON.parse(localStorage.getItem('marketHunterPortfolioDaily')||'null')}catch{return null}
+}
+async function loadCloudPortfolio(){
+  const [rows,snaps]=await Promise.all([
+    cloudRest('market_hunter_portfolio_state',{query:'select=payload,updated_at&limit=1'}),
+    cloudRest('market_hunter_portfolio_snapshots',{query:'select=market_as_of,payload,updated_at&order=market_as_of.desc&limit=2'})
+  ]);
+  mergeCloudState(rows?.[0]?.payload||{});
+  const local=currentDailyPayload(),cloudRows=snaps||[];
+  const cloudLatest=cloudRows[0],localDate=local?.currentDate||'';
+  if(cloudLatest?.market_as_of&&cloudLatest.market_as_of>=localDate){
+    const prev=cloudRows[1];
+    localStorage.setItem('marketHunterPortfolioDaily',JSON.stringify({
+      previousDate:prev?.market_as_of||null,previousItems:prev?.payload?.items||[],
+      currentDate:cloudLatest.market_as_of,currentItems:cloudLatest.payload?.items||[]
+    }));
+  }
+}
+async function syncPortfolioCloud(){
+  if(cloudSyncBusy){cloudSyncQueued=true;return}
+  const session=await ensureCloudSession();if(!session||!state.cloud.ready)return;
+  cloudSyncBusy=true;state.cloud.status='syncing';state.cloud.message='Saving cloud copy...';
+  try{
+    const now=new Date().toISOString(),payload={positions:[...state.positions.values()],watchlist:[...state.watch]};
+    await cloudRest('market_hunter_portfolio_state',{method:'POST',query:'on_conflict=user_id',prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:session.user.id,version:2,payload,updated_at:now}});
+    const daily=currentDailyPayload();
+    if(daily?.currentDate){
+      await cloudRest('market_hunter_portfolio_snapshots',{method:'POST',query:'on_conflict=user_id,market_as_of',prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:session.user.id,market_as_of:daily.currentDate,payload:{marketAsOf:daily.currentDate,items:daily.currentItems||[]},updated_at:now}});
+    }
+    state.cloud.status='synced';state.cloud.message='Cloud copy is up to date.';
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed'}
+  finally{
+    cloudSyncBusy=false;
+    if(cloudSyncQueued){cloudSyncQueued=false;queueCloudSync()}
+    if(state.view==='portfolio')renderView('portfolio');
+  }
+}
+function queueCloudSync(){
+  if(!state?.cloud?.session||!state.cloud.ready)return;
+  clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>syncPortfolioCloud(),600);
+}
+async function initializeCloudPortfolio(){
+  state.cloud.ready=false;
+  if(!state.cloud.session){state.cloud.ready=true;return}
+  state.cloud.status='syncing';state.cloud.message='Loading cloud portfolio...';
+  try{await loadCloudPortfolio();state.cloud.ready=true;await syncPortfolioCloud()}
+  catch(e){state.cloud.ready=true;state.cloud.status='error';state.cloud.message=e.message||'Cloud load failed'}
+}
+async function cloudSignIn(email,password){
+  state.cloud.status='syncing';state.cloud.message='Signing in...';renderView('portfolio');
+  try{
+    const data=await cloudAuthRequest('token?grant_type=password',{email,password});
+    saveCloudSession({access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user});
+    state.cloud.showAuth=false;await initializeCloudPortfolio();await loadPortfolio();renderAll();setView('portfolio');
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+}
+async function cloudSignUp(email,password){
+  state.cloud.status='syncing';state.cloud.message='Creating account...';renderView('portfolio');
+  try{
+    const data=await cloudAuthRequest('signup',{email,password});
+    if(data.access_token){
+      saveCloudSession({access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user});
+      state.cloud.showAuth=false;await initializeCloudPortfolio();await loadPortfolio();renderAll();setView('portfolio');
+    }else{state.cloud.status='local';state.cloud.message='Account created. Confirm the email, then sign in.';renderView('portfolio')}
+  }catch(e){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+}
+async function cloudSignOut(){
+  const session=await ensureCloudSession();if(session){try{await cloudAuthRequest('logout',{},session.access_token)}catch{}}
+  saveCloudSession(null);state.cloud.ready=true;state.cloud.status='local';state.cloud.message='Local copy remains on this device.';state.cloud.showAuth=false;renderView('portfolio');
+}
 
 function applyTheme(theme){
   const next=theme==='light'?'light':'dark';
@@ -23,15 +149,29 @@ function applyTheme(theme){
   const meta=q('#themeColor');
   if(meta)meta.setAttribute('content',next==='light'?'#f4f6f8':'#08111d');
 }
-function saveWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]))}
-function savePositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]))}
+function saveWatch(){localStorage.setItem('marketHunterWatchlist',JSON.stringify([...state.watch]));queueCloudSync()}
+function savePositions(){localStorage.setItem('marketHunterPositions',JSON.stringify([...state.positions.values()]));queueCloudSync()}
 function toast(msg){const e=q('#toast');e.textContent=msg;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),1400)}
 async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url);return r.json()}
+function enrichCandidate(x){
+  const live=state.liveItems.get(x?.symbol);if(!live)return x;
+  return {...x,price:Number.isFinite(live.price)?live.price:x.price,dayChangePct:live.dayChangePct};
+}
 function allCandidates(){
   const out=[],seen=new Set();
-  for(const x of state.v2?.integratedSurfacePicks||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(x)}}
-  for(const list of Object.values(state.v2?.surfacePicks||{}))for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(x)}}
+  for(const x of state.v2?.integratedSurfacePicks||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
+  for(const list of Object.values(state.v2?.surfacePicks||{}))for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
   return out;
+}
+async function loadCandidateLiveData(){
+  state.liveItems=new Map();
+  const raw=[...(state.v2?.integratedSurfacePicks||[]),...Object.values(state.v2?.surfacePicks||{}).flat()];
+  const symbols=[...new Set(raw.map(x=>x?.symbol).filter(Boolean))].slice(0,30);
+  if(!symbols.length)return;
+  try{
+    const data=await getJson('/api/portfolio?symbols='+encodeURIComponent(symbols.join(',')));
+    state.liveItems=new Map((data.items||[]).map(x=>[x.symbol,x]));
+  }catch{}
 }
 const REVIEW_STAGES=['Early Watch','Recovery','Attractive Growth','Established Move'];
 function stageEligiblePicks(stage){
