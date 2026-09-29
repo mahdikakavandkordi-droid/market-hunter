@@ -846,6 +846,15 @@ document.addEventListener('click',async e=>{
   const open=e.target.closest('[data-open]');if(open){setView(open.dataset.open);return}
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}
   const watch=e.target.closest('[data-watch]');if(watch){const s=watch.dataset.watch;state.watch.has(s)?state.watch.delete(s):state.watch.add(s);saveWatch();renderAll();toast(state.watch.has(s)?'Saved':'Removed');return}
+  if(e.target.closest('[data-cloud-toggle]')){state.cloud.showAuth=!state.cloud.showAuth;state.cloud.message='';renderView('portfolio');return}
+  if(e.target.closest('[data-cloud-sync]')){await syncPortfolioCloud();return}
+  if(e.target.closest('[data-cloud-signout]')){await cloudSignOut();return}
+  if(e.target.closest('[data-cloud-signin]')||e.target.closest('[data-cloud-signup]')){
+    const email=q('[data-cloud-email]')?.value.trim()||'',password=q('[data-cloud-password]')?.value||'';
+    if(!email||password.length<6){state.cloud.status='error';state.cloud.message='Enter a valid email and a password with at least 6 characters.';renderView('portfolio');return}
+    if(e.target.closest('[data-cloud-signin]'))await cloudSignIn(email,password);else await cloudSignUp(email,password);
+    return;
+  }
   const buy=e.target.closest('[data-buy]');if(buy){openPosition(buy.dataset.buy,'market-hunter');return}
   if(e.target.closest('[data-backup]')){exportBackup();return}
   if(e.target.closest('[data-restore]')){q('#backupFile')?.click();return}
