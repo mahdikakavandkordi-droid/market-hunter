@@ -9,6 +9,12 @@ import intradayHandler from './api/intraday.js';
 const root=path.dirname(fileURLToPath(import.meta.url));
 const port=Number(process.env.PORT||3000);
 
+const localResearchData=Object.freeze({
+  daily:'data/daily-market-report.json',
+  pulse:'data/market-pulse-report.json',
+  v2:'data/v2-latest-scan.json'
+});
+
 const staticFiles=new Map([
   ['/','index.html'],
   ['/index.html','index.html'],
@@ -74,6 +80,11 @@ const server=http.createServer(async(req,res)=>{
     if(url.pathname==='/health'){
       res.writeHead(200,{'Content-Type':'application/json; charset=utf-8'});
       return res.end(JSON.stringify({ok:true,service:'market-hunter'}));
+    }
+    if(url.pathname==='/api/research-data'){
+      const file=localResearchData[query.kind];
+      if(!file){res.writeHead(400,{'Content-Type':'application/json; charset=utf-8'});return res.end(JSON.stringify({error:'invalid_research_data_kind'}))}
+      return await serveFile(res,file);
     }
     if(url.pathname==='/api/scan') return await scanHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/portfolio') return await portfolioHandler(wrappedReq,makeResponse(res));
