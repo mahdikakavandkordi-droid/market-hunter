@@ -1,0 +1,115 @@
+name: Market Hunter Forward Validation
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Primary post-close capture after the validated daily refresh, plus recovery.
+    - cron: '15 23 * * 1-5'
+    - cron: '50 23 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: market-hunter-forward-validation
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      MH_FORWARD_DIR: ${{ github.workspace }}/evidence/data/research/market-hunter-forward-validation
+      MH_FORWARD_SOURCE: ${{ github.workspace }}/source/data/v2-latest-scan.json
+
+    steps:
+      - name: Checkout current production research source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: source
+          persist-credentials: false
+
+      - name: Checkout durable forward evidence
+        uses: actions/checkout@v4
+        with:
+          ref: research/market-hunter-forward-validation
+          path: evidence
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate collector code
+        working-directory: source
+        run: |
+          node --check lib/market-hunter-forward-validation.js
+          node --check scripts/collect-market-hunter-forward-validation.mjs
+          node --check scripts/audit-market-hunter-forward-validation.mjs
+          node scripts/test-market-hunter-forward-validation.mjs
+
+      - name: Collect canonical session and reconcile matured outcomes
+        id: collector
+        continue-on-error: true
+        working-directory: source
+        run: node scripts/collect-market-hunter-forward-validation.mjs
+
+      - name: Audit forward evidence
+        id: audit
+        if: always()
+        continue-on-error: true
+        working-directory: source
+        run: node scripts/audit-market-hunter-forward-validation.mjs
+
+      - name: Preserve append-only evidence
+        if: always()
+        working-directory: evidence
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-forward-validation"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/research/market-hunter-forward-validation
+          if git diff --cached --quiet; then
+            echo "No evidence changes."
+            exit 0
+          fi
+          git commit -m "research: append Market Hunter forward validation"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin research/market-hunter-forward-validation
+            if git push origin HEAD:research/market-hunter-forward-validation; then
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+          exit 1
+
+      - name: Upload validation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-hunter-forward-validation
+          path: |
+            evidence/data/research/market-hunter-forward-validation/status.json
+            evidence/data/research/market-hunter-forward-validation/audit.json
+            evidence/data/research/market-hunter-forward-validation/runs.jsonl
+            evidence/data/research/market-hunter-forward-validation/sessions.jsonl
+            evidence/data/research/market-hunter-forward-validation/presences.jsonl
+            evidence/data/research/market-hunter-forward-validation/episodes.jsonl
+            evidence/data/research/market-hunter-forward-validation/outcomes.jsonl
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Report collection state
+        if: always()
+        shell: bash
+        run: |
+          echo "Collector outcome: ${{ steps.collector.outcome }}"
+          echo "Audit outcome: ${{ steps.audit.outcome }}"
+          if [ "${{ steps.collector.outcome }}" != "success" ]; then
+            echo "Forward validation collection failed or source data was stale."
+            exit 1
+          fi
+          if [ "${{ steps.audit.outcome }}" != "success" ]; then
+            echo "Forward validation evidence audit failed."
+            exit 1
+          fi
