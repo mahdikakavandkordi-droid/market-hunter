@@ -38,7 +38,7 @@ function dailyStorageKey(session){return LOCAL_DAILY_PREFIX+scopeId(session)}
 function contextSession(ctx){return ctx?.userId?{user:{id:ctx.userId}}:null}
 function captureSessionContext(){return {epoch:state.cloud.epoch,userId:sessionUserId(state.cloud.session)}}
 function contextActive(ctx){return Boolean(ctx)&&ctx.epoch===state.cloud.epoch&&ctx.userId===sessionUserId(state.cloud.session)}
-function staleSessionError(){const e=new Error('stale_session_operation');e.code='STALE_SESSION_OPERATION';return e}
+function staleSessionError(){const e=new Error('stale_cloud_operation');e.code='STALE_CLOUD_OPERATION';return e}
 function assertSessionContext(ctx){if(!contextActive(ctx))throw staleSessionError()}
 function advanceSessionEpoch(){
   state.cloud.epoch=(state.cloud.epoch||0)+1;
@@ -321,7 +321,8 @@ function dailySnapshotCandidate(daily,expectedSymbols){
   return inspectSnapshot(daily?.currentDate,daily?.currentItems,inferredComplete(daily),daily?.currentMeta,expectedSymbols);
 }
 function cloudSnapshotCandidate(row,expectedSymbols){
-  return inspectSnapshot(row?.market_as_of,row?.payload?.items,row?.payload?.complete!==false,row?.payload?.meta,expectedSymbols);
+  const date=row?.market_as_of||row?.payload?.marketAsOf||null;
+  return inspectSnapshot(date,row?.payload?.items,row?.payload?.complete!==false,row?.payload?.meta,expectedSymbols);
 }
 function chooseSameDaySnapshot(local,remote,incumbent='local'){
   if(local.valid&&!remote.valid)return 'local';
@@ -338,7 +339,7 @@ function chooseSameDaySnapshot(local,remote,incumbent='local'){
 function applyRemoteSnapshot(row,ctx,cloudRows=[]){
   assertSessionContext(ctx);
   const session=contextSession(ctx),local=currentDailyPayloadFor(session)||{previousDate:null,previousItems:[],currentDate:null,currentItems:[],currentComplete:false};
-  const date=row.market_as_of,payload=row.payload||{};
+  const date=row.market_as_of||row?.payload?.marketAsOf,payload=row.payload||{};
   if(local.currentDate&&date<local.currentDate)return false;
   let next;
   if(local.currentDate===date){
@@ -429,7 +430,7 @@ async function syncPortfolioCloud(ctx=captureSessionContext()){
     await syncCloudSnapshot(session,ctx);assertSessionContext(ctx);
     state.cloud.status='synced';state.cloud.message='Cloud copy is up to date.';
   }catch(e){
-    if(contextActive(ctx)&&e?.code!=='STALE_SESSION_OPERATION'){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed'}
+    if(contextActive(ctx)&&e?.code!=='STALE_CLOUD_OPERATION'){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed'}
   }finally{
     cloudSyncBusyEpochs.delete(ctx.epoch);
     const queued=cloudSyncQueuedEpochs.delete(ctx.epoch);
@@ -452,7 +453,7 @@ async function initializeCloudPortfolio(ctx=captureSessionContext()){
     state.cloud.ready=true;state.cloud.reconciled=true;
     await syncPortfolioCloud(ctx);
   }catch(e){
-    if(contextActive(ctx)&&e?.code!=='STALE_SESSION_OPERATION'){
+    if(contextActive(ctx)&&e?.code!=='STALE_CLOUD_OPERATION'){
       state.cloud.ready=true;state.cloud.reconciled=false;state.cloud.status='error';
       state.cloud.message=(e.message||'Cloud load failed')+' Local changes will not overwrite cloud data without a fresh reconciliation.';
     }
