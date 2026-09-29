@@ -124,8 +124,10 @@ const integratedSurfaceCounts={
   hiddenByIntegratedCap:Math.max(0,Object.values(surfacePicks).reduce((sum,x)=>sum+x.length,0)-integratedSurfacePicks.length),
   byStage:Object.fromEntries(stages.map(stage=>[stage,integratedSurfacePicks.filter(x=>x.stage===stage).length]))
 };
+const marketDates=[...new Set(rows.map(x=>x.date).filter(Boolean))];
+const marketAsOf=marketDates.length===1?marketDates[0]:null;
 const report={
-  version:VERSION,generatedAt:new Date().toISOString(),range,
+  version:VERSION,generatedAt:new Date().toISOString(),marketAsOf,engineCommit:process.env.GITHUB_SHA||null,range,
   purpose:ASSUMPTIONS.purpose,
   universeCount:symbols.length,classifiedCount:rows.length,excluded,
   stageCounts:Object.fromEntries(stages.map(s=>[s,byStage[s].length])),
