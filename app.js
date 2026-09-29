@@ -17,10 +17,24 @@ const LEGACY_POSITIONS_KEY='marketHunterPositions';
 const LEGACY_WATCH_KEY='marketHunterWatchlist';
 const LEGACY_DAILY_KEY='marketHunterPortfolioDaily';
 const LEGACY_GUEST_MIGRATION_KEY='marketHunterLegacyGuestMigrationV3';
-let cloudSyncTimer=0,cloudSyncBusy=false,cloudSyncQueued=false;
+let cloudSyncTimer=0,cloudSyncBusyEpoch=null,cloudSyncQueuedEpoch=null,cloudSessionEpoch=0;
 
 function loadCloudSession(){try{return JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{return null}}
-function saveCloudSession(session){
+function cloudUserId(session){return session?.user?.id||null}
+function staleCloudError(){const e=new Error('stale_cloud_operation');e.code='STALE_CLOUD_OPERATION';return e}
+function isStaleCloudError(e){return e?.code==='STALE_CLOUD_OPERATION'||e?.message==='stale_cloud_operation'}
+function captureCloudContext(session=state?.cloud?.session){return {epoch:cloudSessionEpoch,userId:cloudUserId(session)}}
+function cloudContextActive(ctx){return Boolean(ctx)&&ctx.epoch===cloudSessionEpoch&&ctx.userId===cloudUserId(state?.cloud?.session)}
+function assertCloudContext(ctx){if(!cloudContextActive(ctx))throw staleCloudError()}
+function invalidateCloudOperations(){
+  cloudSessionEpoch+=1;
+  clearTimeout(cloudSyncTimer);cloudSyncTimer=0;
+  cloudSyncQueuedEpoch=null;
+  cloudSyncBusyEpoch=null;
+  return cloudSessionEpoch;
+}
+function saveCloudSession(session,{preserveEpoch=false}={}){
+  if(!preserveEpoch)invalidateCloudOperations();
   if(session){localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(session));state.cloud.session=session}
   else{localStorage.removeItem(CLOUD_SESSION_KEY);state.cloud.session=null}
 }
@@ -123,29 +137,31 @@ const state={
   cloud:{session:initialSession,status:'local',message:'',showAuth:false,ready:false,reconciled:false,revision:0}
 };
 
-function persistEnvelope(){
-  localStorage.setItem(stateStorageKey(state.cloud.session),JSON.stringify(state.envelope));
-  if(!state.cloud.session){
-    localStorage.setItem(LEGACY_POSITIONS_KEY,JSON.stringify([...state.positions.values()]));
-    localStorage.setItem(LEGACY_WATCH_KEY,JSON.stringify([...state.watch]));
+function persistEnvelope(session=state.cloud.session,envelope=state.envelope){
+  localStorage.setItem(stateStorageKey(session),JSON.stringify(envelope));
+  if(!session){
+    localStorage.setItem(LEGACY_POSITIONS_KEY,JSON.stringify([...visiblePositions(envelope).values()]));
+    localStorage.setItem(LEGACY_WATCH_KEY,JSON.stringify([...visibleWatch(envelope)]));
   }
 }
 function hydrateEnvelope(){
   state.positions=visiblePositions(state.envelope);
   state.watch=visibleWatch(state.envelope);
 }
-function currentDailyPayload(){return readDailyFor(state.cloud.session)}
-function persistDaily(payload){
-  const key=dailyStorageKey(state.cloud.session);
+function currentDailyPayload(session=state.cloud.session){return readDailyFor(session)}
+function persistDaily(payload,session=state.cloud.session){
+  const key=dailyStorageKey(session);
   if(payload)localStorage.setItem(key,JSON.stringify(payload));else localStorage.removeItem(key);
-  if(!state.cloud.session){
+  if(!session){
     if(payload)localStorage.setItem(LEGACY_DAILY_KEY,JSON.stringify(payload));else localStorage.removeItem(LEGACY_DAILY_KEY);
   }
 }
 function switchLocalScope(session){
   state.envelope=readEnvelopeFor(session);hydrateEnvelope();
   state.previous=previousMapFromDaily(readDailyFor(session));
+  state.portfolioItems=new Map();state.analytics=null;
 }
+function currentPortfolioSymbols(){return [...state.positions.keys()].sort()}
 function setPositionRecord(rec){
   const symbol=String(rec?.symbol||'').toUpperCase();if(!symbol)return;
   const updatedAt=isoOr(rec.updatedAt||new Date().toISOString(),new Date().toISOString());
@@ -170,13 +186,15 @@ function guestMigrationAvailable(){
   return Boolean(id&&!localStorage.getItem(guestImportMarker(id))&&hasVisibleData(readEnvelopeFor(null)));
 }
 async function importGuestPortfolio(){
-  const id=state.cloud.session?.user?.id;if(!id)return;
-  state.envelope=mergeEnvelopes(state.envelope,readEnvelopeFor(null));hydrateEnvelope();persistEnvelope();
-  const accountDaily=currentDailyPayload(),guestDaily=readDailyFor(null);
-  if(!accountDaily&&guestDaily)persistDaily(guestDaily);
+  const ctx=captureCloudContext(),session=state.cloud.session,id=session?.user?.id;if(!id)return;
+  state.envelope=mergeEnvelopes(state.envelope,readEnvelopeFor(null));hydrateEnvelope();persistEnvelope(session);
+  const accountDaily=currentDailyPayload(session),guestDaily=readDailyFor(null);
+  if(!accountDaily&&guestDaily)persistDaily(guestDaily,session);
   localStorage.setItem(guestImportMarker(id),new Date().toISOString());
   state.cloud.message='Local device data imported into this account.';
-  await syncPortfolioCloud();await loadPortfolio();renderAll();
+  await syncPortfolioCloud(ctx);if(!cloudContextActive(ctx))return;
+  await loadPortfolio(ctx);if(!cloudContextActive(ctx))return;
+  renderAll();
 }
 
 async function cloudAuthRequest(path,body,token){
@@ -187,38 +205,48 @@ async function cloudAuthRequest(path,body,token){
   if(!r.ok)throw new Error(data.msg||data.message||data.error_description||'Cloud authentication failed');
   return data;
 }
-async function ensureCloudSession(){
+async function ensureCloudSession(ctx=captureCloudContext()){
+  if(!cloudContextActive(ctx))return null;
   let session=state.cloud.session;if(!session)return null;
   if(Number(session.expires_at||0)>Math.floor(Date.now()/1000)+90)return session;
-  if(!session.refresh_token){saveCloudSession(null);switchLocalScope(null);return null}
+  if(!session.refresh_token){
+    if(cloudContextActive(ctx)){saveCloudSession(null);switchLocalScope(null)}
+    return null;
+  }
   try{
     const data=await cloudAuthRequest('token?grant_type=refresh_token',{refresh_token:session.refresh_token});
+    if(!cloudContextActive(ctx))return null;
+    if(data.user?.id&&data.user.id!==ctx.userId)throw new Error('refresh_account_mismatch');
     session={access_token:data.access_token,refresh_token:data.refresh_token||session.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user||session.user};
-    saveCloudSession(session);return session;
-  }catch{
+    saveCloudSession(session,{preserveEpoch:true});return session;
+  }catch(e){
+    if(!cloudContextActive(ctx))return null;
     saveCloudSession(null);switchLocalScope(null);state.cloud.status='local';state.cloud.message='Cloud session expired. Sign in again.';return null;
   }
 }
-async function cloudRest(table,{method='GET',query='',body=null,prefer=''}={}){
-  const session=await ensureCloudSession();if(!session)throw new Error('Sign in to use cloud sync');
+async function cloudRest(table,{method='GET',query='',body=null,prefer=''}={},ctx=captureCloudContext()){
+  assertCloudContext(ctx);
+  const session=await ensureCloudSession(ctx);if(!session||!cloudContextActive(ctx))throw staleCloudError();
   const headers={'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'};
   if(prefer)headers.Prefer=prefer;
   const r=await fetch(SUPABASE_URL+'/rest/v1/'+table+(query?'?'+query:''),{method,headers,body:body===null?undefined:JSON.stringify(body),cache:'no-store'});
+  assertCloudContext(ctx);
   if(!r.ok){
     const data=await r.json().catch(()=>({}));const error=new Error(data.message||data.hint||'Cloud data request failed');error.status=r.status;throw error;
   }
   if(r.status===204)return null;
-  const text=await r.text();return text?JSON.parse(text):null;
+  const text=await r.text();assertCloudContext(ctx);return text?JSON.parse(text):null;
 }
-async function fetchCloudStateRow(){
-  const rows=await cloudRest('market_hunter_portfolio_state',{query:'select=payload,revision,updated_at&limit=1'});
+async function fetchCloudStateRow(ctx=captureCloudContext()){
+  const rows=await cloudRest('market_hunter_portfolio_state',{query:'select=payload,revision,updated_at&limit=1'},ctx);
   return rows?.[0]||null;
 }
-async function writeCloudStateCas(session,row,payload){
+async function writeCloudStateCas(session,row,payload,ctx=captureCloudContext(session)){
+  assertCloudContext(ctx);
   const now=new Date().toISOString();
   if(!row){
     try{
-      const created=await cloudRest('market_hunter_portfolio_state',{method:'POST',query:'select=payload,revision,updated_at',prefer:'return=representation',body:{user_id:session.user.id,version:3,revision:1,payload,updated_at:now}});
+      const created=await cloudRest('market_hunter_portfolio_state',{method:'POST',query:'select=payload,revision,updated_at',prefer:'return=representation',body:{user_id:session.user.id,version:3,revision:1,payload,updated_at:now}},ctx);
       return created?.[0]||null;
     }catch(e){if(e.status===409)return null;throw e}
   }
@@ -228,119 +256,167 @@ async function writeCloudStateCas(session,row,payload){
     query:'user_id=eq.'+encodeURIComponent(session.user.id)+'&revision=eq.'+rev+'&select=payload,revision,updated_at',
     prefer:'return=representation',
     body:{version:3,revision:rev+1,payload,updated_at:now}
-  });
+  },ctx);
   return updated?.[0]||null;
 }
-function mergeCloudSnapshots(rows){
+function mergeCloudSnapshots(rows,session=state.cloud.session,expectedSymbols=currentPortfolioSymbols()){
   const cloudRows=(rows||[]).filter(r=>r?.market_as_of&&Array.isArray(r?.payload?.items));
-  if(!cloudRows.length)return;
-  const remote=cloudRows[0],local=currentDailyPayload(),remoteComplete=remote.payload?.complete!==false;
-  if(!remoteComplete)return;
-  const localDate=local?.currentDate||'';
-  if(!localDate||remote.market_as_of>localDate){
-    const prev=cloudRows.find(r=>r.market_as_of<remote.market_as_of&&r.payload?.complete!==false);
-    const next={
-      previousDate:prev?.market_as_of||local?.currentDate||null,
-      previousItems:prev?.payload?.items||local?.currentItems||[],
-      currentDate:remote.market_as_of,currentItems:remote.payload.items,
-      currentComplete:true,currentMeta:remote.payload?.meta||null,lastAttempt:local?.lastAttempt||null
-    };
-    persistDaily(next);state.previous=previousMapFromDaily(next);
-  }else if(remote.market_as_of===localDate&&!inferredComplete(local)){
-    const next={...local,currentDate:remote.market_as_of,currentItems:remote.payload.items,currentComplete:true,currentMeta:remote.payload?.meta||null};
-    persistDaily(next);state.previous=previousMapFromDaily(next);
+  if(!cloudRows.length)return false;
+  const local=currentDailyPayload(session);
+  const localPayload=dailySnapshotPayload(local);
+  let best=null;
+  for(const row of cloudRows){
+    const candidate={marketAsOf:row.market_as_of,...row.payload};
+    const d=snapshotDescriptor(candidate,expectedSymbols);
+    if(!d.usable)continue;
+    if(!best||compareSnapshotPayloads(candidate,best,expectedSymbols)>0)best=candidate;
   }
+  if(!best||compareSnapshotPayloads(best,localPayload,expectedSymbols)<=0)return false;
+  adoptSnapshotPayload(best,session,cloudRows);
+  return true;
 }
-async function loadCloudPortfolio(){
+async function loadCloudPortfolio(ctx=captureCloudContext()){
+  assertCloudContext(ctx);
+  const session=state.cloud.session;
   const [row,snaps]=await Promise.all([
-    fetchCloudStateRow(),
-    cloudRest('market_hunter_portfolio_snapshots',{query:'select=market_as_of,payload,revision,updated_at&order=market_as_of.desc&limit=3'})
+    fetchCloudStateRow(ctx),
+    cloudRest('market_hunter_portfolio_snapshots',{query:'select=market_as_of,payload,revision,updated_at&order=market_as_of.desc&limit=3'},ctx)
   ]);
+  assertCloudContext(ctx);
   state.envelope=mergeEnvelopes(state.envelope,normalizeEnvelope(row?.payload,row?.updated_at||undefined));
-  hydrateEnvelope();persistEnvelope();state.cloud.revision=Number(row?.revision||0);mergeCloudSnapshots(snaps);
+  hydrateEnvelope();persistEnvelope(session,state.envelope);state.cloud.revision=Number(row?.revision||0);
+  mergeCloudSnapshots(snaps,session,currentPortfolioSymbols());
   return row;
 }
-async function syncCloudSnapshot(session){
-  const daily=currentDailyPayload();if(!daily?.currentDate||!inferredComplete(daily))return;
-  const date=daily.currentDate,payload={marketAsOf:date,items:daily.currentItems||[],complete:true,meta:daily.currentMeta||null};
+async function syncCloudSnapshot(session,ctx=captureCloudContext(session)){
+  assertCloudContext(ctx);
+  const expectedSymbols=currentPortfolioSymbols();
+  const local=dailySnapshotPayload(currentDailyPayload(session));
+  const localDesc=snapshotDescriptor(local,expectedSymbols);
+  if(!localDesc.usable)return {status:'local_snapshot_not_current'};
+  const payload={
+    marketAsOf:local.marketAsOf,items:local.items,complete:true,
+    meta:{...(local.meta||{}),complete:true,requestedSymbols:expectedSymbols,portfolioSymbols:expectedSymbols,portfolioEmpty:expectedSymbols.length===0}
+  };
+  const date=payload.marketAsOf;
   for(let attempt=0;attempt<3;attempt++){
-    const rows=await cloudRest('market_hunter_portfolio_snapshots',{query:'market_as_of=eq.'+date+'&select=payload,revision,updated_at&limit=1'});
+    assertCloudContext(ctx);
+    const rows=await cloudRest('market_hunter_portfolio_snapshots',{query:'market_as_of=eq.'+date+'&select=payload,revision,updated_at&limit=1'},ctx);
+    assertCloudContext(ctx);
     const row=rows?.[0]||null,now=new Date().toISOString();
     if(!row){
       try{
-        await cloudRest('market_hunter_portfolio_snapshots',{method:'POST',prefer:'return=minimal',body:{user_id:session.user.id,market_as_of:date,revision:1,payload,updated_at:now}});
-        return;
+        await cloudRest('market_hunter_portfolio_snapshots',{method:'POST',prefer:'return=minimal',body:{user_id:session.user.id,market_as_of:date,revision:1,payload,updated_at:now}},ctx);
+        return {status:'created'};
       }catch(e){if(e.status===409)continue;throw e}
+    }
+    const remote={marketAsOf:date,...(row.payload||{})};
+    const comparison=compareSnapshotPayloads(payload,remote,expectedSymbols);
+    if(comparison<=0){
+      if(comparison<0)adoptSnapshotPayload(remote,session,[{market_as_of:date,payload:row.payload,revision:row.revision,updated_at:row.updated_at}]);
+      return {status:comparison<0?'remote_better':'remote_kept'};
     }
     const rev=Number(row.revision||0);
     const updated=await cloudRest('market_hunter_portfolio_snapshots',{
       method:'PATCH',query:'user_id=eq.'+encodeURIComponent(session.user.id)+'&market_as_of=eq.'+date+'&revision=eq.'+rev+'&select=revision',
       prefer:'return=representation',body:{revision:rev+1,payload,updated_at:now}
-    });
-    if(updated?.length)return;
+    },ctx);
+    if(updated?.length)return {status:'updated'};
+    // CAS conflict: loop re-reads and re-evaluates the remote payload before any retry.
   }
   throw new Error('Snapshot sync conflict; retry later.');
 }
-async function syncPortfolioCloud(){
-  if(cloudSyncBusy){cloudSyncQueued=true;return}
-  const session=await ensureCloudSession();if(!session||!state.cloud.ready)return;
-  cloudSyncBusy=true;state.cloud.status='syncing';state.cloud.message='Reconciling cloud copy...';
+async function syncPortfolioCloud(ctx=captureCloudContext()){
+  if(!cloudContextActive(ctx))return;
+  if(cloudSyncBusyEpoch===ctx.epoch){cloudSyncQueuedEpoch=ctx.epoch;return}
+  const session=await ensureCloudSession(ctx);if(!session||!cloudContextActive(ctx)||!state.cloud.ready)return;
+  cloudSyncBusyEpoch=ctx.epoch;state.cloud.status='syncing';state.cloud.message='Reconciling cloud copy...';
   try{
     let saved=null;
     for(let attempt=0;attempt<3&&!saved;attempt++){
-      const row=await fetchCloudStateRow();
-      state.envelope=mergeEnvelopes(state.envelope,normalizeEnvelope(row?.payload,row?.updated_at||undefined));
-      hydrateEnvelope();persistEnvelope();
-      saved=await writeCloudStateCas(session,row,state.envelope);
+      assertCloudContext(ctx);
+      const row=await fetchCloudStateRow(ctx);assertCloudContext(ctx);
+      const merged=mergeEnvelopes(state.envelope,normalizeEnvelope(row?.payload,row?.updated_at||undefined));
+      state.envelope=merged;hydrateEnvelope();persistEnvelope(session,merged);
+      saved=await writeCloudStateCas(session,row,merged,ctx);
     }
     if(!saved)throw new Error('Cloud sync conflict; retry later.');
+    assertCloudContext(ctx);
     state.cloud.revision=Number(saved.revision||0);state.cloud.reconciled=true;
-    await syncCloudSnapshot(session);
+    await syncCloudSnapshot(session,ctx);assertCloudContext(ctx);
     state.cloud.status='synced';state.cloud.message='Cloud copy is up to date.';
-  }catch(e){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed'}
-  finally{
-    cloudSyncBusy=false;
-    if(cloudSyncQueued){cloudSyncQueued=false;queueCloudSync()}
-    if(state.view==='portfolio')renderView('portfolio');
+  }catch(e){
+    if(!isStaleCloudError(e)&&cloudContextActive(ctx)){state.cloud.status='error';state.cloud.message=e.message||'Cloud sync failed'}
+  }finally{
+    if(cloudSyncBusyEpoch===ctx.epoch)cloudSyncBusyEpoch=null;
+    if(cloudContextActive(ctx)&&cloudSyncQueuedEpoch===ctx.epoch){cloudSyncQueuedEpoch=null;queueCloudSync(ctx)}
+    if(cloudContextActive(ctx)&&state.view==='portfolio')renderView('portfolio');
   }
 }
-function queueCloudSync(){
-  if(!state?.cloud?.session||!state.cloud.ready)return;
-  clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>syncPortfolioCloud(),600);
+function queueCloudSync(ctx=captureCloudContext()){
+  if(!cloudContextActive(ctx)||!state?.cloud?.session||!state.cloud.ready)return;
+  clearTimeout(cloudSyncTimer);
+  cloudSyncTimer=setTimeout(()=>{
+    cloudSyncTimer=0;
+    if(cloudContextActive(ctx))syncPortfolioCloud(ctx);
+  },600);
 }
-async function initializeCloudPortfolio(){
+async function initializeCloudPortfolio(ctx=captureCloudContext()){
+  if(!cloudContextActive(ctx))return;
   state.cloud.ready=false;state.cloud.reconciled=false;
   if(!state.cloud.session){state.cloud.ready=true;return}
   state.cloud.status='syncing';state.cloud.message='Loading cloud portfolio...';
   try{
-    await loadCloudPortfolio();state.cloud.ready=true;state.cloud.reconciled=true;await syncPortfolioCloud();
+    await loadCloudPortfolio(ctx);if(!cloudContextActive(ctx))return;
+    state.cloud.ready=true;state.cloud.reconciled=true;
+    await syncPortfolioCloud(ctx);
   }catch(e){
-    state.cloud.ready=true;state.cloud.reconciled=false;state.cloud.status='error';state.cloud.message=(e.message||'Cloud load failed')+' Local changes will not overwrite cloud data without a fresh reconciliation.';
+    if(!isStaleCloudError(e)&&cloudContextActive(ctx)){
+      state.cloud.ready=true;state.cloud.reconciled=false;state.cloud.status='error';state.cloud.message=(e.message||'Cloud load failed')+' Local changes will not overwrite cloud data without a fresh reconciliation.';
+    }
   }
 }
 async function cloudSignIn(email,password){
-  state.cloud.status='syncing';state.cloud.message='Signing in...';renderView('portfolio');
+  const requestEpoch=invalidateCloudOperations();state.cloud.status='syncing';state.cloud.message='Signing in...';renderView('portfolio');
+  let activeCtx=null;
   try{
     const data=await cloudAuthRequest('token?grant_type=password',{email,password});
+    if(cloudSessionEpoch!==requestEpoch)return;
     const session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user};
-    saveCloudSession(session);switchLocalScope(session);state.cloud.showAuth=false;
-    await initializeCloudPortfolio();await loadPortfolio();renderAll();setView('portfolio');
-  }catch(e){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+    saveCloudSession(session);switchLocalScope(session);state.cloud.showAuth=false;activeCtx=captureCloudContext(session);
+    await initializeCloudPortfolio(activeCtx);if(!cloudContextActive(activeCtx))return;
+    await loadPortfolio(activeCtx);if(!cloudContextActive(activeCtx))return;
+    renderAll();setView('portfolio');
+  }catch(e){
+    if((activeCtx&&cloudContextActive(activeCtx))||(!activeCtx&&cloudSessionEpoch===requestEpoch)){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+  }
 }
 async function cloudSignUp(email,password){
-  state.cloud.status='syncing';state.cloud.message='Creating account...';renderView('portfolio');
+  const requestEpoch=invalidateCloudOperations();state.cloud.status='syncing';state.cloud.message='Creating account...';renderView('portfolio');
+  let activeCtx=null;
   try{
     const data=await cloudAuthRequest('signup',{email,password});
+    if(cloudSessionEpoch!==requestEpoch)return;
     if(data.access_token){
       const session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),user:data.user};
-      saveCloudSession(session);switchLocalScope(session);state.cloud.showAuth=false;await initializeCloudPortfolio();await loadPortfolio();renderAll();setView('portfolio');
+      saveCloudSession(session);switchLocalScope(session);state.cloud.showAuth=false;activeCtx=captureCloudContext(session);
+      await initializeCloudPortfolio(activeCtx);if(!cloudContextActive(activeCtx))return;
+      await loadPortfolio(activeCtx);if(!cloudContextActive(activeCtx))return;
+      renderAll();setView('portfolio');
     }else{state.cloud.status='local';state.cloud.message='Account created. Confirm the email, then sign in.';renderView('portfolio')}
-  }catch(e){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+  }catch(e){
+    if((activeCtx&&cloudContextActive(activeCtx))||(!activeCtx&&cloudSessionEpoch===requestEpoch)){state.cloud.status='error';state.cloud.message=e.message;renderView('portfolio')}
+  }
 }
 async function cloudSignOut(){
-  const session=await ensureCloudSession();if(session){try{await cloudAuthRequest('logout',{},session.access_token)}catch{}}
-  saveCloudSession(null);switchLocalScope(null);state.cloud.ready=true;state.cloud.reconciled=false;state.cloud.status='local';state.cloud.message='Signed out. Guest data on this device is kept separate from account data.';state.cloud.showAuth=false;
-  await loadPortfolio();renderAll();setView('portfolio');
+  const oldSession=state.cloud.session;
+  saveCloudSession(null);switchLocalScope(null);
+  const ctx=captureCloudContext(null);
+  state.cloud.ready=true;state.cloud.reconciled=false;state.cloud.status='local';state.cloud.message='Signed out. Guest data on this device is kept separate from account data.';state.cloud.showAuth=false;
+  if(oldSession?.access_token){try{await cloudAuthRequest('logout',{},oldSession.access_token)}catch{}}
+  if(!cloudContextActive(ctx))return;
+  await loadPortfolio(ctx);if(!cloudContextActive(ctx))return;
+  renderAll();setView('portfolio');
 }
 
 function applyTheme(theme){
@@ -402,19 +478,20 @@ function allCandidates(){
   for(const list of Object.values(state.v2?.surfacePicks||{}))for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
   return out;
 }
-async function loadCandidateLiveData(){
-  state.liveItems=new Map();
+async function loadCandidateLiveData(ctx=captureCloudContext()){
+  if(!cloudContextActive(ctx))return;
   const raw=[...(state.v2?.integratedSurfacePicks||[]),...Object.values(state.v2?.surfacePicks||{}).flat()];
   const symbols=[...new Set([
     ...raw.map(x=>x?.symbol),
     ...state.watch,
     ...[...state.positions.values()].map(x=>x?.symbol)
   ].filter(Boolean))].slice(0,30);
-  if(!symbols.length)return;
+  if(!symbols.length){if(cloudContextActive(ctx))state.liveItems=new Map();return}
   try{
     const data=await getJson('/api/portfolio?symbols='+encodeURIComponent(symbols.join(',')));
+    if(!cloudContextActive(ctx))return;
     state.liveItems=new Map((data.items||[]).map(x=>[x.symbol,x]));
-  }catch{}
+  }catch(e){if(cloudContextActive(ctx))state.liveItems=new Map()}
 }
 const REVIEW_STAGES=['Early Watch','Recovery','Attractive Growth','Established Move'];
 function stageEligiblePicks(stage){
@@ -630,31 +707,98 @@ function changeReasons(cur,prev){
   if(cur.lowState!==prev.lowState&&cur.lowState==='failed_low_break')out.push('Local low reclaimed');
   return out;
 }
+function normalizedSymbolList(values){return [...new Set((values||[]).map(x=>String(x||'').trim().toUpperCase()).filter(Boolean))].sort()}
+function sameSymbolSet(a,b){const x=normalizedSymbolList(a),y=normalizedSymbolList(b);return x.length===y.length&&x.every((v,i)=>v===y[i])}
+function validSessionDate(value){return /^\d{4}-\d{2}-\d{2}$/.test(String(value||''))}
+function dailySnapshotPayload(daily){
+  if(!daily?.currentDate||!Array.isArray(daily?.currentItems))return null;
+  return {marketAsOf:daily.currentDate,items:daily.currentItems,complete:daily.currentComplete!==false,meta:daily.currentMeta||null};
+}
+function snapshotDescriptor(payload,expectedSymbols=null){
+  const date=String(payload?.marketAsOf||''),items=Array.isArray(payload?.items)?payload.items:[],meta=payload?.meta||{};
+  const itemSymbols=normalizedSymbolList(items.map(x=>x?.symbol));
+  const declared=Array.isArray(meta.portfolioSymbols)?normalizedSymbolList(meta.portfolioSymbols)
+    :Array.isArray(meta.requestedSymbols)?normalizedSymbolList(meta.requestedSymbols)
+    :itemSymbols;
+  const uniqueItems=itemSymbols.length===items.length;
+  const exactDates=validSessionDate(date)&&items.every(x=>validSessionDate(x?.asOf)&&x.asOf===date);
+  const explicitEmpty=declared.length===0&&items.length===0&&(meta.portfolioEmpty===true||Array.isArray(meta.portfolioSymbols)||Array.isArray(meta.requestedSymbols));
+  const coverage=sameSymbolSet(itemSymbols,declared);
+  const complete=payload?.complete!==false&&meta?.complete!==false;
+  const valid=Boolean(complete&&validSessionDate(date)&&uniqueItems&&exactDates&&coverage&&(items.length>0||explicitEmpty));
+  const contextMatches=expectedSymbols===null?true:sameSymbolSet(declared,expectedSymbols);
+  const sourceAt=meta.sourceGeneratedAt||meta.capturedAt||null,sourceMs=Date.parse(sourceAt||'');
+  return {valid,usable:valid&&contextMatches,date,items,itemSymbols,declared,contextMatches,sourceAt,sourceMs:Number.isFinite(sourceMs)?sourceMs:null};
+}
+function compareSnapshotPayloads(a,b,expectedSymbols){
+  const A=snapshotDescriptor(a,expectedSymbols),B=snapshotDescriptor(b,expectedSymbols);
+  if(A.usable!==B.usable)return A.usable?1:-1;
+  if(!A.usable&&!B.usable)return 0;
+  if(A.date!==B.date)return A.date>B.date?1:-1;
+  if(Number.isFinite(A.sourceMs)&&Number.isFinite(B.sourceMs)&&A.sourceMs!==B.sourceMs)return A.sourceMs>B.sourceMs?1:-1;
+  if(Number.isFinite(A.sourceMs)!==Number.isFinite(B.sourceMs))return Number.isFinite(A.sourceMs)?1:-1;
+  return 0;
+}
+function bestHistoricalPrior(cloudRows,date){
+  const candidates=(cloudRows||[]).filter(r=>r?.market_as_of&&r.market_as_of<date&&Array.isArray(r?.payload?.items))
+    .map(r=>({marketAsOf:r.market_as_of,...r.payload}))
+    .filter(x=>snapshotDescriptor(x,null).valid)
+    .sort((a,b)=>b.marketAsOf.localeCompare(a.marketAsOf));
+  return candidates[0]||null;
+}
+function adoptSnapshotPayload(payload,session=state.cloud.session,cloudRows=[]){
+  const d=snapshotDescriptor(payload,null);if(!d.valid)return false;
+  const saved=currentDailyPayload(session)||{previousDate:null,previousItems:[],currentDate:null,currentItems:[],currentComplete:false};
+  let next={...saved};
+  if(!saved.currentDate||d.date>saved.currentDate){
+    const prior=bestHistoricalPrior(cloudRows,d.date);
+    next={
+      ...next,
+      previousDate:prior?.marketAsOf||saved.currentDate||null,
+      previousItems:prior?.items||saved.currentItems||[],
+      currentDate:d.date,currentItems:d.items,currentComplete:true,currentMeta:payload.meta||null
+    };
+  }else if(d.date===saved.currentDate){
+    next={...next,currentDate:d.date,currentItems:d.items,currentComplete:true,currentMeta:payload.meta||null};
+  }else return false;
+  persistDaily(next,session);
+  if(scopeId(session)===scopeId(state.cloud.session))state.previous=previousMapFromDaily(next);
+  return true;
+}
 function snapshotAttempt(data,requestedSymbols){
   const items=Array.isArray(data?.items)?data.items:[],failures=Array.isArray(data?.failures)?data.failures:[];
-  const expected=[...new Set((requestedSymbols||[]).filter(Boolean))],returned=new Set(items.map(x=>x?.symbol).filter(Boolean));
-  const dates=[...new Set(items.map(x=>x?.asOf).filter(Boolean))].sort();
-  if(expected.length===0)return {status:'empty_portfolio',complete:false,date:null,items:[],failures:[],requestedSymbols:[],capturedAt:new Date().toISOString()};
-  if(!items.length)return {status:'partial_empty_response',complete:false,date:null,items,failures,requestedSymbols:expected,capturedAt:new Date().toISOString()};
-  if(dates.length!==1)return {status:'partial_mixed_dates',complete:false,date:null,items,failures,requestedSymbols:expected,capturedAt:new Date().toISOString(),dates};
-  const complete=failures.length===0&&expected.length===returned.size&&expected.every(s=>returned.has(s));
-  return {status:complete?'complete':'partial',complete,date:dates[0],items,failures,requestedSymbols:expected,capturedAt:new Date().toISOString()};
+  const expected=normalizedSymbolList(requestedSymbols),itemSymbols=normalizedSymbolList(items.map(x=>x?.symbol));
+  const missingDates=items.some(x=>!validSessionDate(x?.asOf));
+  const dates=normalizedSymbolList(items.map(x=>x?.asOf).filter(validSessionDate));
+  const capturedAt=new Date().toISOString(),sourceGeneratedAt=Number.isFinite(Date.parse(data?.generatedAt||''))?new Date(data.generatedAt).toISOString():null;
+  if(expected.length===0)return {status:'empty_portfolio',complete:false,date:null,items:[],failures:[],requestedSymbols:[],capturedAt,sourceGeneratedAt};
+  if(!items.length)return {status:'partial_empty_response',complete:false,date:null,items,failures,requestedSymbols:expected,capturedAt,sourceGeneratedAt};
+  if(missingDates)return {status:'partial_missing_dates',complete:false,date:null,items,failures,requestedSymbols:expected,capturedAt,sourceGeneratedAt,dates};
+  if(dates.length!==1)return {status:'partial_mixed_dates',complete:false,date:null,items,failures,requestedSymbols:expected,capturedAt,sourceGeneratedAt,dates};
+  const complete=failures.length===0&&items.length===itemSymbols.length&&sameSymbolSet(expected,itemSymbols);
+  return {status:complete?'complete':'partial',complete,date:dates[0],items,failures,requestedSymbols:expected,capturedAt,sourceGeneratedAt};
 }
-function savePortfolioSnapshot(data,requestedSymbols){
-  const saved=currentDailyPayload()||{previousDate:null,previousItems:[],currentDate:null,currentItems:[],currentComplete:false};
+function savePortfolioSnapshot(data,requestedSymbols,session=state.cloud.session){
+  const saved=currentDailyPayload(session)||{previousDate:null,previousItems:[],currentDate:null,currentItems:[],currentComplete:false};
   const attempt=snapshotAttempt(data,requestedSymbols);
-  let next={...saved,lastAttempt:{status:attempt.status,complete:attempt.complete,date:attempt.date,requestedSymbols:attempt.requestedSymbols,returnedSymbols:attempt.items.map(x=>x.symbol),failures:attempt.failures,dates:attempt.dates||undefined,capturedAt:attempt.capturedAt}};
+  let next={...saved,lastAttempt:{status:attempt.status,complete:attempt.complete,date:attempt.date,requestedSymbols:attempt.requestedSymbols,returnedSymbols:attempt.items.map(x=>x.symbol),failures:attempt.failures,dates:attempt.dates||undefined,capturedAt:attempt.capturedAt,sourceGeneratedAt:attempt.sourceGeneratedAt}};
   if(attempt.status==='empty_portfolio'){
-    persistDaily(next);state.previous=previousMapFromDaily(next);return false;
+    persistDaily(next,session);if(scopeId(session)===scopeId(state.cloud.session))state.previous=previousMapFromDaily(next);return false;
   }
   if(!attempt.complete||!attempt.date){
-    persistDaily(next);state.previous=previousMapFromDaily(next);return false;
+    persistDaily(next,session);if(scopeId(session)===scopeId(state.cloud.session))state.previous=previousMapFromDaily(next);return false;
   }
   if(saved.currentDate&&attempt.date<saved.currentDate){
-    next.lastAttempt={...next.lastAttempt,status:'older_complete_response'};persistDaily(next);state.previous=previousMapFromDaily(next);return false;
+    next.lastAttempt={...next.lastAttempt,status:'older_complete_response'};persistDaily(next,session);if(scopeId(session)===scopeId(state.cloud.session))state.previous=previousMapFromDaily(next);return false;
   }
-  const meta={complete:true,requestedSymbols:attempt.requestedSymbols,capturedAt:attempt.capturedAt};
+  const expected=attempt.requestedSymbols;
+  const meta={complete:true,requestedSymbols:expected,portfolioSymbols:expected,portfolioEmpty:expected.length===0,capturedAt:attempt.capturedAt,sourceGeneratedAt:attempt.sourceGeneratedAt};
+  const candidate={marketAsOf:attempt.date,items:attempt.items,complete:true,meta};
   if(saved.currentDate===attempt.date){
+    const existing=dailySnapshotPayload(saved);
+    if(compareSnapshotPayloads(candidate,existing,expected)<=0){
+      persistDaily(next,session);if(scopeId(session)===scopeId(state.cloud.session))state.previous=previousMapFromDaily(next);return false;
+    }
     next={...next,currentItems:attempt.items,currentComplete:true,currentMeta:meta};
   }else if(saved.currentDate&&attempt.date>saved.currentDate){
     next={
@@ -664,23 +808,28 @@ function savePortfolioSnapshot(data,requestedSymbols){
   }else{
     next={...next,previousDate:null,previousItems:[],currentDate:attempt.date,currentItems:attempt.items,currentComplete:true,currentMeta:meta};
   }
-  persistDaily(next);state.previous=previousMapFromDaily(next);queueCloudSync();return true;
+  persistDaily(next,session);
+  if(scopeId(session)===scopeId(state.cloud.session)){state.previous=previousMapFromDaily(next);queueCloudSync()}
+  return true;
 }
-async function loadPortfolio(){
-  const positions=[...state.positions.values()].filter(p=>p?.symbol);
-  state.portfolioItems=new Map();state.analytics=null;
+async function loadPortfolio(ctx=captureCloudContext()){
+  if(!cloudContextActive(ctx))return;
+  const session=state.cloud.session,positions=[...state.positions.values()].filter(p=>p?.symbol);
   const requested=positions.map(p=>p.symbol);
-  if(!positions.length){savePortfolioSnapshot({items:[],failures:[]},[]);return}
+  state.portfolioItems=new Map();state.analytics=null;
+  if(!positions.length){savePortfolioSnapshot({items:[],failures:[]},[],session);return}
   const symbols=requested.join(',');
   const entries=positions.filter(p=>p.boughtAt&&Number(p.entryPrice)>0).map(p=>[p.symbol,String(p.boughtAt).slice(0,10),Number(p.entryPrice)].join('|')).join(',');
   const quantities=positions.filter(p=>Number(p.quantity)>0).map(p=>[p.symbol,Number(p.quantity)].join('|')).join(',');
   try{
     const data=await getJson('/api/portfolio?symbols='+encodeURIComponent(symbols)+(entries?'&entries='+encodeURIComponent(entries):'')+(quantities?'&positions='+encodeURIComponent(quantities):''));
+    if(!cloudContextActive(ctx))return;
     state.portfolioItems=new Map((data.items||[]).map(x=>[x.symbol,x]));
     state.analytics=data.portfolioAnalytics||null;
-    savePortfolioSnapshot(data,requested);
+    savePortfolioSnapshot(data,requested,session);
   }catch(e){
-    savePortfolioSnapshot({items:[],failures:requested.map(symbol=>({symbol,reason:'request_failed'}))},requested);
+    if(!cloudContextActive(ctx))return;
+    savePortfolioSnapshot({items:[],failures:requested.map(symbol=>({symbol,reason:'request_failed'}))},requested,session);
   }
 }
 async function load(){
@@ -711,7 +860,7 @@ function homeHtml(){
   const groups=(d?.groups||[]).slice(0,3).map(g=>`<div class="group-card"><small>${esc(g.label)}</small><b>${esc(g.state)}</b><p>${esc(g.detail)}</p></div>`).join('');
   const developmentByMarket=new Map((d?.keyDevelopments||[]).map(x=>[x.market,x]));
   const marketKeyByName={'TSX Composite':'TSX','S&P 500':'SP500','Nasdaq-100':'NASDAQ100','Gold':'GOLD','Silver':'SILVER','Bitcoin':'BTC','Ethereum':'ETH'};
-  const intradaySymbolByKey={TSX:'^GSPTSE',SP500:'^GSPC',NASDAQ100:'^IXIC',GOLD:'GC=F',SILVER:'SI=F',BTC:'BTC-USD',ETH:'ETH-USD'};
+  const intradaySymbolByKey={TSX:'^GSPTSE',SP500:'^GSPC',NASDAQ100:'^NDX',GOLD:'GC=F',SILVER:'SI=F',BTC:'BTC-USD',ETH:'ETH-USD'};
   const markets=(p?.markets||[]).map(x=>{
     const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
     const key=x.key||marketKeyByName[x.name]||'';
