@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 
-// Deferred-response integration checks use the actual application functions below.\nconst source=fs.readFileSync('app.js','utf8');
+// Deferred-response integration checks use the actual application functions below.
+const source=fs.readFileSync('app.js','utf8');
 const cut=source.indexOf('async function load(){');
 assert.ok(cut>0,'app test seam not found');
 const core=source.slice(0,cut)+`
