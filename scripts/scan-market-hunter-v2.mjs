@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
+import {completedDailyRows} from '../lib/completed-daily-session.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 
 const range=process.env.V2_SCAN_RANGE||'2y';
@@ -13,10 +14,10 @@ async function fetchRows(symbol){
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
   const splitDays=new Set(Object.values(z?.events?.splits||{}).map(x=>dayKey(Number(x.date))));
-  const rows=(z?.timestamp||[]).map((t,i)=>{
+  const rows=completedDailyRows((z?.timestamp||[]).map((t,i)=>{
     const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
     return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
-  }).filter(x=>[x.close,x.rawClose,x.high,x.low,x.volume].every(Number.isFinite)&&x.volume>0);
+  }).filter(x=>[x.close,x.rawClose,x.high,x.low,x.volume].every(Number.isFinite)&&x.volume>0),z?.meta);
   return {rows,splitDays};
 }
 
