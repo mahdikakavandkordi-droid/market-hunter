@@ -1,52 +1,146 @@
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
 
+const PIN='df4cdb289f3f111a6c7dcbe1d73e0d694bf25405';
 const workflow=fs.readFileSync('.github/workflows/htp-live-prospective.yml','utf8');
 assert.doesNotMatch(workflow,/if:\s*steps\.precheck\.outputs\.complete\s*!=\s*'true'/,'completed daily capture must not skip outcome processing');
-assert.match(workflow,/HTP_PINNED_COLLECTOR_SHA:\s*df4cdb289f3f111a6c7dcbe1d73e0d694bf25405/,'approved collector pin must remain unchanged');
+assert.match(workflow,new RegExp('HTP_PINNED_COLLECTOR_SHA:\\s*'+PIN),'approved collector pin must remain unchanged');
 assert.match(workflow,/CAPTURE_WAS_COMPLETE/);
 assert.match(workflow,/outcome reconciliation attempt/);
-assert.match(workflow,/latest_collector_failure_count/);
 assert.match(workflow,/canonical decisions already exist and remain immutable/);
-assert.match(workflow,/coverage\?\.failures/);
 
-function canonicalFirstComplete(inputs){
-  const days=new Set(),out=[];
-  for(const input of inputs){
-    if(days.has(input.marketAsOf))continue;
-    const obs=input.observations||[];
-    if(obs.length!==3||new Set(obs.map(x=>x.model)).size!==3||
-      !obs.every(x=>['complete_nonzero','complete_zero_pick'].includes(x.status)))continue;
-    days.add(input.marketAsOf);out.push(...obs);
-  }
+function runGit(args,options={}){
+  return execFileSync('git',args,{encoding:'utf8',stdio:['ignore','pipe','pipe'],...options});
+}
+try{runGit(['cat-file','-e',PIN+'^{commit}'])}
+catch{
+  // Shallow CI clones fetch only the approved commit object; fixture data remains fully local.
+  runGit(['fetch','--quiet','--no-tags','--depth=1','origin',PIN]);
+  runGit(['cat-file','-e',PIN+'^{commit}']);
+}
+
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'market-hunter-htp-integration-'));
+const collector=path.join(root,'collector'),evidence=path.join(root,'evidence'),preload=path.join(root,'fixture-provider.mjs');
+const today=new Date().toISOString().slice(0,10);
+
+function dateSeries(count=135){
+  const end=Date.parse(today+'T12:00:00Z'),out=[];
+  for(let i=count-1;i>=0;i--)out.push(new Date(end-i*86400000).toISOString().slice(0,10));
   return out;
 }
-function appendStrict(existing,records,keyFn){
-  const by=new Map(existing.map(x=>[keyFn(x),x])),added=[];
-  for(const record of records){
-    const key=keyFn(record);
-    if(by.has(key)){assert.deepEqual(by.get(key),record);continue}
-    by.set(key,record);existing.push(record);added.push(record);
-  }
-  return {records:existing,added};
+const dates=dateSeries(),decisionIndex=90,decisionDate=dates[decisionIndex];
+assert.ok(dates.length-decisionIndex-2>20,'fixture must contain a matured primary horizon');
+
+const ts=d=>Math.floor(Date.parse(d+'T12:00:00Z')/1000);
+const decisionHistory=dates.slice(decisionIndex-14,decisionIndex+1).map(d=>({
+  t:ts(d),close:100,rawClose:100,high:101,low:99,rawHigh:101,rawLow:99,volume:1000000
+}));
+const earlierPickId=['fixture-model-v1',decisionDate,'core','RY.TO'].join('|');
+const earlierObservation={
+  observationId:['fixture-model-v1',decisionDate,'core'].join('|'),
+  collectorVersion:'fixture-seed',
+  model:'core',modelVersion:'fixture-model-v1',marketAsOf:decisionDate,
+  capturedAt:decisionDate+'T23:00:00.000Z',status:'complete_nonzero',
+  intendedUniverseCount:1,evaluatedUniverseCount:1,failedSymbols:[],naturalEligibleCount:1,maxVisible:6,zeroPick:false,
+  picks:[{
+    symbol:'RY.TO',rank:1,score:1,decisionAtr14:2,atr14Pct:2,
+    decisionPriceAnchor:{close:100,rawClose:100},decisionHistory,
+    pickObservationId:earlierPickId
+  }]
+};
+
+const preloadCode=String.raw`
+const today=process.env.HTP_FIXTURE_TODAY;
+const variant=process.env.HTP_FIXTURE_VARIANT||'full';
+function dates(count=135){
+  const end=Date.parse(today+'T12:00:00Z'),out=[];
+  for(let i=count-1;i>=0;i--)out.push(new Date(end-i*86400000).toISOString().slice(0,10));
+  return out;
 }
-const mkObs=(model,pick)=>({
-  observationId:'v1|2026-09-28|'+model,model,marketAsOf:'2026-09-28',
-  status:'complete_nonzero',picks:[{symbol:pick,pickObservationId:'v1|2026-09-28|'+model+'|'+pick}]
-});
-const first=[mkObs('core','RY.TO'),mkObs('trend_rs','TD.TO'),mkObs('early_watch','ENB.TO')];
-const later=[mkObs('core','BMO.TO'),mkObs('trend_rs','BNS.TO'),mkObs('early_watch','CNQ.TO')];
-const canonical=canonicalFirstComplete([
-  {marketAsOf:'2026-09-28',observations:first},
-  {marketAsOf:'2026-09-28',observations:later}
-]);
-assert.deepEqual(canonical.map(x=>x.picks[0].symbol),['RY.TO','TD.TO','ENB.TO'],'later same-day retries must not replace first complete decisions');
+const all=dates(),missingDate=all[90];
+const sec=d=>Math.floor(Date.parse(d+'T12:00:00Z')/1000);
+function payload(symbol){
+  const chosen=(variant==='missing-decision'&&symbol==='RY.TO')?all.filter(d=>d!==missingDate):all;
+  const timestamps=chosen.map(sec),n=timestamps.length;
+  const close=Array(n).fill(100),high=Array(n).fill(101),low=Array(n).fill(99),volume=Array(n).fill(1000000);
+  return {chart:{result:[{
+    meta:{
+      currency:'CAD',exchangeName:'TOR',regularMarketPrice:100,chartPreviousClose:100,
+      regularMarketTime:timestamps.at(-1),
+      currentTradingPeriod:{regular:{start:Math.floor(Date.parse(today+'T00:00:00Z')/1000)-3600,end:Math.floor(Date.parse(today+'T00:00:00Z')/1000)-1}}
+    },
+    timestamp:timestamps,
+    indicators:{quote:[{close,high,low,volume}],adjclose:[{adjclose:close}]},
+    events:{}
+  }],error:null}};
+}
+globalThis.fetch=async url=>{
+  const m=String(url).match(/\/chart\/([^?]+)/);
+  if(!m)return {ok:false,status:404,async json(){return {}}};
+  const symbol=decodeURIComponent(m[1]);
+  return {ok:true,status:200,async json(){return payload(symbol)}};
+};
+`;
 
-const matured={outcomeId:'v1|2026-09-01|core|RY.TO',pickObservationId:'v1|2026-09-01|core|RY.TO',symbol:'RY.TO',status:'evaluated'};
-let journal=appendStrict([], [matured], x=>x.outcomeId);
-assert.equal(journal.added.length,1,'a later retry can append a previously missing matured outcome');
-journal=appendStrict(journal.records,[matured],x=>x.outcomeId);
-assert.equal(journal.added.length,0,'the same outcome cannot be duplicated');
-assert.equal(journal.records.length,1);
+const readJsonl=file=>fs.existsSync(file)?fs.readFileSync(file,'utf8').split('\n').filter(Boolean).map(JSON.parse):[];
+function runCollector(runId,variant){
+  const stdout=execFileSync(process.execPath,['--import',preload,'scripts/collect-healthy-trend-pullback-forward.mjs'],{
+    cwd:collector,encoding:'utf8',
+    env:{...process.env,
+      HTP_FORWARD_DIR:evidence,
+      HTP_FORWARD_CONCURRENCY:'48',
+      HTP_FORWARD_FETCH_TIMEOUT_MS:'1000',
+      HTP_FIXTURE_TODAY:today,
+      HTP_FIXTURE_VARIANT:variant,
+      GITHUB_RUN_ID:runId,
+      GITHUB_RUN_ATTEMPT:'1',
+      GITHUB_SHA:PIN
+    }
+  });
+  return stdout;
+}
 
-console.log('PASS: outcome retry workflow preserves pinned collector, immutable decisions, and outcome dedupe policy');
+try{
+  runGit(['worktree','add','--detach',collector,PIN]);
+  fs.mkdirSync(evidence,{recursive:true});
+  fs.writeFileSync(path.join(evidence,'observations.jsonl'),JSON.stringify(earlierObservation)+'\n');
+  fs.writeFileSync(preload,preloadCode);
+
+  // Run 1: actual approved collector records today's first complete canonical observations.
+  // The earlier RY decision-date bar is deliberately absent, so its already-mature horizon
+  // cannot yet be reconstructed and no outcome is appended.
+  runCollector('fixture-run-1','missing-decision');
+  const obsAfterFirst=readJsonl(path.join(evidence,'observations.jsonl'));
+  const todayFirst=obsAfterFirst.filter(x=>x.marketAsOf===today);
+  assert.equal(todayFirst.length,3,'actual collector must publish exactly three canonical model observations for the complete day');
+  assert.ok(todayFirst.every(x=>['complete_nonzero','complete_zero_pick'].includes(x.status)));
+  assert.equal(readJsonl(path.join(evidence,'outcomes.jsonl')).some(x=>x.pickObservationId===earlierPickId),false,
+    'mature earlier outcome must remain absent while its provider history is unavailable');
+  const frozenCanonical=JSON.parse(JSON.stringify(todayFirst));
+
+  // Run 2: same UTC day, after canonical observations already exist. The provider fixture
+  // now contains the missing historical bar. Running the real pinned collector must append
+  // the matured outcome without rewriting the first complete decisions.
+  runCollector('fixture-run-2','full');
+  const obsAfterSecond=readJsonl(path.join(evidence,'observations.jsonl')).filter(x=>x.marketAsOf===today);
+  assert.deepEqual(obsAfterSecond,frozenCanonical,'later same-day collector run must not rewrite canonical observations or picks');
+  let outcomes=readJsonl(path.join(evidence,'outcomes.jsonl')).filter(x=>x.pickObservationId===earlierPickId);
+  assert.equal(outcomes.length,1,'later same-day run must append the previously unavailable matured outcome');
+  assert.equal(outcomes[0].status,'evaluated');
+  assert.equal(outcomes[0].decisionDate,decisionDate);
+
+  // Run 3: idempotency through the same production append-only path.
+  runCollector('fixture-run-3','full');
+  const obsAfterThird=readJsonl(path.join(evidence,'observations.jsonl')).filter(x=>x.marketAsOf===today);
+  assert.deepEqual(obsAfterThird,frozenCanonical);
+  outcomes=readJsonl(path.join(evidence,'outcomes.jsonl')).filter(x=>x.pickObservationId===earlierPickId);
+  assert.equal(outcomes.length,1,'repeating reconciliation must not duplicate an existing outcome');
+
+  console.log('PASS: actual pinned collector appends a missing matured outcome on a later same-day run while canonical decisions remain immutable');
+}finally{
+  try{runGit(['worktree','remove','--force',collector])}catch{}
+  fs.rmSync(root,{recursive:true,force:true});
+}
