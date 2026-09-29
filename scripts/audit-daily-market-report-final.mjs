@@ -5,6 +5,7 @@ const pulseLatest=JSON.parse(fs.readFileSync('data/market-pulse-latest.json','ut
 const hunter=JSON.parse(fs.readFileSync('data/v2-latest-scan.json','utf8'));
 const md=fs.readFileSync('data/daily-market-report.md','utf8');
 const html=fs.readFileSync('index.html','utf8');
+const app=fs.readFileSync('app.js','utf8');
 const expected=['TSX','SP500','NASDAQ100','GOLD','SILVER','BTC','ETH'];
 const checks=[];
 const fail=(name,pass,detail)=>checks.push({name,pass,detail});
@@ -14,7 +15,11 @@ fail('daily_report_three_groups',report.groups?.length===3,report.groups?.map(x=
 fail('daily_report_key_developments',report.keyDevelopments?.length>=3,report.keyDevelopments?.length);
 fail('daily_report_key_divergences',(report.keyDivergences?.length||0)>=2,report.keyDivergences);
 fail('daily_report_watch_next',(report.watchNext?.length||0)>=3&&report.watchNext.every(x=>x.market&&x.text&&x.levels),report.watchNext);
-fail('mixed_dates_disclosed',report.asOf?.mixedDates===true&&report.executiveSummary?.some(x=>x.includes('timestamps differ')),report.asOf);
+const mixedDatesExpected=report.asOf?.earliest!==report.asOf?.latest;
+fail('mixed_dates_disclosed',
+  report.asOf?.mixedDates===mixedDatesExpected&&
+  (!mixedDatesExpected||report.executiveSummary?.some(x=>x.includes('timestamps differ'))),
+  report.asOf);
 fail('highest_attention_present',(report.highestAttention?.length||0)>=3,report.highestAttention);
 fail('hunter_context_max6',(report.hunterContext?.visible||0)<=6,report.hunterContext);
 fail('hunter_context_matches_backend',report.hunterContext?.visible===hunter.integratedSurfaceCounts?.visible,{report:report.hunterContext?.visible,backend:hunter.integratedSurfaceCounts?.visible});
@@ -41,9 +46,9 @@ fail('markdown_all_markets',expected.every(k=>{
   const name=pulse.markets.find(x=>x.key===k)?.name;
   return name&&md.includes('### '+name);
 }),expected);
-fail('ui_fetches_daily_report',html.includes("fetch('/data/daily-market-report.json'"),null);
-fail('ui_renders_daily_report',html.includes('function renderDailyMarketReport()')&&html.includes('Daily Market Report'),null);
-fail('ui_daily_before_pulse',html.indexOf('${renderDailyMarketReport()}')<html.indexOf('${renderPulse()}'),null);
+fail('ui_fetches_daily_report',app.includes("getJson('/data/daily-market-report.json')"),null);
+fail('ui_renders_daily_report',app.includes('function homeHtml()')&&app.includes('What Changed Today')&&app.includes('keyDevelopments'),null);
+fail('ui_daily_before_pulse',app.indexOf('What Changed Today')<app.indexOf('<h3>Markets</h3>'),null);
 
 const pass=checks.every(x=>x.pass);
 const result={
