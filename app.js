@@ -119,7 +119,7 @@ const initialDaily=readDailyFor(initialSession);
 const state={
   view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,
   envelope:initialEnvelope,watch:visibleWatch(initialEnvelope),positions:visiblePositions(initialEnvelope),
-  portfolioItems:new Map(),liveItems:new Map(),analytics:null,previous:previousMapFromDaily(initialDaily),
+  portfolioItems:new Map(),liveItems:new Map(),intraday:null,intradayStatus:'loading',analytics:null,previous:previousMapFromDaily(initialDaily),
   cloud:{session:initialSession,status:'local',message:'',showAuth:false,ready:false,reconciled:false,revision:0}
 };
 
@@ -358,9 +358,42 @@ function applyTheme(theme){
 }
 function toast(msg){const e=q('#toast');e.textContent=msg;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),1400)}
 async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url);return r.json()}
+function quoteTimeLabel(value){
+  const t=Date.parse(value||'');if(!Number.isFinite(t))return '';
+  return new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+}
+function quoteFor(symbol,fallback=null){
+  const qv=state.intraday?.quotes?.[symbol];
+  if(qv&&numeric(qv.price)){
+    const quoteAt=qv.quoteAt||state.intraday?.capturedAt||null;
+    const age=Number.isFinite(Date.parse(quoteAt||''))?(Date.now()-Date.parse(quoteAt))/60000:Infinity;
+    const stale=Boolean(qv.stale)||age>90;
+    const provisional=Boolean(state.intraday?.marketOpen)&&!stale;
+    return {
+      symbol,price:Number(qv.price),changePct:numeric(qv.changePct)?Number(qv.changePct):null,
+      currency:qv.currency||fallback?.currency||null,quoteAt,covered:true,
+      state:stale?'stale':provisional?'provisional':'hourly',
+      label:stale?'Hourly quote · stale':provisional?'Hourly quote · provisional':'Hourly quote'
+    };
+  }
+  if(fallback&&numeric(fallback.price)){
+    const reason=state.intraday?'Not covered by hourly feed':'Hourly feed unavailable';
+    return {
+      symbol,price:Number(fallback.price),changePct:numeric(fallback.dayChangePct)?Number(fallback.dayChangePct):null,
+      currency:fallback.currency||null,quoteAt:fallback.asOf||null,covered:false,state:'fallback',
+      label:reason+' · completed-session fallback'
+    };
+  }
+  return {symbol,price:null,changePct:null,currency:fallback?.currency||null,quoteAt:null,covered:false,state:'unavailable',label:state.intraday?'Not covered by hourly feed · unavailable':'Hourly feed unavailable'};
+}
+function quoteMetaHtml(display){
+  const when=display?.quoteAt?quoteTimeLabel(display.quoteAt):'';
+  return '<small class="quote-meta '+esc(display?.state||'unavailable')+'">'+esc(display?.label||'Quote unavailable')+(when?' · '+esc(when):'')+'</small>';
+}
 function enrichCandidate(x){
-  const live=state.liveItems.get(x?.symbol);if(!live)return x;
-  return {...x,price:Number.isFinite(live.price)?live.price:x.price,dayChangePct:live.dayChangePct};
+  const completed=state.liveItems.get(x?.symbol)||x;
+  const display=quoteFor(x?.symbol,completed);
+  return {...x,price:numeric(display.price)?display.price:x.price,dayChangePct:display.changePct,displayQuote:display};
 }
 function allCandidates(){
   const out=[],seen=new Set();
@@ -390,7 +423,7 @@ function stageEligiblePicks(stage){
     if(Number.isFinite(policy.minScore)&&(!Number.isFinite(x?.score)||x.score<policy.minScore))return false;
     if(Number.isFinite(policy.maxStageAge)&&(!Number.isFinite(x?.stageAge)||x.stageAge>policy.maxStageAge))return false;
     return true;
-  }).sort((x,y)=>(y?.surfaceScore??y?.score??-Infinity)-(x?.surfaceScore??x?.score??-Infinity)||String(x?.symbol||'').localeCompare(String(y?.symbol||'')));
+  }).sort((x,y)=>(y?.surfaceScore??y?.score??-Infinity)-(x?.surfaceScore??x?.score??-Infinity)||String(x?.symbol||'').localeCompare(String(y?.symbol||''))).map(enrichCandidate);
 }
 function stageLeaders(){return REVIEW_STAGES.map(stage=>stageEligiblePicks(stage)[0]).filter(Boolean)}
 function toneClass(value){
@@ -652,14 +685,17 @@ async function loadPortfolio(){
 async function load(){
   const b=q('#refreshBtn');b.classList.add('busy');b.disabled=true;
   try{
-    const [daily,pulse,v2]=await Promise.allSettled([
+    const [daily,pulse,v2,intraday]=await Promise.allSettled([
       getJson('/data/daily-market-report.json'),
       getJson('/data/market-pulse-report.json'),
-      getJson('/data/v2-latest-scan.json')
+      getJson('/data/v2-latest-scan.json'),
+      getJson('/api/intraday')
     ]);
     state.daily=daily.status==='fulfilled'?daily.value:null;
     state.pulse=pulse.status==='fulfilled'?pulse.value:null;
     state.v2=v2.status==='fulfilled'?v2.value:null;
+    state.intraday=intraday.status==='fulfilled'?intraday.value:null;
+    state.intradayStatus=intraday.status==='fulfilled'?'available':'unavailable';
     await initializeCloudPortfolio();
     await loadCandidateLiveData();
     await loadPortfolio();
@@ -674,19 +710,21 @@ function homeHtml(){
   const groups=(d?.groups||[]).slice(0,3).map(g=>`<div class="group-card"><small>${esc(g.label)}</small><b>${esc(g.state)}</b><p>${esc(g.detail)}</p></div>`).join('');
   const developmentByMarket=new Map((d?.keyDevelopments||[]).map(x=>[x.market,x]));
   const marketKeyByName={'TSX Composite':'TSX','S&P 500':'SP500','Nasdaq-100':'NASDAQ100','Gold':'GOLD','Silver':'SILVER','Bitcoin':'BTC','Ethereum':'ETH'};
+  const intradaySymbolByKey={TSX:'^GSPTSE',SP500:'^GSPC',NASDAQ100:'^IXIC',GOLD:'GC=F',SILVER:'SI=F',BTC:'BTC-USD',ETH:'ETH-USD'};
   const markets=(p?.markets||[]).map(x=>{
     const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
     const key=x.key||marketKeyByName[x.name]||'';
     const context=developmentByMarket.get(key)?.text||'';
-    const d1=x.current?.returns?.d1??x.returns?.d1;
+    const completed={price:x.price,dayChangePct:x.current?.returns?.d1??x.returns?.d1,currency:x.currency||null,asOf:x.asOf||d?.asOf?.latest||null};
+    const display=quoteFor(intradaySymbolByKey[key],completed);
     return `<div class="market-row">
       <div><b>${esc(x.name)}</b><small>${esc(x.condition||'')}</small></div>
-      <div class="market-value">${fmt(x.price)}<small class="day-change ${cls(d1)}">Day ${pct(d1)}</small></div>
+      <div class="market-value"><div class="price-line">${fmt(display.price)}<small class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</small></div>${quoteMetaHtml(display)}</div>
       <div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div>
       ${context?`<div class="market-context">${esc(stripMarketPrefix(context))}</div>`:''}
     </div>`;
   }).join('');
-  const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small><small class="day-change ${cls(x.dayChangePct)}">Day ${pct(x.dayChangePct)}</small></td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
+  const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small><small class="inline-quote">${money(x.price,x.displayQuote?.currency||'CAD')} <span class="day-change ${cls(x.dayChangePct)}">${pct(x.dayChangePct)}</span></small>${quoteMetaHtml(x.displayQuote)}</td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
     const h5=m?.evidence?.horizons?.['5'];
     const h20=m?.evidence?.horizons?.['20'];
@@ -758,7 +796,7 @@ function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
   const why=stockNarrative(x);
   return `<article class="card">
-    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice">${money(x.price,'CAD')}<small class="day-change ${cls(x.dayChangePct)}">Day ${pct(x.dayChangePct)}</small><small class="${cls(x.ret5)}">5D ${pct(x.ret5)}</small></div></div>
+    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice"><div class="price-line">${money(x.price,x.displayQuote?.currency||'CAD')}<small class="day-change ${cls(x.dayChangePct)}">${pct(x.dayChangePct)}</small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
     <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
     <div class="metrics"><div class="metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></div><div class="metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></div><div class="metric"><small>RS20</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="metric"><small>Momentum</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div></div>
     <div class="why analysis-copy">${esc(why)}</div>
@@ -779,11 +817,11 @@ function shortlistHtml(){
   </section></div>`;
 }
 function portfolioSummary(){
-  const rows=[...state.positions.values()].map(p=>({p,x:state.portfolioItems.get(p.symbol)}));
-  const complete=rows.filter(({p,x})=>Number(p.quantity)>0&&Number(p.entryPrice)>0&&x&&Number.isFinite(x.price));
-  const currencies=new Set(complete.map(({x})=>x.currency||'UNKNOWN'));
+  const rows=[...state.positions.values()].map(p=>{const x=state.portfolioItems.get(p.symbol);return {p,x,display:quoteFor(p.symbol,x)}});
+  const complete=rows.filter(({p,display})=>Number(p.quantity)>0&&Number(p.entryPrice)>0&&numeric(display?.price));
+  const currencies=new Set(complete.map(({x,display})=>display?.currency||x?.currency||'UNKNOWN'));
   const single=currencies.size===1&&!currencies.has('UNKNOWN'),currency=single?[...currencies][0]:null;
-  const value=single?complete.reduce((sum,{p,x})=>sum+Number(p.quantity)*x.price,0):null;
+  const value=single?complete.reduce((sum,{p,display})=>sum+Number(p.quantity)*Number(display.price),0):null;
   const cost=single?complete.reduce((sum,{p})=>sum+Number(p.quantity)*Number(p.entryPrice),0):null;
   const pnl=single?value-cost:null,pnlPct=single&&cost>0?pnl/cost*100:null;
   const attention=rows.filter(({x})=>health(x).tone!=='good');
@@ -791,8 +829,8 @@ function portfolioSummary(){
   for(const {p,x} of rows){const reasons=changeReasons(x,state.previous.get(p.symbol));if(reasons.length)changed.push({symbol:p.symbol,reasons})}
   let breadth=null,top1=null,top3=null;
   if(single&&Number.isFinite(value)&&value>0){
-    const weighted=complete.map(({p,x})=>{
-      const positionValue=Number(p.quantity)*x.price;
+    const weighted=complete.map(({p,x,display})=>{
+      const positionValue=Number(p.quantity)*Number(display.price);
       return {symbol:p.symbol,value:positionValue,weight:positionValue/value*100,tone:health(x).tone};
     }).sort((a,b)=>b.value-a.value);
     const healthy=weighted.filter(x=>x.tone==='good').reduce((sum,x)=>sum+x.weight,0);
@@ -849,7 +887,7 @@ function portfolioReadHtml(s){
 function allocationHtml(s){
   if(!s.complete.length)return'';
   if(!s.currency||!Number.isFinite(s.value))return '<div class="notice">Combined weights are hidden because holdings use multiple or unknown currencies. Individual positions are still monitored.</div>';
-  const holdings=s.complete.map(({p,x})=>({name:short(p.symbol),value:Number(p.quantity)*x.price})).sort((a,b)=>b.value-a.value);
+  const holdings=s.complete.map(({p,display})=>({name:short(p.symbol),value:Number(p.quantity)*Number(display.price)})).sort((a,b)=>b.value-a.value);
   const lines=holdings.map(h=>{const w=h.value/s.value*100;return `<div class="allocrow"><span>${esc(h.name)}</span><div class="bar"><span style="width:${Math.max(2,w)}%"></span></div><b>${w.toFixed(1)}%</b></div>`}).join('');
   return `<section class="panel soft"><div class="sectionhead"><div><h3>Allocation & concentration</h3><p>Current market-value weights.</p></div></div><details><summary>Open weights</summary><div class="allocation">${lines}</div></details></section>`;
 }
@@ -920,13 +958,13 @@ function riskHtml(){
   </section>`;
 }
 function positionCard(p,x,total){
-  const h=health(x),qty=Number(p.quantity)||0,value=x&&qty>0?qty*x.price:null,ret=x&&Number(p.entryPrice)>0?(x.price/Number(p.entryPrice)-1)*100:null;
+  const display=quoteFor(p.symbol,x),h=health(x),qty=Number(p.quantity)||0,value=numeric(display.price)&&qty>0?qty*Number(display.price):null,ret=numeric(display.price)&&Number(p.entryPrice)>0?(Number(display.price)/Number(p.entryPrice)-1)*100:null;
   const weight=Number.isFinite(total)&&Number.isFinite(value)&&total>0?value/total*100:null,e=x?.entryStats;
   const read=positionNarrative(p,x,weight);
   return `<article class="card portfolio-slide">
-    <div class="cardtop"><div class="name"><b>${short(p.symbol)}</b><small>${esc(x?.name||p.symbol)}</small><small class="day-change ${cls(x?.dayChangePct)}">Day ${pct(x?.dayChangePct)}</small></div><span class="health ${h.tone}">${h.label}</span></div>
+    <div class="cardtop"><div class="name"><b>${short(p.symbol)}</b><small>${esc(x?.name||p.symbol)}</small><small class="inline-quote">${money(display.price,display.currency||x?.currency||'CAD')} <span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span></small>${quoteMetaHtml(display)}</div><span class="health ${h.tone}">${h.label}</span></div>
     <div class="tags"><span class="tag">${p.source==='market-hunter'?'Market Hunter':'Manual / External'}</span><span class="tag">${qty||'—'} shares</span></div>
-    <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Today</small><b class="${cls(x?.dayChangePct)}">${pct(x?.dayChangePct)}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
+    <div class="metrics"><div class="metric"><small>Value</small><b>${x?money(value,x.currency):'—'}</b></div><div class="metric"><small>Today</small><b class="${cls(display.changePct)}">${pct(display.changePct)}</b></div><div class="metric"><small>Weight</small><b>${Number.isFinite(weight)?weight.toFixed(1)+'%':'—'}</b></div><div class="metric"><small>Since entry</small><b class="${cls(ret)}">${pct(ret)}</b></div><div class="metric"><small>RSI</small><b>${Number.isFinite(x?.rsi14)?x.rsi14.toFixed(0):'—'}</b></div></div>
     ${insightRowsHtml(x)}
     <details><summary>Position details</summary><div class="copy">${(()=>{const q=positionQuickRead(p,x,weight);return '<div class="quick-read-rows"><div><span>Now</span><b>'+esc(q.now)+'</b></div><div><span>Since entry</span><b>'+esc(q.since)+'</b></div><div><span>Portfolio impact</span><b>'+esc(q.impact)+'</b></div></div>';})()}<strong>Your entry</strong><br>Purchased ${esc(p.boughtAt||'—')} · Avg cost ${x?money(p.entryPrice,x.currency):fmt(p.entryPrice)} · Source ${p.source==='market-hunter'?'Market Hunter':'Manual / External'}<br><br><strong>Current chart</strong><br>Entry stage ${esc(p.entryStage||'Not captured')} · Current stage ${esc(x?.stage||'Outside active stages')} · RS vs benchmark ${pct(x?.rs20)} · Momentum shift ${Number.isFinite(x?.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}${e?'<br><br><strong>Since entry details</strong><br>Best move '+pct(e.maxGainPct)+' · Max drawdown '+pct(e.maxDrawdownPct)+' · Benchmark '+pct(e.benchmarkReturnPct)+' · Excess '+pct(e.excessVsBenchmarkPct):''}${p.notes?'<br><br><strong>Your note</strong><br>'+esc(p.notes):''}</div></details>
     <div class="actions"><button class="btn" data-chart="${p.symbol}">Chart ↗</button><button class="btn" data-edit="${p.symbol}">Edit</button><button class="btn danger" data-remove="${p.symbol}">Remove</button></div>
@@ -982,7 +1020,7 @@ function cloudPanelHtml(){
 function portfolioHtml(){
   const s=portfolioSummary();
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
-  const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness, what to watch, and what would change the current read.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>`<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(x?.dayChangePct)}">Day ${pct(x?.dayChangePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`).join('')}</div></section>`:'';
+  const attentionBlock=s.attention.length?`<section class="panel soft attention-panel"><div class="sectionhead"><div><h3>Current attention</h3><p>Strength, weakness, what to watch, and what would change the current read.</p></div></div><div class="attention-cards">${s.attention.map(({p,x})=>{const display=quoteFor(p.symbol,x);return `<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${quoteMetaHtml(display)}${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`}).join('')}</div></section>`:'';
   return `<div class="stack">
     <section class="panel"><div class="sectionhead"><div><h2>Portfolio Monitor</h2><p>What you actually own — Hunter or external.</p></div><div class="section-actions"><button class="btn" data-backup>Backup</button><button class="btn" data-restore>Restore</button><button class="btn primary" data-add>+ Add</button></div></div>
       ${cloudPanelHtml()}
@@ -996,9 +1034,9 @@ function portfolioHtml(){
 function watchlistHtml(){
   const by=new Map(allCandidates().map(x=>[x.symbol,x])),items=[...state.watch];
   return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>Watchlist</h2><p>Saved charts remain even after leaving the shortlist.</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>{
-    const current=by.get(symbol),live=state.liveItems.get(symbol);
+    const current=by.get(symbol),live=state.liveItems.get(symbol),display=quoteFor(symbol,live);
     if(current)return stockCard(current);
-    return `<article class="card"><div class="cardtop"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="cardprice">${live?money(live.price,live.currency||'CAD'):'—'}<small class="day-change ${cls(live?.dayChangePct)}">Day ${pct(live?.dayChangePct)}</small></div></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`;
+    return `<article class="card"><div class="cardtop"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="cardprice"><div class="price-line">${money(display.price,display.currency||'CAD')}<small class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</small></div>${quoteMetaHtml(display)}</div></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`;
   }).join(''):'<div class="empty">Save a chart from the shortlist.</div>'}</div></section></div>`;
 }
 function renderView(view){
