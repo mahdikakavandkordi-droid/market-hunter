@@ -28,6 +28,7 @@ const scan={
   },
   integratedSurfacePicks:[
     {symbol:'AAA.TO',stage:'Early Watch',score:60},
+    {symbol:'BBB.TO',stage:'Recovery',score:55},
     {symbol:'CCC.TO',stage:'Attractive Growth',score:65}
   ],
   all:[]
@@ -36,6 +37,11 @@ scan.all=Object.values(scan.byStage).flat();
 
 const previous={
   marketAsOf:'2026-09-28',
+  integratedSurfacePicks:[
+    {symbol:'AAA.TO',stage:'Early Watch'},
+    {symbol:'CCC.TO',stage:'Recovery'},
+    {symbol:'OLD.TO',stage:'Recovery'}
+  ],
   byStage:{
     'Early Watch':[{symbol:'AAA.TO'}],
     'Recovery':[{symbol:'CCC.TO'},{symbol:'OLD.TO'}],
@@ -72,12 +78,15 @@ assert.match(mReport.text,/برداشت امروز/);
 assert.match(mReport.text,/مهم‌ترین چیز برای پیگیری/);
 
 const hMenu=hunterMenu(scan);
-assert.match(hMenu.text,/چهار مرحله/);
+assert.match(hMenu.text,/منتخب نهایی امروز/);
 assert.ok(hMenu.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='stage:0'));
 
 const ew=stageMenu(scan,0);
 assert.match(ew.text,/ارلی واچ/);
 assert.ok(ew.keyboard.inline_keyboard.flat().some(x=>x.text.includes('⭐ AAA.TO')));
+const established=stageMenu(scan,3);
+assert.match(established.text,/سهمی وارد لیست منتخب نهایی نشده/);
+assert.ok(!established.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='stock:DDD.TO'));
 
 const stock=stockReport(scan,'CCC.TO');
 assert.match(stock.text,/CCC\.TO/);
@@ -93,7 +102,7 @@ assert.ok(diff.stayed.some(x=>x.symbol==='AAA.TO'));
 
 const brief=marketBrief(scan,previous);
 assert.match(brief.text,/برداشت کلی از تغییرات/);
-assert.match(brief.text,/تازه وارد رادار/);
+assert.match(brief.text,/تازه وارد منتخب‌های روز/);
 assert.match(brief.text,/OLD\.TO/);
 assert.match(brief.text,/CCC\.TO/);
 
