@@ -157,9 +157,17 @@ function hydrateEnvelope(){
   state.watch=visibleWatch(state.envelope);
 }
 
-function telegramBridgeRequested(){
-  try{return new URLSearchParams(location.search).get('portfolioBridge')==='1'}catch{return false}
+function telegramBridgeParams(){
+  try{
+    const qs=new URLSearchParams(location.search);
+    return {
+      requested:qs.get('portfolioBridge')==='1',
+      userId:String(qs.get('user_id')||''),
+      sig:String(qs.get('sig')||'')
+    };
+  }catch{return {requested:false,userId:'',sig:''}}
 }
+function telegramBridgeRequested(){return telegramBridgeParams().requested}
 function telegramBridgeEnabled(){
   try{return localStorage.getItem(TELEGRAM_BRIDGE_MARKER)==='connected'}catch{return false}
 }
@@ -169,11 +177,15 @@ async function syncTelegramBridgeNow({announce=false}={}){
     if(announce)toast('No local portfolio was found in this browser. Open the pairing link in the browser where your portfolio is saved.');
     return false;
   }
+  const pairing=telegramBridgeParams();
   const response=await fetch('/api/portfolio-bridge',{
     method:'POST',
     credentials:'same-origin',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({payload:normalizeEnvelope(state.envelope)})
+    body:JSON.stringify({
+      payload:normalizeEnvelope(state.envelope),
+      ...(pairing.requested&&pairing.userId&&pairing.sig?{user_id:pairing.userId,sig:pairing.sig}:{})
+    })
   });
   if(response.status===401){
     try{localStorage.removeItem(TELEGRAM_BRIDGE_MARKER)}catch{}
@@ -929,6 +941,8 @@ async function load(){
           try{
             const url=new URL(location.href);
             url.searchParams.delete('portfolioBridge');
+            url.searchParams.delete('user_id');
+            url.searchParams.delete('sig');
             history.replaceState({},'',url.pathname+(url.search||'')+url.hash);
           }catch{}
         }
@@ -1275,6 +1289,11 @@ async function importBackupFile(file){
   persistDaily(data.portfolioDaily||null);
   await loadPortfolio();renderAll();setView('portfolio');toast('Backup restored');
 }
+function telegramBridgeNoticeHtml(){
+  if(!telegramBridgeRequested()||hasVisibleData(state.envelope))return '';
+  return `<section class="panel soft"><div class="sectionhead"><div><h3>اتصال پورتفولیو به تلگرام</h3><p>این مرورگر پورتفولیوی ذخیره‌شده‌ی تو را ندارد.</p></div></div><div class="read">اگر این صفحه داخل مرورگر خود Telegram باز شده، از منوی مرورگر Telegram گزینه <b>Open in Safari</b> را بزن. باید همین لینک کامل در Safari باز شود؛ آنجا پورتفولیوی اصلی تو خوانده و یک‌بار Sync می‌شود.</div><div class="portfolio-tools"><button class="btn primary" data-copy-bridge-link>کپی لینک امن اتصال</button></div></section>`;
+}
+
 function cloudPanelHtml(){
   const session=state.cloud.session,status=state.cloud.status||'local';
   const badgeClass=status==='synced'?'synced':status==='syncing'?'syncing':status==='error'?'error':'';
@@ -1295,6 +1314,7 @@ function portfolioHtml(){
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
   const attentionBlock=s.attention.length?`<details class="panel soft attention-panel portfolio-disclosure"><summary>Current attention <span>${s.attention.length} holding(s) to review</span></summary><div class="attention-cards">${s.attention.map(({p,x})=>{const display=quoteFor(p.symbol,x);return `<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${quoteMetaHtml(display)}${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`}).join('')}</div></details>`:'';
   return `<div class="stack portfolio-layout">
+    ${telegramBridgeNoticeHtml()}
     <section class="panel portfolio-overview"><div class="sectionhead"><div><div class="eyebrow">YOUR ACCOUNT</div><h2>At a glance</h2><p>Your holdings, in perspective.</p></div><button class="btn primary" data-add>+ Add holding</button></div>
       <div class="portfolio-hero"><div><span class="hero-label">Portfolio value</span><strong class="hero-value">${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</strong></div><div class="hero-return"><span class="hero-label">Total P/L</span><strong class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency):'—'}</strong><span class="return-percent ${cls(s.pnlPct)}">${s.currency?pct(s.pnlPct):'—'}</span></div></div>
       <div class="portfolio-stats"><div><span>Cost basis</span><b>${s.currency?money(s.cost,s.currency):'—'}</b></div><div><span>Holdings</span><b>${s.rows.length}</b></div><div><span>Attention weight</span><b>${s.breadth?s.breadth.attention.toFixed(0)+'%':'—'}</b></div></div>
@@ -1416,6 +1436,13 @@ document.addEventListener('click',async e=>{
     return;
   }
   const buy=e.target.closest('[data-buy]');if(buy){openPosition(buy.dataset.buy,'market-hunter');return}
+  if(e.target.closest('[data-copy-bridge-link]')){
+    try{
+      await navigator.clipboard.writeText(location.href);
+      toast('لینک اتصال کپی شد؛ آن را در Safari باز کن');
+    }catch{toast('از منوی مرورگر Telegram گزینه Open in Safari را بزن')}
+    return;
+  }
   if(e.target.closest('[data-backup]')){exportBackup();return}
   if(e.target.closest('[data-restore]')){q('#backupFile')?.click();return}
   if(e.target.closest('[data-add]')){openPosition('','manual');return}
