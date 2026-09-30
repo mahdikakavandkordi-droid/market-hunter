@@ -131,13 +131,13 @@ assert.ok(emptyPortfolio.keyboard.inline_keyboard.flat().some(x=>x.url==='https:
 assert.match(emptyPortfolio.text,/اتصال پورتفولیوی سایت/);
 assert.match(portfolioMenu(portfolio).text,/پورتفولیو/);
 const portfolioItem=portfolioItemReport(portfolio,'RY.TO');
-assert.match(portfolioItem.text,/برداشت فعلی/);
-assert.match(portfolioItem.text,/موقعیت تو/);
-assert.match(portfolioItem.text,/بعداً چه چیزی را چک کنیم/);
+assert.match(portfolioItem.text,/اگر بخوام ساده بگم/);
+assert.match(portfolioItem.text,/پوزیشن تو/);
+assert.match(portfolioItem.text,/دفعه‌ی بعد چی رو چک کنیم/);
 assert.ok(portfolioItem.keyboard.inline_keyboard.flat().some(x=>x.text.includes('TradingView')&&x.url.includes('TSX%3ARY')));
 assert.match(portfolioSummaryReport(portfolio).text,/تحلیل کامل پورتفولیو/);
-assert.match(portfolioSummaryReport(portfolio).text,/وزن و تمرکز/);
-assert.match(portfolioSummaryReport(portfolio).text,/Exposure/);
+assert.match(portfolioSummaryReport(portfolio).text,/وزن‌ها و تمرکز/);
+assert.match(portfolioSummaryReport(portfolio).text,/ترکیب پورتفولیو/);
 assert.match(portfolioSummaryReport(portfolio).text,/Beta/);
 
 console.log('telegram bot formatters: ok');
