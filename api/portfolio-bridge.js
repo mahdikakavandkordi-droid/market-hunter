@@ -1,5 +1,6 @@
 import {
-  primaryTelegramUserId,verifyPortfolioBridgeToken,pairPortfolioBridge,putPortfolioBridge
+  primaryTelegramUserId,verifyPortfolioBridgeToken,pairPortfolioBridge,
+  getPortfolioBridgeBundle,putPortfolioBridgeBundle
 } from '../lib/portfolio-bridge.js';
 
 function cookieValue(req,name){
@@ -41,7 +42,15 @@ export default async function handler(req,res){
     if(!paired)return res.status(409).json({ok:false,error:'pairing_conflict'});
 
     if(req.method==='GET'){
-      return res.status(200).json({ok:true,connected:true});
+      const bundle=await getPortfolioBridgeBundle(userId,token);
+      return res.status(200).json({
+        ok:true,
+        connected:true,
+        payload:bundle?.payload||null,
+        dailyPayload:bundle?.daily_payload||null,
+        revision:Number(bundle?.revision||0),
+        updatedAt:bundle?.updated_at||null
+      });
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'method_not_allowed'});
 
@@ -49,14 +58,22 @@ export default async function handler(req,res){
     if(!payload||typeof payload!=='object'||Array.isArray(payload)){
       return res.status(400).json({ok:false,error:'invalid_payload'});
     }
-    const ok=await putPortfolioBridge(payload,userId,token);
-    if(!ok)return res.status(409).json({ok:false,error:'bridge_write_failed'});
+    const expectedRevision=Number.isInteger(req.body?.expectedRevision)?req.body.expectedRevision:null;
+    const dailyPayload=req.body?.dailyPayload??null;
+    const saved=await putPortfolioBridgeBundle(payload,dailyPayload,expectedRevision,userId,token);
+    if(!saved?.ok)return res.status(409).json({ok:false,error:'backend_revision_conflict'});
     if(bodyToken&&bodyUserId===String(userId)){
       res.setHeader('Set-Cookie',[
         'mh_portfolio_bridge='+encodeURIComponent(bodyToken)+'; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax'
       ]);
     }
-    return res.status(200).json({ok:true,connected:true,positions:visiblePositionCount(payload)});
+    return res.status(200).json({
+      ok:true,
+      connected:true,
+      positions:visiblePositionCount(payload),
+      revision:Number(saved.revision||0),
+      updatedAt:saved.updated_at||null
+    });
   }catch(error){
     return res.status(500).json({ok:false,error:String(error?.message||'bridge_failed')});
   }
