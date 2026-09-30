@@ -15,10 +15,11 @@ on:
       - 'scripts/build-daily-market-report.mjs'
       - 'scripts/audit-daily-market-report-final.mjs'
   workflow_dispatch:
-  # GitHub schedules run only from the repository default branch.
-  # Run after North American market close and publish only validated latest-data artifacts.
+  # GitHub cron is UTC and does not follow DST. Schedule both possible
+  # Toronto post-close slots; the gate job below keeps only the 16:10 ET run.
   schedule:
-    - cron: '45 22 * * *'
+    - cron: '10 20 * * 1-5'
+    - cron: '10 21 * * 1-5'
 
 permissions:
   contents: write
@@ -28,7 +29,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run_refresh: ${{ steps.window.outputs.run_refresh }}
+    steps:
+      - name: Select first post-close Toronto slot
+        id: window
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" != "schedule" ]; then
+            echo "run_refresh=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          toronto_hour="$(TZ=America/Toronto date +%H)"
+          toronto_minute="$(TZ=America/Toronto date +%M)"
+          echo "Toronto time: ${toronto_hour}:${toronto_minute}"
+          if [ "$toronto_hour" = "16" ]; then
+            echo "run_refresh=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_refresh=false" >> "$GITHUB_OUTPUT"
+          fi
+
   refresh:
+    needs: gate
+    if: needs.gate.outputs.run_refresh == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
