@@ -26,8 +26,13 @@ function visiblePositionCount(payload){
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
   const userId=primaryTelegramUserId();
-  const token=cookieValue(req,'mh_portfolio_bridge');
-  if(!userId||!verifyPortfolioBridgeToken(userId,token)){
+  const cookieToken=cookieValue(req,'mh_portfolio_bridge');
+  const bodyUserId=String(req.body?.user_id||'').trim();
+  const bodyToken=String(req.body?.sig||'').trim();
+  const token=verifyPortfolioBridgeToken(userId,cookieToken)
+    ?cookieToken
+    :(bodyUserId===String(userId||'')&&verifyPortfolioBridgeToken(userId,bodyToken)?bodyToken:'');
+  if(!userId||!token){
     return res.status(401).json({ok:false,connected:false});
   }
 
@@ -46,6 +51,11 @@ export default async function handler(req,res){
     }
     const ok=await putPortfolioBridge(payload,userId,token);
     if(!ok)return res.status(409).json({ok:false,error:'bridge_write_failed'});
+    if(bodyToken&&bodyUserId===String(userId)){
+      res.setHeader('Set-Cookie',[
+        'mh_portfolio_bridge='+encodeURIComponent(bodyToken)+'; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax'
+      ]);
+    }
     return res.status(200).json({ok:true,connected:true,positions:visiblePositionCount(payload)});
   }catch(error){
     return res.status(500).json({ok:false,error:String(error?.message||'bridge_failed')});
