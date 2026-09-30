@@ -3,7 +3,7 @@ import {
   marketBrief,statusReport,portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty
 } from '../lib/telegram-fa.js';
 import {
-  loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadPortfolioSnapshot,loadBotBundle,loadStockLive
+  loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadRecentScans,loadPortfolioSnapshot,loadBotBundle,loadStockLive
 } from '../lib/telegram-data.js';
 import { portfolioPairUrl, portfolioBridgeConfigured } from '../lib/portfolio-bridge.js';
 
@@ -135,8 +135,10 @@ async function routeCallback(update,data){
     return render(update,stockReport(scan,symbol,live));
   }
   if(data==='brief:hunter'){
-    const [scan,previous]=await Promise.all([loadScan(),loadPreviousScan()]);
-    return render(update,marketBrief(scan,previous));
+    const history=await loadRecentScans(5);
+    const scan=history.at(-1)||await loadScan();
+    const previous=history.length>1?history.at(-2):await loadPreviousScan();
+    return render(update,marketBrief(scan,previous,history));
   }
 
   if(data==='m:portfolio'){
@@ -171,8 +173,10 @@ async function routeMessage(update){
     const snapshot=await loadPortfolioSnapshot();return render(update,snapshot?portfolioMenu(snapshot):portfolioEmpty(undefined,portfolioPairUrl()));
   }
   if(text.includes('brief')||text.includes('گزارش')||text==='/brief'){
-    const [scan,previous]=await Promise.all([loadScan(),loadPreviousScan()]);
-    return render(update,marketBrief(scan,previous));
+    const history=await loadRecentScans(5);
+    const scan=history.at(-1)||await loadScan();
+    const previous=history.length>1?history.at(-2):await loadPreviousScan();
+    return render(update,marketBrief(scan,previous,history));
   }
   if(text.includes('hunter')||text.includes('سهام')||text==='/hunter'){
     const scan=await loadScan();return render(update,hunterMenu(scan));

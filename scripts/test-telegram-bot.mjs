@@ -50,6 +50,32 @@ const previous={
   }
 };
 
+const history=[
+  {
+    marketAsOf:'2026-09-24',
+    integratedSurfacePicks:[
+      {symbol:'AAA.TO',stage:'Early Watch'},
+      {symbol:'CCC.TO',stage:'Recovery'}
+    ]
+  },
+  {
+    marketAsOf:'2026-09-25',
+    integratedSurfacePicks:[
+      {symbol:'AAA.TO',stage:'Early Watch'}
+    ]
+  },
+  {
+    marketAsOf:'2026-09-26',
+    integratedSurfacePicks:[
+      {symbol:'AAA.TO',stage:'Early Watch'},
+      {symbol:'CCC.TO',stage:'Recovery'}
+    ]
+  },
+  previous,
+  scan
+];
+
+
 const pulse={
   generatedAt:'2026-09-29T22:50:00Z',
   markets:[{
@@ -102,9 +128,12 @@ assert.deepEqual(diff.removed.map(x=>x.symbol).sort(),['OLD.TO']);
 assert.deepEqual(diff.moved.map(x=>x.symbol).sort(),['CCC.TO']);
 assert.ok(diff.stayed.some(x=>x.symbol==='AAA.TO'));
 
-const brief=marketBrief(scan,previous);
-assert.match(brief.text,/برداشت کلی از تغییرات/);
-assert.match(brief.text,/تازه وارد منتخب‌های روز/);
+const brief=marketBrief(scan,previous,history);
+assert.match(brief.text,/نسبت به جلسه‌ی قبل/);
+assert.match(brief.text,/ردگیری 5 روز معاملاتی اخیر/);
+assert.match(brief.text,/بدون تغییر مرحله/);
+assert.match(brief.text,/AAA\.TO/);
+assert.match(brief.text,/5\/5 روز/);
 assert.match(brief.text,/OLD\.TO/);
 assert.match(brief.text,/CCC\.TO/);
 
