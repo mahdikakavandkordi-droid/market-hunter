@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {
   mainMenu,pulseMenu,marketReport,hunterMenu,stageMenu,stockReport,diffScans,marketBrief,
-  portfolioMenu,portfolioItemReport,portfolioSummaryReport
+  portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty
 } from '../lib/telegram-fa.js';
 
 const scan={
@@ -123,6 +123,9 @@ const portfolio={
     topRiskContributor:{symbol:'RY.TO',riskContributionPct:42}
   }
 };
+const emptyPortfolio=portfolioEmpty(undefined,'https://example.com/pair');
+assert.ok(emptyPortfolio.keyboard.inline_keyboard.flat().some(x=>x.url==='https://example.com/pair'));
+assert.match(emptyPortfolio.text,/اتصال پورتفولیوی سایت/);
 assert.match(portfolioMenu(portfolio).text,/پورتفولیو/);
 const portfolioItem=portfolioItemReport(portfolio,'RY.TO');
 assert.match(portfolioItem.text,/برداشت از وضعیت این دارایی/);
