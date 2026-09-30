@@ -112,9 +112,12 @@ const portfolio={
   marketAsOf:'2026-09-29',
   items:[{
     symbol:'RY.TO',name:'Royal Bank',price:210,currency:'CAD',dayChangePct:1.2,stage:'Attractive Growth',
-    ret20:5,rs20:2,rsi14:58,sector:'Financials',
+    ret5:2,ret20:5,ret60:9,rs20:2,rs60:4,rsi14:58,momentumShift:2,dist20:1.5,dist50:3,
+    sector:'Financials',swingTrend:'Structure improving',higherLow:true,higherHigh:true,
+    support:202,resistance:215,
     exposure:{assetClass:'Equity',group:'Financials'},
-    entryStats:{returnPct:8,maxDrawdownPct:-4,maxGainPct:12,excessVsBenchmarkPct:3}
+    position:{quantity:5,entryPrice:190,boughtAt:'2026-09-01',source:'manual'},
+    entryStats:{sinceEntryReturn:10.5,maxDrawdownPct:-4,maxGainPct:12,excessVsBenchmarkPct:3}
   }],
   portfolioAnalytics:{
     portfolioReturnPct:6,benchmarkReturnPct:3,excessReturnPct:3,
@@ -128,9 +131,13 @@ assert.ok(emptyPortfolio.keyboard.inline_keyboard.flat().some(x=>x.url==='https:
 assert.match(emptyPortfolio.text,/اتصال پورتفولیوی سایت/);
 assert.match(portfolioMenu(portfolio).text,/پورتفولیو/);
 const portfolioItem=portfolioItemReport(portfolio,'RY.TO');
-assert.match(portfolioItem.text,/برداشت از وضعیت این دارایی/);
+assert.match(portfolioItem.text,/برداشت فعلی/);
+assert.match(portfolioItem.text,/موقعیت تو/);
+assert.match(portfolioItem.text,/بعداً چه چیزی را چک کنیم/);
 assert.ok(portfolioItem.keyboard.inline_keyboard.flat().some(x=>x.text.includes('TradingView')&&x.url.includes('TSX%3ARY')));
-assert.match(portfolioSummaryReport(portfolio).text,/برداشت کلی/);
+assert.match(portfolioSummaryReport(portfolio).text,/تحلیل کامل پورتفولیو/);
+assert.match(portfolioSummaryReport(portfolio).text,/وزن و تمرکز/);
+assert.match(portfolioSummaryReport(portfolio).text,/Exposure/);
 assert.match(portfolioSummaryReport(portfolio).text,/Beta/);
 
 console.log('telegram bot formatters: ok');
