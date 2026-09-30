@@ -5,6 +5,7 @@ import {
 import {
   loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadPortfolioSnapshot,loadBotBundle,loadStockLive
 } from '../lib/telegram-data.js';
+import { portfolioPairUrl, portfolioBridgeConfigured } from '../lib/portfolio-bridge.js';
 
 const TELEGRAM_API='https://api.telegram.org';
 
@@ -140,16 +141,16 @@ async function routeCallback(update,data){
 
   if(data==='m:portfolio'){
     const snapshot=await loadPortfolioSnapshot();
-    return render(update,snapshot?portfolioMenu(snapshot):portfolioEmpty());
+    return render(update,snapshot?portfolioMenu(snapshot):portfolioEmpty(undefined,portfolioPairUrl()));
   }
   if(data==='pf:all'){
     const snapshot=await loadPortfolioSnapshot();
-    return render(update,snapshot?portfolioSummaryReport(snapshot):portfolioEmpty());
+    return render(update,snapshot?portfolioSummaryReport(snapshot):portfolioEmpty(undefined,portfolioPairUrl()));
   }
   if(data.startsWith('pf:')){
     const symbol=data.slice('pf:'.length).toUpperCase();
     const snapshot=await loadPortfolioSnapshot();
-    return render(update,snapshot?portfolioItemReport(snapshot,symbol):portfolioEmpty());
+    return render(update,snapshot?portfolioItemReport(snapshot,symbol):portfolioEmpty(undefined,portfolioPairUrl()));
   }
 
   if(data==='m:status'){
@@ -167,7 +168,7 @@ async function routeMessage(update){
     const pulse=await loadPulse();return render(update,pulseMenu(pulse));
   }
   if(text.includes('پورتفولیو')||text==='/portfolio'){
-    const snapshot=await loadPortfolioSnapshot();return render(update,snapshot?portfolioMenu(snapshot):portfolioEmpty());
+    const snapshot=await loadPortfolioSnapshot();return render(update,snapshot?portfolioMenu(snapshot):portfolioEmpty(undefined,portfolioPairUrl()));
   }
   if(text.includes('brief')||text.includes('گزارش')||text==='/brief'){
     const [scan,previous]=await Promise.all([loadScan(),loadPreviousScan()]);
@@ -187,7 +188,10 @@ export default async function handler(req,res){
       ok:true,
       service:'market-hunter-telegram',
       configured:configured(),
-      portfolioCloudConfigured:Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY&&process.env.TELEGRAM_PORTFOLIO_USER_ID)
+      portfolioCloudConfigured:Boolean(
+        (process.env.SUPABASE_SERVICE_ROLE_KEY&&process.env.TELEGRAM_PORTFOLIO_USER_ID)||
+        portfolioBridgeConfigured()
+      )
     });
   }
   if(req.method!=='POST')return res.status(405).json({ok:false,error:'method_not_allowed'});
