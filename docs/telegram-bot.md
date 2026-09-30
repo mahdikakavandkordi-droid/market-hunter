@@ -75,7 +75,7 @@ If no cloud state exists, the Telegram Portfolio menu explains that Cloud Portfo
 
 ## Webhook activation
 
-After deployment and Vercel environment variables are configured:
+After deployment and Vercel environment variables are configured, trigger a fresh deployment so the new secrets are available to the serverless function:
 
 ```bash
 TELEGRAM_BOT_TOKEN="..." \
