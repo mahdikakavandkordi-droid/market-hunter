@@ -68,7 +68,8 @@ assert.ok(pMenu.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='pulse
 const mReport=marketReport(pulse.markets[0]);
 assert.match(mReport.text,/TSX/);
 assert.match(mReport.text,/امروز/);
-assert.match(mReport.text,/ریسک ساختاری/);
+assert.match(mReport.text,/برداشت امروز/);
+assert.match(mReport.text,/مهم‌ترین چیز برای پیگیری/);
 
 const hMenu=hunterMenu(scan);
 assert.match(hMenu.text,/چهار مرحله/);
@@ -81,7 +82,8 @@ assert.ok(ew.keyboard.inline_keyboard.flat().some(x=>x.text.includes('⭐ AAA.TO
 const stock=stockReport(scan,'CCC.TO');
 assert.match(stock.text,/CCC\.TO/);
 assert.match(stock.text,/رشد جذاب/);
-assert.match(stock.text,/چرا در این مرحله/);
+assert.match(stock.text,/برداشت من از این سهم/);
+assert.match(stock.text,/چرا Hunter بهش توجه کرده/);
 
 const diff=diffScans(scan,previous);
 assert.deepEqual(diff.added.map(x=>x.symbol).sort(),['BBB.TO']);
@@ -90,7 +92,8 @@ assert.deepEqual(diff.moved.map(x=>x.symbol).sort(),['CCC.TO']);
 assert.ok(diff.stayed.some(x=>x.symbol==='AAA.TO'));
 
 const brief=marketBrief(scan,previous);
-assert.match(brief.text,/تازه اضافه‌شده/);
+assert.match(brief.text,/برداشت کلی از تغییرات/);
+assert.match(brief.text,/تازه وارد رادار/);
 assert.match(brief.text,/OLD\.TO/);
 assert.match(brief.text,/CCC\.TO/);
 
@@ -110,7 +113,8 @@ const portfolio={
   }
 };
 assert.match(portfolioMenu(portfolio).text,/پورتفولیو/);
-assert.match(portfolioItemReport(portfolio,'RY.TO').text,/امروز/);
+assert.match(portfolioItemReport(portfolio,'RY.TO').text,/برداشت از وضعیت این دارایی/);
+assert.match(portfolioSummaryReport(portfolio).text,/برداشت کلی/);
 assert.match(portfolioSummaryReport(portfolio).text,/Beta/);
 
 console.log('telegram bot formatters: ok');
