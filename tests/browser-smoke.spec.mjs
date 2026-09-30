@@ -86,7 +86,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await expect(nasdaq100).toContainText('completed-session fallback');
 
   await page.locator('[data-view="portfolio"]:visible').first().click();
-  await expect(page.locator('#portfolioView')).toContainText('smoke@example.test');
+  await expect(page.locator('#portfolioView')).toContainText('Backend portfolio');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('RY');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('Hourly quote · provisional');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('111.25');
@@ -125,7 +125,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await page.reload();
   await page.waitForLoadState('networkidle');
   await page.locator('[data-view="portfolio"]:visible').first().click();
-  await expect(page.locator('#portfolioView')).toContainText('smoke@example.test');
+  await expect(page.locator('#portfolioView')).toContainText('Backend portfolio');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('10 shares');
 
   // Edit on the mobile portfolio card.
