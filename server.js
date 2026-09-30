@@ -89,6 +89,10 @@ const server=http.createServer(async(req,res)=>{
     if(url.pathname==='/api/scan') return await scanHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/portfolio') return await portfolioHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/intraday') return await intradayHandler(wrappedReq,makeResponse(res));
+    if(url.pathname==='/api/portfolio-bridge'){
+      res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});
+      return res.end(JSON.stringify({ok:true,connected:false,localDev:true}));
+    }
 
     if(url.pathname.startsWith('/data/')){
       const rel=url.pathname.replace(/^\//,'');
