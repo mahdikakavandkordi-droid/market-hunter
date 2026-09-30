@@ -217,6 +217,7 @@ async function requestTelegramBackendBundle(){
   if(response.status===401)return null;
   const data=await response.json().catch(()=>({}));
   if(!response.ok||data.ok!==true)throw new Error(data.error||'backend_portfolio_load_failed');
+  if(data.connected!==true)return null;
   return data;
 }
 async function loadTelegramBackendPortfolio(){
