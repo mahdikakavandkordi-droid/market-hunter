@@ -16,10 +16,10 @@ on:
       - 'scripts/audit-daily-market-report-final.mjs'
   workflow_dispatch:
   # GitHub cron is UTC and does not follow DST. Schedule both possible
-  # Toronto post-close slots; the gate job below keeps only the 16:10 ET run.
+  # Toronto post-close slots; the gate job below keeps only the 16:30 ET run.
   schedule:
-    - cron: '10 20 * * 1-5'
-    - cron: '10 21 * * 1-5'
+    - cron: '30 20 * * 1-5'
+    - cron: '30 21 * * 1-5'
 
 permissions:
   contents: write
