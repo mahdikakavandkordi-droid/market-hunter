@@ -110,3 +110,8 @@ It reports only whether Telegram and Portfolio integrations are configured. It n
 - `lib/telegram-fa.js` — Persian Telegram views/formatters
 - `scripts/setup-telegram-webhook.mjs` — one-time webhook activation helper
 - `scripts/test-telegram-bot.mjs` — formatter and Market Brief regression checks
+
+
+## Portfolio backend source of truth
+
+Once paired, the backend copy is canonical. Browser storage is a cache and can be restored from the paired backend.
