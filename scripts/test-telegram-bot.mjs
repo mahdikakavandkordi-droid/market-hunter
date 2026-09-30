@@ -84,6 +84,7 @@ assert.ok(hMenu.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='stage
 const ew=stageMenu(scan,0);
 assert.match(ew.text,/ارلی واچ/);
 assert.ok(ew.keyboard.inline_keyboard.flat().some(x=>x.text.includes('⭐ AAA.TO')));
+assert.ok(ew.keyboard.inline_keyboard.flat().some(x=>x.text==='📈 چارت'&&x.url.includes('TSX%3AAAA')));
 const established=stageMenu(scan,3);
 assert.match(established.text,/سهمی وارد لیست منتخب نهایی نشده/);
 assert.ok(!established.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='stock:DDD.TO'));
@@ -93,6 +94,7 @@ assert.match(stock.text,/CCC\.TO/);
 assert.match(stock.text,/رشد جذاب/);
 assert.match(stock.text,/برداشت من از این سهم/);
 assert.match(stock.text,/چرا Hunter بهش توجه کرده/);
+assert.ok(stock.keyboard.inline_keyboard.flat().some(x=>x.text.includes('TradingView')&&x.url.includes('TSX%3ACCC')));
 
 const diff=diffScans(scan,previous);
 assert.deepEqual(diff.added.map(x=>x.symbol).sort(),['BBB.TO']);
@@ -122,7 +124,9 @@ const portfolio={
   }
 };
 assert.match(portfolioMenu(portfolio).text,/پورتفولیو/);
-assert.match(portfolioItemReport(portfolio,'RY.TO').text,/برداشت از وضعیت این دارایی/);
+const portfolioItem=portfolioItemReport(portfolio,'RY.TO');
+assert.match(portfolioItem.text,/برداشت از وضعیت این دارایی/);
+assert.ok(portfolioItem.keyboard.inline_keyboard.flat().some(x=>x.text.includes('TradingView')&&x.url.includes('TSX%3ARY')));
 assert.match(portfolioSummaryReport(portfolio).text,/برداشت کلی/);
 assert.match(portfolioSummaryReport(portfolio).text,/Beta/);
 
