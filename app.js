@@ -17,8 +17,9 @@ const LEGACY_POSITIONS_KEY='marketHunterPositions';
 const LEGACY_WATCH_KEY='marketHunterWatchlist';
 const LEGACY_DAILY_KEY='marketHunterPortfolioDaily';
 const LEGACY_GUEST_MIGRATION_KEY='marketHunterLegacyGuestMigrationV3';
+const TELEGRAM_BRIDGE_MARKER='marketHunterTelegramBridgeV1';
 const MARKET_PULSE_INTRADAY_SYMBOLS=Object.freeze({TSX:'^GSPTSE',SP500:'^GSPC',NASDAQ100:'^NDX',GOLD:'GC=F',SILVER:'SI=F',BTC:'BTC-USD',ETH:'ETH-USD'});
-let cloudSyncTimer=0,authAttempt=0,portfolioLoadSequence=0;
+let cloudSyncTimer=0,telegramBridgeTimer=0,authAttempt=0,portfolioLoadSequence=0;
 const cloudSyncBusyEpochs=new Set(),cloudSyncQueuedEpochs=new Set();
 
 function loadCloudSession(){try{return JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{return null}}
@@ -150,10 +151,51 @@ function persistEnvelopeFor(session,envelope=state.envelope){
     localStorage.setItem(LEGACY_WATCH_KEY,JSON.stringify([...watch]));
   }
 }
-function persistEnvelope(){persistEnvelopeFor(state.cloud.session,state.envelope)}
+function persistEnvelope(){persistEnvelopeFor(state.cloud.session,state.envelope);queueTelegramBridgeSync()}
 function hydrateEnvelope(){
   state.positions=visiblePositions(state.envelope);
   state.watch=visibleWatch(state.envelope);
+}
+
+function telegramBridgeRequested(){
+  try{return new URLSearchParams(location.search).get('portfolioBridge')==='1'}catch{return false}
+}
+function telegramBridgeEnabled(){
+  try{return localStorage.getItem(TELEGRAM_BRIDGE_MARKER)==='connected'}catch{return false}
+}
+async function syncTelegramBridgeNow({announce=false}={}){
+  const firstConnect=!telegramBridgeEnabled();
+  if(firstConnect&&!hasVisibleData(state.envelope)){
+    if(announce)toast('No local portfolio was found in this browser. Open the pairing link in the browser where your portfolio is saved.');
+    return false;
+  }
+  const response=await fetch('/api/portfolio-bridge',{
+    method:'POST',
+    credentials:'same-origin',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({payload:normalizeEnvelope(state.envelope)})
+  });
+  if(response.status===401){
+    try{localStorage.removeItem(TELEGRAM_BRIDGE_MARKER)}catch{}
+    if(announce)toast('Telegram pairing is not active in this browser.');
+    return false;
+  }
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||data.ok!==true){
+    if(announce)toast('Telegram portfolio sync failed. Try the pairing button again.');
+    return false;
+  }
+  try{localStorage.setItem(TELEGRAM_BRIDGE_MARKER,'connected')}catch{}
+  if(announce)toast('Portfolio connected to Telegram');
+  return true;
+}
+function queueTelegramBridgeSync(){
+  if(!telegramBridgeEnabled())return;
+  clearTimeout(telegramBridgeTimer);
+  telegramBridgeTimer=setTimeout(()=>{
+    telegramBridgeTimer=0;
+    syncTelegramBridgeNow().catch(()=>{});
+  },600);
 }
 function currentDailyPayloadFor(session){return readDailyFor(session)}
 function currentDailyPayload(){return currentDailyPayloadFor(state.cloud.session)}
@@ -878,6 +920,20 @@ async function load(){
     await initializeCloudPortfolio(accountCtx);
     if(contextActive(accountCtx))await loadCandidateLiveData(accountCtx);
     if(contextActive(accountCtx))await loadPortfolio(accountCtx);
+    const bridgeRequested=telegramBridgeRequested();
+    if(bridgeRequested||telegramBridgeEnabled()){
+      const bridgeSynced=await syncTelegramBridgeNow({announce:bridgeRequested}).catch(()=>false);
+      if(bridgeRequested){
+        state.view='portfolio';
+        if(bridgeSynced){
+          try{
+            const url=new URL(location.href);
+            url.searchParams.delete('portfolioBridge');
+            history.replaceState({},'',url.pathname+(url.search||'')+url.hash);
+          }catch{}
+        }
+      }
+    }
     const asOf=state.daily?.asOf;
     q('#asOf').textContent=asOf?.mixedDates&&asOf?.earliest&&asOf?.latest
       ?'Completed markets through '+asOf.earliest+' · 24/7 through '+asOf.latest
