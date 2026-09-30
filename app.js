@@ -1387,18 +1387,12 @@ function telegramBridgeNoticeHtml(){
 }
 
 function cloudPanelHtml(){
-  const session=state.cloud.session,status=state.cloud.status||'local';
-  const badgeClass=status==='synced'?'synced':status==='syncing'?'syncing':status==='error'?'error':'';
-  const badgeText=session?(status==='synced'?'Cloud synced':status==='syncing'?'Syncing…':status==='error'?'Sync issue':'Cloud connected'):'Local only';
-  const message=state.cloud.message?`<div class="cloud-message">${esc(state.cloud.message)}</div>`:'';
-  if(session){
-    const migration=guestMigrationAvailable()?'<div class="cloud-message">Local data from before account-scoped sync is still on this device.</div><div class="cloud-actions"><button class="btn primary" data-cloud-import-local>Import local data into this account</button></div>':'';
-    return `<div class="cloud-panel"><div class="cloud-row"><div><b>Cloud portfolio</b><small>${esc(session.user?.email||'Signed in')}</small></div><span class="cloud-badge ${badgeClass}">${badgeText}</span></div><div class="cloud-actions"><button class="btn ghost" data-cloud-sync>Sync now</button><button class="btn" data-cloud-signout>Sign out</button></div>${migration}${message}</div>`;
+  const connected=telegramBridgeEnabled();
+  const updated=telegramBridgeUpdatedAt?quoteTimeLabel(telegramBridgeUpdatedAt):'';
+  if(connected){
+    return `<div class="cloud-panel"><div class="cloud-row"><div><b>Backend portfolio</b><small>Supabase is the source of truth. This browser keeps only a local cache.</small></div><span class="cloud-badge synced">Connected</span></div><div class="cloud-message">Your holdings can be restored from the backend even if browser storage is cleared.${updated?' Last backend update: '+esc(updated)+'.':''}</div><div class="cloud-actions"><button class="btn ghost" data-backend-sync>Sync now</button></div></div>`;
   }
-  if(!state.cloud.showAuth){
-    return `<div class="cloud-panel"><div class="cloud-row"><div><b>Protect this portfolio</b><small>Keep a private cloud copy and restore it on another device.</small></div><button class="btn primary" data-cloud-toggle>Connect cloud</button></div>${message}</div>`;
-  }
-  return `<div class="cloud-panel"><div class="cloud-row"><div><b>Market Hunter cloud</b><small>Account data stays isolated. Existing guest data is imported only if you explicitly choose to import it after sign-in.</small></div><button class="btn" data-cloud-toggle>Cancel</button></div><div class="cloud-form"><input type="email" autocomplete="email" placeholder="Email" data-cloud-email><input type="password" autocomplete="current-password" minlength="6" placeholder="Password (6+ chars)" data-cloud-password><button class="btn primary" data-cloud-signin>Sign in</button><button class="btn" data-cloud-signup>Create account</button></div>${message}</div>`;
+  return `<div class="cloud-panel"><div class="cloud-row"><div><b>Backend portfolio</b><small>This browser is not paired yet. Pair it from the private Telegram bot; no email/password account is required.</small></div><span class="cloud-badge">Not paired</span></div><div class="cloud-message">Open Telegram → Portfolio → اتصال پورتفولیوی سایت, then open the signed link in the browser that currently contains your portfolio.</div></div>`;
 }
 function portfolioHtml(){
   const s=portfolioSummary();
@@ -1416,7 +1410,7 @@ function portfolioHtml(){
 
 
     </section>
-    <a class="portfolio-sync-link" href="#portfolioAccount">${esc(syncLabel)} <span>Manage account ↗</span></a>
+    <a class="portfolio-sync-link" href="#portfolioAccount">${esc(syncLabel)} <span>Backend & backup ↗</span></a>
     ${allocationHtml(s)}
     <section class="panel soft holdings-panel"><div class="sectionhead"><div><h3>Your holdings <span class="holdings-count">${s.rows.length}</span></h3><p>Price, performance and the next thing to watch.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe to browse ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty portfolio-empty"><span aria-hidden="true">＋</span><strong>Your portfolio starts here</strong><p>Add a holding with your purchase price and date to see its progress.</p><button class="btn primary" data-add>Add your first holding</button></div>'}</div></section>
     ${changeBlock}${attentionBlock}
@@ -1520,6 +1514,7 @@ document.addEventListener('click',async e=>{
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}
   const watch=e.target.closest('[data-watch]');if(watch){const s=watch.dataset.watch,present=!state.watch.has(s);setWatchMembership(s,present);renderAll();toast(present?'Saved':'Removed');return}
   if(e.target.closest('[data-cloud-toggle]')){state.cloud.showAuth=!state.cloud.showAuth;state.cloud.message='';renderView('portfolio');return}
+  if(e.target.closest('[data-backend-sync]')){await syncTelegramBridgeNow({announce:true}).catch(()=>false);renderView('portfolio');return}
   if(e.target.closest('[data-cloud-sync]')){await syncPortfolioCloud();return}
   if(e.target.closest('[data-cloud-import-local]')){await importGuestPortfolio();return}
   if(e.target.closest('[data-cloud-signout]')){await cloudSignOut();return}
