@@ -1,13 +1,18 @@
 name: SMC Forward Paper Track
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/smc-forward-paper.yml'
   workflow_dispatch:
   schedule:
     - cron: '30 18 * * 1-5'
       timezone: 'America/Toronto'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   forward-paper:
@@ -22,11 +27,23 @@ jobs:
           node-version: 22
       - name: Run frozen forward paper tracker
         run: node scripts/smc-forward-paper.mjs
+      - name: Persist immutable forward ledger
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/research/smc-wd4h-forward-paper-ledger.json data/research/smc-wd4h-forward-paper-latest.json data/research/smc-wd4h-forward-paper-latest.md
+          if git diff --cached --quiet; then
+            echo "No forward ledger changes"
+          else
+            git commit -m "data: update SMC forward paper ledger"
+            git push origin HEAD:research/smc-wd4h-tsx-validation-20261001
+          fi
       - name: Upload forward paper snapshot
         uses: actions/upload-artifact@v4
         with:
           name: smc-wd4h-forward-paper-latest
           path: |
+            data/research/smc-wd4h-forward-paper-ledger.json
             data/research/smc-wd4h-forward-paper-latest.json
             data/research/smc-wd4h-forward-paper-latest.md
           if-no-files-found: error
