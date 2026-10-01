@@ -1,6 +1,12 @@
 name: SMC Forward Paper Track
 
 on:
+  push:
+    branches:
+      - research/smc-wd4h-tsx-validation-20261001
+    paths:
+      - 'scripts/smc-forward-paper.mjs'
+      - '.github/workflows/smc-forward-paper.yml'
   workflow_dispatch:
   schedule:
     - cron: '30 22 * * 1-5'
