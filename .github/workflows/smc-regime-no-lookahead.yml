@@ -1,0 +1,33 @@
+name: SMC No-Lookahead Regime Analysis
+
+on:
+  push:
+    branches:
+      - research/smc-wd4h-tsx-validation-20261001
+    paths:
+      - 'scripts/analyze-smc-regimes-no-lookahead.mjs'
+      - '.github/workflows/smc-regime-no-lookahead.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run no-lookahead regime analysis
+        run: node scripts/analyze-smc-regimes-no-lookahead.mjs
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smc-wd4h-no-lookahead-regime-20261001
+          path: |
+            data/research/smc-wd4h-no-lookahead-regime-20261001.json
+            data/research/smc-wd4h-no-lookahead-regime-20261001.md
+          if-no-files-found: error
