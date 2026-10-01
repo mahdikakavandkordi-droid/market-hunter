@@ -1,0 +1,59 @@
+name: SMC Crypto and Metals Forward
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/smc-forward-alternatives.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '15 19 * * *'
+      timezone: 'America/Toronto'
+
+permissions:
+  contents: write
+
+jobs:
+  alternatives-forward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/smc-wd4h-tsx-validation-20261001
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run crypto-15 and metals-5 forward cohorts
+        run: node scripts/smc-forward-alternatives.mjs
+      - name: Persist alternative forward ledgers
+        run: |
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/research/smc-wd4h-forward-crypto-15-ledger.json
+          git add data/research/smc-wd4h-forward-crypto-15-latest.json
+          git add data/research/smc-wd4h-forward-crypto-15-latest.md
+          git add data/research/smc-wd4h-forward-metals-5-ledger.json
+          git add data/research/smc-wd4h-forward-metals-5-latest.json
+          git add data/research/smc-wd4h-forward-metals-5-latest.md
+          git add data/research/smc-wd4h-forward-alternatives-summary.json
+          if git diff --cached --quiet; then
+            echo "No alternative forward changes"
+          else
+            git commit -m "data: update crypto/metals SMC forward cohorts"
+            git push origin HEAD:research/smc-wd4h-tsx-validation-20261001
+          fi
+      - name: Upload alternative forward snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: smc-wd4h-forward-alternatives-latest
+          path: |
+            data/research/smc-wd4h-forward-crypto-15-ledger.json
+            data/research/smc-wd4h-forward-crypto-15-latest.json
+            data/research/smc-wd4h-forward-crypto-15-latest.md
+            data/research/smc-wd4h-forward-metals-5-ledger.json
+            data/research/smc-wd4h-forward-metals-5-latest.json
+            data/research/smc-wd4h-forward-metals-5-latest.md
+            data/research/smc-wd4h-forward-alternatives-summary.json
+          if-no-files-found: error
