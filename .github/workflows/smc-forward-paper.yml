@@ -1,0 +1,32 @@
+name: SMC Forward Paper Track
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 18 * * 1-5'
+      timezone: 'America/Toronto'
+
+permissions:
+  contents: read
+
+jobs:
+  forward-paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/smc-wd4h-tsx-validation-20261001
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run frozen forward paper tracker
+        run: node scripts/smc-forward-paper.mjs
+      - name: Upload forward paper snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: smc-wd4h-forward-paper-latest
+          path: |
+            data/research/smc-wd4h-forward-paper-latest.json
+            data/research/smc-wd4h-forward-paper-latest.md
+          if-no-files-found: error
