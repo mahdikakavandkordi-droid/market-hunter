@@ -139,7 +139,8 @@ assert.match(brief.text,/CCC\.TO/);
 
 const portfolio={
   marketAsOf:'2026-09-29',
-  items:[{
+  items:[
+  {
     symbol:'RY.TO',name:'Royal Bank',price:210,currency:'CAD',dayChangePct:1.2,stage:'Attractive Growth',
     ret5:2,ret20:5,ret60:9,rs20:2,rs60:4,rsi14:58,momentumShift:2,dist20:1.5,dist50:3,
     sector:'Financials',swingTrend:'Structure improving',higherLow:true,higherHigh:true,
@@ -147,7 +148,26 @@ const portfolio={
     exposure:{assetClass:'Equity',group:'Financials'},
     position:{quantity:5,entryPrice:190,boughtAt:'2026-09-01',source:'manual'},
     entryStats:{sinceEntryReturn:10.5,maxDrawdownPct:-4,maxGainPct:12,excessVsBenchmarkPct:3}
-  }],
+  },
+  {
+    symbol:'T.TO',name:'TELUS',price:11.63,currency:'CAD',dayChangePct:-2.7,stage:null,
+    ret5:-3.3,ret20:-10.8,ret60:-20.2,rs20:-8.2,rs60:-19.9,rsi14:26.3,momentumShift:.2,dist20:-6,dist50:-11.3,
+    sector:'Communication',swingTrend:'Lower highs + lower lows',higherLow:false,higherHigh:false,
+    support:11.53,resistance:12.78,lowBroken:false,
+    exposure:{assetClass:'Equity',group:'Communication'},
+    position:{quantity:16.4,entryPrice:12.16,boughtAt:'2026-09-22',source:'manual'},
+    entryStats:{sinceEntryReturn:-4.36,maxDrawdownPct:-4.3,maxGainPct:.8,excessVsBenchmarkPct:-1.1}
+  },
+  ...['IVN.TO','ETHX.TO','PHYS.TO','PSLV.TO','CRT-UN.TO'].map((symbol,i)=>({
+    symbol,name:symbol,price:20+i,currency:'CAD',dayChangePct:0,stage:i%2?'Early Watch':null,
+    ret5:0,ret20:0,ret60:0,rs20:0,rs60:0,rsi14:50,momentumShift:0,dist20:0,dist50:0,
+    sector:'Test',swingTrend:'Structure improving',higherLow:true,higherHigh:false,
+    support:19+i,resistance:21+i,
+    exposure:{assetClass:'Equity',group:'Test'},
+    position:{quantity:1,entryPrice:20+i,boughtAt:'2026-09-01',source:'manual'},
+    entryStats:{sinceEntryReturn:0,maxDrawdownPct:0,maxGainPct:0,excessVsBenchmarkPct:0}
+  }))
+  ],
   portfolioAnalytics:{
     portfolioReturnPct:6,benchmarkReturnPct:3,excessReturnPct:3,
     annualizedVolatilityPct:12,betaVsTsx:.9,maxDrawdownPct:-5,
@@ -167,6 +187,12 @@ assert.ok(portfolioItem.keyboard.inline_keyboard.flat().some(x=>x.text.includes(
 assert.match(portfolioSummaryReport(portfolio).text,/تحلیل کامل پورتفولیو/);
 assert.match(portfolioSummaryReport(portfolio).text,/وزن‌ها و تمرکز/);
 assert.match(portfolioSummaryReport(portfolio).text,/ترکیب پورتفولیو/);
-assert.match(portfolioSummaryReport(portfolio).text,/Beta/);
+const fullPortfolioReport=portfolioSummaryReport(portfolio);
+assert.match(fullPortfolioReport.text,/Beta/);
+assert.match(fullPortfolioReport.text,/دارایی به دارایی/);
+for(const symbol of ['RY.TO','T.TO','IVN.TO','ETHX.TO','PHYS.TO','PSLV.TO','CRT-UN.TO']){
+  assert.match(fullPortfolioReport.text,new RegExp(symbol.replace('.','\\.')));
+}
+assert.match(fullPortfolioReport.text,/TELUS/);
 
 console.log('telegram bot formatters: ok');
