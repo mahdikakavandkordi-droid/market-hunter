@@ -129,11 +129,11 @@ assert.deepEqual(diff.moved.map(x=>x.symbol).sort(),['CCC.TO']);
 assert.ok(diff.stayed.some(x=>x.symbol==='AAA.TO'));
 
 const brief=marketBrief(scan,previous,history);
-assert.match(brief.text,/نسبت به جلسه‌ی قبل/);
-assert.match(brief.text,/ردگیری 5 روز معاملاتی اخیر/);
-assert.match(brief.text,/بدون تغییر مرحله/);
+assert.match(brief.text,/امروز چه عوض شد/);
+assert.match(brief.text,/ردگیری کوتاه/);
+assert.match(brief.text,/بدون تغییر/);
 assert.match(brief.text,/AAA\.TO/);
-assert.match(brief.text,/5\/5 روز/);
+assert.match(brief.text,/5 جلسه از 5 جلسه اخیر/);
 assert.match(brief.text,/OLD\.TO/);
 assert.match(brief.text,/CCC\.TO/);
 
