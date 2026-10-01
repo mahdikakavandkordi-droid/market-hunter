@@ -19,7 +19,7 @@ const COHORTS={
   "KEY.TO",
   "ARX.TO",
   "CVE.TO",
-  "MEG.TO",
+  "GIL.TO",
   "WCP.TO",
   "CCO.TO",
   "TECK-B.TO",
@@ -36,7 +36,7 @@ const COHORTS={
   "SAP.TO",
   "WSP.TO",
   "TIH.TO",
-  "CIX.TO",
+  "OTEX.TO",
   "H.TO",
   "CU.TO"
 ],
