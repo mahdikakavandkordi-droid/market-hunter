@@ -171,25 +171,16 @@ const md=[
  `| Sum R | ${n(out.summary.closed.sumR)} | ${n(out.summary.cost03R.sumR)} | ${n(out.summary.cost05R.sumR)} |`,
  '',
  '## $1,000 paper portfolio','',
- `Starting capital: ${PORTFOLIO.startingCapital.toFixed(2)}`,
- `Current realized-equity: ${portfolio.currentEquity.toFixed(2)}`,
+ `Starting capital: $${PORTFOLIO.startingCapital.toFixed(2)}`,
+ `Current realized-equity: $${portfolio.currentEquity.toFixed(2)}`,
  `Return: ${p(portfolio.realizedReturnPct)}`,
  `Max drawdown: ${p(portfolio.maxDrawdownPct)}`,
  `Entered / skipped / open: ${portfolio.enteredCount} / ${portfolio.skippedCount} / ${portfolio.openCount}`,
- `Sizing: target 1% account risk per trade; max 25% notional per position; max 4 positions; max 4% aggregate open risk; 0.05R cost per closed trade.`,'',
+ 'Sizing: target 1% account risk per trade; max 25% notional per position; max 4 positions; max 4% aggregate open risk; 0.05R cost per closed trade.','',
  '### Portfolio allocations','',
  '| Symbol | Entry | Dir | Allocation | Risk $ | Risk % | Status | P/L $ |',
  '|---|---|---:|---:|---:|---:|---|---:|',
- ...portfolio.entered.map(x=>`| ${x.symbol} | ${x.entryT.slice(0,10)} | ${x.dir===1?'Long':'Short'} | ${x.notional.toFixed(2)} | ${x.riskAmount.toFixed(2)} | ${p(x.riskPctEquity)} | ${x.portfolioStatus} | ${Number.isFinite(x.pnl)?'
- '| Symbol | Entry | Dir | R | Exit |','|---|---|---:|---:|---|',
- ...closed.map(x=>`| ${x.symbol} | ${x.entryT.slice(0,10)} | ${x.dir===1?'Long':'Short'} | ${n(x.R)} | ${x.exitT?.slice(0,10)||''} |`),
- '', '## Open trades','',
- ...(open.length?open.map(x=>`- ${x.symbol} ${x.dir===1?'Long':'Short'}; entry ${n(x.entry)}, stop ${n(x.stop)}, target ${n(x.target)}`):['- None']),
- '', 'This is a forward paper/shadow record only. The rules are frozen; no signal may be removed after seeing its outcome.'
-].join('\n');
-fs.writeFileSync('data/research/smc-wd4h-forward-paper-latest.md',md+'\n');
-console.log(md);
-+x.pnl.toFixed(2):''} |`),
+ ...portfolio.entered.map(x=>`| ${x.symbol} | ${x.entryT.slice(0,10)} | ${x.dir===1?'Long':'Short'} | $${x.notional.toFixed(2)} | $${x.riskAmount.toFixed(2)} | ${p(x.riskPctEquity)} | ${x.portfolioStatus} | ${Number.isFinite(x.pnl)?'$'+x.pnl.toFixed(2):''} |`),
  '',`Open paper trades: ${open.length}`,'',
  '## Closed trades','',
  '| Symbol | Entry | Dir | R | Exit |','|---|---|---:|---:|---|',
