@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra
 
-Generated: 2026-10-01T22:40:25.114Z
+Generated: 2026-10-01T22:42:20.915Z
 
 Forward start: 2026-10-01; universe: 37; no regime/VP/sweep filter.
 
@@ -23,7 +23,6 @@ Entered / skipped / open: 1 / 0 / 1.
 
 ## Fetch failures
 
-- MEG.TO: http_404
-- CIX.TO: http_404
+- None
 
 This cohort is tracked independently. No signal may be removed after its outcome is known.

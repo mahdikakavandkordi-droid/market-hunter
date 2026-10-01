@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75
 
-Generated: 2026-10-01T22:40:45.825Z
+Generated: 2026-10-01T22:42:42.491Z
 
 Forward start: 2026-10-01; universe: 75; no regime/VP/sweep filter.
 
