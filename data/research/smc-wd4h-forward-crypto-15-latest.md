@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — crypto-15
 
-Mode: crypto; generated 2026-10-01T23:09:34.678Z; start 2026-10-01; universe 15.
+Mode: crypto; generated 2026-10-01T23:22:49.890Z; start 2026-10-01; universe 15.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|

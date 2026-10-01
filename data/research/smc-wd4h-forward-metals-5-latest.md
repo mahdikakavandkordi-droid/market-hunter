@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — metals-5
 
-Mode: stock; generated 2026-10-01T23:09:35.960Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-10-01T23:22:51.265Z; start 2026-10-01; universe 5.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|
