@@ -153,6 +153,33 @@ function stats(T){
   return {n,wr:n?w/n:null,pf:l?g/l:null,avgR:n?sum/n:null,sumR:sum,maxDD:dd};
 }
 
+function stressStats(T,costR){
+  return stats(T.map(x=>({...x,R:x.R-costR})));
+}
+
+function bootstrapMean(T,iters=10000){
+  if(!T.length)return null;
+  let seed=20261001;
+  const rnd=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296};
+  const means=[];
+  for(let b=0;b<iters;b++){
+    let s=0;for(let i=0;i<T.length;i++)s+=T[Math.floor(rnd()*T.length)].R;
+    means.push(s/T.length);
+  }
+  means.sort((a,b)=>a-b);
+  const q=p=>means[Math.min(means.length-1,Math.floor(p*(means.length-1)))];
+  return {iterations:iters,meanPositiveRate:means.filter(x=>x>0).length/means.length,ci95:[q(.025),q(.975)],median:q(.5)};
+}
+
+function quarterly(T){
+  const g={};
+  for(const x of T){
+    const d=new Date(x.t),q=Math.floor(d.getUTCMonth()/3)+1,k=`${d.getUTCFullYear()}-Q${q}`;
+    (g[k]??=[]).push(x);
+  }
+  return Object.fromEntries(Object.entries(g).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>[k,stats(v)]));
+}
+
 const results={},failures=[],all=[],data={};
 for(const symbol of SYMBOLS){
   try{
@@ -193,9 +220,16 @@ const output={
   generatedAt:new Date().toISOString(),
   frozenRules:{weeklyStructure:3,dailyStructure:5,fourHourStructure:3,trigger:'CHOCH',entry:'next 4H open',stop:'opposing 4H swing + 0.1 ATR14',target:'2R',maxHold4HBars:16,onePositionPerSymbol:true,sameBarStopBeforeTarget:true},
   symbols:SYMBOLS,failures,results,
-  aggregate:{baseline,outsideVP,vpAcceptance:insideVP,firstHalf:stats(all.filter(x=>x.t<split)),secondHalf:stats(all.filter(x=>x.t>=split))},
+  aggregate:{
+    baseline,outsideVP,vpAcceptance:insideVP,
+    firstHalf:stats(all.filter(x=>x.t<split)),secondHalf:stats(all.filter(x=>x.t>=split)),
+    stress:{cost03R:stressStats(all,.03),cost05R:stressStats(all,.05),cost10R:stressStats(all,.10)},
+    bootstrapMean:bootstrapMean(all),
+    quarterly:quarterly(all)
+  },
   robustness:{variants:grid.length,positiveExpectancy:grid.filter(x=>x.avgR>0).length,pfAbove1:grid.filter(x=>(x.pf??0)>1).length,worst:[...grid].sort((a,b)=>(a.avgR??-99)-(b.avgR??-99))[0],best:[...grid].sort((a,b)=>(b.avgR??-99)-(a.avgR??-99))[0],grid},
   fiveYearDailyRegime:dailyRegime,
+  tradeLedger:all.map(x=>({symbol:x.symbol,t:new Date(x.t).toISOString(),R:x.R,dir:x.dir,vp:x.vp})),
   limitations:['Yahoo 1h intraday history is limited to roughly the recent couple of years; full 5-8 year 4H validation is not claimed.','Volume Profile is a diagnostic filter, not part of the frozen core entry rule.']
 };
 
@@ -216,6 +250,8 @@ const md=[
   `| First chronological half | ${output.aggregate.firstHalf.n} | ${pct(output.aggregate.firstHalf.wr)} | ${num(output.aggregate.firstHalf.pf)} | ${num(output.aggregate.firstHalf.avgR)} | ${num(output.aggregate.firstHalf.sumR)} | ${num(output.aggregate.firstHalf.maxDD)} |`,
   `| Second chronological half | ${output.aggregate.secondHalf.n} | ${pct(output.aggregate.secondHalf.wr)} | ${num(output.aggregate.secondHalf.pf)} | ${num(output.aggregate.secondHalf.avgR)} | ${num(output.aggregate.secondHalf.sumR)} | ${num(output.aggregate.secondHalf.maxDD)} |`,'',
   `Robustness: ${output.robustness.positiveExpectancy}/${grid.length} variants positive expectancy; ${output.robustness.pfAbove1}/${grid.length} PF > 1.`,'',
+  `Cost stress: +0.03R cost => Avg R ${num(output.aggregate.stress.cost03R.avgR)}; +0.05R => ${num(output.aggregate.stress.cost05R.avgR)}; +0.10R => ${num(output.aggregate.stress.cost10R.avgR)}.`,'',
+  `Bootstrap mean-R 95% CI: [${num(output.aggregate.bootstrapMean?.ci95?.[0])}, ${num(output.aggregate.bootstrapMean?.ci95?.[1])}], P(mean>0)=${pct(output.aggregate.bootstrapMean?.meanPositiveRate)}.`,'',
   '## Per symbol','',
   '| Symbol | Trades | PF | Avg R | Outside-VP PF |',
   '|---|---:|---:|---:|---:|',
