@@ -1,0 +1,37 @@
+name: SMC Crypto and Metals Historical Validation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/smc-alternatives-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/smc-wd4h-tsx-validation-20261001
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run historical validation
+        run: node scripts/smc-alternatives-validation.mjs
+      - name: Upload validation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smc-wd4h-alternatives-validation
+          path: |
+            data/research/smc-wd4h-validation-crypto-15-historical-latest.json
+            data/research/smc-wd4h-validation-crypto-15-historical-latest.md
+            data/research/smc-wd4h-validation-metals-5-historical-latest.json
+            data/research/smc-wd4h-validation-metals-5-historical-latest.md
+            data/research/smc-wd4h-alternatives-validation-summary.json
+          if-no-files-found: error
