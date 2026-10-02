@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { momentumShadow, momentumBucketSummary } from '../lib/smc-momentum-shadow.mjs';
 
 const SYMBOLS=[
   'RY.TO','TD.TO','BMO.TO','BNS.TO','CM.TO','AEM.TO','WPM.TO','ABX.TO','LUN.TO',
@@ -7,6 +8,7 @@ const SYMBOLS=[
   'EMA.TO','WCN.TO','CSU.TO','ATD.TO','MRU.TO','L.TO'
 ];
 const FORWARD_START='2026-10-01';
+const MOMENTUM_BENCHMARK='^GSPTSE';
 const LEDGER_PATH='data/research/smc-wd4h-forward-paper-ledger.json';
 const PORTFOLIO={
   startingCapital:1000,
@@ -107,7 +109,7 @@ function simulatePortfolio(trades){
   };
 }
 
-function forwardTrades(d0,h,symbol){
+function forwardTrades(d0,h,symbol,benchmarkDaily=[]){
   const d=dailyDate(d0),f=fourHour(h),w=weekly(d0),A=atr(f),W=structure(w,3),D=structure(d,5),F=structure(f,3),T=[];let blocked=-1;
   for(const e of F.ev){
     if(e.tag!=='CHOCH'||e.i<=blocked||e.i+1>=f.length||e.opp==null)continue;
@@ -123,17 +125,21 @@ function forwardTrades(d0,h,symbol){
     }
     const maxI=Math.min(f.length-1,e.i+16);
     if(R==null&&maxI>=e.i+16){exitI=maxI;R=dir*(f[exitI].c-en)/risk;status='closed'}
-    T.push({symbol,signalT:new Date(f[e.i].t).toISOString(),entryT:new Date(entryT).toISOString(),dir,entry:en,stop,target:tp,risk,status,R,exitT:exitI!=null?new Date(f[exitI].t).toISOString():null});
+    const m=momentumShadow(d,di,dir,benchmarkDaily,MOMENTUM_BENCHMARK);
+    T.push({symbol,signalT:new Date(f[e.i].t).toISOString(),entryT:new Date(entryT).toISOString(),dir,entry:en,stop,target:tp,risk,status,R,exitT:exitI!=null?new Date(f[exitI].t).toISOString():null,momentumShadow:m});
     if(exitI!=null)blocked=exitI;
   }
   return T;
 }
 
 const failures=[],all=[];
+let benchmarkDaily=[];
+try{benchmarkDaily=dailyDate(await yahoo(MOMENTUM_BENCHMARK,'2y','1d'))}
+catch(e){failures.push({symbol:MOMENTUM_BENCHMARK,error:'momentum_benchmark_'+String(e?.message||e)})}
 for(const s of SYMBOLS){
   try{
     const [d,h]=await Promise.all([yahoo(s,'2y','1d'),yahoo(s,'60d','1h')]);
-    all.push(...forwardTrades(d,h,s));await sleep(250);
+    all.push(...forwardTrades(d,h,s,benchmarkDaily));await sleep(250);
   }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
 }
 all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
@@ -148,9 +154,9 @@ const out={
   version:'smc-wd4h-forward-paper-v1',
   generatedAt:new Date().toISOString(),
   forwardStart:FORWARD_START,
-  frozenRules:{universe:SYMBOLS.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none'},
+  frozenRules:{universe:SYMBOLS.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none',momentumShadow:'observational only; never gates, ranks, sizes, enters or exits trades'},
   failures,
-  summary:{closed:stats(closed),cost03R:stats(closed,.03),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length},
+  summary:{closed:stats(closed),cost03R:stats(closed,.03),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
   portfolio,
   trades:ledgerTrades
 };
@@ -177,6 +183,11 @@ const md=[
  `Max drawdown: ${p(portfolio.maxDrawdownPct)}`,
  `Entered / skipped / open: ${portfolio.enteredCount} / ${portfolio.skippedCount} / ${portfolio.openCount}`,
  'Sizing: target 1% account risk per trade; max 25% notional per position; max 4 positions; max 4% aggregate open risk; 0.05R cost per closed trade.','',
+ '### Momentum shadow (observational only)','',
+ '| Bucket | Closed | Win rate | Avg R after cost | PF after cost |',
+ '|---|---:|---:|---:|---:|',
+ ...['high','medium','low','unavailable'].map(b=>{const x=out.summary.momentumShadow[b];return `| ${b} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.afterCost.avgR)} | ${n(x.afterCost.pf)} |`}),
+ '',
  '### Portfolio allocations','',
  '| Symbol | Entry | Dir | Allocation | Risk $ | Risk % | Status | P/L $ |',
  '|---|---|---:|---:|---:|---:|---|---:|',
