@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75
 
-Generated: 2026-10-01T22:56:24.837Z
+Generated: 2026-10-02T21:23:32.249Z
 
 Forward start: 2026-10-01; universe: 75; no regime/VP/sweep filter.
 
@@ -16,6 +16,15 @@ Forward start: 2026-10-01; universe: 75; no regime/VP/sweep filter.
 
 Current equity: $1000.00; return 0.0%; max DD 0.0%.
 Entered / skipped / open: 1 / 0 / 1.
+
+## Momentum shadow (observational only)
+
+| Bucket | Closed | Win rate | Avg R after cost | PF after cost |
+|---|---:|---:|---:|---:|
+| high | 0 | n/a | n/a | n/a |
+| medium | 0 | n/a | n/a | n/a |
+| low | 0 | n/a | n/a | n/a |
+| unavailable | 0 | n/a | n/a | n/a |
 
 ## Open positions
 
