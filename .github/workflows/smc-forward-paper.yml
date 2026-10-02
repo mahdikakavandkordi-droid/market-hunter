@@ -6,6 +6,8 @@ on:
       - research/smc-wd4h-tsx-validation-20261001
     paths:
       - 'scripts/smc-forward-paper.mjs'
+      - 'lib/smc-momentum-shadow.mjs'
+      - 'scripts/test-smc-momentum-shadow.mjs'
       - '.github/workflows/smc-forward-paper.yml'
   workflow_dispatch:
   schedule:
@@ -25,6 +27,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Test momentum shadow
+        run: node scripts/test-smc-momentum-shadow.mjs
       - name: Run frozen forward paper tracker
         run: node scripts/smc-forward-paper.mjs
       - name: Upload forward paper snapshot
