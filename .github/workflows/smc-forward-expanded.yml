@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Test momentum shadow
+        run: node scripts/test-smc-momentum-shadow.mjs
       - name: Run TSX-extra and US-75 forward cohorts
         run: node scripts/smc-forward-expanded.mjs
       - name: Persist expanded forward ledgers
