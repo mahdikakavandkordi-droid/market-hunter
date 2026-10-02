@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { momentumShadow, momentumBucketSummary } from '../lib/smc-momentum-shadow.mjs';
 
 const FORWARD_START='2026-10-01';
 const CRYPTO=[
@@ -7,6 +8,7 @@ const CRYPTO=[
   'BCH-USD','LTC-USD','AVAX-USD','DOT-USD','SHIB-USD'
 ];
 const METALS=['GLD','SLV','CPER','PPLT','PALL'];
+const MOMENTUM_BENCHMARKS={'crypto-15':'BTC-USD','metals-5':'GLD'};
 
 const PORTFOLIO={
   startingCapital:1000,
@@ -161,7 +163,7 @@ function simulatePortfolio(trades){
   return{rules:PORTFOLIO,startingCapital:PORTFOLIO.startingCapital,currentEquity,realizedReturnPct:currentEquity/PORTFOLIO.startingCapital-1,cash,reservedNotional:open.reduce((s,p)=>s+p.notional,0),openRiskAmount:open.reduce((s,p)=>s+p.riskAmount,0),maxDrawdownPct:maxDD,enteredCount:entered.length,closedCount:entered.filter(x=>x.portfolioStatus==='closed').length,openCount:open.length,skippedCount:skipped.length,entered,open,skipped,equityCurve};
 }
 
-function forwardTrades(d0,h,symbol,mode){
+function forwardTrades(d0,h,symbol,mode,benchmarkDaily=[],benchmarkSymbol=null){
   const d=mode==='crypto'?dailyCrypto(d0):dailyStock(d0);
   const f=mode==='crypto'?fourHourCrypto(h):fourHourStock(h);
   const w=weekly(d0,mode),A=atr(f),W=structure(w,3),D=structure(d,5),F=structure(f,3),T=[];let blocked=-1;
@@ -182,7 +184,8 @@ function forwardTrades(d0,h,symbol,mode){
     }
     const maxI=Math.min(f.length-1,e.i+16);
     if(R==null&&maxI>=e.i+16){exitI=maxI;R=dir*(f[exitI].c-en)/risk;status='closed'}
-    T.push({symbol,signalT:new Date(f[e.i].t).toISOString(),entryT:new Date(entryT).toISOString(),dir,entry:en,stop,target:tp,risk,status,R,exitT:exitI!=null?new Date(f[exitI].t).toISOString():null,mode});
+    const m=momentumShadow(d,di,dir,benchmarkDaily,benchmarkSymbol);
+    T.push({symbol,signalT:new Date(f[e.i].t).toISOString(),entryT:new Date(entryT).toISOString(),dir,entry:en,stop,target:tp,risk,status,R,exitT:exitI!=null?new Date(f[exitI].t).toISOString():null,mode,momentumShadow:m});
     if(exitI!=null)blocked=exitI;
   }
   return T;
@@ -194,10 +197,18 @@ async function runCohort(name,symbols,mode){
   const latestJson=`data/research/smc-wd4h-forward-${safe}-latest.json`;
   const latestMd=`data/research/smc-wd4h-forward-${safe}-latest.md`;
   const failures=[],all=[];
+  const benchmarkSymbol=MOMENTUM_BENCHMARKS[name]||null;
+  let benchmarkDaily=[];
+  if(benchmarkSymbol){
+    try{
+      const raw=await yahoo(benchmarkSymbol,'2y','1d');
+      benchmarkDaily=mode==='crypto'?dailyCrypto(raw):dailyStock(raw);
+    }catch(e){failures.push({symbol:benchmarkSymbol,error:'momentum_benchmark_'+String(e?.message||e)})}
+  }
   for(const s of symbols){
     try{
       const [d,h]=await Promise.all([yahoo(s,'2y','1d'),yahoo(s,'60d','1h')]);
-      all.push(...forwardTrades(d,h,s,mode));await sleep(175);
+      all.push(...forwardTrades(d,h,s,mode,benchmarkDaily,benchmarkSymbol));await sleep(175);
     }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
   }
   all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
@@ -206,8 +217,8 @@ async function runCohort(name,symbols,mode){
   const trades=[...merged.values()].sort((a,b)=>a.entryT.localeCompare(b.entryT)||a.symbol.localeCompare(b.symbol));
   const closed=trades.filter(x=>x.status==='closed'&&Number.isFinite(x.R)),open=trades.filter(x=>x.status==='open'),portfolio=simulatePortfolio(trades);
   const out={version:'smc-wd4h-forward-alternatives-v1',cohort:name,mode,generatedAt:new Date().toISOString(),forwardStart:FORWARD_START,
-    frozenRules:{universe:symbols.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none',cryptoClock:mode==='crypto'?'UTC 24/7 4H buckets':'n/a'},
-    failures,summary:{closed:stats(closed),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length},portfolio,trades};
+    frozenRules:{universe:symbols.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none',cryptoClock:mode==='crypto'?'UTC 24/7 4H buckets':'n/a',momentumShadow:'observational only; never gates, ranks, sizes, enters or exits trades'},
+    failures,summary:{closed:stats(closed),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},portfolio,trades};
   fs.mkdirSync('data/research',{recursive:true});
   fs.writeFileSync(ledgerPath,JSON.stringify({version:'smc-wd4h-forward-alternatives-ledger-v1',cohort:name,mode,updatedAt:out.generatedAt,forwardStart:FORWARD_START,symbols,trades},null,2)+'\n');
   fs.writeFileSync(latestJson,JSON.stringify(out,null,2)+'\n');
@@ -223,6 +234,10 @@ async function runCohort(name,symbols,mode){
     '## $1,000 paper portfolio','',
     `Equity $${portfolio.currentEquity.toFixed(2)}; return ${p(portfolio.realizedReturnPct)}; max DD ${p(portfolio.maxDrawdownPct)}.`,
     `Entered / skipped / open: ${portfolio.enteredCount} / ${portfolio.skippedCount} / ${portfolio.openCount}.`,'',
+    '## Momentum shadow (observational only)','',
+    '| Bucket | Closed | Win rate | Avg R after cost | PF after cost |','|---|---:|---:|---:|---:|',
+    ...['high','medium','low','unavailable'].map(b=>{const x=out.summary.momentumShadow[b];return `| ${b} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.afterCost.avgR)} | ${n(x.afterCost.pf)} |`}),
+    '',
     '## Open positions','',
     ...(portfolio.open.length?portfolio.open.map(x=>`- ${x.symbol} ${x.dir===1?'Long':'Short'}; allocation $${x.notional.toFixed(2)}; risk $${x.riskAmount.toFixed(2)}; entry ${n(x.entry)}; stop ${n(x.stop)}; target ${n(x.target)}`):['- None']),
     '', '## Fetch failures','',
