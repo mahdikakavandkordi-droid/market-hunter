@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Test momentum shadow
+        run: node scripts/test-smc-momentum-shadow.mjs
       - name: Run crypto-15 and metals-5 forward cohorts
         run: node scripts/smc-forward-alternatives.mjs
       - name: Persist alternative forward ledgers
