@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — metals-5
 
-Mode: stock; generated 2026-10-01T23:22:51.265Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-10-02T00:38:29.835Z; start 2026-10-01; universe 5.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|
@@ -13,6 +13,15 @@ Mode: stock; generated 2026-10-01T23:22:51.265Z; start 2026-10-01; universe 5.
 
 Equity $1000.00; return 0.0%; max DD 0.0%.
 Entered / skipped / open: 0 / 0 / 0.
+
+## Momentum shadow (observational only)
+
+| Bucket | Closed | Win rate | Avg R after cost | PF after cost |
+|---|---:|---:|---:|---:|
+| high | 0 | n/a | n/a | n/a |
+| medium | 0 | n/a | n/a | n/a |
+| low | 0 | n/a | n/a | n/a |
+| unavailable | 0 | n/a | n/a | n/a |
 
 ## Open positions
 
