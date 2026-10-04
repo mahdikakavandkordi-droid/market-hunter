@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="/mobile-polish.css">
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/ui-polish.css">
+  <link rel="stylesheet" href="/engine-dashboard.css">
   <title>Market Hunter</title>
 </head>
 <body>
@@ -38,6 +39,7 @@
         <button class="navbtn" data-view="shortlist"><span>◎</span>Charts to Review</button>
         <button class="navbtn" data-view="portfolio"><span>▣</span>Portfolio</button>
         <button class="navbtn" data-view="watchlist"><span>☆</span>Watchlist</button>
+        <button class="navbtn" data-view="engines"><span>◈</span>Paper Engines</button>
       </nav>
 
       <div class="side-note">
@@ -68,6 +70,7 @@
         <section class="view" id="shortlistView"></section>
         <section class="view" id="portfolioView"></section>
         <section class="view" id="watchlistView"></section>
+        <section class="view" id="enginesView"></section>
       </main>
     </div>
   </div>
@@ -77,11 +80,14 @@
     <button class="navbtn" data-view="shortlist"><span>◎</span><small>Review</small></button>
     <button class="navbtn" data-view="portfolio"><span>▣</span><small>Portfolio</small></button>
     <button class="navbtn" data-view="watchlist"><span>☆</span><small>Watchlist</small></button>
+    <button class="navbtn" data-view="engines"><span>◈</span><small>Engines</small></button>
   </nav>
 
   <input id="backupFile" type="file" accept="application/json,.json" hidden>
   <div class="modal" id="positionModal" aria-hidden="true"></div>
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="/quote-policy.js" defer></script>\n  <script src="/app.js" defer></script>
+  <script src="/quote-policy.js" defer></script>
+  <script src="/engine-dashboard.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 </html>

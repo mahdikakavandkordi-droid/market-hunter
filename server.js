@@ -5,6 +5,7 @@ import path from 'node:path';
 import scanHandler from './api/scan.js';
 import portfolioHandler from './api/portfolio.js';
 import intradayHandler from './api/intraday.js';
+import enginesHandler from './api/engines.js';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 const port=Number(process.env.PORT||3000);
@@ -19,6 +20,8 @@ const staticFiles=new Map([
   ['/','index.html'],
   ['/index.html','index.html'],
   ['/app.js','app.js'],
+  ['/engine-dashboard.js','engine-dashboard.js'],
+  ['/engine-dashboard.css','engine-dashboard.css'],
   ['/quote-policy.js','quote-policy.js'],
   ['/app.css','app.css'],
   ['/mobile-polish.css','mobile-polish.css'],
@@ -90,6 +93,7 @@ const server=http.createServer(async(req,res)=>{
     if(url.pathname==='/api/scan') return await scanHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/portfolio') return await portfolioHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/intraday') return await intradayHandler(wrappedReq,makeResponse(res));
+    if(url.pathname==='/api/engines') return await enginesHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/portfolio-bridge'){
       res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});
       return res.end(JSON.stringify({ok:true,connected:false,localDev:true}));
