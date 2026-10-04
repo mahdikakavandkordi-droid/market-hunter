@@ -89,10 +89,10 @@ jobs:
         run: |
           set -euo pipefail
           weekday="$(date -u +%u)"
-          if [ "$GITHUB_EVENT_NAME" != "schedule" ] || [ "$weekday" -le 5 ]; then
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || [ "$weekday" -le 5 ]; then
             node scripts/scan-market-hunter-v2.mjs
           else
-            echo "Weekend schedule: keep the latest completed-session V2 stock snapshot."
+            echo "Weekend push/schedule: preserve the latest completed-session V2 stock snapshot."
           fi
 
       - name: Validate source snapshots
