@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper Track
 
-Generated: 2026-10-02T22:39:47.382Z
+Generated: 2026-10-04T13:52:25.498Z
 
 Forward start: 2026-10-01; universe: 33 TSX symbols; regime filters: none.
 
