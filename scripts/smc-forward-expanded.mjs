@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { momentumShadow, momentumBucketSummary } from '../lib/smc-momentum-shadow.mjs';
+import { createRunContext, loadLedgerStrict, reconcileLedger, appendRunLog } from '../lib/smc-forward-evidence.mjs';
 
 const COHORTS={
   'tsx-extra':[
@@ -264,11 +265,11 @@ async function runCohort(name,symbols){
     }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
   }
   all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
-  let prior={trades:[]};
-  if(fs.existsSync(ledgerPath)){try{prior=JSON.parse(fs.readFileSync(ledgerPath,'utf8'))}catch{}}
-  const merged=new Map((prior.trades||[]).map(x=>[tradeKey(x),x]));
-  for(const x of all)merged.set(tradeKey(x),x);
-  const ledgerTrades=[...merged.values()].sort((a,b)=>a.entryT.localeCompare(b.entryT)||a.symbol.localeCompare(b.symbol));
+  const run=createRunContext('smc-forward-expanded',name);
+  const prior=loadLedgerStrict(ledgerPath,{version:'smc-wd4h-forward-expanded-ledger-v2',cohort:name,forwardStart:FORWARD_START,symbols,trades:[]});
+  const reconciliation=reconcileLedger(prior,all,run);
+  const ledgerTrades=reconciliation.trades;
+  const runLog=appendRunLog(prior.runLog,run,{fetchFailures:failures, ...reconciliation.summary, discrepancyCount:reconciliation.runDiscrepancies.length});
   const closed=ledgerTrades.filter(x=>x.status==='closed'&&Number.isFinite(x.R));
   const open=ledgerTrades.filter(x=>x.status==='open');
   const portfolio=simulatePortfolio(ledgerTrades);
@@ -279,12 +280,13 @@ async function runCohort(name,symbols){
     forwardStart:FORWARD_START,
     frozenRules:{universe:symbols.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none',momentumShadow:'observational only; never gates, ranks, sizes, enters or exits trades'},
     failures,
+    evidenceAudit:{run,reconciliation:reconciliation.summary,discrepancies:reconciliation.runDiscrepancies,legacyProvenanceUnknown:reconciliation.summary.legacyUnprovenancedCount},
     summary:{closed:stats(closed),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
     portfolio,
     trades:ledgerTrades
   };
   fs.mkdirSync('data/research',{recursive:true});
-  fs.writeFileSync(ledgerPath,JSON.stringify({version:'smc-wd4h-forward-expanded-ledger-v1',cohort:name,updatedAt:out.generatedAt,forwardStart:FORWARD_START,symbols,trades:ledgerTrades},null,2)+'\n');
+  fs.writeFileSync(ledgerPath,JSON.stringify({version:'smc-wd4h-forward-expanded-ledger-v2',cohort:name,updatedAt:reconciliation.changed?run.observedAt:(prior.updatedAt||run.observedAt),forwardStart:FORWARD_START,symbols,runLog,discrepancyLog:reconciliation.discrepancyLog,trades:ledgerTrades},null,2)+'\n');
   fs.writeFileSync(latestJson,JSON.stringify(out,null,2)+'\n');
 
   const n=x=>Number.isFinite(x)?x.toFixed(3):'n/a',p=x=>Number.isFinite(x)?(100*x).toFixed(1)+'%':'n/a';
@@ -301,6 +303,9 @@ async function runCohort(name,symbols){
     '## $1,000 paper portfolio','',
     `Current equity: $${portfolio.currentEquity.toFixed(2)}; return ${p(portfolio.realizedReturnPct)}; max DD ${p(portfolio.maxDrawdownPct)}.`,
     `Entered / skipped / open: ${portfolio.enteredCount} / ${portfolio.skippedCount} / ${portfolio.openCount}.`,'',
+    '## Evidence integrity','',
+    `Provenance known ${ledgerTrades.length-reconciliation.summary.legacyUnprovenancedCount}; legacy unknown ${reconciliation.summary.legacyUnprovenancedCount}; prospective ${reconciliation.summary.prospectiveCount}; reconstructed ${reconciliation.summary.reconstructedCount}.`,
+    `This run: new ${reconciliation.summary.newRecords}; lifecycle updates ${reconciliation.summary.lifecycleUpdates}; discrepancies ${reconciliation.runDiscrepancies.length}; prior not re-observed ${reconciliation.summary.missingPreviouslyRecorded}.`,'',
     '## Momentum shadow (observational only)','',
     '| Bucket | Closed | Win rate | Avg R after cost | PF after cost |','|---|---:|---:|---:|---:|',
     ...['high','medium','low','unavailable'].map(b=>{const x=out.summary.momentumShadow[b];return `| ${b} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.afterCost.avgR)} | ${n(x.afterCost.pf)} |`}),
