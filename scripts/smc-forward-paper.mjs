@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { momentumShadow, momentumBucketSummary } from '../lib/smc-momentum-shadow.mjs';
 import { createRunContext, loadLedgerStrict, reconcileLedger, appendRunLog } from '../lib/smc-forward-evidence.mjs';
 import { aggregateExchange4H, evaluateExit } from '../lib/smc-forward-runtime.mjs';
+import { latestCompletedMark, simulatePortfolioMarked } from '../lib/smc-forward-portfolio.mjs';
 
 const SYMBOLS=[
   'RY.TO','TD.TO','BMO.TO','BNS.TO','CM.TO','AEM.TO','WPM.TO','ABX.TO','LUN.TO',
@@ -112,9 +113,11 @@ function simulatePortfolio(trades){
   };
 }
 
-function forwardTrades(d0,h,symbol,benchmarkDaily=[],dataQuality=[]){
+function forwardTrades(d0,h,symbol,benchmarkDaily=[],dataQuality=[],marksBySymbol=new Map()){
   const d=dailyDate(d0),agg=aggregateExchange4H(h,{nowMs:Date.parse(RUN.observedAt)}),f=agg.bars,w=weekly(d0),A=atr(f),W=structure(w,3),D=structure(d,5),F=structure(f,3),T=[];let blocked=-1;
   dataQuality.push(...agg.diagnostics.map(x=>({symbol,...x})));
+  const latestMark=latestCompletedMark(f,RUN.observedAt,{freshnessMs:120*60*60*1000});
+  if(latestMark)marksBySymbol.set(symbol,latestMark);
   for(const e of F.ev){
     if(e.tag!=='CHOCH'||e.i<=blocked||e.opp==null)continue;
     const di=prevD(d,f[e.i].t),wi=prevW(w,f[e.i].t);if(di<0||wi<0||D.b[di]!==e.dir||W.b[wi]!==e.dir)continue;
@@ -137,78 +140,101 @@ function forwardTrades(d0,h,symbol,benchmarkDaily=[],dataQuality=[]){
   return T;
 }
 
-const failures=[],all=[],dataQuality=[];
+const failures=[],all=[],dataQuality=[],marksBySymbol=new Map();
 let benchmarkDaily=[];
 try{benchmarkDaily=dailyDate(await yahoo(MOMENTUM_BENCHMARK,'2y','1d'))}
 catch(e){failures.push({symbol:MOMENTUM_BENCHMARK,error:'momentum_benchmark_'+String(e?.message||e)})}
 for(const s of SYMBOLS){
   try{
     const [d,h]=await Promise.all([yahoo(s,'2y','1d'),yahoo(s,'60d','1h')]);
-    all.push(...forwardTrades(d,h,s,benchmarkDaily,dataQuality));await sleep(250);
+    all.push(...forwardTrades(d,h,s,benchmarkDaily,dataQuality,marksBySymbol));await sleep(250);
   }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
 }
 all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
 const prior=loadLedgerStrict(LEDGER_PATH,{version:'smc-wd4h-forward-ledger-v2',forwardStart:FORWARD_START,trades:[]});
 const reconciliation=reconcileLedger(prior,all,RUN);
 const ledgerTrades=reconciliation.trades;
-const runLog=appendRunLog(prior.runLog,RUN,{fetchFailures:failures,dataQuality, ...reconciliation.summary, discrepancyCount:reconciliation.runDiscrepancies.length});
-const closed=ledgerTrades.filter(x=>x.status==='closed'&&Number.isFinite(x.R)),open=ledgerTrades.filter(x=>x.status==='open');
-const portfolio=simulatePortfolio(ledgerTrades);
+const closed=ledgerTrades.filter(x=>x.status==='closed'&&Number.isFinite(x.R));
+const open=ledgerTrades.filter(x=>x.status==='open');
+const pending=ledgerTrades.filter(x=>x.status==='pending_entry');
+const legacyPortfolioV1=simulatePortfolio(ledgerTrades);
+const portfolio=simulatePortfolioMarked(ledgerTrades,PORTFOLIO,{
+  marksBySymbol,observedAt:RUN.observedAt,runKey:RUN.runKey,priorMarkedSeries:prior.markedEquitySeries||[]
+});
+const runLog=appendRunLog(prior.runLog,RUN,{
+  fetchFailures:failures,dataQuality,
+  markQuality:portfolio.markedObservation.quality,
+  missingMarkSymbols:portfolio.markedObservation.missingSymbols,
+  staleMarkSymbols:portfolio.markedObservation.staleSymbols,
+  ...reconciliation.summary,discrepancyCount:reconciliation.runDiscrepancies.length
+});
 const out={
-  version:'smc-wd4h-forward-paper-v1',
-  generatedAt:new Date().toISOString(),
+  version:'smc-wd4h-forward-paper-evidence-v2',
+  generatedAt:RUN.observedAt,
   forwardStart:FORWARD_START,
+  evidenceVersionNote:'Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.',
   frozenRules:{universe:SYMBOLS.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none',momentumShadow:'observational only; never gates, ranks, sizes, enters or exits trades'},
-  failures,
-  dataQuality,
+  timingConvention:{exchange4H:'completed source slots only; conservative end timestamp',exit:'bar-end evidence v2',collision:'stop-first when both touched',gapFill:'strategy-level result retained but gap uncertainty flagged'},
+  failures,dataQuality,
   evidenceAudit:{run:RUN,reconciliation:reconciliation.summary,discrepancies:reconciliation.runDiscrepancies,legacyProvenanceUnknown:reconciliation.summary.legacyUnprovenancedCount},
-  summary:{closed:stats(closed),cost03R:stats(closed,.03),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
+  summary:{closed:stats(closed),cost03R:stats(closed,.03),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,pendingCount:pending.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
+  legacyPortfolioV1,
   portfolio,
   trades:ledgerTrades
 };
 fs.mkdirSync('data/research',{recursive:true});
-fs.writeFileSync(LEDGER_PATH,JSON.stringify({version:'smc-wd4h-forward-ledger-v2',updatedAt:reconciliation.changed?RUN.observedAt:(prior.updatedAt||RUN.observedAt),forwardStart:FORWARD_START,runLog,discrepancyLog:reconciliation.discrepancyLog,trades:ledgerTrades},null,2)+'\n');
-fs.writeFileSync('data/research/smc-wd4h-forward-paper-latest.json',JSON.stringify(out,null,2)+'\n');
-const n=x=>Number.isFinite(x)?x.toFixed(3):'n/a',p=x=>Number.isFinite(x)?(100*x).toFixed(1)+'%':'n/a';
+fs.writeFileSync(LEDGER_PATH,JSON.stringify({
+  version:'smc-wd4h-forward-ledger-v2',
+  updatedAt:RUN.observedAt,forwardStart:FORWARD_START,
+  runLog,discrepancyLog:reconciliation.discrepancyLog,
+  markedEquitySeries:portfolio.markedEquitySeries,
+  markedSeriesCoverageStartAt:portfolio.markedSeriesCoverageStartAt,
+  trades:ledgerTrades
+},null,2)+'\n');
+const V2_JSON='data/research/smc-wd4h-forward-paper-evidence-v2-latest.json';
+const V2_MD='data/research/smc-wd4h-forward-paper-evidence-v2-latest.md';
+fs.writeFileSync(V2_JSON,JSON.stringify(out,null,2)+'\n');
+
+const n=x=>Number.isFinite(x)?x.toFixed(3):'n/a';
+const p=x=>Number.isFinite(x)?(100*x).toFixed(1)+'%':'n/a';
+const money=x=>Number.isFinite(x)?'$'+x.toFixed(2):'n/a';
 const md=[
- '# SMC W-D-4H Forward Paper Track','',
+ '# SMC W-D-4H Forward Paper — Corrected Evidence v2','',
  `Generated: ${out.generatedAt}`,'',
- `Forward start: ${FORWARD_START}; universe: ${SYMBOLS.length} TSX symbols; regime filters: none.`,'',
- '| Metric | Raw | +0.03R cost | +0.05R cost |',
- '|---|---:|---:|---:|',
+ 'Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.',
+ 'The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.','',
+ '## Strategy outcomes','',
+ '| Metric | Raw | +0.03R cost | +0.05R cost |','|---|---:|---:|---:|',
  `| Closed trades | ${out.summary.closed.n} | ${out.summary.cost03R.n} | ${out.summary.cost05R.n} |`,
  `| Win rate | ${p(out.summary.closed.wr)} | ${p(out.summary.cost03R.wr)} | ${p(out.summary.cost05R.wr)} |`,
  `| PF | ${n(out.summary.closed.pf)} | ${n(out.summary.cost03R.pf)} | ${n(out.summary.cost05R.pf)} |`,
- `| Avg R | ${n(out.summary.closed.avgR)} | ${n(out.summary.cost03R.avgR)} | ${n(out.summary.cost05R.avgR)} |`,
- `| Sum R | ${n(out.summary.closed.sumR)} | ${n(out.summary.cost03R.sumR)} | ${n(out.summary.cost05R.sumR)} |`,
- '',
- '## $1,000 paper portfolio','',
- `Starting capital: $${PORTFOLIO.startingCapital.toFixed(2)}`,
- `Current realized-equity: $${portfolio.currentEquity.toFixed(2)}`,
- `Return: ${p(portfolio.realizedReturnPct)}`,
- `Max drawdown: ${p(portfolio.maxDrawdownPct)}`,
- `Entered / skipped / open: ${portfolio.enteredCount} / ${portfolio.skippedCount} / ${portfolio.openCount}`,
- 'Sizing: target 1% account risk per trade; max 25% notional per position; max 4 positions; max 4% aggregate open risk; 0.05R cost per closed trade.','',
+ `| Avg R | ${n(out.summary.closed.avgR)} | ${n(out.summary.cost03R.avgR)} | ${n(out.summary.cost05R.avgR)} |`,'',
+ '## $1,000 paper account — realized vs marked','',
+ `Realized-only equity: ${money(portfolio.realizedCurrentEquity)}; realized return: ${p(portfolio.realizedReturnPct)}.`,
+ `Marked equity: ${money(portfolio.markedCurrentEquity)}; marked return: ${p(portfolio.markedReturnPct)}; mark quality: ${portfolio.markedObservation.quality}.`,
+ `Unrealized P/L: ${money(portfolio.markedObservation.totalUnrealizedPnl)}.`,
+ `Realized-event max drawdown: ${p(portfolio.realizedMaxDrawdownPct)}; observed marked max drawdown: ${p(portfolio.markedObservedMaxDrawdownPct)}.`,
+ `Marked-equity observation coverage starts: ${portfolio.markedSeriesCoverageStartAt||'n/a'}; this is not historical intraday drawdown coverage.`,
+ `Missing marks: ${portfolio.markedObservation.missingSymbols.join(', ')||'none'}; stale marks: ${portfolio.markedObservation.staleSymbols.join(', ')||'none'}.`,'',
+ '### Open positions with marks','',
+ '| Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |',
+ '|---|---:|---:|---:|---|---|---:|',
+ ...(portfolio.open.length?portfolio.open.map(x=>`| ${x.symbol} | ${x.dir===1?'Long':'Short'} | ${n(x.entry)} | ${n(x.markPrice)} | ${x.markT||''} | ${x.markStatus} | ${money(x.unrealizedPnl)} |`):['| None | | | | | | |']),'',
  '## Evidence integrity','',
- `First-observation provenance known: ${ledgerTrades.length-reconciliation.summary.legacyUnprovenancedCount}; legacy provenance unknown: ${reconciliation.summary.legacyUnprovenancedCount}.`,
- `Prospective entries: ${reconciliation.summary.prospectiveCount}; reconstructed entries: ${reconciliation.summary.reconstructedCount}; pending: ${reconciliation.summary.pendingCount}.`,
- `This run: new ${reconciliation.summary.newRecords}; lifecycle updates ${reconciliation.summary.lifecycleUpdates}; discrepancies ${reconciliation.runDiscrepancies.length}; prior records not re-observed ${reconciliation.summary.missingPreviouslyRecorded}; candle/data diagnostics ${dataQuality.length}.`,'',
- '### Momentum shadow (observational only)','',
- '| Bucket | Closed | Win rate | Avg R after cost | PF after cost |',
- '|---|---:|---:|---:|---:|',
- ...['high','medium','low','unavailable'].map(b=>{const x=out.summary.momentumShadow[b];return `| ${b} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.afterCost.avgR)} | ${n(x.afterCost.pf)} |`}),
- '',
- '### Portfolio allocations','',
- '| Symbol | Entry | Dir | Allocation | Risk $ | Risk % | Status | P/L $ |',
- '|---|---|---:|---:|---:|---:|---|---:|',
- ...portfolio.entered.map(x=>`| ${x.symbol} | ${x.entryT.slice(0,10)} | ${x.dir===1?'Long':'Short'} | $${x.notional.toFixed(2)} | $${x.riskAmount.toFixed(2)} | ${p(x.riskPctEquity)} | ${x.portfolioStatus} | ${Number.isFinite(x.pnl)?'$'+x.pnl.toFixed(2):''} |`),
- '',`Open paper trades: ${open.length}`,'',
- '## Closed trades','',
- '| Symbol | Entry | Dir | R | Exit |','|---|---|---:|---:|---|',
- ...closed.map(x=>`| ${x.symbol} | ${x.entryT.slice(0,10)} | ${x.dir===1?'Long':'Short'} | ${n(x.R)} | ${x.exitT?.slice(0,10)||''} |`),
- '', '## Open trades','',
- ...(open.length?open.map(x=>`- ${x.symbol} ${x.dir===1?'Long':'Short'}; entry ${n(x.entry)}, stop ${n(x.stop)}, target ${n(x.target)}`):['- None']),
- '', 'This is a forward paper/shadow record only. The rules are frozen; no signal may be removed after seeing its outcome.'
+ `Legacy trades without first-observation provenance: ${reconciliation.summary.legacyUnprovenancedCount}.`,
+ `Prospective entries: ${reconciliation.summary.prospectiveCount}; reconstructed entries: ${reconciliation.summary.reconstructedCount}; pending signals: ${reconciliation.summary.pendingCount}.`,
+ `This run discrepancies: ${reconciliation.runDiscrepancies.length}; prior records not re-observed: ${reconciliation.summary.missingPreviouslyRecorded}; candle/data diagnostics: ${dataQuality.length}.`,'',
+ '## Momentum shadow (observational only)','',
+ '| Bucket | Closed | Win rate | Avg R after cost | PF after cost |','|---|---:|---:|---:|---:|',
+ ...['high','medium','low','unavailable'].map(b=>{const x=out.summary.momentumShadow[b];return `| ${b} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.afterCost.avgR)} | ${n(x.afterCost.pf)} |`}), '',
+ '## Execution qualifications','',
+ '- New exits are timestamped at bar completion. Legacy closed exit timestamps remain immutable and are conservatively delayed for corrected portfolio availability when their convention is unknown.',
+ '- Same-bar stop/target collisions remain stop-first.',
+ '- Gap-through-stop/target events retain the frozen strategy-level R result but are flagged because true execution price is unknown.',
+ '- Momentum is recorded only as shadow evidence and does not affect any trade decision.','',
+ '## Fetch/data gaps','',
+ ...(failures.length?failures.map(x=>`- Fetch failure ${x.symbol}: ${x.error}`):['- No fetch failures this run.']),
+ ...(dataQuality.length?dataQuality.slice(0,50).map(x=>`- Data diagnostic: ${JSON.stringify(x)}`):['- No candle/data diagnostics this run.'])
 ].join('\n');
-fs.writeFileSync('data/research/smc-wd4h-forward-paper-latest.md',md+'\n');
+fs.writeFileSync(V2_MD,md+'\n');
 console.log(md);
