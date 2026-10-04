@@ -38,6 +38,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Test forward ledger integrity
+        working-directory: evidence
+        run: node scripts/test-smc-forward-ledger.mjs
+      - name: Test momentum shadow
+        working-directory: evidence
+        run: node scripts/test-smc-momentum-shadow.mjs
       - name: Run frozen forward paper tracker
         working-directory: evidence
         run: node scripts/smc-forward-paper.mjs
