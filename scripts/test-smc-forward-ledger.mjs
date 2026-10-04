@@ -65,6 +65,14 @@ const base={symbol:'AAA',signalT:'2026-10-04T08:00:00.000Z',entryT:'2026-10-04T0
   assert.equal(r.summary.missingPreviouslyRecorded,1);
 }
 {
+  const stale={...base,decisionId:tradeIdentity(base),firstObservedAt:'2026-10-04T08:30:00.000Z',firstObservedProvenance:{tracker:'x'},entryObservationClass:'pending'};
+  const r=reconcileLedger({trades:[stale]},[],run);
+  assert.equal(r.trades[0].entryObservationClass,'prospective','stale pending provenance must normalize even when the trade is not re-observed');
+  assert.equal(r.summary.prospectiveCount,1);
+  assert.equal(r.summary.reconstructedCount,0);
+  assert.equal(r.summary.missingPreviouslyRecorded,1);
+}
+{
   const r=reconcileLedger({trades:[]},[base],run);
   assert.equal(r.trades[0].firstObservedProvenance.marketDataSource,'Yahoo Finance chart API');
   assert.equal(r.trades[0].firstObservedProvenance.tracker,'test');
