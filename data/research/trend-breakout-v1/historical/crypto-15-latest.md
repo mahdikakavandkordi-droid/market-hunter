@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-04T19:59:14.463Z; mode: historical_diagnostic.
+Generated: 2026-10-04T20:07:36.500Z; mode: historical_diagnostic.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 1; pending 1; closed 91; lifecycle reviews 0.
-Realized equity $1070.07; marked equity $1069.23; mark quality fresh.
+Open 2; pending 0; closed 91; lifecycle reviews 0.
+Realized equity $1070.07; marked equity $1067.78; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -16,7 +16,7 @@ Realized equity $1070.07; marked equity $1069.23; mark quality fresh.
 ## Positions
 
 - BNB-USD: Long open; entry 789.5700073242188; current stop 773.9700055803571; provenance historical_simulated; gap none
-- LTC-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- LTC-USD: Long open; entry 71.80500030517578; current stop 68.92071533203125; provenance historical_simulated; gap none
 
 ## Common-window comparison
 

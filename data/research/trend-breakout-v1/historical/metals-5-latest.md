@@ -1,5 +1,5 @@
 # Trend Breakout V1 — metals-5
-Generated: 2026-10-04T19:59:14.463Z; mode: historical_diagnostic.
+Generated: 2026-10-04T20:07:36.500Z; mode: historical_diagnostic.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 5; failed fetch/review symbols 0.
 Open 4; pending 0; closed 8; lifecycle reviews 0.
 Realized equity $950.30; marked equity $983.54; mark quality fresh.
