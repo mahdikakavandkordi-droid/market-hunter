@@ -47,4 +47,14 @@ const base={symbol:'AAA',signalT:'2026-10-04T08:00:00.000Z',entryT:'2026-10-04T0
   fs.writeFileSync(p,'{bad json');
   assert.throws(()=>loadLedgerStrict(p,{trades:[]}),/corrupt ledger JSON/);
 }
+{
+  const pending={symbol:'P',signalT:'2026-10-04T08:00:00.000Z',dir:1,status:'pending_entry',R:null,exitT:null,momentumShadow:{score:60,bucket:'medium'},decisionId:'P|2026-10-04T08:00:00.000Z|1',firstObservedAt:'2026-10-04T08:30:00.000Z',firstObservedProvenance:{tracker:'test'}};
+  const observed={...pending,entryT:'2026-10-04T12:00:00.000Z',entry:100,stop:95,target:110,risk:5,status:'open'};
+  delete observed.firstObservedAt; delete observed.firstObservedProvenance; delete observed.decisionId;
+  const r=reconcileLedger({trades:[pending]},[observed],run);
+  assert.equal(r.trades[0].status,'open');
+  assert.equal(r.trades[0].entry,100);
+  assert.equal(r.trades[0].entryObservationClass,'prospective');
+  assert.equal(r.summary.lifecycleUpdates,1);
+}
 console.log('SMC forward ledger integrity tests passed');
