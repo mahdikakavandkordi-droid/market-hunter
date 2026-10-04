@@ -3,6 +3,7 @@ import vm from 'node:vm';
 import assert from 'node:assert/strict';
 
 const source=fs.readFileSync('app.js','utf8');
+const quotePolicySource=fs.readFileSync('quote-policy.js','utf8');
 const cut=source.indexOf('async function load(){');
 assert.ok(cut>0,'app test seam not found');
 const core=source.slice(0,cut)+`
@@ -55,6 +56,7 @@ function boot(initial={},fetchImpl=async()=>response(500,{message:'unexpected fe
     window:{open(){},scrollTo(){}}
   };
   context.globalThis=context;
+  vm.runInNewContext(quotePolicySource,context,{filename:'quote-policy.js'});
   vm.runInNewContext(core,context,{filename:'app-core.js'});
   return {h:context.__mh,storage:localStorage,context};
 }
@@ -76,20 +78,27 @@ const plain=x=>JSON.parse(JSON.stringify(x));
 }
 
 
-// Quote presentation must distinguish provisional/stale/hourly coverage from completed-session fallback.
+// Quote presentation uses the production selection policy, not a copied test helper.
 {
   const {h}=boot();
-  const now=new Date().toISOString();
-  h.state.intraday={marketOpen:true,capturedAt:now,quotes:{
-    'RY.TO':{price:111.25,changePct:1.2,currency:'CAD',quoteAt:now,stale:false},
-    'TD.TO':{price:170,changePct:-0.4,currency:'CAD',quoteAt:now,stale:true}
-  }};
-  const provisional=h.quoteFor('RY.TO',{price:110,dayChangePct:0.3,currency:'CAD',asOf:'2026-09-25'});
+  const now=new Date();
+  const nowIso=now.toISOString();
+  const sessionDate=nowIso.slice(0,10);
+  h.state.intraday={
+    capturedAt:nowIso,
+    currentState:{marketOpen:true,snapshotFresh:true,sessionDate,status:'live'},
+    quotes:{
+      'RY.TO':{symbol:'RY.TO',price:111.25,changePct:1.2,currency:'CAD',quoteAt:nowIso,sessionDate,stale:false},
+      'TD.TO':{symbol:'TD.TO',price:170,changePct:-0.4,currency:'CAD',quoteAt:nowIso,sessionDate,stale:true}
+    }
+  };
+  const provisional=h.quoteFor('RY.TO',{symbol:'RY.TO',price:110,dayChangePct:0.3,currency:'CAD',asOf:'2026-09-25'});
   assert.equal(provisional.state,'provisional');assert.equal(provisional.price,111.25);assert.equal(provisional.changePct,1.2);
-  const stale=h.quoteFor('TD.TO',{price:169,dayChangePct:0.1,currency:'CAD',asOf:'2026-09-25'});
-  assert.equal(stale.state,'stale');
-  const fallback=h.quoteFor('ENB.TO',{price:50,dayChangePct:-0.5,currency:'CAD',asOf:'2026-09-25'});
-  assert.equal(fallback.state,'fallback');assert.match(fallback.label,/Not covered by hourly feed/);assert.match(fallback.label,/completed-session fallback/);
+  h.state.intraday.currentState={marketOpen:false,snapshotFresh:false,sessionDate,status:'stale_snapshot'};
+  const completed=h.quoteFor('TD.TO',{symbol:'TD.TO',price:169,dayChangePct:0.1,currency:'CAD',asOf:sessionDate});
+  assert.equal(completed.state,'completed');assert.equal(completed.price,169);
+  const fallback=h.quoteFor('ENB.TO',{symbol:'ENB.TO',price:50,dayChangePct:-0.5,currency:'CAD',asOf:'2026-09-25'});
+  assert.equal(fallback.state,'completed');assert.match(fallback.label,/Completed session/);
   assert.equal(h.quoteTimeLabel('2026-09-25'),'2026-09-25');
 }
 
@@ -256,9 +265,9 @@ const plain=x=>JSON.parse(JSON.stringify(x));
 {
   const {h}=boot();
   assert.equal(h.MARKET_PULSE_INTRADAY_SYMBOLS.NASDAQ100,'^NDX');
-  h.state.intraday={marketOpen:true,quotes:{'^IXIC':{price:99999,changePct:9,quoteAt:new Date().toISOString(),currency:'USD',stale:false}}};
+  h.state.intraday={capturedAt:new Date().toISOString(),currentState:{marketOpen:true,snapshotFresh:true,sessionDate:new Date().toISOString().slice(0,10)},quotes:{'^IXIC':{symbol:'^IXIC',price:99999,changePct:9,quoteAt:new Date().toISOString(),sessionDate:new Date().toISOString().slice(0,10),currency:'USD',stale:false}}};
   const display=h.quoteFor(h.MARKET_PULSE_INTRADAY_SYMBOLS.NASDAQ100,{price:25000,dayChangePct:-0.2,currency:'USD',asOf:'2026-09-28'});
-  assert.equal(display.state,'fallback');
+  assert.equal(display.state,'completed');
   assert.equal(display.price,25000);
 }
 
