@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — crypto-15 — Corrected Evidence v2
 
-Mode: crypto; generated 2026-10-04T14:55:43.751Z; start 2026-10-01; universe 15.
+Mode: crypto; generated 2026-10-04T14:58:39.194Z; start 2026-10-01; universe 15.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $989.50; return -1.0%; realized-event max DD -1.0%.
-Marked equity $986.10; return -1.4%; observed marked max DD 0.0%; quality fresh.
+Marked equity $986.08; return -1.4%; observed marked max DD -0.0%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:43.751Z; no historical intraday marked DD is implied.
 Missing marks: none; stale marks: none.
 
@@ -24,13 +24,13 @@ Missing marks: none; stale marks: none.
 |---|---:|---:|---|---|---:|
 | BTC-USD | Long | 86095.680 | 85304.172 | 2026-10-04T12:00:00.000Z | fresh | $-2.30 |
 | BNB-USD | Long | 789.570 | 788.580 | 2026-10-04T12:00:00.000Z | fresh | $-0.31 |
-| BCH-USD | Long | 319.860 | 318.840 | 2026-10-04T12:00:00.000Z | fresh | $-0.63 |
+| BCH-USD | Long | 319.860 | 318.810 | 2026-10-04T12:00:00.000Z | fresh | $-0.64 |
 | XRP-USD | Long | 1.500 | 1.498 | 2026-10-04T12:00:00.000Z | fresh | $-0.16 |
 
 ## Evidence integrity
 
 Legacy provenance unknown 5; prospective 0; reconstructed 0; pending 0.
-This run discrepancies 18; prior not re-observed 0; candle/data diagnostics 16.
+This run discrepancies 1; prior not re-observed 0; candle/data diagnostics 15.
 
 ## Momentum shadow (observational only)
 
@@ -49,8 +49,7 @@ This run discrepancies 18; prior not re-observed 0; candle/data diagnostics 16.
 - Data diagnostic: {"symbol":"BNB-USD","mode":"crypto","type":"live_incomplete_crypto_bar_dropped","bucket":1791115200000,"endT":1791129600000}
 - Data diagnostic: {"symbol":"XRP-USD","mode":"crypto","type":"live_incomplete_crypto_bar_dropped","bucket":1791115200000,"endT":1791129600000}
 - Data diagnostic: {"symbol":"SOL-USD","mode":"crypto","type":"live_incomplete_crypto_bar_dropped","bucket":1791115200000,"endT":1791129600000}
-- Data diagnostic: {"symbol":"TRX-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1791115200000,"t":1791125584000}
-- Data diagnostic: {"symbol":"TRX-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1791115200000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"TRX-USD","mode":"crypto","type":"live_incomplete_crypto_bar_dropped","bucket":1791115200000,"endT":1791129600000}
 - Data diagnostic: {"symbol":"DOGE-USD","mode":"crypto","type":"live_incomplete_crypto_bar_dropped","bucket":1791115200000,"endT":1791129600000}
 - Data diagnostic: {"symbol":"LINK-USD","mode":"crypto","type":"live_incomplete_crypto_bar_dropped","bucket":1791115200000,"endT":1791129600000}
 - Data diagnostic: {"symbol":"ADA-USD","mode":"crypto","type":"live_incomplete_crypto_bar_dropped","bucket":1791115200000,"endT":1791129600000}

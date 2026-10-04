@@ -2,7 +2,7 @@
   "version": "smc-wd4h-forward-alternatives-evidence-v2",
   "cohort": "crypto-15",
   "mode": "crypto",
-  "generatedAt": "2026-10-04T14:55:43.751Z",
+  "generatedAt": "2026-10-04T14:58:39.194Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -68,26 +68,9 @@
     {
       "symbol": "TRX-USD",
       "mode": "crypto",
-      "type": "off_crypto_hour_grid",
+      "type": "live_incomplete_crypto_bar_dropped",
       "bucket": 1791115200000,
-      "t": 1791125584000
-    },
-    {
-      "symbol": "TRX-USD",
-      "mode": "crypto",
-      "type": "incomplete_or_missing_crypto_bar",
-      "bucket": 1791115200000,
-      "expected": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "present": [
-        0,
-        1,
-        2
-      ]
+      "endT": 1791129600000
     },
     {
       "symbol": "DOGE-USD",
@@ -157,16 +140,16 @@
     "run": {
       "tracker": "smc-forward-alternatives",
       "cohort": "crypto-15",
-      "observedAt": "2026-10-04T14:55:43.751Z",
+      "observedAt": "2026-10-04T14:58:39.194Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "37210997950",
-        "runAttempt": "2",
-        "sha": "e07547e55b2be8be8163afacfab7d8f78eb23add",
+        "runId": "37211228294",
+        "runAttempt": "1",
+        "sha": "62eb3ca11ab20867fe622150f9337334ca931f23",
         "workflow": "SMC Crypto and Metals Forward",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-alternatives|crypto-15|37210997950|2"
+      "runKey": "smc-forward-alternatives|crypto-15|37211228294|1"
     },
     "reconciliation": {
       "newRecords": 0,
@@ -179,130 +162,11 @@
     },
     "discrepancies": [
       {
-        "type": "source_revision_conflict",
-        "identity": "ADA-USD|2026-10-02T04:00:00.000Z|1",
-        "field": "stop",
-        "recorded": 0.24230535786066737,
-        "recomputed": 0.24229350217751094
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "ADA-USD|2026-10-02T04:00:00.000Z|1",
-        "field": "target",
-        "recorded": 0.28134932198694773,
-        "recomputed": 0.2813730333532606
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "ADA-USD|2026-10-02T04:00:00.000Z|1",
-        "field": "risk",
-        "recorded": 0.01301465470876012,
-        "recomputed": 0.013026510391916546
-      },
-      {
         "type": "closed_outcome_revision",
         "identity": "ADA-USD|2026-10-02T04:00:00.000Z|1",
         "field": "exitT",
         "recorded": "2026-10-02T16:00:00.000Z",
         "recomputed": "2026-10-02T20:00:00.000Z"
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BTC-USD|2026-10-02T04:00:00.000Z|1",
-        "field": "entry",
-        "recorded": 86095.6796875,
-        "recomputed": 86095.671875
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BTC-USD|2026-10-02T04:00:00.000Z|1",
-        "field": "stop",
-        "recorded": 83037.74508928572,
-        "recomputed": 83013.62873883928
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BTC-USD|2026-10-02T04:00:00.000Z|1",
-        "field": "target",
-        "recorded": 92211.54888392857,
-        "recomputed": 92259.75814732144
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BTC-USD|2026-10-02T04:00:00.000Z|1",
-        "field": "risk",
-        "recorded": 3057.934598214284,
-        "recomputed": 3082.043136160719
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BNB-USD|2026-10-03T16:00:00.000Z|1",
-        "field": "entry",
-        "recorded": 789.5700073242188,
-        "recomputed": 789.47998046875
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BNB-USD|2026-10-03T16:00:00.000Z|1",
-        "field": "stop",
-        "recorded": 763.0199877057756,
-        "recomputed": 763.0210588727679
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BNB-USD|2026-10-03T16:00:00.000Z|1",
-        "field": "target",
-        "recorded": 842.670046561105,
-        "recomputed": 842.3978236607143
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BNB-USD|2026-10-03T16:00:00.000Z|1",
-        "field": "risk",
-        "recorded": 26.550019618443116,
-        "recomputed": 26.458921595982133
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BCH-USD|2026-10-03T20:00:00.000Z|1",
-        "field": "stop",
-        "recorded": 303.73785334995813,
-        "recomputed": 303.73799612862723
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BCH-USD|2026-10-03T20:00:00.000Z|1",
-        "field": "target",
-        "recorded": 352.10424935477124,
-        "recomputed": 352.10396379743304
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BCH-USD|2026-10-03T20:00:00.000Z|1",
-        "field": "risk",
-        "recorded": 16.12213200160437,
-        "recomputed": 16.12198922293527
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "XRP-USD|2026-10-04T04:00:00.000Z|1",
-        "field": "stop",
-        "recorded": 1.477332876409803,
-        "recomputed": 1.477220003093992
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "XRP-USD|2026-10-04T04:00:00.000Z|1",
-        "field": "target",
-        "recorded": 1.543834355899266,
-        "recomputed": 1.5440601025308882
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "XRP-USD|2026-10-04T04:00:00.000Z|1",
-        "field": "risk",
-        "recorded": 0.02216715982982098,
-        "recomputed": 0.022280033145632094
       }
     ],
     "legacyProvenanceUnknown": 5
@@ -1242,14 +1106,14 @@
         "equity": 989.5
       }
     ],
-    "markedCurrentEquity": 986.1004946314933,
-    "markedReturnPct": -0.013899505368506704,
+    "markedCurrentEquity": 986.0820828035098,
+    "markedReturnPct": -0.01391791719649016,
     "markedObservation": {
-      "runKey": "smc-forward-alternatives|crypto-15|37210997950|2",
-      "observedAt": "2026-10-04T14:55:43.751Z",
+      "runKey": "smc-forward-alternatives|crypto-15|37211228294|1",
+      "observedAt": "2026-10-04T14:58:39.194Z",
       "quality": "fresh",
-      "markedEquity": 986.1004946314933,
-      "totalUnrealizedPnl": -3.399505368506611,
+      "markedEquity": 986.0820828035098,
+      "totalUnrealizedPnl": -3.41791719649022,
       "missingSymbols": [],
       "staleSymbols": [],
       "positions": [
@@ -1510,12 +1374,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 318.8399963378906,
+          "markPrice": 318.80999755859375,
           "markT": "2026-10-04T12:00:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -0.6260208816848065,
-          "markedPositionValue": 195.68886816268903
+          "unrealizedPnl": -0.6444327096684156,
+          "markedPositionValue": 195.67045633470542
         },
         {
           "symbol": "XRP-USD",
@@ -1616,10 +1480,19 @@
         "totalUnrealizedPnl": -3.399505368506611,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-alternatives|crypto-15|37211228294|1",
+        "observedAt": "2026-10-04T14:58:39.194Z",
+        "quality": "fresh",
+        "markedEquity": 986.0820828035098,
+        "totalUnrealizedPnl": -3.41791719649022,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T14:55:43.751Z",
-    "markedObservedMaxDrawdownPct": 0,
+    "markedObservedMaxDrawdownPct": -0.00001867135052036062,
     "enteredCount": 5,
     "closedCount": 1,
     "openCount": 4,
@@ -2295,12 +2168,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 318.8399963378906,
+        "markPrice": 318.80999755859375,
         "markT": "2026-10-04T12:00:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -0.6260208816848065,
-        "markedPositionValue": 195.68886816268903
+        "unrealizedPnl": -0.6444327096684156,
+        "markedPositionValue": 195.67045633470542
       },
       {
         "symbol": "XRP-USD",
