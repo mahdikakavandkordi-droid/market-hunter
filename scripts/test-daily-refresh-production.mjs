@@ -32,3 +32,17 @@ assert.match(audit,/api\/research-data\?kind=daily/,'audit must recognize the li
 assert.match(audit,/daily-market-report\.json/,'audit must require the static daily-report fallback');
 
 console.log('PASS: validated daily refresh publishes to main and mixed-date labels are explicit');
+
+const assetWorkflow=fs.readFileSync('.github/workflows/asset-freshness-refresh.yml','utf8');
+const scheduleDoc=fs.readFileSync('docs/market-data-refresh-schedule.md','utf8');
+assert.match(assetWorkflow,/MARKET_PULSE_KEYS/);
+assert.match(assetWorkflow,/MARKET_PULSE_MERGE_EXISTING/);
+assert.doesNotMatch(assetWorkflow,/backtest-market-pulse/,'targeted freshness retry must not rerun historical backtests');
+assert.doesNotMatch(assetWorkflow,/scan-market-hunter-v2/,'targeted freshness retry must not rerun the stock scanner');
+assert.match(assetWorkflow,/git diff --exit-code -- data\/v2-latest-scan\.json data\/history\.json data\/market-pulse-state-backtest\.json/);
+assert.match(scheduleDoc,/16:30 America\/Toronto/);
+assert.match(scheduleDoc,/18:00 local time/);
+assert.match(scheduleDoc,/00:15 UTC/);
+assert.match(scheduleDoc,/04:15 UTC/);
+
+assert.match(workflow,/Weekend push\/schedule: preserve the latest completed-session V2 stock snapshot/,'weekend code refresh must not silently replace the equity shortlist');
