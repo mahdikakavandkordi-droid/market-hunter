@@ -69,7 +69,7 @@ const bar=(t,o=100)=>({t,o,h:o+2,l:o-2,c:o+1,v:1000});
 {
   const start=Date.parse('2026-11-27T14:30:00Z');
   const rows=[0,1,2,3].map(i=>bar(start+i*HOUR_MS,100+i));
-  const r=aggregateExchange4H(rows,{nowMs:Date.parse('2026-11-28T00:00:00Z')});
+  const r=aggregateExchange4H(rows,{nowMs:Date.parse('2026-11-29T00:00:00Z')});
   assert.equal(r.bars.length,1,'shortened session with a complete first segment should emit only that segment');
   assert.equal(r.bars[0].sourceCount,4);
   assert.equal(r.bars[0].endT,start+4*HOUR_MS,'shortened-session completion stays conservative at final source start + 1h');
