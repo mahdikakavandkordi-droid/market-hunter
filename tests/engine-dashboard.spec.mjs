@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {ENGINES,COHORTS,normalizeEvidence,commonComparison} from '../lib/engine-dashboard.js';
+test.use({timezoneId:'America/St_Johns'});
 
 function paperAccount(open=false){
   const position={symbol:'TEST.TO',dir:1,status:'open',portfolioStatus:'open',entryT:'2026-10-04T18:00:00Z',entry:100,stop:95,target:110,notional:250,riskAmount:12.5,markPrice:null,unrealizedPnl:null,markStatus:'missing'};
@@ -8,7 +9,7 @@ function paperAccount(open=false){
 function fixture(){
   const now=new Date().toISOString(),reports=[];
   for(const e of ENGINES)for(const cohort of COHORTS){
-    const d={version:e.id==='smc'?'smc-wd4h-forward-paper-evidence-v2':e.id==='trend'?'trend-breakout-v1':'mean-reversion-v1',mode:'forward_shadow',cohort,generatedAt:now,forwardStart:'2026-10-04T17:00:00Z',trades:[],portfolio:paperAccount(e.id==='smc'&&cohort==='tsx-core'),summary:{pending:0},failures:[]};
+    const d={version:e.id==='smc'?'smc-wd4h-forward-paper-evidence-v2':e.id==='trend'?'trend-breakout-v1':'mean-reversion-v1',mode:'forward_shadow',cohort,generatedAt:now,forwardStart:e.id==='smc'?'2026-10-01':'2026-10-04T17:00:00Z',trades:[],portfolio:paperAccount(e.id==='smc'&&cohort==='tsx-core'),summary:{pending:0},failures:[]};
     if(e.id==='mean')d.comparison={commonStart:'2026-10-04T17:00:00Z',smcLedgerAsOf:now,trendLedgerAsOf:now,smc:{commonWindowPaperAccount:paperAccount()},trend:{commonWindowPaperAccount:paperAccount()}};
     reports.push({...normalizeEvidence(e,cohort,d),source:{url:'https://github.com/example/evidence'},comparison:e.id==='mean'?commonComparison(d):null});
   }
@@ -33,6 +34,7 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   const view=page.locator('#enginesView');
   await expect(view.getByText('Three engines. One research desk.')).toBeVisible();
   await expect(view.locator('.engine-position')).toContainText('TEST.TO');
+  await expect(view).toContainText('Started Oct 1');
   await expect(view.locator('.engine-overview').first().locator('.engine-equity')).toContainText('—');
   await expect(view).toContainText('Same starting window');
   await view.locator('[data-engine-tab="trend"]').click();

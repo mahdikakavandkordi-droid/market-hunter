@@ -8,7 +8,9 @@ window.MarketHunterEngines=(()=>{
   const num=v=>typeof v==='number'&&Number.isFinite(v)?v.toLocaleString('en-CA',{maximumFractionDigits:2}):'—';
   const pct=v=>typeof v==='number'&&Number.isFinite(v)?(v>0?'+':'')+(v*100).toFixed(2)+'%':'—';
   const tone=v=>Number.isFinite(v)?v>0?'up':v<0?'down':'flat':'flat';
-  const date=v=>v&&Number.isFinite(Date.parse(v))?new Date(v).toLocaleString('en-CA',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+  const date=v=>!v||!Number.isFinite(Date.parse(v))?'—':/^\d{4}-\d{2}-\d{2}$/.test(v)
+    ?new Date(v).toLocaleDateString('en-CA',{month:'short',day:'numeric',timeZone:'UTC'})
+    :new Date(v).toLocaleString('en-CA',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZoneName:'short'});
   const report=(data,e,c)=>data?.reports?.find(r=>r.engine===e&&r.cohort===c);
   function badges(data,symbol){
     const matches=(data?.reports||[]).filter(r=>r.status==='available'&&r.account.open.some(p=>p.symbol===symbol));
