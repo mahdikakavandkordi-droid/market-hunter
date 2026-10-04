@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {
   mainMenu,pulseMenu,marketReport,hunterMenu,stageMenu,stockReport,diffScans,marketBrief,
-  portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty
+  portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty,allMarketsReport,num,pct
 } from '../lib/telegram-fa.js';
 
 const scan={
@@ -99,12 +99,13 @@ assert.ok(pMenu.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='pulse
 
 const mReport=marketReport(pulse.markets[0]);
 assert.match(mReport.text,/TSX/);
-assert.match(mReport.text,/امروز/);
-assert.match(mReport.text,/برداشت امروز/);
-assert.match(mReport.text,/مهم‌ترین چیز برای پیگیری/);
+assert.match(mReport.text,/تغییر جلسه/);
+assert.match(mReport.text,/اعداد اصلی/);
+assert.match(mReport.text,/محدوده‌های پیگیری/);
+assert.ok(mReport.text.length<1000);
 
 const hMenu=hunterMenu(scan);
-assert.match(hMenu.text,/منتخب نهایی امروز/);
+assert.match(hMenu.text,/منتخب نهایی/);
 assert.ok(hMenu.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='stage:0'));
 
 const ew=stageMenu(scan,0);
@@ -118,8 +119,8 @@ assert.ok(!established.keyboard.inline_keyboard.flat().some(x=>x.callback_data==
 const stock=stockReport(scan,'CCC.TO');
 assert.match(stock.text,/CCC\.TO/);
 assert.match(stock.text,/رشد جذاب/);
-assert.match(stock.text,/برداشت من از این سهم/);
-assert.match(stock.text,/چرا Hunter بهش توجه کرده/);
+assert.match(stock.text,/چرا در فهرست است/);
+assert.ok(stock.text.length<1200);
 assert.ok(stock.keyboard.inline_keyboard.flat().some(x=>x.text.includes('TradingView')&&x.url.includes('TSX%3ACCC')));
 
 const diff=diffScans(scan,previous);
@@ -129,7 +130,7 @@ assert.deepEqual(diff.moved.map(x=>x.symbol).sort(),['CCC.TO']);
 assert.ok(diff.stayed.some(x=>x.symbol==='AAA.TO'));
 
 const brief=marketBrief(scan,previous,history);
-assert.match(brief.text,/امروز چه عوض شد/);
+assert.match(brief.text,/چه عوض شد/);
 assert.match(brief.text,/ردگیری کوتاه/);
 assert.match(brief.text,/بدون تغییر/);
 assert.match(brief.text,/AAA\.TO/);
@@ -180,19 +181,48 @@ assert.ok(emptyPortfolio.keyboard.inline_keyboard.flat().some(x=>x.url==='https:
 assert.match(emptyPortfolio.text,/اتصال پورتفولیوی سایت/);
 assert.match(portfolioMenu(portfolio).text,/پورتفولیو/);
 const portfolioItem=portfolioItemReport(portfolio,'RY.TO');
-assert.match(portfolioItem.text,/اگر بخوام ساده بگم/);
+assert.match(portfolioItem.text,/سود\/زیان باز/);
 assert.match(portfolioItem.text,/پوزیشن تو/);
-assert.match(portfolioItem.text,/دفعه‌ی بعد چی رو چک کنیم/);
-assert.ok(portfolioItem.keyboard.inline_keyboard.flat().some(x=>x.text.includes('TradingView')&&x.url.includes('TSX%3ARY')));
-assert.match(portfolioSummaryReport(portfolio).text,/تحلیل کامل پورتفولیو/);
-assert.match(portfolioSummaryReport(portfolio).text,/وزن‌ها و تمرکز/);
+assert.match(portfolioItem.text,/محدوده‌های پیگیری/);
+assert.ok(portfolioItem.keyboard.inline_keyboard.flat().some(x=>x.url?.includes('TSX%3ARY')));
+assert.match(portfolioSummaryReport(portfolio).text,/پورتفولیو در یک نگاه/);
+assert.match(portfolioSummaryReport(portfolio).text,/سه دارایی بزرگ‌تر/);
 assert.match(portfolioSummaryReport(portfolio).text,/ترکیب پورتفولیو/);
 const fullPortfolioReport=portfolioSummaryReport(portfolio);
 assert.match(fullPortfolioReport.text,/Beta/);
-assert.match(fullPortfolioReport.text,/دارایی به دارایی/);
+assert.match(fullPortfolioReport.text,/دارایی‌ها/);
+const secondPage=portfolioSummaryReport(portfolio,1);
 for(const symbol of ['RY.TO','T.TO','IVN.TO','ETHX.TO','PHYS.TO','PSLV.TO','CRT-UN.TO']){
-  assert.match(fullPortfolioReport.text,new RegExp(symbol.replace('.','\\.')));
+  assert.match(fullPortfolioReport.text+secondPage.text,new RegExp(symbol.replace('.','\\.')));
 }
 assert.match(fullPortfolioReport.text,/TELUS/);
+assert.ok(fullPortfolioReport.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='pfpage:1'));
+assert.ok(secondPage.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='pfpage:0'));
+
+// Every holding remains reachable in a large portfolio; messages do not slice HTML.
+const large={...portfolio,items:Array.from({length:60},(_,i)=>({...portfolio.items[0],symbol:`TEST${i}.TO`,name:'Synthetic holding'}))};
+const seen=[];
+for(let i=0;i<10;i++){
+  const view=portfolioSummaryReport(large,i);
+  assert.ok(view.text.length<3500);
+  assert.equal((view.text.match(/<b>/g)||[]).length,(view.text.match(/<\/b>/g)||[]).length);
+  seen.push(...view.keyboard.inline_keyboard.flat().filter(x=>x.callback_data?.startsWith('pf:')).map(x=>x.callback_data));
+}
+assert.equal(new Set(seen).size,60);
+for(const value of [null,undefined,'',' ',NaN,Infinity]){
+  assert.equal(num(value),'—');assert.equal(pct(value),'—');
+}
+assert.equal(pct(0),'0.0%');
+const incomplete={...portfolio,items:[{...portfolio.items[0],price:null}]};
+assert.match(portfolioSummaryReport(incomplete).text,/در دسترس نیستند/);
+assert.doesNotMatch(portfolioSummaryReport(incomplete).text,/سه دارایی بزرگ‌تر/);
+const unknownCurrency={...portfolio,items:[{...portfolio.items[0],currency:null}]};
+assert.match(portfolioSummaryReport(unknownCurrency).text,/در دسترس نیستند/);
+const mixed={...portfolio,items:[portfolio.items[0],{...portfolio.items[1],currency:'USD'}]};
+assert.match(portfolioSummaryReport(mixed).text,/در دسترس نیستند/);
+const allMarkets=allMarketsReport({asOf:{mixedDates:true}},pulse);
+assert.match(allMarkets.text,/2026-09-29/);
+assert.ok(allMarkets.keyboard.inline_keyboard.flat().some(x=>x.callback_data==='pulse:TSX'));
+assert.match(portfolioItemReport({...portfolio,items:[{...portfolio.items[0],name:'A & <B>'}]},'RY.TO').text,/A &amp; &lt;B&gt;/);
 
 console.log('telegram bot formatters: ok');

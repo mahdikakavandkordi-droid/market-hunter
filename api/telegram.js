@@ -149,6 +149,10 @@ async function routeCallback(update,data){
     const snapshot=await loadPortfolioSnapshot();
     return render(update,snapshot?portfolioSummaryReport(snapshot):portfolioEmpty(undefined,portfolioPairUrl()));
   }
+  if(/^pfpage:\d+$/.test(data)){
+    const snapshot=await loadPortfolioSnapshot();
+    return render(update,snapshot?portfolioSummaryReport(snapshot,Number(data.slice(7))):portfolioEmpty(undefined,portfolioPairUrl()));
+  }
   if(data.startsWith('pf:')){
     const symbol=data.slice('pf:'.length).toUpperCase();
     const snapshot=await loadPortfolioSnapshot();
