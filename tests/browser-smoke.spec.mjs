@@ -39,7 +39,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await page.route('**/api/intraday',async route=>{
     const now=new Date().toISOString();
     await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
-      version:'intraday-v1',capturedAt:now,sessionDate:now.slice(0,10),marketOpen:true,provisional:true,
+      version:'intraday-v1',capturedAt:now,sessionDate:now.slice(0,10),marketOpen:true,provisional:true,currentState:{marketOpen:true,snapshotFresh:true,sessionDate:now.slice(0,10),status:'live'},
       intended:1,received:1,failures:[],quotes:{
         'RY.TO':{symbol:'RY.TO',name:'Royal Bank of Canada',price:111.25,currency:'CAD',previousClose:109.9,changePct:1.234,quoteAt:now,sessionDate:now.slice(0,10),stale:false},
         '^IXIC':{symbol:'^IXIC',name:'Nasdaq Composite sentinel',price:99999,currency:'USD',previousClose:90000,changePct:11.11,quoteAt:now,sessionDate:now.slice(0,10),stale:false}
@@ -83,12 +83,12 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   const nasdaq100=page.locator('.market-row').filter({hasText:'Nasdaq-100'}).first();
   await expect(nasdaq100).toBeVisible();
   await expect(nasdaq100).not.toContainText('99,999');
-  await expect(nasdaq100).toContainText('completed-session fallback');
+  await expect(nasdaq100).toContainText('Completed session · hourly quote unavailable');
 
   await page.locator('[data-view="portfolio"]:visible').first().click();
   await expect(page.locator('#portfolioView')).toContainText('Backend portfolio');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('RY');
-  await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('Hourly quote · provisional');
+  await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('Intraday quote · current session');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('111.25');
   await expect(page.locator('#portfolioView .portfolio-slide')).toContainText('+1.2%');
   const allocation=page.locator('#portfolioAllocation');
@@ -145,7 +145,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   // Watchlist stays usable at mobile width and explicitly labels symbols missing from the hourly feed.
   await page.locator('[data-view="watchlist"]:visible').first().click();
   await expect(page.locator('#watchlistView')).toContainText('ENB');
-  await expect(page.locator('#watchlistView')).toContainText('Not covered by hourly feed · completed-session fallback');
+  await expect(page.locator('#watchlistView')).toContainText('Not covered by hourly feed · Completed session · hourly quote unavailable');
   const enbCard=page.locator('#watchlistView .card').filter({hasText:'ENB'}).first();
   await expect(enbCard.locator('.cardprice')).not.toContainText('5D');
 
