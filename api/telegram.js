@@ -1,9 +1,9 @@
 import {
-  mainMenu,pulseMenu,marketReport,allMarketsReport,hunterMenu,stageMenu,stockReport,
+  mainMenu,enginesMenu,pulseMenu,marketReport,allMarketsReport,hunterMenu,stageMenu,stockReport,
   marketBrief,statusReport,portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty
 } from '../lib/telegram-fa.js';
 import {
-  loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadRecentScans,loadPortfolioSnapshot,loadBotBundle,loadStockLive
+  loadEngineEvidence,loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadRecentScans,loadPortfolioSnapshot,loadBotBundle,loadStockLive
 } from '../lib/telegram-data.js';
 import { portfolioPairUrl, portfolioBridgeConfigured } from '../lib/portfolio-bridge.js';
 
@@ -120,6 +120,10 @@ async function routeCallback(update,data){
     return render(update,marketReport(findMarket(pulse,key)));
   }
 
+  if(data==='m:engines'||/^eng:(all|smc|trend|mean)$/.test(data)){
+    const [scan,engines]=await Promise.all([loadScan(),loadEngineEvidence()]);
+    return render(update,enginesMenu(scan,engines,data.startsWith('eng:')?data.slice(4):'all'));
+  }
   if(data==='m:hunter'){
     const scan=await loadScan();
     return render(update,hunterMenu(scan));
@@ -131,8 +135,8 @@ async function routeCallback(update,data){
   }
   if(data.startsWith('stock:')){
     const symbol=data.slice('stock:'.length).toUpperCase();
-    const [scan,live]=await Promise.all([loadScan(),loadStockLive(symbol)]);
-    return render(update,stockReport(scan,symbol,live));
+    const [scan,live,engines]=await Promise.all([loadScan(),loadStockLive(symbol),loadEngineEvidence()]);
+    return render(update,stockReport(scan,symbol,live,engines));
   }
   if(data==='brief:hunter'){
     const history=await loadRecentScans(5);
@@ -169,6 +173,7 @@ async function routeCallback(update,data){
 
 async function routeMessage(update){
   const text=String(update?.message?.text||'').trim().toLowerCase();
+  if(text==='/engines'||text==='موتورها'){const [scan,engines]=await Promise.all([loadScan(),loadEngineEvidence()]);return render(update,enginesMenu(scan,engines));}
   if(text==='/start'||text==='/menu'||text==='منو'||text==='خانه'||!text)return render(update,mainMenu());
   if(text.includes('بازار')||text==='/markets'){
     const pulse=await loadPulse();return render(update,pulseMenu(pulse));
@@ -221,3 +226,4 @@ export default async function handler(req,res){
 
   return res.status(200).json({ok:true});
 }
+
