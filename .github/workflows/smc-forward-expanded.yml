@@ -14,48 +14,60 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: smc-forward-evidence-writes
+  cancel-in-progress: false
+
 jobs:
   expanded-forward:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout operational helper
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: ops
+          persist-credentials: false
+      - name: Checkout frozen evidence branch
+        uses: actions/checkout@v4
         with:
           ref: research/smc-wd4h-tsx-validation-20261001
+          path: evidence
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Test momentum shadow
+        working-directory: evidence
         run: node scripts/test-smc-momentum-shadow.mjs
       - name: Run TSX-extra and US-75 forward cohorts
+        working-directory: evidence
         run: node scripts/smc-forward-expanded.mjs
       - name: Persist expanded forward ledgers
+        working-directory: evidence
         run: |
-          git config user.name "market-hunter-bot"
-          git config user.email "market-hunter-bot@users.noreply.github.com"
-          git add data/research/smc-wd4h-forward-tsx-extra-ledger.json
-          git add data/research/smc-wd4h-forward-tsx-extra-latest.json
-          git add data/research/smc-wd4h-forward-tsx-extra-latest.md
-          git add data/research/smc-wd4h-forward-us-75-ledger.json
-          git add data/research/smc-wd4h-forward-us-75-latest.json
-          git add data/research/smc-wd4h-forward-us-75-latest.md
-          git add data/research/smc-wd4h-forward-expanded-summary.json
-          if git diff --cached --quiet; then
-            echo "No expanded forward changes"
-          else
-            git commit -m "data: update expanded SMC forward cohorts"
-            git push origin HEAD:research/smc-wd4h-tsx-validation-20261001
-          fi
+          node ../ops/scripts/persist-smc-evidence.mjs \
+            --branch research/smc-wd4h-tsx-validation-20261001 \
+            --message "data: update expanded SMC forward cohorts" \
+            --files \
+              evidence/data/research/smc-wd4h-forward-tsx-extra-ledger.json \
+              evidence/data/research/smc-wd4h-forward-tsx-extra-latest.json \
+              evidence/data/research/smc-wd4h-forward-tsx-extra-latest.md \
+              evidence/data/research/smc-wd4h-forward-us-75-ledger.json \
+              evidence/data/research/smc-wd4h-forward-us-75-latest.json \
+              evidence/data/research/smc-wd4h-forward-us-75-latest.md \
+              evidence/data/research/smc-wd4h-forward-expanded-summary.json
       - name: Upload expanded forward snapshot
         uses: actions/upload-artifact@v4
         with:
           name: smc-wd4h-forward-expanded-latest
           path: |
-            data/research/smc-wd4h-forward-tsx-extra-ledger.json
-            data/research/smc-wd4h-forward-tsx-extra-latest.json
-            data/research/smc-wd4h-forward-tsx-extra-latest.md
-            data/research/smc-wd4h-forward-us-75-ledger.json
-            data/research/smc-wd4h-forward-us-75-latest.json
-            data/research/smc-wd4h-forward-us-75-latest.md
-            data/research/smc-wd4h-forward-expanded-summary.json
+            evidence/data/research/smc-wd4h-forward-tsx-extra-ledger.json
+            evidence/data/research/smc-wd4h-forward-tsx-extra-latest.json
+            evidence/data/research/smc-wd4h-forward-tsx-extra-latest.md
+            evidence/data/research/smc-wd4h-forward-us-75-ledger.json
+            evidence/data/research/smc-wd4h-forward-us-75-latest.json
+            evidence/data/research/smc-wd4h-forward-us-75-latest.md
+            evidence/data/research/smc-wd4h-forward-expanded-summary.json
           if-no-files-found: error
