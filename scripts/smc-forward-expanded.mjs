@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { momentumShadow, momentumBucketSummary } from '../lib/smc-momentum-shadow.mjs';
 import { createRunContext, loadLedgerStrict, reconcileLedger, appendRunLog } from '../lib/smc-forward-evidence.mjs';
+import { aggregateExchange4H, evaluateExit } from '../lib/smc-forward-runtime.mjs';
 
 const COHORTS={
   'tsx-extra':[
@@ -221,29 +222,29 @@ function simulatePortfolio(trades){
   };
 }
 
-function forwardTrades(d0,h,symbol,benchmarkDaily=[],benchmarkSymbol=null){
-  const d=dailyDate(d0),f=fourHour(h),w=weekly(d0),A=atr(f),W=structure(w,3),D=structure(d,5),F=structure(f,3),T=[];let blocked=-1;
+function forwardTrades(d0,h,symbol,benchmarkDaily=[],benchmarkSymbol=null,observedAt=new Date().toISOString(),dataQuality=[]){
+  const d=dailyDate(d0),agg=aggregateExchange4H(h,{nowMs:Date.parse(observedAt)}),f=agg.bars,w=weekly(d0),A=atr(f),W=structure(w,3),D=structure(d,5),F=structure(f,3),T=[];let blocked=-1;
+  dataQuality.push(...agg.diagnostics.map(x=>({symbol,...x})));
   for(const e of F.ev){
-    if(e.tag!=='CHOCH'||e.i<=blocked||e.i+1>=f.length||e.opp==null)continue;
+    if(e.tag!=='CHOCH'||e.i<=blocked||e.opp==null)continue;
     const di=prevD(d,f[e.i].t),wi=prevW(w,f[e.i].t);if(di<0||wi<0||D.b[di]!==e.dir||W.b[wi]!==e.dir)continue;
-    const dir=e.dir,en=f[e.i+1].o,entryT=f[e.i+1].t;
+    const dir=e.dir,m=momentumShadow(d,di,dir,benchmarkDaily,benchmarkSymbol);
+    const signalSnapshot={opposingSwing:e.opp,atr14:A[e.i]??null,signalCompletedAt:new Date(f[e.i].endT).toISOString(),candleConvention:f[e.i].completionConvention};
+    const signalT=new Date(f[e.i].t).toISOString();
+    if(e.i+1>=f.length){
+      T.push({symbol,signalT,dir,status:'pending_entry',R:null,exitT:null,momentumShadow:m,signalSnapshot});
+      continue;
+    }
+    const en=f[e.i+1].o,entryT=f[e.i+1].t;
     if(tor(entryT).date<FORWARD_START)continue;
     let stop=e.opp;stop=dir===1?stop-.1*(A[e.i]||0):stop+.1*(A[e.i]||0);const risk=dir===1?en-stop:stop-en;if(!(risk>0))continue;
-    const tp=en+dir*2*risk;let R=null,exitI=null,status='open';
-    for(let j=e.i+1;j<=Math.min(f.length-1,e.i+16);j++){
-      const hs=dir===1?f[j].l<=stop:f[j].h>=stop,ht=dir===1?f[j].h>=tp:f[j].l<=tp;
-      if(hs){R=-1;exitI=j;status='closed';break}
-      if(ht){R=2;exitI=j;status='closed';break}
-    }
-    const maxI=Math.min(f.length-1,e.i+16);
-    if(R==null&&maxI>=e.i+16){exitI=maxI;R=dir*(f[exitI].c-en)/risk;status='closed'}
-    const m=momentumShadow(d,di,dir,benchmarkDaily,benchmarkSymbol);
-    T.push({symbol,signalT:new Date(f[e.i].t).toISOString(),entryT:new Date(entryT).toISOString(),dir,entry:en,stop,target:tp,risk,status,R,exitT:exitI!=null?new Date(f[exitI].t).toISOString():null,momentumShadow:m});
-    if(exitI!=null)blocked=exitI;
+    const tp=en+dir*2*risk;
+    const outcome=evaluateExit(f,e.i,dir,en,stop,tp,16),{exitIndex,...life}=outcome;
+    T.push({symbol,signalT,entryT:new Date(entryT).toISOString(),dir,entry:en,stop,target:tp,risk,...life,momentumShadow:m,signalSnapshot});
+    if(Number.isInteger(exitIndex))blocked=exitIndex;
   }
   return T;
 }
-
 
 async function runCohort(name,symbols){
   const safe=name.replace(/[^a-z0-9-]/gi,'-').toLowerCase();
@@ -251,7 +252,8 @@ async function runCohort(name,symbols){
   const latestJson=`data/research/smc-wd4h-forward-${safe}-latest.json`;
   const latestMd=`data/research/smc-wd4h-forward-${safe}-latest.md`;
 
-  const failures=[],all=[];
+  const failures=[],all=[],dataQuality=[];
+  const run=createRunContext('smc-forward-expanded',name);
   const benchmarkSymbol=MOMENTUM_BENCHMARKS[name]||null;
   let benchmarkDaily=[];
   if(benchmarkSymbol){
@@ -261,15 +263,14 @@ async function runCohort(name,symbols){
   for(const s of symbols){
     try{
       const [d,h]=await Promise.all([yahoo(s,'2y','1d'),yahoo(s,'60d','1h')]);
-      all.push(...forwardTrades(d,h,s,benchmarkDaily,benchmarkSymbol));await sleep(175);
+      all.push(...forwardTrades(d,h,s,benchmarkDaily,benchmarkSymbol,run.observedAt,dataQuality));await sleep(175);
     }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
   }
   all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
-  const run=createRunContext('smc-forward-expanded',name);
   const prior=loadLedgerStrict(ledgerPath,{version:'smc-wd4h-forward-expanded-ledger-v2',cohort:name,forwardStart:FORWARD_START,symbols,trades:[]});
   const reconciliation=reconcileLedger(prior,all,run);
   const ledgerTrades=reconciliation.trades;
-  const runLog=appendRunLog(prior.runLog,run,{fetchFailures:failures, ...reconciliation.summary, discrepancyCount:reconciliation.runDiscrepancies.length});
+  const runLog=appendRunLog(prior.runLog,run,{fetchFailures:failures,dataQuality, ...reconciliation.summary, discrepancyCount:reconciliation.runDiscrepancies.length});
   const closed=ledgerTrades.filter(x=>x.status==='closed'&&Number.isFinite(x.R));
   const open=ledgerTrades.filter(x=>x.status==='open');
   const portfolio=simulatePortfolio(ledgerTrades);
@@ -280,6 +281,7 @@ async function runCohort(name,symbols){
     forwardStart:FORWARD_START,
     frozenRules:{universe:symbols.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none',momentumShadow:'observational only; never gates, ranks, sizes, enters or exits trades'},
     failures,
+    dataQuality,
     evidenceAudit:{run,reconciliation:reconciliation.summary,discrepancies:reconciliation.runDiscrepancies,legacyProvenanceUnknown:reconciliation.summary.legacyUnprovenancedCount},
     summary:{closed:stats(closed),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
     portfolio,
