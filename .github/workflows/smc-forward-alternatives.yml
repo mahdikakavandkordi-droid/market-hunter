@@ -41,6 +41,9 @@ jobs:
       - name: Test forward ledger integrity
         working-directory: evidence
         run: node scripts/test-smc-forward-ledger.mjs
+      - name: Test forward candle timing
+        working-directory: evidence
+        run: node scripts/test-smc-forward-timing.mjs
       - name: Test momentum shadow
         working-directory: evidence
         run: node scripts/test-smc-momentum-shadow.mjs
