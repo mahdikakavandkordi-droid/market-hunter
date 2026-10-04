@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — crypto-15
 
-Mode: crypto; generated 2026-10-04T13:52:26.155Z; start 2026-10-01; universe 15.
+Mode: crypto; generated 2026-10-04T14:42:43.731Z; start 2026-10-01; universe 15.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|
@@ -13,6 +13,11 @@ Mode: crypto; generated 2026-10-04T13:52:26.155Z; start 2026-10-01; universe 15.
 
 Equity $989.50; return -1.0%; max DD -1.0%.
 Entered / skipped / open: 5 / 0 / 4.
+
+## Evidence integrity
+
+Provenance known 0; legacy unknown 5; prospective 0; reconstructed 0.
+This run: new 0; lifecycle updates 0; discrepancies 17; prior not re-observed 0.
 
 ## Momentum shadow (observational only)
 
