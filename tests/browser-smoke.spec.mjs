@@ -84,6 +84,8 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await expect(nasdaq100).toBeVisible();
   await expect(nasdaq100).not.toContainText('99,999');
   await expect(nasdaq100).toContainText('Completed session · hourly quote unavailable');
+  await expect(page.locator('.outlook-panel')).not.toHaveAttribute('open','');
+  await page.screenshot({path:'test-results/home-mobile.png',fullPage:true});
 
   await page.locator('[data-view="portfolio"]:visible').first().click();
   await expect(page.locator('#portfolioView')).toContainText('Backend portfolio');
@@ -115,6 +117,12 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   }
   await page.setViewportSize({width:390,height:844});
+  await expect(page.locator('.portfolio-analysis')).not.toHaveAttribute('open','');
+  await page.locator('.portfolio-sync-link').click();
+  await expect(page.locator('#portfolioAccount')).toHaveAttribute('open','');
+  await page.locator('#portfolioAccount>summary').click();
+  await page.evaluate(()=>scrollTo(0,0));
+  await page.screenshot({path:'test-results/portfolio-mobile.png',fullPage:true});
   await allocation.scrollIntoViewIfNeeded();
   await page.screenshot({path:'/tmp/market-hunter-allocation-dark.png'});
   await page.evaluate(()=>document.documentElement.dataset.theme='light');
@@ -149,5 +157,6 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   const enbCard=page.locator('#watchlistView .card').filter({hasText:'ENB'}).first();
   await expect(enbCard.locator('.cardprice')).not.toContainText('5D');
 
+  await page.screenshot({path:'test-results/watchlist-mobile.png',fullPage:true});
   expect(errors).toEqual([]);
 });

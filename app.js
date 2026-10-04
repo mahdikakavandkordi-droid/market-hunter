@@ -1068,7 +1068,7 @@ function homeHtml(){
       <div><b>${esc(x.name)}</b><small>${esc(x.condition||'')}</small></div>
       <div class="market-value"><div class="price-line">${fmt(display.price)}<small class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</small></div>${quoteMetaHtml(display)}</div>
       <div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div>
-      ${context?`<div class="market-context">${esc(stripMarketPrefix(context))}</div>`:''}
+      ${context?`<details class="market-context"><summary>${ui("Today’s context","توضیح امروز")}</summary><p>${esc(stripMarketPrefix(context))}</p></details>`:''}
     </div>`;
   }).join('');
   const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small><small class="inline-quote">${money(x.price,x.displayQuote?.currency||'CAD')} <span class="day-change ${cls(x.dayChangePct)}">${pct(x.dayChangePct)}</span></small>${quoteMetaHtml(x.displayQuote)}</td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
@@ -1088,12 +1088,12 @@ function homeHtml(){
   const portfolioValue=s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—';
   const pnl=s.currency?`${money(s.pnl,s.currency)} · ${pct(s.pnlPct)}`:'—';
 
-  return `<div class="stack">
+  return `<div class="stack dashboard-layout">
     <div class="grid home-hero">
       <section class="panel report-panel"><div class="panel-inner report-shell">
         <div class="report-topline">
           <div>
-            <div class="eyebrow">What Changed Today</div>
+            <div class="eyebrow">${ui("Today’s brief","خلاصهٔ امروز")}</div>
             <div class="report-tone">${esc(String(d?.headline||'Daily market brief').split(':')[0])}</div>
           </div>
           <span class="report-date">${esc(d?.asOf?.latest||'')}</span>
@@ -1103,13 +1103,13 @@ function homeHtml(){
           ${(d?.groups||[]).slice(0,3).map(g=>`<span class="badge"><b>${esc(g.label)}</b> · ${esc(g.state)}</span>`).join('')}
         </div>
         <details class="report-details">
-          <summary>Read full market brief</summary>
+          <summary>${ui("Read the full brief","گزارش کامل")}</summary>
           <div class="report-title">${esc(d?.headline||'Market report unavailable')}</div>
           <div class="report-copy">${esc(d?.executiveSummary?.[0]||d?.summary||d?.headline||'')}</div>
         </details>
       </div></section>
       <section class="panel soft">
-        <div class="panel-head"><div><h3>Markets</h3><p>Price · regime · condition · today’s context.</p></div></div>
+        <div class="panel-head"><div><h3>${ui("Markets","بازارها")}</h3><p>${ui("Latest available prices and daily change.","آخرین قیمت موجود و تغییر روزانه")}</p></div></div>
         <div class="market-list">${markets||'<div class="empty">Market Pulse unavailable.</div>'}</div>
       </section>
     </div>
@@ -1117,26 +1117,26 @@ function homeHtml(){
 
     <div class="grid home-lower">
       <section class="panel soft">
-        <div class="panel-head"><div><h2>Charts to Review Today</h2><p>One stage leader each · open Review for every qualified chart.</p></div><button class="btn ghost" data-open="shortlist">View all</button></div>
+        <div class="panel-head"><div><h2>${ui("Today’s shortlist","سهم‌های منتخب امروز")}</h2><p>${ui("One leader from each stage.","یک سهم منتخب از هر مرحله")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
         <div class="table-wrap"><table class="review-table"><thead><tr><th>#</th><th>Symbol</th><th>Stage</th><th>Context</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="5">No current shortlist.</td></tr>'}</tbody></table></div>
       </section>
 
       <section class="panel soft">
-        <div class="panel-head"><div><h3>Portfolio Monitor</h3><p>What changed in things you actually own.</p></div><button class="btn ghost" data-open="portfolio">Open</button></div>
+        <div class="panel-head"><div><h3>${ui("Your portfolio","پورتفولیوی تو")}</h3><p>${ui("Holdings and performance.","سهم‌ها و عملکرد")}</p></div><button class="btn ghost" data-open="portfolio">${ui("Open ↗","مشاهده ↗")}</button></div>
         <div class="portfolio-glance">
-          <div class="eyebrow">Current value</div>
+          <div class="eyebrow">${ui("Current value","ارزش فعلی")}</div>
           <div class="portfolio-value">${portfolioValue}</div>
           <div class="portfolio-pnl ${cls(s.pnl)==='up'?'metric-good':cls(s.pnl)==='down'?'metric-bad':'metric-flat'}">${pnl}</div>
           <div class="glance-grid">
-            <div class="glance-stat"><small>Holdings</small><b>${s.rows.length}</b></div>
-            <div class="glance-stat"><small>Needs attention</small><b>${s.attention.length}</b></div>
-            <div class="glance-stat"><small>Changed today</small><b>${s.changed.length}</b></div>
+            <div class="glance-stat"><small>${ui("Holdings","سهم‌ها")}</small><b>${s.rows.length}</b></div>
+            <div class="glance-stat"><small>${ui("Needs attention","نیازمند بررسی")}</small><b>${s.attention.length}</b></div>
+            <div class="glance-stat"><small>${ui("Changed today","تغییر امروز")}</small><b>${s.changed.length}</b></div>
           </div>
         </div>
       </section>
     </div>
 
-    ${outlook?`<section class="panel soft outlook-panel"><div class="panel-head"><div><h3>Model Outlook</h3><p>Based on historical analogs · short vs medium-term context · no price targets.</p></div></div><div class="outlook-track">${outlook}</div></section>`:''}
+    ${outlook?`<details class="panel soft outlook-panel dashboard-disclosure"><summary>${ui("Market outlook","چشم‌انداز بازار")}<span>${ui("Historical analogs · weekly and monthly","الگوهای تاریخی · هفتگی و ماهانه")}</span></summary><div class="outlook-track">${outlook}</div></details>`:''}
   </div>`;
 }
 function stockSummaryHtml(x){
@@ -1429,18 +1429,18 @@ function portfolioHtml(){
     ${allocationHtml(s)}
     <section class="panel soft holdings-panel"><div class="sectionhead"><div><h3>Your holdings <span class="holdings-count">${s.rows.length}</span></h3><p>Price, performance and the next thing to watch.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe to browse ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty portfolio-empty"><span aria-hidden="true">＋</span><strong>Your portfolio starts here</strong><p>Add a holding with your purchase price and date to see its progress.</p><button class="btn primary" data-add>Add your first holding</button></div>'}</div></section>
     ${changeBlock}${attentionBlock}
-    <div class="portfolio-context">${portfolioReadHtml(s)}${riskHtml()}</div>
-    <section class="panel soft portfolio-account" id="portfolioAccount"><div class="sectionhead"><div><h3>Account & backup</h3><p>Manage sync and keep a copy.</p></div></div>${cloudPanelHtml()}<details><summary>Backup & restore</summary><div class="portfolio-tools"><button class="btn" data-backup>Export backup</button><button class="btn" data-restore>Restore backup</button></div></details></section>
+    <details class="panel dashboard-disclosure portfolio-analysis"><summary>${ui("Portfolio analysis","تحلیل پورتفولیو")}<span>${ui("Breadth, concentration and risk","وضعیت سهم‌ها، تمرکز و ریسک")}</span></summary><div class="portfolio-context">${portfolioReadHtml(s)}${riskHtml()}</div></details>
+    <details class="panel soft portfolio-account dashboard-disclosure" id="portfolioAccount"><summary>${ui("Connection & backup","اتصال و پشتیبان")}<span>${esc(syncLabel)}</span></summary>${cloudPanelHtml()}<details><summary>Backup & restore</summary><div class="portfolio-tools"><button class="btn" data-backup>Export backup</button><button class="btn" data-restore>Restore backup</button></div></details></details>
   </div>`;
 }
 
 function watchlistHtml(){
   const by=new Map(allCandidates().map(x=>[x.symbol,x])),items=[...state.watch];
-  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>Watchlist</h2><p>Saved charts remain even after leaving the shortlist.</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>{
+  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>${ui("Saved charts","سهم‌های ذخیره‌شده")}</h2><p>${ui("Your watchlist stays here as the shortlist changes.","با تغییر فهرست منتخب، سهم‌های ذخیره‌شده اینجا می‌مانند.")}</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>{
     const current=by.get(symbol),live=state.liveItems.get(symbol),display=quoteFor(symbol,live);
     if(current)return stockCard(current);
     return `<article class="card"><div class="cardtop"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="cardprice"><div class="price-line">${money(display.price,display.currency||'CAD')}<small class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</small></div>${quoteMetaHtml(display)}</div></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`;
-  }).join(''):'<div class="empty">Save a chart from the shortlist.</div>'}</div></section></div>`;
+  }).join(''):'<div class="empty"><strong>'+ui('Your watchlist is empty','دیده‌بان خالی است')+'</strong><p>'+ui('Save a stock from Review to follow it here.','در صفحهٔ بررسی، سهمی را ذخیره کن تا اینجا دنبال کنی.')+'</p><button class="btn primary" data-open="shortlist">'+ui('Explore stocks','بررسی سهم‌ها')+'</button></div>'}</div></section></div>`;
 }
 let engineLoadSequence=0;
 async function loadEngines(){
@@ -1469,7 +1469,7 @@ function setView(view){
   state.view=view;
   qa('.view').forEach(el=>el.classList.toggle('active',el.id===view+'View'));
   qa('.navbtn').forEach(el=>{const active=el.dataset.view===view;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')});
-  const titles={home:'Home',shortlist:'Charts to Review',portfolio:'Portfolio Monitor',watchlist:'Watchlist',engines:'Paper Engines'};
+  const titles={home:'Market overview',shortlist:'Review',portfolio:'Portfolio',watchlist:'Watchlist',engines:'Engines'};
   const title=q('#pageTitle');if(title)title.textContent=window.MHI18n?.t(titles[view]||'Market Hunter',({home:'خانه',shortlist:'بررسی سهم‌ها',portfolio:'پورتفولیو',watchlist:'دیده‌بان',engines:'موتورها'})[view]||'مارکت هانتر')||titles[view];
   renderView(view);window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1520,6 +1520,7 @@ function closeRiskInfo(except=null){
   qa('.risk-info[open]').forEach(d=>{if(d!==except)d.open=false});
 }
 document.addEventListener('click',async e=>{
+  if(e.target.closest('.portfolio-sync-link')){const account=q('#portfolioAccount');if(account?.tagName==='DETAILS')account.open=true;}
   const allocationControl=e.target.closest('[data-allocation-mode],[data-allocation-item]');
   if(allocationControl){
     const mode=allocationControl.dataset.allocationMode;
