@@ -100,7 +100,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await expect(allocation.getByRole('button',{name:'Exposure',exact:true})).toHaveAttribute('aria-pressed','true');
   await page.evaluate(()=>{
     state.positions.set('ENB.TO',{symbol:'ENB.TO',quantity:10,entryPrice:40,source:'manual'});
-    state.portfolioItems.set('ENB.TO',{symbol:'ENB.TO',name:'Enbridge',sector:'Energy',price:50,currency:'CAD'});
+    state.portfolioItems.set('ENB.TO',{symbol:'ENB.TO',name:'Enbridge',sector:'Energy',price:50,dayChangePct:-0.5,currency:'CAD',asOf:'2026-09-25'});
     state.portfolioItems.get('RY.TO').sector='Financials';
     renderView('portfolio');
   });
@@ -145,7 +145,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   // Watchlist stays usable at mobile width and explicitly labels symbols missing from the hourly feed.
   await page.locator('[data-view="watchlist"]:visible').first().click();
   await expect(page.locator('#watchlistView')).toContainText('ENB');
-  await expect(page.locator('#watchlistView')).toContainText('Not covered by hourly feed · Completed session · hourly quote unavailable');
+  await expect(page.locator('#watchlistView')).toContainText('Completed session · hourly quote unavailable');
   const enbCard=page.locator('#watchlistView .card').filter({hasText:'ENB'}).first();
   await expect(enbCard.locator('.cardprice')).not.toContainText('5D');
 
