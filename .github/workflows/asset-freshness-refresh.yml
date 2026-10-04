@@ -1,0 +1,107 @@
+name: Asset Freshness Refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      group:
+        description: Asset group to refresh
+        required: true
+        default: crypto
+        type: choice
+        options: [crypto, metals]
+  schedule:
+    # Crypto daily bars complete at the documented UTC day boundary. Run two light retries.
+    - cron: '15 0 * * *'
+    - cron: '15 1 * * *'
+    # Yahoo/COMEX daily session metadata currently completes near 03:59 UTC.
+    # Tue-Sat captures the Mon-Fri metals sessions, with one delayed-provider retry.
+    - cron: '15 4 * * 2-6'
+    - cron: '15 5 * * 2-6'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: asset-freshness-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Select asset group
+        id: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            group="${{ inputs.group }}"
+          else
+            hour="$(date -u +%H)"
+            case "$hour" in
+              00|01) group="crypto" ;;
+              04|05) group="metals" ;;
+              *) echo "Unexpected scheduled hour: $hour"; exit 1 ;;
+            esac
+          fi
+          if [ "$group" = "crypto" ]; then
+            echo "keys=BTC,ETH" >> "$GITHUB_OUTPUT"
+          else
+            echo "keys=GOLD,SILVER" >> "$GITHUB_OUTPUT"
+          fi
+          echo "group=$group" >> "$GITHUB_OUTPUT"
+
+      - name: Validate targeted refresh code
+        run: |
+          node --check lib/market-freshness.js
+          node --check scripts/scan-market-pulse.mjs
+          node --check scripts/build-market-pulse-report.mjs
+          node --check scripts/build-daily-market-report.mjs
+          node scripts/test-market-freshness.mjs
+          node scripts/test-completed-daily-session.mjs
+
+      - name: Refresh completed bars for target assets only
+        env:
+          MARKET_PULSE_KEYS: ${{ steps.target.outputs.keys }}
+          MARKET_PULSE_MERGE_EXISTING: '1'
+        run: node scripts/scan-market-pulse.mjs
+
+      - name: Rebuild presentation reports only
+        run: |
+          node scripts/build-market-pulse-report.mjs
+          node scripts/build-daily-market-report.mjs
+          node scripts/audit-daily-market-report-final.mjs
+
+      - name: Verify immutable equity/Hunter inputs were not touched
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- data/v2-latest-scan.json data/history.json data/market-pulse-state-backtest.json
+
+      - name: Commit targeted freshness package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-freshness"
+          git config user.email "market-hunter-freshness@users.noreply.github.com"
+          git add data/market-pulse-latest.json data/market-pulse-report.json data/daily-market-report.json data/daily-market-report.md data/daily-market-report-final-audit.json
+          if git diff --cached --quiet; then
+            echo "No freshness changes."
+            exit 0
+          fi
+          git commit -m "data: refresh ${{ steps.target.outputs.group }} completed sessions"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          exit 1
