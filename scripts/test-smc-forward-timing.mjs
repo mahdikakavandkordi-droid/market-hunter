@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {aggregateExchange4H,aggregateCrypto4H,evaluateExit,effectiveExitMs,HOUR_MS} from '../lib/smc-forward-runtime.mjs';
+import {aggregateExchange4H,aggregateCrypto4H,evaluateExit,effectiveExitMs,HOUR_MS,buildGapBeforeIndex,resumeRecordedTrade} from '../lib/smc-forward-runtime.mjs';
 
 const bar=(t,o=100)=>({t,o,h:o+2,l:o-2,c:o+1,v:1000});
 {
@@ -112,5 +112,59 @@ const bar=(t,o=100)=>({t,o,h:o+2,l:o-2,c:o+1,v:1000});
   }
   const x=evaluateExit(bars,0,1,100,95,110,16);
   assert.equal(x.status,'open','15 completed holding bars are not enough to force the 16-bar exit');
+}
+
+{
+  const bars=[
+    {t:0,endT:4*HOUR_MS,o:100,h:101,l:99,c:100,date:'2026-10-04',segment:0},
+    {t:8*HOUR_MS,endT:12*HOUR_MS,o:100,h:112,l:99,c:111,date:'2026-10-04',segment:2}
+  ];
+  const gaps=buildGapBeforeIndex(bars,{mode:'crypto'});
+  const x=evaluateExit(bars,0,1,100,95,110,16,{gapBeforeIndex:gaps});
+  assert.equal(x.status,'pending_entry','a missing next crypto candle must not create a delayed synthetic entry');
+  assert.equal(x.lifecycleDataGap.type,'missing_crypto_4h_sequence');
+}
+{
+  const bars=[
+    {t:0,endT:4*HOUR_MS,o:100,h:101,l:99,c:100},
+    {t:4*HOUR_MS,endT:8*HOUR_MS,o:100,h:104,l:96,c:101},
+    {t:12*HOUR_MS,endT:16*HOUR_MS,o:100,h:112,l:99,c:111}
+  ];
+  const gaps=buildGapBeforeIndex(bars,{mode:'crypto'});
+  const x=evaluateExit(bars,0,1,100,95,110,16,{gapBeforeIndex:gaps});
+  assert.equal(x.status,'open','a missing holding-period candle must stop lifecycle inference before later bars');
+  assert.equal(x.lifecycleDataGap.phase,'holding_period');
+}
+{
+  const start=Date.parse('2026-11-27T14:30:00Z');
+  const next=Date.parse('2026-11-30T14:30:00Z');
+  const bars=[
+    {t:start,endT:start+4*HOUR_MS,o:100,h:101,l:99,c:100,date:'2026-11-27',segment:0},
+    {t:next,endT:next+4*HOUR_MS,o:100,h:101,l:99,c:100,date:'2026-11-30',segment:0}
+  ];
+  const gaps=buildGapBeforeIndex(bars,{
+    mode:'stock',
+    diagnostics:[{type:'historical_session_tail_absent',date:'2026-11-27',note:'ambiguous shortened session vs missing tail'}],
+    tradingDates:['2026-11-27','2026-11-30']
+  });
+  const x=evaluateExit(bars,0,1,100,95,110,16,{gapBeforeIndex:gaps});
+  assert.equal(x.status,'pending_entry','an ambiguous exchange-session tail must not invent the next-bar entry');
+  assert.equal(x.lifecycleDataGap.type,'unresolved_exchange_session_tail');
+}
+{
+  const bars=[
+    {t:0,endT:4*HOUR_MS,o:100,h:101,l:99,c:100},
+    {t:4*HOUR_MS,endT:8*HOUR_MS,o:100,h:103,l:96,c:101},
+    {t:8*HOUR_MS,endT:12*HOUR_MS,o:100,h:102,l:94,c:95}
+  ];
+  const recorded={
+    symbol:'R',signalT:new Date(0).toISOString(),entryT:new Date(4*HOUR_MS).toISOString(),
+    dir:1,entry:100,stop:95,target:110,risk:5,status:'open',R:null,exitT:null
+  };
+  const x=resumeRecordedTrade(recorded,bars,{gapBeforeIndex:new Map()});
+  assert.equal(x.status,'closed','an already-recorded open trade must resolve from its recorded stop/target');
+  assert.equal(x.R,-1);
+  assert.equal(x.exitReason,'stop');
+  assert.equal(x.lifecycleRefreshSource,'recorded_immutable_fields');
 }
 console.log('SMC forward candle timing tests passed');
