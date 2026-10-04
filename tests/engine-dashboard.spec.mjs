@@ -61,6 +61,7 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await page.screenshot({path:`test-results/engines-${width}-light.png`,fullPage:true});
   await page.locator('#languageBtn').click();
   await expect(view).toContainText('پوزیشن‌ها · همهٔ بازارها');
+  await page.screenshot({path:`test-results/engines-${width}-persian.png`,fullPage:true});
   await page.locator('[data-view="shortlist"]:visible').click();
   await expect(page.locator('#shortlistView .analysis-copy').first()).toContainText('بازسازی');
   await page.reload();
