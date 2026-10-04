@@ -44,6 +44,9 @@ jobs:
       - name: Test forward candle timing
         working-directory: evidence
         run: node scripts/test-smc-forward-timing.mjs
+      - name: Test marked portfolio accounting
+        working-directory: evidence
+        run: node scripts/test-smc-forward-portfolio.mjs
       - name: Test momentum shadow
         working-directory: evidence
         run: node scripts/test-smc-momentum-shadow.mjs
@@ -58,22 +61,22 @@ jobs:
             --message "data: update expanded SMC forward cohorts" \
             --files \
               data/research/smc-wd4h-forward-tsx-extra-ledger.json \
-              data/research/smc-wd4h-forward-tsx-extra-latest.json \
-              data/research/smc-wd4h-forward-tsx-extra-latest.md \
+              data/research/smc-wd4h-forward-tsx-extra-evidence-v2-latest.json \
+              data/research/smc-wd4h-forward-tsx-extra-evidence-v2-latest.md \
               data/research/smc-wd4h-forward-us-75-ledger.json \
-              data/research/smc-wd4h-forward-us-75-latest.json \
-              data/research/smc-wd4h-forward-us-75-latest.md \
-              data/research/smc-wd4h-forward-expanded-summary.json
+              data/research/smc-wd4h-forward-us-75-evidence-v2-latest.json \
+              data/research/smc-wd4h-forward-us-75-evidence-v2-latest.md \
+              data/research/smc-wd4h-forward-expanded-evidence-v2-summary.json
       - name: Upload expanded forward snapshot
         uses: actions/upload-artifact@v4
         with:
           name: smc-wd4h-forward-expanded-latest
           path: |
-            evidence/data/research/smc-wd4h-forward-tsx-extra-ledger.json
+            evidence/data/research/smc-wd4h-forward-tsx-extra-evidence-v2-latest.json
+            evidence/data/research/smc-wd4h-forward-tsx-extra-evidence-v2-latest.md
+            evidence/data/research/smc-wd4h-forward-us-75-evidence-v2-latest.json
+            evidence/data/research/smc-wd4h-forward-us-75-evidence-v2-latest.md
+            evidence/data/research/smc-wd4h-forward-expanded-evidence-v2-summary.json
             evidence/data/research/smc-wd4h-forward-tsx-extra-latest.json
-            evidence/data/research/smc-wd4h-forward-tsx-extra-latest.md
-            evidence/data/research/smc-wd4h-forward-us-75-ledger.json
             evidence/data/research/smc-wd4h-forward-us-75-latest.json
-            evidence/data/research/smc-wd4h-forward-us-75-latest.md
-            evidence/data/research/smc-wd4h-forward-expanded-summary.json
           if-no-files-found: error
