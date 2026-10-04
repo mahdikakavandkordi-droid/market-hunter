@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { momentumShadow, momentumBucketSummary } from '../lib/smc-momentum-shadow.mjs';
+import { createRunContext, loadLedgerStrict, reconcileLedger, appendRunLog } from '../lib/smc-forward-evidence.mjs';
 
 const SYMBOLS=[
   'RY.TO','TD.TO','BMO.TO','BNS.TO','CM.TO','AEM.TO','WPM.TO','ABX.TO','LUN.TO',
@@ -9,6 +10,7 @@ const SYMBOLS=[
 ];
 const FORWARD_START='2026-10-01';
 const MOMENTUM_BENCHMARK='^GSPTSE';
+const RUN=createRunContext('smc-forward-paper','tsx-core');
 const LEDGER_PATH='data/research/smc-wd4h-forward-paper-ledger.json';
 const PORTFOLIO={
   startingCapital:1000,
@@ -143,11 +145,10 @@ for(const s of SYMBOLS){
   }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
 }
 all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
-let prior={trades:[]};
-if(fs.existsSync(LEDGER_PATH)){try{prior=JSON.parse(fs.readFileSync(LEDGER_PATH,'utf8'))}catch{}}
-const merged=new Map((prior.trades||[]).map(x=>[tradeKey(x),x]));
-for(const x of all)merged.set(tradeKey(x),x);
-const ledgerTrades=[...merged.values()].sort((a,b)=>a.entryT.localeCompare(b.entryT)||a.symbol.localeCompare(b.symbol));
+const prior=loadLedgerStrict(LEDGER_PATH,{version:'smc-wd4h-forward-ledger-v2',forwardStart:FORWARD_START,trades:[]});
+const reconciliation=reconcileLedger(prior,all,RUN);
+const ledgerTrades=reconciliation.trades;
+const runLog=appendRunLog(prior.runLog,RUN,{fetchFailures:failures, ...reconciliation.summary, discrepancyCount:reconciliation.runDiscrepancies.length});
 const closed=ledgerTrades.filter(x=>x.status==='closed'&&Number.isFinite(x.R)),open=ledgerTrades.filter(x=>x.status==='open');
 const portfolio=simulatePortfolio(ledgerTrades);
 const out={
@@ -156,12 +157,13 @@ const out={
   forwardStart:FORWARD_START,
   frozenRules:{universe:SYMBOLS.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none',momentumShadow:'observational only; never gates, ranks, sizes, enters or exits trades'},
   failures,
+  evidenceAudit:{run:RUN,reconciliation:reconciliation.summary,discrepancies:reconciliation.runDiscrepancies,legacyProvenanceUnknown:reconciliation.summary.legacyUnprovenancedCount},
   summary:{closed:stats(closed),cost03R:stats(closed,.03),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
   portfolio,
   trades:ledgerTrades
 };
 fs.mkdirSync('data/research',{recursive:true});
-fs.writeFileSync(LEDGER_PATH,JSON.stringify({version:'smc-wd4h-forward-ledger-v1',updatedAt:out.generatedAt,forwardStart:FORWARD_START,trades:ledgerTrades},null,2)+'\n');
+fs.writeFileSync(LEDGER_PATH,JSON.stringify({version:'smc-wd4h-forward-ledger-v2',updatedAt:reconciliation.changed?RUN.observedAt:(prior.updatedAt||RUN.observedAt),forwardStart:FORWARD_START,runLog,discrepancyLog:reconciliation.discrepancyLog,trades:ledgerTrades},null,2)+'\n');
 fs.writeFileSync('data/research/smc-wd4h-forward-paper-latest.json',JSON.stringify(out,null,2)+'\n');
 const n=x=>Number.isFinite(x)?x.toFixed(3):'n/a',p=x=>Number.isFinite(x)?(100*x).toFixed(1)+'%':'n/a';
 const md=[
@@ -183,6 +185,10 @@ const md=[
  `Max drawdown: ${p(portfolio.maxDrawdownPct)}`,
  `Entered / skipped / open: ${portfolio.enteredCount} / ${portfolio.skippedCount} / ${portfolio.openCount}`,
  'Sizing: target 1% account risk per trade; max 25% notional per position; max 4 positions; max 4% aggregate open risk; 0.05R cost per closed trade.','',
+ '## Evidence integrity','',
+ `First-observation provenance known: ${ledgerTrades.length-reconciliation.summary.legacyUnprovenancedCount}; legacy provenance unknown: ${reconciliation.summary.legacyUnprovenancedCount}.`,
+ `Prospective entries: ${reconciliation.summary.prospectiveCount}; reconstructed entries: ${reconciliation.summary.reconstructedCount}; pending: ${reconciliation.summary.pendingCount}.`,
+ `This run: new ${reconciliation.summary.newRecords}; lifecycle updates ${reconciliation.summary.lifecycleUpdates}; discrepancies ${reconciliation.runDiscrepancies.length}; prior records not re-observed ${reconciliation.summary.missingPreviouslyRecorded}.`,'',
  '### Momentum shadow (observational only)','',
  '| Bucket | Closed | Win rate | Avg R after cost | PF after cost |',
  '|---|---:|---:|---:|---:|',
