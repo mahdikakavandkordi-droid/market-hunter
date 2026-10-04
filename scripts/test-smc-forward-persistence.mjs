@@ -59,11 +59,17 @@ git(['fetch','origin',branch],a);
 const still=JSON.parse(git(['show',`origin/${branch}:data/research/test-ledger.json`],a).stdout);
 assert.equal(still.trades[0].entry,101,'rejected rewrite must not reach remote');
 
-for(const file of ['.github/workflows/smc-forward-paper.yml','.github/workflows/smc-forward-expanded.yml','.github/workflows/smc-forward-alternatives.yml']){
+const workflowFiles=['.github/workflows/smc-forward-paper.yml','.github/workflows/smc-forward-expanded.yml','.github/workflows/smc-forward-alternatives.yml'];
+const concurrencyGroups=[];
+for(const file of workflowFiles){
   const src=fs.readFileSync(file,'utf8');
-  assert.match(src,/group: smc-forward-evidence-writes/);
+  const group=src.match(/concurrency:\s*[\s\S]*?group:\s*([^\n]+)/)?.[1]?.trim();
+  assert.ok(group,file+': concurrency group missing');
+  concurrencyGroups.push(group);
+  assert.match(src,/cancel-in-progress:\s*false/);
   assert.match(src,/persist-smc-evidence\.mjs/);
   assert.match(src,/fetch-depth: 0/);
 }
+assert.equal(new Set(concurrencyGroups).size,workflowFiles.length,'independent workflows must not share one GitHub concurrency queue because a third pending run can be cancelled');
 
 console.log('PASS: SMC persistence survives unrelated concurrent writes, retries idempotently and rejects immutable rewrites');
