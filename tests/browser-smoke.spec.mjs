@@ -85,6 +85,9 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await expect(nasdaq100).not.toContainText('99,999');
   await expect(nasdaq100).toContainText('Completed session · hourly quote unavailable');
   await expect(page.locator('.outlook-panel')).not.toHaveAttribute('open','');
+  const marketBoxes=await page.locator('.market-row').evaluateAll(rows=>rows.map(r=>{const b=r.getBoundingClientRect();return {x:b.x,right:b.right,y:b.y}}));
+  expect(marketBoxes.every(b=>b.x>=0&&b.right<=390)).toBe(true);
+  expect(marketBoxes.every((b,i)=>i===0||b.y>marketBoxes[i-1].y)).toBe(true);
   await page.screenshot({path:'test-results/home-mobile.png',fullPage:true});
 
   await page.locator('[data-view="portfolio"]:visible').first().click();
