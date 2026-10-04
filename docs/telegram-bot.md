@@ -44,6 +44,18 @@ This keeps Telegram as a presentation/navigation layer over the same engine that
 
 Messages use Telegram HTML rather than Markdown tables so Persian RTL text and Latin tickers/numbers remain readable on mobile.
 
+## Mobile report layout (October 4, 2026)
+
+- Market overview groups equities, metals and crypto, with one short state and an explicit completed-session date per market.
+- Individual market and stock views put price, session change and key metrics before navigation to the chart.
+- Portfolio summary puts open P/L, positions requiring review and asset/sector exposure first. Holdings are paginated six at a time, with per-position detail buttons and previous/next navigation.
+- Per-position reports show quantity, average entry, current value, weight, open P/L, technical concerns and tracking levels without repeated narrative paragraphs.
+- Percentages representing allocation use unsigned weights. Latin numbers use directional isolation inside HTML code spans.
+- Missing numeric values remain unavailable. Unknown or mixed currencies prevent aggregate values and allocation weights from being displayed.
+- These presentation changes do not modify scanner selection, research decisions, or portfolio holdings. Neutral technical labels do not assert that a holding is safe.
+
+Validation: the formatter suite exercises 60 synthetic holdings across all pages, message length and balanced HTML, missing values, mixed/unknown currencies and escaped names. Production verification uses the read-only health endpoint; it does not send a test message to the user.
+
 ## Required Vercel environment variables
 
 Create the bot with @BotFather, then configure these variables on the Market Hunter Vercel project:
