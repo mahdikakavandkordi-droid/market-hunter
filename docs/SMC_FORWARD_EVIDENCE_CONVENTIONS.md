@@ -33,3 +33,16 @@ New exit evidence uses the exit bar completion timestamp, not its opening timest
 If a bar opens through a stop or target, the open is treated as temporally prior to the rest of that candle. A gap through the stop therefore resolves as the stop outcome, and a gap through the target resolves as the target outcome before later high/low contacts are considered. The frozen strategy-level boundary R result is retained while the report flags that the true gap fill is unknown. For non-gap bars where both stop and target are touched and intrabar order is unavailable, the conservative stop-first rule remains in force.
 
 Legacy closed records whose exit timestamp predates this convention remain immutable. Corrected portfolio accounting treats an unlabelled legacy exit timestamp conservatively as unavailable until four hours after that timestamp and qualifies the legacy evidence instead of rewriting it.
+
+
+## Marked account equity
+
+The original realized-equity series is retained and labelled separately. Open positions are additionally valued from the latest completed 4H close available at the observation time.
+
+For each open position the evidence records the mark price, mark timestamp, mark source/status and directional unrealized P/L. A mark from before the position entry, a future-dated mark, or a missing mark is not used to manufacture an account value. In those cases the position is flagged and total marked equity is null rather than substituting the entry price.
+
+Marked open-position value is the reserved entry notional plus directional unrealized P/L. Total marked equity is cash plus those marked position values, so reserved capital is not counted twice. Long and short positions use the same reserved-capital accounting while unrealized P/L changes sign with direction.
+
+The configured cost assumption is charged once when a position settles. Open marked equity does not subtract a hypothetical future closing cost, so the same cost is not charged twice.
+
+The marked-equity series begins only when these observations are actually recorded. The report distinguishes the first observation from the first complete marked-equity observation and does not claim historical intraday marked drawdown coverage before that point. Stale marks may still produce a marked value, but the quality is explicitly labelled stale.
