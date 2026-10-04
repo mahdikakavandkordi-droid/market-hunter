@@ -49,4 +49,10 @@ const long={symbol:'L',signalT:'2026-10-04T00:00:00Z',entryT:'2026-10-04T04:00:0
   const p=simulatePortfolioMarked([closed],rules,{marksBySymbol:new Map(),observedAt:'2026-10-04T12:00:00Z',runKey:'r6'});
   assert.equal(p.realizedCurrentEquity,1019.5,'0.05R cost must be charged once on a 2R close');
 }
+{
+  const pending={symbol:'P',signalT:'2026-10-04T08:00:00Z',dir:1,status:'pending_entry',R:null,exitT:null};
+  const p=simulatePortfolioMarked([pending],rules,{marksBySymbol:new Map(),observedAt:'2026-10-04T12:00:00Z',runKey:'pending'});
+  assert.equal(p.enteredCount,0,'pending signals must not consume capital before a validated next-bar open');
+  assert.equal(p.realizedCurrentEquity,1000);
+}
 console.log('SMC marked portfolio tests passed');
