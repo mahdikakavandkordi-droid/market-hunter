@@ -150,14 +150,14 @@ for(const s of SYMBOLS){
     all.push(...forwardTrades(d,h,s,benchmarkDaily,dataQuality,marksBySymbol));await sleep(250);
   }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
 }
-all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
+all.sort((a,b)=>(a.entryT||a.signalT).localeCompare(b.entryT||b.signalT));
 const prior=loadLedgerStrict(LEDGER_PATH,{version:'smc-wd4h-forward-ledger-v2',forwardStart:FORWARD_START,trades:[]});
 const reconciliation=reconcileLedger(prior,all,RUN);
 const ledgerTrades=reconciliation.trades;
 const closed=ledgerTrades.filter(x=>x.status==='closed'&&Number.isFinite(x.R));
 const open=ledgerTrades.filter(x=>x.status==='open');
 const pending=ledgerTrades.filter(x=>x.status==='pending_entry');
-const legacyPortfolioV1=simulatePortfolio(ledgerTrades);
+const legacyPortfolioV1=simulatePortfolio(ledgerTrades.filter(x=>x.entryT&&Number.isFinite(x.entry)&&Number.isFinite(x.risk)));
 const portfolio=simulatePortfolioMarked(ledgerTrades,PORTFOLIO,{
   marksBySymbol,observedAt:RUN.observedAt,runKey:RUN.runKey,priorMarkedSeries:prior.markedEquitySeries||[]
 });
