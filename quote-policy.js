@@ -53,13 +53,13 @@
 
   function activeIntraday(q,snapshot,now){
     if(!q)return false;
+    const nowMs=now.getTime(),quoteMs=Date.parse(q.quoteAt),age=(nowMs-quoteMs)/60000,sec=nowMs/1000;
+    const quoteFresh=!q.staleFlag&&Number.isFinite(age)&&age>=-1&&age<=MAX_LIVE_AGE_MINUTES;
     const current=snapshot?.currentState;
     if(current&&typeof current.marketOpen==='boolean'){
-      return current.marketOpen===true&&current.snapshotFresh!==false&&current.sessionDate===q.sessionDate;
+      return quoteFresh&&current.marketOpen===true&&current.snapshotFresh!==false&&current.sessionDate===q.sessionDate;
     }
-    const nowMs=now.getTime(),quoteMs=Date.parse(q.quoteAt),age=(nowMs-quoteMs)/60000,sec=nowMs/1000;
-    return !q.staleFlag&&age>=-1&&age<=MAX_LIVE_AGE_MINUTES&&
-      Number.isFinite(q.sessionStart)&&Number.isFinite(q.sessionEnd)&&sec>=q.sessionStart&&sec<q.sessionEnd;
+    return quoteFresh&&Number.isFinite(q.sessionStart)&&Number.isFinite(q.sessionEnd)&&sec>=q.sessionStart&&sec<q.sessionEnd;
   }
 
   function result(source,quote,state,label,extra={}){
