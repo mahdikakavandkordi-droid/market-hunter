@@ -8,7 +8,7 @@ Hourly Yahoo bars are interpreted on the America/Toronto regular-session grid be
 
 A group is emitted only when all expected source slots for that segment exist. Missing hourly sources therefore create an explicit data-quality diagnostic instead of a synthetic candle.
 
-The completion timestamp is conservatively recorded as the final hourly source timestamp plus one hour. This deliberately avoids claiming an exact 16:00 or shortened-session close when the source payload does not provide per-bar duration. On an early-close session, a fully observed first segment can still exist; an absent session tail is reported as ambiguous between a shortened session and missing tail data.
+The completion timestamp is conservatively recorded as the final hourly source timestamp plus one hour. This deliberately avoids claiming an exact 16:00 or shortened-session close when the source payload does not provide per-bar duration. On an early-close session, the first research segment can contain the complete available session even though the final Yahoo hourly source may represent less than a full hour; that segment is retained with the conservative final-source-start + 1h completion timestamp. The absent session tail is reported as ambiguous between a shortened session and missing tail data, and no second segment is synthesized.
 
 Current-day bars are not emitted until this conservative completion timestamp has passed. Date/session assignment uses America/Toronto via Intl, so DST is handled by the timezone database rather than a fixed UTC offset.
 
@@ -30,6 +30,6 @@ Stop/target detection continues to use the bar's high/low. If both stop and targ
 
 New exit evidence uses the exit bar completion timestamp, not its opening timestamp. This prevents capital from being released before the bar outcome is knowable.
 
-If a bar opens through a stop or target, the frozen strategy-level R result is retained but the report flags that the true gap fill is unknown. The audit does not silently invent a better execution price.
+If a bar opens through a stop or target, the open is treated as temporally prior to the rest of that candle. A gap through the stop therefore resolves as the stop outcome, and a gap through the target resolves as the target outcome before later high/low contacts are considered. The frozen strategy-level boundary R result is retained while the report flags that the true gap fill is unknown. For non-gap bars where both stop and target are touched and intrabar order is unavailable, the conservative stop-first rule remains in force.
 
 Legacy closed records whose exit timestamp predates this convention remain immutable. Corrected portfolio accounting treats an unlabelled legacy exit timestamp conservatively as unavailable until four hours after that timestamp and qualifies the legacy evidence instead of rewriting it.
