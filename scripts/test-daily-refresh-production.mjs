@@ -44,3 +44,5 @@ assert.match(scheduleDoc,/16:30 America\/Toronto/);
 assert.match(scheduleDoc,/18:00 local time/);
 assert.match(scheduleDoc,/00:15 UTC/);
 assert.match(scheduleDoc,/04:15 UTC/);
+
+assert.match(workflow,/Weekend push\/schedule: preserve the latest completed-session V2 stock snapshot/,'weekend code refresh must not silently replace the equity shortlist');
