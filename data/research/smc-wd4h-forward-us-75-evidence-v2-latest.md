@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75 — Corrected Evidence v2
 
-Generated: 2026-10-04T14:55:54.783Z; forward start: 2026-10-01; universe: 75.
+Generated: 2026-10-04T14:58:54.065Z; forward start: 2026-10-01; universe: 75.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 

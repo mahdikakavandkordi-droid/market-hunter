@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-10-04T14:55:45.085Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-10-04T14:58:43.893Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
