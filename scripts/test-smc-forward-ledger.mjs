@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {createRunContext,loadLedgerStrict,reconcileLedger,tradeIdentity} from '../lib/smc-forward-evidence.mjs';
+import {createRunContext,loadLedgerStrict,reconcileLedger,tradeIdentity,evidenceProvenanceClass} from '../lib/smc-forward-evidence.mjs';
 
 const run=createRunContext('test','fixture','2026-10-04T12:00:00.000Z');
 const momentum={score:70,bucket:'high'};
@@ -48,7 +48,7 @@ const base={symbol:'AAA',signalT:'2026-10-04T08:00:00.000Z',entryT:'2026-10-04T0
   assert.throws(()=>loadLedgerStrict(p,{trades:[]}),/corrupt ledger JSON/);
 }
 {
-  const pending={symbol:'P',signalT:'2026-10-04T08:00:00.000Z',dir:1,status:'pending_entry',R:null,exitT:null,momentumShadow:{score:60,bucket:'medium'},decisionId:'P|2026-10-04T08:00:00.000Z|1',firstObservedAt:'2026-10-04T08:30:00.000Z',firstObservedProvenance:{tracker:'test'}};
+  const pending={symbol:'P',signalT:'2026-10-04T08:00:00.000Z',dir:1,status:'pending_entry',R:null,exitT:null,momentumShadow:{score:60,bucket:'medium'},decisionId:'P|2026-10-04T08:00:00.000Z|1',firstObservedAt:'2026-10-04T08:30:00.000Z',firstObservedProvenance:{tracker:'test'},entryObservationClass:'pending'};
   const observed={...pending,entryT:'2026-10-04T12:00:00.000Z',entry:100,stop:95,target:110,risk:5,status:'open'};
   delete observed.firstObservedAt; delete observed.firstObservedProvenance; delete observed.decisionId;
   const r=reconcileLedger({trades:[pending]},[observed],run);
@@ -76,5 +76,13 @@ const base={symbol:'AAA',signalT:'2026-10-04T08:00:00.000Z',entryT:'2026-10-04T0
     /duplicate trade identity/,
     'duplicate observations must fail rather than duplicate ledger evidence'
   );
+}
+{
+  const closedProspective={...base,status:'closed',R:2,firstObservedAt:'2026-10-04T08:30:00.000Z',entryObservationClass:'prospective'};
+  const closedReconstructed={...base,status:'closed',R:-1,firstObservedAt:'2026-10-04T12:00:00.000Z',entryObservationClass:'pending'};
+  const closedLegacy={...base,status:'closed',R:2};
+  assert.equal(evidenceProvenanceClass(closedProspective),'prospective');
+  assert.equal(evidenceProvenanceClass(closedReconstructed),'reconstructed','reporting must repair stale pending labels from timestamps');
+  assert.equal(evidenceProvenanceClass(closedLegacy),'legacy_unprovenanced');
 }
 console.log('SMC forward ledger integrity tests passed');
