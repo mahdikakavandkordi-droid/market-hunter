@@ -1,0 +1,103 @@
+name: Mean Reversion V1 Shadow
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/mean-reversion-forward.yml']
+  workflow_dispatch:
+  schedule:
+    - cron: '45 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: mean-reversion-v1-shadow
+  cancel-in-progress: false
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: ops
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: research/mean-reversion-v1-20261004
+          path: evidence
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          ref: research/smc-wd4h-tsx-validation-20261001
+          path: baseline
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: research/trend-breakout-v1-20261004
+          path: trend-baseline
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify challenger invariants
+        working-directory: evidence
+        run: |
+          node scripts/test-mean-reversion.mjs
+          node scripts/test-mean-reversion-persistence.mjs
+      - name: Run third engine and common-window comparisons
+        working-directory: evidence
+        env:
+          SMC_BASELINE_ROOT: ../baseline
+          TREND_BASELINE_ROOT: ../trend-baseline
+        run: node scripts/mean-reversion-forward.mjs
+      - name: Archive initial untuned historical diagnostic
+        if: github.event_name == 'push'
+        working-directory: evidence
+        env:
+          SMC_BASELINE_ROOT: ../baseline
+          TREND_BASELINE_ROOT: ../trend-baseline
+        run: node scripts/mean-reversion-forward.mjs --historical --offline
+      - name: Persist independent evidence
+        working-directory: evidence
+        run: |
+          node scripts/persist-mean-reversion-evidence.mjs \
+            --branch research/mean-reversion-v1-20261004 \
+            --message "data: update Mean Reversion V1 independent evidence" \
+            --files \
+              data/research/mean-reversion-v1/tsx-core-ledger.json \
+              data/research/mean-reversion-v1/tsx-extra-ledger.json \
+              data/research/mean-reversion-v1/us-75-ledger.json \
+              data/research/mean-reversion-v1/crypto-15-ledger.json \
+              data/research/mean-reversion-v1/metals-5-ledger.json \
+              data/research/mean-reversion-v1/tsx-core-latest.json \
+              data/research/mean-reversion-v1/tsx-extra-latest.json \
+              data/research/mean-reversion-v1/us-75-latest.json \
+              data/research/mean-reversion-v1/crypto-15-latest.json \
+              data/research/mean-reversion-v1/metals-5-latest.json \
+              data/research/mean-reversion-v1/tsx-core-latest.md \
+              data/research/mean-reversion-v1/tsx-extra-latest.md \
+              data/research/mean-reversion-v1/us-75-latest.md \
+              data/research/mean-reversion-v1/crypto-15-latest.md \
+              data/research/mean-reversion-v1/metals-5-latest.md \
+              data/research/mean-reversion-v1/summary.json \
+              data/research/mean-reversion-v1/historical/tsx-core-latest.json \
+              data/research/mean-reversion-v1/historical/tsx-core-latest.md \
+              data/research/mean-reversion-v1/historical/tsx-extra-latest.json \
+              data/research/mean-reversion-v1/historical/tsx-extra-latest.md \
+              data/research/mean-reversion-v1/historical/us-75-latest.json \
+              data/research/mean-reversion-v1/historical/us-75-latest.md \
+              data/research/mean-reversion-v1/historical/crypto-15-latest.json \
+              data/research/mean-reversion-v1/historical/crypto-15-latest.md \
+              data/research/mean-reversion-v1/historical/metals-5-latest.json \
+              data/research/mean-reversion-v1/historical/metals-5-latest.md \
+              data/research/mean-reversion-v1/historical/summary.json
+      - name: Archive evidence and reproducible raw snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mean-reversion-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            evidence/data/research/mean-reversion-v1/
+            evidence/docs/MEAN_REVERSION_V1.md
+          retention-days: 90
+          if-no-files-found: error
