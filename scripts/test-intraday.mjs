@@ -19,7 +19,14 @@ assert.equal(benchmarkOpen({...q,sessionEnd:secs('2026-09-28T15:00:00Z')},now),f
 assert.equal(normalizeQuote({meta:{...meta,chartPreviousClose:0}},'X','X',now).changePct,null);
 assert.throws(()=>normalizeQuote({meta:{...meta,regularMarketPrice:NaN}},'X','X',now),/invalid_quote/);
 assert.equal(normalizeQuote({meta:{...meta,regularMarketTime:secs('2026-09-25T20:00:00Z')}},'X','X',now).stale,true);
-const {default:handler}=await import('../api/intraday.js');
+const {default:handler,decorateIntradaySnapshot}=await import('../api/intraday.js');
+const oldSnapshot={version:'intraday-v1',capturedAt:'2026-10-02T19:58:00Z',sessionDate:'2026-10-02',marketOpen:true,provisional:true,quotes:{'^GSPTSE':{symbol:'^GSPTSE',price:100,quoteAt:'2026-10-02T19:58:00Z',sessionDate:'2026-10-02',stale:false,sessionStart:secs('2026-10-02T13:30:00Z'),sessionEnd:secs('2026-10-02T20:00:00Z')}}};
+const weekendView=decorateIntradaySnapshot(oldSnapshot,d('2026-10-04T15:00:00Z'));
+assert.equal(weekendView.marketOpen,true,'legacy capture-time field remains backward compatible');
+assert.equal(weekendView.marketOpenAtCapture,true);
+assert.equal(weekendView.currentState.marketOpen,false);
+assert.equal(weekendView.currentState.snapshotFresh,false);
+assert.equal(weekendView.currentState.status,'stale_snapshot');
 const old=globalThis.fetch;let status,body;
 const response={setHeader(){},status(n){status=n;return this;},json(x){body=x;}};
 try{
