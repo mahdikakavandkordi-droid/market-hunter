@@ -16,10 +16,16 @@ fail('daily_report_key_developments',report.keyDevelopments?.length>=3,report.ke
 fail('daily_report_key_divergences',Array.isArray(report.keyDivergences)&&report.keyDivergences.every(x=>x?.id&&x?.label&&x?.text),report.keyDivergences);
 fail('daily_report_watch_next',(report.watchNext?.length||0)>=3&&report.watchNext.every(x=>x.market&&x.text&&x.levels),report.watchNext);
 const mixedDatesExpected=report.asOf?.earliest!==report.asOf?.latest;
+const explicitPerMarketDates=expected.every(k=>report.asOf?.byMarket?.[k]);
+const mixedSummaryText=report.executiveSummary?.join(' ')||'';
 fail('mixed_dates_disclosed',
   report.asOf?.mixedDates===mixedDatesExpected&&
-  (!mixedDatesExpected||report.executiveSummary?.some(x=>x.includes('timestamps differ'))),
-  report.asOf);
+  explicitPerMarketDates&&
+  (!mixedDatesExpected||(
+    mixedSummaryText.includes('Completed-session dates differ by instrument')&&
+    expected.every(k=>mixedSummaryText.includes(k+' '+report.asOf.byMarket[k]))
+  )),
+  {asOf:report.asOf,summary:report.executiveSummary});
 fail('highest_attention_present',(report.highestAttention?.length||0)>=3,report.highestAttention);
 fail('hunter_context_max6',(report.hunterContext?.visible||0)<=6,report.hunterContext);
 fail('hunter_context_matches_backend',report.hunterContext?.visible===hunter.integratedSurfaceCounts?.visible,{report:report.hunterContext?.visible,backend:hunter.integratedSurfaceCounts?.visible});
