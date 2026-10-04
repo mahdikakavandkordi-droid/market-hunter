@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper Track
 
-Generated: 2026-10-04T14:42:47.313Z
+Generated: 2026-10-04T14:47:42.890Z
 
 Forward start: 2026-10-01; universe: 33 TSX symbols; regime filters: none.
 
@@ -25,7 +25,7 @@ Sizing: target 1% account risk per trade; max 25% notional per position; max 4 p
 
 First-observation provenance known: 0; legacy provenance unknown: 2.
 Prospective entries: 0; reconstructed entries: 0; pending: 0.
-This run: new 0; lifecycle updates 0; discrepancies 0; prior records not re-observed 0.
+This run: new 0; lifecycle updates 0; discrepancies 0; prior records not re-observed 0; candle/data diagnostics 1.
 
 ### Momentum shadow (observational only)
 
