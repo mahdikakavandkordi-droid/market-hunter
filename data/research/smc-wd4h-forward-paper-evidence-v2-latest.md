@@ -1,0 +1,58 @@
+# SMC W-D-4H Forward Paper — Corrected Evidence v2
+
+Generated: 2026-10-04T14:55:43.524Z
+
+Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
+The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
+
+## Strategy outcomes
+
+| Metric | Raw | +0.03R cost | +0.05R cost |
+|---|---:|---:|---:|
+| Closed trades | 0 | 0 | 0 |
+| Win rate | n/a | n/a | n/a |
+| PF | n/a | n/a | n/a |
+| Avg R | n/a | n/a | n/a |
+
+## $1,000 paper account — realized vs marked
+
+Realized-only equity: $1000.00; realized return: 0.0%.
+Marked equity: $998.52; marked return: -0.1%; mark quality: fresh.
+Unrealized P/L: $-1.48.
+Realized-event max drawdown: 0.0%; observed marked max drawdown: 0.0%.
+Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
+Missing marks: none; stale marks: none.
+
+### Open positions with marks
+
+| Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
+|---|---:|---:|---:|---|---|---:|
+| L.TO | Short | 61.780 | 62.170 | 2026-10-02T20:30:00.000Z | fresh | $-1.58 |
+| SU.TO | Long | 99.090 | 99.130 | 2026-10-02T20:30:00.000Z | fresh | $0.10 |
+
+## Evidence integrity
+
+Legacy trades without first-observation provenance: 2.
+Prospective entries: 0; reconstructed entries: 0; pending signals: 0.
+This run discrepancies: 0; prior records not re-observed: 0; candle/data diagnostics: 1.
+
+## Momentum shadow (observational only)
+
+| Bucket | Closed | Win rate | Avg R after cost | PF after cost |
+|---|---:|---:|---:|---:|
+| high | 0 | n/a | n/a | n/a |
+| medium | 0 | n/a | n/a | n/a |
+| low | 0 | n/a | n/a | n/a |
+| unavailable | 0 | n/a | n/a | n/a |
+
+## Execution qualifications
+
+- New exits are timestamped at bar completion. Legacy closed exit timestamps remain immutable and are conservatively delayed for corrected portfolio availability when their convention is unknown.
+- Same-bar stop/target collisions remain stop-first.
+- Gap-through-stop/target events retain the frozen strategy-level R result but are flagged because true execution price is unknown.
+- Momentum is recorded only as shadow evidence and does not affect any trade decision.
+
+## Fetch/data gaps
+
+- No fetch failures this run.
+- Data diagnostic: {"symbol":"CSU.TO","type":"incomplete_or_missing_exchange_bar","date":"2026-09-21","segment":1,"expected":[4,5,6],"present":[5,6]}

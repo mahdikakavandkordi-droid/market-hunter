@@ -1,0 +1,1267 @@
+{
+  "version": "smc-wd4h-forward-paper-evidence-v2",
+  "generatedAt": "2026-10-04T14:55:43.524Z",
+  "forwardStart": "2026-10-01",
+  "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
+  "frozenRules": {
+    "universe": 33,
+    "weekly": 3,
+    "daily": 5,
+    "fourHour": 3,
+    "trigger": "CHOCH",
+    "dailyWeekly": "previous completed only",
+    "entry": "next 4H open",
+    "stop": "opposing swing + 0.1 ATR14",
+    "target": "2R",
+    "maxHold": 16,
+    "regimeFilter": "none",
+    "vp": "none",
+    "sweep": "none",
+    "momentumShadow": "observational only; never gates, ranks, sizes, enters or exits trades"
+  },
+  "timingConvention": {
+    "exchange4H": "completed source slots only; conservative end timestamp",
+    "exit": "bar-end evidence v2",
+    "collision": "stop-first when both touched",
+    "gapFill": "strategy-level result retained but gap uncertainty flagged"
+  },
+  "failures": [],
+  "dataQuality": [
+    {
+      "symbol": "CSU.TO",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-09-21",
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        5,
+        6
+      ]
+    }
+  ],
+  "evidenceAudit": {
+    "run": {
+      "tracker": "smc-forward-paper",
+      "cohort": "tsx-core",
+      "observedAt": "2026-10-04T14:55:43.524Z",
+      "marketDataSource": "Yahoo Finance chart API",
+      "github": {
+        "runId": "37210993036",
+        "runAttempt": "2",
+        "sha": "3ae4290e44bc79a523db69d3f4cf4afa9fff0d47",
+        "workflow": "SMC Forward Paper Track",
+        "ref": "refs/heads/main"
+      },
+      "runKey": "smc-forward-paper|tsx-core|37210993036|2"
+    },
+    "reconciliation": {
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 0,
+      "prospectiveCount": 0,
+      "pendingCount": 0
+    },
+    "discrepancies": [],
+    "legacyProvenanceUnknown": 2
+  },
+  "summary": {
+    "closed": {
+      "n": 0,
+      "wr": null,
+      "pf": null,
+      "avgR": null,
+      "sumR": 0,
+      "maxDD": 0
+    },
+    "cost03R": {
+      "n": 0,
+      "wr": null,
+      "pf": null,
+      "avgR": null,
+      "sumR": 0,
+      "maxDD": 0
+    },
+    "cost05R": {
+      "n": 0,
+      "wr": null,
+      "pf": null,
+      "avgR": null,
+      "sumR": 0,
+      "maxDD": 0
+    },
+    "long": {
+      "n": 0,
+      "wr": null,
+      "pf": null,
+      "avgR": null,
+      "sumR": 0,
+      "maxDD": 0
+    },
+    "short": {
+      "n": 0,
+      "wr": null,
+      "pf": null,
+      "avgR": null,
+      "sumR": 0,
+      "maxDD": 0
+    },
+    "openCount": 2,
+    "pendingCount": 0,
+    "momentumShadow": {
+      "high": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "afterCost": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      },
+      "medium": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "afterCost": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      },
+      "low": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "afterCost": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      },
+      "unavailable": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "afterCost": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      }
+    }
+  },
+  "legacyPortfolioV1": {
+    "rules": {
+      "startingCapital": 1000,
+      "targetRiskPct": 0.01,
+      "maxPositionPct": 0.25,
+      "maxOpenRiskPct": 0.04,
+      "maxPositions": 4,
+      "costR": 0.05,
+      "fractionalShares": true
+    },
+    "startingCapital": 1000,
+    "currentEquity": 1000,
+    "realizedReturnPct": 0,
+    "cash": 508.9885891499511,
+    "reservedNotional": 491.0114108500489,
+    "openRiskAmount": 16.739072011493466,
+    "maxDrawdownPct": 0,
+    "enteredCount": 2,
+    "closedCount": 0,
+    "openCount": 2,
+    "skippedCount": 0,
+    "entered": [
+      {
+        "symbol": "L.TO",
+        "signalT": "2026-10-02T13:30:00.000Z",
+        "entryT": "2026-10-02T17:30:00.000Z",
+        "dir": -1,
+        "entry": 61.779998779296875,
+        "stop": 63.445358221871516,
+        "target": 58.449279894147594,
+        "risk": 1.6653594425746405,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 48.8,
+          "bucket": "low",
+          "asOfDate": "2026-10-01",
+          "direction": "short",
+          "ret20": 0.0017718555478403175,
+          "ret60": -0.01348353864964802,
+          "rsi14": 54.91892012268072,
+          "ma20": 62.36999988555908,
+          "ma50": 62.58899978637695,
+          "ma20Slope5": 0.005408283235319056,
+          "volumeRatio20": 0.7592599883634964,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": -0.02595619869148058,
+          "benchmarkRet60": -0.0033397247731009605,
+          "rs20": 0.0277280542393209,
+          "rs60": -0.010143813876547059,
+          "components": {
+            "return20": {
+              "score": 49.1,
+              "weight": 20
+            },
+            "return60": {
+              "score": 53.4,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 37.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 36.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0.7,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 32.7,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 53.4,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 250,
+        "allocationPct": 0.25,
+        "quantity": 4.046617108121045,
+        "stopPct": 0.02695628804597387,
+        "riskAmount": 6.739072011493467,
+        "riskPctEquity": 0.006739072011493466,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "SU.TO",
+        "signalT": "2026-10-02T13:30:00.000Z",
+        "entryT": "2026-10-02T17:30:00.000Z",
+        "dir": 1,
+        "entry": 99.08999633789062,
+        "stop": 94.97857289995466,
+        "target": 107.31284321376256,
+        "risk": 4.111423437935969,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 78.5,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.03823811995984072,
+          "ret60": 0.22114552769506313,
+          "rsi14": 57.2537575983946,
+          "ma20": 95.96999969482422,
+          "ma50": 93.27699996948242,
+          "ma20Slope5": 0.009503877523541204,
+          "volumeRatio20": 0.9821736162003369,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": -0.02595619869148058,
+          "benchmarkRet60": -0.0033397247731009605,
+          "rs20": 0.0641943186513213,
+          "rs60": 0.2244852524681641,
+          "components": {
+            "return20": {
+              "score": 69.1,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 68.1,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 73.8,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 18.6,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 90.1,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 100,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 241.0114108500489,
+        "allocationPct": 0.2410114108500489,
+        "quantity": 2.4322476511979594,
+        "stopPct": 0.04149181138241518,
+        "riskAmount": 10,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      }
+    ],
+    "open": [
+      {
+        "symbol": "L.TO",
+        "signalT": "2026-10-02T13:30:00.000Z",
+        "entryT": "2026-10-02T17:30:00.000Z",
+        "dir": -1,
+        "entry": 61.779998779296875,
+        "stop": 63.445358221871516,
+        "target": 58.449279894147594,
+        "risk": 1.6653594425746405,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 48.8,
+          "bucket": "low",
+          "asOfDate": "2026-10-01",
+          "direction": "short",
+          "ret20": 0.0017718555478403175,
+          "ret60": -0.01348353864964802,
+          "rsi14": 54.91892012268072,
+          "ma20": 62.36999988555908,
+          "ma50": 62.58899978637695,
+          "ma20Slope5": 0.005408283235319056,
+          "volumeRatio20": 0.7592599883634964,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": -0.02595619869148058,
+          "benchmarkRet60": -0.0033397247731009605,
+          "rs20": 0.0277280542393209,
+          "rs60": -0.010143813876547059,
+          "components": {
+            "return20": {
+              "score": 49.1,
+              "weight": 20
+            },
+            "return60": {
+              "score": 53.4,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 37.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 36.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0.7,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 32.7,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 53.4,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 250,
+        "allocationPct": 0.25,
+        "quantity": 4.046617108121045,
+        "stopPct": 0.02695628804597387,
+        "riskAmount": 6.739072011493467,
+        "riskPctEquity": 0.006739072011493466,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "SU.TO",
+        "signalT": "2026-10-02T13:30:00.000Z",
+        "entryT": "2026-10-02T17:30:00.000Z",
+        "dir": 1,
+        "entry": 99.08999633789062,
+        "stop": 94.97857289995466,
+        "target": 107.31284321376256,
+        "risk": 4.111423437935969,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 78.5,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.03823811995984072,
+          "ret60": 0.22114552769506313,
+          "rsi14": 57.2537575983946,
+          "ma20": 95.96999969482422,
+          "ma50": 93.27699996948242,
+          "ma20Slope5": 0.009503877523541204,
+          "volumeRatio20": 0.9821736162003369,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": -0.02595619869148058,
+          "benchmarkRet60": -0.0033397247731009605,
+          "rs20": 0.0641943186513213,
+          "rs60": 0.2244852524681641,
+          "components": {
+            "return20": {
+              "score": 69.1,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 68.1,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 73.8,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 18.6,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 90.1,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 100,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 241.0114108500489,
+        "allocationPct": 0.2410114108500489,
+        "quantity": 2.4322476511979594,
+        "stopPct": 0.04149181138241518,
+        "riskAmount": 10,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      }
+    ],
+    "skipped": [],
+    "equityCurve": [
+      {
+        "t": "2026-10-01",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T17:30:00.000Z",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T17:30:00.000Z",
+        "equity": 1000
+      }
+    ]
+  },
+  "portfolio": {
+    "rules": {
+      "startingCapital": 1000,
+      "targetRiskPct": 0.01,
+      "maxPositionPct": 0.25,
+      "maxOpenRiskPct": 0.04,
+      "maxPositions": 4,
+      "costR": 0.05,
+      "fractionalShares": true
+    },
+    "startingCapital": 1000,
+    "cash": 508.9885891499511,
+    "reservedEntryNotional": 491.0114108500489,
+    "openRiskAmount": 16.739072011493466,
+    "realizedCurrentEquity": 1000,
+    "realizedReturnPct": 0,
+    "realizedMaxDrawdownPct": 0,
+    "realizedEquityCurve": [
+      {
+        "t": "start",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T17:30:00.000Z",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T17:30:00.000Z",
+        "equity": 1000
+      }
+    ],
+    "markedCurrentEquity": 998.5191139305291,
+    "markedReturnPct": -0.0014808860694709436,
+    "markedObservation": {
+      "runKey": "smc-forward-paper|tsx-core|37210993036|2",
+      "observedAt": "2026-10-04T14:55:43.524Z",
+      "quality": "fresh",
+      "markedEquity": 998.5191139305291,
+      "totalUnrealizedPnl": -1.480886069470983,
+      "missingSymbols": [],
+      "staleSymbols": [],
+      "positions": [
+        {
+          "symbol": "L.TO",
+          "signalT": "2026-10-02T13:30:00.000Z",
+          "entryT": "2026-10-02T17:30:00.000Z",
+          "dir": -1,
+          "entry": 61.779998779296875,
+          "stop": 63.445358221871516,
+          "target": 58.449279894147594,
+          "risk": 1.6653594425746405,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "momentumShadow": {
+            "available": true,
+            "score": 48.8,
+            "bucket": "low",
+            "asOfDate": "2026-10-01",
+            "direction": "short",
+            "ret20": 0.0017718555478403175,
+            "ret60": -0.01348353864964802,
+            "rsi14": 54.91892012268072,
+            "ma20": 62.36999988555908,
+            "ma50": 62.58899978637695,
+            "ma20Slope5": 0.005408283235319056,
+            "volumeRatio20": 0.7592599883634964,
+            "benchmarkSymbol": "^GSPTSE",
+            "benchmarkRet20": -0.02595619869148058,
+            "benchmarkRet60": -0.0033397247731009605,
+            "rs20": 0.0277280542393209,
+            "rs60": -0.010143813876547059,
+            "components": {
+              "return20": {
+                "score": 49.1,
+                "weight": 20
+              },
+              "return60": {
+                "score": 53.4,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 37.7,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 36.5,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 0.7,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 32.7,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 53.4,
+                "weight": 7
+              }
+            }
+          },
+          "accountEquityBefore": 1000,
+          "notional": 250,
+          "allocationPct": 0.25,
+          "quantity": 4.046617108121045,
+          "stopPct": 0.02695628804597387,
+          "riskAmount": 6.739072011493467,
+          "riskPctEquity": 0.006739072011493466,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 62.16999816894531,
+          "markT": "2026-10-02T20:30:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -1.5781782023081328,
+          "markedPositionValue": 248.42182179769188
+        },
+        {
+          "symbol": "SU.TO",
+          "signalT": "2026-10-02T13:30:00.000Z",
+          "entryT": "2026-10-02T17:30:00.000Z",
+          "dir": 1,
+          "entry": 99.08999633789062,
+          "stop": 94.97857289995466,
+          "target": 107.31284321376256,
+          "risk": 4.111423437935969,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "momentumShadow": {
+            "available": true,
+            "score": 78.5,
+            "bucket": "high",
+            "asOfDate": "2026-10-01",
+            "direction": "long",
+            "ret20": 0.03823811995984072,
+            "ret60": 0.22114552769506313,
+            "rsi14": 57.2537575983946,
+            "ma20": 95.96999969482422,
+            "ma50": 93.27699996948242,
+            "ma20Slope5": 0.009503877523541204,
+            "volumeRatio20": 0.9821736162003369,
+            "benchmarkSymbol": "^GSPTSE",
+            "benchmarkRet20": -0.02595619869148058,
+            "benchmarkRet60": -0.0033397247731009605,
+            "rs20": 0.0641943186513213,
+            "rs60": 0.2244852524681641,
+            "components": {
+              "return20": {
+                "score": 69.1,
+                "weight": 20
+              },
+              "return60": {
+                "score": 100,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 68.1,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 73.8,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 18.6,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 90.1,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 100,
+                "weight": 7
+              }
+            }
+          },
+          "accountEquityBefore": 1000,
+          "notional": 241.0114108500489,
+          "allocationPct": 0.2410114108500489,
+          "quantity": 2.4322476511979594,
+          "stopPct": 0.04149181138241518,
+          "riskAmount": 10,
+          "riskPctEquity": 0.01,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 99.12999725341797,
+          "markT": "2026-10-02T20:30:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": 0.09729213283714983,
+          "markedPositionValue": 241.10870298288603
+        }
+      ]
+    },
+    "markedEquitySeries": [
+      {
+        "runKey": "smc-forward-paper|tsx-core|37210993036|2",
+        "observedAt": "2026-10-04T14:55:43.524Z",
+        "quality": "fresh",
+        "markedEquity": 998.5191139305291,
+        "totalUnrealizedPnl": -1.480886069470983,
+        "missingSymbols": [],
+        "staleSymbols": []
+      }
+    ],
+    "markedSeriesCoverageStartAt": "2026-10-04T14:55:43.524Z",
+    "markedObservedMaxDrawdownPct": 0,
+    "enteredCount": 2,
+    "closedCount": 0,
+    "openCount": 2,
+    "skippedCount": 0,
+    "entered": [
+      {
+        "symbol": "L.TO",
+        "signalT": "2026-10-02T13:30:00.000Z",
+        "entryT": "2026-10-02T17:30:00.000Z",
+        "dir": -1,
+        "entry": 61.779998779296875,
+        "stop": 63.445358221871516,
+        "target": 58.449279894147594,
+        "risk": 1.6653594425746405,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 48.8,
+          "bucket": "low",
+          "asOfDate": "2026-10-01",
+          "direction": "short",
+          "ret20": 0.0017718555478403175,
+          "ret60": -0.01348353864964802,
+          "rsi14": 54.91892012268072,
+          "ma20": 62.36999988555908,
+          "ma50": 62.58899978637695,
+          "ma20Slope5": 0.005408283235319056,
+          "volumeRatio20": 0.7592599883634964,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": -0.02595619869148058,
+          "benchmarkRet60": -0.0033397247731009605,
+          "rs20": 0.0277280542393209,
+          "rs60": -0.010143813876547059,
+          "components": {
+            "return20": {
+              "score": 49.1,
+              "weight": 20
+            },
+            "return60": {
+              "score": 53.4,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 37.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 36.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0.7,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 32.7,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 53.4,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 250,
+        "allocationPct": 0.25,
+        "quantity": 4.046617108121045,
+        "stopPct": 0.02695628804597387,
+        "riskAmount": 6.739072011493467,
+        "riskPctEquity": 0.006739072011493466,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
+      },
+      {
+        "symbol": "SU.TO",
+        "signalT": "2026-10-02T13:30:00.000Z",
+        "entryT": "2026-10-02T17:30:00.000Z",
+        "dir": 1,
+        "entry": 99.08999633789062,
+        "stop": 94.97857289995466,
+        "target": 107.31284321376256,
+        "risk": 4.111423437935969,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 78.5,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.03823811995984072,
+          "ret60": 0.22114552769506313,
+          "rsi14": 57.2537575983946,
+          "ma20": 95.96999969482422,
+          "ma50": 93.27699996948242,
+          "ma20Slope5": 0.009503877523541204,
+          "volumeRatio20": 0.9821736162003369,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": -0.02595619869148058,
+          "benchmarkRet60": -0.0033397247731009605,
+          "rs20": 0.0641943186513213,
+          "rs60": 0.2244852524681641,
+          "components": {
+            "return20": {
+              "score": 69.1,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 68.1,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 73.8,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 18.6,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 90.1,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 100,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 241.0114108500489,
+        "allocationPct": 0.2410114108500489,
+        "quantity": 2.4322476511979594,
+        "stopPct": 0.04149181138241518,
+        "riskAmount": 10,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
+      }
+    ],
+    "open": [
+      {
+        "symbol": "L.TO",
+        "signalT": "2026-10-02T13:30:00.000Z",
+        "entryT": "2026-10-02T17:30:00.000Z",
+        "dir": -1,
+        "entry": 61.779998779296875,
+        "stop": 63.445358221871516,
+        "target": 58.449279894147594,
+        "risk": 1.6653594425746405,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 48.8,
+          "bucket": "low",
+          "asOfDate": "2026-10-01",
+          "direction": "short",
+          "ret20": 0.0017718555478403175,
+          "ret60": -0.01348353864964802,
+          "rsi14": 54.91892012268072,
+          "ma20": 62.36999988555908,
+          "ma50": 62.58899978637695,
+          "ma20Slope5": 0.005408283235319056,
+          "volumeRatio20": 0.7592599883634964,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": -0.02595619869148058,
+          "benchmarkRet60": -0.0033397247731009605,
+          "rs20": 0.0277280542393209,
+          "rs60": -0.010143813876547059,
+          "components": {
+            "return20": {
+              "score": 49.1,
+              "weight": 20
+            },
+            "return60": {
+              "score": 53.4,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 37.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 36.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0.7,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 32.7,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 53.4,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 250,
+        "allocationPct": 0.25,
+        "quantity": 4.046617108121045,
+        "stopPct": 0.02695628804597387,
+        "riskAmount": 6.739072011493467,
+        "riskPctEquity": 0.006739072011493466,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 62.16999816894531,
+        "markT": "2026-10-02T20:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -1.5781782023081328,
+        "markedPositionValue": 248.42182179769188
+      },
+      {
+        "symbol": "SU.TO",
+        "signalT": "2026-10-02T13:30:00.000Z",
+        "entryT": "2026-10-02T17:30:00.000Z",
+        "dir": 1,
+        "entry": 99.08999633789062,
+        "stop": 94.97857289995466,
+        "target": 107.31284321376256,
+        "risk": 4.111423437935969,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 78.5,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.03823811995984072,
+          "ret60": 0.22114552769506313,
+          "rsi14": 57.2537575983946,
+          "ma20": 95.96999969482422,
+          "ma50": 93.27699996948242,
+          "ma20Slope5": 0.009503877523541204,
+          "volumeRatio20": 0.9821736162003369,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": -0.02595619869148058,
+          "benchmarkRet60": -0.0033397247731009605,
+          "rs20": 0.0641943186513213,
+          "rs60": 0.2244852524681641,
+          "components": {
+            "return20": {
+              "score": 69.1,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 68.1,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 73.8,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 18.6,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 90.1,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 100,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 241.0114108500489,
+        "allocationPct": 0.2410114108500489,
+        "quantity": 2.4322476511979594,
+        "stopPct": 0.04149181138241518,
+        "riskAmount": 10,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 99.12999725341797,
+        "markT": "2026-10-02T20:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": 0.09729213283714983,
+        "markedPositionValue": 241.10870298288603
+      }
+    ],
+    "skipped": []
+  },
+  "trades": [
+    {
+      "symbol": "L.TO",
+      "signalT": "2026-10-02T13:30:00.000Z",
+      "entryT": "2026-10-02T17:30:00.000Z",
+      "dir": -1,
+      "entry": 61.779998779296875,
+      "stop": 63.445358221871516,
+      "target": 58.449279894147594,
+      "risk": 1.6653594425746405,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 48.8,
+        "bucket": "low",
+        "asOfDate": "2026-10-01",
+        "direction": "short",
+        "ret20": 0.0017718555478403175,
+        "ret60": -0.01348353864964802,
+        "rsi14": 54.91892012268072,
+        "ma20": 62.36999988555908,
+        "ma50": 62.58899978637695,
+        "ma20Slope5": 0.005408283235319056,
+        "volumeRatio20": 0.7592599883634964,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": -0.02595619869148058,
+        "benchmarkRet60": -0.0033397247731009605,
+        "rs20": 0.0277280542393209,
+        "rs60": -0.010143813876547059,
+        "components": {
+          "return20": {
+            "score": 49.1,
+            "weight": 20
+          },
+          "return60": {
+            "score": 53.4,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 37.7,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 36.5,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0.7,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 32.7,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 53.4,
+            "weight": 7
+          }
+        }
+      }
+    },
+    {
+      "symbol": "SU.TO",
+      "signalT": "2026-10-02T13:30:00.000Z",
+      "entryT": "2026-10-02T17:30:00.000Z",
+      "dir": 1,
+      "entry": 99.08999633789062,
+      "stop": 94.97857289995466,
+      "target": 107.31284321376256,
+      "risk": 4.111423437935969,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 78.5,
+        "bucket": "high",
+        "asOfDate": "2026-10-01",
+        "direction": "long",
+        "ret20": 0.03823811995984072,
+        "ret60": 0.22114552769506313,
+        "rsi14": 57.2537575983946,
+        "ma20": 95.96999969482422,
+        "ma50": 93.27699996948242,
+        "ma20Slope5": 0.009503877523541204,
+        "volumeRatio20": 0.9821736162003369,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": -0.02595619869148058,
+        "benchmarkRet60": -0.0033397247731009605,
+        "rs20": 0.0641943186513213,
+        "rs60": 0.2244852524681641,
+        "components": {
+          "return20": {
+            "score": 69.1,
+            "weight": 20
+          },
+          "return60": {
+            "score": 100,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 68.1,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 73.8,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 18.6,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 90.1,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 100,
+            "weight": 7
+          }
+        }
+      }
+    }
+  ]
+}
