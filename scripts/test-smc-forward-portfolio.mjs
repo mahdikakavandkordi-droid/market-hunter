@@ -9,7 +9,7 @@ const long={symbol:'L',signalT:'2026-10-04T00:00:00Z',entryT:'2026-10-04T04:00:0
   assert.equal(p.realizedCurrentEquity,1000);
   assert.equal(p.markedCurrentEquity,1010);
   assert.equal(p.open[0].unrealizedPnl,10);
-  assert.equal(p.markedReturnPct,.01);
+  assert.ok(Math.abs(p.markedReturnPct-.01)<1e-12);
 }
 {
   const short={...long,symbol:'S',dir:-1,stop:110,target:80};
