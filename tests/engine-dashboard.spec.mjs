@@ -10,7 +10,7 @@ function fixture(){
   const now=new Date().toISOString(),reports=[];
   for(const e of ENGINES)for(const cohort of COHORTS){
     const d={version:e.id==='smc'?'smc-wd4h-forward-paper-evidence-v2':e.id==='trend'?'trend-breakout-v1':'mean-reversion-v1',mode:'forward_shadow',cohort,generatedAt:now,forwardStart:e.id==='smc'?'2026-10-01':'2026-10-04T17:00:00Z',trades:[],portfolio:paperAccount(e.id==='smc'&&cohort==='tsx-core'),summary:{pending:0},failures:[]};
-    if(e.id==='smc'&&cohort==='crypto-15'){d.portfolio=paperAccount(true);d.portfolio.open[0]={...d.portfolio.open[0],symbol:'BTC-USD',dir:-1,markPrice:98,markT:now,markStatus:'fresh',unrealizedPnl:5};d.portfolio.entered=d.portfolio.open;d.trades=[{symbol:'ADA-USD',dir:1,status:'pending_entry',firstObservedAt:now,signalT:now}];}
+    if(e.id==='smc'&&cohort==='crypto-15'){d.portfolio=paperAccount(true);d.portfolio.open[0]={...d.portfolio.open[0],symbol:'BTC-USD',dir:-1,markPrice:98,markT:now,markStatus:'fresh',unrealizedPnl:5};d.portfolio.entered=[...d.portfolio.open,{symbol:'CLOSED-USD',dir:1,status:'closed',entryT:now,exitT:now,entry:10,exitPrice:11,notional:100,pnl:10}];d.trades=[{symbol:'ADA-USD',dir:1,status:'pending_entry',firstObservedAt:now,signalT:now}];}
     if(e.id==='mean')d.comparison={commonStart:'2026-10-04T17:00:00Z',smcLedgerAsOf:now,trendLedgerAsOf:now,smc:{commonWindowPaperAccount:paperAccount()},trend:{commonWindowPaperAccount:paperAccount()}};
     reports.push({...normalizeEvidence(e,cohort,d),source:{url:'https://github.com/example/evidence'},comparison:e.id==='mean'?commonComparison(d):null});
   }
@@ -41,14 +41,23 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await expect(view.locator('.engine-position')).toContainText('ADA-USD');
   await expect(view).toContainText('no position has opened');
   await view.locator('[data-engine-mode="open"]').click();
-  await expect(view).toContainText('Started Oct 1');
-  await expect(view.locator('.engine-overview').first().locator('.engine-equity')).toContainText('—');
-  await expect(view).toContainText('Same starting window');
+  await view.locator('[data-engine-tab="smc"]:visible').click();
+  await expect(view.locator('[data-engine-funding="smc"] .engine-segment')).toHaveCount(5);
+  const canada=view.locator('[data-engine-funding="smc"] [data-engine-segment="tsx-core"]');
+  await expect(canada.locator('.engine-segment-value strong')).toHaveText('—');
+  await expect(canada).toContainText('250');
+  await expect(canada).toContainText('750');
+  await expect(view.locator('.engine-position')).toHaveCount(2);
+  await expect(view.locator('.engine-position').filter({hasText:'BTC-USD'})).toContainText('Crypto');
+  await expect(view.locator('[data-engine-market]')).toHaveCount(0);
+  await view.locator('[data-engine-mode="closed"]').click();
+  await expect(view.locator('.engine-position')).toContainText('CLOSED-USD');
+  await expect(view.locator('.engine-position')).toContainText('Crypto');
+  await view.locator('[data-engine-mode="open"]').click();
   await view.locator('[data-engine-tab="trend"]:visible').click();
   await expect(view).toContainText('No recorded open position');
-  await view.locator('.engine-account-details>summary').click();
-  await view.locator('[data-engine-market="crypto-15"]').click();
-  await expect(view.locator('[data-engine-market="crypto-15"]')).toHaveAttribute('aria-pressed','true');
+  await expect(view.locator('[data-engine-funding="trend"] .engine-segment')).toHaveCount(5);
+  await expect(view.locator('[data-engine-funding="smc"]')).toHaveCount(0);
   await view.locator('[data-engine-mode="closed"]').click();
   await expect(view).toContainText('No settled paper trades');
   await page.locator('[data-view="shortlist"]:visible').click();
@@ -58,7 +67,8 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await page.screenshot({path:`test-results/review-${width}-english.png`,fullPage:true});
   await page.locator('[data-engine-open="smc"]').click();
   await expect(view.locator('.engine-position').filter({hasText:'TEST.TO'})).toContainText('TEST.TO');
-  await expect(view.locator('[data-engine-market="tsx-core"]')).toHaveAttribute('aria-pressed','true');
+  await expect(view.locator('[data-engine-funding="smc"] .engine-segment')).toHaveCount(5);
+  await expect(view.locator('.engine-position')).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   await page.screenshot({path:`test-results/engines-${width}-dark.png`,fullPage:true});
   await page.locator('#themeBtn').click();
