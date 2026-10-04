@@ -1,0 +1,83 @@
+name: Trend Breakout V1 Shadow
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/trend-breakout-forward.yml']
+  workflow_dispatch:
+  schedule:
+    - cron: '35 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: trend-breakout-v1-shadow
+  cancel-in-progress: false
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: ops
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: research/trend-breakout-v1-20261004
+          path: evidence
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          ref: research/smc-wd4h-tsx-validation-20261001
+          path: baseline
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify challenger invariants
+        working-directory: evidence
+        run: node scripts/test-trend-breakout.mjs
+      - name: Run independent challenger and common-window comparison
+        working-directory: evidence
+        env:
+          SMC_BASELINE_ROOT: ../baseline
+        run: node scripts/trend-breakout-forward.mjs
+      - name: Archive initial untuned historical diagnostic
+        if: github.event_name == 'push'
+        working-directory: evidence
+        env:
+          SMC_BASELINE_ROOT: ../baseline
+        run: node scripts/trend-breakout-forward.mjs --historical --offline
+      - name: Persist independent evidence
+        working-directory: evidence
+        run: |
+          node ../ops/scripts/persist-smc-evidence.mjs \
+            --branch research/trend-breakout-v1-20261004 \
+            --message "data: update Trend Breakout V1 independent evidence" \
+            --files \
+              data/research/trend-breakout-v1/tsx-core-ledger.json \
+              data/research/trend-breakout-v1/tsx-extra-ledger.json \
+              data/research/trend-breakout-v1/us-75-ledger.json \
+              data/research/trend-breakout-v1/crypto-15-ledger.json \
+              data/research/trend-breakout-v1/metals-5-ledger.json \
+              data/research/trend-breakout-v1/tsx-core-latest.json \
+              data/research/trend-breakout-v1/tsx-extra-latest.json \
+              data/research/trend-breakout-v1/us-75-latest.json \
+              data/research/trend-breakout-v1/crypto-15-latest.json \
+              data/research/trend-breakout-v1/metals-5-latest.json \
+              data/research/trend-breakout-v1/tsx-core-latest.md \
+              data/research/trend-breakout-v1/tsx-extra-latest.md \
+              data/research/trend-breakout-v1/us-75-latest.md \
+              data/research/trend-breakout-v1/crypto-15-latest.md \
+              data/research/trend-breakout-v1/metals-5-latest.md \
+              data/research/trend-breakout-v1/summary.json
+      - name: Archive evidence and reproducible raw snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trend-breakout-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            evidence/data/research/trend-breakout-v1/
+            evidence/docs/TREND_BREAKOUT_V1.md
+          retention-days: 90
+          if-no-files-found: error
