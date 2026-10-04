@@ -57,4 +57,24 @@ const base={symbol:'AAA',signalT:'2026-10-04T08:00:00.000Z',entryT:'2026-10-04T0
   assert.equal(r.trades[0].entryObservationClass,'prospective');
   assert.equal(r.summary.lifecycleUpdates,1);
 }
+{
+  const old={...base,decisionId:tradeIdentity(base),firstObservedAt:'2026-10-04T08:30:00.000Z',firstObservedProvenance:{tracker:'x'},entryObservationClass:'prospective'};
+  const r=reconcileLedger({trades:[old]},[],run);
+  assert.equal(r.trades.length,1,'a fetch/data gap must not erase prior evidence');
+  assert.equal(r.trades[0].decisionId,old.decisionId);
+  assert.equal(r.summary.missingPreviouslyRecorded,1);
+}
+{
+  const r=reconcileLedger({trades:[]},[base],run);
+  assert.equal(r.trades[0].firstObservedProvenance.marketDataSource,'Yahoo Finance chart API');
+  assert.equal(r.trades[0].firstObservedProvenance.tracker,'test');
+  assert.equal(r.trades[0].firstObservedProvenance.cohort,'fixture');
+}
+{
+  assert.throws(
+    ()=>reconcileLedger({trades:[]},[base,{...base}],run),
+    /duplicate trade identity/,
+    'duplicate observations must fail rather than duplicate ledger evidence'
+  );
+}
 console.log('SMC forward ledger integrity tests passed');
