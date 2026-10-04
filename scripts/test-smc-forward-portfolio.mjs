@@ -55,4 +55,45 @@ const long={symbol:'L',signalT:'2026-10-04T00:00:00Z',entryT:'2026-10-04T04:00:0
   assert.equal(p.enteredCount,0,'pending signals must not consume capital before a validated next-bar open');
   assert.equal(p.realizedCurrentEquity,1000);
 }
+{
+  const closed={...long,symbol:'C',entryT:'2026-10-04T00:00:00Z',status:'closed',R:2,exitT:'2026-10-04T08:00:00Z',exitTimeConvention:'bar_end'};
+  const longOpen={...long,symbol:'L2',entryT:'2026-10-04T12:00:00Z'};
+  const shortOpen={...long,symbol:'S2',entryT:'2026-10-04T12:00:00Z',dir:-1,stop:110,target:80};
+  const marks=new Map([
+    ['L2',{price:110,markT:'2026-10-04T16:00:00Z',status:'fresh',source:'test'}],
+    ['S2',{price:90,markT:'2026-10-04T16:00:00Z',status:'fresh',source:'test'}]
+  ]);
+  const p=simulatePortfolioMarked([closed,longOpen,shortOpen],rules,{marksBySymbol:marks,observedAt:'2026-10-04T17:00:00Z',runKey:'reconcile'});
+  assert.ok(Math.abs(p.realizedCurrentEquity-1019.5)<1e-9);
+  assert.ok(Math.abs(p.cash+p.reservedEntryNotional-p.realizedCurrentEquity)<1e-9,'cash + reserved capital must reconcile realized equity');
+  assert.ok(Math.abs(p.markedCurrentEquity-(p.realizedCurrentEquity+p.markedObservation.totalUnrealizedPnl))<1e-9,'marked equity must equal realized equity plus unrealized P/L');
+  assert.equal(p.open.length,2);
+  assert.ok(p.open.every(x=>Number.isFinite(x.unrealizedPnl)));
+  assert.equal(p.costAccounting.closedTradeCostR,.05);
+  assert.equal(p.costAccounting.chargedOnceOnSettlement,true);
+  assert.equal(p.costAccounting.openMarkedEquityIncludesHypotheticalExitCost,false);
+}
+{
+  const marks=new Map([['L',{price:110,markT:'2026-10-04T03:00:00Z',status:'fresh',source:'test'}]]);
+  const p=simulatePortfolioMarked([long],rules,{marksBySymbol:marks,observedAt:'2026-10-04T09:00:00Z',runKey:'pre-entry-mark'});
+  assert.equal(p.markedCurrentEquity,null,'a mark from before entry must not value the position');
+  assert.equal(p.open[0].markStatus,'pre_entry_or_invalid_mark');
+  assert.deepEqual(p.markedObservation.invalidMarkSymbols,['L']);
+  assert.deepEqual(p.markedObservation.missingSymbols,['L']);
+}
+{
+  const marks=new Map([['L',{price:110,markT:'2026-10-04T10:00:00Z',status:'fresh',source:'test'}]]);
+  const p=simulatePortfolioMarked([long],rules,{marksBySymbol:marks,observedAt:'2026-10-04T09:00:00Z',runKey:'future-mark'});
+  assert.equal(p.markedCurrentEquity,null,'a future mark must not be used');
+  assert.equal(p.open[0].markStatus,'future_mark_invalid');
+}
+{
+  const prior=[
+    {runKey:'a',observedAt:'2026-10-04T08:00:00Z',quality:'incomplete_missing_marks',markedEquity:null,totalUnrealizedPnl:null,missingSymbols:['L'],staleSymbols:[]}
+  ];
+  const marks=new Map([['L',{price:105,markT:'2026-10-04T12:00:00Z',status:'fresh',source:'test'}]]);
+  const p=simulatePortfolioMarked([long],rules,{marksBySymbol:marks,observedAt:'2026-10-04T13:00:00Z',runKey:'b',priorMarkedSeries:prior});
+  assert.equal(p.markedSeriesCoverageStartAt,'2026-10-04T08:00:00Z');
+  assert.equal(p.firstCompleteMarkedEquityAt,'2026-10-04T13:00:00Z','complete marked-equity coverage must not be backdated to an incomplete observation');
+}
 console.log('SMC marked portfolio tests passed');
