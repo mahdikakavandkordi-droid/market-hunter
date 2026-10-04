@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {spawnSync} from 'node:child_process';
+import {isDeepStrictEqual} from 'node:util';
 
 function arg(name){
   const i=process.argv.indexOf(name);
@@ -19,12 +20,21 @@ function git(parts,{allowFail=false,capture=false}={}){
   if(r.status!==0&&!allowFail)throw new Error('git '+parts.join(' ')+' failed'+(r.stderr?': '+r.stderr.trim():''));
   return r;
 }
-function tradeKey(x){return [x?.symbol,x?.entryT,x?.dir].join('|')}
-const IMMUTABLE=['symbol','signalT','entryT','dir','entry','stop','target','risk'];
-function same(a,b){return Object.is(a,b)}
+function tradeKey(x){return x?.decisionId||[x?.symbol,x?.signalT,x?.dir].join('|')}
+const CORE=['symbol','signalT','dir','signalSnapshot'];
+const ENTRY=['entryT','entry','stop','target','risk'];
+const SNAPSHOTS=['momentumShadow'];
+const PROVENANCE=['decisionId','firstObservedAt','firstObservedProvenance'];
+function present(x){return x!==undefined&&x!==null}
+
+function parseLedger(text,label){
+  let x;
+  try{x=JSON.parse(text)}catch(e){throw new Error(label+': corrupt ledger JSON: '+e.message)}
+  if(!x||!Array.isArray(x.trades))throw new Error(label+': invalid ledger schema; trades[] required');
+  return x;
+}
 function validateLedger(path,remote){
-  const current=JSON.parse(fs.readFileSync(path,'utf8'));
-  if(!Array.isArray(current?.trades))return;
+  const current=parseLedger(fs.readFileSync(path,'utf8'),path);
   const prior=remote&&Array.isArray(remote?.trades)?remote.trades:[];
   const nowBy=new Map();
   for(const tr of current.trades){
@@ -34,14 +44,45 @@ function validateLedger(path,remote){
   }
   for(const old of prior){
     const key=tradeKey(old),next=nowBy.get(key);
-    if(!next)throw new Error(path+': immutable prior record disappeared: '+key);
-    for(const field of IMMUTABLE){
-      if(!same(old?.[field],next?.[field]))throw new Error(path+': immutable field changed for '+key+': '+field);
+    if(!next)throw new Error(path+': prior evidence disappeared: '+key);
+
+    for(const field of [...CORE,...SNAPSHOTS]){
+      if(present(old?.[field])&&!isDeepStrictEqual(old?.[field],next?.[field])){
+        throw new Error(path+': immutable field changed for '+key+': '+field);
+      }
     }
+    for(const field of PROVENANCE){
+      if(present(old?.[field])&&!isDeepStrictEqual(old?.[field],next?.[field])){
+        throw new Error(path+': provenance changed for '+key+': '+field);
+      }
+      if(!present(old?.[field])&&present(next?.[field])&&old?.status!=='pending_entry'){
+        throw new Error(path+': refusing retroactive provenance/identity backfill for legacy '+key+': '+field);
+      }
+    }
+    for(const field of ENTRY){
+      if(present(old?.[field])&&!isDeepStrictEqual(old?.[field],next?.[field])){
+        throw new Error(path+': immutable entry field changed for '+key+': '+field);
+      }
+      if(!present(old?.[field])&&present(next?.[field])&&old?.status!=='pending_entry'){
+        throw new Error(path+': entry field appeared outside pending-entry lifecycle for '+key+': '+field);
+      }
+    }
+
     if(old?.status==='closed'){
-      if(next?.status!=='closed'||!same(old?.R,next?.R)||!same(old?.exitT,next?.exitT)){
+      if(next?.status!=='closed'||!isDeepStrictEqual(old?.R,next?.R)||!isDeepStrictEqual(old?.exitT,next?.exitT)){
         throw new Error(path+': closed outcome changed for '+key);
       }
+      for(const field of ['exitReason','exitPriceAssumed','exitTimeConvention','executionAudit']){
+        if(present(old?.[field])&&!isDeepStrictEqual(old?.[field],next?.[field])){
+          throw new Error(path+': closed execution evidence changed for '+key+': '+field);
+        }
+      }
+    }
+    if(old?.status==='open'&&!['open','closed'].includes(next?.status)){
+      throw new Error(path+': invalid lifecycle transition for '+key+': '+old.status+' -> '+next?.status);
+    }
+    if(old?.status==='pending_entry'&&!['pending_entry','open','closed'].includes(next?.status)){
+      throw new Error(path+': invalid pending lifecycle transition for '+key+': '+next?.status);
     }
   }
 }
@@ -53,7 +94,7 @@ git(['fetch','origin',branch]);
 for(const path of files.filter(x=>x.endsWith('-ledger.json'))){
   const show=git(['show',`origin/${branch}:${path}`],{allowFail:true,capture:true});
   let remote=null;
-  if(show.status===0&&show.stdout.trim())remote=JSON.parse(show.stdout);
+  if(show.status===0&&show.stdout.trim())remote=parseLedger(show.stdout,'origin/'+branch+':'+path);
   validateLedger(path,remote);
 }
 
