@@ -71,5 +71,12 @@ for(const file of workflowFiles){
   assert.match(src,/fetch-depth: 0/);
 }
 assert.equal(new Set(concurrencyGroups).size,workflowFiles.length,'independent workflows must not share one GitHub concurrency queue because a third pending run can be cancelled');
+for(const file of workflowFiles){
+  const src=fs.readFileSync(file,'utf8');
+  const persistBlock=src.split(/- name: Persist[^\n]*\n/)[1]?.split(/\n\s*- name: Upload/)[0]||'';
+  assert.match(persistBlock,/working-directory:\s*evidence/);
+  assert.doesNotMatch(persistBlock,/\bevidence\/data\/research\//,'persist helper runs inside evidence/, so file args must be evidence-relative');
+  assert.match(persistBlock,/\bdata\/research\//);
+}
 
 console.log('PASS: SMC persistence survives unrelated concurrent writes, retries idempotently and rejects immutable rewrites');
