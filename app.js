@@ -1071,7 +1071,7 @@ function homeHtml(){
       ${context?`<details class="market-context"><summary>${ui("Today’s context","توضیح امروز")}</summary><p>${esc(stripMarketPrefix(context))}</p></details>`:''}
     </div>`;
   }).join('');
-  const rows=picks.map((x,i)=>`<tr><td><span class="rank-dot">${i+1}</span></td><td class="symbol-cell"><b>${short(x.symbol)}</b><small>${esc(x.name||x.symbol)}</small><small class="inline-quote">${money(x.price,x.displayQuote?.currency||'CAD')} <span class="day-change ${cls(x.dayChangePct)}">${pct(x.dayChangePct)}</span></small>${quoteMetaHtml(x.displayQuote)}</td><td><span class="stage-pill">${esc(x.stage)}</span></td><td>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</td><td><button class="btn ghost" data-chart="${x.symbol}">Chart ↗</button></td></tr>`).join('');
+  const rows=picks.map(x=>`<button class="home-pick" data-chart="${esc(x.symbol)}"><span><b><bdi>${short(x.symbol)}</bdi></b><small>${esc(x.name||x.symbol)}</small><em>${esc(stageLabel(x.stage))}</em></span><span class="home-pick-quote"><b><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi></b><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small>${quoteMetaHtml(x.displayQuote)}</span><span class="home-pick-arrow" aria-hidden="true">↗</span></button>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
     const h5=m?.evidence?.horizons?.['5'];
     const h20=m?.evidence?.horizons?.['20'];
@@ -1098,7 +1098,7 @@ function homeHtml(){
           </div>
           <span class="report-date">${esc(d?.asOf?.latest||'')}</span>
         </div>
-        <div class="change-list">${changes||'<div class="change-empty">No material market-state change flagged today.</div>'}</div>
+        <details class="brief-changes"><summary>${ui("What changed today","تغییرات امروز")}</summary><div class="change-list">${changes||'<div class="change-empty">No material market-state change flagged today.</div>'}</div></details>
         <div class="report-badges">
           ${(d?.groups||[]).slice(0,3).map(g=>`<span class="badge"><b>${esc(g.label)}</b> · ${esc(g.state)}</span>`).join('')}
         </div>
@@ -1118,7 +1118,7 @@ function homeHtml(){
     <div class="grid home-lower">
       <section class="panel soft">
         <div class="panel-head"><div><h2>${ui("Today’s shortlist","سهم‌های منتخب امروز")}</h2><p>${ui("One leader from each stage.","یک سهم منتخب از هر مرحله")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
-        <div class="table-wrap"><table class="review-table"><thead><tr><th>#</th><th>Symbol</th><th>Stage</th><th>Context</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="5">No current shortlist.</td></tr>'}</tbody></table></div>
+        <div class="home-picks">${rows||'<div class="empty">'+ui('No current shortlist.','فهرست منتخب فعلاً خالی است.')+'</div>'}</div>
       </section>
 
       <section class="panel soft">
