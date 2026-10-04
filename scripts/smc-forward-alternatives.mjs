@@ -218,14 +218,14 @@ async function runCohort(name,symbols,mode){
       all.push(...forwardTrades(d,h,s,mode,benchmarkDaily,benchmarkSymbol,run.observedAt,dataQuality,marksBySymbol));await sleep(175);
     }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
   }
-  all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
+  all.sort((a,b)=>(a.entryT||a.signalT).localeCompare(b.entryT||b.signalT));
   const prior=loadLedgerStrict(ledgerPath,{version:'smc-wd4h-forward-alternatives-ledger-v2',cohort:name,mode,forwardStart:FORWARD_START,symbols,trades:[]});
   const reconciliation=reconcileLedger(prior,all,run);
   const trades=reconciliation.trades;
   const closed=trades.filter(x=>x.status==='closed'&&Number.isFinite(x.R));
   const open=trades.filter(x=>x.status==='open');
   const pending=trades.filter(x=>x.status==='pending_entry');
-  const legacyPortfolioV1=simulatePortfolio(trades);
+  const legacyPortfolioV1=simulatePortfolio(trades.filter(x=>x.entryT&&Number.isFinite(x.entry)&&Number.isFinite(x.risk)));
   const portfolio=simulatePortfolioMarked(trades,PORTFOLIO,{
     marksBySymbol,observedAt:run.observedAt,runKey:run.runKey,priorMarkedSeries:prior.markedEquitySeries||[]
   });
