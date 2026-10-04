@@ -54,7 +54,7 @@ const tampered={...remoteLedger,trades:[{...remoteLedger.trades[0],entry:999}]};
 fs.writeFileSync(path.join(a,'data/research/test-ledger.json'),JSON.stringify(tampered,null,2)+'\n');
 r=run(process.execPath,[helper,'--branch',branch,'--message','tamper','--files','data/research/test-ledger.json'],a,true);
 assert.notEqual(r.status,0,'immutable entry rewrite must be rejected');
-assert.match(r.stderr+r.stdout,/immutable field changed/);
+assert.match(r.stderr+r.stdout,/immutable entry field changed/);
 git(['fetch','origin',branch],a);
 const still=JSON.parse(git(['show',`origin/${branch}:data/research/test-ledger.json`],a).stdout);
 assert.equal(still.trades[0].entry,101,'rejected rewrite must not reach remote');
