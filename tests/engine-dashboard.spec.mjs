@@ -25,7 +25,7 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
     if(url.pathname==='/api/engines')return route.fulfill({json:data});
     if(url.pathname==='/api/research-data'){
       const kind=url.searchParams.get('kind');
-      return route.fulfill({json:kind==='v2'?{generatedAt:new Date().toISOString(),marketAsOf:new Date().toISOString().slice(0,10),integratedSurfacePicks:[{symbol:'TEST.TO',name:'Synthetic fixture',stage:'Recovery',price:100,rsi14:55}],surfacePicks:{Recovery:[{symbol:'TEST.TO',name:'Synthetic fixture',stage:'Recovery',price:100,rsi14:55}]} }:kind==='pulse'?{markets:[]}:{groups:[],markets:[],asOf:{latest:'2026-10-04'}}});
+      return route.fulfill({json:kind==='v2'?{generatedAt:new Date().toISOString(),marketAsOf:new Date().toISOString().slice(0,10),integratedSurfacePicks:[{symbol:'TEST.TO',name:'Synthetic fixture',stage:'Recovery',price:100,rsi14:55,date:new Date().toISOString().slice(0,10),currency:'CAD',ret20:3.2,rs20:4.1,momentumShift:2.3,swingTrend:'Structure improving'}],surfacePicks:{Recovery:[{symbol:'TEST.TO',name:'Synthetic fixture',stage:'Recovery',price:100,rsi14:55,date:new Date().toISOString().slice(0,10),currency:'CAD',ret20:3.2,rs20:4.1,momentumShift:2.3,swingTrend:'Structure improving'}]} }:kind==='pulse'?{markets:[]}:{groups:[],markets:[],asOf:{latest:'2026-10-04'}}});
     }
     if(url.pathname==='/api/portfolio')return route.fulfill({json:{items:[],failures:[]}});
     return route.fulfill({json:{quotes:{},connected:false}});

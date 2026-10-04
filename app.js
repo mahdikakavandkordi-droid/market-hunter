@@ -1162,9 +1162,9 @@ function shortlistHtml(){
   const picks=stageEligiblePicks(stage);
   const tabs=REVIEW_STAGES.map(s=>`<button class="stage-tab ${s===stage?'active':''}" data-stage-tab="${esc(s)}" aria-pressed="${s===stage}"><span>${esc(stageLabel(s))}</span><bdi>${counts[s]}</bdi></button>`).join('');
   return `<div class="stack"><section class="panel soft">
-    <div class="sectionhead"><div><h2>${ui('Review stocks','بررسی سهم‌ها')}</h2><p>${ui('Choose a stage, then review each chart.','مرحله را انتخاب کن و سهم‌ها را بررسی کن.')}</p></div><span class="tag"><bdi>${Object.values(counts).reduce((x,y)=>x+y,0)}</bdi> ${ui('charts','سهم')}</span></div>
+    <div class="sectionhead"><div><h2>${ui('Choose a stage','انتخاب مرحله')}</h2><p>${ui('Choose a stage, then review each chart.','مرحله را انتخاب کن و سهم‌ها را بررسی کن.')}</p></div><span class="tag"><bdi>${Object.values(counts).reduce((x,y)=>x+y,0)}</bdi> <span>${ui(Object.values(counts).reduce((x,y)=>x+y,0)===1?'chart':'charts','سهم')}</span></span></div>
     <div class="stage-tabs">${tabs}</div>
-    <div class="stage-summary"><b>${esc(stageLabel(stage))}</b><span><bdi>${picks.length}</bdi> ${ui('charts to review','سهم برای بررسی')} <small class="review-swipe-hint">· ${ui('Swipe ↔','ورق بزن ↔')}</small></span></div>
+    <div class="stage-summary"><b>${esc(stageLabel(stage))}</b><span><bdi>${picks.length}</bdi> ${ui(picks.length===1?'chart to review':'charts to review','سهم برای بررسی')} <small class="review-swipe-hint">· ${ui('Swipe ↔','ورق بزن ↔')}</small></span></div>
     <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">'+ui('No charts meet this stage’s criteria.','سهمی با معیارهای این مرحله پیدا نشده.')+'</div>'}</div>
   </section></div>`;
 }

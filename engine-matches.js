@@ -1,4 +1,4 @@
-// Read-only overlap policy: canonical daily picks, funded positions and recorded pending signals.
+// Read-only overlap policy: canonical daily picks and funded open positions.
 // This presentation layer never changes a scanner or engine decision.
 (function(root){
   'use strict';
