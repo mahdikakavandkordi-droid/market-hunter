@@ -59,7 +59,7 @@ function marketView(m){
   else if(m.condition==='Weakening')framing='Short-term damage, confirmation required';
 
   return {
-    key:m.key,name:m.name,asOf:m.asOf,price:m.price,regime:m.regime,condition:m.condition,
+    key:m.key,name:m.name,asOf:m.asOf,price:m.price,regime:m.regime,condition:m.condition,freshness:m.freshness||null,
     returns:m.current?.returns||{},
     framing,
     evidence:ev,
@@ -127,6 +127,9 @@ const movers=[...pulse.markets].sort((a,b)=>Math.abs(b.current?.returns?.d1||0)-
 const dataDates=[...new Set(pulse.markets.map(x=>x.asOf).filter(Boolean))].sort();
 const latestAsOf=dataDates.at(-1)||null,earliestAsOf=dataDates[0]||null;
 const mixedDates=dataDates.length>1;
+const datesByMarket=Object.fromEntries(pulse.markets.map(x=>[x.key,x.asOf||null]));
+const freshnessByMarket=Object.fromEntries(pulse.markets.map(x=>[x.key,x.freshness||null]));
+const mixedDateSummary=pulse.markets.map(x=>`${x.key} ${x.asOf||'—'}`).join(' · ');
 const keyDivergences=buildDivergences();
 
 const headline=pulse.crossMarketRead?.headline||'Cross-market conditions are mixed.';
@@ -170,11 +173,12 @@ const report={
   version:'daily-market-report-v0.2-2026-09-26',
   generatedAt:new Date().toISOString(),
   status:'research',
-  asOf:{earliest:earliestAsOf,latest:latestAsOf,mixedDates},
+  asOf:{earliest:earliestAsOf,latest:latestAsOf,mixedDates,byMarket:datesByMarket},
+  freshness:{byMarket:freshnessByMarket,source:pulse.freshness||null},
   headline,
   executiveSummary:[
     headline,
-    mixedDates?`Data timestamps differ across markets: traditional markets are as of ${earliestAsOf}, while 24/7 crypto data extends to ${latestAsOf}.`: `All tracked markets are aligned to ${latestAsOf}.`,
+    mixedDates?`Completed-session dates differ by instrument: ${mixedDateSummary}.`: `All tracked markets are aligned to ${latestAsOf}.`,
     'The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.'
   ],
   groups:[groupSummary('Equities'),groupSummary('Metals'),groupSummary('Crypto')],
@@ -205,7 +209,7 @@ function mdMarket(m){
 }
 let md=`# Market Hunter — Daily Market Report
 
-**As of:** ${mixedDates?`${earliestAsOf} to ${latestAsOf}`:latestAsOf}
+**As of:** ${mixedDates?`${earliestAsOf} to ${latestAsOf} (${mixedDateSummary})`:latestAsOf}
 
 ## Executive read
 

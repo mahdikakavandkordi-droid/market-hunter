@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import {MARKET_PULSE_VERSION,MARKET_PULSE_UNIVERSE,round,dayKey,pulseMetrics,descriptiveState,scenarioLevels} from '../lib/market-pulse-engine.js';
 import {completedDailyRows} from '../lib/completed-daily-session.js';
+import {marketKind,assessFreshness,mergeAssetRefresh} from '../lib/market-freshness.js';
 
 const range=process.env.MARKET_PULSE_RANGE||'10y';
 
@@ -10,20 +11,29 @@ async function fetchRows(symbol){
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
   if(!z)throw new Error(symbol+': unavailable');
-  const rows=completedDailyRows((z.timestamp||[]).map((t,i)=>{
+  const rawRows=(z.timestamp||[]).map((t,i)=>{
     const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
     return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
-  }).filter(x=>Number.isFinite(x.close)&&x.close>0&&Number.isFinite(x.high)&&Number.isFinite(x.low)),z.meta);
-  return {rows,currency:z.meta?.currency||null,exchange:z.meta?.exchangeName||null};
+  }).filter(x=>Number.isFinite(x.close)&&x.close>0&&Number.isFinite(x.high)&&Number.isFinite(x.low));
+  const rows=completedDailyRows(rawRows,z.meta);
+  return {rows,rawRows,meta:z.meta||{},currency:z.meta?.currency||null,exchange:z.meta?.exchangeName||null};
 }
 
-const markets=[];
-for(const item of MARKET_PULSE_UNIVERSE){
+const requestedKeys=String(process.env.MARKET_PULSE_KEYS||'').split(',').map(x=>x.trim()).filter(Boolean);
+const mergeExisting=process.env.MARKET_PULSE_MERGE_EXISTING==='1';
+const targets=requestedKeys.length?MARKET_PULSE_UNIVERSE.filter(x=>requestedKeys.includes(x.key)):MARKET_PULSE_UNIVERSE;
+const updates=[],failures=[];
+const nowMs=Date.now();
+
+for(const item of targets){
   process.stdout.write('pulse '+item.symbol+'... ');
   try{
     const data=await fetchRows(item.symbol),m=pulseMetrics(data.rows);
-    if(!m){console.log('insufficient');continue}
+    if(!m){console.log('insufficient');failures.push({key:item.key,reason:'insufficient_completed_history'});continue}
     const state=descriptiveState(m),levels=scenarioLevels(m);
+    const freshness=assessFreshness({
+      kind:marketKind(item),nowMs,meta:data.meta,rawRows:data.rawRows,completedRows:data.rows
+    });
     const row={
       ...item,
       version:MARKET_PULSE_VERSION,
@@ -37,11 +47,23 @@ for(const item of MARKET_PULSE_UNIVERSE){
       structure:{swingTrend:m.swingTrend,higherHigh:m.higherHigh,higherLow:m.higherLow,highBroken:m.highBroken,lowBroken:m.lowBroken,localHigh:round(m.localHigh),localLow:round(m.localLow)},
       range:{pullback20:round(m.pullback20),pullback60:round(m.pullback60),pullback252:round(m.pullback252),rebound20:round(m.rebound20),rebound60:round(m.rebound60)},
       levels:{support:round(m.support),resistance:round(m.resistance),...levels},
-      descriptiveState:state
+      descriptiveState:state,
+      freshness
     };
-    markets.push(row);
-    console.log(row.asOf,state.state);
-  }catch(e){console.log('SKIP '+e.message)}
+    updates.push(row);
+    console.log(row.asOf,state.state,freshness.status);
+  }catch(e){
+    const reason=String(e?.message||e);
+    failures.push({key:item.key,reason});
+    console.log('SKIP '+reason);
+  }
+}
+
+let markets=updates;
+if(mergeExisting){
+  let existing=[];
+  try{existing=JSON.parse(fs.readFileSync('data/market-pulse-latest.json','utf8')).markets||[]}catch{}
+  markets=mergeAssetRefresh(existing,updates,failures,targets.map(x=>x.key),new Date(nowMs).toISOString());
 }
 
 const equity=markets.filter(x=>x.group==='Equity Index');
@@ -58,7 +80,13 @@ const report={
   purpose:'Cross-market context and scenario framing. Descriptive only until historical state validation is completed.',
   universe:MARKET_PULSE_UNIVERSE,
   markets,
-  crossMarket:breadthLike
+  crossMarket:breadthLike,
+  freshness:{
+    attemptedAt:new Date(nowMs).toISOString(),
+    mode:mergeExisting?'targeted':'full',
+    targetKeys:targets.map(x=>x.key),
+    failures
+  }
 };
 fs.mkdirSync('data',{recursive:true});
 fs.writeFileSync('data/market-pulse-latest.json',JSON.stringify(report,null,2));

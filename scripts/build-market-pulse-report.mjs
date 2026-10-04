@@ -171,7 +171,7 @@ for(const m of latest.markets){
     assessments[h]=horizonAssessment(chosen,bt?.horizons?.[h]?.overall||null);
   }
   marketReports.push({
-    key:m.key,name:m.name,symbol:m.symbol,group:m.group,asOf:m.asOf,price:m.price,
+    key:m.key,name:m.name,symbol:m.symbol,group:m.group,asOf:m.asOf,price:m.price,freshness:m.freshness||null,
     regime,condition,
     whatHappened:happened(m),
     whereWeAre:where(m),
@@ -208,6 +208,7 @@ const report={
   },
   note:'Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal. Historical analog confidence automatically falls back to broader families when exact-state samples are sparse, while weak exact-state evidence is retained as a secondary caution.',
   crossMarketRead:{headline:overall,groups:groupReads},
+  freshness:latest.freshness||null,
   markets:marketReports
 };
 fs.writeFileSync('data/market-pulse-report.json',JSON.stringify(report,null,2));
