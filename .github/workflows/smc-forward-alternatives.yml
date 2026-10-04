@@ -44,6 +44,9 @@ jobs:
       - name: Test forward candle timing
         working-directory: evidence
         run: node scripts/test-smc-forward-timing.mjs
+      - name: Test marked portfolio accounting
+        working-directory: evidence
+        run: node scripts/test-smc-forward-portfolio.mjs
       - name: Test momentum shadow
         working-directory: evidence
         run: node scripts/test-smc-momentum-shadow.mjs
@@ -58,22 +61,22 @@ jobs:
             --message "data: update crypto/metals SMC forward cohorts" \
             --files \
               data/research/smc-wd4h-forward-crypto-15-ledger.json \
-              data/research/smc-wd4h-forward-crypto-15-latest.json \
-              data/research/smc-wd4h-forward-crypto-15-latest.md \
+              data/research/smc-wd4h-forward-crypto-15-evidence-v2-latest.json \
+              data/research/smc-wd4h-forward-crypto-15-evidence-v2-latest.md \
               data/research/smc-wd4h-forward-metals-5-ledger.json \
-              data/research/smc-wd4h-forward-metals-5-latest.json \
-              data/research/smc-wd4h-forward-metals-5-latest.md \
-              data/research/smc-wd4h-forward-alternatives-summary.json
+              data/research/smc-wd4h-forward-metals-5-evidence-v2-latest.json \
+              data/research/smc-wd4h-forward-metals-5-evidence-v2-latest.md \
+              data/research/smc-wd4h-forward-alternatives-evidence-v2-summary.json
       - name: Upload alternative forward snapshot
         uses: actions/upload-artifact@v4
         with:
           name: smc-wd4h-forward-alternatives-latest
           path: |
-            evidence/data/research/smc-wd4h-forward-crypto-15-ledger.json
+            evidence/data/research/smc-wd4h-forward-crypto-15-evidence-v2-latest.json
+            evidence/data/research/smc-wd4h-forward-crypto-15-evidence-v2-latest.md
+            evidence/data/research/smc-wd4h-forward-metals-5-evidence-v2-latest.json
+            evidence/data/research/smc-wd4h-forward-metals-5-evidence-v2-latest.md
+            evidence/data/research/smc-wd4h-forward-alternatives-evidence-v2-summary.json
             evidence/data/research/smc-wd4h-forward-crypto-15-latest.json
-            evidence/data/research/smc-wd4h-forward-crypto-15-latest.md
-            evidence/data/research/smc-wd4h-forward-metals-5-ledger.json
             evidence/data/research/smc-wd4h-forward-metals-5-latest.json
-            evidence/data/research/smc-wd4h-forward-metals-5-latest.md
-            evidence/data/research/smc-wd4h-forward-alternatives-summary.json
           if-no-files-found: error
