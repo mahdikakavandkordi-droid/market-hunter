@@ -317,7 +317,14 @@ results.metals=await runCohort('metals-5',METALS,'stock');
 const summary={
   version:'smc-wd4h-forward-alternatives-evidence-v2-summary',generatedAt:new Date().toISOString(),forwardStart:FORWARD_START,
   cohorts:Object.fromEntries(Object.entries(results).map(([k,x])=>[k,{
-    universe:x.frozenRules.universe,failures:x.failures.length,closed:x.summary.closed,cost05R:x.summary.cost05R,openCount:x.summary.openCount,pendingCount:x.summary.pendingCount,
+    universe:x.frozenRules.universe,failures:x.failures.length,closed:x.summary.closed,cost05R:x.summary.cost05R,
+    openCount:x.summary.openCount,pendingCount:x.summary.pendingCount,
+    performanceByProvenance:x.summary.performanceByProvenance,
+    evidenceCounts:{
+      prospective:x.evidenceAudit.reconciliation.prospectiveCount,
+      reconstructed:x.evidenceAudit.reconciliation.reconstructedCount,
+      legacyUnprovenanced:x.evidenceAudit.reconciliation.legacyUnprovenancedCount
+    },
     portfolio:{realizedEquity:x.portfolio.realizedCurrentEquity,realizedReturnPct:x.portfolio.realizedReturnPct,markedEquity:x.portfolio.markedCurrentEquity,markedReturnPct:x.portfolio.markedReturnPct,realizedMaxDrawdownPct:x.portfolio.realizedMaxDrawdownPct,markedObservedMaxDrawdownPct:x.portfolio.markedObservedMaxDrawdownPct,markQuality:x.portfolio.markedObservation.quality,enteredCount:x.portfolio.enteredCount,skippedCount:x.portfolio.skippedCount,openCount:x.portfolio.openCount}
   }]))
 };
