@@ -44,6 +44,9 @@ jobs:
       - name: Test forward candle timing
         working-directory: evidence
         run: node scripts/test-smc-forward-timing.mjs
+      - name: Test marked portfolio accounting
+        working-directory: evidence
+        run: node scripts/test-smc-forward-portfolio.mjs
       - name: Test momentum shadow
         working-directory: evidence
         run: node scripts/test-smc-momentum-shadow.mjs
@@ -58,14 +61,15 @@ jobs:
             --message "data: update SMC forward paper ledger" \
             --files \
               data/research/smc-wd4h-forward-paper-ledger.json \
-              data/research/smc-wd4h-forward-paper-latest.json \
-              data/research/smc-wd4h-forward-paper-latest.md
+              data/research/smc-wd4h-forward-paper-evidence-v2-latest.json \
+              data/research/smc-wd4h-forward-paper-evidence-v2-latest.md
       - name: Upload forward paper snapshot
         uses: actions/upload-artifact@v4
         with:
           name: smc-wd4h-forward-paper-latest
           path: |
-            evidence/data/research/smc-wd4h-forward-paper-ledger.json
+            evidence/data/research/smc-wd4h-forward-paper-evidence-v2-latest.json
+            evidence/data/research/smc-wd4h-forward-paper-evidence-v2-latest.md
             evidence/data/research/smc-wd4h-forward-paper-latest.json
             evidence/data/research/smc-wd4h-forward-paper-latest.md
           if-no-files-found: error
