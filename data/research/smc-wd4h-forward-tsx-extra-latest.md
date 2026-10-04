@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra
 
-Generated: 2026-10-04T14:42:47.463Z
+Generated: 2026-10-04T14:47:42.762Z
 
 Forward start: 2026-10-01; universe: 37; no regime/VP/sweep filter.
 
