@@ -20,7 +20,10 @@ const staticFiles=new Map([
   ['/','index.html'],
   ['/index.html','index.html'],
   ['/app.js','app.js'],
+  ['/i18n.js','i18n.js'],
+  ['/pwa.js','pwa.js'],
   ['/engine-dashboard.js','engine-dashboard.js'],
+  ['/engine-matches.js','engine-matches.js'],
   ['/engine-dashboard.css','engine-dashboard.css'],
   ['/quote-policy.js','quote-policy.js'],
   ['/app.css','app.css'],
@@ -30,6 +33,7 @@ const staticFiles=new Map([
   ['/service-worker.js','service-worker.js'],
   ['/icons/icon-192.png','icons/icon-192.png'],
   ['/icons/icon-512.png','icons/icon-512.png'],
+  ['/icons/icon-maskable.png','icons/icon-maskable.png'],
   ['/icons/apple-touch-icon.png','icons/apple-touch-icon.png'],
 
   ['/manifest.webmanifest','manifest.webmanifest'],
@@ -120,4 +124,3 @@ const server=http.createServer(async(req,res)=>{
 });
 
 server.listen(port,'0.0.0.0',()=>console.log(`Market Hunter listening on ${port}`));
-

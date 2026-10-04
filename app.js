@@ -137,7 +137,7 @@ const initialSession=loadCloudSession();
 const initialEnvelope=readEnvelopeFor(initialSession);
 const initialDaily=readDailyFor(initialSession);
 const state={
-  engines:null,engineSelection:{engine:'smc',cohort:'tsx-core',mode:'open',loading:false,error:false},
+  engines:null,engineSelection:{engine:'all',cohort:'tsx-core',mode:'open',loading:false,error:false},
   view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,
   envelope:initialEnvelope,watch:visibleWatch(initialEnvelope),positions:visiblePositions(initialEnvelope),
   portfolioItems:new Map(),liveItems:new Map(),intraday:null,intradayStatus:'loading',analytics:null,previous:previousMapFromDaily(initialDaily),
@@ -747,6 +747,7 @@ function health(x){
   return{label:'Trend Healthy',tone:'good',notes:good.length?good:['No material structural warning']};
 }
 function stockNarrative(x){
+  if(window.MHI18n?.language()==='fa')return window.MHI18n.stockFa(x);
   if(!x)return 'Current market data is unavailable, so the chart cannot be assessed reliably right now.';
   const parts=[];
   if(x.stage==='Early Watch'){
@@ -1127,8 +1128,8 @@ function stockCard(x,rank=''){
   const why=stockNarrative(x);
   return `<article class="card">
     <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice"><div class="price-line">${money(x.price,x.displayQuote?.currency||'CAD')}<small class="day-change ${cls(x.dayChangePct)}">${pct(x.dayChangePct)}</small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
-    <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
-    ${window.MarketHunterEngines?.badges(state.engines,x.symbol)||''}
+    <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(window.MHI18n?.t(x.stage,({'Early Watch':'زیر نظر اولیه',Recovery:'بازیابی','Attractive Growth':'رشد جذاب','Established Move':'روند جاافتاده'})[x.stage]||x.stage)||x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
+    ${window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
     <div class="metrics"><div class="metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></div><div class="metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></div><div class="metric"><small>RS20</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="metric"><small>Momentum</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div></div>
     <div class="why analysis-copy">${esc(why)}</div>
     <details><summary>Technical details</summary><div class="copy"><strong>Why it qualified</strong><br>${esc((x.evidence||[]).join(' · ')||'Stage-specific review criteria passed.')}<br><br><strong>Positioning</strong><br>Pullback from 60-day high ${pct(x.pullback60)} · ATR ${pct(x.atr14Pct)} · vs MA20 ${pct(x.dist20)} · vs MA50 ${pct(x.dist50)}${(x.riskFlags||[]).length?'<br><br><strong>Risk context</strong><br>'+esc(x.riskFlags.join(' · ')):''}</div></details>
@@ -1442,7 +1443,7 @@ function setView(view){
   qa('.view').forEach(el=>el.classList.toggle('active',el.id===view+'View'));
   qa('.navbtn').forEach(el=>{const active=el.dataset.view===view;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')});
   const titles={home:'Home',shortlist:'Charts to Review',portfolio:'Portfolio Monitor',watchlist:'Watchlist',engines:'Paper Engines'};
-  const title=q('#pageTitle');if(title)title.textContent=titles[view]||'Market Hunter';
+  const title=q('#pageTitle');if(title)title.textContent=window.MHI18n?.t(titles[view]||'Market Hunter',({home:'خانه',shortlist:'بررسی سهم‌ها',portfolio:'پورتفولیو',watchlist:'دیده‌بان',engines:'موتورها'})[view]||'مارکت هانتر')||titles[view];
   renderView(view);window.scrollTo({top:0,behavior:'smooth'});
 }
 let modalTrigger=null;
@@ -1512,13 +1513,15 @@ document.addEventListener('click',async e=>{
     closeRiskInfo();
   }
   const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return}
+  if(e.target.closest('#languageBtn')){window.MHI18n.toggle();renderAll();setView(state.view);return}
   if(e.target.closest('[data-engine-refresh]')){loadEngines();return}
   const engineTab=e.target.closest('[data-engine-tab]');if(engineTab){state.engineSelection.engine=engineTab.dataset.engineTab;renderView('engines');return}
   const engineMarket=e.target.closest('[data-engine-market]');if(engineMarket){state.engineSelection.cohort=engineMarket.dataset.engineMarket;renderView('engines');return}
   const engineMode=e.target.closest('[data-engine-mode]');if(engineMode){state.engineSelection.mode=engineMode.dataset.engineMode;renderView('engines');return}
-  const engineOpen=e.target.closest('[data-engine-open]');if(engineOpen){state.engineSelection.engine=engineOpen.dataset.engineOpen;state.engineSelection.cohort=engineOpen.dataset.engineCohort;state.engineSelection.mode='open';setView('engines');return}
+  const engineOpen=e.target.closest('[data-engine-open]');if(engineOpen){state.engineSelection.engine=engineOpen.dataset.engineOpen;state.engineSelection.cohort=engineOpen.dataset.engineCohort;state.engineSelection.mode=engineOpen.dataset.enginePending==='true'?'pending':'open';setView('engines');return}
   const stageTab=e.target.closest('[data-stage-tab]');if(stageTab){state.reviewStage=stageTab.dataset.stageTab;renderView('shortlist');qa('[data-stage-tab]').find(el=>el.dataset.stageTab===state.reviewStage)?.focus({preventScroll:true});return}
   const open=e.target.closest('[data-open]');if(open){setView(open.dataset.open);return}
+  const engineChart=e.target.closest('[data-engine-chart]');if(engineChart){const symbol=engineChart.dataset.engineChart;if(/\.(TO|V|NE)$/.test(symbol))openChart(symbol);else window.open('https://www.tradingview.com/chart/?symbol='+encodeURIComponent(symbol.replace('-USD','USD')),'_blank','noopener,noreferrer');return}
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}
   const watch=e.target.closest('[data-watch]');if(watch){const s=watch.dataset.watch,present=!state.watch.has(s);setWatchMembership(s,present);renderAll();toast(present?'Saved':'Removed');return}
   if(e.target.closest('[data-cloud-toggle]')){state.cloud.showAuth=!state.cloud.showAuth;state.cloud.message='';renderView('portfolio');return}

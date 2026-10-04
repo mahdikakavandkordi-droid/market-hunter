@@ -1,5 +1,5 @@
-const CACHE='market-hunter-shell-v14';
-const SHELL=['/','/index.html','/app.css','/mobile-polish.css','/theme.css','/ui-polish.css','/app.js','/manifest.webmanifest','/market-hunter-icon.svg','/icons/icon-192.png','/icons/icon-512.png','/icons/apple-touch-icon.png'];
+const CACHE='market-hunter-shell-v16';
+const SHELL=['/','/index.html','/app.css','/mobile-polish.css','/theme.css','/ui-polish.css','/app.js','/i18n.js','/pwa.js','/quote-policy.js','/engine-dashboard.js','/engine-matches.js','/engine-dashboard.css','/manifest.webmanifest','/market-hunter-icon.svg','/icons/icon-192.png','/icons/icon-512.png','/icons/icon-maskable.png','/icons/apple-touch-icon.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
 });
@@ -22,6 +22,6 @@ self.addEventListener('fetch',event=>{
         caches.open(CACHE).then(cache=>cache.put(req,copy));
       }
       return res;
-    }).catch(()=>caches.match(req).then(hit=>hit||caches.match('/index.html')))
+    }).catch(()=>caches.match(req).then(hit=>hit||(req.mode==='navigate'?caches.match('/index.html'):Response.error())))
   );
 });
