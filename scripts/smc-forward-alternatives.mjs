@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { momentumShadow, momentumBucketSummary } from '../lib/smc-momentum-shadow.mjs';
 import { createRunContext, loadLedgerStrict, reconcileLedger, appendRunLog } from '../lib/smc-forward-evidence.mjs';
 import { aggregateExchange4H, aggregateCrypto4H, evaluateExit } from '../lib/smc-forward-runtime.mjs';
+import { latestCompletedMark, simulatePortfolioMarked } from '../lib/smc-forward-portfolio.mjs';
 
 const FORWARD_START='2026-10-01';
 const CRYPTO=[
@@ -165,11 +166,13 @@ function simulatePortfolio(trades){
   return{rules:PORTFOLIO,startingCapital:PORTFOLIO.startingCapital,currentEquity,realizedReturnPct:currentEquity/PORTFOLIO.startingCapital-1,cash,reservedNotional:open.reduce((s,p)=>s+p.notional,0),openRiskAmount:open.reduce((s,p)=>s+p.riskAmount,0),maxDrawdownPct:maxDD,enteredCount:entered.length,closedCount:entered.filter(x=>x.portfolioStatus==='closed').length,openCount:open.length,skippedCount:skipped.length,entered,open,skipped,equityCurve};
 }
 
-function forwardTrades(d0,h,symbol,mode,benchmarkDaily=[],benchmarkSymbol=null,observedAt=new Date().toISOString(),dataQuality=[]){
+function forwardTrades(d0,h,symbol,mode,benchmarkDaily=[],benchmarkSymbol=null,observedAt=new Date().toISOString(),dataQuality=[],marksBySymbol=new Map()){
   const d=mode==='crypto'?dailyCrypto(d0):dailyStock(d0);
   const agg=mode==='crypto'?aggregateCrypto4H(h,{nowMs:Date.parse(observedAt)}):aggregateExchange4H(h,{nowMs:Date.parse(observedAt)});
   const f=agg.bars,w=weekly(d0,mode),A=atr(f),W=structure(w,3),D=structure(d,5),F=structure(f,3),T=[];let blocked=-1;
   dataQuality.push(...agg.diagnostics.map(x=>({symbol,mode,...x})));
+  const latestMark=latestCompletedMark(f,observedAt,{freshnessMs:(mode==='crypto'?12:120)*60*60*1000});
+  if(latestMark)marksBySymbol.set(symbol,latestMark);
   for(const e of F.ev){
     if(e.tag!=='CHOCH'||e.i<=blocked||e.opp==null)continue;
     const di=prevD(d,f[e.i].t,mode),wi=prevW(w,f[e.i].t,mode);
@@ -199,7 +202,7 @@ async function runCohort(name,symbols,mode){
   const ledgerPath=`data/research/smc-wd4h-forward-${safe}-ledger.json`;
   const latestJson=`data/research/smc-wd4h-forward-${safe}-latest.json`;
   const latestMd=`data/research/smc-wd4h-forward-${safe}-latest.md`;
-  const failures=[],all=[],dataQuality=[];
+  const failures=[],all=[],dataQuality=[],marksBySymbol=new Map();
   const run=createRunContext('smc-forward-alternatives',name);
   const benchmarkSymbol=MOMENTUM_BENCHMARKS[name]||null;
   let benchmarkDaily=[];
@@ -212,52 +215,86 @@ async function runCohort(name,symbols,mode){
   for(const s of symbols){
     try{
       const [d,h]=await Promise.all([yahoo(s,'2y','1d'),yahoo(s,'60d','1h')]);
-      all.push(...forwardTrades(d,h,s,mode,benchmarkDaily,benchmarkSymbol,run.observedAt,dataQuality));await sleep(175);
+      all.push(...forwardTrades(d,h,s,mode,benchmarkDaily,benchmarkSymbol,run.observedAt,dataQuality,marksBySymbol));await sleep(175);
     }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
   }
   all.sort((a,b)=>a.entryT.localeCompare(b.entryT));
   const prior=loadLedgerStrict(ledgerPath,{version:'smc-wd4h-forward-alternatives-ledger-v2',cohort:name,mode,forwardStart:FORWARD_START,symbols,trades:[]});
   const reconciliation=reconcileLedger(prior,all,run);
   const trades=reconciliation.trades;
-  const runLog=appendRunLog(prior.runLog,run,{fetchFailures:failures,dataQuality, ...reconciliation.summary, discrepancyCount:reconciliation.runDiscrepancies.length});
-  const closed=trades.filter(x=>x.status==='closed'&&Number.isFinite(x.R)),open=trades.filter(x=>x.status==='open'),portfolio=simulatePortfolio(trades);
-  const out={version:'smc-wd4h-forward-alternatives-v1',cohort:name,mode,generatedAt:new Date().toISOString(),forwardStart:FORWARD_START,
+  const closed=trades.filter(x=>x.status==='closed'&&Number.isFinite(x.R));
+  const open=trades.filter(x=>x.status==='open');
+  const pending=trades.filter(x=>x.status==='pending_entry');
+  const legacyPortfolioV1=simulatePortfolio(trades);
+  const portfolio=simulatePortfolioMarked(trades,PORTFOLIO,{
+    marksBySymbol,observedAt:run.observedAt,runKey:run.runKey,priorMarkedSeries:prior.markedEquitySeries||[]
+  });
+  const runLog=appendRunLog(prior.runLog,run,{
+    fetchFailures:failures,dataQuality,markQuality:portfolio.markedObservation.quality,
+    missingMarkSymbols:portfolio.markedObservation.missingSymbols,staleMarkSymbols:portfolio.markedObservation.staleSymbols,
+    ...reconciliation.summary,discrepancyCount:reconciliation.runDiscrepancies.length
+  });
+  const out={
+    version:'smc-wd4h-forward-alternatives-evidence-v2',cohort:name,mode,generatedAt:run.observedAt,forwardStart:FORWARD_START,
+    evidenceVersionNote:'Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.',
     frozenRules:{universe:symbols.length,weekly:3,daily:5,fourHour:3,trigger:'CHOCH',dailyWeekly:'previous completed only',entry:'next 4H open',stop:'opposing swing + 0.1 ATR14',target:'2R',maxHold:16,regimeFilter:'none',vp:'none',sweep:'none',cryptoClock:mode==='crypto'?'UTC 24/7 4H buckets':'n/a',momentumShadow:'observational only; never gates, ranks, sizes, enters or exits trades'},
-    failures,dataQuality,evidenceAudit:{run,reconciliation:reconciliation.summary,discrepancies:reconciliation.runDiscrepancies,legacyProvenanceUnknown:reconciliation.summary.legacyUnprovenancedCount},summary:{closed:stats(closed),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},portfolio,trades};
+    timingConvention:{fourHour:mode==='crypto'?'four complete UTC hourly sources':'completed exchange-session source slots only',exit:'bar-end evidence v2',collision:'stop-first when both touched',gapFill:'strategy-level result retained but gap uncertainty flagged'},
+    failures,dataQuality,
+    evidenceAudit:{run,reconciliation:reconciliation.summary,discrepancies:reconciliation.runDiscrepancies,legacyProvenanceUnknown:reconciliation.summary.legacyUnprovenancedCount},
+    summary:{closed:stats(closed),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,pendingCount:pending.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
+    legacyPortfolioV1,portfolio,trades
+  };
   fs.mkdirSync('data/research',{recursive:true});
-  fs.writeFileSync(ledgerPath,JSON.stringify({version:'smc-wd4h-forward-alternatives-ledger-v2',cohort:name,mode,updatedAt:reconciliation.changed?run.observedAt:(prior.updatedAt||run.observedAt),forwardStart:FORWARD_START,symbols,runLog,discrepancyLog:reconciliation.discrepancyLog,trades},null,2)+'\n');
-  fs.writeFileSync(latestJson,JSON.stringify(out,null,2)+'\n');
-  const n=x=>Number.isFinite(x)?x.toFixed(3):'n/a',p=x=>Number.isFinite(x)?(100*x).toFixed(1)+'%':'n/a';
+  fs.writeFileSync(ledgerPath,JSON.stringify({
+    version:'smc-wd4h-forward-alternatives-ledger-v2',cohort:name,mode,updatedAt:run.observedAt,forwardStart:FORWARD_START,symbols,
+    runLog,discrepancyLog:reconciliation.discrepancyLog,
+    markedEquitySeries:portfolio.markedEquitySeries,markedSeriesCoverageStartAt:portfolio.markedSeriesCoverageStartAt,
+    trades
+  },null,2)+'\n');
+  const v2Json=`data/research/smc-wd4h-forward-${safe}-evidence-v2-latest.json`;
+  const v2Md=`data/research/smc-wd4h-forward-${safe}-evidence-v2-latest.md`;
+  fs.writeFileSync(v2Json,JSON.stringify(out,null,2)+'\n');
+  const n=x=>Number.isFinite(x)?x.toFixed(3):'n/a',p=x=>Number.isFinite(x)?(100*x).toFixed(1)+'%':'n/a',money=x=>Number.isFinite(x)?'$'+x.toFixed(2):'n/a';
   const md=[
-    `# SMC W-D-4H Forward — ${name}`,'',
+    `# SMC W-D-4H Forward — ${name} — Corrected Evidence v2`,'',
     `Mode: ${mode}; generated ${out.generatedAt}; start ${FORWARD_START}; universe ${symbols.length}.`,'',
+    'Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.','',
     '| Metric | Raw | +0.05R cost |','|---|---:|---:|',
     `| Closed | ${out.summary.closed.n} | ${out.summary.cost05R.n} |`,
+    `| Win rate | ${p(out.summary.closed.wr)} | ${p(out.summary.cost05R.wr)} |`,
     `| PF | ${n(out.summary.closed.pf)} | ${n(out.summary.cost05R.pf)} |`,
-    `| Avg R | ${n(out.summary.closed.avgR)} | ${n(out.summary.cost05R.avgR)} |`,
-    `| Sum R | ${n(out.summary.closed.sumR)} | ${n(out.summary.cost05R.sumR)} |`,'',
-    '## $1,000 paper portfolio','',
-    `Equity $${portfolio.currentEquity.toFixed(2)}; return ${p(portfolio.realizedReturnPct)}; max DD ${p(portfolio.maxDrawdownPct)}.`,
-    `Entered / skipped / open: ${portfolio.enteredCount} / ${portfolio.skippedCount} / ${portfolio.openCount}.`,'',
+    `| Avg R | ${n(out.summary.closed.avgR)} | ${n(out.summary.cost05R.avgR)} |`,'',
+    '## Realized vs marked paper account','',
+    `Realized-only equity ${money(portfolio.realizedCurrentEquity)}; return ${p(portfolio.realizedReturnPct)}; realized-event max DD ${p(portfolio.realizedMaxDrawdownPct)}.`,
+    `Marked equity ${money(portfolio.markedCurrentEquity)}; return ${p(portfolio.markedReturnPct)}; observed marked max DD ${p(portfolio.markedObservedMaxDrawdownPct)}; quality ${portfolio.markedObservation.quality}.`,
+    `Marked-series coverage begins ${portfolio.markedSeriesCoverageStartAt||'n/a'}; no historical intraday marked DD is implied.`,
+    `Missing marks: ${portfolio.markedObservation.missingSymbols.join(', ')||'none'}; stale marks: ${portfolio.markedObservation.staleSymbols.join(', ')||'none'}.`,'',
+    '### Open positions','',
+    '| Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |','|---|---:|---:|---|---|---:|',
+    ...(portfolio.open.length?portfolio.open.map(x=>`| ${x.symbol} | ${x.dir===1?'Long':'Short'} | ${n(x.entry)} | ${n(x.markPrice)} | ${x.markT||''} | ${x.markStatus} | ${money(x.unrealizedPnl)} |`):['| None | | | | | | |']),'',
     '## Evidence integrity','',
-    `Provenance known ${trades.length-reconciliation.summary.legacyUnprovenancedCount}; legacy unknown ${reconciliation.summary.legacyUnprovenancedCount}; prospective ${reconciliation.summary.prospectiveCount}; reconstructed ${reconciliation.summary.reconstructedCount}.`,
-    `This run: new ${reconciliation.summary.newRecords}; lifecycle updates ${reconciliation.summary.lifecycleUpdates}; discrepancies ${reconciliation.runDiscrepancies.length}; prior not re-observed ${reconciliation.summary.missingPreviouslyRecorded}.`,'',
+    `Legacy provenance unknown ${reconciliation.summary.legacyUnprovenancedCount}; prospective ${reconciliation.summary.prospectiveCount}; reconstructed ${reconciliation.summary.reconstructedCount}; pending ${reconciliation.summary.pendingCount}.`,
+    `This run discrepancies ${reconciliation.runDiscrepancies.length}; prior not re-observed ${reconciliation.summary.missingPreviouslyRecorded}; candle/data diagnostics ${dataQuality.length}.`,'',
     '## Momentum shadow (observational only)','',
     '| Bucket | Closed | Win rate | Avg R after cost | PF after cost |','|---|---:|---:|---:|---:|',
-    ...['high','medium','low','unavailable'].map(b=>{const x=out.summary.momentumShadow[b];return `| ${b} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.afterCost.avgR)} | ${n(x.afterCost.pf)} |`}),
-    '',
-    '## Open positions','',
-    ...(portfolio.open.length?portfolio.open.map(x=>`- ${x.symbol} ${x.dir===1?'Long':'Short'}; allocation $${x.notional.toFixed(2)}; risk $${x.riskAmount.toFixed(2)}; entry ${n(x.entry)}; stop ${n(x.stop)}; target ${n(x.target)}`):['- None']),
-    '', '## Fetch failures','',
-    ...(failures.length?failures.map(x=>`- ${x.symbol}: ${x.error}`):['- None'])
+    ...['high','medium','low','unavailable'].map(b=>{const x=out.summary.momentumShadow[b];return `| ${b} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.afterCost.avgR)} | ${n(x.afterCost.pf)} |`}), '',
+    '## Fetch/data gaps','',
+    ...(failures.length?failures.map(x=>`- Fetch failure ${x.symbol}: ${x.error}`):['- No fetch failures this run.']),
+    ...(dataQuality.length?dataQuality.slice(0,50).map(x=>`- Data diagnostic: ${JSON.stringify(x)}`):['- No candle/data diagnostics this run.'])
   ].join('\n');
-  fs.writeFileSync(latestMd,md+'\n');
+  fs.writeFileSync(v2Md,md+'\n');
   return out;
 }
 
 const results={};
 results.crypto15=await runCohort('crypto-15',CRYPTO,'crypto');
 results.metals=await runCohort('metals-5',METALS,'stock');
-const summary={version:'smc-wd4h-forward-alternatives-summary-v1',generatedAt:new Date().toISOString(),forwardStart:FORWARD_START,cohorts:Object.fromEntries(Object.entries(results).map(([k,x])=>[k,{universe:x.frozenRules.universe,failures:x.failures.length,closed:x.summary.closed,cost05R:x.summary.cost05R,openCount:x.summary.openCount,portfolio:{currentEquity:x.portfolio.currentEquity,returnPct:x.portfolio.realizedReturnPct,maxDrawdownPct:x.portfolio.maxDrawdownPct,enteredCount:x.portfolio.enteredCount,skippedCount:x.portfolio.skippedCount,openCount:x.portfolio.openCount}}]))};
-fs.writeFileSync('data/research/smc-wd4h-forward-alternatives-summary.json',JSON.stringify(summary,null,2)+'\n');
+const summary={
+  version:'smc-wd4h-forward-alternatives-evidence-v2-summary',generatedAt:new Date().toISOString(),forwardStart:FORWARD_START,
+  cohorts:Object.fromEntries(Object.entries(results).map(([k,x])=>[k,{
+    universe:x.frozenRules.universe,failures:x.failures.length,closed:x.summary.closed,cost05R:x.summary.cost05R,openCount:x.summary.openCount,pendingCount:x.summary.pendingCount,
+    portfolio:{realizedEquity:x.portfolio.realizedCurrentEquity,realizedReturnPct:x.portfolio.realizedReturnPct,markedEquity:x.portfolio.markedCurrentEquity,markedReturnPct:x.portfolio.markedReturnPct,realizedMaxDrawdownPct:x.portfolio.realizedMaxDrawdownPct,markedObservedMaxDrawdownPct:x.portfolio.markedObservedMaxDrawdownPct,markQuality:x.portfolio.markedObservation.quality,enteredCount:x.portfolio.enteredCount,skippedCount:x.portfolio.skippedCount,openCount:x.portfolio.openCount}
+  }]))
+};
+fs.writeFileSync('data/research/smc-wd4h-forward-alternatives-evidence-v2-summary.json',JSON.stringify(summary,null,2)+'\n');
 console.log(JSON.stringify(summary,null,2));
