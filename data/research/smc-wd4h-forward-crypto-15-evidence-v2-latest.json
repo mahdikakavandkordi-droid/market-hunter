@@ -1,0 +1,2753 @@
+{
+  "version": "smc-wd4h-forward-alternatives-evidence-v2",
+  "cohort": "crypto-15",
+  "mode": "crypto",
+  "generatedAt": "2026-10-04T14:55:43.751Z",
+  "forwardStart": "2026-10-01",
+  "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
+  "frozenRules": {
+    "universe": 15,
+    "weekly": 3,
+    "daily": 5,
+    "fourHour": 3,
+    "trigger": "CHOCH",
+    "dailyWeekly": "previous completed only",
+    "entry": "next 4H open",
+    "stop": "opposing swing + 0.1 ATR14",
+    "target": "2R",
+    "maxHold": 16,
+    "regimeFilter": "none",
+    "vp": "none",
+    "sweep": "none",
+    "cryptoClock": "UTC 24/7 4H buckets",
+    "momentumShadow": "observational only; never gates, ranks, sizes, enters or exits trades"
+  },
+  "timingConvention": {
+    "fourHour": "four complete UTC hourly sources",
+    "exit": "bar-end evidence v2",
+    "collision": "stop-first when both touched",
+    "gapFill": "strategy-level result retained but gap uncertainty flagged"
+  },
+  "failures": [],
+  "dataQuality": [
+    {
+      "symbol": "BTC-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "ETH-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "BNB-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "XRP-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "SOL-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "TRX-USD",
+      "mode": "crypto",
+      "type": "off_crypto_hour_grid",
+      "bucket": 1791115200000,
+      "t": 1791125584000
+    },
+    {
+      "symbol": "TRX-USD",
+      "mode": "crypto",
+      "type": "incomplete_or_missing_crypto_bar",
+      "bucket": 1791115200000,
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "present": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "symbol": "DOGE-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "LINK-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "ADA-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "XLM-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "BCH-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "LTC-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "AVAX-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "DOT-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    },
+    {
+      "symbol": "SHIB-USD",
+      "mode": "crypto",
+      "type": "live_incomplete_crypto_bar_dropped",
+      "bucket": 1791115200000,
+      "endT": 1791129600000
+    }
+  ],
+  "evidenceAudit": {
+    "run": {
+      "tracker": "smc-forward-alternatives",
+      "cohort": "crypto-15",
+      "observedAt": "2026-10-04T14:55:43.751Z",
+      "marketDataSource": "Yahoo Finance chart API",
+      "github": {
+        "runId": "37210997950",
+        "runAttempt": "2",
+        "sha": "e07547e55b2be8be8163afacfab7d8f78eb23add",
+        "workflow": "SMC Crypto and Metals Forward",
+        "ref": "refs/heads/main"
+      },
+      "runKey": "smc-forward-alternatives|crypto-15|37210997950|2"
+    },
+    "reconciliation": {
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 5,
+      "reconstructedCount": 0,
+      "prospectiveCount": 0,
+      "pendingCount": 0
+    },
+    "discrepancies": [
+      {
+        "type": "source_revision_conflict",
+        "identity": "ADA-USD|2026-10-02T04:00:00.000Z|1",
+        "field": "stop",
+        "recorded": 0.24230535786066737,
+        "recomputed": 0.24229350217751094
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "ADA-USD|2026-10-02T04:00:00.000Z|1",
+        "field": "target",
+        "recorded": 0.28134932198694773,
+        "recomputed": 0.2813730333532606
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "ADA-USD|2026-10-02T04:00:00.000Z|1",
+        "field": "risk",
+        "recorded": 0.01301465470876012,
+        "recomputed": 0.013026510391916546
+      },
+      {
+        "type": "closed_outcome_revision",
+        "identity": "ADA-USD|2026-10-02T04:00:00.000Z|1",
+        "field": "exitT",
+        "recorded": "2026-10-02T16:00:00.000Z",
+        "recomputed": "2026-10-02T20:00:00.000Z"
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BTC-USD|2026-10-02T04:00:00.000Z|1",
+        "field": "entry",
+        "recorded": 86095.6796875,
+        "recomputed": 86095.671875
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BTC-USD|2026-10-02T04:00:00.000Z|1",
+        "field": "stop",
+        "recorded": 83037.74508928572,
+        "recomputed": 83013.62873883928
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BTC-USD|2026-10-02T04:00:00.000Z|1",
+        "field": "target",
+        "recorded": 92211.54888392857,
+        "recomputed": 92259.75814732144
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BTC-USD|2026-10-02T04:00:00.000Z|1",
+        "field": "risk",
+        "recorded": 3057.934598214284,
+        "recomputed": 3082.043136160719
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BNB-USD|2026-10-03T16:00:00.000Z|1",
+        "field": "entry",
+        "recorded": 789.5700073242188,
+        "recomputed": 789.47998046875
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BNB-USD|2026-10-03T16:00:00.000Z|1",
+        "field": "stop",
+        "recorded": 763.0199877057756,
+        "recomputed": 763.0210588727679
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BNB-USD|2026-10-03T16:00:00.000Z|1",
+        "field": "target",
+        "recorded": 842.670046561105,
+        "recomputed": 842.3978236607143
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BNB-USD|2026-10-03T16:00:00.000Z|1",
+        "field": "risk",
+        "recorded": 26.550019618443116,
+        "recomputed": 26.458921595982133
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BCH-USD|2026-10-03T20:00:00.000Z|1",
+        "field": "stop",
+        "recorded": 303.73785334995813,
+        "recomputed": 303.73799612862723
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BCH-USD|2026-10-03T20:00:00.000Z|1",
+        "field": "target",
+        "recorded": 352.10424935477124,
+        "recomputed": 352.10396379743304
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BCH-USD|2026-10-03T20:00:00.000Z|1",
+        "field": "risk",
+        "recorded": 16.12213200160437,
+        "recomputed": 16.12198922293527
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "XRP-USD|2026-10-04T04:00:00.000Z|1",
+        "field": "stop",
+        "recorded": 1.477332876409803,
+        "recomputed": 1.477220003093992
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "XRP-USD|2026-10-04T04:00:00.000Z|1",
+        "field": "target",
+        "recorded": 1.543834355899266,
+        "recomputed": 1.5440601025308882
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "XRP-USD|2026-10-04T04:00:00.000Z|1",
+        "field": "risk",
+        "recorded": 0.02216715982982098,
+        "recomputed": 0.022280033145632094
+      }
+    ],
+    "legacyProvenanceUnknown": 5
+  },
+  "summary": {
+    "closed": {
+      "n": 1,
+      "wr": 0,
+      "pf": 0,
+      "avgR": -1,
+      "sumR": -1,
+      "maxDD": -1
+    },
+    "cost05R": {
+      "n": 1,
+      "wr": 0,
+      "pf": 0,
+      "avgR": -1.05,
+      "sumR": -1.05,
+      "maxDD": -1.05
+    },
+    "long": {
+      "n": 1,
+      "wr": 0,
+      "pf": 0,
+      "avgR": -1,
+      "sumR": -1,
+      "maxDD": -1
+    },
+    "short": {
+      "n": 0,
+      "wr": null,
+      "pf": null,
+      "avgR": null,
+      "sumR": 0,
+      "maxDD": 0
+    },
+    "openCount": 4,
+    "pendingCount": 0,
+    "momentumShadow": {
+      "high": {
+        "raw": {
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1,
+          "sumR": -1,
+          "maxDD": -1
+        },
+        "afterCost": {
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1.05,
+          "sumR": -1.05,
+          "maxDD": -1.05
+        }
+      },
+      "medium": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "afterCost": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      },
+      "low": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "afterCost": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      },
+      "unavailable": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "afterCost": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      }
+    }
+  },
+  "legacyPortfolioV1": {
+    "rules": {
+      "startingCapital": 1000,
+      "targetRiskPct": 0.01,
+      "maxPositionPct": 0.25,
+      "maxOpenRiskPct": 0.04,
+      "maxPositions": 4,
+      "costR": 0.05,
+      "fractionalShares": true
+    },
+    "startingCapital": 1000,
+    "currentEquity": 989.5,
+    "realizedReturnPct": -0.010499999999999954,
+    "cash": 48.43511095562616,
+    "reservedNotional": 941.0648890443738,
+    "openRiskAmount": 30.749631375250242,
+    "maxDrawdownPct": -0.010499999999999954,
+    "enteredCount": 5,
+    "closedCount": 1,
+    "openCount": 4,
+    "skippedCount": 0,
+    "entered": [
+      {
+        "symbol": "ADA-USD",
+        "signalT": "2026-10-02T04:00:00.000Z",
+        "entryT": "2026-10-02T08:00:00.000Z",
+        "dir": 1,
+        "entry": 0.2553200125694275,
+        "stop": 0.24230535786066737,
+        "target": 0.28134932198694773,
+        "risk": 0.01301465470876012,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-10-02T16:00:00.000Z",
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 86.9,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.19451991090701037,
+          "ret60": 0.3005640365735309,
+          "rsi14": 70.47387124087587,
+          "ma20": 0.23159274980425834,
+          "ma50": 0.2149471402168274,
+          "ma20Slope5": 0.0397415042658269,
+          "volumeRatio20": 0.908493896705116,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09950663306016061,
+          "benchmarkRet60": 0.33664820835039855,
+          "rs20": 0.09501327784684976,
+          "rs60": -0.036084171776867624,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 12.7,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 38,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 196.1788601257108,
+        "allocationPct": 0.19617886012571079,
+        "quantity": 768.3646031169028,
+        "stopPct": 0.05097389185354646,
+        "riskAmount": 10,
+        "riskPctEquity": 0.01,
+        "pnl": -10.5,
+        "portfolioStatus": "closed",
+        "accountEquityAfter": 989.5
+      },
+      {
+        "symbol": "BTC-USD",
+        "signalT": "2026-10-02T04:00:00.000Z",
+        "entryT": "2026-10-02T08:00:00.000Z",
+        "dir": 1,
+        "entry": 86095.6796875,
+        "stop": 83037.74508928572,
+        "target": 92211.54888392857,
+        "risk": 3057.934598214284,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 84.8,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.09950663306016061,
+          "ret60": 0.33664820835039855,
+          "rsi14": 76.71206959916854,
+          "ma20": 81684.25390625,
+          "ma50": 77700.9984375,
+          "ma20Slope5": 0.01898280774367267,
+          "volumeRatio20": 1.0580638370065072,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09950663306016061,
+          "benchmarkRet60": 0.33664820835039855,
+          "rs20": 0,
+          "rs60": 0,
+          "components": {
+            "return20": {
+              "score": 99.8,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 97.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 24.6,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 50,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 50,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 250,
+        "allocationPct": 0.25,
+        "quantity": 0.002903746168302761,
+        "stopPct": 0.03551786348994068,
+        "riskAmount": 8.87946587248517,
+        "riskPctEquity": 0.00887946587248517,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "BNB-USD",
+        "signalT": "2026-10-03T16:00:00.000Z",
+        "entryT": "2026-10-03T20:00:00.000Z",
+        "dir": 1,
+        "entry": 789.5700073242188,
+        "stop": 763.0199877057756,
+        "target": 842.670046561105,
+        "risk": 26.550019618443116,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 70.2,
+          "bucket": "high",
+          "asOfDate": "2026-10-02",
+          "direction": "long",
+          "ret20": 0.055942262307494106,
+          "ret60": 0.30461074219276396,
+          "rsi14": 52.84770116343112,
+          "ma20": 759.8423065185547,
+          "ma50": 717.6200634765624,
+          "ma20Slope5": 0.012706916109734179,
+          "volumeRatio20": 1.0141056717474117,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09352527950725031,
+          "benchmarkRet60": 0.3314846309766286,
+          "rs20": -0.03758301719975621,
+          "rs60": -0.026873888783864652,
+          "components": {
+            "return20": {
+              "score": 78,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 57.1,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 81.8,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 21.1,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 26.5,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 41,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 247.375,
+        "allocationPct": 0.25,
+        "quantity": 0.3133034407402726,
+        "stopPct": 0.03362592217556329,
+        "riskAmount": 8.31821249817997,
+        "riskPctEquity": 0.008406480543890822,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "BCH-USD",
+        "signalT": "2026-10-03T20:00:00.000Z",
+        "entryT": "2026-10-04T00:00:00.000Z",
+        "dir": 1,
+        "entry": 319.8599853515625,
+        "stop": 303.73785334995813,
+        "target": 352.10424935477124,
+        "risk": 16.12213200160437,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 89.4,
+          "bucket": "high",
+          "asOfDate": "2026-10-02",
+          "direction": "long",
+          "ret20": 0.37491377421094807,
+          "ret60": 0.4607461776748114,
+          "rsi14": 68.60318505325677,
+          "ma20": 286.15297927856443,
+          "ma50": 260.7733514404297,
+          "ma20Slope5": 0.06640086144241275,
+          "volumeRatio20": 0.7995980286360141,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09352527950725031,
+          "benchmarkRet60": 0.3314846309766286,
+          "rs20": 0.28138849470369776,
+          "rs60": 0.1292615466981828,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 96.5,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 4,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 93.1,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 196.31488904437384,
+        "allocationPct": 0.19839806876642127,
+        "quantity": 0.6137525731097669,
+        "stopPct": 0.05040371643825443,
+        "riskAmount": 9.895,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "XRP-USD",
+        "signalT": "2026-10-04T04:00:00.000Z",
+        "entryT": "2026-10-04T08:00:00.000Z",
+        "dir": 1,
+        "entry": 1.499500036239624,
+        "stop": 1.477332876409803,
+        "target": 1.543834355899266,
+        "risk": 0.02216715982982098,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 80.3,
+          "bucket": "high",
+          "asOfDate": "2026-10-03",
+          "direction": "long",
+          "ret20": 0.10882263784318469,
+          "ret60": 0.3851001862768293,
+          "rsi14": 59.55985962977503,
+          "ma20": 1.460547250509262,
+          "ma50": 1.3864237153530121,
+          "ma20Slope5": 0.022789184555301656,
+          "volumeRatio20": 0.2509639222313316,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.10314435251691756,
+          "benchmarkRet60": 0.32327401263690114,
+          "rs20": 0.0056782853262671296,
+          "rs60": 0.06182617363992815,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 73.9,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 53.5,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 70.6,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 247.375,
+        "allocationPct": 0.25,
+        "quantity": 164.97165323207022,
+        "stopPct": 0.0147830338740176,
+        "riskAmount": 3.656953004585104,
+        "riskPctEquity": 0.0036957584685044,
+        "pnl": null,
+        "portfolioStatus": "open"
+      }
+    ],
+    "open": [
+      {
+        "symbol": "BTC-USD",
+        "signalT": "2026-10-02T04:00:00.000Z",
+        "entryT": "2026-10-02T08:00:00.000Z",
+        "dir": 1,
+        "entry": 86095.6796875,
+        "stop": 83037.74508928572,
+        "target": 92211.54888392857,
+        "risk": 3057.934598214284,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 84.8,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.09950663306016061,
+          "ret60": 0.33664820835039855,
+          "rsi14": 76.71206959916854,
+          "ma20": 81684.25390625,
+          "ma50": 77700.9984375,
+          "ma20Slope5": 0.01898280774367267,
+          "volumeRatio20": 1.0580638370065072,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09950663306016061,
+          "benchmarkRet60": 0.33664820835039855,
+          "rs20": 0,
+          "rs60": 0,
+          "components": {
+            "return20": {
+              "score": 99.8,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 97.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 24.6,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 50,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 50,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 250,
+        "allocationPct": 0.25,
+        "quantity": 0.002903746168302761,
+        "stopPct": 0.03551786348994068,
+        "riskAmount": 8.87946587248517,
+        "riskPctEquity": 0.00887946587248517,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "BNB-USD",
+        "signalT": "2026-10-03T16:00:00.000Z",
+        "entryT": "2026-10-03T20:00:00.000Z",
+        "dir": 1,
+        "entry": 789.5700073242188,
+        "stop": 763.0199877057756,
+        "target": 842.670046561105,
+        "risk": 26.550019618443116,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 70.2,
+          "bucket": "high",
+          "asOfDate": "2026-10-02",
+          "direction": "long",
+          "ret20": 0.055942262307494106,
+          "ret60": 0.30461074219276396,
+          "rsi14": 52.84770116343112,
+          "ma20": 759.8423065185547,
+          "ma50": 717.6200634765624,
+          "ma20Slope5": 0.012706916109734179,
+          "volumeRatio20": 1.0141056717474117,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09352527950725031,
+          "benchmarkRet60": 0.3314846309766286,
+          "rs20": -0.03758301719975621,
+          "rs60": -0.026873888783864652,
+          "components": {
+            "return20": {
+              "score": 78,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 57.1,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 81.8,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 21.1,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 26.5,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 41,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 247.375,
+        "allocationPct": 0.25,
+        "quantity": 0.3133034407402726,
+        "stopPct": 0.03362592217556329,
+        "riskAmount": 8.31821249817997,
+        "riskPctEquity": 0.008406480543890822,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "BCH-USD",
+        "signalT": "2026-10-03T20:00:00.000Z",
+        "entryT": "2026-10-04T00:00:00.000Z",
+        "dir": 1,
+        "entry": 319.8599853515625,
+        "stop": 303.73785334995813,
+        "target": 352.10424935477124,
+        "risk": 16.12213200160437,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 89.4,
+          "bucket": "high",
+          "asOfDate": "2026-10-02",
+          "direction": "long",
+          "ret20": 0.37491377421094807,
+          "ret60": 0.4607461776748114,
+          "rsi14": 68.60318505325677,
+          "ma20": 286.15297927856443,
+          "ma50": 260.7733514404297,
+          "ma20Slope5": 0.06640086144241275,
+          "volumeRatio20": 0.7995980286360141,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09352527950725031,
+          "benchmarkRet60": 0.3314846309766286,
+          "rs20": 0.28138849470369776,
+          "rs60": 0.1292615466981828,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 96.5,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 4,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 93.1,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 196.31488904437384,
+        "allocationPct": 0.19839806876642127,
+        "quantity": 0.6137525731097669,
+        "stopPct": 0.05040371643825443,
+        "riskAmount": 9.895,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "XRP-USD",
+        "signalT": "2026-10-04T04:00:00.000Z",
+        "entryT": "2026-10-04T08:00:00.000Z",
+        "dir": 1,
+        "entry": 1.499500036239624,
+        "stop": 1.477332876409803,
+        "target": 1.543834355899266,
+        "risk": 0.02216715982982098,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 80.3,
+          "bucket": "high",
+          "asOfDate": "2026-10-03",
+          "direction": "long",
+          "ret20": 0.10882263784318469,
+          "ret60": 0.3851001862768293,
+          "rsi14": 59.55985962977503,
+          "ma20": 1.460547250509262,
+          "ma50": 1.3864237153530121,
+          "ma20Slope5": 0.022789184555301656,
+          "volumeRatio20": 0.2509639222313316,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.10314435251691756,
+          "benchmarkRet60": 0.32327401263690114,
+          "rs20": 0.0056782853262671296,
+          "rs60": 0.06182617363992815,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 73.9,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 53.5,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 70.6,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 247.375,
+        "allocationPct": 0.25,
+        "quantity": 164.97165323207022,
+        "stopPct": 0.0147830338740176,
+        "riskAmount": 3.656953004585104,
+        "riskPctEquity": 0.0036957584685044,
+        "pnl": null,
+        "portfolioStatus": "open"
+      }
+    ],
+    "skipped": [],
+    "equityCurve": [
+      {
+        "t": "2026-10-01",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T08:00:00.000Z",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T08:00:00.000Z",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T16:00:00.000Z",
+        "equity": 989.5
+      },
+      {
+        "t": "2026-10-03T20:00:00.000Z",
+        "equity": 989.5
+      },
+      {
+        "t": "2026-10-04T00:00:00.000Z",
+        "equity": 989.5
+      },
+      {
+        "t": "2026-10-04T08:00:00.000Z",
+        "equity": 989.5
+      }
+    ]
+  },
+  "portfolio": {
+    "rules": {
+      "startingCapital": 1000,
+      "targetRiskPct": 0.01,
+      "maxPositionPct": 0.25,
+      "maxOpenRiskPct": 0.04,
+      "maxPositions": 4,
+      "costR": 0.05,
+      "fractionalShares": true
+    },
+    "startingCapital": 1000,
+    "cash": 48.43511095562616,
+    "reservedEntryNotional": 941.0648890443738,
+    "openRiskAmount": 30.749631375250242,
+    "realizedCurrentEquity": 989.5,
+    "realizedReturnPct": -0.010499999999999954,
+    "realizedMaxDrawdownPct": -0.010499999999999954,
+    "realizedEquityCurve": [
+      {
+        "t": "start",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T08:00:00.000Z",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T08:00:00.000Z",
+        "equity": 1000
+      },
+      {
+        "t": "2026-10-02T20:00:00.000Z",
+        "equity": 989.5
+      },
+      {
+        "t": "2026-10-03T20:00:00.000Z",
+        "equity": 989.5
+      },
+      {
+        "t": "2026-10-04T00:00:00.000Z",
+        "equity": 989.5
+      },
+      {
+        "t": "2026-10-04T08:00:00.000Z",
+        "equity": 989.5
+      }
+    ],
+    "markedCurrentEquity": 986.1004946314933,
+    "markedReturnPct": -0.013899505368506704,
+    "markedObservation": {
+      "runKey": "smc-forward-alternatives|crypto-15|37210997950|2",
+      "observedAt": "2026-10-04T14:55:43.751Z",
+      "quality": "fresh",
+      "markedEquity": 986.1004946314933,
+      "totalUnrealizedPnl": -3.399505368506611,
+      "missingSymbols": [],
+      "staleSymbols": [],
+      "positions": [
+        {
+          "symbol": "BTC-USD",
+          "signalT": "2026-10-02T04:00:00.000Z",
+          "entryT": "2026-10-02T08:00:00.000Z",
+          "dir": 1,
+          "entry": 86095.6796875,
+          "stop": 83037.74508928572,
+          "target": 92211.54888392857,
+          "risk": 3057.934598214284,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "mode": "crypto",
+          "momentumShadow": {
+            "available": true,
+            "score": 84.8,
+            "bucket": "high",
+            "asOfDate": "2026-10-01",
+            "direction": "long",
+            "ret20": 0.09950663306016061,
+            "ret60": 0.33664820835039855,
+            "rsi14": 76.71206959916854,
+            "ma20": 81684.25390625,
+            "ma50": 77700.9984375,
+            "ma20Slope5": 0.01898280774367267,
+            "volumeRatio20": 1.0580638370065072,
+            "benchmarkSymbol": "BTC-USD",
+            "benchmarkRet20": 0.09950663306016061,
+            "benchmarkRet60": 0.33664820835039855,
+            "rs20": 0,
+            "rs60": 0,
+            "components": {
+              "return20": {
+                "score": 99.8,
+                "weight": 20
+              },
+              "return60": {
+                "score": 100,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 100,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 97.5,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 24.6,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 50,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 50,
+                "weight": 7
+              }
+            }
+          },
+          "accountEquityBefore": 1000,
+          "notional": 250,
+          "allocationPct": 0.25,
+          "quantity": 0.002903746168302761,
+          "stopPct": 0.03551786348994068,
+          "riskAmount": 8.87946587248517,
+          "riskPctEquity": 0.00887946587248517,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 85304.171875,
+          "markT": "2026-10-04T12:00:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -2.2983377777285754,
+          "markedPositionValue": 247.70166222227144
+        },
+        {
+          "symbol": "BNB-USD",
+          "signalT": "2026-10-03T16:00:00.000Z",
+          "entryT": "2026-10-03T20:00:00.000Z",
+          "dir": 1,
+          "entry": 789.5700073242188,
+          "stop": 763.0199877057756,
+          "target": 842.670046561105,
+          "risk": 26.550019618443116,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "mode": "crypto",
+          "momentumShadow": {
+            "available": true,
+            "score": 70.2,
+            "bucket": "high",
+            "asOfDate": "2026-10-02",
+            "direction": "long",
+            "ret20": 0.055942262307494106,
+            "ret60": 0.30461074219276396,
+            "rsi14": 52.84770116343112,
+            "ma20": 759.8423065185547,
+            "ma50": 717.6200634765624,
+            "ma20Slope5": 0.012706916109734179,
+            "volumeRatio20": 1.0141056717474117,
+            "benchmarkSymbol": "BTC-USD",
+            "benchmarkRet20": 0.09352527950725031,
+            "benchmarkRet60": 0.3314846309766286,
+            "rs20": -0.03758301719975621,
+            "rs60": -0.026873888783864652,
+            "components": {
+              "return20": {
+                "score": 78,
+                "weight": 20
+              },
+              "return60": {
+                "score": 100,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 57.1,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 81.8,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 21.1,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 26.5,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 41,
+                "weight": 7
+              }
+            }
+          },
+          "accountEquityBefore": 989.5,
+          "notional": 247.375,
+          "allocationPct": 0.25,
+          "quantity": 0.3133034407402726,
+          "stopPct": 0.03362592217556329,
+          "riskAmount": 8.31821249817997,
+          "riskPctEquity": 0.008406480543890822,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 788.5800170898438,
+          "markT": "2026-10-04T12:00:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -0.3101673467289564,
+          "markedPositionValue": 247.06483265327105
+        },
+        {
+          "symbol": "BCH-USD",
+          "signalT": "2026-10-03T20:00:00.000Z",
+          "entryT": "2026-10-04T00:00:00.000Z",
+          "dir": 1,
+          "entry": 319.8599853515625,
+          "stop": 303.73785334995813,
+          "target": 352.10424935477124,
+          "risk": 16.12213200160437,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "mode": "crypto",
+          "momentumShadow": {
+            "available": true,
+            "score": 89.4,
+            "bucket": "high",
+            "asOfDate": "2026-10-02",
+            "direction": "long",
+            "ret20": 0.37491377421094807,
+            "ret60": 0.4607461776748114,
+            "rsi14": 68.60318505325677,
+            "ma20": 286.15297927856443,
+            "ma50": 260.7733514404297,
+            "ma20Slope5": 0.06640086144241275,
+            "volumeRatio20": 0.7995980286360141,
+            "benchmarkSymbol": "BTC-USD",
+            "benchmarkRet20": 0.09352527950725031,
+            "benchmarkRet60": 0.3314846309766286,
+            "rs20": 0.28138849470369776,
+            "rs60": 0.1292615466981828,
+            "components": {
+              "return20": {
+                "score": 100,
+                "weight": 20
+              },
+              "return60": {
+                "score": 100,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 96.5,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 100,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 4,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 100,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 93.1,
+                "weight": 7
+              }
+            }
+          },
+          "accountEquityBefore": 989.5,
+          "notional": 196.31488904437384,
+          "allocationPct": 0.19839806876642127,
+          "quantity": 0.6137525731097669,
+          "stopPct": 0.05040371643825443,
+          "riskAmount": 9.895,
+          "riskPctEquity": 0.01,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 318.8399963378906,
+          "markT": "2026-10-04T12:00:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -0.6260208816848065,
+          "markedPositionValue": 195.68886816268903
+        },
+        {
+          "symbol": "XRP-USD",
+          "signalT": "2026-10-04T04:00:00.000Z",
+          "entryT": "2026-10-04T08:00:00.000Z",
+          "dir": 1,
+          "entry": 1.499500036239624,
+          "stop": 1.477332876409803,
+          "target": 1.543834355899266,
+          "risk": 0.02216715982982098,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "mode": "crypto",
+          "momentumShadow": {
+            "available": true,
+            "score": 80.3,
+            "bucket": "high",
+            "asOfDate": "2026-10-03",
+            "direction": "long",
+            "ret20": 0.10882263784318469,
+            "ret60": 0.3851001862768293,
+            "rsi14": 59.55985962977503,
+            "ma20": 1.460547250509262,
+            "ma50": 1.3864237153530121,
+            "ma20Slope5": 0.022789184555301656,
+            "volumeRatio20": 0.2509639222313316,
+            "benchmarkSymbol": "BTC-USD",
+            "benchmarkRet20": 0.10314435251691756,
+            "benchmarkRet60": 0.32327401263690114,
+            "rs20": 0.0056782853262671296,
+            "rs60": 0.06182617363992815,
+            "components": {
+              "return20": {
+                "score": 100,
+                "weight": 20
+              },
+              "return60": {
+                "score": 100,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 73.9,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 100,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 0,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 53.5,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 70.6,
+                "weight": 7
+              }
+            }
+          },
+          "accountEquityBefore": 989.5,
+          "notional": 247.375,
+          "allocationPct": 0.25,
+          "quantity": 164.97165323207022,
+          "stopPct": 0.0147830338740176,
+          "riskAmount": 3.656953004585104,
+          "riskPctEquity": 0.0036957584685044,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 1.4984999895095825,
+          "markT": "2026-10-04T12:00:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -0.1649793623642727,
+          "markedPositionValue": 247.21002063763572
+        }
+      ]
+    },
+    "markedEquitySeries": [
+      {
+        "runKey": "smc-forward-alternatives|crypto-15|37210997950|2",
+        "observedAt": "2026-10-04T14:55:43.751Z",
+        "quality": "fresh",
+        "markedEquity": 986.1004946314933,
+        "totalUnrealizedPnl": -3.399505368506611,
+        "missingSymbols": [],
+        "staleSymbols": []
+      }
+    ],
+    "markedSeriesCoverageStartAt": "2026-10-04T14:55:43.751Z",
+    "markedObservedMaxDrawdownPct": 0,
+    "enteredCount": 5,
+    "closedCount": 1,
+    "openCount": 4,
+    "skippedCount": 0,
+    "entered": [
+      {
+        "symbol": "ADA-USD",
+        "signalT": "2026-10-02T04:00:00.000Z",
+        "entryT": "2026-10-02T08:00:00.000Z",
+        "dir": 1,
+        "entry": 0.2553200125694275,
+        "stop": 0.24230535786066737,
+        "target": 0.28134932198694773,
+        "risk": 0.01301465470876012,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-10-02T16:00:00.000Z",
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 86.9,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.19451991090701037,
+          "ret60": 0.3005640365735309,
+          "rsi14": 70.47387124087587,
+          "ma20": 0.23159274980425834,
+          "ma50": 0.2149471402168274,
+          "ma20Slope5": 0.0397415042658269,
+          "volumeRatio20": 0.908493896705116,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09950663306016061,
+          "benchmarkRet60": 0.33664820835039855,
+          "rs20": 0.09501327784684976,
+          "rs60": -0.036084171776867624,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 12.7,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 38,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 196.1788601257108,
+        "allocationPct": 0.19617886012571079,
+        "quantity": 768.3646031169028,
+        "stopPct": 0.05097389185354646,
+        "riskAmount": 10,
+        "riskPctEquity": 0.01,
+        "pnl": -10.5,
+        "portfolioStatus": "closed",
+        "effectiveExitMs": 1790971200000,
+        "legacyExitTimingAdjusted": true,
+        "accountEquityAfter": 989.5
+      },
+      {
+        "symbol": "BTC-USD",
+        "signalT": "2026-10-02T04:00:00.000Z",
+        "entryT": "2026-10-02T08:00:00.000Z",
+        "dir": 1,
+        "entry": 86095.6796875,
+        "stop": 83037.74508928572,
+        "target": 92211.54888392857,
+        "risk": 3057.934598214284,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 84.8,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.09950663306016061,
+          "ret60": 0.33664820835039855,
+          "rsi14": 76.71206959916854,
+          "ma20": 81684.25390625,
+          "ma50": 77700.9984375,
+          "ma20Slope5": 0.01898280774367267,
+          "volumeRatio20": 1.0580638370065072,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09950663306016061,
+          "benchmarkRet60": 0.33664820835039855,
+          "rs20": 0,
+          "rs60": 0,
+          "components": {
+            "return20": {
+              "score": 99.8,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 97.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 24.6,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 50,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 50,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 250,
+        "allocationPct": 0.25,
+        "quantity": 0.002903746168302761,
+        "stopPct": 0.03551786348994068,
+        "riskAmount": 8.87946587248517,
+        "riskPctEquity": 0.00887946587248517,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
+      },
+      {
+        "symbol": "BNB-USD",
+        "signalT": "2026-10-03T16:00:00.000Z",
+        "entryT": "2026-10-03T20:00:00.000Z",
+        "dir": 1,
+        "entry": 789.5700073242188,
+        "stop": 763.0199877057756,
+        "target": 842.670046561105,
+        "risk": 26.550019618443116,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 70.2,
+          "bucket": "high",
+          "asOfDate": "2026-10-02",
+          "direction": "long",
+          "ret20": 0.055942262307494106,
+          "ret60": 0.30461074219276396,
+          "rsi14": 52.84770116343112,
+          "ma20": 759.8423065185547,
+          "ma50": 717.6200634765624,
+          "ma20Slope5": 0.012706916109734179,
+          "volumeRatio20": 1.0141056717474117,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09352527950725031,
+          "benchmarkRet60": 0.3314846309766286,
+          "rs20": -0.03758301719975621,
+          "rs60": -0.026873888783864652,
+          "components": {
+            "return20": {
+              "score": 78,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 57.1,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 81.8,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 21.1,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 26.5,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 41,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 247.375,
+        "allocationPct": 0.25,
+        "quantity": 0.3133034407402726,
+        "stopPct": 0.03362592217556329,
+        "riskAmount": 8.31821249817997,
+        "riskPctEquity": 0.008406480543890822,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
+      },
+      {
+        "symbol": "BCH-USD",
+        "signalT": "2026-10-03T20:00:00.000Z",
+        "entryT": "2026-10-04T00:00:00.000Z",
+        "dir": 1,
+        "entry": 319.8599853515625,
+        "stop": 303.73785334995813,
+        "target": 352.10424935477124,
+        "risk": 16.12213200160437,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 89.4,
+          "bucket": "high",
+          "asOfDate": "2026-10-02",
+          "direction": "long",
+          "ret20": 0.37491377421094807,
+          "ret60": 0.4607461776748114,
+          "rsi14": 68.60318505325677,
+          "ma20": 286.15297927856443,
+          "ma50": 260.7733514404297,
+          "ma20Slope5": 0.06640086144241275,
+          "volumeRatio20": 0.7995980286360141,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09352527950725031,
+          "benchmarkRet60": 0.3314846309766286,
+          "rs20": 0.28138849470369776,
+          "rs60": 0.1292615466981828,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 96.5,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 4,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 93.1,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 196.31488904437384,
+        "allocationPct": 0.19839806876642127,
+        "quantity": 0.6137525731097669,
+        "stopPct": 0.05040371643825443,
+        "riskAmount": 9.895,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
+      },
+      {
+        "symbol": "XRP-USD",
+        "signalT": "2026-10-04T04:00:00.000Z",
+        "entryT": "2026-10-04T08:00:00.000Z",
+        "dir": 1,
+        "entry": 1.499500036239624,
+        "stop": 1.477332876409803,
+        "target": 1.543834355899266,
+        "risk": 0.02216715982982098,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 80.3,
+          "bucket": "high",
+          "asOfDate": "2026-10-03",
+          "direction": "long",
+          "ret20": 0.10882263784318469,
+          "ret60": 0.3851001862768293,
+          "rsi14": 59.55985962977503,
+          "ma20": 1.460547250509262,
+          "ma50": 1.3864237153530121,
+          "ma20Slope5": 0.022789184555301656,
+          "volumeRatio20": 0.2509639222313316,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.10314435251691756,
+          "benchmarkRet60": 0.32327401263690114,
+          "rs20": 0.0056782853262671296,
+          "rs60": 0.06182617363992815,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 73.9,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 53.5,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 70.6,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 247.375,
+        "allocationPct": 0.25,
+        "quantity": 164.97165323207022,
+        "stopPct": 0.0147830338740176,
+        "riskAmount": 3.656953004585104,
+        "riskPctEquity": 0.0036957584685044,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
+      }
+    ],
+    "open": [
+      {
+        "symbol": "BTC-USD",
+        "signalT": "2026-10-02T04:00:00.000Z",
+        "entryT": "2026-10-02T08:00:00.000Z",
+        "dir": 1,
+        "entry": 86095.6796875,
+        "stop": 83037.74508928572,
+        "target": 92211.54888392857,
+        "risk": 3057.934598214284,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 84.8,
+          "bucket": "high",
+          "asOfDate": "2026-10-01",
+          "direction": "long",
+          "ret20": 0.09950663306016061,
+          "ret60": 0.33664820835039855,
+          "rsi14": 76.71206959916854,
+          "ma20": 81684.25390625,
+          "ma50": 77700.9984375,
+          "ma20Slope5": 0.01898280774367267,
+          "volumeRatio20": 1.0580638370065072,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09950663306016061,
+          "benchmarkRet60": 0.33664820835039855,
+          "rs20": 0,
+          "rs60": 0,
+          "components": {
+            "return20": {
+              "score": 99.8,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 97.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 24.6,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 50,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 50,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 1000,
+        "notional": 250,
+        "allocationPct": 0.25,
+        "quantity": 0.002903746168302761,
+        "stopPct": 0.03551786348994068,
+        "riskAmount": 8.87946587248517,
+        "riskPctEquity": 0.00887946587248517,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 85304.171875,
+        "markT": "2026-10-04T12:00:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -2.2983377777285754,
+        "markedPositionValue": 247.70166222227144
+      },
+      {
+        "symbol": "BNB-USD",
+        "signalT": "2026-10-03T16:00:00.000Z",
+        "entryT": "2026-10-03T20:00:00.000Z",
+        "dir": 1,
+        "entry": 789.5700073242188,
+        "stop": 763.0199877057756,
+        "target": 842.670046561105,
+        "risk": 26.550019618443116,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 70.2,
+          "bucket": "high",
+          "asOfDate": "2026-10-02",
+          "direction": "long",
+          "ret20": 0.055942262307494106,
+          "ret60": 0.30461074219276396,
+          "rsi14": 52.84770116343112,
+          "ma20": 759.8423065185547,
+          "ma50": 717.6200634765624,
+          "ma20Slope5": 0.012706916109734179,
+          "volumeRatio20": 1.0141056717474117,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09352527950725031,
+          "benchmarkRet60": 0.3314846309766286,
+          "rs20": -0.03758301719975621,
+          "rs60": -0.026873888783864652,
+          "components": {
+            "return20": {
+              "score": 78,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 57.1,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 81.8,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 21.1,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 26.5,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 41,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 247.375,
+        "allocationPct": 0.25,
+        "quantity": 0.3133034407402726,
+        "stopPct": 0.03362592217556329,
+        "riskAmount": 8.31821249817997,
+        "riskPctEquity": 0.008406480543890822,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 788.5800170898438,
+        "markT": "2026-10-04T12:00:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -0.3101673467289564,
+        "markedPositionValue": 247.06483265327105
+      },
+      {
+        "symbol": "BCH-USD",
+        "signalT": "2026-10-03T20:00:00.000Z",
+        "entryT": "2026-10-04T00:00:00.000Z",
+        "dir": 1,
+        "entry": 319.8599853515625,
+        "stop": 303.73785334995813,
+        "target": 352.10424935477124,
+        "risk": 16.12213200160437,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 89.4,
+          "bucket": "high",
+          "asOfDate": "2026-10-02",
+          "direction": "long",
+          "ret20": 0.37491377421094807,
+          "ret60": 0.4607461776748114,
+          "rsi14": 68.60318505325677,
+          "ma20": 286.15297927856443,
+          "ma50": 260.7733514404297,
+          "ma20Slope5": 0.06640086144241275,
+          "volumeRatio20": 0.7995980286360141,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.09352527950725031,
+          "benchmarkRet60": 0.3314846309766286,
+          "rs20": 0.28138849470369776,
+          "rs60": 0.1292615466981828,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 96.5,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 4,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 93.1,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 196.31488904437384,
+        "allocationPct": 0.19839806876642127,
+        "quantity": 0.6137525731097669,
+        "stopPct": 0.05040371643825443,
+        "riskAmount": 9.895,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 318.8399963378906,
+        "markT": "2026-10-04T12:00:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -0.6260208816848065,
+        "markedPositionValue": 195.68886816268903
+      },
+      {
+        "symbol": "XRP-USD",
+        "signalT": "2026-10-04T04:00:00.000Z",
+        "entryT": "2026-10-04T08:00:00.000Z",
+        "dir": 1,
+        "entry": 1.499500036239624,
+        "stop": 1.477332876409803,
+        "target": 1.543834355899266,
+        "risk": 0.02216715982982098,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "mode": "crypto",
+        "momentumShadow": {
+          "available": true,
+          "score": 80.3,
+          "bucket": "high",
+          "asOfDate": "2026-10-03",
+          "direction": "long",
+          "ret20": 0.10882263784318469,
+          "ret60": 0.3851001862768293,
+          "rsi14": 59.55985962977503,
+          "ma20": 1.460547250509262,
+          "ma50": 1.3864237153530121,
+          "ma20Slope5": 0.022789184555301656,
+          "volumeRatio20": 0.2509639222313316,
+          "benchmarkSymbol": "BTC-USD",
+          "benchmarkRet20": 0.10314435251691756,
+          "benchmarkRet60": 0.32327401263690114,
+          "rs20": 0.0056782853262671296,
+          "rs60": 0.06182617363992815,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 100,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 73.9,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 53.5,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 70.6,
+              "weight": 7
+            }
+          }
+        },
+        "accountEquityBefore": 989.5,
+        "notional": 247.375,
+        "allocationPct": 0.25,
+        "quantity": 164.97165323207022,
+        "stopPct": 0.0147830338740176,
+        "riskAmount": 3.656953004585104,
+        "riskPctEquity": 0.0036957584685044,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 1.4984999895095825,
+        "markT": "2026-10-04T12:00:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -0.1649793623642727,
+        "markedPositionValue": 247.21002063763572
+      }
+    ],
+    "skipped": []
+  },
+  "trades": [
+    {
+      "symbol": "ADA-USD",
+      "signalT": "2026-10-02T04:00:00.000Z",
+      "entryT": "2026-10-02T08:00:00.000Z",
+      "dir": 1,
+      "entry": 0.2553200125694275,
+      "stop": 0.24230535786066737,
+      "target": 0.28134932198694773,
+      "risk": 0.01301465470876012,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-10-02T16:00:00.000Z",
+      "mode": "crypto",
+      "momentumShadow": {
+        "available": true,
+        "score": 86.9,
+        "bucket": "high",
+        "asOfDate": "2026-10-01",
+        "direction": "long",
+        "ret20": 0.19451991090701037,
+        "ret60": 0.3005640365735309,
+        "rsi14": 70.47387124087587,
+        "ma20": 0.23159274980425834,
+        "ma50": 0.2149471402168274,
+        "ma20Slope5": 0.0397415042658269,
+        "volumeRatio20": 0.908493896705116,
+        "benchmarkSymbol": "BTC-USD",
+        "benchmarkRet20": 0.09950663306016061,
+        "benchmarkRet60": 0.33664820835039855,
+        "rs20": 0.09501327784684976,
+        "rs60": -0.036084171776867624,
+        "components": {
+          "return20": {
+            "score": 100,
+            "weight": 20
+          },
+          "return60": {
+            "score": 100,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 100,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 100,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 12.7,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 100,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 38,
+            "weight": 7
+          }
+        }
+      }
+    },
+    {
+      "symbol": "BTC-USD",
+      "signalT": "2026-10-02T04:00:00.000Z",
+      "entryT": "2026-10-02T08:00:00.000Z",
+      "dir": 1,
+      "entry": 86095.6796875,
+      "stop": 83037.74508928572,
+      "target": 92211.54888392857,
+      "risk": 3057.934598214284,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "mode": "crypto",
+      "momentumShadow": {
+        "available": true,
+        "score": 84.8,
+        "bucket": "high",
+        "asOfDate": "2026-10-01",
+        "direction": "long",
+        "ret20": 0.09950663306016061,
+        "ret60": 0.33664820835039855,
+        "rsi14": 76.71206959916854,
+        "ma20": 81684.25390625,
+        "ma50": 77700.9984375,
+        "ma20Slope5": 0.01898280774367267,
+        "volumeRatio20": 1.0580638370065072,
+        "benchmarkSymbol": "BTC-USD",
+        "benchmarkRet20": 0.09950663306016061,
+        "benchmarkRet60": 0.33664820835039855,
+        "rs20": 0,
+        "rs60": 0,
+        "components": {
+          "return20": {
+            "score": 99.8,
+            "weight": 20
+          },
+          "return60": {
+            "score": 100,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 100,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 97.5,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 24.6,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 50,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 50,
+            "weight": 7
+          }
+        }
+      }
+    },
+    {
+      "symbol": "BNB-USD",
+      "signalT": "2026-10-03T16:00:00.000Z",
+      "entryT": "2026-10-03T20:00:00.000Z",
+      "dir": 1,
+      "entry": 789.5700073242188,
+      "stop": 763.0199877057756,
+      "target": 842.670046561105,
+      "risk": 26.550019618443116,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "mode": "crypto",
+      "momentumShadow": {
+        "available": true,
+        "score": 70.2,
+        "bucket": "high",
+        "asOfDate": "2026-10-02",
+        "direction": "long",
+        "ret20": 0.055942262307494106,
+        "ret60": 0.30461074219276396,
+        "rsi14": 52.84770116343112,
+        "ma20": 759.8423065185547,
+        "ma50": 717.6200634765624,
+        "ma20Slope5": 0.012706916109734179,
+        "volumeRatio20": 1.0141056717474117,
+        "benchmarkSymbol": "BTC-USD",
+        "benchmarkRet20": 0.09352527950725031,
+        "benchmarkRet60": 0.3314846309766286,
+        "rs20": -0.03758301719975621,
+        "rs60": -0.026873888783864652,
+        "components": {
+          "return20": {
+            "score": 78,
+            "weight": 20
+          },
+          "return60": {
+            "score": 100,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 57.1,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 81.8,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 21.1,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 26.5,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 41,
+            "weight": 7
+          }
+        }
+      }
+    },
+    {
+      "symbol": "BCH-USD",
+      "signalT": "2026-10-03T20:00:00.000Z",
+      "entryT": "2026-10-04T00:00:00.000Z",
+      "dir": 1,
+      "entry": 319.8599853515625,
+      "stop": 303.73785334995813,
+      "target": 352.10424935477124,
+      "risk": 16.12213200160437,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "mode": "crypto",
+      "momentumShadow": {
+        "available": true,
+        "score": 89.4,
+        "bucket": "high",
+        "asOfDate": "2026-10-02",
+        "direction": "long",
+        "ret20": 0.37491377421094807,
+        "ret60": 0.4607461776748114,
+        "rsi14": 68.60318505325677,
+        "ma20": 286.15297927856443,
+        "ma50": 260.7733514404297,
+        "ma20Slope5": 0.06640086144241275,
+        "volumeRatio20": 0.7995980286360141,
+        "benchmarkSymbol": "BTC-USD",
+        "benchmarkRet20": 0.09352527950725031,
+        "benchmarkRet60": 0.3314846309766286,
+        "rs20": 0.28138849470369776,
+        "rs60": 0.1292615466981828,
+        "components": {
+          "return20": {
+            "score": 100,
+            "weight": 20
+          },
+          "return60": {
+            "score": 100,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 96.5,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 100,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 4,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 100,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 93.1,
+            "weight": 7
+          }
+        }
+      }
+    },
+    {
+      "symbol": "XRP-USD",
+      "signalT": "2026-10-04T04:00:00.000Z",
+      "entryT": "2026-10-04T08:00:00.000Z",
+      "dir": 1,
+      "entry": 1.499500036239624,
+      "stop": 1.477332876409803,
+      "target": 1.543834355899266,
+      "risk": 0.02216715982982098,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "mode": "crypto",
+      "momentumShadow": {
+        "available": true,
+        "score": 80.3,
+        "bucket": "high",
+        "asOfDate": "2026-10-03",
+        "direction": "long",
+        "ret20": 0.10882263784318469,
+        "ret60": 0.3851001862768293,
+        "rsi14": 59.55985962977503,
+        "ma20": 1.460547250509262,
+        "ma50": 1.3864237153530121,
+        "ma20Slope5": 0.022789184555301656,
+        "volumeRatio20": 0.2509639222313316,
+        "benchmarkSymbol": "BTC-USD",
+        "benchmarkRet20": 0.10314435251691756,
+        "benchmarkRet60": 0.32327401263690114,
+        "rs20": 0.0056782853262671296,
+        "rs60": 0.06182617363992815,
+        "components": {
+          "return20": {
+            "score": 100,
+            "weight": 20
+          },
+          "return60": {
+            "score": 100,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 73.9,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 100,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 53.5,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 70.6,
+            "weight": 7
+          }
+        }
+      }
+    }
+  ]
+}
