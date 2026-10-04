@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { momentumShadow, momentumBucketSummary } from '../lib/smc-momentum-shadow.mjs';
-import { createRunContext, loadLedgerStrict, reconcileLedger, appendRunLog } from '../lib/smc-forward-evidence.mjs';
-import { aggregateExchange4H, aggregateCrypto4H, evaluateExit } from '../lib/smc-forward-runtime.mjs';
+import { createRunContext, loadLedgerStrict, reconcileLedger, appendRunLog, evidenceProvenanceClass } from '../lib/smc-forward-evidence.mjs';
+import { aggregateExchange4H, aggregateCrypto4H, evaluateExit, buildGapBeforeIndex, resumeRecordedTrade } from '../lib/smc-forward-runtime.mjs';
 import { latestCompletedMark, simulatePortfolioMarked } from '../lib/smc-forward-portfolio.mjs';
 
 const FORWARD_START='2026-10-01';
@@ -133,6 +133,16 @@ function stats(T,cost=0){
   let eq=0,pk=0,dd=0;for(const r of rs){eq+=r;pk=Math.max(pk,eq);dd=Math.min(dd,eq-pk)}
   return{n,wr:n?w/n:null,pf:l?g/l:null,avgR:n?sum/n:null,sumR:sum,maxDD:dd};
 }
+
+function provenancePerformance(closed){
+  const bucket=name=>closed.filter(x=>evidenceProvenanceClass(x)===name);
+  const pack=xs=>({raw:stats(xs),cost05R:stats(xs,.05)});
+  return {
+    prospective:pack(bucket('prospective')),
+    reconstructed:pack(bucket('reconstructed')),
+    legacyUnprovenanced:pack(bucket('legacy_unprovenanced'))
+  };
+}
 const tradeKey=x=>`${x.symbol}|${x.entryT}|${x.dir}`;
 
 function simulatePortfolio(trades){
@@ -166,11 +176,12 @@ function simulatePortfolio(trades){
   return{rules:PORTFOLIO,startingCapital:PORTFOLIO.startingCapital,currentEquity,realizedReturnPct:currentEquity/PORTFOLIO.startingCapital-1,cash,reservedNotional:open.reduce((s,p)=>s+p.notional,0),openRiskAmount:open.reduce((s,p)=>s+p.riskAmount,0),maxDrawdownPct:maxDD,enteredCount:entered.length,closedCount:entered.filter(x=>x.portfolioStatus==='closed').length,openCount:open.length,skippedCount:skipped.length,entered,open,skipped,equityCurve};
 }
 
-function forwardTrades(d0,h,symbol,mode,benchmarkDaily=[],benchmarkSymbol=null,observedAt=new Date().toISOString(),dataQuality=[],marksBySymbol=new Map()){
+function forwardTrades(d0,h,symbol,mode,benchmarkDaily=[],benchmarkSymbol=null,observedAt=new Date().toISOString(),dataQuality=[],marksBySymbol=new Map(),priorTrades=[]){
   const d=mode==='crypto'?dailyCrypto(d0):dailyStock(d0);
   const agg=mode==='crypto'?aggregateCrypto4H(h,{nowMs:Date.parse(observedAt)}):aggregateExchange4H(h,{nowMs:Date.parse(observedAt)});
   const f=agg.bars,w=weekly(d0,mode),A=atr(f),W=structure(w,3),D=structure(d,5),F=structure(f,3),T=[];let blocked=-1;
   dataQuality.push(...agg.diagnostics.map(x=>({symbol,mode,...x})));
+  const gapBeforeIndex=buildGapBeforeIndex(f,{mode,diagnostics:agg.diagnostics,tradingDates:d.map(x=>x.date)});
   const latestMark=latestCompletedMark(f,observedAt,{freshnessMs:(mode==='crypto'?12:120)*60*60*1000});
   if(latestMark)marksBySymbol.set(symbol,latestMark);
   for(const e of F.ev){
@@ -184,17 +195,27 @@ function forwardTrades(d0,h,symbol,mode,benchmarkDaily=[],benchmarkSymbol=null,o
       T.push({symbol,signalT,dir,status:'pending_entry',R:null,exitT:null,mode,momentumShadow:m,signalSnapshot});
       continue;
     }
+    const entryGap=gapBeforeIndex.get(e.i+1);
+    if(entryGap){
+      T.push({symbol,signalT,dir,status:'pending_entry',R:null,exitT:null,mode,momentumShadow:m,signalSnapshot,lifecycleDataGap:{phase:'entry',beforeBarIndex:e.i+1,...structuredClone(entryGap)}});
+      continue;
+    }
     const en=f[e.i+1].o,entryT=f[e.i+1].t;
     const entryDate=mode==='crypto'?utcDate(entryT):tor(entryT).date;
     if(entryDate<FORWARD_START)continue;
     let stop=e.opp;stop=dir===1?stop-.1*(A[e.i]||0):stop+.1*(A[e.i]||0);
     const risk=dir===1?en-stop:stop-en;if(!(risk>0))continue;
     const tp=en+dir*2*risk;
-    const outcome=evaluateExit(f,e.i,dir,en,stop,tp,16),{exitIndex,...life}=outcome;
+    const outcome=evaluateExit(f,e.i,dir,en,stop,tp,16,{gapBeforeIndex}),{exitIndex,...life}=outcome;
     T.push({symbol,signalT,entryT:new Date(entryT).toISOString(),dir,entry:en,stop,target:tp,risk,...life,mode,momentumShadow:m,signalSnapshot});
     if(Number.isInteger(exitIndex))blocked=exitIndex;
   }
-  return T;
+  const byIdentity=new Map(T.map(x=>[[x.symbol,x.signalT,x.dir].join('|'),x]));
+  for(const old of priorTrades.filter(x=>x.status==='open'||x.status==='pending_entry')){
+    const resumed=resumeRecordedTrade(old,f,{gapBeforeIndex});
+    byIdentity.set(old.decisionId||[old.symbol,old.signalT,old.dir].join('|'),resumed);
+  }
+  return [...byIdentity.values()];
 }
 
 async function runCohort(name,symbols,mode){
@@ -203,6 +224,7 @@ async function runCohort(name,symbols,mode){
   const latestJson=`data/research/smc-wd4h-forward-${safe}-latest.json`;
   const latestMd=`data/research/smc-wd4h-forward-${safe}-latest.md`;
   const failures=[],all=[],dataQuality=[],marksBySymbol=new Map();
+  const prior=loadLedgerStrict(ledgerPath,{version:'smc-wd4h-forward-alternatives-ledger-v2',cohort:name,mode,forwardStart:FORWARD_START,symbols,trades:[]});
   const run=createRunContext('smc-forward-alternatives',name);
   const benchmarkSymbol=MOMENTUM_BENCHMARKS[name]||null;
   let benchmarkDaily=[];
@@ -215,11 +237,10 @@ async function runCohort(name,symbols,mode){
   for(const s of symbols){
     try{
       const [d,h]=await Promise.all([yahoo(s,'2y','1d'),yahoo(s,'60d','1h')]);
-      all.push(...forwardTrades(d,h,s,mode,benchmarkDaily,benchmarkSymbol,run.observedAt,dataQuality,marksBySymbol));await sleep(175);
+      all.push(...forwardTrades(d,h,s,mode,benchmarkDaily,benchmarkSymbol,run.observedAt,dataQuality,marksBySymbol,prior.trades.filter(x=>x.symbol===s)));await sleep(175);
     }catch(e){failures.push({symbol:s,error:String(e?.message||e)})}
   }
   all.sort((a,b)=>(a.entryT||a.signalT).localeCompare(b.entryT||b.signalT));
-  const prior=loadLedgerStrict(ledgerPath,{version:'smc-wd4h-forward-alternatives-ledger-v2',cohort:name,mode,forwardStart:FORWARD_START,symbols,trades:[]});
   const reconciliation=reconcileLedger(prior,all,run);
   const trades=reconciliation.trades;
   const closed=trades.filter(x=>x.status==='closed'&&Number.isFinite(x.R));
@@ -241,7 +262,7 @@ async function runCohort(name,symbols,mode){
     timingConvention:{fourHour:mode==='crypto'?'four complete UTC hourly sources':'completed exchange-session source slots only',exit:'bar-end evidence v2',collision:'stop-first when both touched',gapFill:'strategy-level result retained but gap uncertainty flagged'},
     failures,dataQuality,
     evidenceAudit:{run,reconciliation:reconciliation.summary,discrepancies:reconciliation.runDiscrepancies,legacyProvenanceUnknown:reconciliation.summary.legacyUnprovenancedCount},
-    summary:{closed:stats(closed),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,pendingCount:pending.length,momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
+    summary:{closed:stats(closed),cost05R:stats(closed,.05),long:stats(closed.filter(x=>x.dir===1)),short:stats(closed.filter(x=>x.dir===-1)),openCount:open.length,pendingCount:pending.length,performanceByProvenance:provenancePerformance(closed),momentumShadow:momentumBucketSummary(closed,stats,PORTFOLIO.costR)},
     legacyPortfolioV1,portfolio,trades
   };
   fs.mkdirSync('data/research',{recursive:true});
@@ -276,6 +297,9 @@ async function runCohort(name,symbols,mode){
     '## Evidence integrity','',
     `Legacy provenance unknown ${reconciliation.summary.legacyUnprovenancedCount}; prospective ${reconciliation.summary.prospectiveCount}; reconstructed ${reconciliation.summary.reconstructedCount}; pending ${reconciliation.summary.pendingCount}.`,
     `This run discrepancies ${reconciliation.runDiscrepancies.length}; prior not re-observed ${reconciliation.summary.missingPreviouslyRecorded}; candle/data diagnostics ${dataQuality.length}.`,'',
+    '### Performance by evidence provenance','',
+    '| Evidence class | Closed | Win rate | Avg R after 0.05R cost | PF after 0.05R cost |','|---|---:|---:|---:|---:|',
+    ...[['prospective','prospective'],['reconstructed','reconstructed'],['legacyUnprovenanced','legacy unprovenanced']].map(([k,label])=>{const x=out.summary.performanceByProvenance[k];return `| ${label} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.cost05R.avgR)} | ${n(x.cost05R.pf)} |`}), '',
     '## Momentum shadow (observational only)','',
     '| Bucket | Closed | Win rate | Avg R after cost | PF after cost |','|---|---:|---:|---:|---:|',
     ...['high','medium','low','unavailable'].map(b=>{const x=out.summary.momentumShadow[b];return `| ${b} | ${x.raw.n} | ${p(x.raw.wr)} | ${n(x.afterCost.avgR)} | ${n(x.afterCost.pf)} |`}), '',
