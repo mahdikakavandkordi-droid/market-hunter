@@ -14,36 +14,49 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: smc-forward-evidence-writes
+  cancel-in-progress: false
+
 jobs:
   forward-paper:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout operational helper
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: ops
+          persist-credentials: false
+      - name: Checkout frozen evidence branch
+        uses: actions/checkout@v4
         with:
           ref: research/smc-wd4h-tsx-validation-20261001
+          path: evidence
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Run frozen forward paper tracker
+        working-directory: evidence
         run: node scripts/smc-forward-paper.mjs
       - name: Persist immutable forward ledger
+        working-directory: evidence
         run: |
-          git config user.name "market-hunter-bot"
-          git config user.email "market-hunter-bot@users.noreply.github.com"
-          git add data/research/smc-wd4h-forward-paper-ledger.json data/research/smc-wd4h-forward-paper-latest.json data/research/smc-wd4h-forward-paper-latest.md
-          if git diff --cached --quiet; then
-            echo "No forward ledger changes"
-          else
-            git commit -m "data: update SMC forward paper ledger"
-            git push origin HEAD:research/smc-wd4h-tsx-validation-20261001
-          fi
+          node ../ops/scripts/persist-smc-evidence.mjs \
+            --branch research/smc-wd4h-tsx-validation-20261001 \
+            --message "data: update SMC forward paper ledger" \
+            --files \
+              evidence/data/research/smc-wd4h-forward-paper-ledger.json \
+              evidence/data/research/smc-wd4h-forward-paper-latest.json \
+              evidence/data/research/smc-wd4h-forward-paper-latest.md
       - name: Upload forward paper snapshot
         uses: actions/upload-artifact@v4
         with:
           name: smc-wd4h-forward-paper-latest
           path: |
-            data/research/smc-wd4h-forward-paper-ledger.json
-            data/research/smc-wd4h-forward-paper-latest.json
-            data/research/smc-wd4h-forward-paper-latest.md
+            evidence/data/research/smc-wd4h-forward-paper-ledger.json
+            evidence/data/research/smc-wd4h-forward-paper-latest.json
+            evidence/data/research/smc-wd4h-forward-paper-latest.md
           if-no-files-found: error
