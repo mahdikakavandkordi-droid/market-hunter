@@ -19,6 +19,7 @@ const staticFiles=new Map([
   ['/','index.html'],
   ['/index.html','index.html'],
   ['/app.js','app.js'],
+  ['/quote-policy.js','quote-policy.js'],
   ['/app.css','app.css'],
   ['/mobile-polish.css','mobile-polish.css'],
   ['/theme.css','theme.css'],

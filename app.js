@@ -666,28 +666,12 @@ function quoteTimeLabel(value){
   return new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
 }
 function quoteFor(symbol,fallback=null){
-  const qv=state.intraday?.quotes?.[symbol];
-  if(qv&&numeric(qv.price)){
-    const quoteAt=qv.quoteAt||state.intraday?.capturedAt||null;
-    const age=Number.isFinite(Date.parse(quoteAt||''))?(Date.now()-Date.parse(quoteAt))/60000:Infinity;
-    const stale=Boolean(qv.stale)||age>90;
-    const provisional=Boolean(state.intraday?.marketOpen)&&!stale;
-    return {
-      symbol,price:Number(qv.price),changePct:numeric(qv.changePct)?Number(qv.changePct):null,
-      currency:qv.currency||fallback?.currency||null,quoteAt,covered:true,
-      state:stale?'stale':provisional?'provisional':'hourly',
-      label:stale?'Hourly quote · stale':provisional?'Hourly quote · provisional':'Hourly quote'
-    };
-  }
-  if(fallback&&numeric(fallback.price)){
-    const reason=state.intraday?'Not covered by hourly feed':'Hourly feed unavailable';
-    return {
-      symbol,price:Number(fallback.price),changePct:numeric(fallback.dayChangePct)?Number(fallback.dayChangePct):null,
-      currency:fallback.currency||null,quoteAt:fallback.asOf||null,covered:false,state:'fallback',
-      label:reason+' · completed-session fallback'
-    };
-  }
-  return {symbol,price:null,changePct:null,currency:fallback?.currency||null,quoteAt:null,covered:false,state:'unavailable',label:state.intraday?'Not covered by hourly feed · unavailable':'Hourly feed unavailable'};
+  return globalThis.MarketHunterQuotePolicy.selectQuote({
+    symbol,
+    intradaySnapshot:state.intraday,
+    completed:fallback,
+    now:new Date()
+  });
 }
 function quoteMetaHtml(display){
   const when=display?.quoteAt?quoteTimeLabel(display.quoteAt):'';
