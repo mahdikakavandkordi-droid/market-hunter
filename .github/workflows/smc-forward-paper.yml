@@ -6,7 +6,15 @@ on:
       - research/smc-wd4h-tsx-validation-20261001
     paths:
       - 'scripts/smc-forward-paper.mjs'
+      - 'scripts/smc-forward-expanded.mjs'
+      - 'scripts/smc-forward-alternatives.mjs'
+      - 'lib/smc-forward-runtime.mjs'
+      - 'lib/smc-forward-evidence.mjs'
+      - 'lib/smc-forward-portfolio.mjs'
       - 'lib/smc-momentum-shadow.mjs'
+      - 'scripts/test-smc-forward-ledger.mjs'
+      - 'scripts/test-smc-forward-timing.mjs'
+      - 'scripts/test-smc-forward-portfolio.mjs'
       - 'scripts/test-smc-momentum-shadow.mjs'
       - '.github/workflows/smc-forward-paper.yml'
   workflow_dispatch:
@@ -27,6 +35,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Test forward ledger integrity
+        run: node scripts/test-smc-forward-ledger.mjs
+      - name: Test forward candle timing
+        run: node scripts/test-smc-forward-timing.mjs
+      - name: Test marked portfolio accounting
+        run: node scripts/test-smc-forward-portfolio.mjs
+      - name: Check expanded/alternatives syntax
+        run: |
+          node --check scripts/smc-forward-expanded.mjs
+          node --check scripts/smc-forward-alternatives.mjs
       - name: Test momentum shadow
         run: node scripts/test-smc-momentum-shadow.mjs
       - name: Run frozen forward paper tracker
