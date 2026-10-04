@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import handler from '../api/engines.js';
+import {ENGINES,COHORTS,evidencePath,normalizeEvidence,commonComparison,loadDashboard} from '../lib/engine-dashboard.js';
+const now=Date.parse('2026-10-04T21:00:00Z');
+function account(){return {startingCapital:1000,cash:750,realizedCurrentEquity:1000,realizedReturnPct:0,markedCurrentEquity:null,markedReturnPct:null,markedObservation:{quality:'missing'},open:[{symbol:'TEST.TO',dir:1,status:'open',entry:100,markPrice:null,unrealizedPnl:null}],entered:[{symbol:'TEST.TO',status:'open'}],rules:{costR:.05}};}
+function evidence(engine,cohort){return {version:engine.id==='smc'?'smc-wd4h-forward-paper-evidence-v2':engine.id==='trend'?'trend-breakout-v1':'mean-reversion-v1',mode:'forward_shadow',cohort,generatedAt:'2026-10-04T20:00:00Z',forwardStart:'2026-10-04T19:00:00Z',trades:[],portfolio:account(),failures:[],summary:{pending:0}};}
+const d=evidence(ENGINES[0],'tsx-core'),before=JSON.stringify(d);
+const n=normalizeEvidence(ENGINES[0],'tsx-core',d,now);
+assert.equal(n.account.markedEquity,null);assert.equal(n.account.open[0].unrealizedPnl,null);
+assert.equal(n.account.closedCount,0);assert.equal(JSON.stringify(d),before,'adapter must not mutate evidence');
+assert.throws(()=>normalizeEvidence(ENGINES[1],'tsx-core',{...evidence(ENGINES[1],'tsx-core'),mode:'historical'},now));
+assert.throws(()=>normalizeEvidence(ENGINES[0],'us-75',d,now));
+assert.throws(()=>evidencePath(ENGINES[0],'../../secrets'));
+assert.equal(normalizeEvidence(ENGINES[0],'tsx-core',d,now+7*3600000).reportOverdue,true);
+assert.equal(commonComparison(d,now),null);
+const m=evidence(ENGINES[2],'tsx-core');
+m.comparison={commonStart:'2026-10-04T19:00:00Z',smcLedgerAsOf:'2026-10-04T20:00:00Z',trendLedgerAsOf:'2026-10-04T20:00:00Z',smc:{commonWindowPaperAccount:account()},trend:{commonWindowPaperAccount:account()},trendStale:true};
+assert.equal(commonComparison(m,now).rows[1].stale,true);
+assert.equal(commonComparison(m,now).rows[0].account.markedEquity,null);
+const dashboard=await loadDashboard({now,fetcher:async url=>{
+  const engine=ENGINES.find(e=>url.includes('/'+e.branch+'/'));
+  const cohort=COHORTS.find(c=>url.includes('/'+c+'-latest')||url.includes('forward-'+(c==='tsx-core'?'paper':c)+'-evidence'));
+  if(engine.id==='trend'&&cohort==='crypto-15')return {ok:false,status:503};
+  return {ok:true,json:async()=>evidence(engine,cohort)};
+}});
+assert.equal(dashboard.reports.length,15);assert.equal(dashboard.reports.filter(r=>r.status==='available').length,14);
+assert.equal(dashboard.reports.find(r=>r.engine==='trend'&&r.cohort==='crypto-15').account,undefined,'missing data must not become zero');
+const res={status(code){this.code=code;return this},json(body){this.body=body;return this}};
+await handler({method:'POST'},res);assert.equal(res.code,405);
+console.log('Engine dashboard: read-only evidence, missing marks, cohort isolation, historical rejection, common-window and partial-source checks passed.');

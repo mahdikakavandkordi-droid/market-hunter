@@ -137,6 +137,7 @@ const initialSession=loadCloudSession();
 const initialEnvelope=readEnvelopeFor(initialSession);
 const initialDaily=readDailyFor(initialSession);
 const state={
+  engines:null,engineSelection:{engine:'smc',cohort:'tsx-core',mode:'open',loading:false,error:false},
   view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,
   envelope:initialEnvelope,watch:visibleWatch(initialEnvelope),positions:visiblePositions(initialEnvelope),
   portfolioItems:new Map(),liveItems:new Map(),intraday:null,intradayStatus:'loading',analytics:null,previous:previousMapFromDaily(initialDaily),
@@ -987,6 +988,7 @@ async function loadPortfolio(ctx=captureSessionContext()){
   }
 }
 async function load(){
+  loadEngines();
   const b=q('#refreshBtn');b.classList.add('busy');b.disabled=true;
   try{
     const [daily,pulse,v2,intraday]=await Promise.allSettled([
@@ -1126,6 +1128,7 @@ function stockCard(x,rank=''){
   return `<article class="card">
     <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice"><div class="price-line">${money(x.price,x.displayQuote?.currency||'CAD')}<small class="day-change ${cls(x.dayChangePct)}">${pct(x.dayChangePct)}</small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
     <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
+    ${window.MarketHunterEngines?.badges(state.engines,x.symbol)||''}
     <div class="metrics"><div class="metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></div><div class="metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></div><div class="metric"><small>RS20</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="metric"><small>Momentum</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div></div>
     <div class="why analysis-copy">${esc(why)}</div>
     <details><summary>Technical details</summary><div class="copy"><strong>Why it qualified</strong><br>${esc((x.evidence||[]).join(' · ')||'Stage-specific review criteria passed.')}<br><br><strong>Positioning</strong><br>Pullback from 60-day high ${pct(x.pullback60)} · ATR ${pct(x.atr14Pct)} · vs MA20 ${pct(x.dist20)} · vs MA50 ${pct(x.dist50)}${(x.riskFlags||[]).length?'<br><br><strong>Risk context</strong><br>'+esc(x.riskFlags.join(' · ')):''}</div></details>
@@ -1411,18 +1414,34 @@ function watchlistHtml(){
     return `<article class="card"><div class="cardtop"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="cardprice"><div class="price-line">${money(display.price,display.currency||'CAD')}<small class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</small></div>${quoteMetaHtml(display)}</div></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`;
   }).join(''):'<div class="empty">Save a chart from the shortlist.</div>'}</div></section></div>`;
 }
+let engineLoadSequence=0;
+async function loadEngines(){
+  const sequence=++engineLoadSequence;
+  state.engineSelection.loading=true;state.engineSelection.error=false;
+  renderView('engines');
+  try{
+    const data=await getJson('/api/engines');
+    if(sequence!==engineLoadSequence)return;
+    if(data?.version!=='engine-dashboard-v1'||!Array.isArray(data.reports))throw new Error('invalid_engine_dashboard');
+    state.engines=data;
+  }catch{if(sequence===engineLoadSequence)state.engineSelection.error=true;}
+  finally{
+    if(sequence===engineLoadSequence){state.engineSelection.loading=false;renderView('engines');renderView('shortlist');renderView('watchlist');}
+  }
+}
 function renderView(view){
+  if(view==='engines')q('#enginesView').innerHTML=window.MarketHunterEngines?.html(state.engines,state.engineSelection)||'';
   if(view==='home')q('#homeView').innerHTML=homeHtml();
   if(view==='shortlist')q('#shortlistView').innerHTML=shortlistHtml();
   if(view==='portfolio')q('#portfolioView').innerHTML=portfolioHtml();
   if(view==='watchlist')q('#watchlistView').innerHTML=watchlistHtml();
 }
-function renderAll(){['home','shortlist','portfolio','watchlist'].forEach(renderView)}
+function renderAll(){['home','shortlist','portfolio','watchlist','engines'].forEach(renderView)}
 function setView(view){
   state.view=view;
   qa('.view').forEach(el=>el.classList.toggle('active',el.id===view+'View'));
   qa('.navbtn').forEach(el=>{const active=el.dataset.view===view;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')});
-  const titles={home:'Home',shortlist:'Charts to Review',portfolio:'Portfolio Monitor',watchlist:'Watchlist'};
+  const titles={home:'Home',shortlist:'Charts to Review',portfolio:'Portfolio Monitor',watchlist:'Watchlist',engines:'Paper Engines'};
   const title=q('#pageTitle');if(title)title.textContent=titles[view]||'Market Hunter';
   renderView(view);window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1493,6 +1512,11 @@ document.addEventListener('click',async e=>{
     closeRiskInfo();
   }
   const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return}
+  if(e.target.closest('[data-engine-refresh]')){loadEngines();return}
+  const engineTab=e.target.closest('[data-engine-tab]');if(engineTab){state.engineSelection.engine=engineTab.dataset.engineTab;renderView('engines');return}
+  const engineMarket=e.target.closest('[data-engine-market]');if(engineMarket){state.engineSelection.cohort=engineMarket.dataset.engineMarket;renderView('engines');return}
+  const engineMode=e.target.closest('[data-engine-mode]');if(engineMode){state.engineSelection.mode=engineMode.dataset.engineMode;renderView('engines');return}
+  const engineOpen=e.target.closest('[data-engine-open]');if(engineOpen){state.engineSelection.engine=engineOpen.dataset.engineOpen;state.engineSelection.cohort=engineOpen.dataset.engineCohort;state.engineSelection.mode='open';setView('engines');return}
   const stageTab=e.target.closest('[data-stage-tab]');if(stageTab){state.reviewStage=stageTab.dataset.stageTab;renderView('shortlist');qa('[data-stage-tab]').find(el=>el.dataset.stageTab===state.reviewStage)?.focus({preventScroll:true});return}
   const open=e.target.closest('[data-open]');if(open){setView(open.dataset.open);return}
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}

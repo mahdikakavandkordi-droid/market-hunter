@@ -26,3 +26,10 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run browser smoke
         run: npm run test:browser
+      - name: Archive browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-evidence-${{ github.run_id }}
+          path: test-results/
+          retention-days: 7
