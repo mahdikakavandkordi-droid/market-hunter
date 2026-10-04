@@ -25,7 +25,7 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
     if(url.pathname==='/api/engines')return route.fulfill({json:data});
     if(url.pathname==='/api/research-data'){
       const kind=url.searchParams.get('kind');
-      return route.fulfill({json:kind==='v2'?{generatedAt:new Date().toISOString(),marketAsOf:new Date().toISOString().slice(0,10),integratedSurfacePicks:[{symbol:'TEST.TO',name:'Synthetic fixture',stage:'Recovery',price:100,rsi14:55}],surfacePicks:{Recovery:[{symbol:'TEST.TO',name:'Synthetic fixture',stage:'Recovery',price:100,rsi14:55}]} }:kind==='pulse'?{markets:[]}:{groups:[],markets:[],asOf:{latest:'2026-10-04'}}});
+      return route.fulfill({json:kind==='v2'?{generatedAt:new Date().toISOString(),marketAsOf:new Date().toISOString().slice(0,10),integratedSurfacePicks:[{symbol:'TEST.TO',name:'Synthetic fixture',stage:'Recovery',price:100,rsi14:55,date:new Date().toISOString().slice(0,10),currency:'CAD',ret20:3.2,rs20:4.1,momentumShift:2.3,swingTrend:'Structure improving'}],surfacePicks:{Recovery:[{symbol:'TEST.TO',name:'Synthetic fixture',stage:'Recovery',price:100,rsi14:55,date:new Date().toISOString().slice(0,10),currency:'CAD',ret20:3.2,rs20:4.1,momentumShift:2.3,swingTrend:'Structure improving'}]} }:kind==='pulse'?{markets:[]}:{groups:[],markets:[],asOf:{latest:'2026-10-04'}}});
     }
     if(url.pathname==='/api/portfolio')return route.fulfill({json:{items:[],failures:[]}});
     return route.fulfill({json:{quotes:{},connected:false}});
@@ -33,25 +33,29 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await page.goto('/');
   await page.locator('[data-view="engines"]:visible').click();
   const view=page.locator('#enginesView');
-  await expect(view.getByText('Three engines. One research desk.')).toBeVisible();
+  await expect(view.getByText('Paper engines',{exact:true})).toBeVisible();
   await expect(view.locator('.engine-position').filter({hasText:'TEST.TO'})).toContainText('TEST.TO');
   await expect(view.locator('.engine-position').filter({hasText:'BTC-USD'})).toContainText('Short');
   await expect(view.locator('.engine-position').filter({hasText:'BTC-USD'}).locator('.tag')).toHaveClass(/short/);
   await view.locator('[data-engine-mode="pending"]').click();
   await expect(view.locator('.engine-position')).toContainText('ADA-USD');
-  await expect(view).toContainText('No capital committed yet');
+  await expect(view).toContainText('no position has opened');
   await view.locator('[data-engine-mode="open"]').click();
   await expect(view).toContainText('Started Oct 1');
   await expect(view.locator('.engine-overview').first().locator('.engine-equity')).toContainText('—');
   await expect(view).toContainText('Same starting window');
-  await view.locator('[data-engine-tab="trend"]').click();
+  await view.locator('[data-engine-tab="trend"]:visible').click();
   await expect(view).toContainText('No recorded open position');
+  await view.locator('.engine-account-details>summary').click();
   await view.locator('[data-engine-market="crypto-15"]').click();
   await expect(view.locator('[data-engine-market="crypto-15"]')).toHaveAttribute('aria-pressed','true');
   await view.locator('[data-engine-mode="closed"]').click();
   await expect(view).toContainText('No settled paper trades');
   await page.locator('[data-view="shortlist"]:visible').click();
   await page.locator('[data-stage-tab="Recovery"]').click();
+  await expect(page.locator('#shortlistView .engine-confirmation')).toHaveCount(0);
+  await expect(page.locator('#shortlistView')).not.toContainText('What would trigger an entry');
+  await page.screenshot({path:`test-results/review-${width}-english.png`,fullPage:true});
   await page.locator('[data-engine-open="smc"]').click();
   await expect(view.locator('.engine-position').filter({hasText:'TEST.TO'})).toContainText('TEST.TO');
   await expect(view.locator('[data-engine-market="tsx-core"]')).toHaveAttribute('aria-pressed','true');
@@ -64,6 +68,9 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await page.screenshot({path:`test-results/engines-${width}-persian.png`,fullPage:true});
   await page.locator('[data-view="shortlist"]:visible').click();
   await expect(page.locator('#shortlistView .analysis-copy').first()).toContainText('بازسازی');
+  await expect(page.locator('#shortlistView .stock-summary')).toHaveCount(1);
+  await expect(page.locator('#shortlistView .stock-summary')).toHaveCSS('direction','rtl');
+  await page.screenshot({path:`test-results/review-${width}-persian.png`,fullPage:true});
   await page.reload();
   await page.locator('[data-view="shortlist"]:visible').click();
   await page.locator('[data-stage-tab="Recovery"]').click();

@@ -1,3 +1,5 @@
+const ui=(en,fa)=>window.MHI18n?.t(en,fa)||en;
+const stageLabel=s=>window.MHI18n?.stageLabel(s)||s;
 const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const numeric=n=>n!==null&&n!==undefined&&!(typeof n==='string'&&n.trim()==='')&&Number.isFinite(Number(n));
 const fmt=n=>numeric(n)?Number(n).toLocaleString(undefined,{maximumFractionDigits:2}):'—';
@@ -228,6 +230,19 @@ async function loadTelegramBackendPortfolio(){
   if(applied.needsBootstrap){
     await syncTelegramBridgeNow({force:true});
   }
+  return true;
+}
+async function restoreTelegramBackendPortfolio(){
+  const pairing=telegramBridgeParams(),ctx=captureSessionContext();
+  if(!pairing.requested||!pairing.userId||!pairing.sig||hasVisibleData(state.envelope))return false;
+  const response=await fetch('/api/portfolio-bridge',{
+    method:'POST',credentials:'same-origin',cache:'no-store',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'restore',user_id:pairing.userId,sig:pairing.sig})
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||data.ok!==true||data.connected!==true||!contextActive(ctx)||hasVisibleData(state.envelope))return false;
+  applyTelegramBackendBundle(data);
   return true;
 }
 async function writeTelegramBackendBundle({announce=false,force=false}={}){
@@ -1008,7 +1023,7 @@ async function load(){
 
     const bridgeRequested=telegramBridgeRequested();
     if(bridgeRequested){
-      const bridgeSynced=await syncTelegramBridgeNow({announce:true,force:true}).catch(()=>false);
+      const bridgeSynced=await (hasVisibleData(state.envelope)?syncTelegramBridgeNow({announce:true,force:true}):restoreTelegramBackendPortfolio()).catch(()=>false);
       state.view='portfolio';
       if(bridgeSynced){
         try{
@@ -1032,6 +1047,7 @@ async function load(){
       ?'Completed markets through '+asOf.earliest+' · 24/7 through '+asOf.latest
       :asOf?.latest?'Completed-session data through '+asOf.latest:'Research dashboard';
     renderAll();
+    if(bridgeRequested)setView('portfolio');
   }finally{b.classList.remove('busy');b.disabled=false}
 }
 function homeHtml(){
@@ -1123,29 +1139,33 @@ function homeHtml(){
     ${outlook?`<section class="panel soft outlook-panel"><div class="panel-head"><div><h3>Model Outlook</h3><p>Based on historical analogs · short vs medium-term context · no price targets.</p></div></div><div class="outlook-track">${outlook}</div></section>`:''}
   </div>`;
 }
+function stockSummaryHtml(x){
+  const r=window.MHI18n?.read(x);
+  if(!r)return `<p class="analysis-copy">${esc(stockNarrative(x))}</p>`;
+  return `<div class="stock-summary analysis-copy"><p class="stock-summary-lead">${esc(r.lead)}</p>${r.now.length?`<div class="stock-read-row"><span>${ui('Now','وضعیت فعلی')}</span><p>${r.now.map(esc).join('<br>')}</p></div>`:''}${r.watch.length?`<div class="stock-read-row watch"><span>${ui('Watch','احتیاط')}</span><p>${r.watch.map(esc).join('<br>')}</p></div>`:''}</div>`;
+}
 function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
-  const why=stockNarrative(x);
-  return `<article class="card">
-    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart">${short(x.symbol)} ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="cardprice"><div class="price-line">${money(x.price,x.displayQuote?.currency||'CAD')}<small class="day-change ${cls(x.dayChangePct)}">${pct(x.dayChangePct)}</small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
-    <div class="tags"><span class="tag">${rank?rank+' · ':''}${esc(window.MHI18n?.t(x.stage,({'Early Watch':'زیر نظر اولیه',Recovery:'بازیابی','Attractive Growth':'رشد جذاب','Established Move':'روند جاافتاده'})[x.stage]||x.stage)||x.stage)}</span><span class="tag">RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</span></div>
+  return `<article class="card hunter-card">
+    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart"><bdi>${short(x.symbol)}</bdi> ↗</button><small><bdi>${esc(x.name||x.symbol)}</bdi></small></div><div class="cardprice"><div class="price-line"><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
+    <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span><span class="tag"><bdi>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></span></div>
     ${window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
-    <div class="metrics"><div class="metric"><small>5D</small><b class="${cls(x.ret5)}">${pct(x.ret5)}</b></div><div class="metric"><small>20D</small><b class="${cls(x.ret20)}">${pct(x.ret20)}</b></div><div class="metric"><small>RS20</small><b class="${cls(x.rs20)}">${pct(x.rs20)}</b></div><div class="metric"><small>Momentum</small><b class="${cls(x.momentumShift)}">${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</b></div></div>
-    <div class="why analysis-copy">${esc(why)}</div>
-    <details><summary>Technical details</summary><div class="copy"><strong>Why it qualified</strong><br>${esc((x.evidence||[]).join(' · ')||'Stage-specific review criteria passed.')}<br><br><strong>Positioning</strong><br>Pullback from 60-day high ${pct(x.pullback60)} · ATR ${pct(x.atr14Pct)} · vs MA20 ${pct(x.dist20)} · vs MA50 ${pct(x.dist50)}${(x.riskFlags||[]).length?'<br><br><strong>Risk context</strong><br>'+esc(x.riskFlags.join(' · ')):''}</div></details>
-    <div class="actions"><button class="btn" data-chart="${x.symbol}">Chart ↗</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?'♥ Saved':'♡ Watch'}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?'Edit':'Bought'}</button></div>
+    ${stockSummaryHtml(x)}
+    <div class="metrics"><div class="metric"><small>${ui('20-day move','تغییر ۲۰روزه')}</small><b class="${cls(x.ret20)}"><bdi>${pct(x.ret20)}</bdi></b></div><div class="metric"><small>${ui('Relative strength','قدرت نسبی')}</small><b class="${cls(x.rs20)}"><bdi>${pct(x.rs20)}</bdi></b></div><div class="metric"><small>${ui('Momentum shift','تغییر شتاب')}</small><b class="${cls(x.momentumShift)}"><bdi>${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</bdi></b></div></div>
+    <details class="stock-technical"><summary>${ui('Technical details','جزئیات فنی')}</summary><div class="technical-grid"><div><small>${ui('From 60-day high','فاصله از سقف ۶۰روزه')}</small><b><bdi>${pct(x.pullback60)}</bdi></b></div><div><small>${ui('ATR','نوسان (ATR)')}</small><b><bdi>${pct(x.atr14Pct)}</bdi></b></div><div><small>${ui('Above / below MA20','فاصله از میانگین ۲۰روزه')}</small><b><bdi>${pct(x.dist20)}</bdi></b></div><div><small>${ui('Above / below MA50','فاصله از میانگین ۵۰روزه')}</small><b><bdi>${pct(x.dist50)}</bdi></b></div></div>${(x.evidence||[]).length?'<div class="copy"><strong>'+ui('Source evidence','دلایل فنی (متن اصلی)')+'</strong><p><bdi>'+esc(x.evidence.join(' · '))+'</bdi></p></div>':''}</details>
+    <div class="actions"><button class="btn" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
   </article>`;
 }
 function shortlistHtml(){
   const stage=REVIEW_STAGES.includes(state.reviewStage)?state.reviewStage:REVIEW_STAGES[0];
   const counts=Object.fromEntries(REVIEW_STAGES.map(s=>[s,stageEligiblePicks(s).length]));
   const picks=stageEligiblePicks(stage);
-  const tabs=REVIEW_STAGES.map(s=>`<button class="stage-tab ${s===stage?'active':''}" data-stage-tab="${esc(s)}" aria-pressed="${s===stage}"><span>${esc(s)}</span><b>${counts[s]}</b></button>`).join('');
+  const tabs=REVIEW_STAGES.map(s=>`<button class="stage-tab ${s===stage?'active':''}" data-stage-tab="${esc(s)}" aria-pressed="${s===stage}"><span>${esc(stageLabel(s))}</span><bdi>${counts[s]}</bdi></button>`).join('');
   return `<div class="stack"><section class="panel soft">
-    <div class="sectionhead"><div><h2>Charts to Review</h2><p>Explore qualified charts by stage.</p></div><span class="tag">${Object.values(counts).reduce((x,y)=>x+y,0)} qualified</span></div>
+    <div class="sectionhead"><div><h2>${ui('Choose a stage','انتخاب مرحله')}</h2><p>${ui('Choose a stage, then review each chart.','مرحله را انتخاب کن و سهم‌ها را بررسی کن.')}</p></div><span class="tag"><bdi>${Object.values(counts).reduce((x,y)=>x+y,0)}</bdi> <span>${ui(Object.values(counts).reduce((x,y)=>x+y,0)===1?'chart':'charts','سهم')}</span></span></div>
     <div class="stage-tabs">${tabs}</div>
-    <div class="stage-summary"><b>${esc(stage)}</b><span>${picks.length} chart${picks.length===1?'':'s'} meet the criteria for this stage.</span></div>
-    <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">No charts meet the criteria for this stage.</div>'}</div>
+    <div class="stage-summary"><b>${esc(stageLabel(stage))}</b><span><bdi>${picks.length}</bdi> ${ui(picks.length===1?'chart to review':'charts to review','سهم برای بررسی')} <small class="review-swipe-hint">· ${ui('Swipe ↔','ورق بزن ↔')}</small></span></div>
+    <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">'+ui('No charts meet this stage’s criteria.','سهمی با معیارهای این مرحله پیدا نشده.')+'</div>'}</div>
   </section></div>`;
 }
 function portfolioSummary(){
@@ -1382,14 +1402,21 @@ function cloudPanelHtml(){
   }
   return `<div class="cloud-panel"><div class="cloud-row"><div><b>Backend portfolio</b><small>This browser is not paired yet. Pair it from the private Telegram bot; no email/password account is required.</small></div><span class="cloud-badge">Not paired</span></div><div class="cloud-message">Open Telegram → Portfolio → اتصال پورتفولیوی سایت, then open the signed link in the browser that currently contains your portfolio.</div></div>`;
 }
+function portfolioReconnectHtml(){
+  if(state.positions.size||telegramBridgeEnabled()||state.cloud.session)return '';
+  const preview=location.hostname!=='market-hunter-five.vercel.app'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1';
+  return `<section class="panel portfolio-reconnect"><h2>${ui('Already have a portfolio?','پورتفولیو داری اما اینجا نمی‌بینی؟')}</h2><p>${preview?ui('This preview has a separate browser connection. Your usual app’s saved portfolio is not loaded here automatically.','این نسخهٔ آزمایشی اتصال جداگانه‌ای دارد و پورتفولیوی مرورگر اصلی را خودکار نمی‌خواند.'):ui('Connect this browser to your saved portfolio using your private Telegram bot.','این مرورگر را از طریق بات خصوصی تلگرام به پورتفولیوی ذخیره‌شده وصل کن.')}</p><ol><li>${ui('In your private Telegram bot, open Portfolio → اتصال پورتفولیوی سایت.','در بات خصوصی تلگرام، «پورتفولیو ← اتصال پورتفولیوی سایت» را باز کن.')}</li><li>${ui('Open the secure link in Safari. It restores saved holdings in a new browser.','لینک امن را در Safari باز کن؛ پورتفولیوی ذخیره‌شده در مرورگر تازه بازیابی می‌شود.')}</li></ol><div class="reconnect-actions">${preview?'<a class="btn primary" href="https://market-hunter-five.vercel.app/">'+ui('Open your usual app ↗','بازکردن سایت اصلی ↗')+'</a>':''}<button class="btn" data-restore>${ui('Restore a backup','بازیابی فایل پشتیبان')}</button></div></section>`;
+}
 function portfolioHtml(){
   const s=portfolioSummary();
+  if(!s.rows.length)return `<div class="stack portfolio-layout">${portfolioReconnectHtml()}${telegramBridgeNoticeHtml()}<section class="panel soft"><div class="empty portfolio-empty"><strong>${ui(telegramBridgeEnabled()?'No saved holdings':'No holdings in this browser',telegramBridgeEnabled()?'پوزیشن ذخیره‌شده‌ای نیست':'این مرورگر هنوز پوزیشنی ندارد')}</strong><p>${ui('If you are starting a new portfolio, add a holding with your purchase price and date.','اگر می‌خواهی پورتفولیوی تازه بسازی، سهم را با قیمت و تاریخ خرید ثبت کن.')}</p><button class="btn primary" data-add>${ui('Add holding','افزودن سهم')}</button></div></section><section class="panel soft portfolio-account" id="portfolioAccount">${cloudPanelHtml()}</section></div>`;
   const syncLabel=telegramBridgeEnabled()
     ?'Backend portfolio'
     :state.cloud.session?(state.cloud.status==='error'?'Sync issue':state.cloud.status==='synced'?'Cloud synced':state.cloud.status==='syncing'?'Syncing…':'Cloud connected'):'Local cache';
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
   const attentionBlock=s.attention.length?`<details class="panel soft attention-panel portfolio-disclosure"><summary>Current attention <span>${s.attention.length} holding(s) to review</span></summary><div class="attention-cards">${s.attention.map(({p,x})=>{const display=quoteFor(p.symbol,x);return `<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${quoteMetaHtml(display)}${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`}).join('')}</div></details>`:'';
   return `<div class="stack portfolio-layout">
+    ${portfolioReconnectHtml()}
     ${telegramBridgeNoticeHtml()}
     <section class="panel portfolio-overview"><div class="sectionhead"><div><div class="eyebrow">YOUR ACCOUNT</div><h2>At a glance</h2><p>Your holdings, in perspective.</p></div><button class="btn primary" data-add>+ Add holding</button></div>
       <div class="portfolio-hero"><div><span class="hero-label">Portfolio value</span><strong class="hero-value">${s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—'}</strong></div><div class="hero-return"><span class="hero-label">Total P/L</span><strong class="${cls(s.pnl)}">${s.currency?money(s.pnl,s.currency):'—'}</strong><span class="return-percent ${cls(s.pnlPct)}">${s.currency?pct(s.pnlPct):'—'}</span></div></div>
