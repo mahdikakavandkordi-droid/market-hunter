@@ -37,7 +37,7 @@
     const out=[],seen=new Set();
     for(const r of data?.reports||[]){
       if(!equityCohorts.includes(r.cohort)||!usable(r,now)||(engine!=='all'&&r.engine!==engine)||!names[r.engine])continue;
-      for(const p of [...(r.account?.open||[]),...(r.pending||[])]){
+      for(const p of r.account?.open||[]){
         if(p.status==='pending_entry'&&(!validTime(p.availableAt||p.signalT)||Date.parse(p.availableAt||p.signalT)>now))continue;
         if(!bySymbol.has(p.symbol)||![1,-1].includes(p.dir)||(p.status!=='pending_entry'&&(p.status!=='open'||!validTime(p.entryT)||Date.parse(p.entryT)>now||!(p.notional>0)))||(r.failures||[]).some(f=>f.symbol===p.symbol))continue;
         const key=r.engine+'|'+r.cohort+'|'+p.symbol+'|'+p.entryT;

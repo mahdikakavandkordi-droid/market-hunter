@@ -24,3 +24,12 @@ English/Persian explanation preference persists locally. Persian narratives foll
 The installable standalone PWA has SVG and 180/192/512 PNG artwork, a dedicated maskable icon and complete shell asset caching. API and financial data are not cached as offline market evidence. iOS installation is guided through Safari Share > Add to Home Screen. Android install prompts are used when available.
 
 Telegram adds an Engines menu and `/engines`; no outbound test messages are required. Fully available evidence with no overlap returns «سهم مناسبی برای امروز یافت نشد». Partial or stale evidence returns an unavailable notice instead.
+
+
+## UI correction after mobile review
+
+Stock cards now show only a compact engine badge for a funded, recorded open position. No-match, unavailable-evidence and general entry-rule text is omitted. Pending signals remain visible in the independent Engines page, but are not presented as purchases in the Hunter/Telegram overlap view. Stock narratives use a short lead and separate current observations and cautions, with technical metrics collapsed. Persian copy is scoped RTL and symbols/numbers are explicitly isolated.
+
+The Engines page prioritizes all-market positions; account balances and common-window comparisons are secondary disclosures. Original individual-market account values remain separate.
+
+Preview domains and newly installed browser contexts have separate storage and pairing cookies. An empty device can now restore a backend portfolio from an existing signed Telegram pairing link: authenticated POST `action: restore` reads the existing bundle and establishes the same secure cookie without calling portfolio `put`. Restoring switches to the Portfolio view and removes the signed parameters from the URL. Existing populated-device pairing, revisions, tombstones and account isolation are preserved. An unpaired empty view provides reconnection guidance rather than only asking for new holdings.

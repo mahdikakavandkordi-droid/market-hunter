@@ -2,18 +2,27 @@ window.MHI18n=(()=>{
   let lang='en';try{lang=localStorage.getItem('mh-language')==='fa'?'fa':'en'}catch{}
   const t=(en,fa)=>lang==='fa'?fa:en;
   function apply(){document.documentElement.lang=lang;document.documentElement.dataset.language=lang;const b=document.getElementById('languageBtn');if(b){b.textContent=lang==='fa'?'EN':'فارسی';b.setAttribute('aria-label',t('Read Persian explanations','نمایش توضیحات انگلیسی'));}document.getElementById('installBtn').textContent=t('Install','نصب');const labels={home:['Home','خانه'],shortlist:['Charts to Review','بررسی سهم‌ها'],portfolio:['Portfolio','پورتفولیو'],watchlist:['Watchlist','دیده‌بان'],engines:['Paper Engines','موتورها']};document.querySelectorAll('.navbtn[data-view]').forEach(button=>{const pair=labels[button.dataset.view],small=button.querySelector('small');if(small)small.textContent=t(pair[0]==='Charts to Review'?'Review':pair[0]==='Paper Engines'?'Engines':pair[0],pair[1]);else{const text=[...button.childNodes].find(n=>n.nodeType===3);if(text)text.textContent=t(...pair)}});}
-  function stockFa(x){
-    if(!x)return 'دادهٔ فعلی در دسترس نیست؛ ارزیابی معتبر ممکن نیست.';
-    const stages={'Early Watch':'فشار فروش نزدیک کف اخیر رو به کاهش است، اما هنوز برگشت روند تأیید نشده است.','Recovery':'سهم پس از ضعف قبلی در حال بازسازی است و نشانه‌هایی از بهبود ساختار و شتاب دیده می‌شود.','Attractive Growth':'روند کلی سازنده است و قیمت در مرحلهٔ رشد قوی‌تری قرار دارد.','Established Move':'روند صعودی بلندمدت جا افتاده و هنوز پابرجاست؛ باید دید بدون فاصله‌گرفتن زیاد از میانگین‌ها ادامه پیدا می‌کند یا نه.'};
-    const out=[stages[x.stage]||'سهم خارج از مراحل فعال هانتر است؛ بررسی بر اساس ساختار، شتاب و قدرت نسبی انجام می‌شود.'];
-    const swing={'Higher highs + higher lows':'سقف‌ها و کف‌های بالاتر حفظ شده‌اند.','Structure improving':'ساختار نوسان‌ها رو به بهبود است.','Lower highs + lower lows':'سقف‌ها و کف‌های پایین‌تر، ضعف ساختار را نشان می‌دهند.','Structure weakening':'ساختار نوسان‌ها رو به ضعف است.'};if(swing[x.swingTrend])out.push(swing[x.swingTrend]);
-    if(Number.isFinite(x.momentumShift)){if(x.momentumShift>=4)out.push('شتاب حرکت به‌وضوح بهتر شده است.');else if(x.momentumShift>=1)out.push('شتاب حرکت رو به بهبود است.');else if(x.momentumShift<=-4)out.push('شتاب حرکت به‌طور محسوسی کاهش یافته است.');else if(x.momentumShift<0)out.push('شتاب حرکت کمی ضعیف‌تر شده است.');}
-    if(Number.isFinite(x.rs20)){if(x.rs20>=8)out.push('قدرت نسبی ۲۰روزه به‌وضوح جلوتر از شاخص TSX است.');else if(x.rs20>=3)out.push('قدرت نسبی ۲۰روزه جلوتر از TSX است.');else if(x.rs20<=-8)out.push('قدرت نسبی ۲۰روزه به‌وضوح عقب‌تر از TSX است.');else if(x.rs20<=-3)out.push('قدرت نسبی ۲۰روزه عقب‌تر از TSX است.');}
-    if(x.lowBroken===true)out.push('احتیاط: کف محلی اخیر شکسته شده است.');
-    if(x.dist20>=10)out.push('قیمت فاصلهٔ زیادی بالای میانگین ۲۰روزه دارد.');else if(x.dist20>=6)out.push('قیمت بالاتر از میانگین ۲۰روزه کشیده شده است.');
-    if(x.rsi14>=80)out.push('RSI بسیار بالاست.');else if(x.rsi14>=72)out.push('RSI بالاست.');
-    return out.join(' ');
+  const stageFa={'Early Watch':'نشانه‌های اولیه',Recovery:'بازیابی','Attractive Growth':'رشد قوی','Established Move':'روند جاافتاده'};
+  function stageLabel(stage){return t(stage,stageFa[stage]||stage);}
+  function read(x){
+    if(!x)return {lead:t('Market data unavailable.','دادهٔ سهم در دسترس نیست.'),now:[],watch:[]};
+    const leads={
+      'Early Watch':['Selling pressure is easing; a reversal is not confirmed.','فشار فروش کمتر شده؛ برگشت روند هنوز تأیید نشده.'],
+      Recovery:['The chart is rebuilding after earlier weakness.','سهم پس از افت قبلی در حال بازسازی است.'],
+      'Attractive Growth':['Price is participating in a stronger uptrend.','قیمت در یک روند صعودی قوی‌تر حرکت می‌کند.'],
+      'Established Move':['The uptrend is established; watch for an overstretched move.','روند صعودی جا افتاده؛ فاصلهٔ زیاد از میانگین‌ها را زیر نظر بگیر.']};
+    const lead=t(...(leads[x.stage]||['Outside the active Hunter stages.','خارج از مراحل فعال هانتر.']));
+    const now=[],watch=[];
+    const swing={'Higher highs + higher lows':['Higher highs and higher lows are intact.','سقف‌ها و کف‌های بالاتر حفظ شده‌اند.'],'Structure improving':['Swing structure is improving.','ساختار قیمت بهتر شده است.'],'Lower highs + lower lows':['Lower highs and lower lows still show weakness.','سقف‌ها و کف‌های پایین‌تر هنوز نشانهٔ ضعف هستند.'],'Structure weakening':['Swing structure is weakening.','ساختار قیمت ضعیف‌تر شده است.']};
+    if(swing[x.swingTrend])now.push(t(...swing[x.swingTrend]));
+    if(Number.isFinite(x.momentumShift)){if(x.momentumShift>=4)now.push(t('Momentum has improved clearly.','شتاب حرکت به‌وضوح بهتر شده.'));else if(x.momentumShift>=1)now.push(t('Momentum is improving.','شتاب حرکت رو به بهبود است.'));else if(x.momentumShift<=-4)now.push(t('Momentum has cooled noticeably.','شتاب حرکت به‌طور محسوسی کاهش یافته.'));else if(x.momentumShift<0)now.push(t('Momentum is slightly softer.','شتاب حرکت کمی ضعیف‌تر شده.'));}
+    if(Number.isFinite(x.rs20)){if(x.rs20>=3)now.push(t('20-day performance is ahead of TSX.','عملکرد ۲۰روزه بهتر از شاخص TSX است.'));else if(x.rs20<=-3)now.push(t('20-day performance is behind TSX.','عملکرد ۲۰روزه ضعیف‌تر از شاخص TSX است.'));}
+    if(x.lowBroken===true)watch.push(t('The recent local low has broken.','کف اخیر شکسته شده است.'));
+    if(Number.isFinite(x.dist20)&&x.dist20>=10)watch.push(t('Price is very extended above its 20-day average.','قیمت فاصلهٔ زیادی بالای میانگین ۲۰روزه دارد.'));else if(Number.isFinite(x.dist20)&&x.dist20>=6)watch.push(t('Price is extended above its 20-day average.','قیمت از میانگین ۲۰روزه فاصله گرفته است.'));
+    if(Number.isFinite(x.rsi14)&&x.rsi14>=80)watch.push(t('RSI is extremely elevated.','RSI بسیار بالاست.'));else if(Number.isFinite(x.rsi14)&&x.rsi14>=72)watch.push(t('RSI is elevated.','RSI بالاست.'));
+    return {lead,now:now.slice(0,2),watch:watch.slice(0,2)};
   }
+  function stockFa(x){const r=read(x);return [r.lead,...r.now,...r.watch].join(' ');}
   document.addEventListener('DOMContentLoaded',apply);
-  return {t,stockFa,language:()=>lang,toggle(){lang=lang==='fa'?'en':'fa';try{localStorage.setItem('mh-language',lang)}catch{}apply();}};
+  return {t,stockFa,read,stageLabel,language:()=>lang,toggle(){lang=lang==='fa'?'en':'fa';try{localStorage.setItem('mh-language',lang)}catch{}apply();}};
 })();

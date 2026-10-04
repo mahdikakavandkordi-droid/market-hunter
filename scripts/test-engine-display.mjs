@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const ctx={window:{},Date,Number,String,Intl};vm.createContext(ctx);vm.runInContext(fs.readFileSync('engine-dashboard.js','utf8'),ctx);
+const display=ctx.window.MarketHunterEngines;
+assert.equal(display.confirmation(null,'FIXTURE.TO'),'', 'no data must not add noise to a stock card');
+const r={engine:'smc',cohort:'tsx-core',status:'available',generatedAt:new Date().toISOString(),account:{open:[]},pending:[{symbol:'FIXTURE.TO',dir:1,status:'pending_entry'}]};
+assert.equal(display.confirmation({reports:[r]},'FIXTURE.TO'),'', 'pending or no match must not show generic engine explanations');
+const p={symbol:'FIXTURE.TO',dir:1,status:'open',entryT:new Date().toISOString(),notional:250};r.account.open=[p];
+assert.match(display.confirmation({reports:[r]},'FIXTURE.TO'),/SMC · Long/);assert.match(display.confirmation({reports:[r]},'FIXTURE.TO'),/class="engine-badge long"/);
+assert.doesNotMatch(display.confirmation({reports:[r]},'FIXTURE.TO'),/trigger|Frozen|incomplete|Hunter ×/);
+r.account.open=[{...p,notional:0}];assert.equal(display.confirmation({reports:[r]},'FIXTURE.TO'),'');
+r.account.open=[{...p,dir:-1}];assert.match(display.confirmation({reports:[r]},'FIXTURE.TO'),/class="engine-badge short"/);
+console.log('Stock engine display: funded positions only, no unmatched text, green Long and red Short passed.');

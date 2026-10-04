@@ -41,8 +41,12 @@ export default async function handler(req,res){
     const paired=await pairPortfolioBridge(userId);
     if(!paired)return res.status(409).json({ok:false,error:'pairing_conflict'});
 
-    if(req.method==='GET'){
+    // Restore is authenticated exactly like writes, but never calls put.
+    if(req.method==='GET'||(req.method==='POST'&&req.body?.action==='restore')){
       const bundle=await getPortfolioBridgeBundle(userId,token);
+      if(req.method==='POST'&&bodyToken&&bodyUserId===String(userId)){
+        res.setHeader('Set-Cookie',['mh_portfolio_bridge='+encodeURIComponent(bodyToken)+'; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax']);
+      }
       return res.status(200).json({
         ok:true,
         connected:true,
