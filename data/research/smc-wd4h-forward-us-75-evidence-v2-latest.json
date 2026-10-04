@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-evidence-v2",
   "cohort": "us-75",
-  "generatedAt": "2026-10-04T14:58:54.065Z",
+  "generatedAt": "2026-10-04T19:37:44.551Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -32,16 +32,16 @@
     "run": {
       "tracker": "smc-forward-expanded",
       "cohort": "us-75",
-      "observedAt": "2026-10-04T14:58:54.065Z",
+      "observedAt": "2026-10-04T19:37:44.551Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
         "runId": "37211226063",
-        "runAttempt": "1",
+        "runAttempt": "2",
         "sha": "42b4f71975fe5b93c0ced4ef79a3c52b5adc2355",
         "workflow": "SMC Expanded Forward Cohorts",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-expanded|us-75|37211226063|1"
+      "runKey": "smc-forward-expanded|us-75|37211226063|2"
     },
     "reconciliation": {
       "newRecords": 0,
@@ -90,6 +90,62 @@
     },
     "openCount": 1,
     "pendingCount": 0,
+    "performanceByProvenance": {
+      "prospective": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "cost05R": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      },
+      "reconstructed": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "cost05R": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      },
+      "legacyUnprovenanced": {
+        "raw": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        },
+        "cost05R": {
+          "n": 0,
+          "wr": null,
+          "pf": null,
+          "avgR": null,
+          "sumR": 0,
+          "maxDD": 0
+        }
+      }
+    },
     "momentumShadow": {
       "high": {
         "raw": {
@@ -256,6 +312,7 @@
             }
           }
         },
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 1000,
         "notional": 203.2687358724275,
         "allocationPct": 0.2032687358724275,
@@ -337,6 +394,7 @@
             }
           }
         },
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 1000,
         "notional": 203.2687358724275,
         "allocationPct": 0.2032687358724275,
@@ -390,13 +448,14 @@
     "markedCurrentEquity": 999.0307200683226,
     "markedReturnPct": -0.0009692799316773915,
     "markedObservation": {
-      "runKey": "smc-forward-expanded|us-75|37211226063|1",
-      "observedAt": "2026-10-04T14:58:54.065Z",
+      "runKey": "smc-forward-expanded|us-75|37211226063|2",
+      "observedAt": "2026-10-04T19:37:44.551Z",
       "quality": "fresh",
       "markedEquity": 999.0307200683226,
       "totalUnrealizedPnl": -0.9692799316775161,
       "missingSymbols": [],
       "staleSymbols": [],
+      "invalidMarkSymbols": [],
       "positions": [
         {
           "symbol": "DIS",
@@ -467,6 +526,7 @@
               }
             }
           },
+          "lifecycleRefreshSource": "recorded_immutable_fields",
           "accountEquityBefore": 1000,
           "notional": 203.2687358724275,
           "allocationPct": 0.2032687358724275,
@@ -505,10 +565,30 @@
         "totalUnrealizedPnl": -0.9692799316775161,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-expanded|us-75|37211226063|2",
+        "observedAt": "2026-10-04T19:37:44.551Z",
+        "quality": "fresh",
+        "markedEquity": 999.0307200683226,
+        "totalUnrealizedPnl": -0.9692799316775161,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T14:55:54.783Z",
+    "firstCompleteMarkedEquityAt": "2026-10-04T14:55:54.783Z",
     "markedObservedMaxDrawdownPct": 0,
+    "costAccounting": {
+      "closedTradeCostR": 0.05,
+      "chargedOnceOnSettlement": true,
+      "openMarkedEquityIncludesHypotheticalExitCost": false
+    },
+    "valuationConvention": {
+      "openPositionValue": "reserved entry notional + directional unrealized P/L",
+      "markedEquity": "cash + marked open position values",
+      "missingOrInvalidMarkMakesTotalMarkedEquityNull": true
+    },
     "enteredCount": 1,
     "closedCount": 0,
     "openCount": 1,
@@ -583,6 +663,7 @@
             }
           }
         },
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 1000,
         "notional": 203.2687358724275,
         "allocationPct": 0.2032687358724275,
@@ -666,6 +747,7 @@
             }
           }
         },
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 1000,
         "notional": 203.2687358724275,
         "allocationPct": 0.2032687358724275,
@@ -756,7 +838,8 @@
             "weight": 7
           }
         }
-      }
+      },
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
