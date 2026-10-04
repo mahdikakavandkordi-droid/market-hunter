@@ -12,3 +12,14 @@ assert.doesNotMatch(display.confirmation({reports:[r]},'FIXTURE.TO'),/trigger|Fr
 r.account.open=[{...p,notional:0}];assert.equal(display.confirmation({reports:[r]},'FIXTURE.TO'),'');
 r.account.open=[{...p,dir:-1}];assert.match(display.confirmation({reports:[r]},'FIXTURE.TO'),/class="engine-badge short"/);
 console.log('Stock engine display: funded positions only, no unmatched text, green Long and red Short passed.');
+
+const account={startingCapital:1000,cash:750,markedEquity:null,markedReturn:null,realizedEquity:1000,open:[{...p,notional:250}],closed:[],openCount:1,closedCount:0};
+const data={reports:[{...r,account,failures:[]}]};
+const html=display.html(data,{engine:'smc'});
+assert.doesNotMatch(html,/data-engine-market=/,'segment selection must not partition the position feed');
+assert.equal((html.match(/class="engine-segment"/g)||[]).length,5,'all five independent segment accounts appear');
+assert.match(html,/In open positions[\s\S]*?250/);assert.match(html,/Free cash[\s\S]*?750/);
+assert.match(html,/Current account value<\/small><strong>—/,'missing valuation is not zero');
+assert.match(html,/Unavailable/,'missing segments remain visible');
+assert.doesNotMatch(display.html(data,{engine:'trend'}),/FIXTURE.TO/,'another engine must not inherit these positions');
+console.log('Engine-first account cards: all segments, committed capital, cash, missing valuation and engine isolation passed.');
