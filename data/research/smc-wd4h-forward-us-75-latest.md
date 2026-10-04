@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75
 
-Generated: 2026-10-04T13:52:47.536Z
+Generated: 2026-10-04T14:43:11.392Z
 
 Forward start: 2026-10-01; universe: 75; no regime/VP/sweep filter.
 
@@ -16,6 +16,11 @@ Forward start: 2026-10-01; universe: 75; no regime/VP/sweep filter.
 
 Current equity: $1000.00; return 0.0%; max DD 0.0%.
 Entered / skipped / open: 1 / 0 / 1.
+
+## Evidence integrity
+
+Provenance known 0; legacy unknown 1; prospective 0; reconstructed 0.
+This run: new 0; lifecycle updates 0; discrepancies 0; prior not re-observed 0.
 
 ## Momentum shadow (observational only)
 

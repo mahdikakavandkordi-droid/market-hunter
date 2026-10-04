@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra
 
-Generated: 2026-10-04T13:52:26.586Z
+Generated: 2026-10-04T14:42:47.463Z
 
 Forward start: 2026-10-01; universe: 37; no regime/VP/sweep filter.
 
@@ -16,6 +16,11 @@ Forward start: 2026-10-01; universe: 37; no regime/VP/sweep filter.
 
 Current equity: $1000.00; return 0.0%; max DD 0.0%.
 Entered / skipped / open: 2 / 0 / 2.
+
+## Evidence integrity
+
+Provenance known 0; legacy unknown 2; prospective 0; reconstructed 0.
+This run: new 0; lifecycle updates 0; discrepancies 0; prior not re-observed 0.
 
 ## Momentum shadow (observational only)
 
