@@ -1,26 +1,26 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-10-01 to 2026-10-02
+**As of:** 2026-10-02 to 2026-10-03 (TSX 2026-10-02 · SP500 2026-10-02 · NASDAQ100 2026-10-02 · GOLD 2026-10-02 · SILVER 2026-10-02 · BTC 2026-10-03 · ETH 2026-10-03)
 
 ## Executive read
 
 - Risk-on but uneven: U.S. equities and crypto retain strong primary trends while Canada lags and metals are not confirming. Precious metals are currently in a weakening short-term phase.
-- Data timestamps differ across markets: traditional markets are as of 2026-10-01, while 24/7 crypto data extends to 2026-10-02.
+- Completed-session dates differ by instrument: TSX 2026-10-02 · SP500 2026-10-02 · NASDAQ100 2026-10-02 · GOLD 2026-10-02 · SILVER 2026-10-02 · BTC 2026-10-03 · ETH 2026-10-03.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
 
-- **Watch:** TSX Composite: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Caution:** Ethereum: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
 - **Watch:** Gold: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
+- **Watch:** Silver: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
+- **Watch:** TSX Composite: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Context:** Nasdaq-100: trend is strong near highs, but historical follow-through is not automatically stronger than baseline.
-- **Watch:** S&P 500: primary trend remains constructive, but the pullback is unresolved and rebound should be confirmed rather than assumed.
 
 ## Group read
 
 - **Equities: Constructive but uneven** — Most tracked markets remain constructive, but leadership is not uniform.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Strong trend** — All tracked markets in this group remain in a strong bull regime.
+- **Crypto: Strong trend · Pullback** — All tracked markets in this group remain in a strong bull regime.
 
 ## Key divergences
 
@@ -30,11 +30,11 @@
 
 ## What to watch next
 
-- **Bitcoin:** bullish continuation above 87363.76 · trend warning near 81684.25 · structure risk below 82906.62.
+- **Ethereum:** bullish continuation above 2746.01 · trend warning near 2637.34 · structure risk below 2635.48.
+- **Bitcoin:** bullish continuation above 87363.76 · trend warning near 82441.86 · structure risk below 82906.62.
+- **Gold:** bullish continuation above 4170.7 · trend warning near 4334.33 · structure risk below 4143.1.
+- **Silver:** bullish continuation above 62.62 · trend warning near 63.96 · structure risk below 57.76.
 - **TSX Composite:** bullish continuation above 35629.9 · trend warning near 35732.58 · structure risk below 35427.5.
-- **Ethereum:** bullish continuation above 2746.01 · trend warning near 2619.72 · structure risk below 2635.48.
-- **Gold:** bullish continuation above 4215.5 · trend warning near 4353.21 · structure risk below 4143.1.
-- **Nasdaq-100:** bullish continuation above 30770.63 · trend warning near 29907.64 · structure risk below 30081.06.
 
 ## Market detail
 
@@ -64,35 +64,35 @@
 
 ### Gold
 - **State:** Mixed / Weakening
-- **Returns:** 1D +0.4% · 5D -2.2% · 20D -4.8% · 60D +2.9%
+- **Returns:** 1D -0.9% · 5D -3.7% · 20D -8.3% · 60D +0.5%
 - **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Constructive, recent caution
 - **Framing:** Short-term damage, confirmation required
 - **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
-- **Watch next:** bullish continuation above 4215.5 · trend warning near 4353.21 · structure risk below 4143.1.
+- **Watch next:** bullish continuation above 4170.7 · trend warning near 4334.33 · structure risk below 4143.1.
 
 ### Silver
 - **State:** Mixed / Weakening
-- **Returns:** 1D +1% · 5D -4.3% · 20D -6.2% · 60D +4.4%
+- **Returns:** 1D -0.5% · 5D -6% · 20D -9.8% · 60D +0.1%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Mixed
 - **Framing:** Historical analogs supportive
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 62.62 · trend warning near 64.29 · structure risk below 57.76.
+- **Watch next:** bullish continuation above 62.62 · trend warning near 63.96 · structure risk below 57.76.
 
 ### Bitcoin
 - **State:** Strong Bull / Positive Momentum
-- **Returns:** 1D +1.6% · 5D +0.5% · 20D +9.9% · 60D +33.7%
+- **Returns:** 1D +0.3% · 5D +1.5% · 20D +10.3% · 60D +32.3%
 - **Historical read:** 5 sessions: Cautious · 10: Cautious · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.
-- **Watch next:** bullish continuation above 87363.76 · trend warning near 81684.25 · structure risk below 82906.62.
+- **Watch next:** bullish continuation above 87363.76 · trend warning near 82441.86 · structure risk below 82906.62.
 
 ### Ethereum
-- **State:** Strong Bull / Positive Momentum
-- **Returns:** 1D +0.8% · 5D +0.4% · 20D +7.6% · 60D +43.7%
-- **Historical read:** 5 sessions: Mixed · 10: Mixed · 20: Supportive
+- **State:** Strong Bull / Pullback
+- **Returns:** 1D +0.7% · 5D -0.1% · 20D +8.5% · 60D +43.8%
+- **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Constructive, recent caution
 - **Framing:** Broader setup constructive, exact setup caution
-- **Outlook:** Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.
-- **Watch next:** bullish continuation above 2746.01 · trend warning near 2619.72 · structure risk below 2635.48.
+- **Outlook:** Primary trend remains constructive, and the broader pullback family is reasonably supported, but the exact current setup has shown materially weaker recent follow-through. Treat rebound expectations cautiously until price confirms.
+- **Watch next:** bullish continuation above 2746.01 · trend warning near 2637.34 · structure risk below 2635.48.
 - **Specific setup caution:** Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through.
 
 
