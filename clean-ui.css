@@ -89,3 +89,26 @@ html[data-language=fa] .engine-segment-head,html[data-language=fa] .engine-segme
 }
 #homeView .report-panel .report-copy{font-size:14px!important;line-height:1.85!important;font-weight:400!important;letter-spacing:normal!important}
 @media(max-width:700px){#homeView .report-panel .report-copy{font-size:13px!important;line-height:1.85!important}.engine-intro-top{flex-wrap:nowrap!important;align-items:flex-start!important}.engine-intro-top>div{min-width:0}.engine-intro-top>.btn{flex-shrink:0;font-size:10px!important;padding:8px!important}}
+/* Reading hierarchy: one summary, supporting evidence, optional detail. */
+.reading-copy{line-height:1.85;text-align:start;overflow-wrap:anywhere}
+.market-read{grid-column:1/-1;margin:4px 0 0;font-size:13px;color:var(--text)}
+.market-context{width:100%;grid-column:1/-1;border-top:1px solid var(--line-soft)!important;margin-top:8px!important;padding-top:8px!important}
+.market-context>summary,.analog-details>summary{font-size:12px;font-weight:600;color:var(--blue)}
+.market-context p,.outlook-summary{font-size:13px;line-height:1.85;margin:8px 0 14px;color:var(--text)}
+.market-levels{border-top:1px solid var(--line-soft);margin-top:14px;padding-top:4px}
+.market-levels>div{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.market-levels>div:last-child{border-bottom:0}.market-levels span{font-size:11px;font-weight:600}.market-levels small{display:block;color:var(--muted);font-size:10px;font-weight:400;margin-top:3px}.market-levels b{font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.report-badges{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px!important;margin:20px 0 16px!important;align-items:stretch}
+.brief-group{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel2);padding:14px;min-width:0}.brief-group small{font-size:11px;color:var(--blue);font-weight:600}.brief-group b{display:block;font-size:13px;margin:7px 0;line-height:1.65}.brief-group p{margin:0;font-size:12px;color:var(--muted);line-height:1.8}
+.brief-focus{border-top:1px solid var(--line-soft);margin-top:18px;padding-top:4px}.brief-focus h4{font-size:12px;margin:12px 0}.brief-focus .change-list{margin-top:8px!important}.brief-focus .change-item{grid-template-columns:1fr!important;gap:4px!important;font-size:12px!important}.brief-focus .change-market{color:var(--blue)}
+.explanation-eyebrow{display:block;font-size:10px;color:var(--muted);margin-bottom:6px;font-weight:600}.stock-summary-lead{font-size:14px!important;font-weight:600!important;line-height:1.8!important}
+.reading-point{display:block;position:relative;padding-inline-start:12px}.reading-point:before{content:'•';position:absolute;inset-inline-start:0;color:var(--muted)}.reading-point+.reading-point{margin-top:8px}
+.stock-read-row{grid-template-columns:1fr!important;gap:6px!important;padding:12px 0!important}.stock-read-row>span{font-size:10px!important;letter-spacing:.02em}.stock-read-row p{font-size:13px!important;line-height:1.85!important}
+.explanation-note{font-size:11px!important;line-height:1.9!important;color:var(--muted)!important;font-weight:400;margin:8px 0 14px}.setup-caution{border-inline-start:3px solid var(--amber,#c89c54);padding:8px 12px;font-size:12px;color:var(--text);background:var(--panel2);border-radius:4px}
+.analog-details{margin:12px 0}.outlook-grid{gap:12px!important}.outlook-grid>div{padding:12px;border:1px solid var(--line-soft);border-radius:10px}.outlook-grid b{font-size:13px!important;line-height:1.65!important}.outlook-grid em{font-size:10px!important;line-height:1.8!important;font-style:normal;display:block}.outlook-head b{font-size:16px}.outlook-head small{line-height:1.8!important}
+html[data-language=fa] .reading-copy,html[data-language=fa] .report-details>summary,html[data-language=fa] .report-topline{direction:rtl;text-align:right;font-family:Tahoma,Arial,sans-serif}
+html[data-language=fa] .reading-copy bdi{direction:ltr;unicode-bidi:isolate}html[data-language=fa] .outlook-head small,html[data-language=fa] .market-row>div:first-child small{direction:rtl}
+@media(max-width:700px){
+ .report-badges{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 0 10px!important;gap:10px!important;margin:16px 0 10px!important;direction:ltr}.brief-group{flex:0 0 82%;scroll-snap-align:start;padding:14px}.brief-group p{font-size:12px}.brief-group b{font-size:14px}
+ #homeMarkets>.market-row{gap:8px!important}#homeMarkets .market-context{padding-top:8px!important;margin-top:4px!important}.market-read{margin-top:4px;font-size:13px;line-height:1.9}.outlook-summary{font-size:13px!important}.outlook-grid{grid-template-columns:1fr!important}.stock-summary{margin-top:18px}.stock-summary-lead{font-size:14px!important}.stock-read-row p{font-size:13px!important}
+}
