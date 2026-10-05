@@ -1,7 +1,7 @@
 # Trend Breakout V1 — tsx-extra
-Generated: 2026-10-05T16:46:45.926Z; mode: forward_shadow.
+Generated: 2026-10-05T17:44:55.248Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 0.
-Open 0; pending 0; closed 0; lifecycle reviews 0.
+Open 0; pending 3; closed 0; lifecycle reviews 0.
 Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 ## Evidence provenance
 
@@ -15,6 +15,9 @@ Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 
 ## Positions
 
+- IFC.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- T.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- TFII.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
