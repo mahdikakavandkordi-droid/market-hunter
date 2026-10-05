@@ -91,9 +91,8 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await page.locator('[data-view="shortlist"]:visible').click();
   await page.locator('[data-stage-tab="Recovery"]').click();
   await expect(page.locator('#shortlistView .analysis-copy').first()).toContainText('بازسازی');
-  await page.locator('#installBtn').click();
-  await expect(page.locator('.install-dialog')).toBeVisible();
-  await page.locator('.install-dialog button').click();
+  await expect(page.locator('#installBtn')).toHaveCount(0);
+  await expect(page.locator('.install-dialog')).toHaveCount(0);
   await page.locator('#languageBtn').click();
   await page.locator('[data-view="engines"]:visible').click();
   await page.route('**/api/engines',route=>route.fulfill({status:503,json:{error:'unavailable'}}));
