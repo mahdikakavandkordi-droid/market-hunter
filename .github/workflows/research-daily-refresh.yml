@@ -38,15 +38,24 @@ jobs:
       - name: Select first post-close Toronto slot
         id: window
         shell: bash
+        env:
+          SCHEDULED_CRON: ${{ github.event.schedule }}
         run: |
           set -euo pipefail
           if [ "$GITHUB_EVENT_NAME" != "schedule" ]; then
             echo "run_refresh=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          toronto_hour="$(TZ=America/Toronto date +%H)"
-          toronto_minute="$(TZ=America/Toronto date +%M)"
-          echo "Toronto time: ${toronto_hour}:${toronto_minute}"
+          # Evaluate the intended cron slot, not when a delayed runner starts.
+          # Otherwise a queued 16:30 ET refresh can be silently skipped after 17:00.
+          case "$SCHEDULED_CRON" in
+            '30 20 * * 1-5') scheduled_hour=20 ;;
+            '30 21 * * 1-5') scheduled_hour=21 ;;
+            *) echo "Unknown schedule: $SCHEDULED_CRON"; exit 1 ;;
+          esac
+          scheduled_date="$(date -u +%F)"
+          toronto_hour="$(TZ=America/Toronto date -d "${scheduled_date} ${scheduled_hour}:30 UTC" +%H)"
+          echo "Scheduled Toronto slot: ${toronto_hour}:30"
           if [ "$toronto_hour" = "16" ]; then
             echo "run_refresh=true" >> "$GITHUB_OUTPUT"
           else

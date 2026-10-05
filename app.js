@@ -1103,7 +1103,7 @@ function homeHtml(){
 
   return `<div class="stack dashboard-layout">
     <div class="grid home-hero">
-      <section class="panel report-panel"><div class="panel-inner report-shell">
+      <section class="panel report-panel" id="homeBrief"><div class="panel-inner report-shell">
         <div class="report-topline">
           <div>
             <div class="eyebrow">${ui("Today’s brief","خلاصهٔ امروز")}</div>
@@ -1112,7 +1112,8 @@ function homeHtml(){
           <span class="report-date">${esc(d?.asOf?.latest||'')}</span>
         </div>
 
-        <div class="report-badges">
+        ${swipeTools("homeBriefGroups",d?.groups?.length||0)}
+        <div class="report-badges" id="homeBriefGroups" tabindex="0" aria-label="Market brief groups">
           ${(d?.groups||[]).slice(0,3).map(g=>`<div class="brief-group reading-copy"><small>${esc(words(g.label))}</small><b>${esc(words(g.state))}</b><p>${esc(words(g.detail))}</p></div>`).join('')}
         </div>
         <details class="report-details">

@@ -53,6 +53,8 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
       asOf:'2026-09-25',items:symbols.map(completedItem),failures:[],portfolioAnalytics:null
     })});
   });
+  // This portfolio/layout suite must not wait for live research-branch requests.
+  await page.route('**/api/engines',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({reports:[]})}));
   await page.route('https://ivmpzyjxyfcefjyylybr.supabase.co/rest/v1/**',async route=>{
     const req=route.request(),url=req.url(),method=req.method();
     if(url.includes('market_hunter_portfolio_state')){
@@ -79,6 +81,32 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
 
   await page.goto('/');
   await page.waitForLoadState('networkidle');
+
+  const briefRail=page.locator('#homeBriefGroups');
+  await expect(briefRail.locator('.brief-group')).toHaveCount(3);
+  expect(await briefRail.evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
+  await expect(briefRail).toHaveCSS('overflow-x','auto');
+  await expect(briefRail).toHaveCSS('flex-wrap','nowrap');
+  await page.locator('[data-swipe="homeBriefGroups"][data-step="1"]').click();
+  await expect.poll(()=>briefRail.evaluate(r=>r.scrollLeft)).toBeGreaterThan(0);
+  await page.locator('[data-swipe="homeBriefGroups"][data-step="1"]').click();
+  await expect.poll(()=>briefRail.evaluate(r=>r.scrollLeft+r.clientWidth>=r.scrollWidth-2)).toBe(true);
+  await page.locator('[data-swipe="homeBriefGroups"][data-step="-1"]').click();
+  await expect.poll(()=>briefRail.evaluate(r=>r.scrollLeft+r.clientWidth<r.scrollWidth-2)).toBe(true);
+  await briefRail.evaluate(r=>r.scrollTo({left:0,behavior:'instant'}));
+  // Native touch events exercise the same horizontal pan as a mobile finger.
+  const touch=await page.context().newCDPSession(page);
+  await touch.send('Emulation.setTouchEmulationEnabled',{enabled:true});
+  const bounds=await briefRail.boundingBox();
+  const y=bounds.y+Math.min(bounds.height/2,100),x=bounds.x+bounds.width*.85;
+  await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+  for(let step=1;step<=8;step++){
+    await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-bounds.width*.65*step/8,y}]});
+  }
+  await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await expect.poll(()=>briefRail.evaluate(r=>r.scrollLeft)).toBeGreaterThan(0);
+  await touch.detach();
+  await briefRail.evaluate(r=>r.scrollTo({left:0,behavior:'instant'}));
 
   const nasdaq100=page.locator('.market-row').filter({hasText:'Nasdaq-100'}).first();
   await expect(nasdaq100).toBeVisible();
@@ -185,4 +213,3 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await page.screenshot({path:'test-results/watchlist-mobile.png',fullPage:true});
   expect(errors).toEqual([]);
 });
-

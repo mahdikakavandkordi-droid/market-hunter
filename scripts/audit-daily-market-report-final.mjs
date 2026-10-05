@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {dailyReportUiContract} from '../lib/daily-report-ui-contract.js';
 const report=JSON.parse(fs.readFileSync('data/daily-market-report.json','utf8'));
 const pulse=JSON.parse(fs.readFileSync('data/market-pulse-report.json','utf8'));
 const pulseLatest=JSON.parse(fs.readFileSync('data/market-pulse-latest.json','utf8'));
@@ -55,8 +56,9 @@ fail('markdown_all_markets',expected.every(k=>{
 fail('ui_fetches_daily_report',
   app.includes("getJsonFallback('/api/research-data?kind=daily','/data/daily-market-report.json')"),
   null);
-fail('ui_renders_daily_report',app.includes('function homeHtml()')&&app.includes('What Changed Today')&&app.includes('keyDevelopments'),null);
-fail('ui_daily_before_pulse',app.indexOf('What Changed Today')<app.indexOf('<h3>Markets</h3>'),null);
+const uiContract=dailyReportUiContract(app);
+fail('ui_renders_daily_report',uiContract.renders,uiContract);
+fail('ui_daily_before_pulse',uiContract.beforeMarkets,uiContract);
 
 const pass=checks.every(x=>x.pass);
 const result={

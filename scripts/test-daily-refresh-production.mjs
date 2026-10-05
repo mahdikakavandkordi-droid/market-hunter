@@ -1,9 +1,30 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {dailyReportUiContract} from '../lib/daily-report-ui-contract.js';
 
 const workflow=fs.readFileSync('.github/workflows/research-daily-refresh.yml','utf8');
 const app=fs.readFileSync('app.js','utf8');
 const audit=fs.readFileSync('scripts/audit-daily-market-report-final.mjs','utf8');
+assert.deepEqual(dailyReportUiContract(app),{renders:true,beforeMarkets:true});
+assert.deepEqual(dailyReportUiContract(app.replaceAll('Market at a glance','A renamed heading').replace('ui("Markets","بازارها")','ui("Market prices","قیمت بازارها")')),{renders:true,beforeMarkets:true});
+assert.equal(dailyReportUiContract(app.replace('id="homeBrief"','id="missingBrief"')).renders,false);
+assert.equal(dailyReportUiContract(app.replace('id="homeMarkets"','id="missingMarkets"')).beforeMarkets,false);
+assert.equal(dailyReportUiContract(app.replaceAll('d?.groups','missingGroups')).renders,false);
+assert.equal(dailyReportUiContract(app.replaceAll('d?.keyDevelopments','missingDevelopments')).renders,false);
+assert.doesNotMatch(audit,/app\.includes\('What Changed Today'\)/);
+const gateScript=workflow.split('Select first post-close Toronto slot')[1].split('run: |')[1].split('\n  refresh:')[0].replace(/^          /gm,'').replaceAll('>> "$GITHUB_OUTPUT"','');
+const fixtureDate='date(){ if [[ "$*" == "-u +%F" ]]; then printf "%s\\n" "$FIXTURE_DATE"; elif [[ "$*" == "+%H" ]]; then printf "18\\n"; else command date "$@"; fi; };\n';
+for(const [day,cron,expected] of [
+  ['2026-10-05','30 20 * * 1-5',true],
+  ['2026-10-05','30 21 * * 1-5',false],
+  ['2026-12-07','30 20 * * 1-5',false],
+  ['2026-12-07','30 21 * * 1-5',true]
+]){
+  const result=spawnSync('bash',['-c',fixtureDate+gateScript],{encoding:'utf8',env:{...process.env,GITHUB_EVENT_NAME:'schedule',GITHUB_OUTPUT:'/dev/stdout',SCHEDULED_CRON:cron,FIXTURE_DATE:day}});
+  assert.equal(result.status,0,result.stderr);
+  assert.ok(result.stdout.includes('run_refresh='+expected),'delayed runner must preserve intended Toronto slot: '+day+' '+cron);
+}
 
 assert.match(workflow,/branches:\s*\n\s*- main/,'daily refresh bootstrap must run from production main');
 assert.match(workflow,/ref: main/,'daily refresh must execute approved production code');
