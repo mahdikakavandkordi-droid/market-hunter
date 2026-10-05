@@ -1,3 +1,4 @@
+import {engineDeskMenu,engineDeskReport} from '../lib/telegram-engines.js';
 import {
   mainMenu,enginesMenu,pulseMenu,marketReport,allMarketsReport,hunterMenu,stageMenu,stockReport,
   marketBrief,statusReport,portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty
@@ -105,6 +106,9 @@ function findMarket(pulse,key){
 
 async function routeCallback(update,data){
   if(data==='m:home')return render(update,mainMenu());
+  if(data==='m:engineDesk')return render(update,engineDeskMenu());
+  const desk=/^desk:(smc|trend|mean):(open|closed|pending|capital):(\d+)$/.exec(data);
+  if(desk){const engines=await loadEngineEvidence();return render(update,engineDeskReport(engines,desk[1],desk[2],Number(desk[3])));}
 
   if(data==='m:pulse'){
     const pulse=await loadPulse();
@@ -147,7 +151,7 @@ async function routeCallback(update,data){
 
   if(data==='m:portfolio'){
     const snapshot=await loadPortfolioSnapshot();
-    return render(update,snapshot?portfolioMenu(snapshot):portfolioEmpty(undefined,portfolioPairUrl()));
+    return render(update,snapshot?portfolioMenu(snapshot,portfolioPairUrl()):portfolioEmpty(undefined,portfolioPairUrl()));
   }
   if(data==='pf:all'){
     const snapshot=await loadPortfolioSnapshot();
@@ -173,13 +177,13 @@ async function routeCallback(update,data){
 
 async function routeMessage(update){
   const text=String(update?.message?.text||'').trim().toLowerCase();
-  if(text==='/engines'||text==='موتورها'){const [scan,engines]=await Promise.all([loadScan(),loadEngineEvidence()]);return render(update,enginesMenu(scan,engines));}
+  if(text==='/engines'||text==='موتورها')return render(update,engineDeskMenu());
   if(text==='/start'||text==='/menu'||text==='منو'||text==='خانه'||!text)return render(update,mainMenu());
   if(text.includes('بازار')||text==='/markets'){
     const pulse=await loadPulse();return render(update,pulseMenu(pulse));
   }
   if(text.includes('پورتفولیو')||text==='/portfolio'){
-    const snapshot=await loadPortfolioSnapshot();return render(update,snapshot?portfolioMenu(snapshot):portfolioEmpty(undefined,portfolioPairUrl()));
+    const snapshot=await loadPortfolioSnapshot();return render(update,snapshot?portfolioMenu(snapshot,portfolioPairUrl()):portfolioEmpty(undefined,portfolioPairUrl()));
   }
   if(text.includes('brief')||text.includes('گزارش')||text==='/brief'){
     const history=await loadRecentScans(5);

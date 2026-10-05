@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {engineDeskMenu,engineDeskReport} from '../lib/telegram-engines.js';
+import {portfolioMenu} from '../lib/telegram-fa.js';
+const stamp=new Date().toISOString();
+const position=(symbol,dir=1)=>({symbol,dir,status:'open',entry:100,markPrice:null,entryT:stamp,notional:250,unrealizedPnl:null});
+const account=(open=[])=>({startingCapital:1000,cash:1000-open.length*250,markedEquity:null,markedReturn:null,realizedEquity:1000,open,closed:[],openCount:open.length,closedCount:0});
+const reports=['tsx-core','tsx-extra','us-75','crypto-15','metals-5'].map(cohort=>({engine:'smc',cohort,status:'available',generatedAt:stamp,failures:[],account:account(),pending:[]}));
+reports[0].account=account([position('CANADA<.TO'),position('TWO.TO'),position('THREE.TO')]);
+reports[3].account=account([position('BTC-USD',-1)]);reports[3].account.closed=[{...position('CLOSED-USD'),status:'closed',pnl:5,exitPrice:102,exitT:stamp}];reports[3].account.closedCount=1;
+const data={reports:[...reports,{...reports[0],engine:'trend',account:account([position('OTHER-ENGINE')])}]};
+let view=engineDeskReport(data,'smc');assert.match(view.text,/CANADA&lt;/);assert.doesNotMatch(view.text,/OTHER-ENGINE/);assert.match(view.text,/🟢 Long/);assert.ok(view.keyboard.inline_keyboard.flat().some(b=>b.callback_data==='desk:smc:open:1'));
+view=engineDeskReport(data,'smc','open',1);assert.match(view.text,/BTC-USD/);assert.match(view.text,/🔴 Short/);assert.match(view.text,/کریپتو/);assert.doesNotMatch(view.text,/CANADA/);
+view=engineDeskReport(data,'smc','closed');assert.match(view.text,/CLOSED-USD/);assert.match(view.text,/2.00%/);
+view=engineDeskReport(data,'smc','capital');assert.match(view.text,/سرمایهٔ اولیه/);assert.match(view.text,/750/);assert.match(view.text,/250/);assert.match(view.text,/ارزش فعلی <code>\u2066—/);assert.doesNotMatch(view.text,/3,000|5,000/);
+assert.match(engineDeskReport(data,'smc','capital',2).text,/فلزات/);
+assert.match(engineDeskReport(null,'smc').text,/گزارش موتور در دسترس نیست/);
+assert.ok(engineDeskMenu().keyboard.inline_keyboard.flat().some(b=>b.callback_data==='m:engines'));
+for(const mode of ['open','closed','pending','capital']){const v=engineDeskReport(data,'smc',mode,999);assert.ok(v.text.length<3900);for(const b of v.keyboard.inline_keyboard.flat())if(b.callback_data)assert.ok(Buffer.byteLength(b.callback_data)<=64);}
+assert.ok(portfolioMenu({items:[{symbol:'TEST.TO',price:100,quantity:1,entryPrice:100}]},'https://example.test/secure').keyboard.inline_keyboard.flat().some(b=>b.url==='https://example.test/secure'));
+console.log('Telegram engine desk: all-market pagination, direction, segment attribution, separate funding, missing marks and recovery link passed.');
