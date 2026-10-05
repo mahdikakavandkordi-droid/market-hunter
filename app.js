@@ -1051,25 +1051,34 @@ async function load(){
     if(bridgeRequested)setView('portfolio');
   }finally{b.classList.remove('busy');b.disabled=false}
 }
+function marketLevelsHtml(levels){
+  const rows=[['bullishTrigger',ui('Above this level','بالای این سطح'),ui('Bullish continuation to watch','ادامهٔ صعود را بررسی کن')],['warningLevel',ui('Trend warning','سطح هشدار روند'),ui('Watch the reaction near this level','واکنش قیمت به این سطح مهم است')],['bearishTrigger',ui('Below this level','پایین این سطح'),ui('Risk of structural weakness','خطر ضعیف‌شدن ساختار')]].filter(([key])=>Number.isFinite(levels?.[key]));
+  if(!rows.length)return '';
+  return `<div class="market-levels reading-copy">${rows.map(([key,label,note])=>`<div><span>${label}<small>${note}</small></span><b><bdi>${fmt(levels[key])}</bdi></b></div>`).join('')}</div>`;
+}
 function homeHtml(){
   const d=state.daily,p=state.pulse,picks=stageLeaders();
   const s=portfolioSummary();
-  const changes=(d?.keyDevelopments||[]).slice(0,3).map(x=>`<div class="change-item"><span class="change-market">${esc(x.market)}</span><span>${esc(stripMarketPrefix(x.text))}</span></div>`).join('');
-  const groups=(d?.groups||[]).slice(0,3).map(g=>`<div class="group-card"><small>${esc(g.label)}</small><b>${esc(g.state)}</b><p>${esc(g.detail)}</p></div>`).join('');
-  const developmentByMarket=new Map((d?.keyDevelopments||[]).map(x=>[x.market,x]));
+  const words=value=>window.MHI18n?.text(value)||value||'—';
+  const marketRead=value=>window.MHI18n?.marketRead(value)||value?.outlook||'';
   const marketKeyByName={'TSX Composite':'TSX','S&P 500':'SP500','Nasdaq-100':'NASDAQ100','Gold':'GOLD','Silver':'SILVER','Bitcoin':'BTC','Ethereum':'ETH'};
   const intradaySymbolByKey=MARKET_PULSE_INTRADAY_SYMBOLS;
+  const changes=(d?.keyDevelopments||[]).slice(0,3).map(x=>{
+    const m=(d?.markets||[]).find(m=>m.key===x.market);
+    return `<div class="change-item"><span class="change-market"><bdi>${esc(m?.name||x.market)}</bdi></span><span>${esc(m?window.MHI18n.outlook(m.outlook):stripMarketPrefix(x.text))}</span></div>`;
+  }).join('');
   const markets=(p?.markets||[]).map(x=>{
     const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
     const key=x.key||marketKeyByName[x.name]||'';
-    const context=developmentByMarket.get(key)?.text||'';
+    const view=(d?.markets||[]).find(m=>m.key===key)||x;
     const completed={price:x.price,dayChangePct:x.current?.returns?.d1??x.returns?.d1,currency:x.currency||null,asOf:x.asOf||d?.asOf?.latest||null};
     const display=quoteFor(intradaySymbolByKey[key],completed);
     return `<div class="market-row">
-      <div><b>${esc(x.name)}</b><small>${esc(x.condition||'')}</small></div>
+      <div><b>${esc(x.name)}</b><small>${esc(words(x.condition))}</small></div>
       <div class="market-value"><div class="price-line">${fmt(display.price)}<small class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</small></div>${quoteMetaHtml(display)}</div>
-      <div class="market-state ${tone}">${esc(x.regime||'Neutral')}</div>
-      ${context?`<details class="market-context"><summary>${ui("Today’s context","توضیح امروز")}</summary><p>${esc(stripMarketPrefix(context))}</p></details>`:''}
+      <div class="market-state ${tone}">${esc(words(x.regime))}</div>
+      <p class="market-read reading-copy">${esc(marketRead(x))}</p>
+      <details class="market-context reading-copy"><summary>${ui("What to watch","چه چیزی را دنبال کنم؟")}</summary><p>${esc(window.MHI18n.outlook(view.outlook))}</p>${marketLevelsHtml(view.levels||x.levels)}</details>
     </div>`;
   }).join('');
   const rows=picks.map(x=>`<button class="home-pick" data-chart="${esc(x.symbol)}"><span><b><bdi>${short(x.symbol)}</bdi></b><small>${esc(x.name||x.symbol)}</small><em>${esc(stageLabel(x.stage))}</em></span><span class="home-pick-quote"><b><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi></b><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small>${quoteMetaHtml(x.displayQuote)}</span><span class="home-pick-arrow" aria-hidden="true">↗</span></button>`).join('');
@@ -1077,13 +1086,16 @@ function homeHtml(){
     const h5=m?.evidence?.horizons?.['5'];
     const h20=m?.evidence?.horizons?.['20'];
     return `<article class="outlook-card">
-      <div class="outlook-head"><div><b>${esc(m.name)}</b><small>${esc(m.regime||'—')} · ${esc(m.condition||'—')}</small></div><span>${esc(m.asOf||'')}</span></div>
-      <div class="outlook-grid">
-        <div><small>Short term (~1 week)</small><b class="${toneClass(h5?.tone||h5?.label)}">${esc(h5?.label||h5?.tone||'—')}</b><em>${esc(h5?.confidence||'')} confidence</em></div>
-        <div><small>Medium term (~1 month)</small><b class="${toneClass(h20?.tone||h20?.label)}">${esc(h20?.label||h20?.tone||'—')}</b><em>${esc(h20?.confidence||'')} confidence</em></div>
-      </div>
-      <p>${esc(m.outlook||m.framing||'')}</p>
-      ${m.watchNext?`<details><summary>What changes the view</summary><div class="outlook-watch">${esc(m.watchNext)}</div></details>`:''}
+      <div class="outlook-head"><div><b>${esc(m.name)}</b><small>${esc(words(m.regime))} · ${esc(words(m.condition))}</small></div><span>${esc(m.asOf||'')}</span></div>
+      <p class="reading-copy outlook-summary">${esc(window.MHI18n.outlook(m.outlook||m.framing))}</p>
+      <details class="analog-details reading-copy"><summary>${ui('Historical comparison','مقایسه با گذشته')}</summary>
+        <p class="explanation-note">${ui('Compared with this market’s usual returns. These are historical observations, not a probability of profit.','مقایسه با بازده معمول همین بازار است؛ این نتایج تاریخی‌اند و احتمال سود را نشان نمی‌دهند.')}</p>
+        <div class="outlook-grid">
+          ${[[5,h5],[20,h20]].map(([days,h])=>`<div><small>${ui(days+' sessions',days+' جلسهٔ معاملاتی')}</small><b class="${toneClass(h?.tone||h?.label)}">${esc(words(h?.label||h?.tone))}</b><em>${ui('Evidence confidence','اطمینان به شواهد')}: ${esc(words(h?.confidence))}</em><em>${esc(words(h?.analogLevel))} · ${ui('Samples','نمونه‌ها')}: <bdi>${Number.isFinite(h?.sample?.overall)?h.sample.overall:'—'}</bdi></em></div>`).join('')}
+        </div>
+      </details>
+      ${marketLevelsHtml(m.levels)}
+      ${m.specificSetupWarning?.warning?`<p class="setup-caution reading-copy">${ui('The exact current setup has weaker recent follow-through than its broader group.','وضعیت دقیق فعلی در نمونه‌های اخیر، ادامهٔ حرکت ضعیف‌تری از گروه کلی خود داشته است.')}</p>`:''}
     </article>`;
   }).join('');
   const portfolioValue=s.currency?money(s.value,s.currency):s.complete.length?'Mixed currencies':'—';
@@ -1095,17 +1107,18 @@ function homeHtml(){
         <div class="report-topline">
           <div>
             <div class="eyebrow">${ui("Today’s brief","خلاصهٔ امروز")}</div>
-            <div class="report-tone">${esc(String(d?.headline||'Daily market brief').split(':')[0])}</div>
+            <div class="report-tone">${ui('Market at a glance','بازار در یک نگاه')}</div>
           </div>
           <span class="report-date">${esc(d?.asOf?.latest||'')}</span>
         </div>
-        <details class="brief-changes"><summary>${ui("What changed today","تغییرات امروز")}</summary><div class="change-list">${changes||'<div class="change-empty">No material market-state change flagged today.</div>'}</div></details>
+
         <div class="report-badges">
-          ${(d?.groups||[]).slice(0,3).map(g=>`<span class="badge"><b>${esc(g.label)}</b> · ${esc(g.state)}</span>`).join('')}
+          ${(d?.groups||[]).slice(0,3).map(g=>`<div class="brief-group reading-copy"><small>${esc(words(g.label))}</small><b>${esc(words(g.state))}</b><p>${esc(words(g.detail))}</p></div>`).join('')}
         </div>
         <details class="report-details">
           <summary>${ui("Read the full brief","گزارش کامل")}</summary>
-          <div class="report-copy">${esc(d?.executiveSummary?.[0]||d?.summary||d?.headline||'')}</div>
+          <div class="report-copy reading-copy">${esc(window.MHI18n.headline(d?.executiveSummary?.[0]||d?.summary||d?.headline))}</div>
+          ${changes?`<div class="brief-focus reading-copy"><h4>${ui('Worth watching','موارد قابل پیگیری')}</h4><div class="change-list">${changes}</div></div>`:''}
         </details>
       </div></section>
       <section class="panel soft">
@@ -1142,7 +1155,7 @@ function homeHtml(){
 function stockSummaryHtml(x){
   const r=window.MHI18n?.read(x);
   if(!r)return `<p class="analysis-copy">${esc(stockNarrative(x))}</p>`;
-  return `<div class="stock-summary analysis-copy"><p class="stock-summary-lead">${esc(r.lead)}</p>${r.now.length?`<div class="stock-read-row"><span>${ui('Now','وضعیت فعلی')}</span><p>${r.now.map(esc).join('<br>')}</p></div>`:''}${r.watch.length?`<div class="stock-read-row watch"><span>${ui('Watch','احتیاط')}</span><p>${r.watch.map(esc).join('<br>')}</p></div>`:''}</div>`;
+  return `<div class="stock-summary analysis-copy"><small class="explanation-eyebrow">${ui('Why it is on the list','چرا در فهرست آمده؟')}</small><p class="stock-summary-lead">${esc(r.lead)}</p>${r.now.length?`<div class="stock-read-row"><span>${ui('Evidence','شواهد فعلی')}</span><p>${r.now.map(v=>'<span class="reading-point">'+esc(v)+'</span>').join('')}</p></div>`:''}${r.watch.length?`<div class="stock-read-row watch"><span>${ui('Watch','احتیاط')}</span><p>${r.watch.map(v=>'<span class="reading-point">'+esc(v)+'</span>').join('')}</p></div>`:''}</div>`;
 }
 function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
@@ -1151,8 +1164,8 @@ function stockCard(x,rank=''){
     <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span><span class="tag"><bdi>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></span></div>
     ${window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
     ${stockSummaryHtml(x)}
-    <div class="metrics"><div class="metric"><small>${ui('20-day move','تغییر ۲۰روزه')}</small><b class="${cls(x.ret20)}"><bdi>${pct(x.ret20)}</bdi></b></div><div class="metric"><small>${ui('Relative strength','قدرت نسبی')}</small><b class="${cls(x.rs20)}"><bdi>${pct(x.rs20)}</bdi></b></div><div class="metric"><small>${ui('Momentum shift','تغییر شتاب')}</small><b class="${cls(x.momentumShift)}"><bdi>${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</bdi></b></div></div>
-    <details class="stock-technical"><summary>${ui('Technical details','جزئیات فنی')}</summary><div class="technical-grid"><div><small>${ui('From 60-day high','فاصله از سقف ۶۰روزه')}</small><b><bdi>${pct(x.pullback60)}</bdi></b></div><div><small>${ui('ATR','نوسان (ATR)')}</small><b><bdi>${pct(x.atr14Pct)}</bdi></b></div><div><small>${ui('Above / below MA20','فاصله از میانگین ۲۰روزه')}</small><b><bdi>${pct(x.dist20)}</bdi></b></div><div><small>${ui('Above / below MA50','فاصله از میانگین ۵۰روزه')}</small><b><bdi>${pct(x.dist50)}</bdi></b></div></div>${(x.evidence||[]).length?'<div class="copy"><strong>'+ui('Source evidence','دلایل فنی (متن اصلی)')+'</strong><p><bdi>'+esc(x.evidence.join(' · '))+'</bdi></p></div>':''}</details>
+    <div class="metrics"><div class="metric"><small>${ui('20-day move','تغییر ۲۰روزه')}</small><b class="${cls(x.ret20)}"><bdi>${pct(x.ret20)}</bdi></b></div><div class="metric"><small>${ui('Vs benchmark · 20D','نسبت به شاخص · ۲۰روز')}</small><b class="${cls(x.rs20)}"><bdi>${Number.isFinite(x.rs20)?(x.rs20>=0?'+':'')+x.rs20.toFixed(1)+' pp':'—'}</bdi></b></div><div class="metric"><small>${ui('Momentum shift','تغییر شتاب')}</small><b class="${cls(x.momentumShift)}"><bdi>${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</bdi></b></div></div>
+    <details class="stock-technical"><summary>${ui('Numbers & definitions','اعداد و معنی آن‌ها')}</summary><p class="explanation-note reading-copy">${ui('Relative strength compares 20-day returns with the benchmark. Momentum shift shows how much the pace changed. Both use percentage points (pp), not your portfolio return.','قدرت نسبی، اختلاف بازده ۲۰روزه با شاخص مبناست. تغییر شتاب می‌گوید سرعت حرکت چقدر تغییر کرده. واحد هر دو «واحد درصد» (pp) است؛ این اعداد سود پورتفولیوی تو نیستند.')}</p><div class="technical-grid"><div><small>${ui('Benchmark','شاخص مبنا')}</small><b><bdi>${esc(x.benchmark||'—')}</bdi></b></div><div><small>${ui('From 60-day high','فاصله از سقف ۶۰روزه')}</small><b><bdi>${pct(x.pullback60)}</bdi></b></div><div><small>${ui('ATR','نوسان (ATR)')}</small><b><bdi>${pct(x.atr14Pct)}</bdi></b></div><div><small>${ui('Above / below MA20','فاصله از میانگین ۲۰روزه')}</small><b><bdi>${pct(x.dist20)}</bdi></b></div><div><small>${ui('Above / below MA50','فاصله از میانگین ۵۰روزه')}</small><b><bdi>${pct(x.dist50)}</bdi></b></div></div>${(x.evidence||[]).length?'<div class="copy"><strong>'+ui('Source evidence','دلایل فنی (متن اصلی)')+'</strong><p><bdi>'+esc(x.evidence.join(' · '))+'</bdi></p></div>':''}</details>
     <div class="actions"><button class="btn" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
   </article>`;
 }

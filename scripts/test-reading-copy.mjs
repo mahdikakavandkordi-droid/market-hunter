@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const context={window:{},localStorage:{getItem:()=>null,setItem(){}},document:{addEventListener(){},documentElement:{dataset:{}},getElementById:()=>null,querySelectorAll:()=>[]}};
+vm.runInNewContext(fs.readFileSync('i18n.js','utf8'),context);
+const ui=context.window.MHI18n;
+assert.match(ui.marketRead({regime:'Strong Bull',condition:'Pullback'}),/upward.*pulling back/);
+assert.match(ui.marketRead({}),/unavailable/);
+const stock={stage:'Recovery',swingTrend:'Structure improving',momentumShift:4,rs20:-5,lowState:'local_low_broken'};
+assert.equal(ui.read(stock).now.length,3,'relative performance must not be lost behind structure and momentum');
+assert.match(ui.read(stock).now[2],/5.0 percentage points behind/);
+assert.equal(ui.read(stock).watch.length,1,'backend low-break state must remain visible');
+assert.equal(ui.read({...stock,rs20:null}).now.length,2,'missing return must not be presented as zero');
+ui.toggle();
+assert.equal(ui.text('Strong Bull'),'صعودی قوی');
+assert.match(ui.marketRead({regime:'Mixed',condition:'Weakening'}),/جهت روشنی ندارد.*ضعیف‌تر/);
+assert.equal(ui.text('Future state'),'Future state','unrecognized backend states remain visible');
+assert.match(ui.headline('Mixed cross-market environment.'),/جهت بازارها/);
+const report=JSON.parse(fs.readFileSync('data/daily-market-report.json','utf8'));
+for(const m of report.markets){assert.notEqual(ui.outlook(m.outlook),m.outlook,`Persian outlook missing for ${m.key}`);}
+assert.match(ui.read(stock).now[2],/واحد درصد/);
+console.log('Bilingual reading, missing evidence and warning tests passed');
