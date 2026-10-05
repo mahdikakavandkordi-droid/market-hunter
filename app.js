@@ -1070,7 +1070,7 @@ function homeHtml(){
   const markets=(p?.markets||[]).map(x=>{
     const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
     const key=x.key||marketKeyByName[x.name]||'';
-    const view=(d?.markets||[]).find(m=>m.key===key)||x;
+    const view=(d?.markets||[]).find(m=>m.key===key&&m.asOf===x.asOf)||x;
     const completed={price:x.price,dayChangePct:x.current?.returns?.d1??x.returns?.d1,currency:x.currency||null,asOf:x.asOf||d?.asOf?.latest||null};
     const display=quoteFor(intradaySymbolByKey[key],completed);
     return `<div class="market-row">
