@@ -1,7 +1,7 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-10-05T18:50:04.246Z; mode: forward_shadow.
+Generated: 2026-10-05T21:44:58.908Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
-Open 0; pending 6; closed 0; lifecycle reviews 0.
+Open 0; pending 7; closed 0; lifecycle reviews 0.
 Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 ## Evidence provenance
 
@@ -21,6 +21,7 @@ Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 - OXY: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 - PEP: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 - T: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- NVDA: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
