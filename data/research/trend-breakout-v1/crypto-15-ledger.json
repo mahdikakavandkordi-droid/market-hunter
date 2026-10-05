@@ -1,14 +1,14 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-10-05T07:46:59.170Z",
+  "updatedAt": "2026-10-05T08:47:10.802Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
       "symbol": "ADA-USD",
       "signalT": "2026-10-04T20:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-05T00:00:00.000Z",
         "dailyAsOf": "2026-10-03",
@@ -19,11 +19,11 @@
         "atr14": 0.0060971443142209735,
         "signalClose": 0.25957000255584717
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
+      "entryT": "2026-10-05T04:00:00.000Z",
+      "entry": 0.2685700058937073,
+      "stop": 0.2563757172652653,
       "target": null,
-      "risk": null,
+      "risk": 0.012194288628441947,
       "R": null,
       "exitT": null,
       "decisionId": "ADA-USD|2026-10-04T20:00:00.000Z|1",
@@ -35,13 +35,18 @@
         "runKey": "trend-breakout-v1|37252543736|1",
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 0.2563757172652653,
+      "bestClose": 0.2728399932384491,
+      "holdingBars": 1,
+      "entryObservedAt": "2026-10-05T08:47:10.802Z",
+      "lastEvaluatedEndT": "2026-10-05T08:00:00.000Z"
     },
     {
       "symbol": "BNB-USD",
       "signalT": "2026-10-04T20:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-05T00:00:00.000Z",
         "dailyAsOf": "2026-10-03",
@@ -52,11 +57,11 @@
         "atr14": 6.986432756696429,
         "signalClose": 795.4099731445312
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
+      "entryT": "2026-10-05T04:00:00.000Z",
+      "entry": 791.8400268554688,
+      "stop": 777.8671613420759,
       "target": null,
-      "risk": null,
+      "risk": 13.972865513392858,
       "R": null,
       "exitT": null,
       "decisionId": "BNB-USD|2026-10-04T20:00:00.000Z|1",
@@ -68,7 +73,12 @@
         "runKey": "trend-breakout-v1|37249108889|1",
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 777.8671613420759,
+      "bestClose": 791.8400268554688,
+      "holdingBars": 1,
+      "entryObservedAt": "2026-10-05T08:47:10.802Z",
+      "lastEvaluatedEndT": "2026-10-05T08:00:00.000Z"
     }
   ],
   "runLog": [
@@ -153,6 +163,12 @@
     {
       "runKey": "trend-breakout-v1|37279621963|1",
       "observedAt": "2026-10-05T07:46:59.170Z",
+      "failures": [],
+      "diagnosticCount": 30
+    },
+    {
+      "runKey": "trend-breakout-v1|37285737842|1",
+      "observedAt": "2026-10-05T08:47:10.802Z",
       "failures": [],
       "diagnosticCount": 30
     }
@@ -281,6 +297,15 @@
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|37285737842|1",
+      "observedAt": "2026-10-05T08:47:10.802Z",
+      "quality": "fresh",
+      "markedEquity": 1003.362711178622,
+      "totalUnrealizedPnl": 3.36271117862207,
       "missingSymbols": [],
       "staleSymbols": []
     }
