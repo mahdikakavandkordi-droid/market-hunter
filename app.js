@@ -1,4 +1,5 @@
 const ui=(en,fa)=>window.MHI18n?.t(en,fa)||en;
+const swipeTools=(id,count)=>count>1?`<div class="swipe-tools"><span>${ui('Swipe to browse','برای دیدن بقیه ورق بزن')} ↔ <bdi>${count}</bdi></span><div><button type="button" data-swipe="${id}" data-step="-1" aria-label="${ui('Previous card','کارت قبلی')}">←</button><button type="button" data-swipe="${id}" data-step="1" aria-label="${ui('Next card','کارت بعدی')}">→</button></div></div>`:'';
 const stageLabel=s=>window.MHI18n?.stageLabel(s)||s;
 const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const numeric=n=>n!==null&&n!==undefined&&!(typeof n==='string'&&n.trim()==='')&&Number.isFinite(Number(n));
@@ -1104,13 +1105,12 @@ function homeHtml(){
         </div>
         <details class="report-details">
           <summary>${ui("Read the full brief","گزارش کامل")}</summary>
-          <div class="report-title">${esc(d?.headline||'Market report unavailable')}</div>
           <div class="report-copy">${esc(d?.executiveSummary?.[0]||d?.summary||d?.headline||'')}</div>
         </details>
       </div></section>
       <section class="panel soft">
         <div class="panel-head"><div><h3>${ui("Markets","بازارها")}</h3><p>${ui("Latest available prices and daily change.","آخرین قیمت موجود و تغییر روزانه")}</p></div></div>
-        <div class="market-list">${markets||'<div class="empty">Market Pulse unavailable.</div>'}</div>
+        ${swipeTools("homeMarkets",p?.markets?.length||0)}<div class="market-list mobile-rail" id="homeMarkets" tabindex="0" aria-label="Markets">${markets||'<div class="empty">Market Pulse unavailable.</div>'}</div>
       </section>
     </div>
 
@@ -1118,7 +1118,7 @@ function homeHtml(){
     <div class="grid home-lower">
       <section class="panel soft">
         <div class="panel-head"><div><h2>${ui("Today’s shortlist","سهم‌های منتخب امروز")}</h2><p>${ui("One leader from each stage.","یک سهم منتخب از هر مرحله")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
-        <div class="home-picks">${rows||'<div class="empty">'+ui('No current shortlist.','فهرست منتخب فعلاً خالی است.')+'</div>'}</div>
+        ${swipeTools("homePicks",picks.length)}<div class="home-picks mobile-rail" id="homePicks" tabindex="0" aria-label="Selected stocks">${rows||'<div class="empty">'+ui('No current shortlist.','فهرست منتخب فعلاً خالی است.')+'</div>'}</div>
       </section>
 
       <section class="panel soft">
@@ -1136,7 +1136,7 @@ function homeHtml(){
       </section>
     </div>
 
-    ${outlook?`<details class="panel soft outlook-panel dashboard-disclosure"><summary>${ui("Market outlook","چشم‌انداز بازار")}<span>${ui("Historical analogs · weekly and monthly","الگوهای تاریخی · هفتگی و ماهانه")}</span></summary><div class="outlook-track">${outlook}</div></details>`:''}
+    ${outlook?`<details class="panel soft outlook-panel dashboard-disclosure"><summary>${ui("Market outlook","چشم‌انداز بازار")}<span>${ui("Historical analogs · weekly and monthly","الگوهای تاریخی · هفتگی و ماهانه")}</span></summary>${swipeTools("marketOutlook",d?.markets?.length||0)}<div class="outlook-track mobile-rail" id="marketOutlook" tabindex="0" aria-label="Market outlook">${outlook}</div></details>`:''}
   </div>`;
 }
 function stockSummaryHtml(x){
@@ -1436,7 +1436,7 @@ function portfolioHtml(){
 
 function watchlistHtml(){
   const by=new Map(allCandidates().map(x=>[x.symbol,x])),items=[...state.watch];
-  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>${ui("Saved charts","سهم‌های ذخیره‌شده")}</h2><p>${ui("Your watchlist stays here as the shortlist changes.","با تغییر فهرست منتخب، سهم‌های ذخیره‌شده اینجا می‌مانند.")}</p></div><span class="tag">${items.length}</span></div><div class="cards">${items.length?items.map(symbol=>{
+  return `<div class="stack"><section class="panel soft"><div class="sectionhead"><div><h2>${ui("Saved charts","سهم‌های ذخیره‌شده")}</h2><p>${ui("Your watchlist stays here as the shortlist changes.","با تغییر فهرست منتخب، سهم‌های ذخیره‌شده اینجا می‌مانند.")}</p></div><span class="tag">${items.length}</span></div>${swipeTools("watchCards",items.length)}<div class="cards mobile-rail" id="watchCards" tabindex="0" aria-label="Saved stocks">${items.length?items.map(symbol=>{
     const current=by.get(symbol),live=state.liveItems.get(symbol),display=quoteFor(symbol,live);
     if(current)return stockCard(current);
     return `<article class="card"><div class="cardtop"><div class="name"><b>${short(symbol)}</b><small>Outside current Hunter surface</small></div><div class="cardprice"><div class="price-line">${money(display.price,display.currency||'CAD')}<small class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</small></div>${quoteMetaHtml(display)}</div></div><div class="actions"><button class="btn" data-chart="${symbol}">Chart ↗</button><button class="btn danger" data-watch="${symbol}">Remove</button></div></article>`;
@@ -1520,6 +1520,7 @@ function closeRiskInfo(except=null){
   qa('.risk-info[open]').forEach(d=>{if(d!==except)d.open=false});
 }
 document.addEventListener('click',async e=>{
+  const swipe=e.target.closest('[data-swipe]');if(swipe){const rail=document.getElementById(swipe.dataset.swipe);if(rail)rail.scrollBy({left:Number(swipe.dataset.step)*rail.clientWidth*.9,behavior:'smooth'});return}
   if(e.target.closest('.portfolio-sync-link')){const account=q('#portfolioAccount');if(account?.tagName==='DETAILS')account.open=true;}
   const allocationControl=e.target.closest('[data-allocation-mode],[data-allocation-item]');
   if(allocationControl){

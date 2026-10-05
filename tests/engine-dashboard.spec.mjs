@@ -69,6 +69,12 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await expect(view.locator('.engine-position').filter({hasText:'TEST.TO'})).toContainText('TEST.TO');
   await expect(view.locator('[data-engine-funding="smc"] .engine-segment')).toHaveCount(5);
   await expect(view.locator('.engine-position')).toHaveCount(2);
+  if(width===390){
+    expect(await view.locator('#enginePositions').evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
+    await view.locator('[data-swipe="enginePositions"][data-step="1"]').click();
+    await expect.poll(()=>view.locator('#enginePositions').evaluate(r=>r.scrollLeft)).toBeGreaterThan(0);
+    await view.locator('#enginePositions').evaluate(r=>r.scrollTo({left:0,behavior:'instant'}));
+  }
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   await page.screenshot({path:`test-results/engines-${width}-dark.png`,fullPage:true});
   await page.locator('#themeBtn').click();

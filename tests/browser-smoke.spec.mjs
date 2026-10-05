@@ -85,9 +85,17 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await expect(nasdaq100).not.toContainText('99,999');
   await expect(nasdaq100).toContainText('Completed session · hourly quote unavailable');
   await expect(page.locator('.outlook-panel')).not.toHaveAttribute('open','');
-  const marketBoxes=await page.locator('.market-row').evaluateAll(rows=>rows.map(r=>{const b=r.getBoundingClientRect();return {x:b.x,right:b.right,y:b.y}}));
-  expect(marketBoxes.every(b=>b.x>=0&&b.right<=390)).toBe(true);
-  expect(marketBoxes.every((b,i)=>i===0||b.y>marketBoxes[i-1].y)).toBe(true);
+  const marketRail=page.locator('#homeMarkets');
+  expect(await marketRail.evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
+  await page.locator('[data-swipe="homeMarkets"][data-step="1"]').click();
+  await expect.poll(()=>marketRail.evaluate(r=>r.scrollLeft)).toBeGreaterThan(0);
+  await marketRail.evaluate(r=>r.scrollTo({left:0,behavior:'instant'}));
+  expect(await page.locator('#homePicks').evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
+  await page.locator('.report-details>summary').click();
+  await expect(page.locator('.report-title')).toHaveCount(0);
+  expect(await page.locator('.report-copy').evaluate(r=>parseFloat(getComputedStyle(r).fontSize))).toBeLessThanOrEqual(14);
+  await page.screenshot({path:'test-results/home-open-brief-mobile.png',fullPage:true});
+  await page.locator('.report-details>summary').click();
   await page.screenshot({path:'test-results/home-mobile.png',fullPage:true});
 
   await page.locator('[data-view="portfolio"]:visible').first().click();
@@ -160,6 +168,10 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   const enbCard=page.locator('#watchlistView .card').filter({hasText:'ENB'}).first();
   await expect(enbCard.locator('.cardprice')).not.toContainText('5D');
 
+  expect(await page.locator('#watchCards').evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
+  await page.locator('[data-swipe="watchCards"][data-step="1"]').click();
+  await expect.poll(()=>page.locator('#watchCards').evaluate(r=>r.scrollLeft)).toBeGreaterThan(0);
   await page.screenshot({path:'test-results/watchlist-mobile.png',fullPage:true});
   expect(errors).toEqual([]);
 });
+
