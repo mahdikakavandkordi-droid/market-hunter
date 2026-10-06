@@ -93,7 +93,8 @@ assert.match(portfolioApi,/dayChangePct/);
 assert.match(portfolioApi,/r\.value\.rows\.at\(-2\)/); // completed-session fallback only; UI prefers /api/intraday
 assert.match(researchApi,/raw\.githubusercontent\.com\/mahdikakavandkordi-droid\/market-hunter\/main\/data/);
 assert.match(researchApi,/X-Market-Hunter-Source/);
-assert.match(researchApi,/s-maxage=60/);
+assert.match(researchApi,/setHeader\('Cache-Control','no-store'\)/);
+assert.match(researchApi,/choosePublishedResearch/);
 assert.match(server,/\/api\/research-data/);
 assert.match(mobile,/@media/);
 assert.match(theme,/data-theme="light"/);
