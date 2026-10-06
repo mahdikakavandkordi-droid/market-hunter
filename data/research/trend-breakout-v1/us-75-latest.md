@@ -1,8 +1,8 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-10-06T16:46:04.605Z; mode: forward_shadow.
+Generated: 2026-10-06T17:44:29.376Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
-Open 0; pending 7; closed 0; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
+Open 7; pending 6; closed 0; lifecycle reviews 0.
+Realized equity $1000.00; marked equity $998.50; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,13 +15,19 @@ Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 
 ## Positions
 
-- EOG: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- GE: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- MSFT: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- OXY: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- PEP: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- T: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- NVDA: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- AMD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- CAT: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- CVX: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- EOG: Long open; entry 143.16000366210938; current stop 138.71802847726005; provenance prospective; gap none
+- GE: Short open; entry 306.5; current stop 317.2689950125558; provenance prospective; gap none
+- MSFT: Long open; entry 531.6799926757812; current stop 513.5771876743862; provenance prospective; gap none
+- NVDA: Long open; entry 242.0800018310547; current stop 234.76746477399553; provenance prospective; gap none
+- OXY: Long open; entry 57.529998779296875; current stop 55.72058732169015; provenance prospective; gap none
+- PEP: Short open; entry 125.69999694824219; current stop 128.30829402378626; provenance prospective; gap none
+- T: Short open; entry 24.190000534057617; current stop 24.69752938406808; provenance prospective; gap none
+- TXN: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- VZ: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- XOM: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 

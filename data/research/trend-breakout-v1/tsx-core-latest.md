@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-10-06T16:46:04.605Z; mode: forward_shadow.
+Generated: 2026-10-06T17:44:29.376Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
-Open 0; pending 2; closed 0; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
+Open 2; pending 1; closed 0; lifecycle reviews 0.
+Realized equity $1000.00; marked equity $1001.34; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,8 +15,9 @@ Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 
 ## Positions
 
-- BCE.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- SHOP.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- BCE.TO: Short open; entry 28.09000015258789; current stop 28.917857033865793; provenance prospective; gap none
+- EMA.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- SHOP.TO: Long open; entry 235; current stop 223.32143075125558; provenance prospective; gap none
 
 ## Common-window comparison
 

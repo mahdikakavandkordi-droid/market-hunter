@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-extra
-Generated: 2026-10-06T16:46:04.605Z; mode: forward_shadow.
+Generated: 2026-10-06T17:44:29.376Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 0.
-Open 0; pending 4; closed 0; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
+Open 4; pending 3; closed 0; lifecycle reviews 0.
+Realized equity $1000.00; marked equity $1008.27; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,10 +15,13 @@ Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 
 ## Positions
 
-- IFC.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- T.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- TFII.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- MG.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- IFC.TO: Short open; entry 242.10000610351562; current stop 247.0010713849749; provenance prospective; gap none
+- MG.TO: Long open; entry 92.94000244140625; current stop 90.32071576799665; provenance prospective; gap none
+- PPL.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- RCI-B.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- SAP.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- T.TO: Short open; entry 11.180000305175781; current stop 11.58714348929269; provenance prospective; gap none
+- TFII.TO: Short open; entry 165.2899932861328; current stop 172.00785173688615; provenance prospective; gap none
 
 ## Common-window comparison
 
