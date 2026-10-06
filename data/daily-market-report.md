@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-10-02 to 2026-10-05 (TSX 2026-10-05 · SP500 2026-10-05 · NASDAQ100 2026-10-05 · GOLD 2026-10-02 · SILVER 2026-10-02 · BTC 2026-10-04 · ETH 2026-10-04)
+**As of:** 2026-10-04 to 2026-10-05 (TSX 2026-10-05 · SP500 2026-10-05 · NASDAQ100 2026-10-05 · GOLD 2026-10-05 · SILVER 2026-10-05 · BTC 2026-10-04 · ETH 2026-10-04)
 
 ## Executive read
 
 - Broadly risk-on, led by U.S. equities and crypto, with confirmation varying across other groups. Precious metals are currently in a weakening short-term phase.
-- Completed-session dates differ by instrument: TSX 2026-10-05 · SP500 2026-10-05 · NASDAQ100 2026-10-05 · GOLD 2026-10-02 · SILVER 2026-10-02 · BTC 2026-10-04 · ETH 2026-10-04.
+- Completed-session dates differ by instrument: TSX 2026-10-05 · SP500 2026-10-05 · NASDAQ100 2026-10-05 · GOLD 2026-10-05 · SILVER 2026-10-05 · BTC 2026-10-04 · ETH 2026-10-04.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -13,8 +13,8 @@
 - **Caution:** Bitcoin: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
 - **Caution:** Ethereum: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
 - **Watch:** Gold: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
-- **Watch:** Silver: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Context:** Nasdaq-100: trend is strong near highs, but historical follow-through is not automatically stronger than baseline.
+- **Watch:** Silver: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 
 ## Group read
 
@@ -32,9 +32,9 @@
 
 - **Bitcoin:** bullish continuation above 87146.35 · trend warning near 82857.71 · structure risk below 82906.62.
 - **Ethereum:** bullish continuation above 2746.01 · trend warning near 2647.94 · structure risk below 2651.08.
-- **Gold:** bullish continuation above 4170.7 · trend warning near 4334.33 · structure risk below 4143.1.
-- **Silver:** bullish continuation above 62.62 · trend warning near 63.94 · structure risk below 57.76.
+- **Gold:** bullish continuation above 4170.7 · trend warning near 4318.34 · structure risk below 4143.1.
 - **Nasdaq-100:** bullish continuation above 30770.63 · trend warning near 29984.25 · structure risk below 30081.06.
+- **Silver:** bullish continuation above 62.62 · trend warning near 63.68 · structure risk below 57.76.
 
 ## Market detail
 
@@ -64,19 +64,19 @@
 
 ### Gold
 - **State:** Mixed / Weakening
-- **Returns:** 1D -0.9% · 5D -3.7% · 20D -8.3% · 60D +0.5%
+- **Returns:** 1D -0.1% · 5D -0.3% · 20D -7.1% · 60D +1.1%
 - **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Constructive, recent caution
 - **Framing:** Short-term damage, confirmation required
 - **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
-- **Watch next:** bullish continuation above 4170.7 · trend warning near 4334.33 · structure risk below 4143.1.
+- **Watch next:** bullish continuation above 4170.7 · trend warning near 4318.34 · structure risk below 4143.1.
 
 ### Silver
 - **State:** Mixed / Weakening
-- **Returns:** 1D -1.2% · 5D -6.6% · 20D -10.4% · 60D -0.7%
+- **Returns:** 1D +1.5% · 5D -0.6% · 20D -7.8% · 60D +1.8%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Mixed
 - **Framing:** Historical analogs supportive
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 62.62 · trend warning near 63.94 · structure risk below 57.76.
+- **Watch next:** bullish continuation above 62.62 · trend warning near 63.68 · structure risk below 57.76.
 
 ### Bitcoin
 - **State:** Strong Bull / Breakout / Near High
