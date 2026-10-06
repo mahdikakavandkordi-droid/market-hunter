@@ -1,5 +1,15 @@
 import assert from 'node:assert/strict';
 import handler from '../api/research-data.js';
+import {choosePublishedResearch} from '../lib/published-research.js';
+const scan=(marketAsOf,generatedAt)=>({marketAsOf,generatedAt,integratedSurfacePicks:[]});
+const older=scan('2026-10-02','2026-10-02T20:00:00Z'),newer=scan('2026-10-05','2026-10-06T00:10:00Z');
+assert.equal(choosePublishedResearch('v2',older,newer).data,newer);
+assert.equal(choosePublishedResearch('v2',older,newer).source,'deployment-snapshot');
+assert.equal(choosePublishedResearch('v2',newer,older).data,newer,'newer main data is used without requiring redeployment');
+assert.equal(choosePublishedResearch('v2',{...older,generatedAt:'2026-10-06T00:20:00Z'},newer).data,newer,'regenerated older market session must not outrank the latest session');
+assert.equal(choosePublishedResearch('v2',newer,null).source,'github-main');
+assert.throws(()=>choosePublishedResearch('v2',{generatedAt:newer.generatedAt},newer),/invalid_research_data/);
+assert.equal(choosePublishedResearch('daily',{generatedAt:'2026-10-06T00:10:00Z',asOf:{latest:'2026-10-05'},groups:[]},{generatedAt:'2026-10-06T00:20:00Z',asOf:{latest:'2026-10-05'},groups:[]}).source,'deployment-snapshot');
 
 function makeRes(){
   const headers={};let statusCode=200,payload=null;
@@ -19,7 +29,7 @@ try{
   globalThis.fetch=async url=>{
     seenUrl=String(url);
     return {ok:true,status:200,async json(){return {
-      generatedAt:'2026-09-29T14:45:09Z',
+      generatedAt:'2099-09-29T14:45:09Z',
       asOf:{latest:'2026-09-28'},
       groups:[]
     }}};
@@ -29,7 +39,7 @@ try{
   assert.equal(ok.statusCode,200);
   assert.match(seenUrl,/\/main\/data\/daily-market-report\.json\?v=/);
   assert.equal(ok.headers['X-Market-Hunter-Source'],'github-main');
-  assert.match(ok.headers['Cache-Control'],/s-maxage=60/);
+  assert.equal(ok.headers['Cache-Control'],'no-store');
 
   const bad=makeRes();
   await handler({method:'GET',query:{kind:'nope'}},bad);

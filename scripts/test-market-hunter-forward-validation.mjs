@@ -1,8 +1,18 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
 import {
   sessionFromReport,presenceAndEpisodes,targetDateForHorizon,buildOutcome,
-  appendJsonlStrict,parseJsonl
+  appendJsonlStrict,parseJsonl,marketCalendarDate
 } from '../lib/market-hunter-forward-validation.js';
+
+assert.equal(marketCalendarDate(Date.parse('2026-10-06T00:11:00Z')),'2026-10-05','post-midnight UTC retry still belongs to Monday in Toronto');
+assert.equal(marketCalendarDate(Date.parse('2026-01-07T00:30:00Z')),'2026-01-06','winter offset');
+assert.equal(marketCalendarDate(Date.parse('2026-10-06T04:01:00Z')),'2026-10-06','never capture a previous session after exchange-local midnight');
+assert.equal(marketCalendarDate(Date.parse('2026-03-09T00:30:00Z')),'2026-03-08','spring DST');
+assert.equal(marketCalendarDate(Date.parse('2026-11-02T00:30:00Z')),'2026-11-01','autumn DST');
 
 function pick(symbol,stage,price,score=60){
   return {symbol,name:symbol,sector:'Test',date:'2026-09-01',stage,price,score,surfaceScore:score,evidence:['fixture']};
@@ -69,3 +79,30 @@ assert.equal(parseJsonl(twice.text).length,1);
 assert.throws(()=>appendJsonlStrict(once.text,[{...s1,modelVersion:'changed'}],x=>x.sessionId),/append_only_conflict/);
 
 console.log('PASS: four-stage forward validation journaling is append-only and episode-aware');
+
+// Exercise the actual collector after UTC midnight, not just its date helper.
+const temp=fs.mkdtempSync(path.join(os.tmpdir(),'mh-market-calendar-'));
+const source=path.join(temp,'source.json'),store=path.join(temp,'evidence'),preload=path.join(temp,'fixture.mjs');
+const fixture={version:'fixture-v1',generatedAt:'2026-10-06T00:10:00Z',marketAsOf:'2026-10-05',surfacePicks:{},integratedSurfacePicks:[],all:[]};
+fs.writeFileSync(source,JSON.stringify(fixture));
+fs.writeFileSync(preload,`
+const NativeDate=Date,ms=NativeDate.parse(process.env.FIXTURE_NOW);
+globalThis.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[ms]))}static now(){return ms}};
+const t=Math.floor(NativeDate.parse('2026-10-05T13:30:00Z')/1000);
+globalThis.fetch=async()=>({ok:true,json:async()=>({chart:{result:[{timestamp:[t],meta:{},indicators:{quote:[{close:[100],high:[101],low:[99],volume:[100000]}]}}]}})});
+`);
+function collectAt(now){return spawnSync(process.execPath,['--import',preload,'scripts/collect-market-hunter-forward-validation.mjs'],{encoding:'utf8',env:{...process.env,MH_FORWARD_DIR:store,MH_FORWARD_SOURCE:source,FIXTURE_NOW:now}})}
+let run=collectAt('2026-10-06T00:11:00Z');assert.equal(run.status,0,run.stderr);
+assert.equal(JSON.parse(run.stdout).addedSessions,1);
+const canonical=fs.readFileSync(path.join(store,'sessions.jsonl'),'utf8');
+fs.writeFileSync(source,JSON.stringify({...fixture,generatedAt:'2026-10-06T00:12:00Z'}));
+run=collectAt('2026-10-06T00:13:00Z');assert.equal(run.status,0,run.stderr);
+assert.equal(JSON.parse(run.stdout).addedSessions,0);
+assert.equal(fs.readFileSync(path.join(store,'sessions.jsonl'),'utf8'),canonical,'retry cannot replace the first complete session');
+run=collectAt('2026-10-06T04:01:00Z');assert.equal(run.status,0,run.stderr);
+assert.equal(JSON.parse(run.stdout).status,'no_completed_market_session');
+fs.writeFileSync(source,JSON.stringify({...fixture,marketAsOf:'2026-10-02'}));
+run=collectAt('2026-10-06T00:13:00Z');assert.equal(run.status,1);
+assert.match(run.stderr,/stale_source_report/);
+assert.equal(fs.readFileSync(path.join(store,'sessions.jsonl'),'utf8'),canonical);
+console.log('PASS: real collector UTC-midnight capture, immutable retry, exchange-midnight exclusion and stale-source rejection');

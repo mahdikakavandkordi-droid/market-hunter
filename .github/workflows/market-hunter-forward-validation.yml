@@ -7,6 +7,8 @@ on:
       - main
     paths:
       - '.github/workflows/market-hunter-forward-validation.yml'
+      - 'lib/market-hunter-forward-validation.js'
+      - 'scripts/collect-market-hunter-forward-validation.mjs'
   schedule:
     # Primary post-close capture after the validated daily refresh, plus recovery.
     - cron: '15 23 * * 1-5'

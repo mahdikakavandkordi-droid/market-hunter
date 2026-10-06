@@ -3,7 +3,7 @@ import path from 'node:path';
 import {completedDailyRows} from '../lib/completed-daily-session.js';
 import {
   FORWARD_VALIDATION_VERSION,HORIZONS,parseJsonl,appendJsonlStrict,sessionFromReport,
-  presenceAndEpisodes,targetDateForHorizon,buildOutcome,statusFromStore,dayKey,sha256Json
+  presenceAndEpisodes,targetDateForHorizon,buildOutcome,statusFromStore,dayKey,sha256Json,marketCalendarDate
 } from '../lib/market-hunter-forward-validation.js';
 
 const ROOT=process.env.MH_FORWARD_DIR||'data/research/market-hunter-forward-validation';
@@ -24,7 +24,6 @@ function writeText(file,text){
   fs.renameSync(file+'.tmp',file);
 }
 function nowIso(){return new Date().toISOString()}
-function todayUtc(){return nowIso().slice(0,10)}
 function appendFile(file,records,keyFn){
   const result=appendJsonlStrict(readText(file),records,keyFn);
   if(result.added.length)writeText(file,result.text);
@@ -105,12 +104,12 @@ async function collect(){
   const candidateSession=sessionFromReport(report);
   const benchmarkRows=await fetchChart(BENCHMARK);
   const latestBenchmarkDate=dayKey(benchmarkRows.at(-1).t);
-  const today=todayUtc();
+  const today=marketCalendarDate(Date.parse(attemptedAt));
 
   if(latestBenchmarkDate!==today){
     appendRun({
       runId:rid,collectorVersion:FORWARD_VALIDATION_VERSION,attemptedAt,
-      status:'no_completed_market_session',todayUtc:today,latestBenchmarkDate,
+      status:'no_completed_market_session',marketCalendarDate:today,todayUtc:attemptedAt.slice(0,10),latestBenchmarkDate,
       sourceMarketDate:candidateSession.marketDate
     });
     return {status:'no_completed_market_session',latestBenchmarkDate};
