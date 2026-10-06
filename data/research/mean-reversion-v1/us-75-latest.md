@@ -1,8 +1,8 @@
 # Mean Reversion V1 — us-75
-Generated: 2026-10-06T16:59:29.080Z; mode: forward_shadow.
+Generated: 2026-10-06T17:57:11.658Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 75; failed fetch/review symbols 3.
-Open 0; pending 1; closed 0; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
+Open 1; pending 0; closed 0; lifecycle reviews 0.
+Realized equity $1000.00; marked equity $1000.75; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,11 +15,11 @@ Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 
 ## Positions
 
-- KO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- KO: Long open; entry 86.5999984741211; current stop 84.59535544259208; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-05T22:56:26.321Z; stale false. Trend ledger as of 2026-10-06T16:46:04.605Z; stale false.
+SMC ledger as of 2026-10-05T22:56:26.321Z; stale false. Trend ledger as of 2026-10-06T17:44:29.376Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
 SMC closed 0; Trend closed 0; challenger closed 0. No winner is claimed from a small sample.
 
