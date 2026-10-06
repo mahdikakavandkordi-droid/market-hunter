@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-06T07:44:48.724Z; mode: forward_shadow.
+Generated: 2026-10-06T08:45:17.489Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 2; pending 0; closed 0; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $994.34; mark quality fresh.
+Open 2; pending 1; closed 0; lifecycle reviews 0.
+Realized equity $1000.00; marked equity $1000.10; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -17,6 +17,7 @@ Realized equity $1000.00; marked equity $994.34; mark quality fresh.
 
 - ADA-USD: Long open; entry 0.2685700058937073; current stop 0.2563757172652653; provenance prospective; gap none
 - BNB-USD: Long open; entry 791.8400268554688; current stop 777.8671613420759; provenance prospective; gap none
+- AVAX-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
