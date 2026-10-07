@@ -1,0 +1,1865 @@
+{
+  "version": "wave-ml-task3-calendar-accepted-v2",
+  "calendarHash": "5794c77da7abeb47023cdc7a3a56c23c13f719ecae7cbd4641fa1a2a2cea7ed6",
+  "calendarApproved": true,
+  "priceQuarantinePolicy": "unchanged 0.5% boundary check; require complete same-day source path; no rescaling",
+  "contractHash": "7d559f5a8bb7792e01c42400e395933435b59436055eec0a88ef2f3fa1fe9d3a",
+  "sourceManifestHash": "38c0f9e3e1357197d37e2e67f7cab053e502f4848fadf34008a203aa7bd4343c",
+  "featureManifestHash": "cccb9b07af0bc1053481c3991710caae0febbbd31ff696059603bdc31ecc45f9",
+  "asOf": "2026-10-07T23:01:09.135Z",
+  "labelHash": "e8762ec69e3995f8e8bfd3204f58b36be60b09453e91415157896b5ed1f5f310",
+  "splitHash": "491bb3c4bcfff965d39a1bb0cd00e2836d8eedc7267d98e57f7a7d342fda8090",
+  "developmentRows": 66420,
+  "resolved": 54574,
+  "unresolved": 11846,
+  "counts": {
+    "ca|1|train": {
+      "rows": 13365,
+      "resolved": 11435,
+      "reasons": {
+        "daily_crosscheck_unverified": 1588,
+        "untrusted_price_day": 316,
+        "split_in_label_path": 26
+      }
+    },
+    "ca|-1|train": {
+      "rows": 13365,
+      "resolved": 11107,
+      "reasons": {
+        "daily_crosscheck_unverified": 1897,
+        "untrusted_price_day": 347,
+        "split_in_label_path": 14
+      }
+    },
+    "ca|1|validation": {
+      "rows": 1533,
+      "resolved": 1498,
+      "reasons": {
+        "untrusted_price_day": 35
+      }
+    },
+    "ca|-1|validation": {
+      "rows": 1533,
+      "resolved": 1471,
+      "reasons": {
+        "untrusted_price_day": 62
+      }
+    },
+    "us|1|train": {
+      "rows": 14607,
+      "resolved": 11226,
+      "reasons": {
+        "untrusted_price_day": 447,
+        "daily_crosscheck_unverified": 2927,
+        "split_in_label_path": 7
+      }
+    },
+    "us|-1|train": {
+      "rows": 14607,
+      "resolved": 11139,
+      "reasons": {
+        "untrusted_price_day": 487,
+        "daily_crosscheck_unverified": 2975,
+        "split_in_label_path": 6
+      }
+    },
+    "us|1|validation": {
+      "rows": 1541,
+      "resolved": 1465,
+      "reasons": {
+        "untrusted_price_day": 40,
+        "daily_crosscheck_unverified": 36
+      }
+    },
+    "us|-1|validation": {
+      "rows": 1541,
+      "resolved": 1466,
+      "reasons": {
+        "untrusted_price_day": 40,
+        "daily_crosscheck_unverified": 35
+      }
+    },
+    "crypto|1|train": {
+      "rows": 1444,
+      "resolved": 1162,
+      "reasons": {
+        "untrusted_price_day": 83,
+        "daily_crosscheck_unverified": 199
+      }
+    },
+    "crypto|-1|train": {
+      "rows": 1444,
+      "resolved": 1165,
+      "reasons": {
+        "untrusted_price_day": 68,
+        "daily_crosscheck_unverified": 211
+      }
+    },
+    "crypto|1|validation": {
+      "rows": 720,
+      "resolved": 720,
+      "reasons": {}
+    },
+    "crypto|-1|validation": {
+      "rows": 720,
+      "resolved": 720,
+      "reasons": {}
+    }
+  },
+  "foldCounts": {
+    "validation_1|fit|ca|1": 9541,
+    "validation_1|fit|ca|-1": 9541,
+    "validation_1|excluded|ca|1": 5139,
+    "validation_1|excluded|ca|-1": 5139,
+    "validation_1|excluded|us|1": 6242,
+    "validation_1|excluded|us|-1": 6242,
+    "validation_1|fit|us|1": 9684,
+    "validation_1|fit|us|-1": 9684,
+    "validation_1|fit|crypto|1": 778,
+    "validation_1|fit|crypto|-1": 778,
+    "validation_1|excluded|crypto|1": 1186,
+    "validation_1|excluded|crypto|-1": 1186,
+    "validation_1|evaluate|ca|1": 218,
+    "validation_1|evaluate|ca|-1": 218,
+    "validation_1|evaluate|us|1": 222,
+    "validation_1|evaluate|us|-1": 222,
+    "validation_1|evaluate|crypto|1": 200,
+    "validation_1|evaluate|crypto|-1": 200,
+    "validation_2|fit|ca|1": 10357,
+    "validation_2|fit|ca|-1": 10357,
+    "validation_2|excluded|ca|1": 4541,
+    "validation_2|excluded|ca|-1": 4541,
+    "validation_2|excluded|us|1": 6221,
+    "validation_2|excluded|us|-1": 6221,
+    "validation_2|fit|us|1": 9927,
+    "validation_2|fit|us|-1": 9927,
+    "validation_2|fit|crypto|1": 1012,
+    "validation_2|fit|crypto|-1": 1012,
+    "validation_2|excluded|crypto|1": 1112,
+    "validation_2|excluded|crypto|-1": 1112,
+    "validation_2|evaluate|crypto|1": 40,
+    "validation_2|evaluate|crypto|-1": 40,
+    "final_fit_only|fit|ca|1": 10701,
+    "final_fit_only|fit|ca|-1": 10701,
+    "final_fit_only|excluded|ca|1": 4197,
+    "final_fit_only|excluded|ca|-1": 4197,
+    "final_fit_only|excluded|us|1": 5841,
+    "final_fit_only|excluded|us|-1": 5841,
+    "final_fit_only|fit|us|1": 10307,
+    "final_fit_only|fit|us|-1": 10307,
+    "final_fit_only|fit|crypto|1": 1260,
+    "final_fit_only|fit|crypto|-1": 1260,
+    "final_fit_only|excluded|crypto|1": 904,
+    "final_fit_only|excluded|crypto|-1": 904
+  },
+  "minimumFailures": [
+    {
+      "fold": "validation_2",
+      "market": "us",
+      "dir": 1,
+      "role": "evaluate",
+      "count": 0,
+      "minimum": 100
+    },
+    {
+      "fold": "validation_2",
+      "market": "us",
+      "dir": -1,
+      "role": "evaluate",
+      "count": 0,
+      "minimum": 100
+    },
+    {
+      "fold": "validation_2",
+      "market": "ca",
+      "dir": 1,
+      "role": "evaluate",
+      "count": 0,
+      "minimum": 100
+    },
+    {
+      "fold": "validation_2",
+      "market": "ca",
+      "dir": -1,
+      "role": "evaluate",
+      "count": 0,
+      "minimum": 100
+    },
+    {
+      "fold": "validation_2",
+      "market": "crypto",
+      "dir": 1,
+      "role": "evaluate",
+      "count": 40,
+      "minimum": 100
+    },
+    {
+      "fold": "validation_2",
+      "market": "crypto",
+      "dir": -1,
+      "role": "evaluate",
+      "count": 40,
+      "minimum": 100
+    }
+  ],
+  "fitCoverage": [
+    {
+      "fold": "validation_1",
+      "market": "us",
+      "dir": 1,
+      "rows": 9684,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2025-10-17T21:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_1",
+      "market": "us",
+      "dir": -1,
+      "rows": 9684,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2025-10-17T21:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_1",
+      "market": "ca",
+      "dir": 1,
+      "rows": 9541,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2025-10-17T21:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_1",
+      "market": "ca",
+      "dir": -1,
+      "rows": 9541,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2025-10-17T21:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_1",
+      "market": "crypto",
+      "dir": 1,
+      "rows": 778,
+      "first": "2024-10-08T00:05:00.000Z",
+      "last": "2025-10-17T00:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_1",
+      "market": "crypto",
+      "dir": -1,
+      "rows": 778,
+      "first": "2024-10-08T00:05:00.000Z",
+      "last": "2025-10-17T00:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_2",
+      "market": "us",
+      "dir": 1,
+      "rows": 9927,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2025-12-10T22:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_2",
+      "market": "us",
+      "dir": -1,
+      "rows": 9927,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2025-12-10T22:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_2",
+      "market": "ca",
+      "dir": 1,
+      "rows": 10357,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2025-12-12T22:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_2",
+      "market": "ca",
+      "dir": -1,
+      "rows": 10357,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2025-12-12T22:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_2",
+      "market": "crypto",
+      "dir": 1,
+      "rows": 1012,
+      "first": "2024-10-08T00:05:00.000Z",
+      "last": "2025-12-15T00:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "validation_2",
+      "market": "crypto",
+      "dir": -1,
+      "rows": 1012,
+      "first": "2024-10-08T00:05:00.000Z",
+      "last": "2025-12-15T00:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "final_fit_only",
+      "market": "us",
+      "dir": 1,
+      "rows": 10307,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2026-01-15T22:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "final_fit_only",
+      "market": "us",
+      "dir": -1,
+      "rows": 10307,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2026-01-15T22:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "final_fit_only",
+      "market": "ca",
+      "dir": 1,
+      "rows": 10701,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2026-01-15T22:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "final_fit_only",
+      "market": "ca",
+      "dir": -1,
+      "rows": 10701,
+      "first": "2024-10-08T21:05:00.000Z",
+      "last": "2026-01-15T22:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "final_fit_only",
+      "market": "crypto",
+      "dir": 1,
+      "rows": 1260,
+      "first": "2024-10-08T00:05:00.000Z",
+      "last": "2026-01-15T00:05:00.000Z",
+      "atLeast12Months": true
+    },
+    {
+      "fold": "final_fit_only",
+      "market": "crypto",
+      "dir": -1,
+      "rows": 1260,
+      "first": "2024-10-08T00:05:00.000Z",
+      "last": "2026-01-15T00:05:00.000Z",
+      "atLeast12Months": true
+    }
+  ],
+  "coverage": {
+    "sealedFinalFeatureRows": 1486,
+    "developmentFinalFeatureRows": 10562,
+    "reservedSymbolsSkipped": 12
+  },
+  "quality": [
+    {
+      "symbol": "RY.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TD.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BNS.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CM.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "AEM.TO",
+      "market": "ca",
+      "developmentMismatchDays": 3,
+      "openOnly": 1,
+      "closeOnly": 2,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "WPM.TO",
+      "market": "ca",
+      "developmentMismatchDays": 4,
+      "openOnly": 3,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ABX.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 1,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "LUN.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CNQ.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TRP.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CNR.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CP.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SHOP.TO",
+      "market": "ca",
+      "developmentMismatchDays": 4,
+      "openOnly": 3,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "NTR.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MFC.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BCE.TO",
+      "market": "ca",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "NA.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SLF.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "POW.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ENB.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "IMO.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TOU.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "FNV.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "K.TO",
+      "market": "ca",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "FTS.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "EMA.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "WCN.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CSU.TO",
+      "market": "ca",
+      "developmentMismatchDays": 11,
+      "openOnly": 3,
+      "closeOnly": 8,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ATD.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MRU.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "L.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "RCI-B.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "T.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "QSR.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CCL-B.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "GIB-A.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TRI.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "IFC.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "GWO.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BAM.TO",
+      "market": "ca",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BN.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BIP-UN.TO",
+      "market": "ca",
+      "developmentMismatchDays": 3,
+      "openOnly": 1,
+      "closeOnly": 2,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BEP-UN.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 1,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "PPL.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "KEY.TO",
+      "market": "ca",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ARX.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CVE.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "GIL.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "WCP.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TECK-B.TO",
+      "market": "ca",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "FM.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "PAAS.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "AGI.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "EDV.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MG.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TFII.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "STN.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CAE.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CTC-A.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "GSY.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SAP.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "WSP.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TIH.TO",
+      "market": "ca",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "OTEX.TO",
+      "market": "ca",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "H.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CU.TO",
+      "market": "ca",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "AAPL",
+      "market": "us",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MSFT",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 1,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "NVDA",
+      "market": "us",
+      "developmentMismatchDays": 6,
+      "openOnly": 6,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": true
+    },
+    {
+      "symbol": "AMZN",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "GOOGL",
+      "market": "us",
+      "developmentMismatchDays": 6,
+      "openOnly": 6,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "META",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "AVGO",
+      "market": "us",
+      "developmentMismatchDays": 10,
+      "openOnly": 10,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": true
+    },
+    {
+      "symbol": "TSLA",
+      "market": "us",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BAC",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "WFC",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "GS",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MS",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "V",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MA",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "AXP",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "C",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SCHW",
+      "market": "us",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BLK",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CVX",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "COP",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SLB",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "EOG",
+      "market": "us",
+      "developmentMismatchDays": 58,
+      "openOnly": 58,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "OXY",
+      "market": "us",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "JNJ",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "LLY",
+      "market": "us",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "UNH",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MRK",
+      "market": "us",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ABBV",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TMO",
+      "market": "us",
+      "developmentMismatchDays": 66,
+      "openOnly": 66,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ABT",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MDT",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "HD",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "LOW",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "WMT",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TGT",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MCD",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SBUX",
+      "market": "us",
+      "developmentMismatchDays": 6,
+      "openOnly": 6,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "NKE",
+      "market": "us",
+      "developmentMismatchDays": 4,
+      "openOnly": 4,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CAT",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "DE",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "GE",
+      "market": "us",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": true
+    },
+    {
+      "symbol": "HON",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "UPS",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "UNP",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "RTX",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "LMT",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BA",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CRM",
+      "market": "us",
+      "developmentMismatchDays": 5,
+      "openOnly": 5,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ORCL",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ADBE",
+      "market": "us",
+      "developmentMismatchDays": 4,
+      "openOnly": 4,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "INTC",
+      "market": "us",
+      "developmentMismatchDays": 10,
+      "openOnly": 10,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "QCOM",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TXN",
+      "market": "us",
+      "developmentMismatchDays": 6,
+      "openOnly": 6,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "AMAT",
+      "market": "us",
+      "developmentMismatchDays": 9,
+      "openOnly": 9,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "MU",
+      "market": "us",
+      "developmentMismatchDays": 15,
+      "openOnly": 15,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "NFLX",
+      "market": "us",
+      "developmentMismatchDays": 7,
+      "openOnly": 7,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "DIS",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "CMCSA",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "T",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "VZ",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "NEE",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SO",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "DUK",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "LIN",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "APD",
+      "market": "us",
+      "developmentMismatchDays": 3,
+      "openOnly": 3,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "FCX",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "NEM",
+      "market": "us",
+      "developmentMismatchDays": 5,
+      "openOnly": 5,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "PG",
+      "market": "us",
+      "developmentMismatchDays": 4,
+      "openOnly": 4,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "KO",
+      "market": "us",
+      "developmentMismatchDays": 0,
+      "openOnly": 0,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "PEP",
+      "market": "us",
+      "developmentMismatchDays": 2,
+      "openOnly": 2,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "PM",
+      "market": "us",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BTC-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ETH-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 1,
+      "openOnly": 0,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "XRP-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 3,
+      "openOnly": 2,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SOL-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 3,
+      "openOnly": 1,
+      "closeOnly": 2,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "TRX-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 3,
+      "openOnly": 1,
+      "closeOnly": 2,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "DOGE-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 6,
+      "openOnly": 2,
+      "closeOnly": 4,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "ADA-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 2,
+      "openOnly": 0,
+      "closeOnly": 2,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "XLM-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 3,
+      "openOnly": 2,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "BCH-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 1,
+      "openOnly": 1,
+      "closeOnly": 0,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "DOT-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 3,
+      "openOnly": 2,
+      "closeOnly": 1,
+      "both": 0,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    },
+    {
+      "symbol": "SHIB-USD",
+      "market": "crypto",
+      "developmentMismatchDays": 515,
+      "openOnly": 57,
+      "closeOnly": 59,
+      "both": 399,
+      "calendarApproved": true,
+      "zeroEligibleFeatures": false
+    }
+  ],
+  "finalLabelsOpened": false,
+  "trainingStarted": false,
+  "trainingReady": false,
+  "blockers": [
+    "source_mismatch_origin_not_verified_and_affected_paths_quarantined",
+    "insufficient_second_validation_window_after_horizon_purge",
+    "reserved_symbol_feature_feasibility_and_independent_block_support_not_approved"
+  ],
+  "outcomePolicy": "ATR challenger; not Elliott account returns; development diagnostics only"
+}
