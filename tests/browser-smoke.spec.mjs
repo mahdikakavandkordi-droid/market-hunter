@@ -54,6 +54,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
     })});
   });
   // This portfolio/layout suite must not wait for live research-branch requests.
+  await page.route('**/api/hunter-monitor',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({version:'hunter-monitor-v1',marketAsOf:'2026-09-25',firstRecordedDate:'2026-09-25',summary:{total:0,up:0,down:0,new:0,missing:0},rows:[]})}));
   await page.route('**/api/engines',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({reports:[]})}));
   await page.route('https://ivmpzyjxyfcefjyylybr.supabase.co/rest/v1/**',async route=>{
     const req=route.request(),url=req.url(),method=req.method();
