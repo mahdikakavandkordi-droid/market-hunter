@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import {UNIVERSE} from '../lib/universe.js';
 import {completedDailyRows} from '../lib/completed-daily-session.js';
+import {referenceSession,quoteSessionIssue} from '../lib/scan-session-integrity.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 
 const range=process.env.V2_SCAN_RANGE||'2y';
@@ -72,13 +73,18 @@ for(const s of needed){
   catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set()}}
 }
 
-const rows=[],excluded={};
+// Anchor the scan to the completed Canadian benchmark session. A suspended or
+// stale instrument must not enter today's ranking with months-old candles.
+const marketAsOf=referenceSession(data['^GSPTSE']?.rows);
+const rows=[],excluded={},sessionExclusions=[];
 for(const symbol of symbols){
   const pack=data[symbol],r=pack?.rows||[],bench=data[benchSymbol(symbol)]?.rows||[];
   let reason=null;
   if(r.length<120||bench.length<80)reason='insufficient_history';
   else if(recentSplit(r,pack.splitDays))reason='recent_split';
   if(reason){excluded[reason]=(excluded[reason]||0)+1;continue}
+  const issue=quoteSessionIssue(r,marketAsOf);
+  if(issue){excluded[issue.reason]=(excluded[issue.reason]||0)+1;sessionExclusions.push({symbol,...issue});continue}
   const date=dayKey(r.at(-1).t),bh=benchmarkHist(bench,date);
   if(!bh||bh.length<65){excluded.benchmark_alignment=(excluded.benchmark_alignment||0)+1;continue}
   const m=metrics(r,bh);
@@ -124,12 +130,11 @@ const integratedSurfaceCounts={
   hiddenByIntegratedCap:Math.max(0,Object.values(surfacePicks).reduce((sum,x)=>sum+x.length,0)-integratedSurfacePicks.length),
   byStage:Object.fromEntries(stages.map(stage=>[stage,integratedSurfacePicks.filter(x=>x.stage===stage).length]))
 };
-const marketDates=[...new Set(rows.map(x=>x.date).filter(Boolean))];
-const marketAsOf=marketDates.length===1?marketDates[0]:null;
 const report={
   version:VERSION,generatedAt:new Date().toISOString(),marketAsOf,engineCommit:process.env.GITHUB_SHA||null,range,
   purpose:ASSUMPTIONS.purpose,
   universeCount:symbols.length,classifiedCount:rows.length,excluded,
+  sessionIntegrity:{referenceSymbol:'^GSPTSE',completedSession:marketAsOf,exclusions:sessionExclusions},
   stageCounts:Object.fromEntries(stages.map(s=>[s,byStage[s].length])),
   priorityFloors:PRIORITY_FLOORS,
   surfacePolicy:SURFACE_POLICY,surfacePicks,surfaceCounts,

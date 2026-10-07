@@ -5,7 +5,7 @@ import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {
   sessionFromReport,presenceAndEpisodes,targetDateForHorizon,buildOutcome,
-  appendJsonlStrict,parseJsonl,marketCalendarDate
+  appendJsonlStrict,parseJsonl,marketCalendarDate,reportMarketDate
 } from '../lib/market-hunter-forward-validation.js';
 
 assert.equal(marketCalendarDate(Date.parse('2026-10-06T00:11:00Z')),'2026-10-05','post-midnight UTC retry still belongs to Monday in Toronto');
@@ -13,6 +13,8 @@ assert.equal(marketCalendarDate(Date.parse('2026-01-07T00:30:00Z')),'2026-01-06'
 assert.equal(marketCalendarDate(Date.parse('2026-10-06T04:01:00Z')),'2026-10-06','never capture a previous session after exchange-local midnight');
 assert.equal(marketCalendarDate(Date.parse('2026-03-09T00:30:00Z')),'2026-03-08','spring DST');
 assert.equal(marketCalendarDate(Date.parse('2026-11-02T00:30:00Z')),'2026-11-01','autumn DST');
+assert.throws(()=>reportMarketDate({marketAsOf:'2026-10-06',all:[{date:'2026-10-06'},{date:'2026-08-11'}]}),/mixed_report_market_dates/,'an explicit date must not hide stale classified rows');
+assert.throws(()=>reportMarketDate({marketAsOf:'2026-10-06',all:[],integratedSurfacePicks:[{date:'2026-08-11'}]}),/mixed_report_surface_dates/);
 
 function pick(symbol,stage,price,score=60){
   return {symbol,name:symbol,sector:'Test',date:'2026-09-01',stage,price,score,surfaceScore:score,evidence:['fixture']};
