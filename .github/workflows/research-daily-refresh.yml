@@ -123,6 +123,9 @@ jobs:
           }
 
           const v2=JSON.parse(fs.readFileSync('data/v2-latest-scan.json','utf8'));
+          if(!/^\d{4}-\d{2}-\d{2}$/.test(v2.marketAsOf||'')||(v2.all||[]).some(x=>x.date!==v2.marketAsOf)){
+            throw new Error('V2 scan contains missing or mixed completed-session dates');
+          }
           if(!Array.isArray(v2.integratedSurfacePicks)||v2.integratedSurfacePicks.length>6){
             throw new Error('V2 integrated shortlist invalid');
           }

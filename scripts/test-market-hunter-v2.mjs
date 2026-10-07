@@ -1,4 +1,10 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {referenceSession,quoteSessionIssue} from '../lib/scan-session-integrity.js';
 import {classify,rank,surfaceRank,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY} from '../lib/market-hunter-v2-engine.js';
 
 const base={
@@ -133,4 +139,40 @@ assert.deepEqual(
 );
 assert.deepEqual(riskFlags(m({dist20:5.9,rsi14:74.9,atr14Pct:5.9})),[]);
 
-console.log('Market Hunter V2 contract tests passed');
+assert.throws(()=>referenceSession([]),/completed_reference_session_unavailable/);
+const sessionRows=date=>[{t:Date.parse(date+'T20:00:00Z')/1000}];
+assert.equal(quoteSessionIssue(sessionRows('2026-10-06'),'2026-10-06'),null);
+assert.equal(quoteSessionIssue(sessionRows('2026-08-11'),'2026-10-06').sourceDate,'2026-08-11');
+assert.equal(quoteSessionIssue(sessionRows('2026-10-07'),'2026-10-06').reason,'session_mismatch');
+
+// Exercise the real scanner with isolated provider fixtures, never production files.
+const fixtureDir=fs.mkdtempSync(path.join(os.tmpdir(),'hunter-session-'));
+try{
+  fs.mkdirSync(path.join(fixtureDir,'data'));
+  const preload=path.join(fixtureDir,'provider.mjs');
+  fs.writeFileSync(preload,`globalThis.fetch=async url=>{
+    const symbol=decodeURIComponent(new URL(url).pathname.split('/').at(-1));
+    if(process.env.FIXTURE_NO_BENCH==='1'&&symbol==='^GSPTSE')return {ok:false,status:503};
+    const end=Date.parse((symbol==='ARX.TO'?'2026-08-11':'2026-10-06')+'T20:00:00Z')/1000;
+    const timestamp=Array.from({length:200},(_,i)=>end-(199-i)*86400);
+    const close=timestamp.map((_,i)=>50+i);
+    return {ok:true,json:async()=>({chart:{result:[{timestamp,meta:{},indicators:{quote:[{
+      close,high:close.map(x=>x+1),low:close.map(x=>x-1),volume:close.map(()=>3000000)
+    }]}}]}})};
+  };`);
+  const run=env=>spawnSync(process.execPath,['--import',preload,fileURLToPath(new URL('./scan-market-hunter-v2.mjs',import.meta.url))],{cwd:fixtureDir,env:{...process.env,...env},encoding:'utf8',timeout:60000});
+  const good=run({});
+  assert.equal(good.status,0,good.stderr);
+  const output=path.join(fixtureDir,'data/v2-latest-scan.json');
+  const saved=fs.readFileSync(output,'utf8'),report=JSON.parse(saved);
+  assert.equal(report.marketAsOf,'2026-10-06');
+  assert.ok(report.all.length>0);
+  assert.ok(report.all.every(x=>x.date==='2026-10-06'&&x.symbol!=='ARX.TO'));
+  assert.deepEqual(report.sessionIntegrity.exclusions,[{symbol:'ARX.TO',reason:'session_mismatch',sourceDate:'2026-08-11',expectedSession:'2026-10-06'}]);
+  const missing=run({FIXTURE_NO_BENCH:'1'});
+  assert.notEqual(missing.status,0);
+  assert.match(missing.stderr,/completed_reference_session_unavailable/);
+  assert.equal(fs.readFileSync(output,'utf8'),saved,'failed reference fetch must preserve the published snapshot');
+}finally{fs.rmSync(fixtureDir,{recursive:true,force:true});}
+
+console.log('Market Hunter V2 contract and session-integrity tests passed');
