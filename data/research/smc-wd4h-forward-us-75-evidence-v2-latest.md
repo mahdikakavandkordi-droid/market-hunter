@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75 — Corrected Evidence v2
 
-Generated: 2026-10-06T22:56:33.846Z; forward start: 2026-10-01; universe: 75.
+Generated: 2026-10-07T22:57:01.117Z; forward start: 2026-10-01; universe: 75.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1000.00; return 0.0%; realized-event max DD 0.0%.
-Marked equity $993.26; return -0.7%; observed marked max DD -0.6%; quality fresh.
+Marked equity $986.18; return -1.4%; observed marked max DD -1.3%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:54.783Z; first complete marked-equity observation 2026-10-04T14:55:54.783Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,14 +23,15 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| DIS | Short | 101.710 | 104.020 | fresh | $-4.62 |
-| FCX | Long | 73.070 | 72.570 | fresh | $-0.99 |
-| CVX | Long | 208.545 | 207.600 | fresh | $-1.13 |
+| DIS | Short | 101.710 | 104.760 | fresh | $-6.10 |
+| FCX | Long | 73.070 | 71.880 | fresh | $-2.36 |
+| CVX | Long | 208.545 | 205.170 | fresh | $-4.05 |
+| LLY | Long | 1196.415 | 1188.250 | fresh | $-1.32 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 1; prospective 0; reconstructed 2; pending 0.
-This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 2.
+Legacy provenance unknown 1; prospective 0; reconstructed 3; pending 2.
+This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 0.
 
 ### Performance by evidence provenance
 
@@ -52,5 +53,4 @@ This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 2.
 ## Fetch/data gaps
 
 - No fetch failures this run.
-- Data diagnostic: {"symbol":"EOG","type":"incomplete_or_missing_exchange_bar","date":"2026-10-06","segment":1,"expected":[4,5,6],"present":[4,5]}
-- Data diagnostic: {"symbol":"TMO","type":"incomplete_or_missing_exchange_bar","date":"2026-10-06","segment":1,"expected":[4,5,6],"present":[4,5]}
+- No candle/data diagnostics this run.
