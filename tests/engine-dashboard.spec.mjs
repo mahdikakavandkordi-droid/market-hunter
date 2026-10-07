@@ -42,6 +42,23 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await expect(view).toContainText('no position has opened');
   await view.locator('[data-engine-mode="open"]').click();
   await view.locator('[data-engine-tab="smc"]:visible').click();
+  if(width===390){
+    const bounds=()=>page.evaluate(()=>{
+      const nav=document.querySelector('.mobile-nav').getBoundingClientRect();
+      const shell=document.querySelector('.app-shell').getBoundingClientRect();
+      return {bottom:nav.bottom,top:nav.top,shellBottom:shell.bottom,height:innerHeight,position:getComputedStyle(document.querySelector('.mobile-nav')).position};
+    });
+    for(const height of [900,470,900]){
+      await page.setViewportSize({width,height});
+      await expect.poll(async()=>Math.abs((await bounds()).bottom-height)).toBeLessThan(2);
+      const b=await bounds();expect(b.shellBottom).toBeLessThanOrEqual(b.top+1);expect(b.position).toBe('relative');
+    }
+    await page.locator('.app-shell').evaluate(el=>el.scrollTop=300);
+    expect((await bounds()).bottom).toBe(900);
+    await page.locator('[data-view="home"]:visible').click();
+    await expect.poll(()=>page.locator('.app-shell').evaluate(el=>el.scrollTop)).toBe(0);
+    await page.locator('[data-view="engines"]:visible').click();
+  }
   await expect(view.locator('[data-engine-funding="smc"] .engine-segment')).toHaveCount(5);
   const canada=view.locator('[data-engine-funding="smc"] [data-engine-segment="tsx-core"]');
   await expect(canada.locator('.engine-segment-value strong')).toHaveText('—');

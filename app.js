@@ -1507,6 +1507,7 @@ function setView(view){
   const titles={home:'Market overview',shortlist:'Review',portfolio:'Portfolio',watchlist:'Watchlist',engines:'Engines'};
   const title=q('#pageTitle');if(title)title.textContent=window.MHI18n?.t(titles[view]||'Market Hunter',({home:'خانه',shortlist:'بررسی سهم‌ها',portfolio:'پورتفولیو',watchlist:'دیده‌بان',engines:'موتورها'})[view]||'مارکت هانتر')||titles[view];
   renderView(view);window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelector('.app-shell')?.scrollTo({top:0,behavior:'instant'});
 }
 let modalTrigger=null;
 function closeModal(){

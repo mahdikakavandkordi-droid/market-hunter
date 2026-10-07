@@ -114,3 +114,14 @@ html[data-language=fa] .reading-copy bdi{direction:ltr;unicode-bidi:isolate}html
 }
 
 .hunter-monitor>p{padding:0 18px}.hunter-monitor-scroll{overflow-x:auto;padding:0 18px}.hunter-monitor table{width:100%;border-collapse:collapse;min-width:450px}.hunter-monitor th,.hunter-monitor td{text-align:start;padding:12px 8px;border-bottom:1px solid var(--line,#243244);vertical-align:top}.hunter-monitor td small{display:block;font-size:12px;opacity:.75;margin-top:5px}.hunter-monitor th{font-size:12px}
+
+/* Keep navigation outside the scroller: iOS can retain an obsolete fixed-layer
+   viewport after keyboard dismissal. Normal-flow navigation cannot overlay cards. */
+@media(max-width:700px){
+ html{height:100%;overflow:hidden}
+ body{height:100vh;height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+ .app-shell{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+ .workspace{min-height:100%}
+ .mobile-nav{position:relative!important;inset:auto!important;flex:0 0 auto;width:100%;box-sizing:border-box}
+ .main{padding-bottom:24px!important}
+}

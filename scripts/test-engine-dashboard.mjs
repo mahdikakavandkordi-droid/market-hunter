@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
 import handler from '../api/engines.js';
 import {ENGINES,COHORTS,evidencePath,normalizeEvidence,commonComparison,loadDashboard} from '../lib/engine-dashboard.js';
 const now=Date.parse('2026-10-04T21:00:00Z');
@@ -27,4 +29,12 @@ assert.equal(dashboard.reports.length,15);assert.equal(dashboard.reports.filter(
 assert.equal(dashboard.reports.find(r=>r.engine==='trend'&&r.cohort==='crypto-15').account,undefined,'missing data must not become zero');
 const res={status(code){this.code=code;return this},json(body){this.body=body;return this}};
 await handler({method:'POST'},res);assert.equal(res.code,405);
-console.log('Engine dashboard: read-only evidence, missing marks, cohort isolation, historical rejection, common-window and partial-source checks passed.');
+const uiContext={window:{},document:{documentElement:{dataset:{language:'en'}}}};
+vm.runInNewContext(fs.readFileSync('engine-dashboard.js','utf8'),uiContext);
+const oldReport={...n,reportOverdue:true,failures:[]};
+const oldHtml=uiContext.window.MarketHunterEngines.html({reports:[oldReport]},{engine:'smc'});
+assert.match(oldHtml,/Reports are older than 6 hours/);
+assert.doesNotMatch(oldHtml,/Some reports are unavailable or incomplete/);
+const partialHtml=uiContext.window.MarketHunterEngines.html({reports:[{...oldReport,failures:[{symbol:'TEST.TO'}]}]},{engine:'smc'});
+assert.match(partialHtml,/Some reports are unavailable or incomplete/);
+console.log('Engine dashboard: read-only evidence, missing marks, cohort isolation, historical rejection, common-window, partial-source and separate overdue warnings passed.');
