@@ -7,6 +7,7 @@ import portfolioHandler from './api/portfolio.js';
 import intradayHandler from './api/intraday.js';
 import hunterMonitorHandler from './api/hunter-monitor.js';
 import enginesHandler from './api/engines.js';
+import elliottHandler from './api/elliott.js';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 const port=Number(process.env.PORT||3000);
@@ -20,6 +21,9 @@ const localResearchData=Object.freeze({
 const staticFiles=new Map([
   ['/','index.html'],
   ['/index.html','index.html'],
+  ['/elliott.html','elliott.html'],
+  ['/elliott.js','elliott.js'],
+  ['/elliott.css','elliott.css'],
   ['/app.js','app.js'],
   ['/i18n.js','i18n.js'],
   ['/market-status.js','market-status.js'],
@@ -102,6 +106,7 @@ const server=http.createServer(async(req,res)=>{
     if(url.pathname==='/api/portfolio') return await portfolioHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/intraday') return await intradayHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/engines') return await enginesHandler(wrappedReq,makeResponse(res));
+    if(url.pathname==='/api/elliott') return await elliottHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/portfolio-bridge'){
       res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});
       return res.end(JSON.stringify({ok:true,connected:false,localDev:true}));
@@ -128,3 +133,4 @@ const server=http.createServer(async(req,res)=>{
 });
 
 server.listen(port,'0.0.0.0',()=>console.log(`Market Hunter listening on ${port}`));
+

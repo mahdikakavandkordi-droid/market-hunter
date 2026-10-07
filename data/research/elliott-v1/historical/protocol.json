@@ -1,0 +1,101 @@
+{
+  "version": "elliott-historical-structure-v1",
+  "createdAt": "2026-10-07T22:29:45.657445+00:00",
+  "modelCommit": "03478cfcb98eb80f642826549a618ed44cbaa7bc",
+  "purpose": "fixed-model causal structural diagnostic; no optimization and no trading-performance claims",
+  "window": "provider 2y completed daily bars",
+  "sampleSelection": "purposive liquid cross-market sample fixed before fetching outcomes; not representative of full universe",
+  "instruments": [
+    {
+      "symbol": "AAPL",
+      "market": "us"
+    },
+    {
+      "symbol": "MSFT",
+      "market": "us"
+    },
+    {
+      "symbol": "NVDA",
+      "market": "us"
+    },
+    {
+      "symbol": "AMZN",
+      "market": "us"
+    },
+    {
+      "symbol": "GOOGL",
+      "market": "us"
+    },
+    {
+      "symbol": "TSLA",
+      "market": "us"
+    },
+    {
+      "symbol": "RY.TO",
+      "market": "ca"
+    },
+    {
+      "symbol": "TD.TO",
+      "market": "ca"
+    },
+    {
+      "symbol": "SHOP.TO",
+      "market": "ca"
+    },
+    {
+      "symbol": "ENB.TO",
+      "market": "ca"
+    },
+    {
+      "symbol": "CNQ.TO",
+      "market": "ca"
+    },
+    {
+      "symbol": "CNR.TO",
+      "market": "ca"
+    },
+    {
+      "symbol": "BTC-USD",
+      "market": "crypto"
+    },
+    {
+      "symbol": "ETH-USD",
+      "market": "crypto"
+    },
+    {
+      "symbol": "SOL-USD",
+      "market": "crypto"
+    },
+    {
+      "symbol": "XRP-USD",
+      "market": "crypto"
+    },
+    {
+      "symbol": "ADA-USD",
+      "market": "crypto"
+    },
+    {
+      "symbol": "DOGE-USD",
+      "market": "crypto"
+    },
+    {
+      "symbol": "GLD",
+      "market": "metals"
+    },
+    {
+      "symbol": "SLV",
+      "market": "metals"
+    }
+  ],
+  "developmentFraction": 0.67,
+  "holdoutPolicy": "Chronological final third reserved from tuning. Aggregate diagnostics are observed here, so this is not an untouched final holdout for later development; later changes require a new untouched period/symbol set.",
+  "prefixCheck": "every completed daily bar; compare immutable decisions and pivots to full replay truncated at availability",
+  "regime": "causal SMA50/SMA200: up when close>50>200; down when close<50<200; mixed otherwise; insufficient history before 200 bars",
+  "caseSelection": "first chronological signal in each direction and first example per final rejection reason; no performance selection",
+  "limits": [
+    "no definitive ground-truth Elliott annotations",
+    "current survivor universe and retrospectively revised quotes",
+    "two-year sample does not span all market cycles",
+    "no historical 4H execution or portfolio performance in this stage"
+  ]
+}
