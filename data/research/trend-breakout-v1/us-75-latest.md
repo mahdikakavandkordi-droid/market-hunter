@@ -1,8 +1,8 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-10-07T19:43:17.200Z; mode: forward_shadow.
+Generated: 2026-10-07T20:44:16.942Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
 Open 11; pending 8; closed 2; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $993.80; mark quality fresh.
+Realized equity $1000.00; marked equity $998.31; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -20,7 +20,7 @@ Realized equity $1000.00; marked equity $993.80; mark quality fresh.
 - MSFT: Long open; entry 531.6799926757812; current stop 513.5771876743862; provenance prospective; gap none
 - NVDA: Long open; entry 242.0800018310547; current stop 234.76746477399553; provenance prospective; gap none
 - OXY: Long open; entry 57.529998779296875; current stop 55.72058732169015; provenance prospective; gap none
-- PEP: Short open; entry 125.69999694824219; current stop 128.25866154262; provenance prospective; gap none
+- PEP: Short open; entry 125.69999694824219; current stop 127.92223467145648; provenance prospective; gap none
 - ABBV: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 - AMD: Long open; entry 634.3920288085938; current stop 605.3802795410156; provenance prospective; gap none
 - AMZN: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
