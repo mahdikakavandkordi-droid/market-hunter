@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-extra
-Generated: 2026-10-07T16:47:04.397Z; mode: forward_shadow.
+Generated: 2026-10-07T17:45:21.426Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 0.
-Open 4; pending 3; closed 0; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $1008.83; mark quality fresh.
+Open 7; pending 4; closed 0; lifecycle reviews 0.
+Realized equity $1000.00; marked equity $1004.70; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -17,11 +17,15 @@ Realized equity $1000.00; marked equity $1008.83; mark quality fresh.
 
 - IFC.TO: Short open; entry 242.10000610351562; current stop 246.91321672712053; provenance prospective; gap none
 - MG.TO: Long open; entry 92.94000244140625; current stop 90.32071576799665; provenance prospective; gap none
-- PPL.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- RCI-B.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- SAP.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 - T.TO: Short open; entry 11.180000305175781; current stop 11.58714348929269; provenance prospective; gap none
-- TFII.TO: Short open; entry 165.2899932861328; current stop 171.91107395717077; provenance prospective; gap none
+- TFII.TO: Short open; entry 165.2899932861328; current stop 170.1289291381836; provenance prospective; gap none
+- CAE.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- EDV.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- PPL.TO: Long open; entry 66.4800033569336; current stop 64.75143323625836; provenance prospective; gap none
+- RCI-B.TO: Short open; entry 43.52000045776367; current stop 45.085714612688335; provenance prospective; gap none
+- SAP.TO: Short open; entry 37.88999938964844; current stop 39.0614264351981; provenance prospective; gap none
+- STN.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- WSP.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 

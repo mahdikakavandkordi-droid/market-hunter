@@ -2,101 +2,203 @@
   "version": "trend-breakout-v1",
   "mode": "forward_shadow",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "generatedAt": "2026-10-07T16:47:04.397Z",
+  "generatedAt": "2026-10-07T17:45:21.426Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "cohort": "metals-5",
   "universe": 5,
   "failures": [],
   "diagnostics": [
     {
-      "symbol": "PPLT",
-      "type": "off_session_grid",
-      "date": "2026-10-07",
-      "t": 1791391607000
-    },
-    {
-      "symbol": "PPLT",
-      "type": "live_incomplete_exchange_bar_dropped",
-      "date": "2026-10-07",
-      "segment": 0,
-      "endT": 1791394200000
-    },
-    {
       "symbol": "CPER",
       "type": "off_session_grid",
       "date": "2026-10-07",
-      "t": 1791391587000
+      "t": 1791395094000
     },
     {
       "symbol": "CPER",
-      "type": "live_incomplete_exchange_bar_dropped",
+      "type": "incomplete_or_missing_exchange_bar",
       "date": "2026-10-07",
-      "segment": 0,
-      "endT": 1791394200000
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4
+      ]
     },
     {
       "symbol": "GLD",
       "type": "off_session_grid",
       "date": "2026-10-07",
-      "t": 1791391629000
+      "t": 1791395119000
     },
     {
       "symbol": "GLD",
-      "type": "live_incomplete_exchange_bar_dropped",
+      "type": "incomplete_or_missing_exchange_bar",
       "date": "2026-10-07",
-      "segment": 0,
-      "endT": 1791394200000
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4
+      ]
+    },
+    {
+      "symbol": "PPLT",
+      "type": "off_session_grid",
+      "date": "2026-10-07",
+      "t": 1791395108000
+    },
+    {
+      "symbol": "PPLT",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-07",
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4
+      ]
     },
     {
       "symbol": "SLV",
       "type": "off_session_grid",
       "date": "2026-10-07",
-      "t": 1791391627000
+      "t": 1791395128000
     },
     {
       "symbol": "SLV",
-      "type": "live_incomplete_exchange_bar_dropped",
+      "type": "incomplete_or_missing_exchange_bar",
       "date": "2026-10-07",
-      "segment": 0,
-      "endT": 1791394200000
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4
+      ]
     },
     {
       "symbol": "PALL",
       "type": "off_session_grid",
       "date": "2026-10-07",
-      "t": 1791391524000
+      "t": 1791395072000
     },
     {
       "symbol": "PALL",
-      "type": "live_incomplete_exchange_bar_dropped",
+      "type": "incomplete_or_missing_exchange_bar",
       "date": "2026-10-07",
-      "segment": 0,
-      "endT": 1791394200000
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4
+      ]
     }
   ],
   "inputs": [
     {
-      "symbol": "PPLT",
-      "sha256": "0b7ef08f32228715712dc948091b8f218cf45818e7847ab0dcd42e3f62d9ba5f"
-    },
-    {
       "symbol": "CPER",
-      "sha256": "8e474e64a0328fa8a4c00553728ea8251b7a59dc6816fdd116ad34146efa34c2"
+      "sha256": "53452a047ce63eaf7d8d2760c402fad1df32e6c3d122d02bfdda3b759fb67089"
     },
     {
       "symbol": "GLD",
-      "sha256": "5ec3e9112987415df9c7246c4154aa6b456bc6b2740028b9e7f5fea7a14924fe"
+      "sha256": "a249a748beec29870d57b8a40e5821b1f7921e3c970dc945003d8707fb5b5fea"
+    },
+    {
+      "symbol": "PPLT",
+      "sha256": "f381f56702b8d3dc72632b7be88a13ddf32dccf38caf9c4cc339b8dd818912db"
     },
     {
       "symbol": "SLV",
-      "sha256": "8d89d2e5a2bea1ed24a576b07a5e9936a26129325d4fe57e6758a3ac5914b140"
+      "sha256": "355ec37b4c9a55b1368bcff360ff4ea0b15c5c6cde9b59c84d0c4c68edb50a6e"
     },
     {
       "symbol": "PALL",
-      "sha256": "eb8048bc0c3c7f63bfe39afd4fe4c1a8e09426aedd9faf2fdf10e00a358dae48"
+      "sha256": "37e5323027b528724dfc1a6ec854e091c72dbe485053273a74d46acff5d6f4e3"
     }
   ],
-  "trades": [],
+  "trades": [
+    {
+      "symbol": "PALL",
+      "signalT": "2026-10-07T13:30:00.000Z",
+      "dir": -1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-07T17:30:00.000Z",
+        "dailyAsOf": "2026-10-06",
+        "dailyClose": 21.25,
+        "dailySma": 26.778060064315795,
+        "breakoutHigh": 23.1200008392334,
+        "breakoutLow": 20.920000076293945,
+        "atr14": 0.3311074120657785,
+        "signalClose": 20.434999465942383
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "PALL|2026-10-07T13:30:00.000Z|-1",
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-07T17:45:21.426Z",
+      "firstObservedAt": "2026-10-07T17:45:21.426Z",
+      "firstObservedProvenance": {
+        "tracker": "trend-breakout-v1",
+        "runKey": "trend-breakout-v1|37661430753|1",
+        "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
+      },
+      "entryObservationClass": "pending"
+    },
+    {
+      "symbol": "PPLT",
+      "signalT": "2026-10-07T13:30:00.000Z",
+      "dir": -1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-07T17:30:00.000Z",
+        "dailyAsOf": "2026-10-06",
+        "dailyClose": 15.470000267028809,
+        "dailySma": 17.673779973983766,
+        "breakoutHigh": 16.15999984741211,
+        "breakoutLow": 15.1899995803833,
+        "atr14": 0.26475722449166433,
+        "signalClose": 14.859999656677246
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "PPLT|2026-10-07T13:30:00.000Z|-1",
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-07T17:45:21.426Z",
+      "firstObservedAt": "2026-10-07T17:45:21.426Z",
+      "firstObservedProvenance": {
+        "tracker": "trend-breakout-v1",
+        "runKey": "trend-breakout-v1|37661430753|1",
+        "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
+      },
+      "entryObservationClass": "pending"
+    }
+  ],
   "summary": {
     "raw": {
       "n": 0,
@@ -211,7 +313,7 @@
         "open": 0
       }
     },
-    "pending": 0,
+    "pending": 2,
     "open": 0,
     "needsReview": 0
   },
@@ -241,8 +343,8 @@
     "markedCurrentEquity": 1000,
     "markedReturnPct": 0,
     "markedObservation": {
-      "runKey": "trend-breakout-v1|37654673333|1",
-      "observedAt": "2026-10-07T16:47:04.397Z",
+      "runKey": "trend-breakout-v1|37661430753|1",
+      "observedAt": "2026-10-07T17:45:21.426Z",
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
@@ -872,6 +974,15 @@
         "totalUnrealizedPnl": 0,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "trend-breakout-v1|37661430753|1",
+        "observedAt": "2026-10-07T17:45:21.426Z",
+        "quality": "fresh",
+        "markedEquity": 1000,
+        "totalUnrealizedPnl": 0,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T19:58:21.240Z",
@@ -1040,8 +1151,8 @@
         "markedCurrentEquity": 1000,
         "markedReturnPct": 0,
         "markedObservation": {
-          "runKey": "trend-breakout-v1|37654673333|1",
-          "observedAt": "2026-10-07T16:47:04.397Z",
+          "runKey": "trend-breakout-v1|37661430753|1",
+          "observedAt": "2026-10-07T17:45:21.426Z",
           "quality": "fresh",
           "markedEquity": 1000,
           "totalUnrealizedPnl": 0,
@@ -1052,8 +1163,8 @@
         },
         "markedEquitySeries": [
           {
-            "runKey": "trend-breakout-v1|37654673333|1",
-            "observedAt": "2026-10-07T16:47:04.397Z",
+            "runKey": "trend-breakout-v1|37661430753|1",
+            "observedAt": "2026-10-07T17:45:21.426Z",
             "quality": "fresh",
             "markedEquity": 1000,
             "totalUnrealizedPnl": 0,
@@ -1061,8 +1172,8 @@
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-10-07T16:47:04.397Z",
-        "firstCompleteMarkedEquityAt": "2026-10-07T16:47:04.397Z",
+        "markedSeriesCoverageStartAt": "2026-10-07T17:45:21.426Z",
+        "firstCompleteMarkedEquityAt": "2026-10-07T17:45:21.426Z",
         "markedObservedMaxDrawdownPct": 0,
         "costAccounting": {
           "closedTradeCostR": 0.05,
