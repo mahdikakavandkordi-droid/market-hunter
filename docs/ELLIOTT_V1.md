@@ -1,8 +1,9 @@
-# Elliott V1 — steps 2–3: causal core and requested-symbol analysis
+# Elliott V1 — steps 2–4: causal analysis and independent paper accounts
 
-Status: core and requested-symbol analysis implemented and tested on the research
-branch. No trading runner, account, operational workflow, scheduled activation or
-outbound messages in this change. The page is not deployed to production yet.
+Status: causal core, requested-symbol analysis and independent long/short paper
+accounts implemented on the research branch. Configuration is disabled and has
+no forwardStart. No operational workflow, scheduled activation or outbound
+messages are added. The page is not deployed to production yet.
 
 This is a constrained Elliott-inspired hypothesis, not a complete discretionary
 wave count, calibrated confidence estimate or demonstrated trading advantage.
@@ -20,7 +21,7 @@ Read-only dashboard sources are `lib/engine-dashboard.js` and
 | Mean Reversion | `research/mean-reversion-v1-20261004` | `0219c185f53e2eebe0275ae21df5305b6b76a1e5` |
 
 Existing independent cohorts: `tsx-core` (33), `tsx-extra` (37), `us-75` (75),
-`crypto-15` (15), `metals-5` (5 metal ETFs). Elliott's eventual runner must freeze
+`crypto-15` (15), `metals-5` (5 metal ETFs). Elliott's configuration freezes
 the same current symbol lists, not reconstruct them from scanner selections.
 There are five separate nominal 1,000-unit accounts, not a combined portfolio.
 Current comparison settings: target risk 1%, notional cap 25%, four positions,
@@ -182,10 +183,66 @@ The maximum upstream fetch path is two sequential seven-second attempts, with
 symbol and reference fetched concurrently. No secrets or additional dependencies
 are needed for the production feature. The browser test uses existing Playwright.
 
+## Step 4 — independent long/short paper accounts
+
+`data/research/elliott-v1/config.json` freezes the five reviewed universes and
+comparison account settings. `enabled: false` and `forwardStart: null` prevent
+account creation or data fetching. `npm run elliott:paper` currently reports five
+inactive cohorts. Actual activation and scheduling belong to step 6.
+
+The shared daily loader/core supplies only a latest completed daily confirmation.
+First observation freezes its snapshot; entry cannot precede that observation.
+The production runner records availability after fetching the cohort, rather than
+backdating it to the beginning of the scan. Hourly Yahoo quotes are aggregated
+using the reviewed Trend session conventions: four complete UTC hourly sources
+for crypto, and exchange segments of four and three hourly sources for stocks.
+The final exchange segment uses last source start + 1h, conservatively including
+its short final hourly slot. Missing segments, daily sessions, or held paths pause
+execution; no missing exit path is filled from a later candle. Splits and source
+revisions affecting already consumed execution bars require review. Provider
+calendars remain observed, not authoritative. Sixty-day hourly retention can
+leave long outages unresolved; positions then remain under review.
+
+Signals expire after 120 wall hours for stocks or 36 for crypto. Entry uses the
+first eligible completed research bar's open, with reward/risk rechecked at that
+open. Stop and target remain fixed. Adverse stop gaps use the opening price;
+favorable target gaps use the target boundary. Opening gap evidence precedes
+intrabar ambiguity; otherwise a stop/target collision resolves stop first. A
+position exits at the 60th held research bar's close when neither boundary hits.
+The entry bar counts. Timestamp ordering prevents later bar outcomes funding
+an earlier entry within a run or on late feed recovery across runs; closes precede opens at equal timestamps.
+
+Each cohort has a separate nominal 1,000-unit account, with 1% target initial
+risk, 25% notional cap, four admitted positions, and 4% aggregate initial open
+risk. Both directions reserve entry notional as collateral; hypothetical short
+sale proceeds do not increase buying power. Quantity stays fixed after entry.
+Closed P/L charges 0.05R once; open marks exclude hypothetical future exit cost.
+Realized and marked equity, drawdown, cash, risk, pending and skipped decisions
+are reported separately. Missing marks produce null total equity; stale marks
+are explicitly tagged. Borrow, funding, FX, dividends and variable spreads are
+not simulated, so this is not evidence of executable profitability.
+
+`lib/elliott/paper-account.mjs` owns incremental decisions and accounting;
+`ledger-store.mjs` validates checksums, revision leases, frozen allocations,
+terminal outcomes, and append-only runs/curves before atomic fsynced replacement.
+Realized curve timestamps record when an outcome became known; eventT preserves
+the original candle end so delayed recovery does not backdate observed equity.
+A separate exclusive cohort runner lock prevents overlapping writers. Corrupt
+state is rejected rather than replaced. A crashed process may leave a lock,
+which must be investigated before removal. Compressed immutable input archives
+contain daily analysis, raw hourly source, normalized feeds and a checksum.
+Retries replay those inputs without refetching; truncated archives fail closed.
+`report.json` is a derived view; the checksum-verified ledger is authoritative.
+
+Verification: the scoped suite now passes 59 tests: 32 core/symbol tests,
+20 accounting/persistence tests and 7 runner/aggregation tests. All paper tests
+use synthetic data and temporary accounts. No real forward history or performance
+results have been created. The existing project-wide suite cannot be run from
+this partial checkout. Browser rendering remains unverified as described above.
+
 ## Remaining steps
 
-4. Independent persistent long/short paper account and execution tests.
 5. Engines dashboard, evidence/comparison reports and Telegram integration.
 6. End-to-end independent review, then scheduled activation.
 
-No scheduled Elliott execution is enabled by the step-2 PR.
+No scheduled Elliott execution is enabled by this PR.
