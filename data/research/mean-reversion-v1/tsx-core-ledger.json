@@ -1,14 +1,14 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-07T17:09:04.166Z",
+  "updatedAt": "2026-10-07T17:59:47.312Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
       "symbol": "NA.TO",
       "signalT": "2026-10-06T13:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-06T21:00:00.000Z",
         "dailyAsOf": "2026-10-06",
@@ -23,11 +23,11 @@
         "signalClose": 204.22000122070312,
         "initialStop": 198.9017927987235
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-07T13:30:00.000Z",
+      "entry": 202.94000244140625,
+      "stop": 198.9017927987235,
+      "target": 209.62499923706054,
+      "risk": 4.0382096426827445,
       "R": null,
       "exitT": null,
       "decisionId": "NA.TO|2026-10-06T13:30:00.000Z|1",
@@ -40,13 +40,17 @@
         "runKey": "mean-reversion-v1|37537120502|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 198.9017927987235,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-10-07T17:30:00.000Z",
+      "entryObservedAt": "2026-10-07T17:59:47.312Z"
     },
     {
       "symbol": "NTR.TO",
       "signalT": "2026-10-06T13:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-06T21:00:00.000Z",
         "dailyAsOf": "2026-10-06",
@@ -61,11 +65,11 @@
         "signalClose": 101.3499984741211,
         "initialStop": 95.98553821018764
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-07T13:30:00.000Z",
+      "entry": 102.12999725341797,
+      "stop": 95.98553821018764,
+      "target": 105.51549987792968,
+      "risk": 6.144459043230327,
       "R": null,
       "exitT": null,
       "decisionId": "NTR.TO|2026-10-06T13:30:00.000Z|1",
@@ -78,7 +82,11 @@
         "runKey": "mean-reversion-v1|37537120502|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 95.98553821018764,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-10-07T17:30:00.000Z",
+      "entryObservedAt": "2026-10-07T17:59:47.312Z"
     }
   ],
   "runLog": [
@@ -1044,6 +1052,21 @@
         }
       ],
       "diagnosticCount": 64
+    },
+    {
+      "runKey": "mean-reversion-v1|37663285758|1",
+      "observedAt": "2026-10-07T17:59:47.312Z",
+      "failures": [
+        {
+          "symbol": "AEM.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "CSU.TO",
+          "error": "invalid_source_quotes_require_review"
+        }
+      ],
+      "diagnosticCount": 62
     }
   ],
   "markedEquitySeries": [
@@ -1629,6 +1652,15 @@
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|37663285758|1",
+      "observedAt": "2026-10-07T17:59:47.312Z",
+      "quality": "fresh",
+      "markedEquity": 993.3486250201845,
+      "totalUnrealizedPnl": -6.65137497981552,
       "missingSymbols": [],
       "staleSymbols": []
     }
