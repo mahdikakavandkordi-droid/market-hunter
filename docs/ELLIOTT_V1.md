@@ -276,6 +276,31 @@ Daily execution must not be substituted and represented as the frozen engine.
 The scoped suite now contains 63 passing tests, including four historical-audit
 checks. Details and review charts: `data/research/elliott-v1/historical/`.
 
+## Rejected-count diagnosis on the frozen historical sample
+
+A second historical test explains all 55 terminal candidate states using only
+pivots and candles available at their first terminal event. Each state matches
+full replay, and replay of the prior candle is nonterminal or predates recognition.
+A separate numerical audit checks impulse geometry, anchor confirmation, simple
+ABC conditions, origin/C breaches and reward/risk. No unexplained rule mismatch
+was found in these 55 records; that does not prove the engine globally bug-free.
+
+The generic complex-correction reason covers 15 cases where C did not exceed A,
+14 where B reached/exceeded wave 5, and 7 with more than three post-impulse pivots.
+Thus 29 cases were excluded for geometry outside the narrow ABC contract, rather
+than because an extra-pivot correction was observed. These diagnostic categories
+are not ground-truth Elliott annotations: an excluded geometry could belong to a
+pattern family that this model does not support. Retracement rejections comprise
+7 shallow and 2 deep cases; 3 origins and 2 C endpoints were breached; 1 breakout
+failed reward/risk, and 4 passed. Model parameters and forward accounts are intact.
+
+`npm run elliott:history:rejections` reproduces the explanation offline from the
+existing checksummed snapshots. `rejection-report.json` contains per-candidate
+as-of evidence and `rejection-report.md` explains the totals. All 68 scoped tests
+pass, including five new checks of mirrored geometry, availability, causality
+and fixed bounds. Annotation of excluded geometries and longer intraday data
+remain necessary before revised models or actual execution backtests.
+
 ## Remaining steps
 
 5. Obtain historical intraday paths and validate execution; then integrate the
