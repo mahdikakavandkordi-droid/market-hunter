@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-10-05 to 2026-10-06 (TSX 2026-10-06 · SP500 2026-10-06 · NASDAQ100 2026-10-06 · GOLD 2026-10-06 · SILVER 2026-10-06 · BTC 2026-10-05 · ETH 2026-10-05)
+**As of:** 2026-10-06
 
 ## Executive read
 
 - Broadly risk-on, led by U.S. equities and crypto, with confirmation varying across other groups.
-- Completed-session dates differ by instrument: TSX 2026-10-06 · SP500 2026-10-06 · NASDAQ100 2026-10-06 · GOLD 2026-10-06 · SILVER 2026-10-06 · BTC 2026-10-05 · ETH 2026-10-05.
+- All tracked markets are aligned to 2026-10-06.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -18,7 +18,7 @@
 
 - **Equities: Constructive but uneven** — Most tracked markets remain constructive, but leadership is not uniform.
 - **Metals: Mixed** — Signals are mixed across the tracked markets.
-- **Crypto: Strong trend** — All tracked markets in this group remain in a strong bull regime.
+- **Crypto: Strong trend · Pullback** — All tracked markets in this group remain in a strong bull regime.
 
 ## Key divergences
 
@@ -27,10 +27,10 @@
 
 ## What to watch next
 
-- **Bitcoin:** bullish continuation above 87146.35 · trend warning near 83366.41 · structure risk below 82906.62.
+- **Ethereum:** bullish continuation above 2746.01 · trend warning near 2677.61 · structure risk below 2651.08.
+- **Bitcoin:** bullish continuation above 87146.35 · trend warning near 83836.77 · structure risk below 82906.62.
 - **Gold:** bullish continuation above 4215.5 · trend warning near 4305.74 · structure risk below 4143.1.
 - **Silver:** bullish continuation above 62.62 · trend warning near 63.42 · structure risk below 59.98.
-- **Ethereum:** bullish continuation above 2746.01 · trend warning near 2663.54 · structure risk below 2651.08.
 - **Nasdaq-100:** bullish continuation above 30770.63 · trend warning near 30070.1 · structure risk below 30081.06.
 
 ## Market detail
@@ -77,19 +77,19 @@
 
 ### Bitcoin
 - **State:** Strong Bull / Positive Momentum
-- **Returns:** 1D -0.8% · 5D +2.7% · 20D +13.5% · 60D +33.5%
+- **Returns:** 1D -0.3% · 5D +0.8% · 20D +12.3% · 60D +31.9%
 - **Historical read:** 5 sessions: Cautious · 10: Cautious · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.
-- **Watch next:** bullish continuation above 87146.35 · trend warning near 83366.41 · structure risk below 82906.62.
+- **Watch next:** bullish continuation above 87146.35 · trend warning near 83836.77 · structure risk below 82906.62.
 
 ### Ethereum
-- **State:** Strong Bull / Positive Momentum
-- **Returns:** 1D -0.6% · 5D +1% · 20D +13% · 60D +42.5%
-- **Historical read:** 5 sessions: Mixed · 10: Mixed · 20: Supportive
+- **State:** Strong Bull / Pullback
+- **Returns:** 1D -0.5% · 5D -0.3% · 20D +11.7% · 60D +41%
+- **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Constructive, recent caution
 - **Framing:** Broader setup constructive, exact setup caution
-- **Outlook:** Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.
-- **Watch next:** bullish continuation above 2746.01 · trend warning near 2663.54 · structure risk below 2651.08.
+- **Outlook:** Primary trend remains constructive, and the broader pullback family is reasonably supported, but the exact current setup has shown materially weaker recent follow-through. Treat rebound expectations cautiously until price confirms.
+- **Watch next:** bullish continuation above 2746.01 · trend warning near 2677.61 · structure risk below 2651.08.
 - **Specific setup caution:** Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through.
 
 

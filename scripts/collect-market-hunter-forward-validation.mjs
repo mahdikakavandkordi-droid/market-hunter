@@ -1,6 +1,7 @@
+import {fetchChart} from '../lib/hunter-monitor-source.js';
+import {buildHunterMonitor} from '../lib/hunter-monitor.js';
 import fs from 'node:fs';
 import path from 'node:path';
-import {completedDailyRows} from '../lib/completed-daily-session.js';
 import {
   FORWARD_VALIDATION_VERSION,HORIZONS,parseJsonl,appendJsonlStrict,sessionFromReport,
   presenceAndEpisodes,targetDateForHorizon,buildOutcome,statusFromStore,dayKey,sha256Json,marketCalendarDate
@@ -15,7 +16,6 @@ const OUTCOMES=path.join(ROOT,'outcomes.jsonl');
 const RUNS=path.join(ROOT,'runs.jsonl');
 const STATUS=path.join(ROOT,'status.json');
 const BENCHMARK='^GSPTSE';
-const TIMEOUT=Number(process.env.MH_FORWARD_FETCH_TIMEOUT_MS||12000);
 
 function readText(file){return fs.existsSync(file)?fs.readFileSync(file,'utf8'):''}
 function writeText(file,text){
@@ -46,35 +46,6 @@ function runId(stamp){return [process.env.GITHUB_RUN_ID||'local',process.env.GIT
 function appendRun(record){
   appendFile(RUNS,[record],x=>x.runId);
   writeStatus();
-}
-async function fetchChart(symbol){
-  let lastError=null;
-  for(const host of ['query1','query2']){
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),TIMEOUT);
-    try{
-      const url='https://'+host+'.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?range=1y&interval=1d&includePrePost=false&events=div%2Csplits';
-      const response=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Mozilla/5.0 MarketHunterForwardValidation/1.0'}});
-      if(!response.ok)throw new Error(symbol+':http_'+response.status);
-      const payload=await response.json(),result=payload?.chart?.result?.[0];
-      if(!result)throw new Error(symbol+':chart_missing');
-      const q=result.indicators?.quote?.[0]||{},adj=result.indicators?.adjclose?.[0]?.adjclose||q.close||[];
-      const rows=completedDailyRows((result.timestamp||[]).map((t,i)=>{
-        const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
-        return {
-          t,close:adj[i],rawClose,
-          high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,
-          low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,
-          volume:q.volume?.[i]
-        };
-      }).filter(x=>Number.isFinite(x.close)&&x.close>0&&Number.isFinite(x.high)&&Number.isFinite(x.low)),result.meta);
-      if(!rows.length)throw new Error(symbol+':empty_rows');
-      return rows;
-    }catch(error){
-      lastError=error;
-    }finally{clearTimeout(timer)}
-  }
-  throw lastError||new Error(symbol+':fetch_failed');
 }
 async function mapLimit(values,limit,worker){
   const out=new Array(values.length);let next=0;
@@ -144,7 +115,7 @@ async function collect(){
       if(targetDate)pending.push({episode,horizon,targetDate});
     }
   }
-  const neededSymbols=[...new Set(pending.map(x=>x.episode.symbol))];
+  const neededSymbols=[...new Set([...pending.map(x=>x.episode.symbol),...afterCanonical.episodes.filter(x=>x.scope==='stage').map(x=>x.symbol)])];
   const fetched=await mapLimit(neededSymbols,8,fetchChart);
   const symbolRows=new Map();
   const fetchFailures=[];
@@ -166,6 +137,8 @@ async function collect(){
     if(outcome)outcomes.push(outcome);
   }
   const addedOutcomes=appendFile(OUTCOMES,outcomes,x=>x.outcomeId).length;
+  const monitor=buildHunterMonitor({...readStore(),symbolRows,benchmarkRows,generatedAt:attemptedAt});
+  writeText(path.join(ROOT,'monitor.json'),JSON.stringify(monitor,null,2)+'\n');
   const canonicalSourceChanged=Boolean(existingSession&&existingSession.sourceReportHash!==candidateSession.sourceReportHash);
 
   appendRun({

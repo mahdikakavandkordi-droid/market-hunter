@@ -1,0 +1,20 @@
+import {test,expect} from '@playwright/test';
+test('mobile monitor keeps removed picks and stale market labels clear',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.route('**/api/engines',r=>r.fulfill({json:{reports:[]}}));
+  await page.route('**/api/intraday',r=>r.fulfill({json:{quotes:{},failures:[]}}));
+  await page.route('**/api/portfolio?**',r=>r.fulfill({json:{items:[],failures:[]}}));
+  await page.route('**/api/research-data?kind=pulse',r=>r.fulfill({json:{markets:[{key:'BTC',group:'Crypto',name:'Bitcoin',asOf:'2020-01-01',price:100,regime:'Strong Bull',condition:'Positive Momentum',freshness:{status:'fresh'},current:{returns:{d1:1}}}]}}));
+  await page.route('**/api/hunter-monitor',r=>r.fulfill({json:{version:'hunter-monitor-v1',marketAsOf:'2026-10-06',firstRecordedDate:'2026-09-29',summary:{total:2,up:0,down:1,new:0,missing:1},rows:[{symbol:'CURA.TO',firstDate:'2026-09-29',entryStage:'Attractive Growth',sinceSelectionPct:-7.54,status:'cooling',reasons:['below_ma20'],surfaced:false,currentStage:null},{symbol:'MISS.TO',firstDate:'2026-09-29',entryStage:'Early Watch',sinceSelectionPct:null,status:'unavailable',reasons:['quote_unavailable'],surfaced:false}]}}));
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('/');
+  await expect(page.locator('.market-state')).toHaveText('Update required');
+  await expect(page.locator('.market-read')).toContainText('Current trend assessment unavailable');
+  await page.locator('.hunter-monitor summary').click();
+  await expect(page.locator('.hunter-monitor')).toContainText('CURA');
+  await expect(page.locator('.hunter-monitor')).toContainText('-7.5%');
+  await expect(page.locator('.hunter-monitor')).toContainText('Outside current shortlist; tracking continues');
+  await expect(page.locator('.hunter-monitor')).toContainText('Quote unavailable');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
+  expect(errors).toEqual([]);
+});

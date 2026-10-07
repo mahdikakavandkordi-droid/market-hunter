@@ -141,7 +141,7 @@ const initialEnvelope=readEnvelopeFor(initialSession);
 const initialDaily=readDailyFor(initialSession);
 const state={
   engines:null,engineSelection:{engine:'all',cohort:'tsx-core',mode:'open',loading:false,error:false},
-  view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,
+  view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,hunterMonitor:null,
   envelope:initialEnvelope,watch:visibleWatch(initialEnvelope),positions:visiblePositions(initialEnvelope),
   portfolioItems:new Map(),liveItems:new Map(),intraday:null,intradayStatus:'loading',analytics:null,previous:previousMapFromDaily(initialDaily),
   cloud:{session:initialSession,epoch:1,status:'local',message:'',showAuth:false,ready:false,reconciled:false,revision:0}
@@ -1008,12 +1008,14 @@ async function load(){
   loadEngines();
   const b=q('#refreshBtn');b.classList.add('busy');b.disabled=true;
   try{
-    const [daily,pulse,v2,intraday]=await Promise.allSettled([
+    const [daily,pulse,v2,intraday,monitor]=await Promise.allSettled([
       getJsonFallback('/api/research-data?kind=daily','/data/daily-market-report.json'),
       getJsonFallback('/api/research-data?kind=pulse','/data/market-pulse-report.json'),
       getJsonFallback('/api/research-data?kind=v2','/data/v2-latest-scan.json'),
-      getJson('/api/intraday')
+      getJson('/api/intraday'),
+      getJson('/api/hunter-monitor')
     ]);
+    state.hunterMonitor=monitor.status==='fulfilled'&&monitor.value?.version==='hunter-monitor-v1'?monitor.value:null;
     state.daily=daily.status==='fulfilled'?daily.value:null;
     state.pulse=pulse.status==='fulfilled'?pulse.value:null;
     state.v2=v2.status==='fulfilled'?v2.value:null;
@@ -1058,6 +1060,7 @@ function marketLevelsHtml(levels){
 }
 function homeHtml(){
   const d=state.daily,p=state.pulse,picks=stageLeaders();
+  const briefFresh=(p?.markets||[]).length>0&&(p.markets||[]).every(m=>window.MarketHunterStatus.freshness(m).usable);
   const s=portfolioSummary();
   const words=value=>window.MHI18n?.text(value)||value||'—';
   const marketRead=value=>window.MHI18n?.marketRead(value)||value?.outlook||'';
@@ -1068,7 +1071,8 @@ function homeHtml(){
     return `<div class="change-item"><span class="change-market"><bdi>${esc(m?.name||x.market)}</bdi></span><span>${esc(m?window.MHI18n.outlook(m.outlook):stripMarketPrefix(x.text))}</span></div>`;
   }).join('');
   const markets=(p?.markets||[]).map(x=>{
-    const tone=/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
+    const fresh=window.MarketHunterStatus.freshness(x);
+    const tone=!fresh.usable?'metric-flat':/bull|uptrend|risk-on|strength/i.test(x.regime||'')?'metric-good':/bear|downtrend|risk-off|weak/i.test(x.regime||'')?'metric-bad':'metric-flat';
     const key=x.key||marketKeyByName[x.name]||'';
     const view=(d?.markets||[]).find(m=>m.key===key&&m.asOf===x.asOf)||x;
     const completed={price:x.price,dayChangePct:x.current?.returns?.d1??x.returns?.d1,currency:x.currency||null,asOf:x.asOf||d?.asOf?.latest||null};
@@ -1076,18 +1080,19 @@ function homeHtml(){
     return `<div class="market-row">
       <div><b>${esc(x.name)}</b><small>${esc(words(x.condition))}</small></div>
       <div class="market-value"><div class="price-line">${fmt(display.price)}<small class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</small></div>${quoteMetaHtml(display)}</div>
-      <div class="market-state ${tone}">${esc(words(x.regime))}</div>
-      <p class="market-read reading-copy">${esc(marketRead(x))}</p>
-      <details class="market-context reading-copy"><summary>${ui("What to watch","چه چیزی را دنبال کنم؟")}</summary><p>${esc(window.MHI18n.outlook(view.outlook))}</p>${marketLevelsHtml(view.levels||x.levels)}</details>
+      <div class="market-state ${tone}">${fresh.usable?esc(words(x.regime)):ui('Update required','نیازمند بروزرسانی')}</div>
+      <p class="market-read reading-copy">${esc(marketRead(x))}</p>${!fresh.usable?`<small class="setup-caution">${ui("Last recorded assessment","آخرین ارزیابی ثبت‌شده")}: ${esc(words(x.regime))} · ${esc(x.asOf||"—")}</small>`:""}
+      <details class="market-context reading-copy"><summary>${ui("What to watch","چه چیزی را دنبال کنم؟")}</summary><p>${fresh.usable?esc(window.MHI18n.outlook(view.outlook)):ui("These levels belong to the last recorded session; current assessment is unavailable.","این سطوح مربوط به آخرین جلسهٔ ثبت‌شده‌اند؛ ارزیابی فعلی در دسترس نیست.")}</p>${marketLevelsHtml(view.levels||x.levels)}</details>
     </div>`;
   }).join('');
   const rows=picks.map(x=>`<button class="home-pick" data-chart="${esc(x.symbol)}"><span><b><bdi>${short(x.symbol)}</bdi></b><small>${esc(x.name||x.symbol)}</small><em>${esc(stageLabel(x.stage))}</em></span><span class="home-pick-quote"><b><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi></b><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small>${quoteMetaHtml(x.displayQuote)}</span><span class="home-pick-arrow" aria-hidden="true">↗</span></button>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
+    const fresh=window.MarketHunterStatus.freshness(m);
     const h5=m?.evidence?.horizons?.['5'];
     const h20=m?.evidence?.horizons?.['20'];
     return `<article class="outlook-card">
       <div class="outlook-head"><div><b>${esc(m.name)}</b><small>${esc(words(m.regime))} · ${esc(words(m.condition))}</small></div><span>${esc(m.asOf||'')}</span></div>
-      <p class="reading-copy outlook-summary">${esc(window.MHI18n.outlook(m.outlook||m.framing))}</p>
+      <p class="reading-copy outlook-summary">${fresh.usable?esc(window.MHI18n.outlook(m.outlook||m.framing)):ui("Update required; this outlook is based on an older completed session.","نیازمند بروزرسانی؛ این چشم‌انداز مربوط به جلسهٔ قبلی است.")}</p>
       <details class="analog-details reading-copy"><summary>${ui('Historical comparison','مقایسه با گذشته')}</summary>
         <p class="explanation-note">${ui('Compared with this market’s usual returns. These are historical observations, not a probability of profit.','مقایسه با بازده معمول همین بازار است؛ این نتایج تاریخی‌اند و احتمال سود را نشان نمی‌دهند.')}</p>
         <div class="outlook-grid">
@@ -1114,11 +1119,11 @@ function homeHtml(){
 
         ${swipeTools("homeBriefGroups",d?.groups?.length||0)}
         <div class="report-badges" id="homeBriefGroups" tabindex="0" aria-label="Market brief groups">
-          ${(d?.groups||[]).slice(0,3).map(g=>`<div class="brief-group reading-copy"><small>${esc(words(g.label))}</small><b>${esc(words(g.state))}</b><p>${esc(words(g.detail))}</p></div>`).join('')}
+          ${(d?.groups||[]).slice(0,3).map(g=>`<div class="brief-group reading-copy"><small>${esc(words(g.label))}</small><b>${(p?.markets||[]).filter(m=>g.markets?.some(x=>x.key===m.key)).every(m=>window.MarketHunterStatus.freshness(m).usable)?esc(words(g.state)):ui("Update required","نیازمند بروزرسانی")}</b><p>${(p?.markets||[]).filter(m=>g.markets?.some(x=>x.key===m.key)).every(m=>window.MarketHunterStatus.freshness(m).usable)?esc(words(g.detail)):ui("Current assessment unavailable; last recorded data is retained.","ارزیابی فعلی در دسترس نیست؛ آخرین دادهٔ ثبت‌شده حفظ شده است.")}</p></div>`).join('')}
         </div>
         <details class="report-details">
           <summary>${ui("Read the full brief","گزارش کامل")}</summary>
-          <div class="report-copy reading-copy">${esc(window.MHI18n.headline(d?.executiveSummary?.[0]||d?.summary||d?.headline))}</div>
+          <div class="report-copy reading-copy">${briefFresh?esc(window.MHI18n.headline(d?.executiveSummary?.[0]||d?.summary||d?.headline)):ui("Current cross-market assessment is incomplete; some inputs require an update.","ارزیابی فعلی بازار کامل نیست؛ بعضی داده‌ها نیاز به بروزرسانی دارند.")}</div>
           ${changes?`<div class="brief-focus reading-copy"><h4>${ui('Worth watching','موارد قابل پیگیری')}</h4><div class="change-list">${changes}</div></div>`:''}
         </details>
       </div></section>
@@ -1150,9 +1155,25 @@ function homeHtml(){
       </section>
     </div>
 
+    ${hunterMonitorHtml()}
     ${outlook?`<details class="panel soft outlook-panel dashboard-disclosure"><summary>${ui("Market outlook","چشم‌انداز بازار")}<span>${ui("Historical analogs · weekly and monthly","الگوهای تاریخی · هفتگی و ماهانه")}</span></summary>${swipeTools("marketOutlook",d?.markets?.length||0)}<div class="outlook-track mobile-rail" id="marketOutlook" tabindex="0" aria-label="Market outlook">${outlook}</div></details>`:''}
   </div>`;
 }
+
+function hunterMonitorHtml(){
+  const d=state.hunterMonitor;
+  const heading=ui('Market Hunter follow-up','پیگیری سهم‌های مارکت هانتر');
+  if(!d)return `<details class="panel soft dashboard-disclosure"><summary>${heading}</summary><p class="reading-copy">${ui('Tracking data is unavailable. Refresh to retry.','دادهٔ پیگیری فعلاً در دسترس نیست؛ بروزرسانی را امتحان کن.')}</p></details>`;
+  const labels={progress:['🟢 Progress','🟢 پیشرفت'],cooling:['🟡 Cooling','🟡 تضعیف'],support_broken:['🔴 Support broken','🔴 شکست حمایت'],watch:['🟡 Watch','🟡 نیازمند پیگیری'],new:['🆕 New','🆕 تازه‌وارد'],unavailable:['⚪ Quote unavailable','⚪ قیمت ناموجود']};
+  const reasons={quote_unavailable:['Completed-session quote unavailable','قیمت جلسهٔ کامل در دسترس نیست'],no_post_selection_session:['No session after selection yet','هنوز جلسه‌ای پس از معرفی نداریم'],support_broken:['Below the first selection support or latest local low','زیر حمایت هنگام معرفی یا کف محلی اخیر'],momentum_fading:['Momentum fading','شتاب حرکت کمتر شده'],below_ma20:['Below MA20','زیر میانگین ۲۰روزه'],above_first_selection:['Above first selection price','بالاتر از قیمت اولین معرفی'],no_positive_follow_through:['No positive follow-through yet','هنوز پیشرفت قیمتی ندارد']};
+  const overdue=state.v2?.marketAsOf&&d.marketAsOf<state.v2.marketAsOf;
+  return `<details class="panel soft dashboard-disclosure hunter-monitor"><summary>${heading}<span>${d.rows.length} ${ui('stocks · through','سهم · تا')} ${esc(d.marketAsOf)}</span></summary>
+    <p class="reading-copy">${ui('Tracked since','شروع ثبت')} ${esc(d.firstRecordedDate)} · ${d.summary.up} ${ui('up','مثبت')} · ${d.summary.down} ${ui('down','منفی')} · ${d.summary.new} ${ui('new','تازه‌وارد')} · ${d.summary.missing} ${ui('missing quotes','قیمت ناموجود')}. ${ui('Returns start at each stock’s first recorded selection; holding periods differ.','بازده از اولین معرفی ثبت‌شدهٔ هر سهم است؛ مدت پیگیری یکسان نیست.')}</p>
+    ${overdue?`<p class="setup-caution">${ui('Monitor is behind the latest scan.','مانیتور از آخرین اسکن عقب‌تر است.')}</p>`:''}
+    <div class="hunter-monitor-scroll"><table><thead><tr><th>${ui('Stock / first selection','سهم / اولین معرفی')}</th><th>${ui('Since selection','از معرفی')}</th><th>${ui('Follow-up','وضعیت پیگیری')}</th></tr></thead><tbody>${d.rows.map(r=>`<tr><td><button class="symbol-link" data-chart="${esc(r.symbol)}"><bdi>${esc(short(r.symbol))}</bdi> ↗</button><small>${esc(r.firstDate)} · ${esc(stageLabel(r.entryStage))}</small></td><td class="${cls(r.sinceSelectionPct)}"><bdi>${pct(r.sinceSelectionPct)}</bdi></td><td><b>${ui(...(labels[r.status]||labels.unavailable))}</b><small>${r.reasons.map(x=>ui(...(reasons[x]||[x,x]))).map(esc).join(' · ')}</small><small>${r.surfaced?ui('Still selected','هنوز منتخب'):ui('Outside current shortlist; tracking continues','خارج از فهرست منتخب؛ پیگیری ادامه دارد')}${r.currentStage?' · '+esc(stageLabel(r.currentStage)):''}</small></td></tr>`).join('')}</tbody></table></div>
+    <p class="reading-copy">${ui('Descriptive follow-up, not trades or portfolio profit. Leaving the shortlist is not automatically a failed setup.','پیگیری توصیفی است، نه معامله یا سود پورتفولیو. خروج از فهرست به‌تنهایی شکست نیست.')}</p></details>`;
+}
+
 function stockSummaryHtml(x){
   const r=window.MHI18n?.read(x);
   if(!r)return `<p class="analysis-copy">${esc(stockNarrative(x))}</p>`;

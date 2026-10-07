@@ -1,19 +1,19 @@
 {
   "version": "daily-market-report-v0.2-2026-09-26",
-  "generatedAt": "2026-10-07T05:32:49.595Z",
+  "generatedAt": "2026-10-07T11:50:41.758Z",
   "status": "research",
   "asOf": {
-    "earliest": "2026-10-05",
+    "earliest": "2026-10-06",
     "latest": "2026-10-06",
-    "mixedDates": true,
+    "mixedDates": false,
     "byMarket": {
       "TSX": "2026-10-06",
       "SP500": "2026-10-06",
       "NASDAQ100": "2026-10-06",
       "GOLD": "2026-10-06",
       "SILVER": "2026-10-06",
-      "BTC": "2026-10-05",
-      "ETH": "2026-10-05"
+      "BTC": "2026-10-06",
+      "ETH": "2026-10-06"
     }
   },
   "freshness": {
@@ -54,26 +54,26 @@
         "assessedAt": "2026-10-07T05:32:48.776Z"
       },
       "BTC": {
-        "status": "stale",
-        "latestCompletedSession": "2026-10-05",
+        "status": "fresh",
+        "latestCompletedSession": "2026-10-06",
         "expectedCompletedSession": "2026-10-06",
         "partialBarExcluded": true,
-        "assessedAt": "2026-10-07T01:32:43.985Z"
+        "assessedAt": "2026-10-07T11:50:36.006Z"
       },
       "ETH": {
-        "status": "stale",
-        "latestCompletedSession": "2026-10-05",
+        "status": "fresh",
+        "latestCompletedSession": "2026-10-06",
         "expectedCompletedSession": "2026-10-06",
         "partialBarExcluded": true,
-        "assessedAt": "2026-10-07T01:32:43.985Z"
+        "assessedAt": "2026-10-07T11:50:36.006Z"
       }
     },
     "source": {
-      "attemptedAt": "2026-10-07T05:32:48.776Z",
+      "attemptedAt": "2026-10-07T11:50:36.006Z",
       "mode": "targeted",
       "targetKeys": [
-        "GOLD",
-        "SILVER"
+        "BTC",
+        "ETH"
       ],
       "failures": []
     }
@@ -81,7 +81,7 @@
   "headline": "Broadly risk-on, led by U.S. equities and crypto, with confirmation varying across other groups.",
   "executiveSummary": [
     "Broadly risk-on, led by U.S. equities and crypto, with confirmation varying across other groups.",
-    "Completed-session dates differ by instrument: TSX 2026-10-06 · SP500 2026-10-06 · NASDAQ100 2026-10-06 · GOLD 2026-10-06 · SILVER 2026-10-06 · BTC 2026-10-05 · ETH 2026-10-05.",
+    "All tracked markets are aligned to 2026-10-06.",
     "The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets."
   ],
   "groups": [
@@ -141,7 +141,7 @@
     },
     {
       "label": "Crypto",
-      "state": "Strong trend",
+      "state": "Strong trend · Pullback",
       "detail": "All tracked markets in this group remain in a strong bull regime.",
       "markets": [
         {
@@ -149,16 +149,16 @@
           "name": "Bitcoin",
           "regime": "Strong Bull",
           "condition": "Positive Momentum",
-          "d5": 2.67,
-          "d20": 13.46
+          "d5": 0.83,
+          "d20": 12.35
         },
         {
           "key": "ETH",
           "name": "Ethereum",
           "regime": "Strong Bull",
-          "condition": "Positive Momentum",
-          "d5": 1.02,
-          "d20": 13
+          "condition": "Pullback",
+          "d5": -0.3,
+          "d20": 11.65
         }
       ]
     }
@@ -194,16 +194,30 @@
   ],
   "watchNext": [
     {
+      "market": "ETH",
+      "name": "Ethereum",
+      "regime": "Strong Bull",
+      "condition": "Pullback",
+      "text": "Ethereum: bullish continuation above 2746.01 · trend warning near 2677.61 · structure risk below 2651.08.",
+      "levels": {
+        "support": 2651.08,
+        "resistance": 2746.01,
+        "bullishTrigger": 2746.01,
+        "warningLevel": 2677.61,
+        "bearishTrigger": 2651.08
+      }
+    },
+    {
       "market": "BTC",
       "name": "Bitcoin",
       "regime": "Strong Bull",
       "condition": "Positive Momentum",
-      "text": "Bitcoin: bullish continuation above 87146.35 · trend warning near 83366.41 · structure risk below 82906.62.",
+      "text": "Bitcoin: bullish continuation above 87146.35 · trend warning near 83836.77 · structure risk below 82906.62.",
       "levels": {
         "support": 82906.62,
         "resistance": 87146.35,
         "bullishTrigger": 87146.35,
-        "warningLevel": 83366.41,
+        "warningLevel": 83836.77,
         "bearishTrigger": 82906.62
       }
     },
@@ -233,20 +247,6 @@
         "bullishTrigger": 62.62,
         "warningLevel": 63.42,
         "bearishTrigger": 59.98
-      }
-    },
-    {
-      "market": "ETH",
-      "name": "Ethereum",
-      "regime": "Strong Bull",
-      "condition": "Positive Momentum",
-      "text": "Ethereum: bullish continuation above 2746.01 · trend warning near 2663.54 · structure risk below 2651.08.",
-      "levels": {
-        "support": 2651.08,
-        "resistance": 2746.01,
-        "bullishTrigger": 2746.01,
-        "warningLevel": 2663.54,
-        "bearishTrigger": 2651.08
       }
     },
     {
@@ -673,23 +673,23 @@
     {
       "key": "BTC",
       "name": "Bitcoin",
-      "asOf": "2026-10-05",
-      "price": 85786.59,
+      "asOf": "2026-10-06",
+      "price": 85557.56,
       "regime": "Strong Bull",
       "condition": "Positive Momentum",
       "freshness": {
-        "status": "stale",
-        "latestCompletedSession": "2026-10-05",
+        "status": "fresh",
+        "latestCompletedSession": "2026-10-06",
         "expectedCompletedSession": "2026-10-06",
         "partialBarExcluded": true,
-        "assessedAt": "2026-10-07T01:32:43.985Z"
+        "assessedAt": "2026-10-07T11:50:36.006Z"
       },
       "returns": {
-        "d1": -0.8,
-        "d5": 2.67,
-        "d20": 13.46,
-        "d60": 33.49,
-        "d120": 35.65
+        "d1": -0.27,
+        "d5": 0.83,
+        "d20": 12.35,
+        "d60": 31.87,
+        "d120": 35.61
       },
       "framing": "Historical analogs cautious",
       "evidence": {
@@ -740,12 +740,12 @@
         }
       },
       "outlook": "Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.",
-      "watchNext": "bullish continuation above 87146.35 · trend warning near 83366.41 · structure risk below 82906.62.",
+      "watchNext": "bullish continuation above 87146.35 · trend warning near 83836.77 · structure risk below 82906.62.",
       "levels": {
         "support": 82906.62,
         "resistance": 87146.35,
         "bullishTrigger": 87146.35,
-        "warningLevel": 83366.41,
+        "warningLevel": 83836.77,
         "bearishTrigger": 82906.62
       },
       "specificSetupWarning": null,
@@ -754,33 +754,33 @@
     {
       "key": "ETH",
       "name": "Ethereum",
-      "asOf": "2026-10-05",
-      "price": 2711.03,
+      "asOf": "2026-10-06",
+      "price": 2697.52,
       "regime": "Strong Bull",
-      "condition": "Positive Momentum",
+      "condition": "Pullback",
       "freshness": {
-        "status": "stale",
-        "latestCompletedSession": "2026-10-05",
+        "status": "fresh",
+        "latestCompletedSession": "2026-10-06",
         "expectedCompletedSession": "2026-10-06",
         "partialBarExcluded": true,
-        "assessedAt": "2026-10-07T01:32:43.985Z"
+        "assessedAt": "2026-10-07T11:50:36.006Z"
       },
       "returns": {
-        "d1": -0.57,
-        "d5": 1.02,
-        "d20": 13,
-        "d60": 42.53,
-        "d120": 60.76
+        "d1": -0.5,
+        "d5": -0.3,
+        "d20": 11.65,
+        "d60": 40.99,
+        "d120": 59.6
       },
       "framing": "Broader setup constructive, exact setup caution",
       "evidence": {
-        "sessions5": "Mixed",
+        "sessions5": "Supportive",
         "sessions10": "Mixed",
-        "sessions20": "Supportive",
+        "sessions20": "Constructive, recent caution",
         "confidence": [
-          "Moderate",
-          "Moderate",
-          "Moderate"
+          "High",
+          "High",
+          "High"
         ],
         "analogLevels": [
           "State Family",
@@ -789,64 +789,64 @@
         ],
         "horizons": {
           "5": {
-            "tone": "Mixed",
-            "label": "Mixed / Near Baseline",
-            "confidence": "Moderate",
+            "tone": "Supportive",
+            "label": "Historically Favorable",
+            "confidence": "High",
             "analogLevel": "State Family",
             "sample": {
-              "overall": 165,
-              "recent": 51
+              "overall": 235,
+              "recent": 71
             }
           },
           "10": {
             "tone": "Mixed",
             "label": "Mixed / Near Baseline",
-            "confidence": "Moderate",
+            "confidence": "High",
             "analogLevel": "State Family",
             "sample": {
-              "overall": 165,
-              "recent": 51
+              "overall": 235,
+              "recent": 71
             }
           },
           "20": {
-            "tone": "Supportive",
-            "label": "Historically Favorable",
-            "confidence": "Moderate",
+            "tone": "Constructive, recent caution",
+            "label": "Long-term Favorable · Recent Weaker",
+            "confidence": "High",
             "analogLevel": "State Family",
             "sample": {
-              "overall": 165,
-              "recent": 51
+              "overall": 235,
+              "recent": 71
             }
           }
         }
       },
-      "outlook": "Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.",
-      "watchNext": "bullish continuation above 2746.01 · trend warning near 2663.54 · structure risk below 2651.08.",
+      "outlook": "Primary trend remains constructive, and the broader pullback family is reasonably supported, but the exact current setup has shown materially weaker recent follow-through. Treat rebound expectations cautiously until price confirms.",
+      "watchNext": "bullish continuation above 2746.01 · trend warning near 2677.61 · structure risk below 2651.08.",
       "levels": {
         "support": 2651.08,
         "resistance": 2746.01,
         "bullishTrigger": 2746.01,
-        "warningLevel": 2663.54,
+        "warningLevel": 2677.61,
         "bearishTrigger": 2651.08
       },
       "specificSetupWarning": {
         "sample": {
-          "overall": 70,
-          "recent": 21
+          "overall": 79,
+          "recent": 24
         },
-        "recentMeanGap": -1.57,
-        "recentPositiveRateGap": -4.2,
+        "recentMeanGap": -4.64,
+        "recentPositiveRateGap": -29.9,
         "warning": true,
         "note": "Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through."
       },
-      "attentionScore": 4
+      "attentionScore": 6.5
     }
   ],
   "highestAttention": [
+    "ETH",
     "BTC",
     "GOLD",
-    "SILVER",
-    "ETH"
+    "SILVER"
   ],
   "hunterContext": {
     "generatedAt": "2026-10-07T00:48:32.392Z",

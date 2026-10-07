@@ -8,6 +8,8 @@ on:
     paths:
       - '.github/workflows/market-hunter-forward-validation.yml'
       - 'lib/market-hunter-forward-validation.js'
+      - 'lib/hunter-monitor.js'
+      - 'lib/hunter-monitor-source.js'
       - 'scripts/collect-market-hunter-forward-validation.mjs'
   schedule:
     # Primary post-close capture after the validated daily refresh, plus recovery.
@@ -54,6 +56,7 @@ jobs:
           node --check scripts/collect-market-hunter-forward-validation.mjs
           node --check scripts/audit-market-hunter-forward-validation.mjs
           node scripts/test-market-hunter-forward-validation.mjs
+          node scripts/test-hunter-monitor.mjs
 
       - name: Collect canonical session and reconcile matured outcomes
         id: collector
@@ -96,6 +99,7 @@ jobs:
         with:
           name: market-hunter-forward-validation
           path: |
+            evidence/data/research/market-hunter-forward-validation/monitor.json
             evidence/data/research/market-hunter-forward-validation/status.json
             evidence/data/research/market-hunter-forward-validation/audit.json
             evidence/data/research/market-hunter-forward-validation/runs.jsonl

@@ -1,3 +1,4 @@
+import '../market-status.js';
 import fs from 'node:fs';
 
 const latest=JSON.parse(fs.readFileSync('data/market-pulse-latest.json','utf8'));
@@ -150,6 +151,7 @@ function outlookText(m,a5,a10,a20){
 }
 function groupRead(rows,label){
   if(!rows.length)return {label,state:'Unavailable',detail:'No data.'};
+  if(rows.some(x=>!globalThis.MarketHunterStatus.freshness(x).usable))return {label,state:'Update required',detail:'Current assessment unavailable; one or more completed-session inputs are not verified fresh.'};
   const strongBull=rows.filter(x=>x.descriptiveState?.regime==='Strong Bull').length;
   const bull=rows.filter(x=>['Strong Bull','Bull'].includes(x.descriptiveState?.regime)).length;
   const weakening=rows.filter(x=>x.descriptiveState?.condition==='Weakening').length;
@@ -193,6 +195,7 @@ let overall='Mixed cross-market environment.';
 if(us.every(x=>x.descriptiveState?.regime==='Strong Bull')&&crypto.every(x=>x.descriptiveState?.regime==='Strong Bull')){
   overall=tsx?.descriptiveState?.condition==='Weakening'?'Risk-on but uneven: U.S. equities and crypto retain strong primary trends while Canada lags and metals are not confirming.':'Broadly risk-on, led by U.S. equities and crypto, with confirmation varying across other groups.';
 }
+if(latest.markets.some(x=>!globalThis.MarketHunterStatus.freshness(x).usable))overall='Current cross-market assessment is incomplete; some inputs require an update.';
 if(metals.every(x=>x.descriptiveState?.condition==='Weakening'))overall+=' Precious metals are currently in a weakening short-term phase.';
 
 const report={

@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import {MARKET_PULSE_VERSION,MARKET_PULSE_UNIVERSE,round,dayKey,pulseMetrics,descriptiveState,scenarioLevels} from '../lib/market-pulse-engine.js';
-import {completedDailyRows} from '../lib/completed-daily-session.js';
+import {completedDailyRows,completedCryptoDailyRows} from '../lib/completed-daily-session.js';
 import {marketKind,assessFreshness,mergeAssetRefresh} from '../lib/market-freshness.js';
 
 const range=process.env.MARKET_PULSE_RANGE||'10y';
 
-async function fetchRows(symbol){
+async function fetchRows(symbol,kind){
   const url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?range='+range+'&interval=1d&includePrePost=false&events=div%2Csplits';
   const res=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 MarketHunterMarketPulse/1.0'}});
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
@@ -15,7 +15,7 @@ async function fetchRows(symbol){
     const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
     return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
   }).filter(x=>Number.isFinite(x.close)&&x.close>0&&Number.isFinite(x.high)&&Number.isFinite(x.low));
-  const rows=completedDailyRows(rawRows,z.meta);
+  const rows=kind==='crypto'?completedCryptoDailyRows(rawRows):completedDailyRows(rawRows,z.meta);
   return {rows,rawRows,meta:z.meta||{},currency:z.meta?.currency||null,exchange:z.meta?.exchangeName||null};
 }
 
@@ -28,7 +28,7 @@ const nowMs=Date.now();
 for(const item of targets){
   process.stdout.write('pulse '+item.symbol+'... ');
   try{
-    const data=await fetchRows(item.symbol),m=pulseMetrics(data.rows);
+    const data=await fetchRows(item.symbol,marketKind(item)),m=pulseMetrics(data.rows);
     if(!m){console.log('insufficient');failures.push({key:item.key,reason:'insufficient_completed_history'});continue}
     const state=descriptiveState(m),levels=scenarioLevels(m);
     const freshness=assessFreshness({
