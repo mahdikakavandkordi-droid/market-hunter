@@ -33,7 +33,7 @@
 - **Bitcoin:** bullish continuation above 87146.35 · trend warning near 83366.41 · structure risk below 82906.62.
 - **Ethereum:** bullish continuation above 2746.01 · trend warning near 2663.54 · structure risk below 2651.08.
 - **Gold:** bullish continuation above 4170.7 · trend warning near 4318.34 · structure risk below 4143.1.
-- **Nasdaq-100:** bullish continuation above 30770.63 · trend warning near 30070.09 · structure risk below 30081.06.
+- **Nasdaq-100:** bullish continuation above 30770.63 · trend warning near 30070.1 · structure risk below 30081.06.
 - **Silver:** bullish continuation above 62.62 · trend warning near 63.68 · structure risk below 57.76.
 
 ## Market detail
@@ -60,7 +60,7 @@
 - **Historical read:** 5 sessions: Cautious · 10: Mixed · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case.
-- **Watch next:** bullish continuation above 30770.63 · trend warning near 30070.09 · structure risk below 30081.06.
+- **Watch next:** bullish continuation above 30770.63 · trend warning near 30070.1 · structure risk below 30081.06.
 
 ### Gold
 - **State:** Mixed / Weakening
