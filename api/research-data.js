@@ -21,6 +21,7 @@ export default async function handler(req,res){
     const chosen=choosePublishedResearch(kind,remote,deployed);
     res.setHeader('Cache-Control','no-store');
     res.setHeader('X-Market-Hunter-Source',chosen.source);
+    if(chosen.warning)res.setHeader('X-Market-Hunter-Upstream-Warning',chosen.warning);
     res.setHeader('X-Market-Hunter-Generated-At',chosen.data.generatedAt);
     return res.status(200).json(chosen.data);
   }catch(e){

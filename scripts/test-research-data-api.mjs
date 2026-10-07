@@ -8,7 +8,14 @@ assert.equal(choosePublishedResearch('v2',older,newer).source,'deployment-snapsh
 assert.equal(choosePublishedResearch('v2',newer,older).data,newer,'newer main data is used without requiring redeployment');
 assert.equal(choosePublishedResearch('v2',{...older,generatedAt:'2026-10-06T00:20:00Z'},newer).data,newer,'regenerated older market session must not outrank the latest session');
 assert.equal(choosePublishedResearch('v2',newer,null).source,'github-main');
-assert.throws(()=>choosePublishedResearch('v2',{generatedAt:newer.generatedAt},newer),/invalid_research_data/);
+assert.equal(choosePublishedResearch('v2',{generatedAt:newer.generatedAt},newer).data,newer,'invalid CDN snapshot must not hide a separately validated deployment snapshot');
+assert.equal(choosePublishedResearch('v2',{generatedAt:newer.generatedAt},newer).warning,'invalid_upstream_snapshot');
+assert.throws(()=>choosePublishedResearch('v2',{generatedAt:newer.generatedAt},null),/invalid_research_data/);
+const mixed={...newer,all:[{symbol:'ARX.TO',date:'2026-08-11'}]};
+assert.equal(choosePublishedResearch('v2',mixed,newer).data,newer,'explicit session cannot mask stale rows');
+assert.throws(()=>choosePublishedResearch('v2',mixed,mixed),/invalid_research_data/);
+const staleSurface={...newer,integratedSurfacePicks:[{symbol:'ARX.TO',date:'2026-08-11'}]};
+assert.throws(()=>choosePublishedResearch('v2',staleSurface,null),/invalid_research_data/);
 assert.equal(choosePublishedResearch('daily',{generatedAt:'2026-10-06T00:10:00Z',asOf:{latest:'2026-10-05'},groups:[]},{generatedAt:'2026-10-06T00:20:00Z',asOf:{latest:'2026-10-05'},groups:[]}).source,'deployment-snapshot');
 
 function makeRes(){
