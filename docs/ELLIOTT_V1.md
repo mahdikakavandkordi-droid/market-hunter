@@ -1,7 +1,8 @@
-# Elliott V1 — step 2: causal research core
+# Elliott V1 — steps 2–3: causal core and requested-symbol analysis
 
-Status: core implemented and tested; no provider runner, account, endpoint, UI,
-workflow, scheduled activation or outbound messages in this change.
+Status: core and requested-symbol analysis implemented and tested on the research
+branch. No trading runner, account, operational workflow, scheduled activation or
+outbound messages in this change. The page is not deployed to production yet.
 
 This is a constrained Elliott-inspired hypothesis, not a complete discretionary
 wave count, calibrated confidence estimate or demonstrated trading advantage.
@@ -135,9 +136,54 @@ equal/ambiguous pivots, indicator arithmetic, missing optional volume, malformed
 input and deterministic no-structure output. No real account or portfolio data
 was accessed or changed. These tests establish core mechanics, not profitability.
 
+## Step 3: requested-symbol analysis
+
+`elliott.html` is a standalone bilingual analysis page (not a new scanner tab).
+`GET /api/elliott?symbol=BTC&market=crypto` uses the same `analyzeElliott` core.
+Markets: `us`, `ca`, `crypto`, `metals`; Canadian base symbols resolve to `.TO`,
+crypto base symbols to `-USD`. Invalid/mismatched input is rejected. Analysis is
+read-only and never creates a trade, ledger or portfolio mutation.
+
+The adapter requests two years of observed daily Yahoo data. Stock calendars use
+SPY or XIU.TO reference quotes; weekends are not interpreted as missing sessions.
+Crypto uses continuous UTC days. Current stock completion uses provider regular
+session metadata; historical stock completion conservatively uses 17:00 Toronto
+with DST. A missing completed reference session returns unavailable rather than
+false freshness. These observed calendars are not authoritative exchange data.
+
+Incomplete daily bars are excluded. Missing paths reset the wave count. Stale
+quotes, malformed completed rows, corporate splits or insufficient history block
+analysis and show a separate quality warning. Source failures have no historical
+fallback. In crypto the supplied volume is aggregate provider volume, not an
+exchange-specific executable market. Foreign exchange-session metadata is rejected.
+
+The page renders candles, 0–5/A–B–C labels, B confirmation, full count invalidation,
+and hypothetical stop/target. Waiting-breakout levels are explicitly provisional
+and supplied by the shared core; confirmed decision levels remain immutable.
+Historical confirmations are explicitly distinguished from current entries or
+open positions. At most two scenarios are shown; no forced count/confidence score.
+Pointer inspection displays date/OHLC. Source times, currency, RSI/RVOL/ATR and
+limitations are visible. Failed new requests clear the previous symbol's chart.
+Provider names/text are escaped before insertion in HTML.
+
+Verification: `npm run test:elliott` passes 32 tests (18 core + 14 adapter/API/chart).
+The integration tests use synthetic providers and real handler/core code, with
+daily completion, DST, missing sessions, stale/split data, API failures and safe
+SVG/HTML output and provisional levels from the shared core. Live provider smoke
+checks passed for BTC-USD (730 rows), AAPL (501 rows), RY.TO (503 rows); all returned
+usable completed data. These counts describe the observed verification run, not
+a permanent universe or performance result. Visual browser verification is outstanding:
+Chromium could not launch in the execution environment (`socket(): Operation not
+permitted`). `npm run test:elliott:browser` provides a repeatable fixture-driven
+browser test for an environment with Chromium installed. No screenshots are claimed.
+
+Local routes are added in `server.js`; Vercel function timeout is 20 seconds.
+The maximum upstream fetch path is two sequential seven-second attempts, with
+symbol and reference fetched concurrently. No secrets or additional dependencies
+are needed for the production feature. The browser test uses existing Playwright.
+
 ## Remaining steps
 
-3. Requested-symbol provider adapter and annotated chart, using this same core.
 4. Independent persistent long/short paper account and execution tests.
 5. Engines dashboard, evidence/comparison reports and Telegram integration.
 6. End-to-end independent review, then scheduled activation.
