@@ -32,16 +32,18 @@ window.MHI18n=(()=>{
     'Most tracked markets remain constructive, but leadership is not uniform.':'بیشتر شاخص‌ها وضعیت مثبتی دارند، اما قدرت حرکتشان یکسان نیست.',
     'Most tracked markets in this group show weakening short-term conditions.':'بیشتر بازارهای این گروه در کوتاه‌مدت ضعیف‌تر شده‌اند.',
     'All tracked markets in this group remain in a strong bull regime.':'روند اصلی همهٔ بازارهای این گروه همچنان صعودی قوی است.',
-    'Signals are mixed across the tracked markets.':'بازارهای این گروه جهت یکسانی نشان نمی‌دهند.','No data.':'داده‌ای موجود نیست.'
+    'Signals are mixed across the tracked markets.':'بازارهای این گروه جهت یکسانی نشان نمی‌دهند.','No data.':'داده‌ای موجود نیست.', 'Update required':'نیازمند بروزرسانی', 'Current assessment unavailable; one or more completed-session inputs are not verified fresh.':'ارزیابی فعلی در دسترس نیست؛ تازگی دادهٔ یک یا چند بازار تأیید نشده است.'
   };
   function text(value){return lang==='fa'?(words[value]||value||'—'):(value||'—');}
   function marketRead(m){
+    if(window.MarketHunterStatus&&!window.MarketHunterStatus.freshness(m).usable)return t('Current trend assessment unavailable. Last completed session: ','ارزیابی فعلی روند در دسترس نیست. آخرین جلسهٔ کامل: ')+(m?.asOf||'—');
     const trends={'Strong Bull':['The main trend is strongly upward.','روند اصلی صعودی قوی است.'],Bull:['The main trend is upward.','روند اصلی صعودی است.'],Mixed:['The main trend has no clear direction.','روند اصلی جهت روشنی ندارد.'],Bear:['The main trend is downward.','روند اصلی نزولی است.'],'Strong Bear':['The main trend is strongly downward.','روند اصلی نزولی قوی است.']};
     const conditions={Weakening:['Short-term price structure is weakening.','ساختار قیمت در کوتاه‌مدت ضعیف‌تر شده.'],Pullback:['Price is pulling back within that trend.','قیمت در دل این روند عقب‌نشینی کرده.'],'Breakout / Near High':['Price is breaking out or trading near its recent high.','قیمت در حال شکست مقاومت یا نزدیک سقف اخیر است.'],'Positive Momentum':['Short-term momentum is positive.','شتاب کوتاه‌مدت مثبت است.'],'Recovery Attempt':['Price is attempting to recover; confirmation is still needed.','قیمت در تلاش برای بازیابی است؛ هنوز به تأیید نیاز دارد.'],Extended:['Price is stretched; a pause or pullback remains a risk.','قیمت کشیده شده؛ احتمال توقف یا عقب‌نشینی را زیر نظر بگیر.'],'Range / Mixed':['Short-term movement is mixed or range-bound.','حرکت کوتاه‌مدت نوسانی و بدون جهت روشن است.']};
     return [trends[m?.regime]?t(...trends[m.regime]):t('Trend assessment unavailable.','ارزیابی روند موجود نیست.'),conditions[m?.condition]?t(...conditions[m.condition]):text(m?.condition)].filter(Boolean).join(' ');
   }
   function headline(value){
     const pieces={
+      'Current cross-market assessment is incomplete; some inputs require an update.':'ارزیابی فعلی بازار کامل نیست؛ بعضی داده‌ها نیاز به بروزرسانی دارند.',
       'Risk-on but uneven: U.S. equities and crypto retain strong primary trends while Canada lags and metals are not confirming.':'سهام آمریکا و رمزارزها روند اصلی قوی دارند؛ کانادا عقب‌تر است و فلزات این قدرت را تأیید نمی‌کنند.',
       'Broadly risk-on, led by U.S. equities and crypto, with confirmation varying across other groups.':'سهام آمریکا و رمزارزها پیشتاز فضای مثبت بازارند؛ وضعیت سایر گروه‌ها یکسان نیست.',
       'Mixed cross-market environment.':'جهت بازارها یکسان نیست.',

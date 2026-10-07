@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fetchChart} from '../lib/hunter-monitor-source.js';
+import {buildHunterMonitor} from '../lib/hunter-monitor.js';
+import {parseJsonl} from '../lib/market-hunter-forward-validation.js';
+const root=process.env.MH_FORWARD_DIR||'data/research/market-hunter-forward-validation';
+const read=f=>parseJsonl(fs.readFileSync(path.join(root,f+'.jsonl'),'utf8'));
+const sessions=read('sessions'),episodes=read('episodes'),outcomes=read('outcomes');
+const symbols=[...new Set(episodes.filter(e=>e.scope==='stage').map(e=>e.symbol))];
+const benchmarkRows=await fetchChart('^GSPTSE'),symbolRows=new Map();
+let i=0;await Promise.all(Array.from({length:8},async()=>{while(i<symbols.length){const symbol=symbols[i++];try{symbolRows.set(symbol,await fetchChart(symbol));}catch(e){console.error(symbol,e.message);}}}));
+const d=buildHunterMonitor({sessions,episodes,outcomes,symbolRows,benchmarkRows});
+fs.writeFileSync(path.join(root,'monitor.json'),JSON.stringify(d,null,2)+'\n');
+console.log(JSON.stringify({marketAsOf:d.marketAsOf,summary:d.summary}));

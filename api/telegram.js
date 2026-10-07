@@ -1,10 +1,10 @@
 import {engineDeskMenu,engineDeskReport} from '../lib/telegram-engines.js';
 import {
   mainMenu,enginesMenu,pulseMenu,marketReport,allMarketsReport,hunterMenu,stageMenu,stockReport,
-  marketBrief,statusReport,portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty
+  hunterMonitorReport,marketBrief,statusReport,portfolioMenu,portfolioItemReport,portfolioSummaryReport,portfolioEmpty
 } from '../lib/telegram-fa.js';
 import {
-  loadEngineEvidence,loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadRecentScans,loadPortfolioSnapshot,loadBotBundle,loadStockLive
+  loadHunterMonitor,loadEngineEvidence,loadScan,loadPulse,loadDailyReport,loadPreviousScan,loadRecentScans,loadPortfolioSnapshot,loadBotBundle,loadStockLive
 } from '../lib/telegram-data.js';
 import { portfolioPairUrl, portfolioBridgeConfigured } from '../lib/portfolio-bridge.js';
 
@@ -128,6 +128,10 @@ async function routeCallback(update,data){
     const [scan,engines]=await Promise.all([loadScan(),loadEngineEvidence()]);
     return render(update,enginesMenu(scan,engines,data.startsWith('eng:')?data.slice(4):'all'));
   }
+  if(/^hm:\d+$/.test(data)){
+    const monitor=await loadHunterMonitor().catch(()=>null);
+    return render(update,hunterMonitorReport(monitor,Number(data.slice(3))));
+  }
   if(data==='m:hunter'){
     const scan=await loadScan();
     return render(update,hunterMenu(scan));
@@ -177,6 +181,7 @@ async function routeCallback(update,data){
 
 async function routeMessage(update){
   const text=String(update?.message?.text||'').trim().toLowerCase();
+  if(text==='/monitor'||text.includes('پیگیری'))return render(update,hunterMonitorReport(await loadHunterMonitor().catch(()=>null)));
   if(text==='/engines'||text==='موتورها')return render(update,engineDeskMenu());
   if(text==='/start'||text==='/menu'||text==='منو'||text==='خانه'||!text)return render(update,mainMenu());
   if(text.includes('بازار')||text==='/markets'){

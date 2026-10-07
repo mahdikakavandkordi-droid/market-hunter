@@ -5,6 +5,7 @@ import path from 'node:path';
 import scanHandler from './api/scan.js';
 import portfolioHandler from './api/portfolio.js';
 import intradayHandler from './api/intraday.js';
+import hunterMonitorHandler from './api/hunter-monitor.js';
 import enginesHandler from './api/engines.js';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
@@ -21,6 +22,7 @@ const staticFiles=new Map([
   ['/index.html','index.html'],
   ['/app.js','app.js'],
   ['/i18n.js','i18n.js'],
+  ['/market-status.js','market-status.js'],
   ['/pwa.js','pwa.js'],
   ['/engine-dashboard.js','engine-dashboard.js'],
   ['/engine-matches.js','engine-matches.js'],
@@ -95,6 +97,7 @@ const server=http.createServer(async(req,res)=>{
       if(!file){res.writeHead(400,{'Content-Type':'application/json; charset=utf-8'});return res.end(JSON.stringify({error:'invalid_research_data_kind'}))}
       return await serveFile(res,file);
     }
+    if(url.pathname==='/api/hunter-monitor')return await hunterMonitorHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/scan') return await scanHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/portfolio') return await portfolioHandler(wrappedReq,makeResponse(res));
     if(url.pathname==='/api/intraday') return await intradayHandler(wrappedReq,makeResponse(res));

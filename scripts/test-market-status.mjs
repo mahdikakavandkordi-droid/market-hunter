@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import '../market-status.js';
+import {completedCryptoDailyRows} from '../lib/completed-daily-session.js';
+import {marketReport,allMarketsReport} from '../lib/telegram-fa.js';
+const now=Date.parse('2026-10-07T11:00:00Z'),sec=s=>Date.parse(s)/1000;
+const rows=[{t:sec('2026-10-05T00:00Z')},{t:sec('2026-10-06T00:00Z')},{t:sec('2026-10-07T00:00Z')}];
+assert.equal(completedCryptoDailyRows(rows,now).length,2,'keep the previous completed crypto day even with delayed provider metadata');
+assert.equal(completedCryptoDailyRows(rows,Date.parse('2026-10-07T00:00Z')).length,2);
+const stale={key:'BTC',group:'Crypto',asOf:'2026-10-05',freshness:{status:'fresh'},descriptiveState:{regime:'Strong Bull'}};
+assert.equal(globalThis.MarketHunterStatus.freshness(stale,now).usable,false,'runtime must not trust yesterday’s freshness flag');
+assert.equal(globalThis.MarketHunterStatus.freshness({...stale,asOf:'2026-10-06'},now).usable,true);
+assert.equal(globalThis.MarketHunterStatus.freshness({asOf:'2026-10-06',freshness:{status:'provider_failure'}},now).usable,false);
+assert.equal(globalThis.MarketHunterStatus.freshness({},now).usable,false);
+assert.match(marketReport(stale).text,/آخرین ارزیابی ثبت‌شده/);
+assert.match(allMarketsReport({}, {markets:[stale]}).text,/وضعیت فعلی قابل ارزیابی نیست/);
+console.log('market freshness presentation and UTC crypto sessions: ok');
