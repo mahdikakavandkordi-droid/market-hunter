@@ -240,9 +240,46 @@ use synthetic data and temporary accounts. No real forward history or performanc
 results have been created. The existing project-wide suite cannot be run from
 this partial checkout. Browser rendering remains unverified as described above.
 
+## Historical structure audit before integration
+
+The fixed-model structural audit now precedes dashboard integration. Its protocol
+was saved before provider capture: 6 US stocks, 6 Canadian stocks, 6 crypto
+assets and GLD/SLV, over the provider's two-year daily window. No parameters were
+changed. `historical/protocol.json`, `manifest.json` and checksum-verified gzipped
+base64 snapshots freeze the exact observations; `npm run elliott:history:replay`
+reproduces diagnostics offline without touching any forward account.
+
+All 20 sources were usable: 11,406 completed daily bars and 11,406 prefix checks
+passed. There were 55 eligible impulse candidates, but only 4 confirmed signals
+(1 long, 3 short). Thirty-six candidates ended as unsupported complex corrections;
+9 failed the retracement bounds, 3 breached the origin, 2 breached C, and 1 failed
+reward/risk. Confirmed examples were NVDA short, TSLA long, BTC short and XRP short.
+No confirmations occurred in the sampled Canadian stocks or metal ETFs. The
+sample is too small and selective to infer population signal frequency or edge.
+C-to-trigger delays for the four examples were 5, 2, 4 and 5 daily bars; outer
+endpoint recognition required 5 bars in all four examples. The four confirmation
+charts were visually inspected as static candle plots; the 29-case review gallery
+is available as generated HTML. This is not a claim of browser UI verification.
+
+These results support causal replay behavior on the frozen source history and
+identify a sparse, restrictive hypothesis. They do not measure correct Elliott
+labeling against an independent annotated reference, and do not establish that
+sparsity is good or bad for profitability. Retrospective revised quotes and a
+current survivor sample remain material limitations. The diagnostics reveal the
+whole period; its last third is consequently not an untouched final test for any
+later tuning. Fresh time/symbol data must be reserved for a revised model.
+
+This stage does not simulate the actual 4H account or report returns. A longer
+frozen intraday path is needed to backtest its entry, expiry and 60-bar exits;
+the current provider's 60-day hourly window does not cover these 2025 signals.
+Daily execution must not be substituted and represented as the frozen engine.
+The scoped suite now contains 63 passing tests, including four historical-audit
+checks. Details and review charts: `data/research/elliott-v1/historical/`.
+
 ## Remaining steps
 
-5. Engines dashboard, evidence/comparison reports and Telegram integration.
+5. Obtain historical intraday paths and validate execution; then integrate the
+   Engines dashboard, evidence/comparison reports and Telegram.
 6. End-to-end independent review, then scheduled activation.
 
 No scheduled Elliott execution is enabled by this PR.
