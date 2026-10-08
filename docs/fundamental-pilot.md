@@ -37,4 +37,6 @@ The four generated pairs have been reviewed for presentation and integrated as l
 
 Presentation checks reject mismatched CIKs, future dates, invalid source URLs, duplicate instruments, partial snapshots and malformed readings. Three Playwright tests passed for mobile/desktop bilingual disclosures and a failed financial source while technical cards remain usable. These tests are included in browser CI. The PWA shell cache is version 27.
 
+Full browser CI exposed an existing smooth-scroll race in the home rail: a second arrow click could restart from the unfinished first movement. Arrow navigation now accumulates the pending destination and clears it on settled scrolling or direct pointer/wheel interaction. All nine browser tests passed locally after this correction.
+
 The six Canadian source routes still need individual retrieval/usage verification or a licensed provider review. No paid provider has been configured. No SEDAR+ public-site ingestion is implemented. No live customer account or portfolio was used for testing.

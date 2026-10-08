@@ -2,6 +2,15 @@ const ui=(en,fa)=>window.MHI18n?.t(en,fa)||en;
 const swipeTools=(id,count)=>count>1?`<div class="swipe-tools"><span>${ui('Swipe to browse','برای دیدن بقیه ورق بزن')} ↔ <bdi>${count}</bdi></span><div><button type="button" data-swipe="${id}" data-step="-1" aria-label="${ui('Previous card','کارت قبلی')}">←</button><button type="button" data-swipe="${id}" data-step="1" aria-label="${ui('Next card','کارت بعدی')}">→</button></div></div>`:'';
 const stageLabel=s=>window.MHI18n?.stageLabel(s)||s;
 const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
+const pendingRailTargets=new WeakMap();
+function stepRail(rail,step){
+  const base=pendingRailTargets.get(rail)??rail.scrollLeft;
+  const target=Math.max(0,Math.min(rail.scrollWidth-rail.clientWidth,base+step*rail.clientWidth*.9));
+  pendingRailTargets.set(rail,target);
+  rail.addEventListener('scrollend',()=>pendingRailTargets.delete(rail),{once:true});
+  rail.scrollTo({left:target,behavior:'smooth'});
+}
+for(const event of ['pointerdown','wheel'])document.addEventListener(event,e=>{const rail=e.target.closest?.('.mobile-rail');if(rail)pendingRailTargets.delete(rail)},{passive:true});
 const numeric=n=>n!==null&&n!==undefined&&!(typeof n==='string'&&n.trim()==='')&&Number.isFinite(Number(n));
 const fmt=n=>numeric(n)?Number(n).toLocaleString(undefined,{maximumFractionDigits:2}):'—';
 const pct=n=>numeric(n)?((Number(n)>0?'+':'')+Number(n).toFixed(1)+'%'):'—';
@@ -1565,7 +1574,7 @@ function closeRiskInfo(except=null){
   qa('.risk-info[open]').forEach(d=>{if(d!==except)d.open=false});
 }
 document.addEventListener('click',async e=>{
-  const swipe=e.target.closest('[data-swipe]');if(swipe){const rail=document.getElementById(swipe.dataset.swipe);if(rail)rail.scrollBy({left:Number(swipe.dataset.step)*rail.clientWidth*.9,behavior:'smooth'});return}
+  const swipe=e.target.closest('[data-swipe]');if(swipe){const rail=document.getElementById(swipe.dataset.swipe);if(rail)stepRail(rail,Number(swipe.dataset.step));return}
   if(e.target.closest('.portfolio-sync-link')){const account=q('#portfolioAccount');if(account?.tagName==='DETAILS')account.open=true;}
   const allocationControl=e.target.closest('[data-allocation-mode],[data-allocation-item]');
   if(allocationControl){
