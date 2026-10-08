@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {coverage} from '../lib/wave-ml/coverage.mjs';
+const row=availableAt=>({availableAt});
+test('paired directions count one day but preserve two rows',()=>{const c=coverage([row('2026-01-01T00:05Z'),row('2026-01-01T00:05Z')],['2026-01-01']);assert.equal(c.observedDecisionDays,1);assert.equal(c.rows,2);});
+test('first-to-last endpoints do not hide empty interior months',()=>{const c=coverage([row('2025-01-01T00:05Z'),row('2025-03-01T00:05Z')],['2025-01-01','2025-02-01','2025-03-01']);assert.deepEqual(c.emptyMonths,['2025-02']);assert.equal(c.longestMissingRun.start,'2025-02-01');});
+test('stock weekend/holiday calendar dates do not manufacture missing sessions',()=>{const c=coverage([row('2026-01-02T22:05Z'),row('2026-01-05T22:05Z')],['2026-01-02','2026-01-05']);assert.equal(c.longestMissingRun,null);assert.equal(c.decisionDayCoverage,1);});
+test('longest gap includes missing leading/trailing observations',()=>{const c=coverage([row('2026-01-03T00:05Z')],['2026-01-01','2026-01-02','2026-01-03','2026-01-04']);assert.equal(c.longestMissingRun.expectedDecisionDays,2);assert.equal(c.longestMissingRun.endInclusive,'2026-01-02');});
+test('empty coverage reports unknown ratio for empty calendar and explicit gaps otherwise',()=>{assert.equal(coverage([],[]).decisionDayCoverage,null);assert.equal(coverage([],['2026-01-01']).longestMissingRun.expectedDecisionDays,1);});
+test('invalid or out-of-calendar observations reject',()=>{assert.throws(()=>coverage([row('bad')],[]),/timestamp/);assert.throws(()=>coverage([row('2026-01-01')],['2026-01-02']),/calendar/);});
