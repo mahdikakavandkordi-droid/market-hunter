@@ -37,6 +37,8 @@ def download(year):
         names = [n for n in z.namelist() if n.lower().endswith('.csv')]
         frames = [pd.read_csv(z.open(n), sep=';', header=None, names=['timestamp','open','high','low','close','volume']) for n in names]
     df = pd.concat(frames, ignore_index=True)
+    identical_duplicates = int(df.duplicated().sum())
+    df = df.drop_duplicates().copy()
     df['timestamp'] = pd.to_datetime(df.timestamp, format='%Y%m%d %H%M%S')
     assert not df.timestamp.duplicated().any(), 'duplicate source minute'
     assert df.timestamp.is_monotonic_increasing, 'unordered source'
@@ -56,6 +58,8 @@ def download(year):
         quality = bool(len(group) >= 900 and gap <= 120 and first <= 30 and (date.weekday() == 4 or last >= 1409))
         daily.append({'date':str(date), 'open':float(group.open.iloc[0]),'high':float(group.high.max()),'low':float(group.low.min()),'close':float(group.close.iloc[-1]),'minutes':len(group),'first_minute':first,'last_minute':last,'max_gap_minutes':None if pd.isna(gap) else float(gap),'quality':quality})
     result = {'year':year,'source_url':url,'raw_sha256':hashlib.sha256(body).hexdigest(),'raw_bytes':len(body),'minute_rows':len(df),'timezone':'UTC-05:00 fixed','quote_side':'bid','daily':daily}
+    if identical_duplicates:
+        result['identical_duplicate_rows_removed'] = identical_duplicates
     target = OUT / f'daily-{year}.json'
     encoded = json.dumps(result, separators=(',',':')) + '\n'
     if target.exists() and target.read_text() != encoded:
