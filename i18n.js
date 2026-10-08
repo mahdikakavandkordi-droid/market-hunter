@@ -22,6 +22,22 @@ window.MHI18n=(()=>{
     if(Number.isFinite(x.rsi14)&&x.rsi14>=80)watch.push(t('RSI is very high; the move may be stretched.','شاخص قدرت حرکت (RSI) بسیار بالاست؛ حرکت ممکن است بیش از حد کشیده شده باشد.'));else if(Number.isFinite(x.rsi14)&&x.rsi14>=72)watch.push(t('RSI is high; watch for a pause in momentum.','شاخص قدرت حرکت (RSI) بالاست؛ احتمال مکث حرکت را زیر نظر بگیر.'));
     return {lead,now:now.slice(0,3),watch:watch.slice(0,2)};
   }
+  function technical(x){
+    const r=read(x),monitor=[];
+    const finite=v=>typeof v==='number'&&Number.isFinite(v);
+    const lowBroken=x?.lowBroken===true||x?.lowState==='local_low_broken';
+    const negative=r.now.filter(v=>v===t('Swing structure is weakening.','ساختار قیمت ضعیف‌تر شده است.')||v===t('Lower highs and lower lows still show weakness.','سقف‌ها و کف‌های پایین‌تر هنوز نشانهٔ ضعف هستند.')||v===t('Momentum has cooled noticeably.','شتاب حرکت به‌طور محسوسی کاهش یافته.')||v===t('Momentum is slightly softer.','شتاب حرکت کمی ضعیف‌تر شده.')||(finite(x?.rs20)&&x.rs20<=-3&&v===r.now.at(-1)));
+    const support=r.now.find(v=>!negative.includes(v));
+    const weakness=r.watch[0]||negative[0];
+    const summary=[r.lead,support,weakness].filter(Boolean);
+    if(!r.now.length&&!r.watch.length&&x)summary.push(t('Supporting metrics are unavailable; the stage label alone is not enough to assess this setup.','معیارهای پشتیبان موجود نیستند؛ برچسب مرحله به‌تنهایی برای ارزیابی این وضعیت کافی نیست.'));
+    const invalidLevels=finite(x?.localLow)&&finite(x?.localHigh)&&x.localLow>=x.localHigh;
+    if(!invalidLevels&&finite(x?.localLow)&&x.localLow>0)monitor.push({kind:'local-low',level:x.localLow,text:lowBroken?t('Watch whether price reclaims the recorded local low.','بازگشت قیمت بالای کف ثبت‌شده را دنبال کن.'):t('Watch whether the recorded local low holds or breaks.','حفظ یا شکسته‌شدن کف ثبت‌شده را دنبال کن.')});
+    if(!invalidLevels&&finite(x?.localHigh)&&x.localHigh>0)monitor.push({kind:'local-high',level:x.localHigh,text:x.highBroken===true?t('Watch whether price holds above the recorded local high.','حفظ قیمت بالای سقف ثبت‌شده را دنبال کن.'):t('Watch whether price clears the recorded local high.','عبور قیمت از سقف ثبت‌شده را دنبال کن.')});
+    if(monitor.length<2&&finite(x?.rs20))monitor.push({kind:'relative-strength',level:null,text:x.rs20>0?t('Watch whether outperformance versus the benchmark persists.','تداوم عملکرد بهتر از شاخص مبنا را دنبال کن.'):x.rs20<0?t('Watch whether the performance gap behind the benchmark narrows.','کمترشدن عقب‌ماندگی از شاخص مبنا را دنبال کن.'):t('Watch whether relative performance improves or deteriorates.','بهتر یا ضعیف‌ترشدن عملکرد نسبت به شاخص مبنا را دنبال کن.')});
+    if(monitor.length<2&&finite(x?.momentumShift))monitor.push({kind:'momentum',level:null,text:x.momentumShift>0?t('Watch whether improving momentum persists or cools.','ادامهٔ بهبود یا کاهش شتاب حرکت را دنبال کن.'):t('Watch whether momentum recovers from its recorded level.','بهبود شتاب حرکت نسبت به وضعیت ثبت‌شده را دنبال کن.')});
+    return {summary:summary.slice(0,3),monitor:monitor.slice(0,2),completedSession:/^\d{4}-\d{2}-\d{2}$/.test(x?.date||'')&&Number.isFinite(Date.parse(x.date))?x.date:null,evidence:r.now,cautions:r.watch};
+  }
   // Presentation only: retain backend classifications, evidence and levels.
   const words={
     'Strong Bull':'صعودی قوی','Bull':'صعودی','Mixed':'ترکیبی','Bear':'نزولی','Strong Bear':'نزولی قوی',
@@ -73,5 +89,5 @@ const outlookFa={
   function outlook(value){return lang==='fa'?(outlookFa[value]||value||'توضیحی موجود نیست.'):(value||'No assessment available.');}
   function stockFa(x){const r=read(x);return [r.lead,...r.now,...r.watch].join(' ');}
   document.addEventListener('DOMContentLoaded',apply);
-  return {t,text,marketRead,headline,outlook,stockFa,read,stageLabel,language:()=>lang,toggle(){lang=lang==='fa'?'en':'fa';try{localStorage.setItem('mh-language',lang)}catch{}apply();}};
+  return {t,text,marketRead,headline,outlook,stockFa,read,technical,stageLabel,language:()=>lang,toggle(){lang=lang==='fa'?'en':'fa';try{localStorage.setItem('mh-language',lang)}catch{}apply();}};
 })();
