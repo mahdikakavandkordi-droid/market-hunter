@@ -1,14 +1,14 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-10-08T15:48:23.408Z",
+  "updatedAt": "2026-10-08T21:26:43.880Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
       "symbol": "PALL",
       "signalT": "2026-10-07T13:30:00.000Z",
       "dir": -1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-07T17:30:00.000Z",
         "dailyAsOf": "2026-10-06",
@@ -19,11 +19,11 @@
         "atr14": 0.3311074120657785,
         "signalClose": 20.434999465942383
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
+      "entryT": "2026-10-08T13:30:00.000Z",
+      "entry": 20.350000381469727,
+      "stop": 21.012215205601283,
       "target": null,
-      "risk": null,
+      "risk": 0.662214824131557,
       "R": null,
       "exitT": null,
       "decisionId": "PALL|2026-10-07T13:30:00.000Z|-1",
@@ -35,13 +35,18 @@
         "runKey": "trend-breakout-v1|37661430753|1",
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 21.012215205601283,
+      "bestClose": 20.350000381469727,
+      "holdingBars": 2,
+      "entryObservedAt": "2026-10-08T21:26:43.880Z",
+      "lastEvaluatedEndT": "2026-10-08T20:30:00.000Z"
     },
     {
       "symbol": "PPLT",
       "signalT": "2026-10-07T13:30:00.000Z",
       "dir": -1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-07T17:30:00.000Z",
         "dailyAsOf": "2026-10-06",
@@ -52,11 +57,11 @@
         "atr14": 0.26475722449166433,
         "signalClose": 14.859999656677246
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
+      "entryT": "2026-10-08T13:30:00.000Z",
+      "entry": 14.819999694824219,
+      "stop": 15.349514143807548,
       "target": null,
-      "risk": null,
+      "risk": 0.5295144489833287,
       "R": null,
       "exitT": null,
       "decisionId": "PPLT|2026-10-07T13:30:00.000Z|-1",
@@ -66,6 +71,44 @@
       "firstObservedProvenance": {
         "tracker": "trend-breakout-v1",
         "runKey": "trend-breakout-v1|37661430753|1",
+        "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
+      },
+      "entryObservationClass": "prospective",
+      "currentStop": 15.349514143807548,
+      "bestClose": 14.819999694824219,
+      "holdingBars": 2,
+      "entryObservedAt": "2026-10-08T21:26:43.880Z",
+      "lastEvaluatedEndT": "2026-10-08T20:30:00.000Z"
+    },
+    {
+      "symbol": "SLV",
+      "signalT": "2026-10-08T13:30:00.000Z",
+      "dir": -1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+        "dailyAsOf": "2026-10-07",
+        "dailyClose": 53.81999969482422,
+        "dailySma": 65.84945007324218,
+        "breakoutHigh": 58.51499938964844,
+        "breakoutLow": 53.599998474121094,
+        "atr14": 0.8418358394077846,
+        "signalClose": 53.40999984741211
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "SLV|2026-10-08T13:30:00.000Z|-1",
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-08T21:26:43.880Z",
+      "firstObservedAt": "2026-10-08T21:26:43.880Z",
+      "firstObservedProvenance": {
+        "tracker": "trend-breakout-v1",
+        "runKey": "trend-breakout-v1|37846746324|1",
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "pending"
@@ -581,6 +624,12 @@
       "observedAt": "2026-10-08T15:48:23.408Z",
       "failures": [],
       "diagnosticCount": 10
+    },
+    {
+      "runKey": "trend-breakout-v1|37846746324|1",
+      "observedAt": "2026-10-08T21:26:43.880Z",
+      "failures": [],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -1346,6 +1395,15 @@
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|37846746324|1",
+      "observedAt": "2026-10-08T21:26:43.880Z",
+      "quality": "fresh",
+      "markedEquity": 998.1572528781516,
+      "totalUnrealizedPnl": -1.8427471218484581,
       "missingSymbols": [],
       "staleSymbols": []
     }
