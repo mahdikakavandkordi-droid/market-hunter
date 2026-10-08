@@ -1,14 +1,14 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-08T15:53:11.674Z",
+  "updatedAt": "2026-10-08T21:32:33.518Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
       "symbol": "KO",
       "signalT": "2026-10-05T13:30:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-05T21:00:00.000Z",
         "dailyAsOf": "2026-10-05",
@@ -28,8 +28,8 @@
       "stop": 84.59535544259208,
       "target": 87.69599990844726,
       "risk": 2.004643031529014,
-      "R": null,
-      "exitT": null,
+      "R": 0.5467314714332003,
+      "exitT": "2026-10-08T17:30:00.000Z",
       "decisionId": "KO|2026-10-05T13:30:00.000Z|1",
       "entryWaitHours": 120,
       "historicalDiagnostic": false,
@@ -42,15 +42,102 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 84.59535544259208,
-      "holdingBars": 4,
-      "lastEvaluatedEndT": "2026-10-07T20:30:00.000Z",
-      "entryObservedAt": "2026-10-06T17:57:11.658Z"
+      "holdingBars": 5,
+      "lastEvaluatedEndT": "2026-10-08T17:30:00.000Z",
+      "entryObservedAt": "2026-10-06T17:57:11.658Z",
+      "exitPriceAssumed": 87.69599990844726,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "mean_target",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "stopTargetCollision": false,
+        "collisionPolicy": "stop_first",
+        "exitBarStartT": "2026-10-08T13:30:00.000Z",
+        "exitBarEndT": "2026-10-08T17:30:00.000Z"
+      }
+    },
+    {
+      "symbol": "C",
+      "signalT": "2026-10-08T13:30:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-08T21:00:00.000Z",
+        "dailyAsOf": "2026-10-08",
+        "dipDate": "2026-10-07",
+        "dipClose": 127.31999969482422,
+        "dipHigh": 127.36000061035156,
+        "dipLow": 124.0999984741211,
+        "dailySma": 126.11479984283447,
+        "meanTarget": 132.22000007629396,
+        "atr14": 2.875714438302176,
+        "averageDollarVolume": 1330189541.186142,
+        "signalClose": 128.0800018310547,
+        "initialStop": 122.66214125497001
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "C|2026-10-08T13:30:00.000Z|1",
+      "entryWaitHours": 120,
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-08T21:32:33.518Z",
+      "firstObservedAt": "2026-10-08T21:32:33.518Z",
+      "firstObservedProvenance": {
+        "tracker": "mean-reversion-v1",
+        "runKey": "mean-reversion-v1|37847421131|1",
+        "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
+      },
+      "entryObservationClass": "pending"
+    },
+    {
+      "symbol": "CRM",
+      "signalT": "2026-10-08T13:30:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-08T21:00:00.000Z",
+        "dailyAsOf": "2026-10-08",
+        "dipDate": "2026-10-07",
+        "dipClose": 224.55999755859375,
+        "dipHigh": 226.5,
+        "dipLow": 221.52999877929688,
+        "dailySma": 200.0475003051758,
+        "meanTarget": 237.475,
+        "atr14": 7.861428397042411,
+        "averageDollarVolume": 2630082563.5900116,
+        "signalClose": 227.8000030517578,
+        "initialStop": 217.59928458077567
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "CRM|2026-10-08T13:30:00.000Z|1",
+      "entryWaitHours": 120,
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-08T21:32:33.518Z",
+      "firstObservedAt": "2026-10-08T21:32:33.518Z",
+      "firstObservedProvenance": {
+        "tracker": "mean-reversion-v1",
+        "runKey": "mean-reversion-v1|37847421131|1",
+        "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
+      },
+      "entryObservationClass": "pending"
     },
     {
       "symbol": "JNJ",
       "signalT": "2026-10-07T13:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-07T21:00:00.000Z",
         "dailyAsOf": "2026-10-07",
@@ -65,11 +152,11 @@
         "signalClose": 258.45001220703125,
         "initialStop": 248.76428277151925
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-08T13:30:00.000Z",
+      "entry": 256.2200012207031,
+      "stop": 248.76428277151925,
+      "target": 265.8205001831055,
+      "risk": 7.455718449183877,
       "R": null,
       "exitT": null,
       "decisionId": "JNJ|2026-10-07T13:30:00.000Z|1",
@@ -80,6 +167,86 @@
       "firstObservedProvenance": {
         "tracker": "mean-reversion-v1",
         "runKey": "mean-reversion-v1|37693019120|1",
+        "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
+      },
+      "entryObservationClass": "prospective",
+      "currentStop": 248.76428277151925,
+      "holdingBars": 2,
+      "lastEvaluatedEndT": "2026-10-08T20:30:00.000Z",
+      "entryObservedAt": "2026-10-08T21:32:33.518Z"
+    },
+    {
+      "symbol": "JPM",
+      "signalT": "2026-10-08T13:30:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-08T21:00:00.000Z",
+        "dailyAsOf": "2026-10-08",
+        "dipDate": "2026-10-07",
+        "dipClose": 329.5799865722656,
+        "dipHigh": 329.8699951171875,
+        "dipLow": 325.07000732421875,
+        "dailySma": 322.01565078735354,
+        "meanTarget": 341.63500061035154,
+        "atr14": 5.719288417271206,
+        "averageDollarVolume": 2908081604.374237,
+        "signalClose": 331.4200134277344,
+        "initialStop": 322.21036311558316
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "JPM|2026-10-08T13:30:00.000Z|1",
+      "entryWaitHours": 120,
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-08T21:32:33.518Z",
+      "firstObservedAt": "2026-10-08T21:32:33.518Z",
+      "firstObservedProvenance": {
+        "tracker": "mean-reversion-v1",
+        "runKey": "mean-reversion-v1|37847421131|1",
+        "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
+      },
+      "entryObservationClass": "pending"
+    },
+    {
+      "symbol": "NEM",
+      "signalT": "2026-10-08T13:30:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-08T21:00:00.000Z",
+        "dailyAsOf": "2026-10-08",
+        "dipDate": "2026-10-07",
+        "dipClose": 113.54000091552734,
+        "dipHigh": 114.5,
+        "dipLow": 111.75,
+        "dailySma": 111.74590003967285,
+        "meanTarget": 120.54100036621094,
+        "atr14": 3.5592858450753346,
+        "averageDollarVolume": 746515481.760788,
+        "signalClose": 115.55000305175781,
+        "initialStop": 109.97035707746234
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "NEM|2026-10-08T13:30:00.000Z|1",
+      "entryWaitHours": 120,
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-08T21:32:33.518Z",
+      "firstObservedAt": "2026-10-08T21:32:33.518Z",
+      "firstObservedProvenance": {
+        "tracker": "mean-reversion-v1",
+        "runKey": "mean-reversion-v1|37847421131|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
       "entryObservationClass": "pending"
@@ -1773,6 +1940,29 @@
         }
       ],
       "diagnosticCount": 150
+    },
+    {
+      "runKey": "mean-reversion-v1|37847421131|1",
+      "observedAt": "2026-10-08T21:32:33.518Z",
+      "failures": [
+        {
+          "symbol": "TMO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "HON",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "NFLX",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "CMCSA",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -2493,6 +2683,15 @@
       "quality": "fresh",
       "markedEquity": 997.6905443520234,
       "totalUnrealizedPnl": -2.3094556479765584,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|37847421131|1",
+      "observedAt": "2026-10-08T21:32:33.518Z",
+      "quality": "fresh",
+      "markedEquity": 1003.1429408312375,
+      "totalUnrealizedPnl": 0.26831813985464426,
       "missingSymbols": [],
       "staleSymbols": []
     }
