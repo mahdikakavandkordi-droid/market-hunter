@@ -1,5 +1,8 @@
 name: Fundamental Context Refresh
 on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fundamental-refresh.yml']
   workflow_dispatch:
   schedule:
     # Financial filings need a daily check, not hourly quote polling.

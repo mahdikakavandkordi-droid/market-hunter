@@ -24,7 +24,7 @@ For each relevant verified SEC issuer, the collector checks submissions first. I
 
 `source-checks.json` distinguishes checked/unchanged/collected/failed and records the discovered accession. A newer filing awaiting reconciliation produces a visible warning while previous accepted data is retained. Amendment selection fails closed and records a source-check failure; the previous snapshot remains available.
 
-The GitHub workflow checks filings once each weekday at 22:15 UTC and also supports manual dispatch. It runs the financial guards before collection and commits only financial data. This uses existing GitHub/Vercel infrastructure. The first local live check succeeded for all four issuers, confirming unchanged accessions; it did not claim a newly published financial quarter.
+The GitHub workflow checks filings once each weekday at 22:15 UTC and also supports manual dispatch. Changes to its own workflow trigger one initial run on main, so the deployed orchestration can be verified without waiting for the next daily slot. It runs the financial guards before collection and commits only financial data. This uses existing GitHub/Vercel infrastructure. The first local live check succeeded for all four issuers, confirming unchanged accessions; it did not claim a newly published financial quarter.
 
 ## Periods, evidence and dates
 

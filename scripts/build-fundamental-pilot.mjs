@@ -27,7 +27,7 @@ for (const spec of ISSUERS) {
     const file=spec.source==='sec'?path.join(input,`${spec.symbol.split('.')[0]}.json`):path.join(path.dirname(input),'manual-inputs',`${spec.symbol.split('.')[0]}.json`);
     if(spec.source!=='sec'){
       let manual;try{manual=JSON.parse(await fs.readFile(file,'utf8'));}catch(error){if(error.code==='ENOENT'){if(prior)snapshots.push(prior);continue;}throw error;}
-      if(manual.symbol!==spec.symbol||manual.issuer!==spec.name||!manual.manualReview?.permission||manual.status!=='complete'||Date.parse(manual.reviewedAt)>Date.parse(asOf))throw new Error('Invalid reviewed manual input');
+      if(manual.symbol!==spec.symbol||manual.issuer!==spec.name||manual.manualReview?.permission?.scope!=='republication-authorized'||!manual.manualReview.reviewer?.trim()||manual.status!=='complete'||Date.parse(manual.reviewedAt)>Date.parse(asOf))throw new Error('Invalid reviewed manual input');
       const result=replaceCompleteSnapshot(prior,{...manual,reading:{en:narrative(manual,'en'),fa:narrative(manual,'fa')}});
       if(result.current)snapshots.push(result.current);if(result.lastAttempt)attempts.push(result.lastAttempt);continue;
     }
