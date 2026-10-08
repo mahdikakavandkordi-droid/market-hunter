@@ -42,9 +42,11 @@ for(const spec of PILOT.filter(x=>targets.has(x.symbol))){
   await fs.writeFile(path.join(cache,'selection.json'),JSON.stringify(selections));
   execFileSync('python3',[path.join(root,'scripts/prepare-fundamental-fixtures.py'),cache,input,symbol],{stdio:'pipe'});
   checks[spec.symbol].status='collected';
- }catch(error){checks[spec.symbol]={...checks[spec.symbol],status:'failed',checkedAt,reason:error.message.split('\n')[0]};}
+ }catch(error){checks[spec.symbol]={...checks[spec.symbol],status:'failed',checkedAt,reason:(error.stderr?.toString().trim().split('\n').at(-1)??error.message.split('\n')[0]).slice(0,500)};}
 }
 await fs.mkdir(path.join(root,'data/fundamentals'),{recursive:true});
 await fs.writeFile(path.join(root,'data/fundamentals/source-checks.json'),JSON.stringify(checks,null,2)+'\n');
 execFileSync(process.execPath,[path.join(root,'scripts/build-fundamental-pilot.mjs'),input,output,asOf],{cwd:root,stdio:'inherit'});
 console.log(JSON.stringify({asOf,checks}));
+
+if(Object.values(checks).length&&Object.values(checks).every(check=>check.status==='failed')){console.error('All SEC source checks failed; retained snapshots are NOT a successful refresh.');process.exitCode=1;}

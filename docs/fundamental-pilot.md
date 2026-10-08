@@ -24,7 +24,9 @@ For each relevant verified SEC issuer, the collector checks submissions first. I
 
 `source-checks.json` distinguishes checked/unchanged/collected/failed and records the discovered accession. A newer filing awaiting reconciliation produces a visible warning while previous accepted data is retained. Amendment selection fails closed and records a source-check failure; the previous snapshot remains available.
 
-The GitHub workflow checks filings once each weekday at 22:15 UTC and also supports manual dispatch. Changes to its own workflow trigger one initial run on main, so the deployed orchestration can be verified without waiting for the next daily slot. It runs the financial guards before collection and commits only financial data. This uses existing GitHub/Vercel infrastructure. The first local live check succeeded for all four issuers, confirming unchanged accessions; it did not claim a newly published financial quarter.
+The local live submissions check succeeded for all four issuers and confirmed unchanged accessions. The first hosted GitHub run could not retrieve any issuer. Its previous implementation incorrectly reported job success despite four failed checks. The collector now returns failure when all checks fail, records the actual underlying source error, and retains valid data. The workflow can still publish failure metadata after projection validation.
+
+Automatic scheduling is paused until permitted SEC access is verified on the runner. Manual dispatch and a single verification run when the workflow changes remain available. The UI exposes this pause. No proxy, fingerprint manipulation or alternate transport is introduced to bypass a restriction. These changes do not establish a working automatic refresh from GitHub; approved source access or an appropriately licensed provider remains necessary. Local/manual refresh is available through the tested command.
 
 ## Periods, evidence and dates
 
@@ -36,7 +38,7 @@ Verified facts require original entity-wide inline USD evidence, accession, exac
 
 The generator reads prior accepted snapshots, preserves complete ones on partial/older/failed attempts, records lastAttempts, and writes JSON by temporary-file rename. Repeated unchanged inputs retain their reconciliation date. Source checks, publication, financial period, numeric reconciliation and human review are separate fields. Retrieval never invents a human review date.
 
-Browser financial loading is independent, times out after five seconds and ignores superseded responses. Late responses patch financial disclosures without resetting the active language/view or expanded state. PWA cache: v29.
+Browser financial loading is independent, times out after five seconds and ignores superseded responses. Late responses patch financial disclosures without resetting the active language/view or expanded state. PWA cache: v30.
 
 ## Reviewed manual source route
 
