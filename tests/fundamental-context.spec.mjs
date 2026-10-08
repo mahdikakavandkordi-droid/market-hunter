@@ -27,7 +27,7 @@ for(const width of [390,1440])test(`fundamental disclosure and bilingual evidenc
   await expect(card.locator('.fundamental-reading')).toContainText('12.7%');
   await expect(card.locator('.fundamental-source a')).toHaveAttribute('href',/www\.sec\.gov\/Archives\/edgar\/data\/885590\//);
   await expect(card.locator('.technical-monitor').last().locator('li')).toHaveCount(2);
-  await expect(card.locator('.fundamental-source')).toContainText('not refreshed automatically');
+  await expect(card.locator('.fundamental-source')).toContainText('SEC filings checked daily');
   const microsoft=page.locator('#shortlistView .hunter-card').filter({hasText:'MSFT'});
   await microsoft.locator('.stock-fundamental summary').click();
   await expect(microsoft.locator('.fundamental-reading')).toContainText('not Q4-only');

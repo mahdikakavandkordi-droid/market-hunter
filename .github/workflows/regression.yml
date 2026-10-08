@@ -31,6 +31,7 @@ jobs:
         run: |
           npm run test:fundamental
           node scripts/test-fundamental-build.mjs
+          node scripts/test-fundamental-refresh.mjs
           node scripts/test-fundamental-context.mjs
           python3 scripts/test-fundamental-inline.py
       - name: Install Chromium

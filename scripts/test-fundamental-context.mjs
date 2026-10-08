@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const context={window:{},URL,Date};vm.createContext(context);vm.runInContext(fs.readFileSync('fundamental-context.js','utf8'),context);
 const read=context.window.MHFundamentals.reading;
 const data=JSON.parse(fs.readFileSync('data/fundamental-context.json'));
-const now=new Date('2026-10-08T11:00:00Z');
+const now=new Date(Date.parse(data.reviewedAt)+60000);
 assert.equal(read(data,'BHC.TO','en',now).status,'available');
 assert.equal(read(data,'MSFT.TO','fa',now).period.basis,'fiscal-year');
 assert.equal(read(data,'SIA.TO','en',now).status,'unavailable');
