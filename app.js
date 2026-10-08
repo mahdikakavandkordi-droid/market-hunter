@@ -10,7 +10,6 @@ function stepRail(rail,step){
   rail.addEventListener('scrollend',()=>pendingRailTargets.delete(rail),{once:true});
   rail.scrollTo({left:target,behavior:'smooth'});
 }
-for(const event of ['pointerdown','wheel'])document.addEventListener(event,e=>{const rail=e.target.closest?.('.mobile-rail');if(rail)pendingRailTargets.delete(rail)},{passive:true});
 const numeric=n=>n!==null&&n!==undefined&&!(typeof n==='string'&&n.trim()==='')&&Number.isFinite(Number(n));
 const fmt=n=>numeric(n)?Number(n).toLocaleString(undefined,{maximumFractionDigits:2}):'—';
 const pct=n=>numeric(n)?((Number(n)>0?'+':'')+Number(n).toFixed(1)+'%'):'—';
@@ -1573,6 +1572,7 @@ function openPosition(symbol='',source='manual'){
 function closeRiskInfo(except=null){
   qa('.risk-info[open]').forEach(d=>{if(d!==except)d.open=false});
 }
+for(const event of ['pointerdown','wheel'])document.addEventListener(event,e=>{const rail=e.target.closest?.('.mobile-rail');if(rail)pendingRailTargets.delete(rail)},{passive:true});
 document.addEventListener('click',async e=>{
   const swipe=e.target.closest('[data-swipe]');if(swipe){const rail=document.getElementById(swipe.dataset.swipe);if(rail)stepRail(rail,Number(swipe.dataset.step));return}
   if(e.target.closest('.portfolio-sync-link')){const account=q('#portfolioAccount');if(account?.tagName==='DETAILS')account.open=true;}
