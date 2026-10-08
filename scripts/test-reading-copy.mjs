@@ -11,6 +11,26 @@ assert.equal(ui.read(stock).now.length,3,'relative performance must not be lost 
 assert.match(ui.read(stock).now[2],/5.0 percentage points behind/);
 assert.equal(ui.read(stock).watch.length,1,'backend low-break state must remain visible');
 assert.equal(ui.read({...stock,rs20:null}).now.length,2,'missing return must not be presented as zero');
+const detailed={...stock,date:'2026-10-07',localLow:90.123,localHigh:110.456};
+const saved=JSON.stringify(detailed),english=ui.technical(detailed);
+assert.equal(english.summary.length,3);
+assert.match(english.summary.join(' '),/recent local low has broken/,'conflicting weakness must remain in the visible summary');
+assert.equal(english.completedSession,'2026-10-07');
+assert.equal(english.monitor.length,2);
+assert.deepEqual(Array.from(english.monitor,x=>x.level),[90.123,110.456]);
+assert.match(english.monitor[0].text,/reclaims/,'do not call a broken low intact');
+assert.equal(JSON.stringify(detailed),saved,'presentation must not mutate scan evidence');
+for(const stage of ['Early Watch','Recovery','Attractive Growth','Established Move']){
+ const r=ui.technical({...detailed,stage});assert.ok(r.summary.length<=3);assert.ok(r.monitor.length<=2);
+}
+assert.match(ui.technical({stage:'Early Watch'}).summary.join(' '),/not confirmed/);
+assert.match(ui.technical({stage:'Recovery'}).summary.join(' '),/metrics are unavailable/);
+assert.equal(ui.technical({localLow:null,localHigh:'100',rs20:NaN,momentumShift:Infinity}).monitor.length,0);
+assert.equal(ui.technical(null).monitor.length,0);
+assert.equal(ui.technical({date:'invalid'}).completedSession,null);
+assert.equal(ui.technical({date:'2026-99-99'}).completedSession,null);
+assert.equal(ui.technical({localLow:110,localHigh:90}).monitor.length,0,'contradictory source levels must not become monitoring levels');
+assert.match(ui.technical({...stock,localLow:0,localHigh:Infinity}).monitor[0].text,/gap behind/);
 ui.toggle();
 assert.equal(ui.text('Strong Bull'),'صعودی قوی');
 assert.match(ui.marketRead({regime:'Mixed',condition:'Weakening'}),/جهت روشنی ندارد.*ضعیف‌تر/);
@@ -19,4 +39,9 @@ assert.match(ui.headline('Mixed cross-market environment.'),/جهت بازاره
 const report=JSON.parse(fs.readFileSync('data/daily-market-report.json','utf8'));
 for(const m of report.markets){assert.notEqual(ui.outlook(m.outlook),m.outlook,`Persian outlook missing for ${m.key}`);}
 assert.match(ui.read(stock).now[2],/واحد درصد/);
+const persian=ui.technical(detailed);
+assert.equal(persian.completedSession,english.completedSession);
+assert.deepEqual(Array.from(persian.monitor,x=>({kind:x.kind,level:x.level})),Array.from(english.monitor,x=>({kind:x.kind,level:x.level})));
+assert.match(persian.summary.join(' '),/کف اخیر شکسته/);
+assert.match(persian.monitor[0].text,/بازگشت قیمت/);
 console.log('Bilingual reading, missing evidence and warning tests passed');
