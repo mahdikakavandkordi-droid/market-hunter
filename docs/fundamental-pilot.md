@@ -1,46 +1,62 @@
-# Fundamental narrative pilot and stock-card integration — Stages 3–4
+# Fundamental context: operational refresh and limitations
 
-Base: main `1aabddde0d86971ed70fe9e5d0b346c8b25a5261`.
+The feature adds bilingual financial context without scores or trading recommendations. Scanner stages, rankings, portfolio accounting and paper engines do not consume financial context.
 
-The financial adapter remains a manually run research pipeline. The application reads a compact public projection through `fundamental-context.js` and displays a collapsed Fundamental disclosure on stock cards. The scanner, portfolio accounting and paper engines do not consume it. It adds no live financial-data API, cron, numerical rating or valuation claim.
+## Supported scope and authoritative mapping
 
-The fixed ten-instrument feasibility sample remains intact. Four instruments have a SEC-first implementation; six are explicitly deferred. Generated snapshots and bilingual readings are in `data/research/fundamental-pilot/latest.json` and `review.md`.
+`data/fundamental-issuers.json` is the sole instrument/issuer registry. Server-side adapters and the generated browser registry use it. Four verified SEC mappings exist: BHC.TO, SSRM.TO, META.TO and MSFT.TO. Meta and Microsoft refer to their underlying US companies, retaining USD reporting currency and explicit CDR notes. Unknown symbols and funds are not guessed into corporate mappings.
 
-## Offline reproduction
+The original ten-symbol sample additionally contains SIA.TO, FTT.TO, RUS.TO, DFY.TO, SPB.TO and LUG.TO. Issuer financial-report indexes have been found for all six. An index being accessible is not proof of permitted automated retrieval/republication. They remain unsupported until an approved source route and evidence exist. Russel Metals’ published terms expressly restrict robots/extraction and republication without permission. No SEDAR+ ingestion, paid provider, or access-control bypass is implemented.
 
-Run `npm run test:fundamental`, then `node scripts/build-fundamental-pilot.mjs`. The compact fixtures contain only relevant USD facts, recent filing metadata, original inline fact excerpts and source response hashes. Building the report requires no network access or credentials.
+The public projection reports both sample coverage and coverage of the actual max-six integrated shortlist, with an explicit denominator and unsupported/unmapped/failure reasons. A compact coverage line is shown on Review. It does not claim all stage candidates are covered.
 
-## Fresh collection
+## Runtime refresh
 
-Use `python3 scripts/fetch-fundamental-pilot.py /absolute/path/outside/repository --user-agent 'Your application and real contact URL/address'` to collect the pinned June 2026 source documents. Then run `python3 scripts/prepare-fundamental-fixtures.py /absolute/path/outside/repository tests/fixtures/fundamental-pilot`, tests and report generation. Do not commit the full raw responses. HTTP errors terminate collection without bypassing source restrictions.
+Run:
 
-This collector is deliberately pinned to the pilot period. A later financial period, amendment or changed issuer mapping requires a separate review; this is not a general production financial-data pipeline. Its as-of cutoff is 8 October 2026 at 10:17:56 UTC.
+    SEC_USER_AGENT='YourApp https://your-real-contact-url' node scripts/refresh-fundamentals.mjs
 
-## Evidence controls
+The cutoff defaults to the current UTC instant; `--as-of ISO_TIMESTAMP` supports explicit research cutoffs. Optional `--cache`, `--inputs`, and `--output` paths are available. Full responses remain outside the repository. The compatibility Python collector delegates to this operational command.
 
-- Exact instrument → underlying company → CIK and registered name mapping. Microsoft and Meta CDRs use the underlying company, retaining a separate instrument note.
-- Filing selection uses report date and acceptance timestamp. The selected filing accession, units and exact start/end dates determine eligible facts.
-- Original-document comparison uses entity-wide USD inline XBRL facts, recognized numeric formatting, sign and scale. Dimensional contexts and unsupported transforms are excluded. Source HTML SHA-256 and inline fact/context identifiers are retained. This is reconciliation of selected numbers, not a complete accounting audit or independent financial-data source.
-- Duplicate conflicting values, missing evidence, future dates and unreviewed amendments fail closed. The actual generator loads prior accepted snapshots and applies the replacement policy per issuer. Partial, older or failed attempts preserve the prior complete snapshot and its own dates; lastAttempts records failures separately. JSON publication uses temporary files and atomic renames.
-- Quarterly income statements, six-month cash flows, annual Microsoft figures and instantaneous balance-sheet figures have separate period metadata. No YTD subtraction or automatic quarter reconstruction is performed.
-- Completeness means four verified core fields: revenue, operating income, operating cash and cash. Optional missing/unverified metrics remain explicit gaps. Components are not silently converted to total debt.
-- Comparable revenue growth and operating margins are derived only from verified same-filing, like-duration facts. They are financial percentages, not quality ratings.
-- English and Persian templates share evidence and derived values, each with two monitoring conditions. Business context and monitoring prompts remain visibly reviewed templates; the pilot does not claim an automated assessment of every sector-specific risk.
+Operational inputs reside in `data/fundamentals/inputs`, initially seeded from the reviewed four-company evidence. Test fixtures stay under `tests/fixtures` and are not live refresh inputs. Rebuilding an input is not itself a network refresh.
 
-## Validation and next stage
+For each relevant verified SEC issuer, the collector checks submissions first. It downloads Company Facts and the original document only for a changed accession or an incomplete prior reconciliation. Requests are sequential, spaced at least half a second apart, and bounded by 20-second source timeouts. Each issuer fails independently. No repeated HTTP bypass attempts occur.
 
-Eighteen focused checks cover real-source reconciliation, identity, USD/CAD separation, period confusion, total/continuing operations, duplicates, invalid values, zero, original evidence, as-of timing, amendments, snapshot replacement, CDRs and bilingual comparisons.
+`source-checks.json` distinguishes checked/unchanged/collected/failed and records the discovered accession. A newer filing awaiting reconciliation produces a visible warning while previous accepted data is retained. Amendment selection fails closed and records a source-check failure; the previous snapshot remains available.
 
-Six additional Python parser checks cover original inline sign/scale, exact period, currency, dimensions, entity identity, unsupported transformations, nil values and zero/dash handling. Run `python3 scripts/test-fundamental-inline.py`.
+The GitHub workflow checks filings once each weekday at 22:15 UTC and also supports manual dispatch. Changes to its own workflow trigger one initial run on main, so the deployed orchestration can be verified without waiting for the next daily slot. It runs the financial guards before collection and commits only financial data. This uses existing GitHub/Vercel infrastructure. The first local live check succeeded for all four issuers, confirming unchanged accessions; it did not claim a newly published financial quarter.
 
-The four generated pairs have been reviewed for presentation and integrated as limited financial context with distinct dates, language selection, original-filing links and unavailable-state handling. Microsoft remains explicitly annual. The UI exposes the manual snapshot date and lack of automatic filing refresh, and flags older periods. A separately reconciled Microsoft Q4 source and richer sector-specific evidence remain possible follow-up work.
+## Periods, evidence and dates
 
-Presentation checks reject mismatched CIKs, future dates, invalid source URLs, duplicate instruments, partial snapshots and malformed readings. The browser suite covers delayed and hanging optional requests as well as source failures. Fundamental loading runs independently with a five-second timeout and patches only the financial disclosures, preserving their open state and the active view/language. Three original Playwright tests passed for mobile/desktop bilingual disclosures and a failed financial source while technical cards remain usable. These tests are included in browser CI. The PWA shell cache is version 28.
+Eligible 10-Q/10-K selection uses report date, filing date and acceptance timestamp. Income-statement starts are taken from exact selected-filing facts: quarterly durations 60–110 days; annual durations 330–400 days. Ambiguous/missing periods require review. Cash flows preserve the selected filing-to-date duration. Annual figures are never presented as Q4-only, and YTD subtraction is not performed. Issuers with unsupported forms/taxonomies or unusual periods remain unsupported rather than being approximated.
 
-Full browser CI exposed an existing smooth-scroll race in the home rail: a second arrow click could restart from the unfinished first movement. Arrow navigation now accumulates the pending destination and clears it on settled scrolling or direct pointer/wheel interaction. All nine browser tests passed locally after this correction.
+Same-filing prior-year comparisons require exact dates. A 52/53-week or changed fiscal calendar may prevent a comparison; missing comparisons are omitted. No calendar-frame substitution occurs.
 
-The six Canadian source routes still need individual retrieval/usage verification or a licensed provider review. No paid provider has been configured. No SEDAR+ public-site ingestion is implemented. No live customer account or portfolio was used for testing.
+Verified facts require original entity-wide inline USD evidence, accession, exact periods, source URL and document hash. This is numeric reconciliation, not a complete accounting audit. Four verified core fields define completeness; optional debt/capex gaps remain explicit. Missing values are never zero.
 
-## Reliability follow-up (8 October 2026)
+The generator reads prior accepted snapshots, preserves complete ones on partial/older/failed attempts, records lastAttempts, and writes JSON by temporary-file rename. Repeated unchanged inputs retain their reconciliation date. Source checks, publication, financial period, numeric reconciliation and human review are separate fields. Retrieval never invents a human review date.
 
-Run `node scripts/test-fundamental-build.mjs` to exercise the actual generator against isolated complete, incomplete, missing and older inputs. No real portfolio data is used. The pipeline remains pinned to the original manual pilot period; dynamic collection and expanded coverage are separate next steps. These repairs do not establish a generalized automatic financial-data service.
+Browser financial loading is independent, times out after five seconds and ignores superseded responses. Late responses patch financial disclosures without resetting the active language/view or expanded state. PWA cache: v29.
+
+## Reviewed manual source route
+
+After verifying permission and reviewing a report, prepare a manifest and the original report’s extracted text outside the repository. For PDF sources, use a trustworthy text extraction tool and manually check page/table attribution.
+
+    node scripts/import-fundamental-manual.mjs reviewed-manifest.json source-text.txt
+    node scripts/build-fundamental-pilot.mjs
+
+Required manifest fields: `symbol`, exact registered `issuer`, approved HTTPS `sourceUrl`, actual `publishedAt`, actual `retrievedAt`, `currency` (CAD/USD), `period` with exact start/end/basis, `review` with `approved:true`, named reviewer, actual `reviewedAt`, and `permission:{scope:'republication-authorized',reference:'written permission or applicable license reference'}`.
+
+Each metric supplies an absolute numeric `value`, exact `periodStart`/`periodEnd`, `scale` (1/1000/1000000/1000000000), `scope` (consolidated/continuing), page/table `location`, `sourceNumber` and a matching text `anchor`. Core fields are revenue, operatingIncome, operatingCash and cash. Cash must be a period-end instant. Income fields must match the stated period. The importer checks numeric scaling, text anchors, source identity and chronology, retaining source hashes and human review attribution.
+
+This route is explicitly human-reviewed; the code does not independently certify license authenticity or accounting interpretation. An arbitrary permission assertion is not a substitute for obtaining permission. No deferred issuer has been fabricated into coverage. Manual imports for banks, insurers or other specialized businesses must not relabel a different financial measure as operating income just to pass the core contract.
+
+## Narratives
+
+English/Persian explanations share verified evidence. BHC displays separately identified current/noncurrent long-term debt and cash, without claiming total debt. Meta/Microsoft distinguish same-period equipment cash spending from operating cash and label the subtraction as a limited calculation, not issuer-defined free cash flow. SSRM identifies total versus continuing-operation cash-flow scope. Missing optional evidence suppresses the corresponding conclusion. Business context and sector disclosures still have explicitly stated limits; no valuation or predictive superiority is claimed.
+
+## Validation
+
+Run `npm run test:fundamental`, `node scripts/test-fundamental-build.mjs`, `node scripts/test-fundamental-refresh.mjs`, `node scripts/test-fundamental-context.mjs`, `python3 scripts/test-fundamental-inline.py`, and `npm run test:browser`.
+
+Tests exercise actual generator failures, synthetic advancement to another quarter without date edits, optional-field/scope/period suppression, manual permission/currency guards, and mobile/desktop bilingual rendering with delayed/hanging financial requests. Synthetic later-period records are never committed as real financial evidence.

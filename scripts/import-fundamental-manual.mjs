@@ -1,0 +1,11 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {ISSUERS} from '../lib/fundamental-pilot.mjs';
+import {reviewedManualSnapshot} from '../lib/fundamental-manual.mjs';
+const [manifest,file,output='data/fundamentals/manual-inputs']=process.argv.slice(2);
+if(!manifest||!file)throw new Error('Usage: node scripts/import-fundamental-manual.mjs REVIEWED_MANIFEST SOURCE_TEXT [OUTPUT]');
+const submission=JSON.parse(await fs.readFile(manifest,'utf8')),spec=ISSUERS.find(x=>x.symbol===submission.symbol);
+if(!spec)throw new Error('Unknown instrument; verify registry mapping first');
+const snapshot=reviewedManualSnapshot({spec,submission,sourceText:await fs.readFile(file,'utf8'),asOf:new Date().toISOString()});
+await fs.mkdir(output,{recursive:true});await fs.writeFile(path.join(output,`${spec.symbol.split('.')[0]}.json`),JSON.stringify(snapshot,null,2)+'\n');
+console.log('Reviewed manual snapshot imported; run the generator to apply publication safeguards.');

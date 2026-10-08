@@ -2,7 +2,7 @@
 
 Review only; no score, recommendation or scanner integration.
 
-As-of cutoff: 2026-10-08T10:17:56Z. Last source response received: 2026-10-08T10:19:33.710005Z. Generated: 2026-10-08T10:43:20.114Z. All figures retain USD reporting units.
+As-of cutoff: 2026-10-08T11:37:05.176Z. Last source response received: 2026-10-08T10:19:33.710005Z. Generated: 2026-10-08T11:37:05.176Z. Figures retain each issuer’s reporting currency.
 
 ## BHC.TO
 
@@ -12,22 +12,22 @@ Core-field status: complete; optional gaps remain listed below. [Original 10-Q](
 
 Bausch Health is reviewed on its consolidated pharmaceutical and eye-health reporting basis.
 
-For the quarter ended 2026-06-30, revenue rose 12.7% versus the comparable prior-year period. Operating margin increased from 17.5% to 25.9%; operating cash flow for the six months was USD 0.9 billion.
+For the quarter ended 2026-06-30, revenue rose 12.7% versus the comparable prior-year period. Operating margin increased from 17.5% to 25.9%; operating cash flow for the 2026-01-01 → 2026-06-30 was USD 0.9 billion.
 
-Debt maturities and product/patent exposure still need contextual review; operating profit alone does not establish financial resilience.
+Current long-term debt is USD 0.87 billion and the noncurrent component is USD 19.88 billion, alongside USD 1.83 billion cash. These components are not total debt; maturity terms and cash restrictions still require review.
 
-- Debt maturities and liquidity in the next filing.
+- Changes in current long-term debt and cash, alongside disclosed maturity terms.
 - Product revenue concentration and patent-related disclosures.
 
 ### فارسی
 
 باوش هلث بر اساس گزارش تلفیقی دارو و سلامت چشم بررسی شده است.
 
-در سه‌ماهه منتهی به 2026-06-30، درآمد نسبت به دورهٔ مشابه سال قبل ۱۲٫۷٪ رشد کرد. حاشیهٔ سود عملیاتی از ۱۷٫۵٪ به ۲۵٫۹٪ رسید (افزایش)؛ جریان نقد عملیاتی شش‌ماهه ۰٫۹ میلیارد دلار آمریکا بود.
+در سه‌ماهه منتهی به 2026-06-30، درآمد نسبت به دورهٔ مشابه سال قبل ۱۲٫۷٪ رشد کرد. حاشیهٔ سود عملیاتی از ۱۷٫۵٪ به ۲۵٫۹٪ رسید (افزایش)؛ جریان نقد عملیاتی 2026-01-01 → 2026-06-30 ۰٫۹ میلیارد دلار آمریکا بود.
 
-سررسید بدهی و ریسک محصولات و پتنت‌ها هنوز به بررسی زمینه‌ای نیاز دارند؛ سود عملیاتی به‌تنهایی نشان‌دهندهٔ استحکام مالی نیست.
+بخش جاری بدهی بلندمدت ۰٫۸۷ و بخش غیرجاری ۱۹٫۸۸ میلیارد دلار آمریکا است؛ نقد ۱٫۸۳ میلیارد است. این اجزا معادل کل بدهی نیستند و برنامهٔ سررسید و محدودیت نقدینگی هنوز باید بررسی شود.
 
-- سررسید بدهی و نقدینگی در گزارش بعدی.
+- تغییر بخش جاری بدهی و نقد در گزارش بعدی، همراه با سررسیدهای افشاشده.
 - تمرکز درآمد محصولات و افشاهای مربوط به پتنت‌ها.
 
 | Metric | Value (USD, absolute units) | Exact period | Verification |
@@ -53,9 +53,9 @@ Core-field status: complete; optional gaps remain listed below. [Original 10-Q](
 
 SSR Mining is reviewed as a gold and silver producer.
 
-For the quarter ended 2026-06-30, revenue rose 9.5% versus the comparable prior-year period. Operating margin increased from 41.5% to 43.2%; operating cash flow for the six months was USD 0.36 billion.
+For the quarter ended 2026-06-30, revenue rose 9.5% versus the comparable prior-year period. Operating margin increased from 41.5% to 43.2%; operating cash flow for the 2026-01-01 → 2026-06-30 was USD 0.36 billion.
 
-Total-company profit and cash flow can differ from continuing-operation figures. Mining cost and commodity-price context is not normalized in this pilot.
+Total operating cash is USD 0.36 billion versus USD 0.42 billion from continuing operations. These scopes must not be treated as equivalent. Per-ounce costs and commodity-price effects have not been assessed.
 
 - Continuing versus discontinued-operation results.
 - Production and the source-defined mining-cost measures.
@@ -64,9 +64,9 @@ Total-company profit and cash flow can differ from continuing-operation figures.
 
 SSR Mining به‌عنوان تولیدکنندهٔ طلا و نقره بررسی شده است.
 
-در سه‌ماهه منتهی به 2026-06-30، درآمد نسبت به دورهٔ مشابه سال قبل ۹٫۵٪ رشد کرد. حاشیهٔ سود عملیاتی از ۴۱٫۵٪ به ۴۳٫۲٪ رسید (افزایش)؛ جریان نقد عملیاتی شش‌ماهه ۰٫۳۶ میلیارد دلار آمریکا بود.
+در سه‌ماهه منتهی به 2026-06-30، درآمد نسبت به دورهٔ مشابه سال قبل ۹٫۵٪ رشد کرد. حاشیهٔ سود عملیاتی از ۴۱٫۵٪ به ۴۳٫۲٪ رسید (افزایش)؛ جریان نقد عملیاتی 2026-01-01 → 2026-06-30 ۰٫۳۶ میلیارد دلار آمریکا بود.
 
-سود و جریان نقد کل شرکت ممکن است با عملیات ادامه‌دار متفاوت باشد. هزینهٔ استخراج و اثر قیمت فلزات در این پایلوت استانداردسازی نشده است.
+جریان نقد عملیاتی کل شرکت ۰٫۳۶ و عملیات ادامه‌دار ۰٫۴۲ میلیارد دلار آمریکا است؛ این دو دامنه نباید یکسان فرض شوند. هزینهٔ هر اونس و اثر قیمت فلزات هنوز بررسی نشده‌اند.
 
 - تفکیک نتایج عملیات ادامه‌دار و متوقف‌شده.
 - تولید و هزینه‌های استخراج با تعریف دقیق منبع.
@@ -94,27 +94,27 @@ Core-field status: complete; optional gaps remain listed below. [Original 10-Q](
 
 The business reviewed is Meta Platforms, the company underlying the CAD-hedged CDR.
 
-For the quarter ended 2026-06-30, revenue rose 28% versus the comparable prior-year period. Operating margin decreased from 43% to 30.9%; operating cash flow for the six months was USD 64.09 billion.
+For the quarter ended 2026-06-30, revenue rose 28% versus the comparable prior-year period. Operating margin decreased from 43% to 30.9%; operating cash flow for the 2026-01-01 → 2026-06-30 was USD 64.09 billion.
 
-Infrastructure spending and commitments need separate review; positive operating cash flow alone does not establish cash available after investment.
+Cash payments for property and equipment were USD 49.11 billion over the same period. Operating cash less these payments is USD 14.98 billion. This is not issuer-defined free cash flow and excludes other investment outflows and lease commitments.
 
 Financial figures describe the underlying company in USD; no per-CDR valuation is calculated.
 
 - Operating-margin changes in the next comparable quarter.
-- Infrastructure spending and contractual commitments.
+- Changes in property/equipment cash spending relative to operating cash, over matching periods.
 
 ### فارسی
 
 کسب‌وکار بررسی‌شده Meta Platforms، شرکت پایهٔ CDR با پوشش ارزی دلار کانادا است.
 
-در سه‌ماهه منتهی به 2026-06-30، درآمد نسبت به دورهٔ مشابه سال قبل ۲۸٪ رشد کرد. حاشیهٔ سود عملیاتی از ۴۳٪ به ۳۰٫۹٪ رسید (کاهش)؛ جریان نقد عملیاتی شش‌ماهه ۶۴٫۰۹ میلیارد دلار آمریکا بود.
+در سه‌ماهه منتهی به 2026-06-30، درآمد نسبت به دورهٔ مشابه سال قبل ۲۸٪ رشد کرد. حاشیهٔ سود عملیاتی از ۴۳٪ به ۳۰٫۹٪ رسید (کاهش)؛ جریان نقد عملیاتی 2026-01-01 → 2026-06-30 ۶۴٫۰۹ میلیارد دلار آمریکا بود.
 
-مخارج زیرساخت و تعهدات به بررسی جداگانه نیاز دارند؛ جریان نقد عملیاتی مثبت به‌تنهایی نقد باقی‌مانده پس از سرمایه‌گذاری را نشان نمی‌دهد.
+پرداخت خرید دارایی ثابت ۴۹٫۱۱ میلیارد دلار آمریکا در همان دوره بود؛ جریان نقد عملیاتی منهای این پرداخت‌ها ۱۴٫۹۸ میلیارد است. این محاسبه، جریان نقد آزاد با تعریف شرکت نیست و سایر سرمایه‌گذاری‌ها و تعهدات اجاره را پوشش نمی‌دهد.
 
 ارقام مالی مربوط به شرکت پایه و به دلار آمریکا هستند؛ ارزش‌گذاری هر واحد CDR محاسبه نشده است.
 
 - تغییر حاشیهٔ سود عملیاتی در سه‌ماههٔ قابل‌مقایسهٔ بعدی.
-- مخارج زیرساخت و تعهدات قراردادی.
+- تغییر مخارج دارایی ثابت نسبت به جریان نقد عملیاتی، با دورهٔ زمانی یکسان.
 
 | Metric | Value (USD, absolute units) | Exact period | Verification |
 |---|---:|---|---|
@@ -139,27 +139,27 @@ Core-field status: complete; optional gaps remain listed below. [Original 10-K](
 
 The business reviewed is Microsoft, the company underlying the CAD-hedged CDR.
 
-For the fiscal year ended 2026-06-30, revenue rose 17.8% versus the comparable prior-year period. Operating margin increased from 45.6% to 46.8%; operating cash flow for the fiscal year was USD 182.94 billion.
+For the fiscal year ended 2026-06-30, revenue rose 17.8% versus the comparable prior-year period. Operating margin increased from 45.6% to 46.8%; operating cash flow for the 2025-07-01 → 2026-06-30 was USD 182.94 billion.
 
-This snapshot uses FY2026 annual facts, not Q4-only figures. Investment spending and non-operating gains require separate interpretation.
+Cash payments for property and equipment were USD 115.95 billion over the same period. Operating cash less these payments is USD 66.99 billion. This is not issuer-defined free cash flow and excludes other investment outflows and lease commitments. These are annual facts, not Q4-only figures.
 
 Financial figures describe the underlying company in USD; no per-CDR valuation is calculated.
 
 - Cloud operating performance in the next filing.
-- Investment spending and the distinction between operating and non-operating earnings.
+- Changes in property/equipment cash spending relative to operating cash, over matching periods.
 
 ### فارسی
 
 کسب‌وکار بررسی‌شده Microsoft، شرکت پایهٔ CDR با پوشش ارزی دلار کانادا است.
 
-در سال مالی منتهی به 2026-06-30، درآمد نسبت به دورهٔ مشابه سال قبل ۱۷٫۸٪ رشد کرد. حاشیهٔ سود عملیاتی از ۴۵٫۶٪ به ۴۶٫۸٪ رسید (افزایش)؛ جریان نقد عملیاتی سال مالی ۱۸۲٫۹۴ میلیارد دلار آمریکا بود.
+در سال مالی منتهی به 2026-06-30، درآمد نسبت به دورهٔ مشابه سال قبل ۱۷٫۸٪ رشد کرد. حاشیهٔ سود عملیاتی از ۴۵٫۶٪ به ۴۶٫۸٪ رسید (افزایش)؛ جریان نقد عملیاتی 2025-07-01 → 2026-06-30 ۱۸۲٫۹۴ میلیارد دلار آمریکا بود.
 
-این تصویر از ارقام سال مالی ۲۰۲۶ استفاده می‌کند، نه فقط فصل چهارم. مخارج سرمایه‌گذاری و سودهای غیرعملیاتی به تفسیر جداگانه نیاز دارند.
+پرداخت خرید دارایی ثابت ۱۱۵٫۹۵ میلیارد دلار آمریکا در همان دوره بود؛ جریان نقد عملیاتی منهای این پرداخت‌ها ۶۶٫۹۹ میلیارد است. این محاسبه، جریان نقد آزاد با تعریف شرکت نیست و سایر سرمایه‌گذاری‌ها و تعهدات اجاره را پوشش نمی‌دهد. این ارقام سالانه‌اند، نه فقط فصل چهارم.
 
 ارقام مالی مربوط به شرکت پایه و به دلار آمریکا هستند؛ ارزش‌گذاری هر واحد CDR محاسبه نشده است.
 
 - عملکرد عملیاتی بخش ابری در گزارش بعدی.
-- مخارج سرمایه‌گذاری و تفکیک سود عملیاتی از غیرعملیاتی.
+- تغییر مخارج دارایی ثابت نسبت به جریان نقد عملیاتی، با دورهٔ زمانی یکسان.
 
 | Metric | Value (USD, absolute units) | Exact period | Verification |
 |---|---:|---|---|
@@ -178,17 +178,17 @@ Financial figures describe the underlying company in USD; no per-CDR valuation i
 
 ## Deferred sample
 
-- SIA.TO: Automated source route and usage permission not verified in this pilot.
-- FTT.TO: Automated source route and usage permission not verified in this pilot.
-- RUS.TO: Automated source route and usage permission not verified in this pilot.
-- DFY.TO: Automated source route and usage permission not verified in this pilot.
-- SPB.TO: Automated source route and usage permission not verified in this pilot.
-- LUG.TO: Automated source route and usage permission not verified in this pilot.
+- SIA.TO: Automated retrieval and republication permission not confirmed.
+- FTT.TO: Automated retrieval and republication permission not confirmed.
+- RUS.TO: Issuer terms explicitly prohibit robots/data extraction and republication without permission.
+- DFY.TO: Automated retrieval and republication permission not confirmed.
+- SPB.TO: Automated retrieval and republication permission not confirmed.
+- LUG.TO: Automated retrieval and republication permission not confirmed.
 
 ## Review limits and next work
 
 The adapter reconciles selected USD facts against entity-wide inline facts in the original SEC document. This is numeric reconciliation, not a full accounting audit. Context sentences and monitoring prompts are reviewed templates, not extracted predictions. Sector-specific cost/patent/cloud context remains a separate review obligation.
 
-Microsoft is presented on an annual FY2026 basis because the selected 10-K Company Facts entries do not supply Q4-only core values. Cash-flow periods are explicit; no YTD-to-quarter subtraction is performed. Debt components are not added into a purported total debt, and missing values remain unavailable.
+Selected 10-K figures are annual, not Q4-only values. Subsequent 10-Q periods are selected from their own exact reporting dates. Cash-flow periods are explicit; no YTD-to-quarter subtraction is performed. Debt components are not added into a purported total debt, and missing values remain unavailable.
 
-Stage 4 adds optional financial context to stock cards, with separate dates, source links, language selection and explicit unavailable states. Snapshot refresh is still manual and this limit is shown in the UI. Remaining work: verify Canadian source access and usage rights, richer sector-specific evidence where useful, and a separately reconciled Microsoft Q4 release if an annual view is insufficient.
+Stage 4 adds optional financial context to stock cards, with separate dates, source links, language selection and explicit unavailable states. SEC refresh is a separate bounded operational command; human-review dates are not generated by retrieval. Remaining work: verify Canadian source access and usage rights, richer sector-specific evidence where useful, and a separately reconciled Microsoft Q4 release if an annual view is insufficient.

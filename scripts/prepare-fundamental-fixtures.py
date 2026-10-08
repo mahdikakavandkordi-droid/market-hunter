@@ -96,13 +96,14 @@ def extract_proofs(raw, cik):
 def main():
     source, target = map(pathlib.Path, sys.argv[1:3])
     target.mkdir(parents=True, exist_ok=True)
-    for symbol in ['BHC', 'SSRM', 'META', 'MSFT']:
+    selections = json.loads((source / 'selection.json').read_text())
+    symbols = [sys.argv[3]] if len(sys.argv)>3 else list(selections)
+    for symbol in symbols:
         facts = json.loads((source / f'{symbol}-facts.json').read_text())
         submissions = json.loads((source / f'{symbol}-submissions.json').read_text())
         recent = submissions['filings']['recent']
-        i = next(i for i, form in enumerate(recent['form'])
-                 if form in ['10-Q', '10-K'] and recent['reportDate'][i] == '2026-06-30'
-                 and recent['filingDate'][i] <= '2026-10-08')
+        selected = selections[symbol]
+        i = recent['accessionNumber'].index(selected['accession'])
         accession = recent['accessionNumber'][i]
         cik = str(submissions['cik']).zfill(10)
         compact_facts = {'cik': facts['cik'], 'entityName': facts['entityName'], 'facts': {'us-gaap': {}}}
@@ -122,9 +123,9 @@ def main():
                  'sourceUrl': f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession.replace('-', '')}/{recent['primaryDocument'][i]}",
                  'sha256': hashlib.sha256(raw).hexdigest(), 'facts': extract_proofs(raw, cik)}
         response_files = [source / f'{symbol}-{kind}' for kind in ['facts.json', 'submissions.json', 'filing.html']]
-        retrieved_at = datetime.fromtimestamp(max(p.stat().st_mtime for p in response_files), timezone.utc).isoformat().replace('+00:00', 'Z')
+        retrieved_at = selected['retrievedAt']
         output = {'facts': compact_facts, 'submissions': compact_submissions, 'proofs': proof,
-                  'retrievedAt': retrieved_at,
+                  'retrievedAt': retrieved_at, 'reviewedAt': None, 'collectionCutoff': selected['asOf'],
                   'responseHashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in response_files}}
         (target / f'{symbol}.json').write_text(json.dumps(output, indent=2) + '\n')
         print(symbol, 'inline fact excerpts:', len(proof['facts']))
