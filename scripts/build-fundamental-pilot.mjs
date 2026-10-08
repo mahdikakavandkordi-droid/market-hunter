@@ -1,27 +1,50 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { PILOT, buildSnapshot, narrative } from '../lib/fundamental-pilot.mjs';
+import { PILOT, buildSnapshot, narrative, replaceCompleteSnapshot } from '../lib/fundamental-pilot.mjs';
 
 const input = process.argv[2] ?? 'tests/fixtures/fundamental-pilot';
 const output = process.argv[3] ?? 'data/research/fundamental-pilot';
 const asOf = '2026-10-08T10:17:56Z';
 const generatedAt = new Date().toISOString();
-const snapshots = [];
+async function readPrevious() {
+  try { return JSON.parse(await fs.readFile(path.join(output, 'latest.json'), 'utf8')); }
+  catch (error) { if (error.code === 'ENOENT') return null; throw error; }
+}
+async function atomicJson(file, data) {
+  await fs.mkdir(path.dirname(file), {recursive:true});
+  const temporary = `${file}.${process.pid}.tmp`;
+  try {
+    await fs.writeFile(temporary, JSON.stringify(data, null, 2) + '\n');
+    await fs.rename(temporary, file);
+  } finally { await fs.rm(temporary, {force:true}); }
+}
+const previous = await readPrevious();
+const snapshots = [], attempts = [];
 for (const spec of PILOT) {
-  const data = JSON.parse(await fs.readFile(path.join(input, `${spec.symbol.split('.')[0]}.json`), 'utf8'));
-  const snapshot = buildSnapshot({ ...data, spec, asOf, retrievedAt: data.retrievedAt });
-  snapshots.push({ ...snapshot, sourceResponseHashes: data.responseHashes, reading: { en: narrative(snapshot, 'en'), fa: narrative(snapshot, 'fa') } });
+  const prior = previous?.snapshots?.find(s => s.symbol === spec.symbol);
+  try {
+    const data = JSON.parse(await fs.readFile(path.join(input, `${spec.symbol.split('.')[0]}.json`), 'utf8'));
+    const snapshot = buildSnapshot({ ...data, spec, asOf, retrievedAt: data.retrievedAt });
+    const attempt = { ...snapshot, reviewedAt: asOf, sourceResponseHashes: data.responseHashes,
+      reading: { en: narrative(snapshot, 'en'), fa: narrative(snapshot, 'fa') } };
+    const result = replaceCompleteSnapshot(prior, attempt);
+    if (result.current) snapshots.push(result.current);
+    if (result.lastAttempt) attempts.push(result.lastAttempt);
+  } catch (error) {
+    if (prior?.status === 'complete') snapshots.push(prior);
+    attempts.push({symbol:spec.symbol,status:'failed',attemptedAt:generatedAt,reason:error.message});
+  }
 }
 const report = {
   version: 'fundamental-pilot-v1', asOf, generatedAt, retrievedAt: snapshots.map(s => s.retrievedAt).sort().at(-1), status: 'review-only',
   integratedIntoProduct: true, scannerImpact: false,
-  snapshots,
+  snapshots, lastAttempts: attempts,
   deferred: ['SIA.TO', 'FTT.TO', 'RUS.TO', 'DFY.TO', 'SPB.TO', 'LUG.TO'].map(symbol => ({ symbol, status: 'unavailable', reason: 'Automated source route and usage permission not verified in this pilot' })),
 };
 await fs.mkdir(output, { recursive: true });
-await fs.writeFile(path.join(output, 'latest.json'), JSON.stringify(report, null, 2) + '\n');
-const publicContext={version:'fundamental-context-v1',reviewedAt:asOf,items:snapshots.map(s=>({symbol:s.symbol,cik:s.cik,issuer:s.issuer,status:s.status,period:s.financialPeriod,filed:s.filing.filed,acceptedAt:s.filing.acceptedAt,sourceUrl:s.filing.url,reading:s.reading}))};
-await fs.writeFile('data/fundamental-context.json',JSON.stringify(publicContext,null,2)+'\n');
+await atomicJson(path.join(output, 'latest.json'), report);
+const publicContext={version:'fundamental-context-v1',reviewedAt:asOf,items:snapshots.map(s=>({reviewedAt:s.reviewedAt??s.asOf,symbol:s.symbol,cik:s.cik,issuer:s.issuer,status:s.status,period:s.financialPeriod,filed:s.filing.filed,acceptedAt:s.filing.acceptedAt,sourceUrl:s.filing.url,reading:s.reading}))};
+await atomicJson('data/fundamental-context.json',publicContext);
 let text = '# Market Hunter — Stage 3 Fundamental Pilot\n\nReview only; no score, recommendation or scanner integration.\n\n';
 text += `As-of cutoff: ${asOf}. Last source response received: ${report.retrievedAt}. Generated: ${generatedAt}. All figures retain USD reporting units.\n\n`;
 for (const snapshot of snapshots) {
