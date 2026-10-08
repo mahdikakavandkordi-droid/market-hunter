@@ -2,7 +2,7 @@
 
 Review only; no score, recommendation or scanner integration.
 
-As-of cutoff: 2026-10-08T11:42:03.449Z. Last source response received: 2026-10-08T10:19:33.710005Z. Generated: 2026-10-08T11:42:05.197Z. Figures retain each issuer’s reporting currency.
+As-of cutoff: 2026-10-08T11:44:06.628Z. Last source response received: 2026-10-08T10:19:33.710005Z. Generated: 2026-10-08T11:44:06.628Z. Figures retain each issuer’s reporting currency.
 
 ## BHC.TO
 

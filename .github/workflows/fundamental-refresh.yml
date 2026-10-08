@@ -4,9 +4,8 @@ on:
     branches: [main]
     paths: ['.github/workflows/fundamental-refresh.yml']
   workflow_dispatch:
-  schedule:
-    # Financial filings need a daily check, not hourly quote polling.
-    - cron: '15 22 * * 1-5'
+  # Automatic schedule paused: the first hosted run could not access SEC.
+  # Resume only after permitted source access is verified on this runner.
 permissions:
   contents: write
 concurrency:
@@ -33,12 +32,16 @@ jobs:
           node scripts/test-fundamental-refresh.mjs
           python3 scripts/test-fundamental-inline.py
       - name: Check eligible SEC filings and reconcile new sources
+        id: collect
         env:
           SEC_USER_AGENT: 'MarketHunter https://github.com/mahdikakavandkordi-droid/market-hunter'
         run: node scripts/refresh-fundamentals.mjs --cache "$RUNNER_TEMP/fundamental-sources"
       - name: Validate public projection
+        id: validate
+        if: success() || steps.collect.outcome == 'failure'
         run: node scripts/test-fundamental-context.mjs
       - name: Commit financial data only
+        if: always() && steps.validate.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail

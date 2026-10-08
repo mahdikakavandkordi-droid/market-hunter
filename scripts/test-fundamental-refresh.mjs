@@ -40,3 +40,23 @@ for(const change of [x=>x.review.approved=false,x=>x.review.permission.scope='pe
  const bad=structuredClone(submission);change(bad);assert.throws(()=>reviewedManualSnapshot({spec,submission:bad,sourceText,asOf:'2026-10-08T12:00:00Z'}));
 }
 console.log('Runtime period advancement, evidence-driven narratives, missing/mismatched inputs and reviewed manual currency/permission guards passed');
+
+// Exercise the actual operational command with a synthetic, denied source.
+// The temporary dependency stub makes no network calls and does not mutate repository data.
+const {execFileSync}=await import('node:child_process');
+const os=await import('node:os'),path=await import('node:path');
+const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'mh-refresh-denied-'));
+try{
+ for(const directory of ['scripts','lib','data/fundamentals/inputs','data/research/fundamental-pilot','bin'])fs.mkdirSync(path.join(temporary,directory),{recursive:true});
+ for(const file of ['scripts/refresh-fundamentals.mjs','scripts/build-fundamental-pilot.mjs','lib/fundamental-pilot.mjs','data/fundamental-issuers.json','data/research/fundamental-pilot/latest.json'])fs.copyFileSync(file,path.join(temporary,file));
+ for(const file of fs.readdirSync('data/fundamentals/inputs'))fs.copyFileSync(path.join('data/fundamentals/inputs',file),path.join(temporary,'data/fundamentals/inputs',file));
+ fs.writeFileSync(path.join(temporary,'bin/python3'),'#!/bin/sh\necho "HTTPError: HTTP Error 403: Forbidden" >&2\nexit 1\n',{mode:0o755});
+ let exitCode=0;
+ try{execFileSync(process.execPath,[path.join(temporary,'scripts/refresh-fundamentals.mjs'),'--user-agent','Synthetic fixture contact https://example.com'],{cwd:temporary,env:{...process.env,PATH:path.join(temporary,'bin')+':'+process.env.PATH},stdio:'pipe'});}catch(error){exitCode=error.status;}
+ assert.equal(exitCode,1);
+ const checks=JSON.parse(fs.readFileSync(path.join(temporary,'data/fundamentals/source-checks.json')));
+ assert(Object.values(checks).every(check=>check.status==='failed'&&check.reason.includes('403')));
+ const projection=JSON.parse(fs.readFileSync(path.join(temporary,'data/fundamental-context.json')));
+ assert.equal(projection.items.length,4);assert(projection.items.every(x=>x.refreshStatus==='failed'));
+ console.log('Actual refresh: denied sources return failure, retain all valid snapshots and publish explicit failure metadata');
+}finally{fs.rmSync(temporary,{recursive:true,force:true});}

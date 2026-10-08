@@ -59,7 +59,7 @@ const report = {
 };
 await fs.mkdir(output, { recursive: true });
 await atomicJson(path.join(output, 'latest.json'), report);
-const publicContext={version:'fundamental-context-v1',reviewedAt:asOf,generatedAt,coverage,
+const publicContext={version:'fundamental-context-v1',refreshMode:'manual-source-access-pending',reviewedAt:asOf,generatedAt,coverage,
   issuers:ISSUERS.map(({symbol,cik,name,sourceHosts,source,instrument})=>({symbol,cik,name,sourceHosts,source,instrument})),
   items:snapshots.map(s=>{const check=sourceChecks[s.symbol];return {reviewedAt:s.reviewedAt??null,reconciledAt:s.reconciledAt??s.asOf,
     lastCheckedAt:check?.checkedAt??null,refreshStatus:check?.status??'not-checked',newFilingPending:Boolean(check?.accession&&check.accession!==s.filing.accession),
