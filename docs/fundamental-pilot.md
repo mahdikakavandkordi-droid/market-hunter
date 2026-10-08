@@ -1,8 +1,8 @@
-# Fundamental narrative pilot — Stage 3
+# Fundamental narrative pilot and stock-card integration — Stages 3–4
 
 Base: main `1aabddde0d86971ed70fe9e5d0b346c8b25a5261`.
 
-This is a standalone, manually run research adapter. It is not imported by the application, scanner, portfolio or paper engines. It adds no public API, cron, numerical rating or valuation claim.
+The financial adapter remains a manually run research pipeline. The application reads a compact public projection through `fundamental-context.js` and displays a collapsed Fundamental disclosure on stock cards. The scanner, portfolio accounting and paper engines do not consume it. It adds no live financial-data API, cron, numerical rating or valuation claim.
 
 The fixed ten-instrument feasibility sample remains intact. Four instruments have a SEC-first implementation; six are explicitly deferred. Generated snapshots and bilingual readings are in `data/research/fundamental-pilot/latest.json` and `review.md`.
 
@@ -33,6 +33,8 @@ Eighteen focused checks cover real-source reconciliation, identity, USD/CAD sepa
 
 Six additional Python parser checks cover original inline sign/scale, exact period, currency, dimensions, entity identity, unsupported transformations, nil values and zero/dash handling. Run `python3 scripts/test-fundamental-inline.py`.
 
-Before product integration, review the generated four pairs; decide whether Microsoft's annual view is sufficient or a separately reconciled Q4 source is needed; enrich and verify sector-specific context where useful. Then add optional fundamental context below the existing technical reading with distinct dates, language selection and unavailable-state handling. Keep the scanner's selection logic and sealed research evidence untouched.
+The four generated pairs have been reviewed for presentation and integrated as limited financial context with distinct dates, language selection, original-filing links and unavailable-state handling. Microsoft remains explicitly annual. The UI exposes the manual snapshot date and lack of automatic filing refresh, and flags older periods. A separately reconciled Microsoft Q4 source and richer sector-specific evidence remain possible follow-up work.
+
+Presentation checks reject mismatched CIKs, future dates, invalid source URLs, duplicate instruments, partial snapshots and malformed readings. Three Playwright tests passed for mobile/desktop bilingual disclosures and a failed financial source while technical cards remain usable. These tests are included in browser CI. The PWA shell cache is version 27.
 
 The six Canadian source routes still need individual retrieval/usage verification or a licensed provider review. No paid provider has been configured. No SEDAR+ public-site ingestion is implemented. No live customer account or portfolio was used for testing.

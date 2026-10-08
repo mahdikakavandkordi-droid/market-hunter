@@ -116,6 +116,19 @@ html[data-language=fa] .reading-copy bdi{direction:ltr;unicode-bidi:isolate}html
 
 .hunter-monitor>p{padding:0 18px}.hunter-monitor-scroll{overflow-x:auto;padding:0 18px}.hunter-monitor table{width:100%;border-collapse:collapse;min-width:450px}.hunter-monitor th,.hunter-monitor td{text-align:start;padding:12px 8px;border-bottom:1px solid var(--line,#243244);vertical-align:top}.hunter-monitor td small{display:block;font-size:12px;opacity:.75;margin-top:5px}.hunter-monitor th{font-size:12px}
 
+.stock-fundamental{margin:14px 0;border:1px solid var(--border,#263c4d);border-radius:14px;background:rgba(90,150,190,.035);overflow:hidden}
+.stock-fundamental>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;min-height:48px;cursor:pointer;list-style:none;font-weight:700}
+.stock-fundamental>summary::-webkit-details-marker{display:none}
+.stock-fundamental>summary:after{content:'+';font-weight:400;color:var(--muted,#94a7b8)}
+.stock-fundamental[open]>summary:after{content:'−'}
+.stock-fundamental>summary small{margin-inline-start:auto;font-weight:400;color:var(--muted,#94a7b8);font-size:11px;text-align:end}
+.fundamental-reading,.stock-fundamental>p{padding:0 14px 14px;margin:0}
+.fundamental-reading p{overflow-wrap:anywhere}
+.fundamental-source{display:grid;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border,#263c4d)}
+.fundamental-source small{color:var(--muted,#94a7b8);font-size:11px;line-height:1.65}
+.fundamental-source a{color:var(--accent,#67c7e7);display:inline-block;min-height:32px}
+html[data-language="fa"] .fundamental-reading{direction:rtl;text-align:right}
+html[data-language="fa"] .fundamental-reading bdi{direction:ltr}
 /* Keep navigation outside the scroller: iOS can retain an obsolete fixed-layer
    viewport after keyboard dismissal. Normal-flow navigation cannot overlay cards. */
 @media(max-width:700px){

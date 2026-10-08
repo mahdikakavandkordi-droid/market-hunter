@@ -2,7 +2,7 @@
 
 Review only; no score, recommendation or scanner integration.
 
-As-of cutoff: 2026-10-08T10:17:56Z. Last source response received: 2026-10-08T10:19:33.710005Z. Generated: 2026-10-08T10:28:22.734Z. All figures retain USD reporting units.
+As-of cutoff: 2026-10-08T10:17:56Z. Last source response received: 2026-10-08T10:19:33.710005Z. Generated: 2026-10-08T10:43:20.114Z. All figures retain USD reporting units.
 
 ## BHC.TO
 
@@ -191,4 +191,4 @@ The adapter reconciles selected USD facts against entity-wide inline facts in th
 
 Microsoft is presented on an annual FY2026 basis because the selected 10-K Company Facts entries do not supply Q4-only core values. Cash-flow periods are explicit; no YTD-to-quarter subtraction is performed. Debt components are not added into a purported total debt, and missing values remain unavailable.
 
-Next: review these four outputs, decide whether annual Microsoft context is sufficient or a separately reconciled Q4 release is required, validate richer sector-specific evidence, then integrate an optional fundamental section into stock cards. Canadian source access and usage rights remain pending.
+Stage 4 adds optional financial context to stock cards, with separate dates, source links, language selection and explicit unavailable states. Snapshot refresh is still manual and this limit is shown in the UI. Remaining work: verify Canadian source access and usage rights, richer sector-specific evidence where useful, and a separately reconciled Microsoft Q4 release if an annual view is insufficient.

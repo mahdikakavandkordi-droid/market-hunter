@@ -26,6 +26,7 @@ jobs:
         run: |
           npm run test:fundamental
           python3 scripts/test-fundamental-inline.py
+          node scripts/test-fundamental-context.mjs
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Run browser smoke

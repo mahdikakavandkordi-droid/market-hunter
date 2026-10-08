@@ -14,12 +14,14 @@ for (const spec of PILOT) {
 }
 const report = {
   version: 'fundamental-pilot-v1', asOf, generatedAt, retrievedAt: snapshots.map(s => s.retrievedAt).sort().at(-1), status: 'review-only',
-  integratedIntoProduct: false, scannerImpact: false,
+  integratedIntoProduct: true, scannerImpact: false,
   snapshots,
   deferred: ['SIA.TO', 'FTT.TO', 'RUS.TO', 'DFY.TO', 'SPB.TO', 'LUG.TO'].map(symbol => ({ symbol, status: 'unavailable', reason: 'Automated source route and usage permission not verified in this pilot' })),
 };
 await fs.mkdir(output, { recursive: true });
 await fs.writeFile(path.join(output, 'latest.json'), JSON.stringify(report, null, 2) + '\n');
+const publicContext={version:'fundamental-context-v1',reviewedAt:asOf,items:snapshots.map(s=>({symbol:s.symbol,cik:s.cik,issuer:s.issuer,status:s.status,period:s.financialPeriod,filed:s.filing.filed,acceptedAt:s.filing.acceptedAt,sourceUrl:s.filing.url,reading:s.reading}))};
+await fs.writeFile('data/fundamental-context.json',JSON.stringify(publicContext,null,2)+'\n');
 let text = '# Market Hunter — Stage 3 Fundamental Pilot\n\nReview only; no score, recommendation or scanner integration.\n\n';
 text += `As-of cutoff: ${asOf}. Last source response received: ${report.retrievedAt}. Generated: ${generatedAt}. All figures retain USD reporting units.\n\n`;
 for (const snapshot of snapshots) {
@@ -35,6 +37,6 @@ for (const snapshot of snapshots) {
   text += '\n';
 }
 text += '## Deferred sample\n\n' + report.deferred.map(x => `- ${x.symbol}: ${x.reason}.`).join('\n') + '\n\n';
-text += '## Review limits and next work\n\nThe adapter reconciles selected USD facts against entity-wide inline facts in the original SEC document. This is numeric reconciliation, not a full accounting audit. Context sentences and monitoring prompts are reviewed templates, not extracted predictions. Sector-specific cost/patent/cloud context remains a separate review obligation.\n\nMicrosoft is presented on an annual FY2026 basis because the selected 10-K Company Facts entries do not supply Q4-only core values. Cash-flow periods are explicit; no YTD-to-quarter subtraction is performed. Debt components are not added into a purported total debt, and missing values remain unavailable.\n\nNext: review these four outputs, decide whether annual Microsoft context is sufficient or a separately reconciled Q4 release is required, validate richer sector-specific evidence, then integrate an optional fundamental section into stock cards. Canadian source access and usage rights remain pending.\n';
+text += '## Review limits and next work\n\nThe adapter reconciles selected USD facts against entity-wide inline facts in the original SEC document. This is numeric reconciliation, not a full accounting audit. Context sentences and monitoring prompts are reviewed templates, not extracted predictions. Sector-specific cost/patent/cloud context remains a separate review obligation.\n\nMicrosoft is presented on an annual FY2026 basis because the selected 10-K Company Facts entries do not supply Q4-only core values. Cash-flow periods are explicit; no YTD-to-quarter subtraction is performed. Debt components are not added into a purported total debt, and missing values remain unavailable.\n\nStage 4 adds optional financial context to stock cards, with separate dates, source links, language selection and explicit unavailable states. Snapshot refresh is still manual and this limit is shown in the UI. Remaining work: verify Canadian source access and usage rights, richer sector-specific evidence where useful, and a separately reconciled Microsoft Q4 release if an annual view is insufficient.\n';
 await fs.writeFile(path.join(output, 'review.md'), text);
 console.log(JSON.stringify({ output, snapshots: snapshots.map(s => ({ symbol: s.symbol, status: s.status, gaps: s.gaps.map(g => g.metric) })) }));

@@ -26,6 +26,8 @@ const staticFiles=new Map([
   ['/pwa.js','pwa.js'],
   ['/engine-dashboard.js','engine-dashboard.js'],
   ['/engine-matches.js','engine-matches.js'],
+  ['/fundamental-context.js','fundamental-context.js'],
+  ['/data/fundamental-context.json','data/fundamental-context.json'],
   ['/engine-dashboard.css','engine-dashboard.css'],
   ['/clean-ui.css','clean-ui.css'],
   ['/quote-policy.js','quote-policy.js'],

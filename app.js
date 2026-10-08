@@ -141,7 +141,7 @@ const initialEnvelope=readEnvelopeFor(initialSession);
 const initialDaily=readDailyFor(initialSession);
 const state={
   engines:null,engineSelection:{engine:'all',cohort:'tsx-core',mode:'open',loading:false,error:false},
-  view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,hunterMonitor:null,
+  view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,hunterMonitor:null,fundamentals:null,
   envelope:initialEnvelope,watch:visibleWatch(initialEnvelope),positions:visiblePositions(initialEnvelope),
   portfolioItems:new Map(),liveItems:new Map(),intraday:null,intradayStatus:'loading',analytics:null,previous:previousMapFromDaily(initialDaily),
   cloud:{session:initialSession,epoch:1,status:'local',message:'',showAuth:false,ready:false,reconciled:false,revision:0}
@@ -1008,14 +1008,16 @@ async function load(){
   loadEngines();
   const b=q('#refreshBtn');b.classList.add('busy');b.disabled=true;
   try{
-    const [daily,pulse,v2,intraday,monitor]=await Promise.allSettled([
+    const [daily,pulse,v2,intraday,monitor,fundamentals]=await Promise.allSettled([
       getJsonFallback('/api/research-data?kind=daily','/data/daily-market-report.json'),
       getJsonFallback('/api/research-data?kind=pulse','/data/market-pulse-report.json'),
       getJsonFallback('/api/research-data?kind=v2','/data/v2-latest-scan.json'),
       getJson('/api/intraday'),
-      getJson('/api/hunter-monitor')
+      getJson('/api/hunter-monitor'),
+      getJson('/data/fundamental-context.json')
     ]);
     state.hunterMonitor=monitor.status==='fulfilled'&&monitor.value?.version==='hunter-monitor-v1'?monitor.value:null;
+    state.fundamentals=fundamentals.status==='fulfilled'?fundamentals.value:null;
     state.daily=daily.status==='fulfilled'?daily.value:null;
     state.pulse=pulse.status==='fulfilled'?pulse.value:null;
     state.v2=v2.status==='fulfilled'?v2.value:null;
@@ -1179,6 +1181,13 @@ function stockSummaryHtml(x){
   if(!r)return `<p class="analysis-copy">${esc(stockNarrative(x))}</p>`;
   return `<div class="stock-summary analysis-copy"><small class="explanation-eyebrow">${ui('Technical','تکنیکال')}</small><p class="stock-summary-lead">${esc(r.summary.join(' '))}</p><small class="technical-session">${ui('Completed session','جلسهٔ کامل ثبت‌شده')}: <bdi>${esc(r.completedSession||ui('Unavailable','ناموجود'))}</bdi></small><div class="technical-monitor"><h4>${ui('What to watch','موارد قابل پیگیری')}</h4>${r.monitor.length?'<ul>'+r.monitor.map(v=>'<li>'+esc(v.text)+(v.level!==null?' <bdi class="technical-level">'+fmt(v.level)+'</bdi>':'')+'</li>').join('')+'</ul>':'<p>'+ui('Insufficient data for stock-specific monitoring conditions.','دادهٔ کافی برای تعیین موارد پیگیری اختصاصی این سهم موجود نیست.')+'</p>'}</div></div>`;
 }
+function fundamentalHtml(x){
+  const r=window.MHFundamentals?.reading(state.fundamentals,x.symbol,window.MHI18n?.language()||'en');
+  const title=ui('Fundamental','فاندامنتال');
+  if(!r||r.status==='unavailable')return `<details class="stock-fundamental unavailable"><summary><span>${title}</span><small>${ui('Not available','ناموجود')}</small></summary><p class="reading-copy">${ui('Verified financial context is not available for this stock. Its technical selection is unchanged.','توضیح مالی تأییدشده برای این سهم موجود نیست. انتخاب تکنیکال آن تغییری نمی‌کند.')}</p></details>`;
+  const basis=r.period.basis==='fiscal-year'?ui('Fiscal year','سال مالی'):ui('Quarter','سه‌ماهه');
+  return `<details class="stock-fundamental"><summary><span>${title}</span><small>${basis} · <bdi>${esc(r.period.end)}</bdi></small></summary><div class="fundamental-reading analysis-copy"><p class="reading-copy">${esc(r.context)}</p><p class="stock-summary-lead">${esc(r.summary)}</p><p class="reading-copy">${esc(r.uncertainty)}</p>${r.instrumentNote?'<p class="explanation-note">'+esc(r.instrumentNote)+'</p>':''}<div class="technical-monitor"><h4>${ui('What to watch','موارد قابل پیگیری')}</h4><ul>${r.monitoring.map(s=>'<li>'+esc(s)+'</li>').join('')}</ul></div><div class="fundamental-source"><a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">${ui('Original financial filing','گزارش مالی اصلی')} ↗</a><small>${ui('Filed','تاریخ ثبت')}: <bdi>${esc(r.filed)}</bdi> · ${ui('Snapshot reviewed','بازبینی تصویر مالی')}: <bdi>${esc(r.reviewedAt.slice(0,10))}</bdi></small><small>${ui('Limited coverage · financial filings are not refreshed automatically yet.','پوشش محدود · گزارش‌های مالی هنوز به‌صورت خودکار به‌روز نمی‌شوند.')}</small>${r.status==='older-period'?'<small class="setup-caution">'+ui('Older financial period; check for a newer filing.','دورهٔ مالی قدیمی است؛ گزارش جدیدتر را بررسی کن.')+'</small>':''}</div></div></details>`;
+}
 function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
   return `<article class="card hunter-card">
@@ -1186,6 +1195,7 @@ function stockCard(x,rank=''){
     <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span><span class="tag"><bdi>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></span></div>
     ${window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
     ${stockSummaryHtml(x)}
+    ${fundamentalHtml(x)}
     <details class="stock-technical"><summary>${ui('Technical details','جزئیات تکنیکال')}</summary><div class="metrics"><div class="metric"><small>${ui('20-day move','تغییر ۲۰روزه')}</small><b class="${cls(x.ret20)}"><bdi>${pct(x.ret20)}</bdi></b></div><div class="metric"><small>${ui('Vs benchmark · 20D','نسبت به شاخص · ۲۰روز')}</small><b class="${cls(x.rs20)}"><bdi>${Number.isFinite(x.rs20)?(x.rs20>=0?'+':'')+x.rs20.toFixed(1)+' pp':'—'}</bdi></b></div><div class="metric"><small>${ui('Momentum shift','تغییر شتاب')}</small><b class="${cls(x.momentumShift)}"><bdi>${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</bdi></b></div></div><p class="explanation-note reading-copy">${ui('Relative strength compares 20-day returns with the benchmark. Momentum shift shows how much the pace changed. Both use percentage points (pp), not your portfolio return.','قدرت نسبی، اختلاف بازده ۲۰روزه با شاخص مبناست. تغییر شتاب می‌گوید سرعت حرکت چقدر تغییر کرده. واحد هر دو «واحد درصد» (pp) است؛ این اعداد سود پورتفولیوی تو نیستند.')}</p><div class="technical-grid"><div><small>${ui('Benchmark','شاخص مبنا')}</small><b><bdi>${esc(x.benchmark||'—')}</bdi></b></div><div><small>${ui('From 60-day high','فاصله از سقف ۶۰روزه')}</small><b><bdi>${pct(x.pullback60)}</bdi></b></div><div><small>${ui('ATR','نوسان (ATR)')}</small><b><bdi>${pct(x.atr14Pct)}</bdi></b></div><div><small>${ui('Above / below MA20','فاصله از میانگین ۲۰روزه')}</small><b><bdi>${pct(x.dist20)}</bdi></b></div><div><small>${ui('Above / below MA50','فاصله از میانگین ۵۰روزه')}</small><b><bdi>${pct(x.dist50)}</bdi></b></div></div>${(()=>{const r=window.MHI18n?.read(x);return r&&(r.now.length||r.watch.length)?'<div class="copy"><strong>'+ui('Supporting observations','مشاهدات پشتیبان')+'</strong><p>'+esc([...r.now,...r.watch].join(' '))+'</p></div>':''})()}</details>
     <div class="actions"><button class="btn" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
   </article>`;
