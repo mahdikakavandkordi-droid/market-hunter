@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-evidence-v2",
   "cohort": "us-75",
-  "generatedAt": "2026-10-07T22:57:01.117Z",
+  "generatedAt": "2026-10-08T22:58:52.977Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -27,69 +27,85 @@
     "gapFill": "strategy-level result retained but gap uncertainty flagged"
   },
   "failures": [],
-  "dataQuality": [],
+  "dataQuality": [
+    {
+      "symbol": "TMO",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-08",
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4,
+        5
+      ]
+    }
+  ],
   "evidenceAudit": {
     "run": {
       "tracker": "smc-forward-expanded",
       "cohort": "us-75",
-      "observedAt": "2026-10-07T22:57:01.117Z",
+      "observedAt": "2026-10-08T22:58:52.977Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "37699288862",
+        "runId": "37856733828",
         "runAttempt": "1",
-        "sha": "3571076ec6ae4120011b3dc11b3956f67694af01",
+        "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
         "workflow": "SMC Expanded Forward Cohorts",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-expanded|us-75|37699288862|1"
+      "runKey": "smc-forward-expanded|us-75|37856733828|1"
     },
     "reconciliation": {
-      "newRecords": 3,
-      "lifecycleUpdates": 0,
+      "newRecords": 2,
+      "lifecycleUpdates": 4,
       "missingPreviouslyRecorded": 0,
       "legacyUnprovenancedCount": 1,
-      "reconstructedCount": 3,
-      "prospectiveCount": 0,
-      "pendingCount": 2
+      "reconstructedCount": 5,
+      "prospectiveCount": 2,
+      "pendingCount": 0
     },
     "discrepancies": [],
     "legacyProvenanceUnknown": 1
   },
   "summary": {
     "closed": {
-      "n": 0,
-      "wr": null,
-      "pf": null,
-      "avgR": null,
-      "sumR": 0,
-      "maxDD": 0
+      "n": 2,
+      "wr": 0,
+      "pf": 0,
+      "avgR": -1,
+      "sumR": -2,
+      "maxDD": -2
     },
     "cost05R": {
-      "n": 0,
-      "wr": null,
-      "pf": null,
-      "avgR": null,
-      "sumR": 0,
-      "maxDD": 0
+      "n": 2,
+      "wr": 0,
+      "pf": 0,
+      "avgR": -1.05,
+      "sumR": -2.1,
+      "maxDD": -2.1
     },
     "long": {
-      "n": 0,
-      "wr": null,
-      "pf": null,
-      "avgR": null,
-      "sumR": 0,
-      "maxDD": 0
+      "n": 1,
+      "wr": 0,
+      "pf": 0,
+      "avgR": -1,
+      "sumR": -1,
+      "maxDD": -1
     },
     "short": {
-      "n": 0,
-      "wr": null,
-      "pf": null,
-      "avgR": null,
-      "sumR": 0,
-      "maxDD": 0
+      "n": 1,
+      "wr": 0,
+      "pf": 0,
+      "avgR": -1,
+      "sumR": -1,
+      "maxDD": -1
     },
-    "openCount": 4,
-    "pendingCount": 2,
+    "openCount": 6,
+    "pendingCount": 0,
     "performanceByProvenance": {
       "prospective": {
         "raw": {
@@ -111,38 +127,38 @@
       },
       "reconstructed": {
         "raw": {
-          "n": 0,
-          "wr": null,
-          "pf": null,
-          "avgR": null,
-          "sumR": 0,
-          "maxDD": 0
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1,
+          "sumR": -1,
+          "maxDD": -1
         },
         "cost05R": {
-          "n": 0,
-          "wr": null,
-          "pf": null,
-          "avgR": null,
-          "sumR": 0,
-          "maxDD": 0
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1.05,
+          "sumR": -1.05,
+          "maxDD": -1.05
         }
       },
       "legacyUnprovenanced": {
         "raw": {
-          "n": 0,
-          "wr": null,
-          "pf": null,
-          "avgR": null,
-          "sumR": 0,
-          "maxDD": 0
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1,
+          "sumR": -1,
+          "maxDD": -1
         },
         "cost05R": {
-          "n": 0,
-          "wr": null,
-          "pf": null,
-          "avgR": null,
-          "sumR": 0,
-          "maxDD": 0
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1.05,
+          "sumR": -1.05,
+          "maxDD": -1.05
         }
       }
     },
@@ -167,38 +183,38 @@
       },
       "medium": {
         "raw": {
-          "n": 0,
-          "wr": null,
-          "pf": null,
-          "avgR": null,
-          "sumR": 0,
-          "maxDD": 0
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1,
+          "sumR": -1,
+          "maxDD": -1
         },
         "afterCost": {
-          "n": 0,
-          "wr": null,
-          "pf": null,
-          "avgR": null,
-          "sumR": 0,
-          "maxDD": 0
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1.05,
+          "sumR": -1.05,
+          "maxDD": -1.05
         }
       },
       "low": {
         "raw": {
-          "n": 0,
-          "wr": null,
-          "pf": null,
-          "avgR": null,
-          "sumR": 0,
-          "maxDD": 0
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1,
+          "sumR": -1,
+          "maxDD": -1
         },
         "afterCost": {
-          "n": 0,
-          "wr": null,
-          "pf": null,
-          "avgR": null,
-          "sumR": 0,
-          "maxDD": 0
+          "n": 1,
+          "wr": 0,
+          "pf": 0,
+          "avgR": -1.05,
+          "sumR": -1.05,
+          "maxDD": -1.05
         }
       },
       "unavailable": {
@@ -232,16 +248,16 @@
       "fractionalShares": true
     },
     "startingCapital": 1000,
-    "currentEquity": 1000,
-    "realizedReturnPct": 0,
-    "cash": 208.75236755353026,
-    "reservedNotional": 791.2476324464698,
-    "openRiskAmount": 37.315843969978815,
-    "maxDrawdownPct": 0,
-    "enteredCount": 4,
-    "closedCount": 0,
+    "currentEquity": 979.0000000000002,
+    "realizedReturnPct": -0.020999999999999797,
+    "cash": 248.3906775873749,
+    "reservedNotional": 730.6093224126253,
+    "openRiskAmount": 36.89584396997882,
+    "maxDrawdownPct": -0.020999999999999908,
+    "enteredCount": 6,
+    "closedCount": 2,
     "openCount": 4,
-    "skippedCount": 0,
+    "skippedCount": 2,
     "entered": [
       {
         "symbol": "DIS",
@@ -252,9 +268,9 @@
         "stop": 106.7137198311942,
         "target": 91.70255759102957,
         "risk": 5.003720746721541,
-        "status": "open",
-        "R": null,
-        "exitT": null,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-10-08T17:30:00.000Z",
         "momentumShadow": {
           "available": true,
           "score": 48.5,
@@ -313,6 +329,19 @@
           }
         },
         "lifecycleRefreshSource": "recorded_immutable_fields",
+        "exitReason": "stop",
+        "exitPriceAssumed": 106.7137198311942,
+        "exitTimeConvention": "bar_end",
+        "executionAudit": {
+          "stopTargetCollision": false,
+          "collisionPolicy": null,
+          "gapThroughStop": false,
+          "gapThroughTarget": false,
+          "gapFillAssumption": null,
+          "gapOpenPrecedence": false,
+          "exitBarStartT": "2026-10-08T13:30:00.000Z",
+          "exitBarEndT": "2026-10-08T17:30:00.000Z"
+        },
         "accountEquityBefore": 1000,
         "notional": 203.2687358724275,
         "allocationPct": 0.2032687358724275,
@@ -320,8 +349,9 @@
         "stopPct": 0.049195957052028165,
         "riskAmount": 10,
         "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open"
+        "pnl": -10.5,
+        "portfolioStatus": "closed",
+        "accountEquityAfter": 989.5000000000001
       },
       {
         "symbol": "FCX",
@@ -534,9 +564,9 @@
         "stop": 1134.3662179129465,
         "target": 1320.512681361607,
         "risk": 62.04882114955353,
-        "status": "open",
-        "R": null,
-        "exitT": null,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-10-08T17:30:00.000Z",
         "momentumShadow": {
           "available": true,
           "score": 50.3,
@@ -615,12 +645,227 @@
           }
         },
         "entryObservationClass": "reconstructed",
+        "exitReason": "stop",
+        "exitPriceAssumed": 1134.3662179129465,
+        "exitTimeConvention": "bar_end",
+        "executionAudit": {
+          "stopTargetCollision": false,
+          "collisionPolicy": null,
+          "gapThroughStop": false,
+          "gapThroughTarget": false,
+          "gapFillAssumption": null,
+          "gapOpenPrecedence": false,
+          "exitBarStartT": "2026-10-08T13:30:00.000Z",
+          "exitBarEndT": "2026-10-08T17:30:00.000Z"
+        },
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 1000,
         "notional": 192.81833512659873,
         "allocationPct": 0.19281833512659874,
         "quantity": 0.16116341639911969,
         "stopPct": 0.051862287854701684,
         "riskAmount": 10,
+        "riskPctEquity": 0.01,
+        "pnl": -10.5,
+        "portfolioStatus": "closed",
+        "accountEquityAfter": 979.0000000000001
+      },
+      {
+        "symbol": "PG",
+        "signalT": "2026-10-08T13:30:00.000Z",
+        "entryT": "2026-10-08T17:30:00.000Z",
+        "dir": 1,
+        "entry": 150.0050048828125,
+        "stop": 143.23810130528042,
+        "target": 163.53881203787665,
+        "risk": 6.7669035775320765,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 59.2,
+          "bucket": "medium",
+          "asOfDate": "2026-10-07",
+          "direction": "long",
+          "ret20": 0.03631525488457221,
+          "ret60": 0.011911318944097582,
+          "rsi14": 50.687733049974625,
+          "ma20": 146.4630012512207,
+          "ma50": 145.6792007446289,
+          "ma20Slope5": 0.0006182899143745146,
+          "volumeRatio20": 1.0479579183626382,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.02166086449714877,
+          "benchmarkRet60": 0.03422510782385091,
+          "rs20": 0.014654390387423444,
+          "rs60": -0.022313788879753327,
+          "components": {
+            "return20": {
+              "score": 68.2,
+              "weight": 20
+            },
+            "return60": {
+              "score": 53,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 51.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 51.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 23.8,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 59.2,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 42.6,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 143.39999389648438,
+          "atr14": 1.6189259120396204,
+          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "PG|2026-10-08T13:30:00.000Z|1",
+        "firstObservedAt": "2026-10-08T22:58:52.977Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37856733828",
+            "runAttempt": "1",
+            "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 979.0000000000001,
+        "notional": 217.0193473243373,
+        "allocationPct": 0.22167451207797476,
+        "quantity": 1.4467473768217134,
+        "stopPct": 0.045111185342239374,
+        "riskAmount": 9.790000000000001,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "SBUX",
+        "signalT": "2026-10-08T13:30:00.000Z",
+        "entryT": "2026-10-08T17:30:00.000Z",
+        "dir": -1,
+        "entry": 89.5,
+        "stop": 96.89854207720076,
+        "target": 74.70291584559848,
+        "risk": 7.398542077200759,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 83.8,
+          "bucket": "high",
+          "asOfDate": "2026-10-07",
+          "direction": "short",
+          "ret20": -0.06457416058929677,
+          "ret60": -0.11858337152701581,
+          "rsi14": 37.40831660709889,
+          "ma20": 95.72399978637695,
+          "ma50": 101.78260040283203,
+          "ma20Slope5": -0.023139765214914343,
+          "volumeRatio20": 1.2688297419712726,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.02166086449714877,
+          "benchmarkRet60": 0.03422510782385091,
+          "rs20": -0.08623502508644554,
+          "rs60": -0.15280847935086672,
+          "components": {
+            "return20": {
+              "score": 82.3,
+              "weight": 20
+            },
+            "return60": {
+              "score": 79.6,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 81.5,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 41.5,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 100,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 96.7311019897461,
+          "atr14": 1.674400874546596,
+          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "SBUX|2026-10-08T13:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-08T22:58:52.977Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37856733828",
+            "runAttempt": "1",
+            "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 979.0000000000001,
+        "notional": 118.4294136408443,
+        "allocationPct": 0.12096977899984095,
+        "quantity": 1.3232336719647408,
+        "stopPct": 0.08266527460559507,
+        "riskAmount": 9.790000000000001,
         "riskPctEquity": 0.01,
         "pnl": null,
         "portfolioStatus": "open"
@@ -628,86 +873,6 @@
     ],
     "open": [
       {
-        "symbol": "DIS",
-        "signalT": "2026-10-01T13:30:00.000Z",
-        "entryT": "2026-10-01T17:30:00.000Z",
-        "dir": -1,
-        "entry": 101.70999908447266,
-        "stop": 106.7137198311942,
-        "target": 91.70255759102957,
-        "risk": 5.003720746721541,
-        "status": "open",
-        "R": null,
-        "exitT": null,
-        "momentumShadow": {
-          "available": true,
-          "score": 48.5,
-          "bucket": "low",
-          "asOfDate": "2026-09-30",
-          "direction": "short",
-          "ret20": -0.012427035206688974,
-          "ret60": 0.07611815668261923,
-          "rsi14": 47.14286391250367,
-          "ma20": 105.55999984741212,
-          "ma50": 104.00060028076172,
-          "ma20Slope5": -0.00504733900330212,
-          "volumeRatio20": 1.355768196968068,
-          "benchmarkSymbol": "^GSPC",
-          "benchmarkRet20": 0.002629876505278572,
-          "benchmarkRet60": 0.019681888561763783,
-          "rs20": -0.015056911711967547,
-          "rs60": 0.05643626812085545,
-          "components": {
-            "return20": {
-              "score": 56.2,
-              "weight": 20
-            },
-            "return60": {
-              "score": 31,
-              "weight": 20
-            },
-            "rsi14": {
-              "score": 57.1,
-              "weight": 15
-            },
-            "price_vs_ma20": {
-              "score": 100,
-              "weight": 7
-            },
-            "ma20_vs_ma50": {
-              "score": 0,
-              "weight": 7
-            },
-            "ma20_slope5": {
-              "score": 62.6,
-              "weight": 6
-            },
-            "volume_ratio20": {
-              "score": 48.5,
-              "weight": 10
-            },
-            "relative_strength20": {
-              "score": 59.4,
-              "weight": 8
-            },
-            "relative_strength60": {
-              "score": 31.2,
-              "weight": 7
-            }
-          }
-        },
-        "lifecycleRefreshSource": "recorded_immutable_fields",
-        "accountEquityBefore": 1000,
-        "notional": 203.2687358724275,
-        "allocationPct": 0.2032687358724275,
-        "quantity": 1.9985128080043322,
-        "stopPct": 0.049195957052028165,
-        "riskAmount": 10,
-        "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open"
-      },
-      {
         "symbol": "FCX",
         "signalT": "2026-10-05T13:30:00.000Z",
         "entryT": "2026-10-05T17:30:00.000Z",
@@ -910,46 +1075,46 @@
         "portfolioStatus": "open"
       },
       {
-        "symbol": "LLY",
-        "signalT": "2026-10-07T13:30:00.000Z",
-        "entryT": "2026-10-07T17:30:00.000Z",
+        "symbol": "PG",
+        "signalT": "2026-10-08T13:30:00.000Z",
+        "entryT": "2026-10-08T17:30:00.000Z",
         "dir": 1,
-        "entry": 1196.4150390625,
-        "stop": 1134.3662179129465,
-        "target": 1320.512681361607,
-        "risk": 62.04882114955353,
+        "entry": 150.0050048828125,
+        "stop": 143.23810130528042,
+        "target": 163.53881203787665,
+        "risk": 6.7669035775320765,
         "status": "open",
         "R": null,
         "exitT": null,
         "momentumShadow": {
           "available": true,
-          "score": 50.3,
+          "score": 59.2,
           "bucket": "medium",
-          "asOfDate": "2026-10-06",
+          "asOfDate": "2026-10-07",
           "direction": "long",
-          "ret20": 0.02987779718435979,
-          "ret60": -0.0206283305131163,
-          "rsi14": 56.934363738549735,
-          "ma20": 1152.582989501953,
-          "ma50": 1174.9303955078126,
-          "ma20Slope5": -0.00011104511931259164,
-          "volumeRatio20": 0.955581813004612,
+          "ret20": 0.03631525488457221,
+          "ret60": 0.011911318944097582,
+          "rsi14": 50.687733049974625,
+          "ma20": 146.4630012512207,
+          "ma50": 145.6792007446289,
+          "ma20Slope5": 0.0006182899143745146,
+          "volumeRatio20": 1.0479579183626382,
           "benchmarkSymbol": "^GSPC",
-          "benchmarkRet20": 0.018949602774201546,
-          "benchmarkRet60": 0.040396088313122025,
-          "rs20": 0.010928194410158243,
-          "rs60": -0.061024418826238325,
+          "benchmarkRet20": 0.02166086449714877,
+          "benchmarkRet60": 0.03422510782385091,
+          "rs20": 0.014654390387423444,
+          "rs60": -0.022313788879753327,
           "components": {
             "return20": {
-              "score": 64.9,
+              "score": 68.2,
               "weight": 20
             },
             "return60": {
-              "score": 44.8,
+              "score": 53,
               "weight": 20
             },
             "rsi14": {
-              "score": 67.3,
+              "score": 51.7,
               "weight": 15
             },
             "price_vs_ma20": {
@@ -957,34 +1122,231 @@
               "weight": 7
             },
             "ma20_vs_ma50": {
-              "score": 0,
+              "score": 100,
               "weight": 7
             },
             "ma20_slope5": {
-              "score": 49.7,
+              "score": 51.5,
               "weight": 6
             },
             "volume_ratio20": {
-              "score": 16.4,
+              "score": 23.8,
               "weight": 10
             },
             "relative_strength20": {
-              "score": 56.8,
+              "score": 59.2,
               "weight": 8
             },
             "relative_strength60": {
-              "score": 29.7,
+              "score": 42.6,
               "weight": 7
             }
           }
         },
         "signalSnapshot": {
-          "opposingSwing": 1136.6600341796875,
-          "atr14": 22.938162667410715,
-          "signalCompletedAt": "2026-10-07T17:30:00.000Z",
+          "opposingSwing": 143.39999389648438,
+          "atr14": 1.6189259120396204,
+          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
           "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
         },
-        "decisionId": "LLY|2026-10-07T13:30:00.000Z|1",
+        "decisionId": "PG|2026-10-08T13:30:00.000Z|1",
+        "firstObservedAt": "2026-10-08T22:58:52.977Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37856733828",
+            "runAttempt": "1",
+            "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 979.0000000000001,
+        "notional": 217.0193473243373,
+        "allocationPct": 0.22167451207797476,
+        "quantity": 1.4467473768217134,
+        "stopPct": 0.045111185342239374,
+        "riskAmount": 9.790000000000001,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "SBUX",
+        "signalT": "2026-10-08T13:30:00.000Z",
+        "entryT": "2026-10-08T17:30:00.000Z",
+        "dir": -1,
+        "entry": 89.5,
+        "stop": 96.89854207720076,
+        "target": 74.70291584559848,
+        "risk": 7.398542077200759,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 83.8,
+          "bucket": "high",
+          "asOfDate": "2026-10-07",
+          "direction": "short",
+          "ret20": -0.06457416058929677,
+          "ret60": -0.11858337152701581,
+          "rsi14": 37.40831660709889,
+          "ma20": 95.72399978637695,
+          "ma50": 101.78260040283203,
+          "ma20Slope5": -0.023139765214914343,
+          "volumeRatio20": 1.2688297419712726,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.02166086449714877,
+          "benchmarkRet60": 0.03422510782385091,
+          "rs20": -0.08623502508644554,
+          "rs60": -0.15280847935086672,
+          "components": {
+            "return20": {
+              "score": 82.3,
+              "weight": 20
+            },
+            "return60": {
+              "score": 79.6,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 81.5,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 41.5,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 100,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 96.7311019897461,
+          "atr14": 1.674400874546596,
+          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "SBUX|2026-10-08T13:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-08T22:58:52.977Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37856733828",
+            "runAttempt": "1",
+            "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 979.0000000000001,
+        "notional": 118.4294136408443,
+        "allocationPct": 0.12096977899984095,
+        "quantity": 1.3232336719647408,
+        "stopPct": 0.08266527460559507,
+        "riskAmount": 9.790000000000001,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      }
+    ],
+    "skipped": [
+      {
+        "symbol": "AAPL",
+        "signalT": "2026-10-07T17:30:00.000Z",
+        "dir": 1,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 63.8,
+          "bucket": "medium",
+          "asOfDate": "2026-10-06",
+          "direction": "long",
+          "ret20": 0.05505661752862445,
+          "ret60": 0.05143237669719225,
+          "rsi14": 51.48926183247341,
+          "ma20": 333.41150054931643,
+          "ma50": 322.3479998779297,
+          "ma20Slope5": 0.007411809668408376,
+          "volumeRatio20": 0.7297691229456894,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.018949602774201546,
+          "benchmarkRet60": 0.040396088313122025,
+          "rs20": 0.036107014754422906,
+          "rs60": 0.011036288384070225,
+          "components": {
+            "return20": {
+              "score": 77.5,
+              "weight": 20
+            },
+            "return60": {
+              "score": 62.9,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 53.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 68.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 72.6,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 53.7,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 330.6199951171875,
+          "atr14": 4.361772809709821,
+          "signalCompletedAt": "2026-10-07T20:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "AAPL|2026-10-07T17:30:00.000Z|1",
         "firstObservedAt": "2026-10-07T22:57:01.117Z",
         "firstObservedProvenance": {
           "tracker": "smc-forward-expanded",
@@ -998,19 +1360,109 @@
             "ref": "refs/heads/main"
           }
         },
-        "entryObservationClass": "reconstructed",
-        "accountEquityBefore": 1000,
-        "notional": 192.81833512659873,
-        "allocationPct": 0.19281833512659874,
-        "quantity": 0.16116341639911969,
-        "stopPct": 0.051862287854701684,
-        "riskAmount": 10,
-        "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open"
+        "entryObservationClass": "prospective",
+        "entryT": "2026-10-08T13:30:00.000Z",
+        "entry": 336.8299865722656,
+        "stop": 330.1838178362165,
+        "target": 350.12232404436384,
+        "risk": 6.6461687360491055,
+        "lifecycleRefreshSource": "recorded_signal_snapshot",
+        "reason": "max_positions"
+      },
+      {
+        "symbol": "HON",
+        "signalT": "2026-10-07T17:30:00.000Z",
+        "dir": -1,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 42.5,
+          "bucket": "low",
+          "asOfDate": "2026-10-06",
+          "direction": "short",
+          "ret20": 0.02223391040092637,
+          "ret60": -0.04220474637935878,
+          "rsi14": 65.74013803887436,
+          "ma20": 208.87650146484376,
+          "ma50": 220.29480072021485,
+          "ma20Slope5": 0.005829069571931855,
+          "volumeRatio20": 1.0769129641146995,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.018949602774201546,
+          "benchmarkRet60": 0.040396088313122025,
+          "rs20": 0.003284307626724825,
+          "rs60": -0.0826008346924808,
+          "components": {
+            "return20": {
+              "score": 38.9,
+              "weight": 20
+            },
+            "return60": {
+              "score": 60.6,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 10.6,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 0,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 35.4,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 26.2,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 47.9,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 77.5,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 216.0800018310547,
+          "atr14": 2.6924231392996654,
+          "signalCompletedAt": "2026-10-07T20:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "HON|2026-10-07T17:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-07T22:57:01.117Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37699288862",
+            "runAttempt": "1",
+            "sha": "3571076ec6ae4120011b3dc11b3956f67694af01",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "prospective",
+        "entryT": "2026-10-08T13:30:00.000Z",
+        "entry": 206.49000549316406,
+        "stop": 216.34924414498465,
+        "target": 186.77152818952288,
+        "risk": 9.85923865182059,
+        "lifecycleRefreshSource": "recorded_signal_snapshot",
+        "reason": "max_positions"
       }
     ],
-    "skipped": [],
     "equityCurve": [
       {
         "t": "2026-10-01",
@@ -1031,6 +1483,22 @@
       {
         "t": "2026-10-07T17:30:00.000Z",
         "equity": 1000
+      },
+      {
+        "t": "2026-10-08T17:30:00.000Z",
+        "equity": 989.5000000000001
+      },
+      {
+        "t": "2026-10-08T17:30:00.000Z",
+        "equity": 979.0000000000001
+      },
+      {
+        "t": "2026-10-08T17:30:00.000Z",
+        "equity": 979.0000000000001
+      },
+      {
+        "t": "2026-10-08T17:30:00.000Z",
+        "equity": 979.0000000000002
       }
     ]
   },
@@ -1045,12 +1513,12 @@
       "fractionalShares": true
     },
     "startingCapital": 1000,
-    "cash": 208.75236755353026,
-    "reservedEntryNotional": 791.2476324464698,
-    "openRiskAmount": 37.315843969978815,
-    "realizedCurrentEquity": 1000,
-    "realizedReturnPct": 0,
-    "realizedMaxDrawdownPct": 0,
+    "cash": 248.3906775873749,
+    "reservedEntryNotional": 730.6093224126253,
+    "openRiskAmount": 36.89584396997882,
+    "realizedCurrentEquity": 979.0000000000002,
+    "realizedReturnPct": -0.020999999999999797,
+    "realizedMaxDrawdownPct": -0.020999999999999908,
     "realizedEquityCurve": [
       {
         "t": "start",
@@ -1071,108 +1539,36 @@
       {
         "t": "2026-10-07T17:30:00.000Z",
         "equity": 1000
+      },
+      {
+        "t": "2026-10-08T17:30:00.000Z",
+        "equity": 989.5000000000001
+      },
+      {
+        "t": "2026-10-08T17:30:00.000Z",
+        "equity": 979.0000000000001
+      },
+      {
+        "t": "2026-10-08T17:30:00.000Z",
+        "equity": 979.0000000000001
+      },
+      {
+        "t": "2026-10-08T17:30:00.000Z",
+        "equity": 979.0000000000002
       }
     ],
-    "markedCurrentEquity": 986.1786808691116,
-    "markedReturnPct": -0.013821319130888354,
+    "markedCurrentEquity": 974.7580434344331,
+    "markedReturnPct": -0.025241956565566825,
     "markedObservation": {
-      "runKey": "smc-forward-expanded|us-75|37699288862|1",
-      "observedAt": "2026-10-07T22:57:01.117Z",
+      "runKey": "smc-forward-expanded|us-75|37856733828|1",
+      "observedAt": "2026-10-08T22:58:52.977Z",
       "quality": "fresh",
-      "markedEquity": 986.1786808691116,
-      "totalUnrealizedPnl": -13.821319130888357,
+      "markedEquity": 974.7580434344331,
+      "totalUnrealizedPnl": -4.241956565566969,
       "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
       "positions": [
-        {
-          "symbol": "DIS",
-          "signalT": "2026-10-01T13:30:00.000Z",
-          "entryT": "2026-10-01T17:30:00.000Z",
-          "dir": -1,
-          "entry": 101.70999908447266,
-          "stop": 106.7137198311942,
-          "target": 91.70255759102957,
-          "risk": 5.003720746721541,
-          "status": "open",
-          "R": null,
-          "exitT": null,
-          "momentumShadow": {
-            "available": true,
-            "score": 48.5,
-            "bucket": "low",
-            "asOfDate": "2026-09-30",
-            "direction": "short",
-            "ret20": -0.012427035206688974,
-            "ret60": 0.07611815668261923,
-            "rsi14": 47.14286391250367,
-            "ma20": 105.55999984741212,
-            "ma50": 104.00060028076172,
-            "ma20Slope5": -0.00504733900330212,
-            "volumeRatio20": 1.355768196968068,
-            "benchmarkSymbol": "^GSPC",
-            "benchmarkRet20": 0.002629876505278572,
-            "benchmarkRet60": 0.019681888561763783,
-            "rs20": -0.015056911711967547,
-            "rs60": 0.05643626812085545,
-            "components": {
-              "return20": {
-                "score": 56.2,
-                "weight": 20
-              },
-              "return60": {
-                "score": 31,
-                "weight": 20
-              },
-              "rsi14": {
-                "score": 57.1,
-                "weight": 15
-              },
-              "price_vs_ma20": {
-                "score": 100,
-                "weight": 7
-              },
-              "ma20_vs_ma50": {
-                "score": 0,
-                "weight": 7
-              },
-              "ma20_slope5": {
-                "score": 62.6,
-                "weight": 6
-              },
-              "volume_ratio20": {
-                "score": 48.5,
-                "weight": 10
-              },
-              "relative_strength20": {
-                "score": 59.4,
-                "weight": 8
-              },
-              "relative_strength60": {
-                "score": 31.2,
-                "weight": 7
-              }
-            }
-          },
-          "lifecycleRefreshSource": "recorded_immutable_fields",
-          "accountEquityBefore": 1000,
-          "notional": 203.2687358724275,
-          "allocationPct": 0.2032687358724275,
-          "quantity": 1.9985128080043322,
-          "stopPct": 0.049195957052028165,
-          "riskAmount": 10,
-          "riskPctEquity": 0.01,
-          "pnl": null,
-          "portfolioStatus": "open",
-          "effectiveExitMs": null,
-          "legacyExitTimingAdjusted": false,
-          "markPrice": 104.76000213623047,
-          "markT": "2026-10-07T20:30:00.000Z",
-          "markStatus": "fresh",
-          "markSource": "completed_4h_close",
-          "unrealizedPnl": -6.095470163390289,
-          "markedPositionValue": 197.1732657090372
-        },
         {
           "symbol": "FCX",
           "signalT": "2026-10-05T13:30:00.000Z",
@@ -1275,12 +1671,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 71.87999725341797,
-          "markT": "2026-10-07T20:30:00.000Z",
+          "markPrice": 71.13999938964844,
+          "markT": "2026-10-08T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -2.3640539652362365,
-          "markedPositionValue": 142.79650748220732
+          "unrealizedPnl": -3.834130683770872,
+          "markedPositionValue": 141.32643076367268
         },
         {
           "symbol": "CVX",
@@ -1384,54 +1780,54 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 205.1699981689453,
-          "markT": "2026-10-07T20:30:00.000Z",
+          "markPrice": 211.60499572753906,
+          "markT": "2026-10-08T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -4.0458894119170665,
-          "markedPositionValue": 245.95411058808293
+          "unrealizedPnl": 3.668270140090823,
+          "markedPositionValue": 253.6682701400908
         },
         {
-          "symbol": "LLY",
-          "signalT": "2026-10-07T13:30:00.000Z",
-          "entryT": "2026-10-07T17:30:00.000Z",
+          "symbol": "PG",
+          "signalT": "2026-10-08T13:30:00.000Z",
+          "entryT": "2026-10-08T17:30:00.000Z",
           "dir": 1,
-          "entry": 1196.4150390625,
-          "stop": 1134.3662179129465,
-          "target": 1320.512681361607,
-          "risk": 62.04882114955353,
+          "entry": 150.0050048828125,
+          "stop": 143.23810130528042,
+          "target": 163.53881203787665,
+          "risk": 6.7669035775320765,
           "status": "open",
           "R": null,
           "exitT": null,
           "momentumShadow": {
             "available": true,
-            "score": 50.3,
+            "score": 59.2,
             "bucket": "medium",
-            "asOfDate": "2026-10-06",
+            "asOfDate": "2026-10-07",
             "direction": "long",
-            "ret20": 0.02987779718435979,
-            "ret60": -0.0206283305131163,
-            "rsi14": 56.934363738549735,
-            "ma20": 1152.582989501953,
-            "ma50": 1174.9303955078126,
-            "ma20Slope5": -0.00011104511931259164,
-            "volumeRatio20": 0.955581813004612,
+            "ret20": 0.03631525488457221,
+            "ret60": 0.011911318944097582,
+            "rsi14": 50.687733049974625,
+            "ma20": 146.4630012512207,
+            "ma50": 145.6792007446289,
+            "ma20Slope5": 0.0006182899143745146,
+            "volumeRatio20": 1.0479579183626382,
             "benchmarkSymbol": "^GSPC",
-            "benchmarkRet20": 0.018949602774201546,
-            "benchmarkRet60": 0.040396088313122025,
-            "rs20": 0.010928194410158243,
-            "rs60": -0.061024418826238325,
+            "benchmarkRet20": 0.02166086449714877,
+            "benchmarkRet60": 0.03422510782385091,
+            "rs20": 0.014654390387423444,
+            "rs60": -0.022313788879753327,
             "components": {
               "return20": {
-                "score": 64.9,
+                "score": 68.2,
                 "weight": 20
               },
               "return60": {
-                "score": 44.8,
+                "score": 53,
                 "weight": 20
               },
               "rsi14": {
-                "score": 67.3,
+                "score": 51.7,
                 "weight": 15
               },
               "price_vs_ma20": {
@@ -1439,65 +1835,173 @@
                 "weight": 7
               },
               "ma20_vs_ma50": {
-                "score": 0,
+                "score": 100,
                 "weight": 7
               },
               "ma20_slope5": {
-                "score": 49.7,
+                "score": 51.5,
                 "weight": 6
               },
               "volume_ratio20": {
-                "score": 16.4,
+                "score": 23.8,
                 "weight": 10
               },
               "relative_strength20": {
-                "score": 56.8,
+                "score": 59.2,
                 "weight": 8
               },
               "relative_strength60": {
-                "score": 29.7,
+                "score": 42.6,
                 "weight": 7
               }
             }
           },
           "signalSnapshot": {
-            "opposingSwing": 1136.6600341796875,
-            "atr14": 22.938162667410715,
-            "signalCompletedAt": "2026-10-07T17:30:00.000Z",
+            "opposingSwing": 143.39999389648438,
+            "atr14": 1.6189259120396204,
+            "signalCompletedAt": "2026-10-08T17:30:00.000Z",
             "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
           },
-          "decisionId": "LLY|2026-10-07T13:30:00.000Z|1",
-          "firstObservedAt": "2026-10-07T22:57:01.117Z",
+          "decisionId": "PG|2026-10-08T13:30:00.000Z|1",
+          "firstObservedAt": "2026-10-08T22:58:52.977Z",
           "firstObservedProvenance": {
             "tracker": "smc-forward-expanded",
             "cohort": "us-75",
             "marketDataSource": "Yahoo Finance chart API",
             "github": {
-              "runId": "37699288862",
+              "runId": "37856733828",
               "runAttempt": "1",
-              "sha": "3571076ec6ae4120011b3dc11b3956f67694af01",
+              "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
               "workflow": "SMC Expanded Forward Cohorts",
               "ref": "refs/heads/main"
             }
           },
           "entryObservationClass": "reconstructed",
-          "accountEquityBefore": 1000,
-          "notional": 192.81833512659873,
-          "allocationPct": 0.19281833512659874,
-          "quantity": 0.16116341639911969,
-          "stopPct": 0.051862287854701684,
-          "riskAmount": 10,
+          "accountEquityBefore": 979.0000000000001,
+          "notional": 217.0193473243373,
+          "allocationPct": 0.22167451207797476,
+          "quantity": 1.4467473768217134,
+          "stopPct": 0.045111185342239374,
+          "riskAmount": 9.790000000000001,
           "riskPctEquity": 0.01,
           "pnl": null,
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 1188.25,
-          "markT": "2026-10-07T20:30:00.000Z",
+          "markPrice": 150.58999633789062,
+          "markT": "2026-10-08T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -1.3159055903447654,
-          "markedPositionValue": 191.50242953625397
+          "unrealizedPnl": 0.8463348530973945,
+          "markedPositionValue": 217.8656821774347
+        },
+        {
+          "symbol": "SBUX",
+          "signalT": "2026-10-08T13:30:00.000Z",
+          "entryT": "2026-10-08T17:30:00.000Z",
+          "dir": -1,
+          "entry": 89.5,
+          "stop": 96.89854207720076,
+          "target": 74.70291584559848,
+          "risk": 7.398542077200759,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "momentumShadow": {
+            "available": true,
+            "score": 83.8,
+            "bucket": "high",
+            "asOfDate": "2026-10-07",
+            "direction": "short",
+            "ret20": -0.06457416058929677,
+            "ret60": -0.11858337152701581,
+            "rsi14": 37.40831660709889,
+            "ma20": 95.72399978637695,
+            "ma50": 101.78260040283203,
+            "ma20Slope5": -0.023139765214914343,
+            "volumeRatio20": 1.2688297419712726,
+            "benchmarkSymbol": "^GSPC",
+            "benchmarkRet20": 0.02166086449714877,
+            "benchmarkRet60": 0.03422510782385091,
+            "rs20": -0.08623502508644554,
+            "rs60": -0.15280847935086672,
+            "components": {
+              "return20": {
+                "score": 82.3,
+                "weight": 20
+              },
+              "return60": {
+                "score": 79.6,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 81.5,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 100,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 41.5,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 100,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 100,
+                "weight": 7
+              }
+            }
+          },
+          "signalSnapshot": {
+            "opposingSwing": 96.7311019897461,
+            "atr14": 1.674400874546596,
+            "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+            "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+          },
+          "decisionId": "SBUX|2026-10-08T13:30:00.000Z|-1",
+          "firstObservedAt": "2026-10-08T22:58:52.977Z",
+          "firstObservedProvenance": {
+            "tracker": "smc-forward-expanded",
+            "cohort": "us-75",
+            "marketDataSource": "Yahoo Finance chart API",
+            "github": {
+              "runId": "37856733828",
+              "runAttempt": "1",
+              "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+              "workflow": "SMC Expanded Forward Cohorts",
+              "ref": "refs/heads/main"
+            }
+          },
+          "entryObservationClass": "reconstructed",
+          "accountEquityBefore": 979.0000000000001,
+          "notional": 118.4294136408443,
+          "allocationPct": 0.12096977899984095,
+          "quantity": 1.3232336719647408,
+          "stopPct": 0.08266527460559507,
+          "riskAmount": 9.790000000000001,
+          "riskPctEquity": 0.01,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 93.22000122070312,
+          "markT": "2026-10-08T20:30:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -4.922430874984315,
+          "markedPositionValue": 113.50698276585999
         }
       ]
     },
@@ -1555,11 +2059,20 @@
         "totalUnrealizedPnl": -13.821319130888357,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-expanded|us-75|37856733828|1",
+        "observedAt": "2026-10-08T22:58:52.977Z",
+        "quality": "fresh",
+        "markedEquity": 974.7580434344331,
+        "totalUnrealizedPnl": -4.241956565566969,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T14:55:54.783Z",
     "firstCompleteMarkedEquityAt": "2026-10-04T14:55:54.783Z",
-    "markedObservedMaxDrawdownPct": -0.012864508509139783,
+    "markedObservedMaxDrawdownPct": -0.02429622647863061,
     "costAccounting": {
       "closedTradeCostR": 0.05,
       "chargedOnceOnSettlement": true,
@@ -1570,10 +2083,10 @@
       "markedEquity": "cash + marked open position values",
       "missingOrInvalidMarkMakesTotalMarkedEquityNull": true
     },
-    "enteredCount": 4,
-    "closedCount": 0,
+    "enteredCount": 6,
+    "closedCount": 2,
     "openCount": 4,
-    "skippedCount": 0,
+    "skippedCount": 2,
     "entered": [
       {
         "symbol": "DIS",
@@ -1584,9 +2097,9 @@
         "stop": 106.7137198311942,
         "target": 91.70255759102957,
         "risk": 5.003720746721541,
-        "status": "open",
-        "R": null,
-        "exitT": null,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-10-08T17:30:00.000Z",
         "momentumShadow": {
           "available": true,
           "score": 48.5,
@@ -1645,6 +2158,19 @@
           }
         },
         "lifecycleRefreshSource": "recorded_immutable_fields",
+        "exitReason": "stop",
+        "exitPriceAssumed": 106.7137198311942,
+        "exitTimeConvention": "bar_end",
+        "executionAudit": {
+          "stopTargetCollision": false,
+          "collisionPolicy": null,
+          "gapThroughStop": false,
+          "gapThroughTarget": false,
+          "gapFillAssumption": null,
+          "gapOpenPrecedence": false,
+          "exitBarStartT": "2026-10-08T13:30:00.000Z",
+          "exitBarEndT": "2026-10-08T17:30:00.000Z"
+        },
         "accountEquityBefore": 1000,
         "notional": 203.2687358724275,
         "allocationPct": 0.2032687358724275,
@@ -1652,10 +2178,11 @@
         "stopPct": 0.049195957052028165,
         "riskAmount": 10,
         "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open",
-        "effectiveExitMs": null,
-        "legacyExitTimingAdjusted": false
+        "pnl": -10.5,
+        "portfolioStatus": "closed",
+        "effectiveExitMs": 1791480600000,
+        "legacyExitTimingAdjusted": false,
+        "accountEquityAfter": 989.5000000000001
       },
       {
         "symbol": "FCX",
@@ -1872,9 +2399,9 @@
         "stop": 1134.3662179129465,
         "target": 1320.512681361607,
         "risk": 62.04882114955353,
-        "status": "open",
-        "R": null,
-        "exitT": null,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-10-08T17:30:00.000Z",
         "momentumShadow": {
           "available": true,
           "score": 50.3,
@@ -1953,12 +2480,231 @@
           }
         },
         "entryObservationClass": "reconstructed",
+        "exitReason": "stop",
+        "exitPriceAssumed": 1134.3662179129465,
+        "exitTimeConvention": "bar_end",
+        "executionAudit": {
+          "stopTargetCollision": false,
+          "collisionPolicy": null,
+          "gapThroughStop": false,
+          "gapThroughTarget": false,
+          "gapFillAssumption": null,
+          "gapOpenPrecedence": false,
+          "exitBarStartT": "2026-10-08T13:30:00.000Z",
+          "exitBarEndT": "2026-10-08T17:30:00.000Z"
+        },
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 1000,
         "notional": 192.81833512659873,
         "allocationPct": 0.19281833512659874,
         "quantity": 0.16116341639911969,
         "stopPct": 0.051862287854701684,
         "riskAmount": 10,
+        "riskPctEquity": 0.01,
+        "pnl": -10.5,
+        "portfolioStatus": "closed",
+        "effectiveExitMs": 1791480600000,
+        "legacyExitTimingAdjusted": false,
+        "accountEquityAfter": 979.0000000000001
+      },
+      {
+        "symbol": "PG",
+        "signalT": "2026-10-08T13:30:00.000Z",
+        "entryT": "2026-10-08T17:30:00.000Z",
+        "dir": 1,
+        "entry": 150.0050048828125,
+        "stop": 143.23810130528042,
+        "target": 163.53881203787665,
+        "risk": 6.7669035775320765,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 59.2,
+          "bucket": "medium",
+          "asOfDate": "2026-10-07",
+          "direction": "long",
+          "ret20": 0.03631525488457221,
+          "ret60": 0.011911318944097582,
+          "rsi14": 50.687733049974625,
+          "ma20": 146.4630012512207,
+          "ma50": 145.6792007446289,
+          "ma20Slope5": 0.0006182899143745146,
+          "volumeRatio20": 1.0479579183626382,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.02166086449714877,
+          "benchmarkRet60": 0.03422510782385091,
+          "rs20": 0.014654390387423444,
+          "rs60": -0.022313788879753327,
+          "components": {
+            "return20": {
+              "score": 68.2,
+              "weight": 20
+            },
+            "return60": {
+              "score": 53,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 51.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 51.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 23.8,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 59.2,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 42.6,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 143.39999389648438,
+          "atr14": 1.6189259120396204,
+          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "PG|2026-10-08T13:30:00.000Z|1",
+        "firstObservedAt": "2026-10-08T22:58:52.977Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37856733828",
+            "runAttempt": "1",
+            "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 979.0000000000001,
+        "notional": 217.0193473243373,
+        "allocationPct": 0.22167451207797476,
+        "quantity": 1.4467473768217134,
+        "stopPct": 0.045111185342239374,
+        "riskAmount": 9.790000000000001,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
+      },
+      {
+        "symbol": "SBUX",
+        "signalT": "2026-10-08T13:30:00.000Z",
+        "entryT": "2026-10-08T17:30:00.000Z",
+        "dir": -1,
+        "entry": 89.5,
+        "stop": 96.89854207720076,
+        "target": 74.70291584559848,
+        "risk": 7.398542077200759,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 83.8,
+          "bucket": "high",
+          "asOfDate": "2026-10-07",
+          "direction": "short",
+          "ret20": -0.06457416058929677,
+          "ret60": -0.11858337152701581,
+          "rsi14": 37.40831660709889,
+          "ma20": 95.72399978637695,
+          "ma50": 101.78260040283203,
+          "ma20Slope5": -0.023139765214914343,
+          "volumeRatio20": 1.2688297419712726,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.02166086449714877,
+          "benchmarkRet60": 0.03422510782385091,
+          "rs20": -0.08623502508644554,
+          "rs60": -0.15280847935086672,
+          "components": {
+            "return20": {
+              "score": 82.3,
+              "weight": 20
+            },
+            "return60": {
+              "score": 79.6,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 81.5,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 41.5,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 100,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 96.7311019897461,
+          "atr14": 1.674400874546596,
+          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "SBUX|2026-10-08T13:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-08T22:58:52.977Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37856733828",
+            "runAttempt": "1",
+            "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 979.0000000000001,
+        "notional": 118.4294136408443,
+        "allocationPct": 0.12096977899984095,
+        "quantity": 1.3232336719647408,
+        "stopPct": 0.08266527460559507,
+        "riskAmount": 9.790000000000001,
         "riskPctEquity": 0.01,
         "pnl": null,
         "portfolioStatus": "open",
@@ -1968,94 +2714,6 @@
     ],
     "open": [
       {
-        "symbol": "DIS",
-        "signalT": "2026-10-01T13:30:00.000Z",
-        "entryT": "2026-10-01T17:30:00.000Z",
-        "dir": -1,
-        "entry": 101.70999908447266,
-        "stop": 106.7137198311942,
-        "target": 91.70255759102957,
-        "risk": 5.003720746721541,
-        "status": "open",
-        "R": null,
-        "exitT": null,
-        "momentumShadow": {
-          "available": true,
-          "score": 48.5,
-          "bucket": "low",
-          "asOfDate": "2026-09-30",
-          "direction": "short",
-          "ret20": -0.012427035206688974,
-          "ret60": 0.07611815668261923,
-          "rsi14": 47.14286391250367,
-          "ma20": 105.55999984741212,
-          "ma50": 104.00060028076172,
-          "ma20Slope5": -0.00504733900330212,
-          "volumeRatio20": 1.355768196968068,
-          "benchmarkSymbol": "^GSPC",
-          "benchmarkRet20": 0.002629876505278572,
-          "benchmarkRet60": 0.019681888561763783,
-          "rs20": -0.015056911711967547,
-          "rs60": 0.05643626812085545,
-          "components": {
-            "return20": {
-              "score": 56.2,
-              "weight": 20
-            },
-            "return60": {
-              "score": 31,
-              "weight": 20
-            },
-            "rsi14": {
-              "score": 57.1,
-              "weight": 15
-            },
-            "price_vs_ma20": {
-              "score": 100,
-              "weight": 7
-            },
-            "ma20_vs_ma50": {
-              "score": 0,
-              "weight": 7
-            },
-            "ma20_slope5": {
-              "score": 62.6,
-              "weight": 6
-            },
-            "volume_ratio20": {
-              "score": 48.5,
-              "weight": 10
-            },
-            "relative_strength20": {
-              "score": 59.4,
-              "weight": 8
-            },
-            "relative_strength60": {
-              "score": 31.2,
-              "weight": 7
-            }
-          }
-        },
-        "lifecycleRefreshSource": "recorded_immutable_fields",
-        "accountEquityBefore": 1000,
-        "notional": 203.2687358724275,
-        "allocationPct": 0.2032687358724275,
-        "quantity": 1.9985128080043322,
-        "stopPct": 0.049195957052028165,
-        "riskAmount": 10,
-        "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open",
-        "effectiveExitMs": null,
-        "legacyExitTimingAdjusted": false,
-        "markPrice": 104.76000213623047,
-        "markT": "2026-10-07T20:30:00.000Z",
-        "markStatus": "fresh",
-        "markSource": "completed_4h_close",
-        "unrealizedPnl": -6.095470163390289,
-        "markedPositionValue": 197.1732657090372
-      },
-      {
         "symbol": "FCX",
         "signalT": "2026-10-05T13:30:00.000Z",
         "entryT": "2026-10-05T17:30:00.000Z",
@@ -2157,12 +2815,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 71.87999725341797,
-        "markT": "2026-10-07T20:30:00.000Z",
+        "markPrice": 71.13999938964844,
+        "markT": "2026-10-08T20:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -2.3640539652362365,
-        "markedPositionValue": 142.79650748220732
+        "unrealizedPnl": -3.834130683770872,
+        "markedPositionValue": 141.32643076367268
       },
       {
         "symbol": "CVX",
@@ -2266,54 +2924,54 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 205.1699981689453,
-        "markT": "2026-10-07T20:30:00.000Z",
+        "markPrice": 211.60499572753906,
+        "markT": "2026-10-08T20:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -4.0458894119170665,
-        "markedPositionValue": 245.95411058808293
+        "unrealizedPnl": 3.668270140090823,
+        "markedPositionValue": 253.6682701400908
       },
       {
-        "symbol": "LLY",
-        "signalT": "2026-10-07T13:30:00.000Z",
-        "entryT": "2026-10-07T17:30:00.000Z",
+        "symbol": "PG",
+        "signalT": "2026-10-08T13:30:00.000Z",
+        "entryT": "2026-10-08T17:30:00.000Z",
         "dir": 1,
-        "entry": 1196.4150390625,
-        "stop": 1134.3662179129465,
-        "target": 1320.512681361607,
-        "risk": 62.04882114955353,
+        "entry": 150.0050048828125,
+        "stop": 143.23810130528042,
+        "target": 163.53881203787665,
+        "risk": 6.7669035775320765,
         "status": "open",
         "R": null,
         "exitT": null,
         "momentumShadow": {
           "available": true,
-          "score": 50.3,
+          "score": 59.2,
           "bucket": "medium",
-          "asOfDate": "2026-10-06",
+          "asOfDate": "2026-10-07",
           "direction": "long",
-          "ret20": 0.02987779718435979,
-          "ret60": -0.0206283305131163,
-          "rsi14": 56.934363738549735,
-          "ma20": 1152.582989501953,
-          "ma50": 1174.9303955078126,
-          "ma20Slope5": -0.00011104511931259164,
-          "volumeRatio20": 0.955581813004612,
+          "ret20": 0.03631525488457221,
+          "ret60": 0.011911318944097582,
+          "rsi14": 50.687733049974625,
+          "ma20": 146.4630012512207,
+          "ma50": 145.6792007446289,
+          "ma20Slope5": 0.0006182899143745146,
+          "volumeRatio20": 1.0479579183626382,
           "benchmarkSymbol": "^GSPC",
-          "benchmarkRet20": 0.018949602774201546,
-          "benchmarkRet60": 0.040396088313122025,
-          "rs20": 0.010928194410158243,
-          "rs60": -0.061024418826238325,
+          "benchmarkRet20": 0.02166086449714877,
+          "benchmarkRet60": 0.03422510782385091,
+          "rs20": 0.014654390387423444,
+          "rs60": -0.022313788879753327,
           "components": {
             "return20": {
-              "score": 64.9,
+              "score": 68.2,
               "weight": 20
             },
             "return60": {
-              "score": 44.8,
+              "score": 53,
               "weight": 20
             },
             "rsi14": {
-              "score": 67.3,
+              "score": 51.7,
               "weight": 15
             },
             "price_vs_ma20": {
@@ -2321,34 +2979,247 @@
               "weight": 7
             },
             "ma20_vs_ma50": {
-              "score": 0,
+              "score": 100,
               "weight": 7
             },
             "ma20_slope5": {
-              "score": 49.7,
+              "score": 51.5,
               "weight": 6
             },
             "volume_ratio20": {
-              "score": 16.4,
+              "score": 23.8,
               "weight": 10
             },
             "relative_strength20": {
-              "score": 56.8,
+              "score": 59.2,
               "weight": 8
             },
             "relative_strength60": {
-              "score": 29.7,
+              "score": 42.6,
               "weight": 7
             }
           }
         },
         "signalSnapshot": {
-          "opposingSwing": 1136.6600341796875,
-          "atr14": 22.938162667410715,
-          "signalCompletedAt": "2026-10-07T17:30:00.000Z",
+          "opposingSwing": 143.39999389648438,
+          "atr14": 1.6189259120396204,
+          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
           "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
         },
-        "decisionId": "LLY|2026-10-07T13:30:00.000Z|1",
+        "decisionId": "PG|2026-10-08T13:30:00.000Z|1",
+        "firstObservedAt": "2026-10-08T22:58:52.977Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37856733828",
+            "runAttempt": "1",
+            "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 979.0000000000001,
+        "notional": 217.0193473243373,
+        "allocationPct": 0.22167451207797476,
+        "quantity": 1.4467473768217134,
+        "stopPct": 0.045111185342239374,
+        "riskAmount": 9.790000000000001,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 150.58999633789062,
+        "markT": "2026-10-08T20:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": 0.8463348530973945,
+        "markedPositionValue": 217.8656821774347
+      },
+      {
+        "symbol": "SBUX",
+        "signalT": "2026-10-08T13:30:00.000Z",
+        "entryT": "2026-10-08T17:30:00.000Z",
+        "dir": -1,
+        "entry": 89.5,
+        "stop": 96.89854207720076,
+        "target": 74.70291584559848,
+        "risk": 7.398542077200759,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 83.8,
+          "bucket": "high",
+          "asOfDate": "2026-10-07",
+          "direction": "short",
+          "ret20": -0.06457416058929677,
+          "ret60": -0.11858337152701581,
+          "rsi14": 37.40831660709889,
+          "ma20": 95.72399978637695,
+          "ma50": 101.78260040283203,
+          "ma20Slope5": -0.023139765214914343,
+          "volumeRatio20": 1.2688297419712726,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.02166086449714877,
+          "benchmarkRet60": 0.03422510782385091,
+          "rs20": -0.08623502508644554,
+          "rs60": -0.15280847935086672,
+          "components": {
+            "return20": {
+              "score": 82.3,
+              "weight": 20
+            },
+            "return60": {
+              "score": 79.6,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 81.5,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 41.5,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 100,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 96.7311019897461,
+          "atr14": 1.674400874546596,
+          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "SBUX|2026-10-08T13:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-08T22:58:52.977Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37856733828",
+            "runAttempt": "1",
+            "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 979.0000000000001,
+        "notional": 118.4294136408443,
+        "allocationPct": 0.12096977899984095,
+        "quantity": 1.3232336719647408,
+        "stopPct": 0.08266527460559507,
+        "riskAmount": 9.790000000000001,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 93.22000122070312,
+        "markT": "2026-10-08T20:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -4.922430874984315,
+        "markedPositionValue": 113.50698276585999
+      }
+    ],
+    "skipped": [
+      {
+        "symbol": "AAPL",
+        "signalT": "2026-10-07T17:30:00.000Z",
+        "dir": 1,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 63.8,
+          "bucket": "medium",
+          "asOfDate": "2026-10-06",
+          "direction": "long",
+          "ret20": 0.05505661752862445,
+          "ret60": 0.05143237669719225,
+          "rsi14": 51.48926183247341,
+          "ma20": 333.41150054931643,
+          "ma50": 322.3479998779297,
+          "ma20Slope5": 0.007411809668408376,
+          "volumeRatio20": 0.7297691229456894,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.018949602774201546,
+          "benchmarkRet60": 0.040396088313122025,
+          "rs20": 0.036107014754422906,
+          "rs60": 0.011036288384070225,
+          "components": {
+            "return20": {
+              "score": 77.5,
+              "weight": 20
+            },
+            "return60": {
+              "score": 62.9,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 53.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 68.5,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 72.6,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 53.7,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 330.6199951171875,
+          "atr14": 4.361772809709821,
+          "signalCompletedAt": "2026-10-07T20:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "AAPL|2026-10-07T17:30:00.000Z|1",
         "firstObservedAt": "2026-10-07T22:57:01.117Z",
         "firstObservedProvenance": {
           "tracker": "smc-forward-expanded",
@@ -2362,27 +3233,109 @@
             "ref": "refs/heads/main"
           }
         },
-        "entryObservationClass": "reconstructed",
-        "accountEquityBefore": 1000,
-        "notional": 192.81833512659873,
-        "allocationPct": 0.19281833512659874,
-        "quantity": 0.16116341639911969,
-        "stopPct": 0.051862287854701684,
-        "riskAmount": 10,
-        "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open",
-        "effectiveExitMs": null,
-        "legacyExitTimingAdjusted": false,
-        "markPrice": 1188.25,
-        "markT": "2026-10-07T20:30:00.000Z",
-        "markStatus": "fresh",
-        "markSource": "completed_4h_close",
-        "unrealizedPnl": -1.3159055903447654,
-        "markedPositionValue": 191.50242953625397
+        "entryObservationClass": "prospective",
+        "entryT": "2026-10-08T13:30:00.000Z",
+        "entry": 336.8299865722656,
+        "stop": 330.1838178362165,
+        "target": 350.12232404436384,
+        "risk": 6.6461687360491055,
+        "lifecycleRefreshSource": "recorded_signal_snapshot",
+        "reason": "max_positions"
+      },
+      {
+        "symbol": "HON",
+        "signalT": "2026-10-07T17:30:00.000Z",
+        "dir": -1,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 42.5,
+          "bucket": "low",
+          "asOfDate": "2026-10-06",
+          "direction": "short",
+          "ret20": 0.02223391040092637,
+          "ret60": -0.04220474637935878,
+          "rsi14": 65.74013803887436,
+          "ma20": 208.87650146484376,
+          "ma50": 220.29480072021485,
+          "ma20Slope5": 0.005829069571931855,
+          "volumeRatio20": 1.0769129641146995,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.018949602774201546,
+          "benchmarkRet60": 0.040396088313122025,
+          "rs20": 0.003284307626724825,
+          "rs60": -0.0826008346924808,
+          "components": {
+            "return20": {
+              "score": 38.9,
+              "weight": 20
+            },
+            "return60": {
+              "score": 60.6,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 10.6,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 0,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 35.4,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 26.2,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 47.9,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 77.5,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 216.0800018310547,
+          "atr14": 2.6924231392996654,
+          "signalCompletedAt": "2026-10-07T20:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "HON|2026-10-07T17:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-07T22:57:01.117Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "37699288862",
+            "runAttempt": "1",
+            "sha": "3571076ec6ae4120011b3dc11b3956f67694af01",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "prospective",
+        "entryT": "2026-10-08T13:30:00.000Z",
+        "entry": 206.49000549316406,
+        "stop": 216.34924414498465,
+        "target": 186.77152818952288,
+        "risk": 9.85923865182059,
+        "lifecycleRefreshSource": "recorded_signal_snapshot",
+        "reason": "max_positions"
       }
-    ],
-    "skipped": []
+    ]
   },
   "trades": [
     {
@@ -2394,9 +3347,9 @@
       "stop": 106.7137198311942,
       "target": 91.70255759102957,
       "risk": 5.003720746721541,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-10-08T17:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 48.5,
@@ -2454,7 +3407,20 @@
           }
         }
       },
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "stop",
+      "exitPriceAssumed": 106.7137198311942,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-10-08T13:30:00.000Z",
+        "exitBarEndT": "2026-10-08T17:30:00.000Z"
+      }
     },
     {
       "symbol": "FCX",
@@ -2641,10 +3607,115 @@
       "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
+      "symbol": "LLY",
+      "signalT": "2026-10-07T13:30:00.000Z",
+      "entryT": "2026-10-07T17:30:00.000Z",
+      "dir": 1,
+      "entry": 1196.4150390625,
+      "stop": 1134.3662179129465,
+      "target": 1320.512681361607,
+      "risk": 62.04882114955353,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-10-08T17:30:00.000Z",
+      "momentumShadow": {
+        "available": true,
+        "score": 50.3,
+        "bucket": "medium",
+        "asOfDate": "2026-10-06",
+        "direction": "long",
+        "ret20": 0.02987779718435979,
+        "ret60": -0.0206283305131163,
+        "rsi14": 56.934363738549735,
+        "ma20": 1152.582989501953,
+        "ma50": 1174.9303955078126,
+        "ma20Slope5": -0.00011104511931259164,
+        "volumeRatio20": 0.955581813004612,
+        "benchmarkSymbol": "^GSPC",
+        "benchmarkRet20": 0.018949602774201546,
+        "benchmarkRet60": 0.040396088313122025,
+        "rs20": 0.010928194410158243,
+        "rs60": -0.061024418826238325,
+        "components": {
+          "return20": {
+            "score": 64.9,
+            "weight": 20
+          },
+          "return60": {
+            "score": 44.8,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 67.3,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 0,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 49.7,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 16.4,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 56.8,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 29.7,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 1136.6600341796875,
+        "atr14": 22.938162667410715,
+        "signalCompletedAt": "2026-10-07T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "LLY|2026-10-07T13:30:00.000Z|1",
+      "firstObservedAt": "2026-10-07T22:57:01.117Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-expanded",
+        "cohort": "us-75",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "37699288862",
+          "runAttempt": "1",
+          "sha": "3571076ec6ae4120011b3dc11b3956f67694af01",
+          "workflow": "SMC Expanded Forward Cohorts",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed",
+      "exitReason": "stop",
+      "exitPriceAssumed": 1134.3662179129465,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-10-08T13:30:00.000Z",
+        "exitBarEndT": "2026-10-08T17:30:00.000Z"
+      },
+      "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
       "symbol": "AAPL",
       "signalT": "2026-10-07T17:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "R": null,
       "exitT": null,
       "momentumShadow": {
@@ -2724,13 +3795,19 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "entryT": "2026-10-08T13:30:00.000Z",
+      "entry": 336.8299865722656,
+      "stop": 330.1838178362165,
+      "target": 350.12232404436384,
+      "risk": 6.6461687360491055,
+      "lifecycleRefreshSource": "recorded_signal_snapshot"
     },
     {
       "symbol": "HON",
       "signalT": "2026-10-07T17:30:00.000Z",
       "dir": -1,
-      "status": "pending_entry",
+      "status": "open",
       "R": null,
       "exitT": null,
       "momentumShadow": {
@@ -2810,49 +3887,55 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "entryT": "2026-10-08T13:30:00.000Z",
+      "entry": 206.49000549316406,
+      "stop": 216.34924414498465,
+      "target": 186.77152818952288,
+      "risk": 9.85923865182059,
+      "lifecycleRefreshSource": "recorded_signal_snapshot"
     },
     {
-      "symbol": "LLY",
-      "signalT": "2026-10-07T13:30:00.000Z",
-      "entryT": "2026-10-07T17:30:00.000Z",
+      "symbol": "PG",
+      "signalT": "2026-10-08T13:30:00.000Z",
+      "entryT": "2026-10-08T17:30:00.000Z",
       "dir": 1,
-      "entry": 1196.4150390625,
-      "stop": 1134.3662179129465,
-      "target": 1320.512681361607,
-      "risk": 62.04882114955353,
+      "entry": 150.0050048828125,
+      "stop": 143.23810130528042,
+      "target": 163.53881203787665,
+      "risk": 6.7669035775320765,
       "status": "open",
       "R": null,
       "exitT": null,
       "momentumShadow": {
         "available": true,
-        "score": 50.3,
+        "score": 59.2,
         "bucket": "medium",
-        "asOfDate": "2026-10-06",
+        "asOfDate": "2026-10-07",
         "direction": "long",
-        "ret20": 0.02987779718435979,
-        "ret60": -0.0206283305131163,
-        "rsi14": 56.934363738549735,
-        "ma20": 1152.582989501953,
-        "ma50": 1174.9303955078126,
-        "ma20Slope5": -0.00011104511931259164,
-        "volumeRatio20": 0.955581813004612,
+        "ret20": 0.03631525488457221,
+        "ret60": 0.011911318944097582,
+        "rsi14": 50.687733049974625,
+        "ma20": 146.4630012512207,
+        "ma50": 145.6792007446289,
+        "ma20Slope5": 0.0006182899143745146,
+        "volumeRatio20": 1.0479579183626382,
         "benchmarkSymbol": "^GSPC",
-        "benchmarkRet20": 0.018949602774201546,
-        "benchmarkRet60": 0.040396088313122025,
-        "rs20": 0.010928194410158243,
-        "rs60": -0.061024418826238325,
+        "benchmarkRet20": 0.02166086449714877,
+        "benchmarkRet60": 0.03422510782385091,
+        "rs20": 0.014654390387423444,
+        "rs60": -0.022313788879753327,
         "components": {
           "return20": {
-            "score": 64.9,
+            "score": 68.2,
             "weight": 20
           },
           "return60": {
-            "score": 44.8,
+            "score": 53,
             "weight": 20
           },
           "rsi14": {
-            "score": 67.3,
+            "score": 51.7,
             "weight": 15
           },
           "price_vs_ma20": {
@@ -2860,43 +3943,134 @@
             "weight": 7
           },
           "ma20_vs_ma50": {
-            "score": 0,
+            "score": 100,
             "weight": 7
           },
           "ma20_slope5": {
-            "score": 49.7,
+            "score": 51.5,
             "weight": 6
           },
           "volume_ratio20": {
-            "score": 16.4,
+            "score": 23.8,
             "weight": 10
           },
           "relative_strength20": {
-            "score": 56.8,
+            "score": 59.2,
             "weight": 8
           },
           "relative_strength60": {
-            "score": 29.7,
+            "score": 42.6,
             "weight": 7
           }
         }
       },
       "signalSnapshot": {
-        "opposingSwing": 1136.6600341796875,
-        "atr14": 22.938162667410715,
-        "signalCompletedAt": "2026-10-07T17:30:00.000Z",
+        "opposingSwing": 143.39999389648438,
+        "atr14": 1.6189259120396204,
+        "signalCompletedAt": "2026-10-08T17:30:00.000Z",
         "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
       },
-      "decisionId": "LLY|2026-10-07T13:30:00.000Z|1",
-      "firstObservedAt": "2026-10-07T22:57:01.117Z",
+      "decisionId": "PG|2026-10-08T13:30:00.000Z|1",
+      "firstObservedAt": "2026-10-08T22:58:52.977Z",
       "firstObservedProvenance": {
         "tracker": "smc-forward-expanded",
         "cohort": "us-75",
         "marketDataSource": "Yahoo Finance chart API",
         "github": {
-          "runId": "37699288862",
+          "runId": "37856733828",
           "runAttempt": "1",
-          "sha": "3571076ec6ae4120011b3dc11b3956f67694af01",
+          "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
+          "workflow": "SMC Expanded Forward Cohorts",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed"
+    },
+    {
+      "symbol": "SBUX",
+      "signalT": "2026-10-08T13:30:00.000Z",
+      "entryT": "2026-10-08T17:30:00.000Z",
+      "dir": -1,
+      "entry": 89.5,
+      "stop": 96.89854207720076,
+      "target": 74.70291584559848,
+      "risk": 7.398542077200759,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 83.8,
+        "bucket": "high",
+        "asOfDate": "2026-10-07",
+        "direction": "short",
+        "ret20": -0.06457416058929677,
+        "ret60": -0.11858337152701581,
+        "rsi14": 37.40831660709889,
+        "ma20": 95.72399978637695,
+        "ma50": 101.78260040283203,
+        "ma20Slope5": -0.023139765214914343,
+        "volumeRatio20": 1.2688297419712726,
+        "benchmarkSymbol": "^GSPC",
+        "benchmarkRet20": 0.02166086449714877,
+        "benchmarkRet60": 0.03422510782385091,
+        "rs20": -0.08623502508644554,
+        "rs60": -0.15280847935086672,
+        "components": {
+          "return20": {
+            "score": 82.3,
+            "weight": 20
+          },
+          "return60": {
+            "score": 79.6,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 81.5,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 100,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 41.5,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 100,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 100,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 96.7311019897461,
+        "atr14": 1.674400874546596,
+        "signalCompletedAt": "2026-10-08T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "SBUX|2026-10-08T13:30:00.000Z|-1",
+      "firstObservedAt": "2026-10-08T22:58:52.977Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-expanded",
+        "cohort": "us-75",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "37856733828",
+          "runAttempt": "1",
+          "sha": "9b479880889872f3879a479e9681724ff2c8e40f",
           "workflow": "SMC Expanded Forward Cohorts",
           "ref": "refs/heads/main"
         }

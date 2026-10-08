@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-10-07T22:56:47.933Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-10-08T22:58:41.681Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1000.00; return 0.0%; realized-event max DD 0.0%.
-Marked equity $994.96; return -0.5%; observed marked max DD -1.4%; quality fresh.
+Marked equity $997.70; return -0.2%; observed marked max DD -1.4%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,12 +23,13 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| SAP.TO | Short | 37.960 | 38.510 | fresh | $-1.71 |
-| CVE.TO | Long | 44.260 | 43.670 | fresh | $-3.33 |
+| SAP.TO | Short | 37.960 | 38.990 | fresh | $-3.21 |
+| CVE.TO | Long | 44.260 | 44.775 | fresh | $2.91 |
+| BN.TO | Short | 51.845 | 52.260 | fresh | $-2.00 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 2; prospective 0; reconstructed 0; pending 0.
+Legacy provenance unknown 2; prospective 0; reconstructed 1; pending 1.
 This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 3.
 
 ### Performance by evidence provenance
