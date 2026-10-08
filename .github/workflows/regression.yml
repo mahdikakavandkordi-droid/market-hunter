@@ -27,6 +27,12 @@ jobs:
           npm run test:fundamental
           python3 scripts/test-fundamental-inline.py
           node scripts/test-fundamental-context.mjs
+      - name: Fundamental pipeline regression
+        run: |
+          npm run test:fundamental
+          node scripts/test-fundamental-build.mjs
+          node scripts/test-fundamental-context.mjs
+          python3 scripts/test-fundamental-inline.py
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Run browser smoke

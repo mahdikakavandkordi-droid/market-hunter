@@ -52,3 +52,28 @@ test('fundamental source failure leaves technical cards usable',async({page})=>{
   await card.locator('.stock-fundamental summary').click();
   await expect(card.locator('.stock-fundamental')).toContainText('technical selection is unchanged');
 });
+
+test('delayed financial data does not block cards or reset language and disclosures',async({page})=>{
+  let release;
+  const gate=new Promise(resolve=>release=resolve);
+  await page.route('**/data/fundamental-context.json',async route=>{await gate;await route.continue()});
+  await fixture(page);
+  const card=page.locator('#shortlistView .hunter-card').filter({hasText:'BHC'});
+  await expect(card.locator('.technical-session')).toBeVisible();
+  await expect(card.locator('.stock-fundamental summary')).toContainText('Loading');
+  await page.locator('#languageBtn').click();
+  await card.locator('.stock-fundamental summary').click();
+  release();
+  await expect(card.locator('.fundamental-reading')).toContainText('حاشیهٔ سود');
+  await expect(card.locator('.stock-fundamental')).toHaveAttribute('open','');
+  await expect(page.locator('#shortlistView')).toBeVisible();
+});
+
+test('hanging financial request times out while technical cards stay usable',async({page})=>{
+  await page.route('**/data/fundamental-context.json',()=>new Promise(()=>{}));
+  await fixture(page);
+  const card=page.locator('#shortlistView .hunter-card').filter({hasText:'BHC'});
+  await expect(card.locator('.technical-session')).toBeVisible();
+  await expect(card.locator('.stock-fundamental summary')).toContainText('Not available',{timeout:8000});
+  await expect(card.locator('.technical-session')).toBeVisible();
+});

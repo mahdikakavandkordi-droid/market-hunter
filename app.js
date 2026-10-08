@@ -1012,20 +1012,49 @@ async function loadPortfolio(ctx=captureSessionContext()){
     if(requestActive())savePortfolioSnapshot({items:[],failures:requested.map(symbol=>({symbol,reason:'request_failed'}))},requested,ctx);
   }
 }
+let fundamentalRequestId=0;
+async function loadFundamentals(){
+  const requestId=++fundamentalRequestId;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),5000);
+  state.fundamentalStatus='loading';
+  try{
+    const response=await fetch('/data/fundamental-context.json',{cache:'no-store',signal:controller.signal});
+    if(!response.ok)throw new Error('Financial source unavailable');
+    const data=await response.json();
+    if(requestId!==fundamentalRequestId)return;
+    state.fundamentals=data;
+    state.fundamentalStatus='available';
+  }catch{
+    if(requestId!==fundamentalRequestId)return;
+    state.fundamentalStatus=state.fundamentals?'retained':'unavailable';
+  }finally{
+    clearTimeout(timer);
+    if(requestId===fundamentalRequestId)updateFundamentalDisclosures();
+  }
+}
+function updateFundamentalDisclosures(){
+  document.querySelectorAll('.stock-fundamental[data-fundamental-symbol]').forEach(element=>{
+    const template=document.createElement('template');
+    template.innerHTML=fundamentalHtml({symbol:element.dataset.fundamentalSymbol});
+    const replacement=template.content.firstElementChild;
+    replacement.open=element.open;
+    element.replaceWith(replacement);
+  });
+}
 async function load(){
   loadEngines();
+  void loadFundamentals();
   const b=q('#refreshBtn');b.classList.add('busy');b.disabled=true;
   try{
-    const [daily,pulse,v2,intraday,monitor,fundamentals]=await Promise.allSettled([
+    const [daily,pulse,v2,intraday,monitor]=await Promise.allSettled([
       getJsonFallback('/api/research-data?kind=daily','/data/daily-market-report.json'),
       getJsonFallback('/api/research-data?kind=pulse','/data/market-pulse-report.json'),
       getJsonFallback('/api/research-data?kind=v2','/data/v2-latest-scan.json'),
       getJson('/api/intraday'),
-      getJson('/api/hunter-monitor'),
-      getJson('/data/fundamental-context.json')
+      getJson('/api/hunter-monitor')
     ]);
     state.hunterMonitor=monitor.status==='fulfilled'&&monitor.value?.version==='hunter-monitor-v1'?monitor.value:null;
-    state.fundamentals=fundamentals.status==='fulfilled'?fundamentals.value:null;
     state.daily=daily.status==='fulfilled'?daily.value:null;
     state.pulse=pulse.status==='fulfilled'?pulse.value:null;
     state.v2=v2.status==='fulfilled'?v2.value:null;
@@ -1192,9 +1221,10 @@ function stockSummaryHtml(x){
 function fundamentalHtml(x){
   const r=window.MHFundamentals?.reading(state.fundamentals,x.symbol,window.MHI18n?.language()||'en');
   const title=ui('Fundamental','فاندامنتال');
-  if(!r||r.status==='unavailable')return `<details class="stock-fundamental unavailable"><summary><span>${title}</span><small>${ui('Not available','ناموجود')}</small></summary><p class="reading-copy">${ui('Verified financial context is not available for this stock. Its technical selection is unchanged.','توضیح مالی تأییدشده برای این سهم موجود نیست. انتخاب تکنیکال آن تغییری نمی‌کند.')}</p></details>`;
+  if(!r||r.status==='unavailable')return `<details class="stock-fundamental unavailable" data-fundamental-symbol="${esc(x.symbol)}"><summary><span>${title}</span><small>${state.fundamentalStatus==='loading'?ui('Loading','در حال دریافت'):ui('Not available','ناموجود')}</small></summary><p class="reading-copy">${ui('Verified financial context is not available for this stock. Its technical selection is unchanged.','توضیح مالی تأییدشده برای این سهم موجود نیست. انتخاب تکنیکال آن تغییری نمی‌کند.')}</p></details>`;
+  const retained=state.fundamentalStatus==='retained'?'<small class="setup-caution">'+ui('Refresh failed · showing the previous financial snapshot.','به‌روزرسانی ناموفق بود؛ آخرین تصویر مالی موجود نمایش داده می‌شود.')+'</small>':'';
   const basis=r.period.basis==='fiscal-year'?ui('Fiscal year','سال مالی'):ui('Quarter','سه‌ماهه');
-  return `<details class="stock-fundamental"><summary><span>${title}</span><small>${basis} · <bdi>${esc(r.period.end)}</bdi></small></summary><div class="fundamental-reading analysis-copy"><p class="reading-copy">${esc(r.context)}</p><p class="stock-summary-lead">${esc(r.summary)}</p><p class="reading-copy">${esc(r.uncertainty)}</p>${r.instrumentNote?'<p class="explanation-note">'+esc(r.instrumentNote)+'</p>':''}<div class="technical-monitor"><h4>${ui('What to watch','موارد قابل پیگیری')}</h4><ul>${r.monitoring.map(s=>'<li>'+esc(s)+'</li>').join('')}</ul></div><div class="fundamental-source"><a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">${ui('Original financial filing','گزارش مالی اصلی')} ↗</a><small>${ui('Filed','تاریخ ثبت')}: <bdi>${esc(r.filed)}</bdi> · ${ui('Snapshot reviewed','بازبینی تصویر مالی')}: <bdi>${esc(r.reviewedAt.slice(0,10))}</bdi></small><small>${ui('Limited coverage · financial filings are not refreshed automatically yet.','پوشش محدود · گزارش‌های مالی هنوز به‌صورت خودکار به‌روز نمی‌شوند.')}</small>${r.status==='older-period'?'<small class="setup-caution">'+ui('Older financial period; check for a newer filing.','دورهٔ مالی قدیمی است؛ گزارش جدیدتر را بررسی کن.')+'</small>':''}</div></div></details>`;
+  return `<details class="stock-fundamental" data-fundamental-symbol="${esc(x.symbol)}"><summary><span>${title}</span><small>${basis} · <bdi>${esc(r.period.end)}</bdi></small></summary><div class="fundamental-reading analysis-copy"><p class="reading-copy">${esc(r.context)}</p><p class="stock-summary-lead">${esc(r.summary)}</p><p class="reading-copy">${esc(r.uncertainty)}</p>${r.instrumentNote?'<p class="explanation-note">'+esc(r.instrumentNote)+'</p>':''}<div class="technical-monitor"><h4>${ui('What to watch','موارد قابل پیگیری')}</h4><ul>${r.monitoring.map(s=>'<li>'+esc(s)+'</li>').join('')}</ul></div><div class="fundamental-source">${retained}<a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">${ui('Original financial filing','گزارش مالی اصلی')} ↗</a><small>${ui('Filed','تاریخ ثبت')}: <bdi>${esc(r.filed)}</bdi> · ${ui('Snapshot reviewed','بازبینی تصویر مالی')}: <bdi>${esc(r.reviewedAt.slice(0,10))}</bdi></small><small>${ui('Limited coverage · financial filings are not refreshed automatically yet.','پوشش محدود · گزارش‌های مالی هنوز به‌صورت خودکار به‌روز نمی‌شوند.')}</small>${r.status==='older-period'?'<small class="setup-caution">'+ui('Older financial period; check for a newer filing.','دورهٔ مالی قدیمی است؛ گزارش جدیدتر را بررسی کن.')+'</small>':''}</div></div></details>`;
 }
 function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
