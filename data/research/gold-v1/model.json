@@ -1,0 +1,28 @@
+{
+  "version": "gold-v1-rule-research-only",
+  "decision": "not approved for live use",
+  "trained_through_target_exit": "2023-12-22 00:00:00",
+  "target": "positive five-session bid-price return, next weekday open to fifth weekday close",
+  "feature_implementation_sha256": "0929c8c0f7159359e33d95726496396775855cc2036a89eddd6158fc2933c144",
+  "conditions": [
+    {
+      "feature": "ret_200",
+      "column": 64,
+      "quantile": 0.8,
+      "threshold": 0.16331328345374832,
+      "side": "le"
+    },
+    {
+      "feature": "rsi_200",
+      "column": 70,
+      "quantile": 0.6,
+      "threshold": 0.5266086234891678,
+      "side": "gt"
+    }
+  ],
+  "probability_when_all_conditions_true": 0.5977498542999892,
+  "probability_otherwise": 0.5208591491119372,
+  "calibration_warning": "Historical conditional frequencies were not calibrated on a separate calibration set; both outputs are above 0.5 and imply the same binary direction.",
+  "feature_warmup": 200,
+  "protocol_sha256": "2bb06cd35fe974e288742e3df8f744359bd55a7144615256eeb51d188b81297d"
+}

@@ -1,0 +1,109 @@
+{
+  "version": "wave-ml-single-hourly-pilot-source-checks-1",
+  "pilotReportHash": "172720439a34b89fc7cf52deb7a06a4d5963210897e5804a5f1c5db3c20cb5d5",
+  "checks": [
+    {
+      "symbol": "AAPL",
+      "rawSourceHash": "a5e862519de037410475d77232ca9f48875cd818d36f3d9b92df81e3767d2d54",
+      "missingScheduledHours": 5,
+      "counts": {
+        "absentTimestamp": 0,
+        "nullQuote": 5,
+        "invalidOHLC": 0
+      },
+      "examples": [
+        {
+          "expectedHour": "2024-11-29T17:30:00.000Z",
+          "reason": "nullQuote"
+        },
+        {
+          "expectedHour": "2024-12-24T17:30:00.000Z",
+          "reason": "nullQuote"
+        },
+        {
+          "expectedHour": "2025-07-03T16:30:00.000Z",
+          "reason": "nullQuote"
+        }
+      ],
+      "allMissingHoursExplainedByRawSource": true
+    },
+    {
+      "symbol": "RY.TO",
+      "rawSourceHash": "4a8c8bcd24b3b517bc1d5f617d86c850965b1577ef0410dec205cbbab913abd2",
+      "missingScheduledHours": 6,
+      "counts": {
+        "absentTimestamp": 0,
+        "nullQuote": 6,
+        "invalidOHLC": 0
+      },
+      "examples": [
+        {
+          "expectedHour": "2024-12-24T17:30:00.000Z",
+          "reason": "nullQuote"
+        },
+        {
+          "expectedHour": "2025-04-24T13:30:00.000Z",
+          "reason": "nullQuote"
+        },
+        {
+          "expectedHour": "2025-04-24T14:30:00.000Z",
+          "reason": "nullQuote"
+        }
+      ],
+      "allMissingHoursExplainedByRawSource": true
+    },
+    {
+      "symbol": "BTC-USD",
+      "rawSourceHash": "93de8b68dc43d882640419e60fb89ade41250471af4e98d4e758495d8f53dc63",
+      "missingScheduledHours": 156,
+      "counts": {
+        "absentTimestamp": 0,
+        "nullQuote": 156,
+        "invalidOHLC": 0
+      },
+      "examples": [
+        {
+          "expectedHour": "2025-01-02T14:00:00.000Z",
+          "reason": "nullQuote"
+        },
+        {
+          "expectedHour": "2025-11-17T06:00:00.000Z",
+          "reason": "nullQuote"
+        },
+        {
+          "expectedHour": "2025-11-17T07:00:00.000Z",
+          "reason": "nullQuote"
+        }
+      ],
+      "allMissingHoursExplainedByRawSource": true
+    },
+    {
+      "symbol": "ETH-USD",
+      "rawSourceHash": "fd615f72bd5db2a197f334a1345d28578673b9f51bf357e601f57a17893e94cc",
+      "missingScheduledHours": 156,
+      "counts": {
+        "absentTimestamp": 0,
+        "nullQuote": 156,
+        "invalidOHLC": 0
+      },
+      "examples": [
+        {
+          "expectedHour": "2025-01-02T14:00:00.000Z",
+          "reason": "nullQuote"
+        },
+        {
+          "expectedHour": "2025-11-17T06:00:00.000Z",
+          "reason": "nullQuote"
+        },
+        {
+          "expectedHour": "2025-11-17T07:00:00.000Z",
+          "reason": "nullQuote"
+        }
+      ],
+      "allMissingHoursExplainedByRawSource": true
+    }
+  ],
+  "interpretation": "Scheduled short-session hours are required by the approved calendar; null or absent raw quotes are actual unavailable inputs, not invented afternoon-session requirements",
+  "finalLabelsOpened": false,
+  "trainingStarted": false
+}

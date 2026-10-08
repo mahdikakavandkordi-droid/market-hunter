@@ -1,0 +1,38 @@
+{
+  "version": "wave-ml-single-hourly-pilot-contract-1",
+  "status": "engineering_feasibility_only",
+  "reviewedResearchCommit": "078bdc56e195056f7d9b1a03d43dc80e8139750a",
+  "symbols": [
+    "AAPL",
+    "RY.TO",
+    "BTC-USD",
+    "ETH-USD"
+  ],
+  "selection": "Fixed four nonreserved development representatives chosen before this pilot; no score-based symbol selection",
+  "sourceManifestHash": "38c0f9e3e1357197d37e2e67f7cab053e502f4848fadf34008a203aa7bd4343c",
+  "parentContractHash": "7d559f5a8bb7792e01c42400e395933435b59436055eec0a88ef2f3fa1fe9d3a",
+  "evaluationContractHash": "cba7232a7b4f9075c77c1199a4ab02c64c1368229f9f81426f621ca0e970ca6a",
+  "observationCutoff": "2026-10-07T23:01:09.135Z",
+  "priceSource": "Frozen normalized hourly quotes only; no daily provider OHLC used to build pilot features",
+  "earliestSourceCalendarDate": "2024-10-08",
+  "decisionEndExclusive": "2026-04-01T00:00:00Z",
+  "dailyPolicy": {
+    "crypto": "24 exact UTC hourly sources; completion at next UTC midnight; any missing/invalid hour excludes daily candle",
+    "stock": "Approved exchange session, exact hourly starts: seven sources normally, four for verified 13:00 early close; conservative daily completion at 17:00 Eastern",
+    "ohlc": "first open, max high, min low, last close; volume sum only when all source volumes finite and nonnegative, otherwise null",
+    "volumeCaveat": "Additive volume semantics are an unverified provider assumption, particularly for crypto; not a validated training feature"
+  },
+  "executionPolicy": "Same hourly source; 4H grouping for crypto; four-plus-three-source stock sessions and a single four-source short session; daily completeness is not used to erase earlier complete 4H bars",
+  "gapPolicy": "Missing/invalid scheduled daily sources or split events reset the 250-daily-bar feature state; holidays/weekends are not gaps. No reset based on disagreement with a second daily-price feed. This is a documented source design amendment, not verification of hourly quote authority.",
+  "features": "Original causal feature formulas, 250 daily warmup, 5-minute availability delay and completed-week policy unchanged; restrict outputs to pre-April development decisions",
+  "splitPolicy": "Use original V2 decision windows and 75-day fitting embargo as feasibility boundaries; feature counts are upper bounds, not resolved fitting samples",
+  "comparisons": [
+    "frozen original feature availability for the same four symbols",
+    "pilot hourly-derived feature availability",
+    "optimistic no-missing-source 250-bar warmup ceiling on the same two-year history"
+  ],
+  "outcomesBuilt": false,
+  "trainingStarted": false,
+  "finalLabelsOpened": false,
+  "readiness": "First test complete-source quality and usable history; no model fit unless a later readiness assessment passes"
+}
