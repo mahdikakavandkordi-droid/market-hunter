@@ -1,0 +1,163 @@
+{
+  "winner": {
+    "id": "train_selected_rules",
+    "kind": "rules",
+    "group": "all"
+  },
+  "selection_sha256": "6e5a13e1cc012fe9bcb334246ee581b4dd5fa041da579dab6239ff8f25321c25",
+  "protocol_sha256": "2bb06cd35fe974e288742e3df8f744359bd55a7144615256eeb51d188b81297d",
+  "fit_n": 2421,
+  "fit_last_exit": "2023-12-22 00:00:00",
+  "test_start": "2024-01-22 00:00:00",
+  "test_end": "2025-12-16 00:00:00",
+  "winner_metrics": {
+    "n": 312,
+    "up_rate": 0.657051282051282,
+    "brier": 0.24178614307012097,
+    "log_loss": 0.6766487606093179,
+    "accuracy": 0.657051282051282,
+    "auc": 0.5156599042625941
+  },
+  "baseline_metrics": {
+    "n": 312,
+    "up_rate": 0.657051282051282,
+    "brier": 0.24388319188061677,
+    "log_loss": 0.6809067124779545,
+    "accuracy": 0.657051282051282,
+    "auc": 0.5
+  },
+  "constant_half_metrics": {
+    "n": 312,
+    "up_rate": 0.657051282051282,
+    "brier": 0.25,
+    "log_loss": 0.6931471805599454,
+    "accuracy": 0.657051282051282,
+    "auc": 0.5
+  },
+  "momentum20_metrics": {
+    "n": 312,
+    "up_rate": 0.657051282051282,
+    "brier": 0.2567948717948718,
+    "log_loss": 0.7070603395491086,
+    "accuracy": 0.5160256410256411,
+    "auc": 0.42842489172555276
+  },
+  "paired_brier_improvement": {
+    "mean": 0.0020970488104957523,
+    "ci95": [
+      0.0002590447790517411,
+      0.004428571988317672
+    ],
+    "block_observations": 20,
+    "draws": 2000
+  },
+  "years": {
+    "2024": {
+      "winner": {
+        "n": 164,
+        "up_rate": 0.5853658536585366,
+        "brier": 0.24412398777126693,
+        "log_loss": 0.6813096493726389,
+        "accuracy": 0.5853658536585366,
+        "auc": 0.5309436274509804
+      },
+      "baseline": {
+        "n": 164,
+        "up_rate": 0.5853658536585366,
+        "brier": 0.24687378596061146,
+        "log_loss": 0.6868913741852525,
+        "accuracy": 0.5853658536585366,
+        "auc": 0.5
+      }
+    },
+    "2025": {
+      "winner": {
+        "n": 148,
+        "up_rate": 0.7364864864864865,
+        "brier": 0.23919555840128356,
+        "log_loss": 0.6714839919796919,
+        "accuracy": 0.7364864864864865,
+        "auc": 0.5137614678899083
+      },
+      "baseline": {
+        "n": 148,
+        "up_rate": 0.7364864864864865,
+        "brier": 0.24056929033251448,
+        "log_loss": 0.6742750603158135,
+        "accuracy": 0.7364864864864865,
+        "auc": 0.5
+      }
+    }
+  },
+  "probability_bins": [
+    {
+      "from": 0,
+      "to": 0.4,
+      "n": 0,
+      "mean_prediction": null,
+      "actual_up_rate": null
+    },
+    {
+      "from": 0.4,
+      "to": 0.5,
+      "n": 0,
+      "mean_prediction": null,
+      "actual_up_rate": null
+    },
+    {
+      "from": 0.5,
+      "to": 0.6,
+      "n": 312,
+      "mean_prediction": 0.526034485038056,
+      "actual_up_rate": 0.657051282051282
+    },
+    {
+      "from": 0.6,
+      "to": 1,
+      "n": 0,
+      "mean_prediction": null,
+      "actual_up_rate": null
+    }
+  ],
+  "detail": {
+    "searched": 2696,
+    "eligible": 2477,
+    "conditions": [
+      {
+        "feature": "ret_200",
+        "column": 64,
+        "quantile": 0.8,
+        "threshold": 0.16331328345374832,
+        "side": "le"
+      },
+      {
+        "feature": "rsi_200",
+        "column": 70,
+        "quantile": 0.6,
+        "threshold": 0.5266086234891678,
+        "side": "gt"
+      }
+    ],
+    "support": 484,
+    "posterior": 0.5977498542999892,
+    "base": 0.5208591491119372
+  },
+  "passed_frozen_success_criterion": true,
+  "status": "predictive_evidence_requires_replication",
+  "test_inputs": {
+    "daily-2024.json": "918002475942becca98b8c638fa8a1431ba00e8460d5d88ccf8bdf9c5de86fa4",
+    "daily-2025.json": "4f40dc5b44947989792e162e4a4a909d519a9826f42bd0d5df1a22eae440d21d"
+  },
+  "checks": {
+    "prefix_and_future_perturbation_points": [
+      250,
+      500,
+      1000,
+      1500,
+      4313
+    ],
+    "target_alignment_checks": 31,
+    "status": "passed"
+  },
+  "live_model_deployed": false
+}

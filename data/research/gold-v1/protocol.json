@@ -1,0 +1,139 @@
+{
+  "version": "gold-prediction-v1",
+  "status": "frozen-before-first-model-fit",
+  "instrument": "XAUUSD",
+  "purpose": "Estimate the probability of a positive five-session gold return; research assistance, not an execution system.",
+  "source": "HistData Generic ASCII M1 bid OHLC; fixed EST (UTC-5), no DST; no usable volume or ask prices",
+  "source_url": "https://www.histdata.com/download-free-forex-historical-data/?/ascii/1-minute-bar-quotes/xauusd",
+  "history": {
+    "warmup_start": "2009-01-01",
+    "fit_start": "2010-01-01",
+    "development_years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "sealed_test_years": [
+      2024,
+      2025
+    ],
+    "excluded_years": [
+      2026
+    ]
+  },
+  "bars": {
+    "frequency": "fixed EST calendar weekday",
+    "min_minutes": 900,
+    "max_internal_gap_minutes": 120,
+    "max_open_delay_minutes": 30,
+    "max_final_quote_delay_minutes_mon_thu": 30,
+    "friday_close_exception": true,
+    "invalid_ohlc": "reject source",
+    "duplicate_timestamp": "drop byte-equivalent parsed rows, reject any remaining duplicate timestamp",
+    "fill_missing_prices": false
+  },
+  "target": {
+    "horizon_sessions": 5,
+    "decision": "after completed weekday bar",
+    "entry": "next retained weekday bar open, at most 30 minutes after fixed EST midnight",
+    "exit": "fifth retained weekday bar close",
+    "label": "exit > entry",
+    "max_elapsed_calendar_days": 10,
+    "all_target_bars_must_pass_quality": true
+  },
+  "features": {
+    "lookbacks": [
+      2,
+      3,
+      5,
+      10,
+      20,
+      40,
+      60,
+      120,
+      200
+    ],
+    "families": [
+      "returns",
+      "trend distances and efficiency",
+      "realized volatility and ranges",
+      "RSI and stochastic location",
+      "breakout location",
+      "candle body and wicks",
+      "confirmed pivots and last swing",
+      "calendar"
+    ],
+    "volume": false,
+    "external_macro": false,
+    "causal_only": true
+  },
+  "search": {
+    "families": [
+      "regularized logistic regression",
+      "shallow histogram gradient boosting",
+      "single and paired threshold rules"
+    ],
+    "logistic_C": [
+      0.01,
+      0.1,
+      1.0
+    ],
+    "feature_sets": [
+      "price",
+      "price_and_indicators",
+      "all"
+    ],
+    "tree_leaf_nodes": [
+      3,
+      7,
+      15
+    ],
+    "tree_l2": [
+      1,
+      10
+    ],
+    "tree_iterations": 100,
+    "tree_learning_rate": 0.05,
+    "tree_min_leaf": 100,
+    "rule_quantiles": [
+      0.2,
+      0.4,
+      0.6,
+      0.8
+    ],
+    "max_pair_rules": 2000,
+    "min_rule_train_support": 150,
+    "rule_prior_strength": 100,
+    "random_seed": 271828
+  },
+  "validation": {
+    "method": "expanding historical fit, predict one full next year",
+    "purge": "training target exit strictly before validation first decision timestamp",
+    "selection": "smallest pooled development Brier loss; tie by candidate id",
+    "baseline": "fit-only positive-return frequency",
+    "baselines_also_reported": [
+      "constant 0.5",
+      "20-session momentum direction"
+    ],
+    "rule_selection": "training folds only; selected rule is one pipeline candidate",
+    "final_test": "one frozen winner plus fixed baselines, no retuning after test",
+    "uncertainty": "paired circular block bootstrap, 20 observations per block, 2000 draws",
+    "success": "test Brier improvement vs fit-frequency baseline with 95% block interval strictly positive and improvement in each test year"
+  },
+  "limits": [
+    "Bid-only data cannot establish executable net returns",
+    "Provider history is not independently certified",
+    "Overlapping targets are dependent",
+    "No universal profitable prediction claim",
+    "A failed final test requires a new future holdout, not repeated tuning on these years"
+  ],
+  "amendment_before_any_fit": {
+    "reason": "2019-2021 annual archives each contain 60 identical repeated Sunday minutes; deduplicate exact entire records, never average conflicting prices",
+    "original_protocol_commit": "d630c8477e6a1dc669d755a238d9f8cfb56c91f6",
+    "models_fitted": 0
+  }
+}

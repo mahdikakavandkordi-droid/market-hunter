@@ -1,0 +1,126 @@
+{
+  "version": "wave-ml-source-audit-task3-1",
+  "inputHashes": {
+    "parentContract": "7d559f5a8bb7792e01c42400e395933435b59436055eec0a88ef2f3fa1fe9d3a",
+    "evaluationContract": "cba7232a7b4f9075c77c1199a4ab02c64c1368229f9f81426f621ca0e970ca6a",
+    "sourceManifest": "38c0f9e3e1357197d37e2e67f7cab053e502f4848fadf34008a203aa7bd4343c",
+    "featureManifest": "cccb9b07af0bc1053481c3991710caae0febbbd31ff696059603bdc31ecc45f9",
+    "acceptedLabels": "e8762ec69e3995f8e8bfd3204f58b36be60b09453e91415157896b5ed1f5f310",
+    "v2Manifest": "df8d0368346eeeeea19a0ca0abdbe97d345373fa0f94264b85f6ef49cd131f52",
+    "originalReadinessReport": "5b2cc78a6a7f9ad9d03e630d9633f60a3e1beb97071a20296a7fa414469bf854"
+  },
+  "task1Hash": "0b23bd543906e557e20f0f21dbf4dd456b09ff3ffead782d1e4aefa73e49581e",
+  "task2Hash": "6c010ba27b877ffd4b684d39b35d2137e306f847565df0ff6940be5d80fd4226",
+  "nominalCountsAndSpans": "pass",
+  "continuousCoverageAssessment": "not_established_for_full_requested_scope; first_to_last_span_is_not_continuity",
+  "cryptoFirstFitCoverage": {
+    "observedDays": 161,
+    "expectedDays": 375,
+    "emptyMonths": [
+      "2024-12",
+      "2025-01",
+      "2025-02",
+      "2025-03",
+      "2025-04",
+      "2025-05"
+    ],
+    "longestMissingRun": {
+      "start": "2024-11-28",
+      "endInclusive": "2025-06-29",
+      "expectedDecisionDays": 214,
+      "calendarDays": 214
+    }
+  },
+  "reservedFeasibility": [
+    {
+      "symbol": "BMO.TO",
+      "featureFeasibility": "available",
+      "finalDecisionDays": 28,
+      "expectedCalendarDecisionDays": 28
+    },
+    {
+      "symbol": "SU.TO",
+      "featureFeasibility": "unavailable",
+      "finalDecisionDays": 0,
+      "expectedCalendarDecisionDays": 28
+    },
+    {
+      "symbol": "CCO.TO",
+      "featureFeasibility": "unavailable",
+      "finalDecisionDays": 0,
+      "expectedCalendarDecisionDays": 28
+    },
+    {
+      "symbol": "DOL.TO",
+      "featureFeasibility": "available",
+      "finalDecisionDays": 28,
+      "expectedCalendarDecisionDays": 28
+    },
+    {
+      "symbol": "JPM",
+      "featureFeasibility": "available",
+      "finalDecisionDays": 27,
+      "expectedCalendarDecisionDays": 27
+    },
+    {
+      "symbol": "COST",
+      "featureFeasibility": "unavailable",
+      "finalDecisionDays": 0,
+      "expectedCalendarDecisionDays": 27
+    },
+    {
+      "symbol": "XOM",
+      "featureFeasibility": "available",
+      "finalDecisionDays": 27,
+      "expectedCalendarDecisionDays": 27
+    },
+    {
+      "symbol": "AMD",
+      "featureFeasibility": "unavailable",
+      "finalDecisionDays": 0,
+      "expectedCalendarDecisionDays": 27
+    },
+    {
+      "symbol": "BNB-USD",
+      "featureFeasibility": "available",
+      "finalDecisionDays": 39,
+      "expectedCalendarDecisionDays": 39
+    },
+    {
+      "symbol": "LINK-USD",
+      "featureFeasibility": "available",
+      "finalDecisionDays": 39,
+      "expectedCalendarDecisionDays": 39
+    },
+    {
+      "symbol": "AVAX-USD",
+      "featureFeasibility": "partial",
+      "finalDecisionDays": 12,
+      "expectedCalendarDecisionDays": 39
+    },
+    {
+      "symbol": "LTC-USD",
+      "featureFeasibility": "available",
+      "finalDecisionDays": 39,
+      "expectedCalendarDecisionDays": 39
+    }
+  ],
+  "researchTrainingReady": false,
+  "productionReady": false,
+  "trainingEvidenceGate": {
+    "sourceAcceptance": "blocked",
+    "reservedFeatures": "blocked",
+    "fullUniverseContinuity": "not_established"
+  },
+  "promotionEvidenceGate": {
+    "independentFinalConfidence": "inconclusive_39_day_window"
+  },
+  "blockers": [
+    "raw_price_source_authority_not_verified",
+    "four_reserved_symbols_without_features_and_AVAX_partial",
+    "crypto_214_day_training_gap"
+  ],
+  "recommendation": "Verify a source/instrument price convention using authoritative evidence or review a separately frozen limited-scope research contract; do not remove flags or lower 250-bar eligibility to force passage",
+  "finalLabelsOpened": false,
+  "trainingStarted": false
+}

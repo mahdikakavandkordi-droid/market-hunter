@@ -1,0 +1,403 @@
+{
+  "version": "wave-ml-v2-evaluation-contract-1",
+  "createdAt": "2026-10-07T23:32:13.032Z",
+  "status": "evaluation_v2_task1_contract_only",
+  "enabled": false,
+  "reviewedRefs": {
+    "main": "3571076ec6ae4120011b3dc11b3956f67694af01",
+    "elliott": "58353bb4a25189ce47eb270a2d0efab68948b823"
+  },
+  "universe": {
+    "tsx-core": {
+      "mode": "stock",
+      "symbols": [
+        "RY.TO",
+        "TD.TO",
+        "BMO.TO",
+        "BNS.TO",
+        "CM.TO",
+        "AEM.TO",
+        "WPM.TO",
+        "ABX.TO",
+        "LUN.TO",
+        "CNQ.TO",
+        "SU.TO",
+        "TRP.TO",
+        "CNR.TO",
+        "CP.TO",
+        "SHOP.TO",
+        "NTR.TO",
+        "MFC.TO",
+        "BCE.TO",
+        "NA.TO",
+        "SLF.TO",
+        "POW.TO",
+        "ENB.TO",
+        "IMO.TO",
+        "TOU.TO",
+        "FNV.TO",
+        "K.TO",
+        "FTS.TO",
+        "EMA.TO",
+        "WCN.TO",
+        "CSU.TO",
+        "ATD.TO",
+        "MRU.TO",
+        "L.TO"
+      ]
+    },
+    "tsx-extra": {
+      "mode": "stock",
+      "symbols": [
+        "RCI-B.TO",
+        "T.TO",
+        "QSR.TO",
+        "CCL-B.TO",
+        "GIB-A.TO",
+        "DOL.TO",
+        "TRI.TO",
+        "IFC.TO",
+        "GWO.TO",
+        "BAM.TO",
+        "BN.TO",
+        "BIP-UN.TO",
+        "BEP-UN.TO",
+        "PPL.TO",
+        "KEY.TO",
+        "ARX.TO",
+        "CVE.TO",
+        "GIL.TO",
+        "WCP.TO",
+        "CCO.TO",
+        "TECK-B.TO",
+        "FM.TO",
+        "PAAS.TO",
+        "AGI.TO",
+        "EDV.TO",
+        "MG.TO",
+        "TFII.TO",
+        "STN.TO",
+        "CAE.TO",
+        "CTC-A.TO",
+        "GSY.TO",
+        "SAP.TO",
+        "WSP.TO",
+        "TIH.TO",
+        "OTEX.TO",
+        "H.TO",
+        "CU.TO"
+      ]
+    },
+    "us-75": {
+      "mode": "stock",
+      "symbols": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "TSLA",
+        "JPM",
+        "BAC",
+        "WFC",
+        "GS",
+        "MS",
+        "V",
+        "MA",
+        "AXP",
+        "C",
+        "SCHW",
+        "BLK",
+        "XOM",
+        "CVX",
+        "COP",
+        "SLB",
+        "EOG",
+        "OXY",
+        "JNJ",
+        "LLY",
+        "UNH",
+        "MRK",
+        "ABBV",
+        "TMO",
+        "ABT",
+        "MDT",
+        "HD",
+        "LOW",
+        "COST",
+        "WMT",
+        "TGT",
+        "MCD",
+        "SBUX",
+        "NKE",
+        "CAT",
+        "DE",
+        "GE",
+        "HON",
+        "UPS",
+        "UNP",
+        "RTX",
+        "LMT",
+        "BA",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "AMD",
+        "INTC",
+        "QCOM",
+        "TXN",
+        "AMAT",
+        "MU",
+        "NFLX",
+        "DIS",
+        "CMCSA",
+        "T",
+        "VZ",
+        "NEE",
+        "SO",
+        "DUK",
+        "LIN",
+        "APD",
+        "FCX",
+        "NEM",
+        "PG",
+        "KO",
+        "PEP",
+        "PM"
+      ]
+    },
+    "crypto-15": {
+      "mode": "crypto",
+      "symbols": [
+        "BTC-USD",
+        "ETH-USD",
+        "BNB-USD",
+        "XRP-USD",
+        "SOL-USD",
+        "TRX-USD",
+        "DOGE-USD",
+        "LINK-USD",
+        "ADA-USD",
+        "XLM-USD",
+        "BCH-USD",
+        "LTC-USD",
+        "AVAX-USD",
+        "DOT-USD",
+        "SHIB-USD"
+      ]
+    }
+  },
+  "universePolicy": "current frozen survivor universe; no historic-constituent performance claims; quote-currency nominal accounts; metals excluded from initial requested scope",
+  "sample": {
+    "unit": "symbol x eligible completed daily decision x direction",
+    "eligibility": "250 valid continuous completed daily bars; complete feature availability; both long and short; independent of Elliott confirmation",
+    "smallPivotRadius": 2,
+    "outerPivotRadius": 5,
+    "dailyWarmupBars": 250,
+    "historicalAvailabilityDelayMinutes": 5,
+    "features": {
+      "wave": {
+        "pivots": "strict completed-daily extrema radius 2 and 5; occurrence and confirmation tracked separately; equal/dual extrema skipped",
+        "features": [
+          "last_6_confirmed_leg_signed_size_over_ATR14",
+          "last_6_confirmed_leg_duration_in_daily_bars",
+          "last_6_confirmed_leg_speed_ATR_per_bar",
+          "last_5_leg_size_ratios",
+          "last_5_leg_duration_ratios",
+          "bars_since_last_pivot_confirmation",
+          "distance_to_last_confirmed_high_over_ATR",
+          "distance_to_last_confirmed_low_over_ATR",
+          "higher_high_higher_low_and_lower_high_lower_low_flags"
+        ],
+        "availability": "only use pivots after right-window bar completion; record asOf, confirmation and input cutoffs; no full-series ZigZag labels",
+        "formulas": {
+          "leg_size": "direction*(pivot[j].price-pivot[j-1].price)/decision_ATR14, last six legs from last seven available alternating small pivots",
+          "leg_duration": "pivot occurrence index difference in continuous completed daily bars, strictly positive",
+          "leg_speed": "normalized signed leg_size / leg_duration",
+          "ratios": "consecutive absolute leg sizes and durations; zero denominator -> null with missing flag",
+          "pivot_distances": "direction*(decision_close-last_available_high_or_low_price)/decision_ATR14",
+          "structure_flags": "compare last two available confirmed highs and last two confirmed lows; insufficient history -> null"
+        }
+      },
+      "indicators": {
+        "atr14": "simple mean of last 14 true ranges using prior daily closes; atr14/close",
+        "rsi14": "Wilder RSI; recursive smoothing from fixed segment start; denominator zero -> 100 or 50 for flat",
+        "rvol20": "current volume / mean of 20 strictly previous daily volumes; missing stays null with flag",
+        "ma": "SMA20/50/200: (close-SMA)/ATR; slope=(SMA[t]-SMA[t-5])/(5*ATR)",
+        "returns": "direction-oriented log close returns over 5,20,60 bars",
+        "volatility": "population standard deviation of last 20 daily log returns",
+        "weekly": "last complete week close vs SMA20 of completed weekly closes, normalized by daily ATR; no current-week partial bars"
+      },
+      "context": {
+        "direction": "one long and one short row per eligible daily decision; paired rows remain in same fold",
+        "market": "us/ca/crypto categorical; no symbol ID or outcome-derived sector ranks",
+        "currency": "metadata for accounting only, excluded from predictors",
+        "availability": "daily >= close/completion; weekly >= conservative final daily completion of calendar-confirmed last session; add five-minute research observation delay"
+      }
+    },
+    "missingPolicy": "optional volume and insufficient pivot history -> null plus missing flags; required price/calendar/ATR gaps -> ineligible; reset state at path gaps; imputation learned on train only"
+  },
+  "executionLabel": {
+    "entry": "first regular-session stock research-4H or complete UTC crypto-4H open at or after decisionCompletedAt+5min, within deadline; OHLC completion used only to establish retrospective verified path",
+    "stocks": "regular 09:30–16:00 Eastern; same four-hour plus three-hour-source conservative session segments as reviewed Trend; early close/missing segment requires authoritative session data or unresolved outcome",
+    "crypto": "four complete aligned UTC hourly sources per 4H; omit live/nonaligned provider rows",
+    "entryHours": {
+      "stock": 120,
+      "crypto": 36
+    },
+    "riskDistance": "2 x decision-time daily ATR14",
+    "stop": "entryOpen - direction * riskDistance",
+    "target": "entryOpen + direction * 2 * riskDistance",
+    "maxHeldResearchBars": 60,
+    "costR": 0.05,
+    "maxLabelWallDaysIncludingEntry": 75,
+    "classes": [
+      "target_first",
+      "stop_first",
+      "time_exit",
+      "entry_expired"
+    ],
+    "continuousTargets": [
+      "gross_R",
+      "net_R=gross_R-0.05 for admitted trades; entry_expired=0"
+    ],
+    "unresolved": "missing path, split inside feature/holding window, nonpositive stop, provider revision or boundary ambiguity not covered by stop-first -> unresolved, never stop/zero/success; exclude from supervised fitting but retain coverage records",
+    "collision": "opening adverse stop gap fills open; opening favorable target gap fills target; else intrabar both stop-first",
+    "knownVsFuture": "entryOpen, target, stop, holding path and exit are label-only future data; decision features never read them",
+    "policyDifference": "new ATR-based ML opportunity policy, not Elliott V1 fixed C stop/extension; compare as a distinct challenger, never substitute its labels for Elliott account returns",
+    "short": "hypothetical price P/L with notional reserved; no sale-proceeds leverage; excludes borrow/funding/dividends/FX"
+  },
+  "split": {
+    "globalUTC": true,
+    "trainDecisionStart": "2024-10-08T00:00:00Z",
+    "validationStart": "2026-01-01T00:00:00Z",
+    "finalTestStart": "2026-06-15T00:00:00Z",
+    "finalTestEndExclusive": "2026-07-24T00:00:00Z",
+    "holdoutSymbols": [
+      "BMO.TO",
+      "SU.TO",
+      "CCO.TO",
+      "DOL.TO",
+      "JPM",
+      "COST",
+      "XOM",
+      "AMD",
+      "BNB-USD",
+      "LINK-USD",
+      "AVAX-USD",
+      "LTC-USD"
+    ],
+    "holdoutSymbolPolicy": "all rows excluded from train, tuning and calibration; primary final score only these symbols in final time block; warmup raw data may compute features but must not train model",
+    "priorEvidence": "the 20-symbol Elliott structural audit is observed development evidence; no claims its period or symbols are untouched; final labels for reserved 12 must not be inspected during tasks 1–4",
+    "purge": "Training requires every admitted label information end strictly before the fold decision start, in addition to the 75-day pre-boundary embargo. Global UTC day assignment and paired directions remain grouped. Validation membership uses decision time only; completion uses its separate fixed outcome cutoff, not the end of its decision window.",
+    "embargoDays": 75,
+    "embargo": "Exclude fitting decision days within 75 calendar days before each validation/final decision boundary, across all markets; final fitting also excludes all decisions on/after 2026-04-01.",
+    "walkForward": "Two fixed decision windows: Jan 1 to Mar 1 and Mar 1 to Apr 1. Each model fits only the eligible past of its own decision start. Both score after full validation maturity at Jun 15; scoring a window is not permission to refit its earlier model using later labels.",
+    "rightCensoring": "only labels resolved by observation cutoff allowed; unfinished/unavailable paths not labeled flat or loss",
+    "thresholdSelection": "Select and lock model, preprocessing, calibration, trade threshold and ranking using only matured development validation before opening any primary final labels. Final refit may use only pre-April decisions with information end strictly before June 15, plus unchanged 75-day embargo.",
+    "finalLabelMaturity": "Final decision window is June 15 inclusive to July 24 exclusive; its labels remain sealed. At the frozen October 7 observation cutoff there is at least 75-day horizon maturity for the last admitted decision day. Keep all unresolved paths in coverage; do not select by early outcome resolution.",
+    "insufficientBlockSupport": "insufficient label-horizon-sized independent blocks -> inconclusive confidence evidence; no challenger promotion regardless of nominal row count",
+    "developmentDecisionEndExclusive": "2026-04-01T00:00:00Z",
+    "validationOutcomeCutoffExclusive": "2026-06-15T00:00:00Z",
+    "validationWindows": [
+      {
+        "name": "validation_1",
+        "decisionStart": "2026-01-01T00:00:00Z",
+        "decisionEndExclusive": "2026-03-01T00:00:00Z",
+        "outcomeCutoffExclusive": "2026-06-15T00:00:00Z"
+      },
+      {
+        "name": "validation_2",
+        "decisionStart": "2026-03-01T00:00:00Z",
+        "decisionEndExclusive": "2026-04-01T00:00:00Z",
+        "outcomeCutoffExclusive": "2026-06-15T00:00:00Z"
+      }
+    ],
+    "maturityGap": {
+      "start": "2026-04-01T00:00:00Z",
+      "endExclusive": "2026-06-15T00:00:00Z",
+      "decisionsAllowedInFit": false,
+      "decisionsAllowedInValidation": false,
+      "decisionsAllowedInFinal": false
+    },
+    "finalFitDecisionEndExclusive": "2026-04-01T00:00:00Z",
+    "windowMaturity": "Before the fixed observation cutoff, the entire validation window is not ready for scoring. After maturity, retain all decisions in coverage; resolve eligible outcomes known strictly before cutoff and keep unknown/invalid paths unresolved. Never select the cohort by early exit or outcome duration; never truncate label horizons to fit a month.",
+    "partitionVersioning": "Derive V2 tags from original availableAt and reserved-symbol membership in a separate manifest. Do not rewrite V1 feature files or inherit their Apr 1 final-time tags blindly. Apr 1–Jun 15 decisions are maturity-gap exclusions. Reserved histories remain excluded from development at all times."
+  },
+  "modelPlan": {
+    "baselines": [
+      "constant training class frequencies and training mean net R",
+      "regularized linear/logistic model"
+    ],
+    "candidate": "one preregistered tree model in task4 after checking installed dependencies; at most 8 total model-setting trials; no per-symbol tuning",
+    "metrics": [
+      "multiclass log loss",
+      "Brier score and reliability bins",
+      "net R per admitted position",
+      "coverage and unresolved rate",
+      "independent symbol/time-block intervals",
+      "portfolio realized and marked drawdown using causal risk admission"
+    ],
+    "portfolioRules": {
+      "startingCapital": 1000,
+      "targetRiskPct": 0.01,
+      "maxPositionPct": 0.25,
+      "maxOpenRiskPct": 0.04,
+      "maxPositions": 4,
+      "costR": 0.05,
+      "fractionalShares": true
+    },
+    "acceptance": "integrity gates mandatory; probabilistic model must beat training-frequency baseline on pooled forward validation log loss; report paired block-bootstrap uncertainty; primary heldout net R lower 95% block CI >0 after costs and no sign reversal under 0.10R stress cost; otherwise inconclusive/reject; no auto promotion",
+    "retraining": "future scheduled candidate training only after approved deployment task; immutable model/data/split versions and challenger evaluation; no live self-modifying rules"
+  },
+  "task2Gate": {
+    "engineering": "GO for frozen data acquisition, feature builder and synthetic causality tests",
+    "productionTraining": "BLOCKED pending full-universe source continuity/corporate-action/calendar audit, enough resolved labels per market/direction, split feasibility and sealed final partition",
+    "sampleMinimumBeforeTraining": "at least 12 months train decision coverage, 500 resolved train samples per market/direction, 100 resolved per validation market/direction; raw counts are dependent, not effective independent sample size",
+    "forbidden": [
+      "training in task1",
+      "operational account writes",
+      "strategy parameter tuning",
+      "activation",
+      "daily substitution for 4H execution"
+    ]
+  },
+  "parent": {
+    "version": "wave-ml-v1-contract-1",
+    "contractHash": "7d559f5a8bb7792e01c42400e395933435b59436055eec0a88ef2f3fa1fe9d3a",
+    "path": "data/research/wave-ml-v1/contract.json",
+    "reviewedResearchCommit": "364b5205619a8581089e068cca287a3be8f87619"
+  },
+  "amendment": {
+    "reason": "Separate decision-window membership from outcome-observation maturity; stop selecting only labels resolved before the decision window ends.",
+    "authorizedScope": "Evaluation V2 task 1; contract only. No fitting, final labels or activation.",
+    "priorEvidence": "Development support counts and information intervals were inspected before amendment; no model scores, class return summaries or reserved/final outcomes were inspected. This is a documented design amendment, not a pristine original preregistration.",
+    "changes": [
+      "Validation outcome deadline separated from decision end",
+      "Final decision start moved to 2026-06-15",
+      "April 1 to June 15 is a maturity-only gap excluded from fit/evaluation decisions",
+      "Original data/labels/features remain versioned under the parent contract"
+    ]
+  },
+  "evaluationV2Tasks": {
+    "task1": "contract_only",
+    "task2": "separate_V2_split_manifest",
+    "task3": "causality_tests_and_offline_replay",
+    "task4": "research_readiness_report_and_review; no_training"
+  },
+  "readiness": {
+    "researchTrainingReady": false,
+    "productionReady": false,
+    "finalLabelsOpened": false,
+    "trainingStarted": false,
+    "remainingGates": [
+      "V2 split implementation and integrity verification",
+      "Development count and 12-month span support",
+      "Accepted-path quality and explicit unresolved coverage",
+      "Reserved-symbol feature feasibility without outcome inspection",
+      "Independent horizon-block support; 39-day final window cannot establish robust profitability evidence"
+    ]
+  }
+}
