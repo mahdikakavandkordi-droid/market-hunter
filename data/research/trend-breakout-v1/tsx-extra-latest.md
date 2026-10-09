@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-extra
-Generated: 2026-10-09T15:29:43.033Z; mode: forward_shadow.
+Generated: 2026-10-09T20:14:42.830Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 0.
-Open 9; pending 1; closed 2; lifecycle reviews 0.
-Realized equity $992.60; marked equity $989.11; mark quality fresh.
+Open 10; pending 3; closed 2; lifecycle reviews 0.
+Realized equity $992.60; marked equity $1004.30; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -16,15 +16,18 @@ Realized equity $992.60; marked equity $989.11; mark quality fresh.
 ## Positions
 
 - IFC.TO: Short open; entry 242.10000610351562; current stop 246.91321672712053; provenance prospective; gap none
-- T.TO: Short open; entry 11.180000305175781; current stop 11.58714348929269; provenance prospective; gap none
-- TFII.TO: Short open; entry 165.2899932861328; current stop 170.1289291381836; provenance prospective; gap none
+- T.TO: Short open; entry 11.180000305175781; current stop 11.559285845075335; provenance prospective; gap none
+- TFII.TO: Short open; entry 165.2899932861328; current stop 170.09249441964286; provenance prospective; gap none
 - PPL.TO: Long open; entry 66.4800033569336; current stop 64.75143323625836; provenance prospective; gap none
-- RCI-B.TO: Short open; entry 43.52000045776367; current stop 45.085714612688335; provenance prospective; gap none
+- RCI-B.TO: Short open; entry 43.52000045776367; current stop 44.80178805759975; provenance prospective; gap none
 - CAE.TO: Short open; entry 32.83000183105469; current stop 33.8664311000279; provenance prospective; gap none
-- DOL.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 - EDV.TO: Short open; entry 75.62000274658203; current stop 78.77643258231026; provenance prospective; gap none
 - STN.TO: Short open; entry 95.2699966430664; current stop 98.04570988246373; provenance prospective; gap none
 - WSP.TO: Short open; entry 161.99000549316406; current stop 169.02571977887834; provenance prospective; gap none
+- DOL.TO: Long open; entry 188.74000549316406; current stop 184.74642944335938; provenance prospective; gap none
+- KEY.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- TRI.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- WCP.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 

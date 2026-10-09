@@ -1,7 +1,7 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-10-09T15:29:43.033Z",
+  "updatedAt": "2026-10-09T20:14:42.830Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
@@ -38,15 +38,15 @@
       "entryObservationClass": "prospective",
       "currentStop": 21.012215205601283,
       "bestClose": 20.350000381469727,
-      "holdingBars": 2,
+      "holdingBars": 3,
       "entryObservedAt": "2026-10-08T21:26:43.880Z",
-      "lastEvaluatedEndT": "2026-10-08T20:30:00.000Z"
+      "lastEvaluatedEndT": "2026-10-09T17:30:00.000Z"
     },
     {
       "symbol": "PPLT",
       "signalT": "2026-10-07T13:30:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-07T17:30:00.000Z",
         "dailyAsOf": "2026-10-06",
@@ -62,8 +62,8 @@
       "stop": 15.349514143807548,
       "target": null,
       "risk": 0.5295144489833287,
-      "R": null,
-      "exitT": null,
+      "R": -1.0000000000000016,
+      "exitT": "2026-10-09T17:30:00.000Z",
       "decisionId": "PPLT|2026-10-07T13:30:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-10-07T17:45:21.426Z",
@@ -76,15 +76,24 @@
       "entryObservationClass": "prospective",
       "currentStop": 15.349514143807548,
       "bestClose": 14.819999694824219,
-      "holdingBars": 2,
+      "holdingBars": 3,
       "entryObservedAt": "2026-10-08T21:26:43.880Z",
-      "lastEvaluatedEndT": "2026-10-08T20:30:00.000Z"
+      "lastEvaluatedEndT": "2026-10-09T17:30:00.000Z",
+      "exitPriceAssumed": 15.349514143807548,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "trailing_or_initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapFillAssumption": "boundary stop / completed time-exit close",
+        "exitBarStartT": "2026-10-09T13:30:00.000Z",
+        "exitBarEndT": "2026-10-09T17:30:00.000Z"
+      }
     },
     {
       "symbol": "SLV",
       "signalT": "2026-10-08T13:30:00.000Z",
       "dir": -1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-08T17:30:00.000Z",
         "dailyAsOf": "2026-10-07",
@@ -95,11 +104,11 @@
         "atr14": 0.8418358394077846,
         "signalClose": 53.40999984741211
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
+      "entryT": "2026-10-09T13:30:00.000Z",
+      "entry": 54.89500045776367,
+      "stop": 56.57867213657924,
       "target": null,
-      "risk": null,
+      "risk": 1.6836716788155692,
       "R": null,
       "exitT": null,
       "decisionId": "SLV|2026-10-08T13:30:00.000Z|-1",
@@ -111,7 +120,12 @@
         "runKey": "trend-breakout-v1|37846746324|1",
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 56.57867213657924,
+      "bestClose": 54.834999084472656,
+      "holdingBars": 1,
+      "entryObservedAt": "2026-10-09T20:14:42.830Z",
+      "lastEvaluatedEndT": "2026-10-09T17:30:00.000Z"
     }
   ],
   "runLog": [
@@ -646,6 +660,12 @@
     {
       "runKey": "trend-breakout-v1|37952081120|1",
       "observedAt": "2026-10-09T15:29:43.033Z",
+      "failures": [],
+      "diagnosticCount": 5
+    },
+    {
+      "runKey": "trend-breakout-v1|37985595015|1",
+      "observedAt": "2026-10-09T20:14:42.830Z",
       "failures": [],
       "diagnosticCount": 5
     }
@@ -1449,6 +1469,15 @@
       "quality": "fresh",
       "markedEquity": 998.1572528781516,
       "totalUnrealizedPnl": -1.8427471218484581,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|37985595015|1",
+      "observedAt": "2026-10-09T20:14:42.830Z",
+      "quality": "fresh",
+      "markedEquity": 985.6116445810064,
+      "totalUnrealizedPnl": -5.009303750951557,
       "missingSymbols": [],
       "staleSymbols": []
     }

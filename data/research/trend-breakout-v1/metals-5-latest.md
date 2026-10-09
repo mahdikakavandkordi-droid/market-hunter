@@ -1,13 +1,13 @@
 # Trend Breakout V1 — metals-5
-Generated: 2026-10-09T15:29:43.033Z; mode: forward_shadow.
+Generated: 2026-10-09T20:14:42.830Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 5; failed fetch/review symbols 0.
-Open 2; pending 1; closed 0; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $998.16; mark quality fresh.
+Open 2; pending 0; closed 1; lifecycle reviews 0.
+Realized equity $990.62; marked equity $985.61; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
 |---|---:|---:|---:|
-| prospective | 0 | n/a | n/a |
+| prospective | 1 | -1.0500000000000016 | 0 |
 | reconstructed | 0 | n/a | n/a |
 | historical_simulated | 0 | n/a | n/a |
 | pending | 0 | n/a | n/a |
@@ -16,13 +16,12 @@ Realized equity $1000.00; marked equity $998.16; mark quality fresh.
 ## Positions
 
 - PALL: Short open; entry 20.350000381469727; current stop 21.012215205601283; provenance prospective; gap none
-- PPLT: Short open; entry 14.819999694824219; current stop 15.349514143807548; provenance prospective; gap none
-- SLV: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- SLV: Short open; entry 54.89500045776367; current stop 56.57867213657924; provenance prospective; gap none
 
 ## Common-window comparison
 
 SMC ledger as of 2026-10-08T23:26:15.165Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 0; challenger closed 0. No winner is claimed from a small sample.
+SMC closed 0; challenger closed 1. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
