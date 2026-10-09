@@ -2,7 +2,7 @@
   "version": "mean-reversion-v1",
   "mode": "forward_shadow",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "generatedAt": "2026-10-09T08:01:53.479Z",
+  "generatedAt": "2026-10-09T15:35:34.224Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "cohort": "metals-5",
   "universe": 5,
@@ -16,27 +16,143 @@
       "error": "split_event_requires_review"
     }
   ],
-  "diagnostics": [],
-  "inputs": [
+  "diagnostics": [
     {
-      "symbol": "GLD",
-      "sha256": "e6c7d64ffa1acf394c65faa5e7473e77bd7bd8c80d6c69d03a6634f8e56753d4"
+      "symbol": "CPER",
+      "type": "duplicate_hour_slot",
+      "date": "2026-10-09",
+      "slot": 2
     },
     {
       "symbol": "CPER",
-      "sha256": "fff37bfc8e0cba913406a4a1fa08c8022bf53df6b8518c49bb4d2a0481497d53"
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-09",
+      "segment": 0,
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "present": [
+        0,
+        1,
+        2
+      ]
     },
     {
       "symbol": "PPLT",
-      "sha256": "5ef7766dd165fbe49fee0f41a8a45830584b6810855dc6394df83f02dd098fa2"
+      "type": "duplicate_hour_slot",
+      "date": "2026-10-09",
+      "slot": 2
+    },
+    {
+      "symbol": "PPLT",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-09",
+      "segment": 0,
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "present": [
+        0,
+        1,
+        2
+      ]
     },
     {
       "symbol": "SLV",
-      "sha256": "82c0bf67db23e805498ff2b047d9238f2c5ef46671d5eeb1e9699aa254f37abc"
+      "type": "duplicate_hour_slot",
+      "date": "2026-10-09",
+      "slot": 2
+    },
+    {
+      "symbol": "SLV",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-09",
+      "segment": 0,
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "present": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "symbol": "GLD",
+      "type": "duplicate_hour_slot",
+      "date": "2026-10-09",
+      "slot": 2
+    },
+    {
+      "symbol": "GLD",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-09",
+      "segment": 0,
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "present": [
+        0,
+        1,
+        2
+      ]
     },
     {
       "symbol": "PALL",
-      "sha256": "f5cd73b5704e61a7c50b50ec10ac69ce25a64d9245be3ad1ba46c3cb8bc5fc43"
+      "type": "duplicate_hour_slot",
+      "date": "2026-10-09",
+      "slot": 2
+    },
+    {
+      "symbol": "PALL",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-09",
+      "segment": 0,
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "present": [
+        0,
+        1,
+        2
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "symbol": "CPER",
+      "sha256": "299b992698767ba9fd6c67d3c6af3b900713932f668a69259963d0196844d8b9"
+    },
+    {
+      "symbol": "PPLT",
+      "sha256": "d22ea84f35883c7065173683a065dd8e4e1d570693197798e7cd68232670a118"
+    },
+    {
+      "symbol": "SLV",
+      "sha256": "6f80e42d4838a87030c60fc6ca52473e2c3c15c82cdbc0321cf5b7a41b605949"
+    },
+    {
+      "symbol": "GLD",
+      "sha256": "2af786a77fde1dbfbf5b2bb3c10c116ecfe7401d2a6a9d3a51b60a31e9dbbfc4"
+    },
+    {
+      "symbol": "PALL",
+      "sha256": "bd432d74e91235588e222228a73511ede859c653fbf68250402836a9da68d7df"
     }
   ],
   "trades": [],
@@ -185,8 +301,8 @@
     "markedCurrentEquity": 1000,
     "markedReturnPct": 0,
     "markedObservation": {
-      "runKey": "mean-reversion-v1|37902381471|1",
-      "observedAt": "2026-10-09T08:01:53.479Z",
+      "runKey": "mean-reversion-v1|37952774999|1",
+      "observedAt": "2026-10-09T15:35:34.224Z",
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
@@ -942,6 +1058,15 @@
         "totalUnrealizedPnl": 0,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "mean-reversion-v1|37952774999|1",
+        "observedAt": "2026-10-09T15:35:34.224Z",
+        "quality": "fresh",
+        "markedEquity": 1000,
+        "totalUnrealizedPnl": 0,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T20:32:03.844Z",
@@ -966,7 +1091,7 @@
     "skipped": []
   },
   "comparison": {
-    "trendLedgerAsOf": "2026-10-09T07:47:07.157Z",
+    "trendLedgerAsOf": "2026-10-09T15:29:43.033Z",
     "trendStale": false,
     "trend": {
       "raw": {
@@ -1116,8 +1241,8 @@
         "markedCurrentEquity": 998.1572528781516,
         "markedReturnPct": -0.0018427471218483982,
         "markedObservation": {
-          "runKey": "mean-reversion-v1|37902381471|1",
-          "observedAt": "2026-10-09T08:01:53.479Z",
+          "runKey": "mean-reversion-v1|37952774999|1",
+          "observedAt": "2026-10-09T15:35:34.224Z",
           "quality": "fresh",
           "markedEquity": 998.1572528781516,
           "totalUnrealizedPnl": -1.8427471218484581,
@@ -1239,8 +1364,8 @@
         },
         "markedEquitySeries": [
           {
-            "runKey": "mean-reversion-v1|37902381471|1",
-            "observedAt": "2026-10-09T08:01:53.479Z",
+            "runKey": "mean-reversion-v1|37952774999|1",
+            "observedAt": "2026-10-09T15:35:34.224Z",
             "quality": "fresh",
             "markedEquity": 998.1572528781516,
             "totalUnrealizedPnl": -1.8427471218484581,
@@ -1248,8 +1373,8 @@
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-10-09T08:01:53.479Z",
-        "firstCompleteMarkedEquityAt": "2026-10-09T08:01:53.479Z",
+        "markedSeriesCoverageStartAt": "2026-10-09T15:35:34.224Z",
+        "firstCompleteMarkedEquityAt": "2026-10-09T15:35:34.224Z",
         "markedObservedMaxDrawdownPct": 0,
         "costAccounting": {
           "closedTradeCostR": 0.05,
@@ -1624,8 +1749,8 @@
         "markedCurrentEquity": 1000,
         "markedReturnPct": 0,
         "markedObservation": {
-          "runKey": "mean-reversion-v1|37902381471|1",
-          "observedAt": "2026-10-09T08:01:53.479Z",
+          "runKey": "mean-reversion-v1|37952774999|1",
+          "observedAt": "2026-10-09T15:35:34.224Z",
           "quality": "fresh",
           "markedEquity": 1000,
           "totalUnrealizedPnl": 0,
@@ -1636,8 +1761,8 @@
         },
         "markedEquitySeries": [
           {
-            "runKey": "mean-reversion-v1|37902381471|1",
-            "observedAt": "2026-10-09T08:01:53.479Z",
+            "runKey": "mean-reversion-v1|37952774999|1",
+            "observedAt": "2026-10-09T15:35:34.224Z",
             "quality": "fresh",
             "markedEquity": 1000,
             "totalUnrealizedPnl": 0,
@@ -1645,8 +1770,8 @@
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-10-09T08:01:53.479Z",
-        "firstCompleteMarkedEquityAt": "2026-10-09T08:01:53.479Z",
+        "markedSeriesCoverageStartAt": "2026-10-09T15:35:34.224Z",
+        "firstCompleteMarkedEquityAt": "2026-10-09T15:35:34.224Z",
         "markedObservedMaxDrawdownPct": 0,
         "costAccounting": {
           "closedTradeCostR": 0.05,
