@@ -1,8 +1,8 @@
 # Mean Reversion V1 — us-75
-Generated: 2026-10-09T15:35:34.224Z; mode: forward_shadow.
+Generated: 2026-10-09T20:20:55.232Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 75; failed fetch/review symbols 3.
-Open 1; pending 4; closed 1; lifecycle reviews 0.
-Realized equity $1002.87; marked equity $1003.14; mark quality fresh.
+Open 4; pending 0; closed 1; lifecycle reviews 0.
+Realized equity $1002.87; marked equity $1009.54; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,15 +15,14 @@ Realized equity $1002.87; marked equity $1003.14; mark quality fresh.
 
 ## Positions
 
-- C: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- CRM: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 - JNJ: Long open; entry 256.2200012207031; current stop 248.76428277151925; provenance prospective; gap none
-- JPM: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- NEM: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- C: Long open; entry 128.08999633789062; current stop 122.66214125497001; provenance prospective; gap none
+- CRM: Long open; entry 229.60000610351562; current stop 217.59928458077567; provenance prospective; gap none
+- JPM: Long open; entry 331.20001220703125; current stop 322.21036311558316; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-08T22:58:52.977Z; stale false. Trend ledger as of 2026-10-09T15:29:43.033Z; stale false.
+SMC ledger as of 2026-10-08T22:58:52.977Z; stale false. Trend ledger as of 2026-10-09T20:14:42.830Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
 SMC closed 1; Trend closed 5; challenger closed 1. No winner is claimed from a small sample.
 
