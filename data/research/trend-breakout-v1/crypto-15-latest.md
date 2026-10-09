@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-09T07:47:07.157Z; mode: forward_shadow.
+Generated: 2026-10-09T15:29:43.033Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 2; pending 0; closed 3; lifecycle reviews 0.
-Realized equity $977.48; marked equity $976.81; mark quality fresh.
+Realized equity $977.48; marked equity $976.71; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -20,7 +20,7 @@ Realized equity $977.48; marked equity $976.81; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-08T23:26:11.487Z; stale false.
+SMC ledger as of 2026-10-08T23:26:11.487Z; stale true.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 4; challenger closed 3. No winner is claimed from a small sample.
 
