@@ -1,5 +1,5 @@
 # Trend Breakout V1 — metals-5
-Generated: 2026-10-10T00:13:18.627Z; mode: forward_shadow.
+Generated: 2026-10-10T06:13:29.448Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 5; failed fetch/review symbols 0.
 Open 2; pending 0; closed 1; lifecycle reviews 0.
 Realized equity $990.62; marked equity $985.62; mark quality fresh.
@@ -20,7 +20,7 @@ Realized equity $990.62; marked equity $985.62; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-08T23:26:15.165Z; stale false.
+SMC ledger as of 2026-10-10T02:18:20.364Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 0; challenger closed 1. No winner is claimed from a small sample.
 

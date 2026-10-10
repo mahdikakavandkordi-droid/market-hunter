@@ -1,8 +1,8 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-10-10T00:13:18.627Z; mode: forward_shadow.
+Generated: 2026-10-10T06:13:29.448Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
-Open 22; pending 1; closed 5; lifecycle reviews 0.
-Realized equity $992.07; marked equity $1001.42; mark quality fresh.
+Open 22; pending 1; closed 5; lifecycle reviews 1.
+Realized equity $992.07; marked equity $1002.40; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,7 +15,7 @@ Realized equity $992.07; marked equity $1001.42; mark quality fresh.
 
 ## Positions
 
-- EOG: Long open; entry 143.16000366210938; current stop 141.68929399762834; provenance prospective; gap none
+- EOG: Long open; entry 143.16000366210938; current stop 141.68929399762834; provenance prospective; gap last_observed_bar_unavailable
 - GE: Short open; entry 306.5; current stop 317.2689950125558; provenance prospective; gap none
 - MSFT: Long open; entry 531.6799926757812; current stop 513.5771876743862; provenance prospective; gap none
 - OXY: Long open; entry 57.529998779296875; current stop 57.22880908421108; provenance prospective; gap none
@@ -41,7 +41,7 @@ Realized equity $992.07; marked equity $1001.42; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-08T22:58:52.977Z; stale false.
+SMC ledger as of 2026-10-10T01:56:16.532Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 1; challenger closed 5. No winner is claimed from a small sample.
 
