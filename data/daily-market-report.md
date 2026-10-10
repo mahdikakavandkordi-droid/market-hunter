@@ -1,37 +1,34 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-10-08 to 2026-10-09 (TSX 2026-10-09 · SP500 2026-10-09 · NASDAQ100 2026-10-09 · GOLD 2026-10-08 · SILVER 2026-10-08 · BTC 2026-10-08 · ETH 2026-10-08)
+**As of:** 2026-10-08 to 2026-10-09 (TSX 2026-10-09 · SP500 2026-10-09 · NASDAQ100 2026-10-09 · GOLD 2026-10-09 · SILVER 2026-10-09 · BTC 2026-10-08 · ETH 2026-10-08)
 
 ## Executive read
 
-- Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
-- Completed-session dates differ by instrument: TSX 2026-10-09 · SP500 2026-10-09 · NASDAQ100 2026-10-09 · GOLD 2026-10-08 · SILVER 2026-10-08 · BTC 2026-10-08 · ETH 2026-10-08.
+- Current cross-market assessment is incomplete; some inputs require an update.
+- Completed-session dates differ by instrument: TSX 2026-10-09 · SP500 2026-10-09 · NASDAQ100 2026-10-09 · GOLD 2026-10-09 · SILVER 2026-10-09 · BTC 2026-10-08 · ETH 2026-10-08.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
 
 - **Watch:** Ethereum: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
-- **Watch:** Gold: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
-- **Watch:** Silver: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Watch:** Bitcoin: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Context:** S&P 500: trend is strong near highs, but historical follow-through is not automatically stronger than baseline.
 
 ## Group read
 
 - **Equities: Constructive but uneven** — Most tracked markets remain constructive, but leadership is not uniform.
-- **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
+- **Metals: Mixed** — Signals are mixed across the tracked markets.
 - **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
 
 ## Key divergences
 
 - **Equity leadership:** Canada is lagging U.S. equity leadership: TSX is Mixed / Recovery Attempt, while S&P 500 and Nasdaq-100 are both in stronger primary regimes.
-- **Cross-asset confirmation:** U.S. equities remain constructive while both gold and silver are weakening short term, so metals are not confirming the current risk-on tone.
 
 ## What to watch next
 
+- **Gold:** bullish continuation above 4259 · trend warning near 4267.6 · structure risk below 4143.1.
+- **Silver:** bullish continuation above 61.62 · trend warning near 62.56 · structure risk below 59.98.
 - **Ethereum:** bullish continuation above 2531.74 · trend warning near 2676.96 · structure risk below 2406.91.
-- **Gold:** bullish continuation above 4170.7 · trend warning near 4277.23 · structure risk below 4143.1.
-- **Silver:** bullish continuation above 59.25 · trend warning near 62.76 · structure risk below 57.76.
 - **Nasdaq-100:** bullish continuation above 31361.37 · trend warning near 30313.87 · structure risk below 30081.06.
 - **Bitcoin:** bullish continuation above 82262.21 · trend warning near 84219.13 · structure risk below 76909.35.
 
@@ -62,20 +59,20 @@
 - **Watch next:** bullish continuation above 31361.37 · trend warning near 30313.87 · structure risk below 30081.06.
 
 ### Gold
-- **State:** Mixed / Weakening
-- **Returns:** 1D +0.4% · 5D -1.1% · 20D -5.7% · 60D +2.6%
-- **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Constructive, recent caution
-- **Framing:** Short-term damage, confirmation required
-- **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
-- **Watch next:** bullish continuation above 4170.7 · trend warning near 4277.23 · structure risk below 4143.1.
+- **State:** Mixed / Recovery Attempt
+- **Returns:** 1D +1.4% · 5D +1.3% · 20D -4.4% · 60D +5.6%
+- **Historical read:** 5 sessions: Mixed · 10: Cautious · 20: Cautious
+- **Framing:** Historical analogs cautious
+- **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
+- **Watch next:** bullish continuation above 4259 · trend warning near 4267.6 · structure risk below 4143.1.
 
 ### Silver
-- **State:** Mixed / Weakening
-- **Returns:** 1D -1.4% · 5D -2.7% · 20D -8.1% · 60D +3.4%
-- **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Mixed
-- **Framing:** Historical analogs supportive
-- **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 59.25 · trend warning near 62.76 · structure risk below 57.76.
+- **State:** Mixed / Recovery Attempt
+- **Returns:** 1D +2.7% · 5D +1.2% · 20D -6% · 60D +8.5%
+- **Historical read:** 5 sessions: Cautious · 10: Mixed · 20: Cautious
+- **Framing:** Historical analogs cautious
+- **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
+- **Watch next:** bullish continuation above 61.62 · trend warning near 62.56 · structure risk below 59.98.
 
 ### Bitcoin
 - **State:** Bull / Weakening
