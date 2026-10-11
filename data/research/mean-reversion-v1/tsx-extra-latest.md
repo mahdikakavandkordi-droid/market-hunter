@@ -1,5 +1,5 @@
 # Mean Reversion V1 — tsx-extra
-Generated: 2026-10-11T19:44:37.574Z; mode: forward_shadow.
+Generated: 2026-10-11T23:13:52.561Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 37; failed fetch/review symbols 3.
 Open 0; pending 1; closed 0; lifecycle reviews 0.
 Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
