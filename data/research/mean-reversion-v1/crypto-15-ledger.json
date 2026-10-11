@@ -1,14 +1,14 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-11T07:52:15.406Z",
+  "updatedAt": "2026-10-11T15:06:24.824Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
       "symbol": "BNB-USD",
       "signalT": "2026-10-10T00:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-11T00:00:00.000Z",
         "dailyAsOf": "2026-10-10",
@@ -23,11 +23,11 @@
         "signalClose": 749.7680053710938,
         "initialStop": 723.1327645438058
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-11T08:00:00.000Z",
+      "entry": 746.6599731445312,
+      "stop": 723.1327645438058,
+      "target": 772.9981842041016,
+      "risk": 23.52720860072543,
       "R": null,
       "exitT": null,
       "decisionId": "BNB-USD|2026-10-10T00:00:00.000Z|1",
@@ -40,13 +40,17 @@
         "runKey": "mean-reversion-v1|38122748815|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 723.1327645438058,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-10-11T12:00:00.000Z",
+      "entryObservedAt": "2026-10-11T15:06:24.824Z"
     },
     {
       "symbol": "XLM-USD",
       "signalT": "2026-10-10T00:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-11T00:00:00.000Z",
         "dailyAsOf": "2026-10-10",
@@ -61,11 +65,11 @@
         "signalClose": 0.19652700424194336,
         "initialStop": 0.18563127890229225
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-11T08:00:00.000Z",
+      "entry": 0.19513000547885895,
+      "stop": 0.18563127890229225,
+      "target": 0.21352049931883813,
+      "risk": 0.009498726576566696,
       "R": null,
       "exitT": null,
       "decisionId": "XLM-USD|2026-10-10T00:00:00.000Z|1",
@@ -78,7 +82,11 @@
         "runKey": "mean-reversion-v1|38122748815|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 0.18563127890229225,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-10-11T12:00:00.000Z",
+      "entryObservedAt": "2026-10-11T15:06:24.824Z"
     }
   ],
   "runLog": [
@@ -2735,6 +2743,12 @@
       "observedAt": "2026-10-11T07:52:15.406Z",
       "failures": [],
       "diagnosticCount": 30
+    },
+    {
+      "runKey": "mean-reversion-v1|38149845423|1",
+      "observedAt": "2026-10-11T15:06:24.824Z",
+      "failures": [],
+      "diagnosticCount": 30
     }
   ],
   "markedEquitySeries": [
@@ -3554,6 +3568,15 @@
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|38149845423|1",
+      "observedAt": "2026-10-11T15:06:24.824Z",
+      "quality": "fresh",
+      "markedEquity": 1003.3889924280143,
+      "totalUnrealizedPnl": 3.388992428014184,
       "missingSymbols": [],
       "staleSymbols": []
     }
