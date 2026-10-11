@@ -2,11 +2,15 @@
   "version": "mean-reversion-v1",
   "mode": "forward_shadow",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "generatedAt": "2026-10-10T22:00:51.153Z",
+  "generatedAt": "2026-10-11T01:17:25.700Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "cohort": "crypto-15",
   "universe": 15,
   "failures": [
+    {
+      "symbol": "BTC-USD",
+      "error": "invalid_source_quotes_require_review"
+    },
     {
       "symbol": "BNB-USD",
       "error": "invalid_source_quotes_require_review"
@@ -16,7 +20,7 @@
       "error": "invalid_source_quotes_require_review"
     },
     {
-      "symbol": "BTC-USD",
+      "symbol": "SOL-USD",
       "error": "invalid_source_quotes_require_review"
     },
     {
@@ -24,11 +28,7 @@
       "error": "invalid_source_quotes_require_review"
     },
     {
-      "symbol": "SOL-USD",
-      "error": "invalid_source_quotes_require_review"
-    },
-    {
-      "symbol": "LINK-USD",
+      "symbol": "DOGE-USD",
       "error": "invalid_source_quotes_require_review"
     },
     {
@@ -36,7 +36,11 @@
       "error": "invalid_source_quotes_require_review"
     },
     {
-      "symbol": "DOGE-USD",
+      "symbol": "TRX-USD",
+      "error": "invalid_source_quotes_require_review"
+    },
+    {
+      "symbol": "LINK-USD",
       "error": "invalid_source_quotes_require_review"
     },
     {
@@ -44,15 +48,7 @@
       "error": "invalid_source_quotes_require_review"
     },
     {
-      "symbol": "BCH-USD",
-      "error": "invalid_source_quotes_require_review"
-    },
-    {
       "symbol": "LTC-USD",
-      "error": "invalid_source_quotes_require_review"
-    },
-    {
-      "symbol": "DOT-USD",
       "error": "invalid_source_quotes_require_review"
     },
     {
@@ -60,34 +56,20 @@
       "error": "invalid_source_quotes_require_review"
     },
     {
+      "symbol": "BCH-USD",
+      "error": "invalid_source_quotes_require_review"
+    },
+    {
       "symbol": "SHIB-USD",
+      "error": "invalid_source_quotes_require_review"
+    },
+    {
+      "symbol": "DOT-USD",
       "error": "invalid_source_quotes_require_review"
     }
   ],
-  "diagnostics": [
-    {
-      "symbol": "TRX-USD",
-      "type": "incomplete_or_missing_crypto_bar",
-      "bucket": 1791662400000,
-      "expected": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "present": [
-        0,
-        1,
-        2
-      ]
-    }
-  ],
-  "inputs": [
-    {
-      "symbol": "TRX-USD",
-      "sha256": "b1475733f9545ac561a56290165bb70da80011a621702bf9d8a69f4e08751584"
-    }
-  ],
+  "diagnostics": [],
+  "inputs": [],
   "trades": [],
   "summary": {
     "raw": {
@@ -234,8 +216,8 @@
     "markedCurrentEquity": 1000,
     "markedReturnPct": 0,
     "markedObservation": {
-      "runKey": "mean-reversion-v1|38089747575|1",
-      "observedAt": "2026-10-10T22:00:51.153Z",
+      "runKey": "mean-reversion-v1|38101295693|1",
+      "observedAt": "2026-10-11T01:17:25.700Z",
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
@@ -1045,6 +1027,15 @@
         "totalUnrealizedPnl": 0,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "mean-reversion-v1|38101295693|1",
+        "observedAt": "2026-10-11T01:17:25.700Z",
+        "quality": "fresh",
+        "markedEquity": 1000,
+        "totalUnrealizedPnl": 0,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T20:32:03.844Z",
@@ -1069,7 +1060,7 @@
     "skipped": []
   },
   "comparison": {
-    "trendLedgerAsOf": "2026-10-10T21:56:24.205Z",
+    "trendLedgerAsOf": "2026-10-11T01:09:39.320Z",
     "trendStale": false,
     "trend": {
       "raw": {
@@ -1251,15 +1242,16 @@
         "markedCurrentEquity": null,
         "markedReturnPct": null,
         "markedObservation": {
-          "runKey": "mean-reversion-v1|38089747575|1",
-          "observedAt": "2026-10-10T22:00:51.153Z",
+          "runKey": "mean-reversion-v1|38101295693|1",
+          "observedAt": "2026-10-11T01:17:25.700Z",
           "quality": "incomplete_missing_marks",
           "markedEquity": null,
           "totalUnrealizedPnl": null,
           "missingSymbols": [
             "BCH-USD",
             "SHIB-USD",
-            "DOT-USD"
+            "DOT-USD",
+            "TRX-USD"
           ],
           "staleSymbols": [],
           "invalidMarkSymbols": [],
@@ -1474,31 +1466,31 @@
               "portfolioStatus": "open",
               "effectiveExitMs": null,
               "legacyExitTimingAdjusted": false,
-              "markPrice": 0.33060696721076965,
-              "markT": "2026-10-10T20:00:00.000Z",
-              "markStatus": "fresh",
-              "markSource": "completed_4h_close",
-              "unrealizedPnl": 0.1909931519057795,
-              "markedPositionValue": 244.56198755283648
+              "markPrice": null,
+              "markT": null,
+              "markStatus": "missing",
+              "unrealizedPnl": null,
+              "markedPositionValue": null
             }
           ]
         },
         "markedEquitySeries": [
           {
-            "runKey": "mean-reversion-v1|38089747575|1",
-            "observedAt": "2026-10-10T22:00:51.153Z",
+            "runKey": "mean-reversion-v1|38101295693|1",
+            "observedAt": "2026-10-11T01:17:25.700Z",
             "quality": "incomplete_missing_marks",
             "markedEquity": null,
             "totalUnrealizedPnl": null,
             "missingSymbols": [
               "BCH-USD",
               "SHIB-USD",
-              "DOT-USD"
+              "DOT-USD",
+              "TRX-USD"
             ],
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-10-10T22:00:51.153Z",
+        "markedSeriesCoverageStartAt": "2026-10-11T01:17:25.700Z",
         "firstCompleteMarkedEquityAt": null,
         "markedObservedMaxDrawdownPct": null,
         "costAccounting": {
@@ -2101,12 +2093,11 @@
             "portfolioStatus": "open",
             "effectiveExitMs": null,
             "legacyExitTimingAdjusted": false,
-            "markPrice": 0.33060696721076965,
-            "markT": "2026-10-10T20:00:00.000Z",
-            "markStatus": "fresh",
-            "markSource": "completed_4h_close",
-            "unrealizedPnl": 0.1909931519057795,
-            "markedPositionValue": 244.56198755283648
+            "markPrice": null,
+            "markT": null,
+            "markStatus": "missing",
+            "unrealizedPnl": null,
+            "markedPositionValue": null
           }
         ],
         "skipped": []
@@ -2288,8 +2279,8 @@
         "markedCurrentEquity": 1002.0610223539791,
         "markedReturnPct": 0.0020610223539789807,
         "markedObservation": {
-          "runKey": "mean-reversion-v1|38089747575|1",
-          "observedAt": "2026-10-10T22:00:51.153Z",
+          "runKey": "mean-reversion-v1|38101295693|1",
+          "observedAt": "2026-10-11T01:17:25.700Z",
           "quality": "fresh",
           "markedEquity": 1002.0610223539791,
           "totalUnrealizedPnl": 0,
@@ -2300,8 +2291,8 @@
         },
         "markedEquitySeries": [
           {
-            "runKey": "mean-reversion-v1|38089747575|1",
-            "observedAt": "2026-10-10T22:00:51.153Z",
+            "runKey": "mean-reversion-v1|38101295693|1",
+            "observedAt": "2026-10-11T01:17:25.700Z",
             "quality": "fresh",
             "markedEquity": 1002.0610223539791,
             "totalUnrealizedPnl": 0,
@@ -2309,8 +2300,8 @@
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-10-10T22:00:51.153Z",
-        "firstCompleteMarkedEquityAt": "2026-10-10T22:00:51.153Z",
+        "markedSeriesCoverageStartAt": "2026-10-11T01:17:25.700Z",
+        "firstCompleteMarkedEquityAt": "2026-10-11T01:17:25.700Z",
         "markedObservedMaxDrawdownPct": 0,
         "costAccounting": {
           "closedTradeCostR": 0.05,
