@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-12T09:47:50.957Z",
+  "updatedAt": "2026-10-12T20:00:59.464Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -95,8 +95,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 248.76428277151925,
-      "holdingBars": 4,
-      "lastEvaluatedEndT": "2026-10-09T20:30:00.000Z",
+      "holdingBars": 5,
+      "lastEvaluatedEndT": "2026-10-12T17:30:00.000Z",
       "entryObservedAt": "2026-10-08T21:32:33.518Z"
     },
     {
@@ -177,15 +177,15 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 122.66214125497001,
-      "holdingBars": 2,
-      "lastEvaluatedEndT": "2026-10-09T20:30:00.000Z",
+      "holdingBars": 3,
+      "lastEvaluatedEndT": "2026-10-12T17:30:00.000Z",
       "entryObservedAt": "2026-10-09T20:20:55.232Z"
     },
     {
       "symbol": "CRM",
       "signalT": "2026-10-08T13:30:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-08T21:00:00.000Z",
         "dailyAsOf": "2026-10-08",
@@ -205,8 +205,8 @@
       "stop": 217.59928458077567,
       "target": 237.475,
       "risk": 12.000721522739951,
-      "R": null,
-      "exitT": null,
+      "R": 0.6562100355017976,
+      "exitT": "2026-10-12T17:30:00.000Z",
       "decisionId": "CRM|2026-10-08T13:30:00.000Z|1",
       "entryWaitHours": 120,
       "historicalDiagnostic": false,
@@ -219,9 +219,20 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 217.59928458077567,
-      "holdingBars": 2,
-      "lastEvaluatedEndT": "2026-10-09T20:30:00.000Z",
-      "entryObservedAt": "2026-10-09T20:20:55.232Z"
+      "holdingBars": 3,
+      "lastEvaluatedEndT": "2026-10-12T17:30:00.000Z",
+      "entryObservedAt": "2026-10-09T20:20:55.232Z",
+      "exitPriceAssumed": 237.475,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "mean_target",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "stopTargetCollision": false,
+        "collisionPolicy": "stop_first",
+        "exitBarStartT": "2026-10-12T13:30:00.000Z",
+        "exitBarEndT": "2026-10-12T17:30:00.000Z"
+      }
     },
     {
       "symbol": "JPM",
@@ -261,8 +272,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 322.21036311558316,
-      "holdingBars": 2,
-      "lastEvaluatedEndT": "2026-10-09T20:30:00.000Z",
+      "holdingBars": 3,
+      "lastEvaluatedEndT": "2026-10-12T17:30:00.000Z",
       "entryObservedAt": "2026-10-09T20:20:55.232Z"
     }
   ],
@@ -2262,6 +2273,25 @@
         }
       ],
       "diagnosticCount": 0
+    },
+    {
+      "runKey": "mean-reversion-v1|38301343028|1",
+      "observedAt": "2026-10-12T20:00:59.464Z",
+      "failures": [
+        {
+          "symbol": "HON",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "NFLX",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "CMCSA",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 75
     }
   ],
   "markedEquitySeries": [
@@ -3126,6 +3156,15 @@
       "quality": "fresh",
       "markedEquity": 1011.7998679962423,
       "totalUnrealizedPnl": 8.925245304859526,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|38301343028|1",
+      "observedAt": "2026-10-12T20:00:59.464Z",
+      "quality": "fresh",
+      "markedEquity": 1024.4668817388947,
+      "totalUnrealizedPnl": 15.512732441255892,
       "missingSymbols": [],
       "staleSymbols": []
     }
