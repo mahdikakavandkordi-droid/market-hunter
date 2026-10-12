@@ -1,8 +1,8 @@
 # Mean Reversion V1 — crypto-15
-Generated: 2026-10-12T02:40:14.582Z; mode: forward_shadow.
-Forward start: 2026-10-04T20:24:23.948534+00:00; universe 15; failed fetch/review symbols 15.
-Open 2; pending 0; closed 0; lifecycle reviews 0.
-Realized equity $1000.00; marked equity n/a; mark quality incomplete_missing_marks.
+Generated: 2026-10-12T09:47:50.957Z; mode: forward_shadow.
+Forward start: 2026-10-04T20:24:23.948534+00:00; universe 15; failed fetch/review symbols 0.
+Open 2; pending 2; closed 0; lifecycle reviews 0.
+Realized equity $1000.00; marked equity $1009.92; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,12 +15,14 @@ Realized equity $1000.00; marked equity n/a; mark quality incomplete_missing_mar
 
 ## Positions
 
+- ETH-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- SOL-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 - BNB-USD: Long open; entry 746.6599731445312; current stop 723.1327645438058; provenance prospective; gap none
 - XLM-USD: Long open; entry 0.19513000547885895; current stop 0.18563127890229225; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-12T02:20:57.894Z; stale false. Trend ledger as of 2026-10-11T23:51:08.925Z; stale false.
+SMC ledger as of 2026-10-12T02:20:57.894Z; stale false. Trend ledger as of 2026-10-12T06:19:37.248Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
 SMC closed 4; Trend closed 5; challenger closed 0. No winner is claimed from a small sample.
 
