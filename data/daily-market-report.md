@@ -27,7 +27,7 @@
 ## What to watch next
 
 - **Gold:** bullish continuation above 4259 · trend warning near 4267.6 · structure risk below 4143.1.
-- **Silver:** bullish continuation above 61.62 · trend warning near 62.58 · structure risk below 59.98.
+- **Silver:** bullish continuation above 61.62 · trend warning near 62.56 · structure risk below 59.98.
 - **Ethereum:** bullish continuation above 2531.74 · trend warning near 2676.96 · structure risk below 2406.91.
 - **Nasdaq-100:** bullish continuation above 31361.37 · trend warning near 30313.87 · structure risk below 30081.06.
 - **Bitcoin:** bullish continuation above 82262.21 · trend warning near 84219.13 · structure risk below 76909.35.
@@ -68,11 +68,11 @@
 
 ### Silver
 - **State:** Mixed / Recovery Attempt
-- **Returns:** 1D +3.4% · 5D +1.8% · 20D -5.4% · 60D +9.2%
+- **Returns:** 1D +2.7% · 5D +1.2% · 20D -6% · 60D +8.5%
 - **Historical read:** 5 sessions: Cautious · 10: Mixed · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 61.62 · trend warning near 62.58 · structure risk below 59.98.
+- **Watch next:** bullish continuation above 61.62 · trend warning near 62.56 · structure risk below 59.98.
 
 ### Bitcoin
 - **State:** Bull / Weakening
