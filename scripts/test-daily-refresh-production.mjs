@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {dailyReportUiContract} from '../lib/daily-report-ui-contract.js';
+import {assertHunterSessionCurrent} from '../lib/market-freshness.js';
 
 const workflow=fs.readFileSync('.github/workflows/research-daily-refresh.yml','utf8');
 const app=fs.readFileSync('app.js','utf8');
@@ -14,7 +15,7 @@ assert.equal(dailyReportUiContract(app.replaceAll('d?.groups','missingGroups')).
 assert.equal(dailyReportUiContract(app.replaceAll('d?.keyDevelopments','missingDevelopments')).renders,false);
 assert.doesNotMatch(audit,/app\.includes\('What Changed Today'\)/);
 const gateScript=workflow.split('Select first post-close Toronto slot')[1].split('run: |')[1].split('\n  refresh:')[0].replace(/^          /gm,'').replaceAll('>> "$GITHUB_OUTPUT"','');
-const fixtureDate='date(){ if [[ "$*" == "-u +%F" ]]; then printf "%s\\n" "$FIXTURE_DATE"; elif [[ "$*" == "+%H" ]]; then printf "18\\n"; else command date "$@"; fi; };\n';
+const fixtureDate='date(){ if [[ "$*" == "-u +%F" || "$*" == "+%F" ]]; then printf "%s\\n" "$FIXTURE_DATE"; elif [[ "$*" == "+%H" ]]; then printf "18\\n"; else command date "$@"; fi; };\n';
 for(const [day,cron,expected] of [
   ['2026-10-05','30 20 * * 1-5',true],
   ['2026-10-05','30 21 * * 1-5',false],
@@ -67,3 +68,36 @@ assert.match(scheduleDoc,/00:15 UTC/);
 assert.match(scheduleDoc,/04:15 UTC/);
 
 assert.match(workflow,/Weekend push\/schedule: preserve the latest completed-session V2 stock snapshot/,'weekend code refresh must not silently replace the equity shortlist');
+
+// Execute the production equity-gate step, with only date and scanner IO
+// substituted. These fixtures reproduce the actual queued Friday incident.
+const stockScript=workflow.split('Refresh V2 stock shortlist source')[1].split('run: |')[1].split('      - name: Validate source snapshots')[0].replace(/^          /gm,'');
+const stockFixture='date(){ command date -d "$FIXTURE_INSTANT" "$@"; }; node(){ printf "STOCK_SCAN_EXECUTED\\n"; };\n';
+for(const [instant,event,scan] of [
+  ['2026-10-10T00:14:54Z','schedule',true],
+  ['2026-12-12T01:14:54Z','schedule',true],
+  ['2026-10-10T16:00:00Z','push',false],
+  ['2026-10-11T16:00:00Z','schedule',false],
+  ['2026-10-11T16:00:00Z','workflow_dispatch',true],
+  ['2026-10-12T20:30:00Z','schedule',true]
+]){
+  const result=spawnSync('bash',['-c',stockFixture+stockScript],{encoding:'utf8',env:{...process.env,TZ:'UTC',FIXTURE_INSTANT:instant,GITHUB_EVENT_NAME:event}});
+  assert.equal(result.status,0,result.stderr);
+  assert.equal(result.stdout.includes('STOCK_SCAN_EXECUTED'),scan,instant+' '+event);
+}
+
+const verifiedPulse={markets:[{key:'TSX',asOf:'2026-10-09',freshness:{status:'fresh',latestCompletedSession:'2026-10-09',expectedCompletedSession:'2026-10-09'}}]};
+assert.equal(assertHunterSessionCurrent(verifiedPulse,{marketAsOf:'2026-10-09'}),'2026-10-09','latest Friday is valid during weekend/holiday/intraday refresh');
+assert.throws(()=>assertHunterSessionCurrent(verifiedPulse,{marketAsOf:'2026-10-08'}),/stale or misaligned/);
+assert.throws(()=>assertHunterSessionCurrent(verifiedPulse,{marketAsOf:'2026-10-12'}),/stale or misaligned/,'ahead date must not publish either');
+assert.throws(()=>assertHunterSessionCurrent({}, {marketAsOf:'2026-10-09'}),/reference is missing or unverified/);
+for(const status of ['stale','provider_failure','unknown']){
+  const pulse=structuredClone(verifiedPulse);pulse.markets[0].freshness.status=status;
+  assert.throws(()=>assertHunterSessionCurrent(pulse,{marketAsOf:'2026-10-09'}),/reference is missing or unverified/);
+}
+const inconsistent=structuredClone(verifiedPulse);inconsistent.markets[0].freshness.latestCompletedSession='2026-10-08';
+assert.throws(()=>assertHunterSessionCurrent(inconsistent,{marketAsOf:'2026-10-09'}),/reference is missing or unverified/);
+assert.match(workflow,/assertHunterSessionCurrent\(pulse,v2\)/,'freshness guard must run before report build/publication');
+assert.match(workflow,/node scripts\/test-daily-refresh-production\.mjs/,'refresh must run the incident regression before fetching data');
+assert.doesNotMatch(stockScript,/date -u \+%u/);
+console.log('PASS: delayed Friday stock refresh, weekend preservation, and verified TSX session publication guard');

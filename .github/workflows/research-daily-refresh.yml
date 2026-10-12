@@ -53,7 +53,7 @@ jobs:
             '30 21 * * 1-5') scheduled_hour=21 ;;
             *) echo "Unknown schedule: $SCHEDULED_CRON"; exit 1 ;;
           esac
-          scheduled_date="$(date -u +%F)"
+          scheduled_date="$(TZ=America/Toronto date +%F)"
           toronto_hour="$(TZ=America/Toronto date -d "${scheduled_date} ${scheduled_hour}:30 UTC" +%H)"
           echo "Scheduled Toronto slot: ${toronto_hour}:30"
           if [ "$toronto_hour" = "16" ]; then
@@ -86,6 +86,7 @@ jobs:
           node --check scripts/build-market-pulse-report.mjs
           node --check scripts/build-daily-market-report.mjs
           node --check scripts/audit-daily-market-report-final.mjs
+          node scripts/test-daily-refresh-production.mjs
 
       - name: Refresh Market Pulse snapshot
         run: node scripts/scan-market-pulse.mjs
@@ -97,7 +98,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          weekday="$(date -u +%u)"
+          # A queued Friday run can start on Saturday UTC while Toronto is
+          # still Friday. Never use the runner's UTC day for equity gating.
+          weekday="$(TZ=America/Toronto date +%u)"
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || [ "$weekday" -le 5 ]; then
             node scripts/scan-market-hunter-v2.mjs
           else
@@ -106,8 +109,9 @@ jobs:
 
       - name: Validate source snapshots
         run: |
-          node - <<'NODE'
-          const fs=require('fs');
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import {assertHunterSessionCurrent} from './lib/market-freshness.js';
           const expected=['TSX','SP500','NASDAQ100','GOLD','SILVER','BTC','ETH'];
 
           const pulse=JSON.parse(fs.readFileSync('data/market-pulse-latest.json','utf8'));
@@ -123,6 +127,9 @@ jobs:
           }
 
           const v2=JSON.parse(fs.readFileSync('data/v2-latest-scan.json','utf8'));
+          // Matching files and new generatedAt timestamps do not prove that
+          // the equity shortlist belongs to the latest completed TSX session.
+          assertHunterSessionCurrent(pulse,v2);
           if(!/^\d{4}-\d{2}-\d{2}$/.test(v2.marketAsOf||'')||(v2.all||[]).some(x=>x.date!==v2.marketAsOf)){
             throw new Error('V2 scan contains missing or mixed completed-session dates');
           }
