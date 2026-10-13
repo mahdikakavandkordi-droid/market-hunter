@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper — Corrected Evidence v2
 
-Generated: 2026-10-10T01:50:47.897Z
+Generated: 2026-10-13T03:06:08.987Z
 
 Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
 The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
@@ -17,25 +17,25 @@ The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5f
 ## $1,000 paper account — realized vs marked
 
 Realized-only equity: $989.50; realized return: -1.0%.
-Marked equity: $995.60; marked return: -0.4%; mark quality: fresh.
-Unrealized P/L: $6.10.
+Marked equity: n/a; marked return: n/a; mark quality: incomplete_missing_marks.
+Unrealized P/L: n/a.
 Realized-event max drawdown: -1.0%; observed marked max drawdown: -0.9%.
 Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; first complete marked-equity observation: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
-Missing/invalid marks: none; stale marks: none.
+Missing/invalid marks: L.TO, SU.TO; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
 
 ### Open positions with marks
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---|---:|
-| L.TO | Short | 61.780 | 62.640 | 2026-10-09T20:30:00.000Z | fresh | $-3.48 |
-| SU.TO | Long | 99.090 | 103.030 | 2026-10-09T20:30:00.000Z | fresh | $9.58 |
+| L.TO | Short | 61.780 | n/a |  | missing | n/a |
+| SU.TO | Long | 99.090 | n/a |  | missing | n/a |
 
 ## Evidence integrity
 
 Legacy trades without first-observation provenance: 2.
 Prospective entries: 0; reconstructed entries: 1; pending signals: 0.
-This run discrepancies: 0; prior records not re-observed: 0; candle/data diagnostics: 1.
+This run discrepancies: 0; prior records not re-observed: 3; candle/data diagnostics: 0.
 
 ### Performance by evidence provenance
 
@@ -63,5 +63,38 @@ This run discrepancies: 0; prior records not re-observed: 0; candle/data diagnos
 
 ## Fetch/data gaps
 
-- No fetch failures this run.
-- Data diagnostic: {"symbol":"CSU.TO","type":"incomplete_or_missing_exchange_bar","date":"2026-09-21","segment":1,"expected":[4,5,6],"present":[5,6]}
+- Fetch failure ^GSPTSE: momentum_benchmark_http_429
+- Fetch failure RY.TO: http_429
+- Fetch failure TD.TO: http_429
+- Fetch failure BMO.TO: http_429
+- Fetch failure BNS.TO: http_429
+- Fetch failure CM.TO: http_429
+- Fetch failure AEM.TO: http_429
+- Fetch failure WPM.TO: http_429
+- Fetch failure ABX.TO: http_429
+- Fetch failure LUN.TO: http_429
+- Fetch failure CNQ.TO: http_429
+- Fetch failure SU.TO: http_429
+- Fetch failure TRP.TO: http_429
+- Fetch failure CNR.TO: http_429
+- Fetch failure CP.TO: http_429
+- Fetch failure SHOP.TO: http_429
+- Fetch failure NTR.TO: http_429
+- Fetch failure MFC.TO: http_429
+- Fetch failure BCE.TO: http_429
+- Fetch failure NA.TO: http_429
+- Fetch failure SLF.TO: http_429
+- Fetch failure POW.TO: http_429
+- Fetch failure ENB.TO: http_429
+- Fetch failure IMO.TO: http_429
+- Fetch failure TOU.TO: http_429
+- Fetch failure FNV.TO: http_429
+- Fetch failure K.TO: http_429
+- Fetch failure FTS.TO: http_429
+- Fetch failure EMA.TO: http_429
+- Fetch failure WCN.TO: http_429
+- Fetch failure CSU.TO: http_429
+- Fetch failure ATD.TO: http_429
+- Fetch failure MRU.TO: http_429
+- Fetch failure L.TO: http_429
+- No candle/data diagnostics this run.
