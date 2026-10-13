@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-10-13T19:27:28.105Z; mode: forward_shadow.
+Generated: 2026-10-13T23:23:17.335Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
 Open 5; pending 2; closed 1; lifecycle reviews 0.
-Realized equity $1000.00; marked equity $1034.28; mark quality fresh.
+Realized equity $1000.00; marked equity $1038.44; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -17,9 +17,9 @@ Realized equity $1000.00; marked equity $1034.28; mark quality fresh.
 
 - BCE.TO: Short open; entry 28.09000015258789; current stop 28.113571984427317; provenance prospective; gap none
 - SHOP.TO: Long open; entry 235; current stop 235.7800020490374; provenance prospective; gap none
-- EMA.TO: Short open; entry 66.5; current stop 67.77464403424945; provenance prospective; gap none
-- CNQ.TO: Long open; entry 69.83999633789062; current stop 69.81928416660854; provenance prospective; gap none
-- SU.TO: Long open; entry 100.83000183105469; current stop 100.81642205374581; provenance prospective; gap none
+- EMA.TO: Short open; entry 66.5; current stop 67.73142296927315; provenance prospective; gap none
+- CNQ.TO: Long open; entry 69.83999633789062; current stop 70.50714601789203; provenance prospective; gap none
+- SU.TO: Long open; entry 100.83000183105469; current stop 101.31749561854771; provenance prospective; gap none
 - IMO.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 - TOU.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 
