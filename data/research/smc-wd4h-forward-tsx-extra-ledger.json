@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "tsx-extra",
-  "updatedAt": "2026-10-10T01:56:03.718Z",
+  "updatedAt": "2026-10-13T03:12:16.959Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "RCI-B.TO",
@@ -709,6 +709,78 @@
       "prospectiveCount": 1,
       "pendingCount": 0,
       "discrepancyCount": 0
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|38340553115|1",
+      "observedAt": "2026-10-13T03:12:16.959Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "tsx-extra",
+      "github": {
+        "runId": "38340553115",
+        "runAttempt": "1",
+        "sha": "b17100a6cf28fbaf756c53cdbb09a4e907840289",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 0,
+          "expected": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "present": [
+            0
+          ]
+        },
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "WSP.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-22",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 1,
+      "prospectiveCount": 1,
+      "pendingCount": 0,
+      "discrepancyCount": 0
     }
   ],
   "discrepancyLog": [],
@@ -779,6 +851,15 @@
     {
       "runKey": "smc-forward-expanded|tsx-extra|38015050796|1",
       "observedAt": "2026-10-10T01:56:03.718Z",
+      "quality": "fresh",
+      "markedEquity": 996.6026250058063,
+      "totalUnrealizedPnl": 3.493045989959193,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|38340553115|1",
+      "observedAt": "2026-10-13T03:12:16.959Z",
       "quality": "fresh",
       "markedEquity": 996.6026250058063,
       "totalUnrealizedPnl": 3.493045989959193,
@@ -1125,7 +1206,7 @@
       "stop": 17.912892532348632,
       "target": 19.524217224121095,
       "risk": 0.537108230590821,
-      "lifecycleRefreshSource": "recorded_signal_snapshot"
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }

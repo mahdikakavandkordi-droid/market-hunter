@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-evidence-v2",
   "cohort": "us-75",
-  "generatedAt": "2026-10-10T01:56:16.532Z",
+  "generatedAt": "2026-10-13T03:12:28.107Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -27,28 +27,44 @@
     "gapFill": "strategy-level result retained but gap uncertainty flagged"
   },
   "failures": [],
-  "dataQuality": [],
+  "dataQuality": [
+    {
+      "symbol": "TMO",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-12",
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4,
+        5
+      ]
+    }
+  ],
   "evidenceAudit": {
     "run": {
       "tracker": "smc-forward-expanded",
       "cohort": "us-75",
-      "observedAt": "2026-10-10T01:56:16.532Z",
+      "observedAt": "2026-10-13T03:12:28.107Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "38015050796",
+        "runId": "38340553115",
         "runAttempt": "1",
-        "sha": "e13255cce6b39ae189d123bb47c064b4dfe8d30c",
+        "sha": "b17100a6cf28fbaf756c53cdbb09a4e907840289",
         "workflow": "SMC Expanded Forward Cohorts",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-expanded|us-75|38015050796|1"
+      "runKey": "smc-forward-expanded|us-75|38340553115|1"
     },
     "reconciliation": {
-      "newRecords": 0,
+      "newRecords": 1,
       "lifecycleUpdates": 0,
       "missingPreviouslyRecorded": 0,
       "legacyUnprovenancedCount": 1,
-      "reconstructedCount": 5,
+      "reconstructedCount": 6,
       "prospectiveCount": 2,
       "pendingCount": 0
     },
@@ -88,7 +104,7 @@
       "sumR": -1,
       "maxDD": -1
     },
-    "openCount": 6,
+    "openCount": 7,
     "pendingCount": 0,
     "performanceByProvenance": {
       "prospective": {
@@ -241,7 +257,7 @@
     "enteredCount": 6,
     "closedCount": 2,
     "openCount": 4,
-    "skippedCount": 2,
+    "skippedCount": 3,
     "entered": [
       {
         "symbol": "DIS",
@@ -1449,6 +1465,98 @@
         "risk": 9.85923865182059,
         "lifecycleRefreshSource": "recorded_immutable_fields",
         "reason": "max_positions"
+      },
+      {
+        "symbol": "META",
+        "signalT": "2026-10-12T13:30:00.000Z",
+        "entryT": "2026-10-12T17:30:00.000Z",
+        "dir": 1,
+        "entry": 748.4912719726562,
+        "stop": 710.4851252964564,
+        "target": 824.5035653250559,
+        "risk": 38.00614667619982,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 64.8,
+          "bucket": "medium",
+          "asOfDate": "2026-10-09",
+          "direction": "long",
+          "ret20": 0.10900722253554651,
+          "ret60": 0.08145485098352534,
+          "rsi14": 43.87544785511297,
+          "ma20": 719.1829956054687,
+          "ma50": 639.7303979492187,
+          "ma20Slope5": 0.033430662112714504,
+          "volumeRatio20": 0.5818906986662978,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.020185511649239984,
+          "benchmarkRet60": 0.03686998923661511,
+          "rs20": 0.08882171088630653,
+          "rs60": 0.04458486174691023,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 70.4,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 34.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 0,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 64.9,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 711.6832275390625,
+          "atr14": 11.981022426060267,
+          "signalCompletedAt": "2026-10-12T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "META|2026-10-12T13:30:00.000Z|1",
+        "firstObservedAt": "2026-10-13T03:12:28.107Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "38340553115",
+            "runAttempt": "1",
+            "sha": "b17100a6cf28fbaf756c53cdbb09a4e907840289",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "reason": "max_positions"
       }
     ],
     "equityCurve": [
@@ -1545,14 +1653,14 @@
         "equity": 979.0000000000002
       }
     ],
-    "markedCurrentEquity": 984.5128007683359,
-    "markedReturnPct": -0.015487199231664084,
+    "markedCurrentEquity": 988.16157883591,
+    "markedReturnPct": -0.011838421164090063,
     "markedObservation": {
-      "runKey": "smc-forward-expanded|us-75|38015050796|1",
-      "observedAt": "2026-10-10T01:56:16.532Z",
+      "runKey": "smc-forward-expanded|us-75|38340553115|1",
+      "observedAt": "2026-10-13T03:12:28.107Z",
       "quality": "fresh",
-      "markedEquity": 984.5128007683359,
-      "totalUnrealizedPnl": 5.51280076833588,
+      "markedEquity": 988.16157883591,
+      "totalUnrealizedPnl": 9.16157883590971,
       "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
@@ -1659,12 +1767,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 73.69999694824219,
-          "markT": "2026-10-09T20:30:00.000Z",
+          "markPrice": 73.30000305175781,
+          "markT": "2026-10-12T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 1.2515499575536122,
-          "markedPositionValue": 146.41211140499715
+          "unrealizedPnl": 0.45692372473955495,
+          "markedPositionValue": 145.6174851721831
         },
         {
           "symbol": "CVX",
@@ -1768,12 +1876,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 212,
-          "markT": "2026-10-09T20:30:00.000Z",
+          "markPrice": 215.02000427246094,
+          "markT": "2026-10-12T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 4.14179417079059,
-          "markedPositionValue": 254.1417941707906
+          "unrealizedPnl": 7.762121077425852,
+          "markedPositionValue": 257.76212107742583
         },
         {
           "symbol": "PG",
@@ -1877,12 +1985,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 151.24000549316406,
-          "markT": "2026-10-09T20:30:00.000Z",
+          "markPrice": 153.19000244140625,
+          "markT": "2026-10-12T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 1.786733893399338,
-          "markedPositionValue": 218.80608121773665
+          "unrealizedPnl": 4.607886863079069,
+          "markedPositionValue": 221.62723418741638
         },
         {
           "symbol": "SBUX",
@@ -1986,12 +2094,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 90.76000213623047,
-          "markT": "2026-10-09T20:30:00.000Z",
+          "markPrice": 92.2699966430664,
+          "markT": "2026-10-12T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -1.6672772534076608,
-          "markedPositionValue": 116.76213638743664
+          "unrealizedPnl": -3.665352829334766,
+          "markedPositionValue": 114.76406081150954
         }
       ]
     },
@@ -2067,6 +2175,15 @@
         "totalUnrealizedPnl": 5.51280076833588,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-expanded|us-75|38340553115|1",
+        "observedAt": "2026-10-13T03:12:28.107Z",
+        "quality": "fresh",
+        "markedEquity": 988.16157883591,
+        "totalUnrealizedPnl": 9.16157883590971,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T14:55:54.783Z",
@@ -2085,7 +2202,7 @@
     "enteredCount": 6,
     "closedCount": 2,
     "openCount": 4,
-    "skippedCount": 2,
+    "skippedCount": 3,
     "entered": [
       {
         "symbol": "DIS",
@@ -2816,12 +2933,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 73.69999694824219,
-        "markT": "2026-10-09T20:30:00.000Z",
+        "markPrice": 73.30000305175781,
+        "markT": "2026-10-12T20:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 1.2515499575536122,
-        "markedPositionValue": 146.41211140499715
+        "unrealizedPnl": 0.45692372473955495,
+        "markedPositionValue": 145.6174851721831
       },
       {
         "symbol": "CVX",
@@ -2925,12 +3042,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 212,
-        "markT": "2026-10-09T20:30:00.000Z",
+        "markPrice": 215.02000427246094,
+        "markT": "2026-10-12T20:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 4.14179417079059,
-        "markedPositionValue": 254.1417941707906
+        "unrealizedPnl": 7.762121077425852,
+        "markedPositionValue": 257.76212107742583
       },
       {
         "symbol": "PG",
@@ -3034,12 +3151,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 151.24000549316406,
-        "markT": "2026-10-09T20:30:00.000Z",
+        "markPrice": 153.19000244140625,
+        "markT": "2026-10-12T20:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 1.786733893399338,
-        "markedPositionValue": 218.80608121773665
+        "unrealizedPnl": 4.607886863079069,
+        "markedPositionValue": 221.62723418741638
       },
       {
         "symbol": "SBUX",
@@ -3143,12 +3260,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 90.76000213623047,
-        "markT": "2026-10-09T20:30:00.000Z",
+        "markPrice": 92.2699966430664,
+        "markT": "2026-10-12T20:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -1.6672772534076608,
-        "markedPositionValue": 116.76213638743664
+        "unrealizedPnl": -3.665352829334766,
+        "markedPositionValue": 114.76406081150954
       }
     ],
     "skipped": [
@@ -3336,6 +3453,98 @@
         "target": 186.77152818952288,
         "risk": 9.85923865182059,
         "lifecycleRefreshSource": "recorded_immutable_fields",
+        "reason": "max_positions"
+      },
+      {
+        "symbol": "META",
+        "signalT": "2026-10-12T13:30:00.000Z",
+        "entryT": "2026-10-12T17:30:00.000Z",
+        "dir": 1,
+        "entry": 748.4912719726562,
+        "stop": 710.4851252964564,
+        "target": 824.5035653250559,
+        "risk": 38.00614667619982,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 64.8,
+          "bucket": "medium",
+          "asOfDate": "2026-10-09",
+          "direction": "long",
+          "ret20": 0.10900722253554651,
+          "ret60": 0.08145485098352534,
+          "rsi14": 43.87544785511297,
+          "ma20": 719.1829956054687,
+          "ma50": 639.7303979492187,
+          "ma20Slope5": 0.033430662112714504,
+          "volumeRatio20": 0.5818906986662978,
+          "benchmarkSymbol": "^GSPC",
+          "benchmarkRet20": 0.020185511649239984,
+          "benchmarkRet60": 0.03686998923661511,
+          "rs20": 0.08882171088630653,
+          "rs60": 0.04458486174691023,
+          "components": {
+            "return20": {
+              "score": 100,
+              "weight": 20
+            },
+            "return60": {
+              "score": 70.4,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 34.7,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 0,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 100,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 100,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 64.9,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 711.6832275390625,
+          "atr14": 11.981022426060267,
+          "signalCompletedAt": "2026-10-12T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "META|2026-10-12T13:30:00.000Z|1",
+        "firstObservedAt": "2026-10-13T03:12:28.107Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-expanded",
+          "cohort": "us-75",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "38340553115",
+            "runAttempt": "1",
+            "sha": "b17100a6cf28fbaf756c53cdbb09a4e907840289",
+            "workflow": "SMC Expanded Forward Cohorts",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
         "reason": "max_positions"
       }
     ]
@@ -4081,6 +4290,97 @@
       },
       "entryObservationClass": "reconstructed",
       "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
+      "symbol": "META",
+      "signalT": "2026-10-12T13:30:00.000Z",
+      "entryT": "2026-10-12T17:30:00.000Z",
+      "dir": 1,
+      "entry": 748.4912719726562,
+      "stop": 710.4851252964564,
+      "target": 824.5035653250559,
+      "risk": 38.00614667619982,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 64.8,
+        "bucket": "medium",
+        "asOfDate": "2026-10-09",
+        "direction": "long",
+        "ret20": 0.10900722253554651,
+        "ret60": 0.08145485098352534,
+        "rsi14": 43.87544785511297,
+        "ma20": 719.1829956054687,
+        "ma50": 639.7303979492187,
+        "ma20Slope5": 0.033430662112714504,
+        "volumeRatio20": 0.5818906986662978,
+        "benchmarkSymbol": "^GSPC",
+        "benchmarkRet20": 0.020185511649239984,
+        "benchmarkRet60": 0.03686998923661511,
+        "rs20": 0.08882171088630653,
+        "rs60": 0.04458486174691023,
+        "components": {
+          "return20": {
+            "score": 100,
+            "weight": 20
+          },
+          "return60": {
+            "score": 70.4,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 34.7,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 0,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 100,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 100,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 64.9,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 711.6832275390625,
+        "atr14": 11.981022426060267,
+        "signalCompletedAt": "2026-10-12T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "META|2026-10-12T13:30:00.000Z|1",
+      "firstObservedAt": "2026-10-13T03:12:28.107Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-expanded",
+        "cohort": "us-75",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "38340553115",
+          "runAttempt": "1",
+          "sha": "b17100a6cf28fbaf756c53cdbb09a4e907840289",
+          "workflow": "SMC Expanded Forward Cohorts",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed"
     }
   ]
 }
