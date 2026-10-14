@@ -1,20 +1,20 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-10-13T03:12:16.959Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-10-14T01:25:35.136Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|
-| Closed trades | 1 | 1 |
-| Win rate | 0.0% | 0.0% |
-| PF | 0.000 | 0.000 |
-| Avg R | -1.000 | -1.050 |
+| Closed trades | 2 | 2 |
+| Win rate | 50.0% | 50.0% |
+| PF | 2.000 | 1.857 |
+| Avg R | 0.500 | 0.450 |
 
 ## Realized vs marked paper account
 
-Realized-only equity $993.11; return -0.7%; realized-event max DD -0.7%.
-Marked equity $996.60; return -0.3%; observed marked max DD -1.4%; quality fresh.
+Realized-only equity $1004.83; return 0.5%; realized-event max DD -0.7%.
+Marked equity $1014.20; return 1.4%; observed marked max DD -1.4%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,9 +23,8 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| SAP.TO | Short | 37.960 | 38.790 | fresh | $-2.58 |
-| CVE.TO | Long | 44.260 | 44.760 | fresh | $2.82 |
-| WCP.TO | Long | 18.450 | 18.690 | fresh | $3.25 |
+| SAP.TO | Short | 37.960 | 38.650 | fresh | $-2.15 |
+| WCP.TO | Long | 18.450 | 19.300 | fresh | $11.52 |
 
 ## Evidence integrity
 
@@ -38,7 +37,7 @@ This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 3.
 |---|---:|---:|---:|---:|
 | prospective | 0 | n/a | n/a | n/a |
 | reconstructed | 1 | 0.0% | -1.050 | 0.000 |
-| legacy unprovenanced | 0 | n/a | n/a | n/a |
+| legacy unprovenanced | 1 | 100.0% | 1.950 | n/a |
 
 ## Momentum shadow (observational only)
 
@@ -46,7 +45,7 @@ This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 3.
 |---|---:|---:|---:|---:|
 | high | 0 | n/a | n/a | n/a |
 | medium | 1 | 0.0% | -1.050 | 0.000 |
-| low | 0 | n/a | n/a | n/a |
+| low | 1 | 100.0% | 1.950 | n/a |
 | unavailable | 0 | n/a | n/a | n/a |
 
 ## Fetch/data gaps
