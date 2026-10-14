@@ -2,6 +2,14 @@
 
 ## Audit follow-up: research v3
 
+Risk-event hypothesis v1: `risk-events/PROTOCOL-2026-10-14.md` defines a separate exploratory binary-event experiment on the already-inspected source vintages. It predicts crossing an asset-relative high-volatility threshold and tests whether acceleration/shocks add value beyond calibrated current volatility, including calm-origin transitions. It is not a return/crash forecast or portfolio strategy.
+
+```
+node research/statistical/risk-events/test.mjs
+node research/statistical/risk-events/run.mjs --pre2020-bundle /private/pre2020-evidence --post2020-bundle /private/v3-evidence --output-dir /private/new-risk-event-directory
+node research/statistical/risk-events/run.mjs --input-bundle /private/new-risk-event-directory --output-dir /private/new-risk-event-replay
+```
+
 Pre-2020 replication: read `v3/PRE2020-PROTOCOL-2026-10-14.md` and `v3/PRE2020-RESULTS-2026-10-14.md`. The unchanged model failed to reproduce its broad h20 equity advantage against EWMA; limited crypto improvements do not establish a robust risk-control edge. The protocol was published before input retrieval. Both historical periods are now inspected.
 
 ```
