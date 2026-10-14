@@ -1,0 +1,32 @@
+name: Isolated statistical forecast research
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'research/statistical/**'
+      - '.github/workflows/statistical-forecast-research.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check model math and anti-leakage invariants
+        run: node research/statistical/test.mjs
+      - name: Train and walk-forward test 9 actual markets (provider dependent)
+        run: node research/statistical/run.mjs --from 2020-01-01 --asof 2026-10-13 --output research/statistical/experiment-results.json
+      - name: Archive aggregate report (not raw licensed bars)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: statistical-forecast-20261013
+          path: research/statistical/experiment-results.json
+          if-no-files-found: ignore
+          retention-days: 30
