@@ -3,7 +3,7 @@
 // An outcome ending at t+h becomes trainable only at (or after) t+h.
 
 const avg = a => a.reduce((s,x)=>s+x,0)/a.length;
-const std = a => Math.sqrt(avg(a.map(v => (v-avg(a))**2)));
+const std = a => { const m=avg(a); return Math.sqrt(avg(a.map(v => (v-m)**2))); };
 const sigmoid = z => 1/(1+Math.exp(-Math.max(-35,Math.min(35,z))));
 
 export const HORIZONS = [5,10,20];
