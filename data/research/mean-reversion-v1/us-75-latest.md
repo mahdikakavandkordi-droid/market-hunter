@@ -1,8 +1,8 @@
 # Mean Reversion V1 — us-75
-Generated: 2026-10-14T14:04:50.089Z; mode: forward_shadow.
+Generated: 2026-10-14T18:57:16.132Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 75; failed fetch/review symbols 3.
-Open 0; pending 2; closed 5; lifecycle reviews 0.
-Realized equity $1016.00; marked equity $1016.00; mark quality fresh.
+Open 2; pending 0; closed 5; lifecycle reviews 0.
+Realized equity $1016.00; marked equity $1013.26; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,13 +15,13 @@ Realized equity $1016.00; marked equity $1016.00; mark quality fresh.
 
 ## Positions
 
-- DE: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- QCOM: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- DE: Long open; entry 646.9600219726562; current stop 607.8857182094029; provenance prospective; gap none
+- QCOM: Long open; entry 173.62600708007812; current stop 168.87964739118303; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-14T01:25:47.050Z; stale false. Trend ledger as of 2026-10-14T13:56:33.186Z; stale false.
+SMC ledger as of 2026-10-14T01:25:47.050Z; stale false. Trend ledger as of 2026-10-14T18:48:42.925Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
-SMC closed 1; Trend closed 7; challenger closed 5. No winner is claimed from a small sample.
+SMC closed 1; Trend closed 8; challenger closed 5. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical fractional shares, fixed-R costs excluding FX/dividends and variable spreads, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.

@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-14T14:04:50.089Z",
+  "updatedAt": "2026-10-14T18:57:16.132Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -313,7 +313,7 @@
       "symbol": "DE",
       "signalT": "2026-10-13T13:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-13T21:00:00.000Z",
         "dailyAsOf": "2026-10-13",
@@ -328,11 +328,11 @@
         "signalClose": 650,
         "initialStop": 607.8857182094029
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-14T13:30:00.000Z",
+      "entry": 646.9600219726562,
+      "stop": 607.8857182094029,
+      "target": 676.4869964599609,
+      "risk": 39.0743037632534,
       "R": null,
       "exitT": null,
       "decisionId": "DE|2026-10-13T13:30:00.000Z|1",
@@ -345,13 +345,17 @@
         "runKey": "mean-reversion-v1|38482311341|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 607.8857182094029,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-10-14T17:30:00.000Z",
+      "entryObservedAt": "2026-10-14T18:57:16.132Z"
     },
     {
       "symbol": "QCOM",
       "signalT": "2026-10-13T13:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-13T21:00:00.000Z",
         "dailyAsOf": "2026-10-13",
@@ -366,11 +370,11 @@
         "signalClose": 176.86000061035156,
         "initialStop": 168.87964739118303
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-14T13:30:00.000Z",
+      "entry": 173.62600708007812,
+      "stop": 168.87964739118303,
+      "target": 185.6249984741211,
+      "risk": 4.746359688895097,
       "R": null,
       "exitT": null,
       "decisionId": "QCOM|2026-10-13T13:30:00.000Z|1",
@@ -383,7 +387,11 @@
         "runKey": "mean-reversion-v1|38482311341|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 168.87964739118303,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-10-14T17:30:00.000Z",
+      "entryObservedAt": "2026-10-14T18:57:16.132Z"
     }
   ],
   "runLog": [
@@ -2546,6 +2554,25 @@
         }
       ],
       "diagnosticCount": 150
+    },
+    {
+      "runKey": "mean-reversion-v1|38619424327|1",
+      "observedAt": "2026-10-14T18:57:16.132Z",
+      "failures": [
+        {
+          "symbol": "HON",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "NFLX",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "CMCSA",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 150
     }
   ],
   "markedEquitySeries": [
@@ -3482,6 +3509,15 @@
       "quality": "fresh",
       "markedEquity": 1016.0040663717821,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|38619424327|1",
+      "observedAt": "2026-10-14T18:57:16.132Z",
+      "quality": "fresh",
+      "markedEquity": 1013.2556478675283,
+      "totalUnrealizedPnl": -2.748418504253837,
       "missingSymbols": [],
       "staleSymbols": []
     }
