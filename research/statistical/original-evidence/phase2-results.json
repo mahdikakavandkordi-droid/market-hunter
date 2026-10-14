@@ -1,0 +1,3316 @@
+{
+  "generated": "2026-10-14T03:50:40.099Z",
+  "asOf": "2026-10-13",
+  "source": "Yahoo Finance chart daily close (adjusted for ETF if available)",
+  "classification": "EXPLORATORY only: previously examined history is reused; NO unbiased fresh holdout",
+  "models": {
+    "volatility": "Daily-close HAR-style log realized-volatility ridge; no intraday realized-vol data",
+    "regime": "Close>SMA200 and 20-bar volatility above trailing median of 252 observed values",
+    "macro": "Lagged previous-calendar-day-only VIX, US10Y, DXY/UUP, oil/USO, SPX",
+    "features": [
+      "log_vix_prior",
+      "vix_ret5_prior",
+      "us10y_yield_prior",
+      "us10y_change20_prior",
+      "dollar_ret20_prior",
+      "oil_ret20_prior",
+      "spx_ret5_prior",
+      "spx_ret20_prior"
+    ],
+    "fairness": "Macro and own-price logistic/regression model on exact same available sample dates, expanding walk-forward, 252 matured observations, refit 21 bars",
+    "horizon": "5,10,20 native daily bars; indices use trading days; crypto includes weekends",
+    "caveat": "Overlapping labels, no execution or trading costs; avoid treating small historical gains as validated alpha"
+  },
+  "markets": [
+    {
+      "id": "tsx",
+      "ticker": "^GSPTSE",
+      "barCount": 1702,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 1381,
+          "first": "2021-04-06",
+          "last": "2026-10-05",
+          "harMSE": 0.0000133114477916484,
+          "harMAE": 0.0025281709514720406,
+          "persistenceMSE": 0.000015879192004853224,
+          "persistenceMAE": 0.0028588123708836945,
+          "historicalMeanMSE": 0.000015376380300005805,
+          "historicalMeanMAE": 0.00293649193107242,
+          "skillVsPersistencePct": 16.170496662676758,
+          "skillVsMeanPct": 13.42924971982271,
+          "maeSkillVsPersistencePct": 11.565691501098707,
+          "nonOverlapping": {
+            "n": 277,
+            "skillVsPersistencePct": 16.69961010994093,
+            "skillVsMeanPct": 13.38233564388035
+          },
+          "byYear": {
+            "2021": {
+              "n": 187,
+              "skillVsPersistencePct": 15.286922907759104,
+              "skillVsMeanPct": 49.64155582830748
+            },
+            "2022": {
+              "n": 250,
+              "skillVsPersistencePct": -5.019210254750139,
+              "skillVsMeanPct": -3.902619356030712
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 20.94379496018505,
+              "skillVsMeanPct": 17.090910295389584
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 19.095118518053745,
+              "skillVsMeanPct": 29.068312220055926
+            },
+            "2025": {
+              "n": 251,
+              "skillVsPersistencePct": 26.61233701725967,
+              "skillVsMeanPct": 9.660324278617194
+            },
+            "2026": {
+              "n": 191,
+              "skillVsPersistencePct": 10.731903156084787,
+              "skillVsMeanPct": -2.1656870289802788
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1371,
+          "first": "2021-04-13",
+          "last": "2026-09-28",
+          "harMSE": 0.000010438392053561293,
+          "harMAE": 0.0022213750173768836,
+          "persistenceMSE": 0.000013390974902256529,
+          "persistenceMAE": 0.0025456672622791634,
+          "historicalMeanMSE": 0.000011985625721078556,
+          "historicalMeanMAE": 0.002587269264164736,
+          "skillVsPersistencePct": 22.049050724437492,
+          "skillVsMeanPct": 12.909077118904321,
+          "maeSkillVsPersistencePct": 12.73898791517386,
+          "nonOverlapping": {
+            "n": 138,
+            "skillVsPersistencePct": 19.3117982676973,
+            "skillVsMeanPct": 15.469036626486654
+          },
+          "byYear": {
+            "2021": {
+              "n": 182,
+              "skillVsPersistencePct": 25.75647248694607,
+              "skillVsMeanPct": 57.827539587701104
+            },
+            "2022": {
+              "n": 250,
+              "skillVsPersistencePct": -1.5847363569204909,
+              "skillVsMeanPct": -4.6152333365105935
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 33.07889315486787,
+              "skillVsMeanPct": 24.38231552229083
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 25.058719910201855,
+              "skillVsMeanPct": 33.924092460819345
+            },
+            "2025": {
+              "n": 251,
+              "skillVsPersistencePct": 29.14549755108322,
+              "skillVsMeanPct": 2.792089840446721
+            },
+            "2026": {
+              "n": 186,
+              "skillVsPersistencePct": 19.16634042325792,
+              "skillVsMeanPct": -2.589603139091845
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1351,
+          "first": "2021-04-27",
+          "last": "2026-09-14",
+          "harMSE": 0.000008059132207316035,
+          "harMAE": 0.0019721223811200806,
+          "persistenceMSE": 0.000011498952058149183,
+          "persistenceMAE": 0.002361295999509858,
+          "historicalMeanMSE": 0.000009236338626479304,
+          "historicalMeanMAE": 0.002264450398453888,
+          "skillVsPersistencePct": 29.914202906823885,
+          "skillVsMeanPct": 12.745379600834262,
+          "maeSkillVsPersistencePct": 16.481356783332522,
+          "nonOverlapping": {
+            "n": 68,
+            "skillVsPersistencePct": 35.07603137573035,
+            "skillVsMeanPct": 15.267543323944954
+          },
+          "byYear": {
+            "2021": {
+              "n": 172,
+              "skillVsPersistencePct": 31.014939042960656,
+              "skillVsMeanPct": 61.650159401480984
+            },
+            "2022": {
+              "n": 250,
+              "skillVsPersistencePct": 3.2649867755159545,
+              "skillVsMeanPct": -4.339307421898386
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 41.64154754497885,
+              "skillVsMeanPct": 32.836174185520846
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 38.02507276022246,
+              "skillVsMeanPct": 45.08515679575225
+            },
+            "2025": {
+              "n": 251,
+              "skillVsPersistencePct": 36.39305254515798,
+              "skillVsMeanPct": -0.48199576706118297
+            },
+            "2026": {
+              "n": 176,
+              "skillVsPersistencePct": 29.841249125392753,
+              "skillVsMeanPct": -9.250653256924291
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 182,
+          "positiveRatePct": 60.43956043956044,
+          "meanForwardLogReturnPct": 1.0174740956025146,
+          "medianForwardLogReturnPct": 1.410107085192364
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 69,
+          "positiveRatePct": 72.46376811594203,
+          "meanForwardLogReturnPct": 2.0983058170667763,
+          "medianForwardLogReturnPct": 3.3462824248645715
+        },
+        {
+          "regime": "up-highvol",
+          "count": 457,
+          "positiveRatePct": 72.42888402625822,
+          "meanForwardLogReturnPct": 1.1391024763461086,
+          "medianForwardLogReturnPct": 1.672075188640996
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 499,
+          "positiveRatePct": 58.717434869739485,
+          "meanForwardLogReturnPct": 0.4183225586249734,
+          "medianForwardLogReturnPct": 0.7614060478473332
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 1381,
+          "first": "2021-04-06",
+          "last": "2026-10-05",
+          "priorBrier": 0.24041793652171503,
+          "priceBrier": 0.24391934785868696,
+          "macroBrier": 0.24875719183958445,
+          "macroBrierSkillVsPriorPct": -3.468649402169799,
+          "macroBrierSkillVsPricePct": -1.9833785320303,
+          "macroReturnMseSkillVsPricePct": -7.3537186330467685,
+          "historicalPriorAccuracy": 60.53584359160029,
+          "priceAccuracy": 60.53584359160029,
+          "macroAccuracy": 57.711803041274436,
+          "nonOverlapping": {
+            "n": 277,
+            "macroBrierSkillVsPricePct": -2.1106079686073143,
+            "macroBrierSkillVsPriorPct": -1.8514408548194305
+          },
+          "byYear": {
+            "2021": {
+              "n": 187,
+              "macroBrierSkillVsPricePct": -0.4340926878528162,
+              "macroBrierSkillVsPriorPct": -1.2087891208599988
+            },
+            "2022": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -1.8498943879898588,
+              "macroBrierSkillVsPriorPct": -5.884934085646587
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": 9.611544949713412,
+              "macroBrierSkillVsPriorPct": 10.016464269806447
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -14.691184320744966,
+              "macroBrierSkillVsPriorPct": -16.125533605780728
+            },
+            "2025": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -2.0721337540734908,
+              "macroBrierSkillVsPriorPct": -3.8287183152650783
+            },
+            "2026": {
+              "n": 191,
+              "macroBrierSkillVsPricePct": -3.4770979482025233,
+              "macroBrierSkillVsPriorPct": -4.759349711316019
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1371,
+          "first": "2021-04-13",
+          "last": "2026-09-28",
+          "priorBrier": 0.23496637460287756,
+          "priceBrier": 0.23894268900743112,
+          "macroBrier": 0.2521689793402817,
+          "macroBrierSkillVsPriorPct": -7.321304917130678,
+          "macroBrierSkillVsPricePct": -5.5353400381458195,
+          "macroReturnMseSkillVsPricePct": -16.702474189435492,
+          "historicalPriorAccuracy": 63.45733041575492,
+          "priceAccuracy": 63.31145149525893,
+          "macroAccuracy": 58.20568927789934,
+          "nonOverlapping": {
+            "n": 138,
+            "macroBrierSkillVsPricePct": -7.317095448599331,
+            "macroBrierSkillVsPriorPct": -8.829051039078939
+          },
+          "byYear": {
+            "2021": {
+              "n": 182,
+              "macroBrierSkillVsPricePct": 0.18094396949398517,
+              "macroBrierSkillVsPriorPct": -1.261963396296828
+            },
+            "2022": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -6.462187369364858,
+              "macroBrierSkillVsPriorPct": -10.704859158312408
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": 6.054435243813394,
+              "macroBrierSkillVsPriorPct": 8.823780183077057
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -23.334587810034257,
+              "macroBrierSkillVsPriorPct": -24.876464583045397
+            },
+            "2025": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -3.5194352369463333,
+              "macroBrierSkillVsPriorPct": -7.970104698243596
+            },
+            "2026": {
+              "n": 186,
+              "macroBrierSkillVsPricePct": -4.838780553363642,
+              "macroBrierSkillVsPriorPct": -7.745808153040135
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1351,
+          "first": "2021-04-27",
+          "last": "2026-09-14",
+          "priorBrier": 0.23560578217558895,
+          "priceBrier": 0.2369164837613847,
+          "macroBrier": 0.2669625873804255,
+          "macroBrierSkillVsPriorPct": -13.309013435615679,
+          "macroBrierSkillVsPricePct": -12.682149904479578,
+          "macroReturnMseSkillVsPricePct": -34.545202777484675,
+          "historicalPriorAccuracy": 65.72908956328646,
+          "priceAccuracy": 65.13693560325684,
+          "macroAccuracy": 57.735011102886745,
+          "nonOverlapping": {
+            "n": 68,
+            "macroBrierSkillVsPricePct": -8.278536978187855,
+            "macroBrierSkillVsPriorPct": -5.9246735978475185
+          },
+          "byYear": {
+            "2021": {
+              "n": 172,
+              "macroBrierSkillVsPricePct": -1.5770396355342609,
+              "macroBrierSkillVsPriorPct": 0.44673033620036273
+            },
+            "2022": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -12.53316285594761,
+              "macroBrierSkillVsPriorPct": -18.006446366954478
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -10.93454249750514,
+              "macroBrierSkillVsPriorPct": -5.336971978237037
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -33.47137812328842,
+              "macroBrierSkillVsPriorPct": -29.92126908495889
+            },
+            "2025": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -14.142558898028401,
+              "macroBrierSkillVsPriorPct": -19.798158332278113
+            },
+            "2026": {
+              "n": 176,
+              "macroBrierSkillVsPricePct": 1.7818431192925699,
+              "macroBrierSkillVsPriorPct": -1.5475128808189131
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sp500",
+      "ticker": "^GSPC",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "harMSE": 0.000020340080246872984,
+          "harMAE": 0.0029738068442716785,
+          "persistenceMSE": 0.00002356748763828657,
+          "persistenceMAE": 0.003249153694994674,
+          "historicalMeanMSE": 0.000028893851536873762,
+          "historicalMeanMAE": 0.004039648924011643,
+          "skillVsPersistencePct": 13.694320926132574,
+          "skillVsMeanPct": 29.60412279783685,
+          "maeSkillVsPersistencePct": 8.474417542856404,
+          "nonOverlapping": {
+            "n": 277,
+            "skillVsPersistencePct": 10.600016555296921,
+            "skillVsMeanPct": 32.40379350260961
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "skillVsPersistencePct": 18.359458112094007,
+              "skillVsMeanPct": 52.45032213811919
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -16.60239997080646,
+              "skillVsMeanPct": 14.813945475132218
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 18.650387441691773,
+              "skillVsMeanPct": 62.58042007417104
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 16.56771796251766,
+              "skillVsMeanPct": 41.441455858987844
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 25.05350279053664,
+              "skillVsMeanPct": 19.998963934140612
+            },
+            "2026": {
+              "n": 191,
+              "skillVsPersistencePct": 21.725928054744514,
+              "skillVsMeanPct": 24.850505893296926
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "harMSE": 0.000016885324839185036,
+          "harMAE": 0.0027192491794781927,
+          "persistenceMSE": 0.000019808208343378662,
+          "persistenceMAE": 0.003000245716207108,
+          "historicalMeanMSE": 0.000024312615827954112,
+          "historicalMeanMAE": 0.0037470393869270396,
+          "skillVsPersistencePct": 14.755920644234665,
+          "skillVsMeanPct": 30.54912330835804,
+          "maeSkillVsPersistencePct": 9.365784115980647,
+          "nonOverlapping": {
+            "n": 138,
+            "skillVsPersistencePct": 9.388986021867318,
+            "skillVsMeanPct": 34.63254872047244
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "skillVsPersistencePct": 29.98822245179511,
+              "skillVsMeanPct": 57.33795800941805
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -30.88223464441773,
+              "skillVsMeanPct": 17.553750470113805
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 23.608998005669157,
+              "skillVsMeanPct": 74.42384322133712
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 24.5947476200968,
+              "skillVsMeanPct": 45.648614236291785
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 23.937409247121288,
+              "skillVsMeanPct": 14.69761677835233
+            },
+            "2026": {
+              "n": 186,
+              "skillVsPersistencePct": 32.71860531589036,
+              "skillVsMeanPct": 26.03263715229612
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "harMSE": 0.000014782387804479735,
+          "harMAE": 0.0025896172698745565,
+          "persistenceMSE": 0.000017868746664648264,
+          "persistenceMAE": 0.002839076940122748,
+          "historicalMeanMSE": 0.00002079614684296401,
+          "historicalMeanMAE": 0.003574735275612222,
+          "skillVsPersistencePct": 17.272385792309752,
+          "skillVsMeanPct": 28.917660006420455,
+          "maeSkillVsPersistencePct": 8.78664705146759,
+          "nonOverlapping": {
+            "n": 68,
+            "skillVsPersistencePct": 14.104386750251264,
+            "skillVsMeanPct": 28.412801879812843
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "skillVsPersistencePct": 43.65785246763093,
+              "skillVsMeanPct": 62.49162090434821
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -43.49984248268013,
+              "skillVsMeanPct": 15.59377216887955
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 4.05505690080139,
+              "skillVsMeanPct": 78.29536648711839
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 38.46041724311134,
+              "skillVsMeanPct": 48.91340873122463
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 26.695890886368623,
+              "skillVsMeanPct": 7.799737783021321
+            },
+            "2026": {
+              "n": 176,
+              "skillVsPersistencePct": 42.25460507959845,
+              "skillVsMeanPct": 28.482134552992257
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 250,
+          "positiveRatePct": 53.6,
+          "meanForwardLogReturnPct": 0.8633027261566482,
+          "medianForwardLogReturnPct": 1.5987495926264164
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 42,
+          "positiveRatePct": 76.19047619047619,
+          "meanForwardLogReturnPct": 2.3937416343495515,
+          "medianForwardLogReturnPct": 4.654761180069289
+        },
+        {
+          "regime": "up-highvol",
+          "count": 374,
+          "positiveRatePct": 65.50802139037432,
+          "meanForwardLogReturnPct": 0.5308326864322378,
+          "medianForwardLogReturnPct": 1.4826670349804312
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 543,
+          "positiveRatePct": 66.66666666666666,
+          "meanForwardLogReturnPct": 0.9230072824307,
+          "medianForwardLogReturnPct": 1.3570462244289077
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "priorBrier": 0.24436939478904615,
+          "priceBrier": 0.24934889319034503,
+          "macroBrier": 0.2549264386110876,
+          "macroBrierSkillVsPriorPct": -4.320117022491665,
+          "macroBrierSkillVsPricePct": -2.2368438653885825,
+          "macroReturnMseSkillVsPricePct": -8.604292289052307,
+          "historicalPriorAccuracy": 58.85755603759942,
+          "priceAccuracy": 58.85755603759942,
+          "macroAccuracy": 54.66377440347071,
+          "nonOverlapping": {
+            "n": 277,
+            "macroBrierSkillVsPricePct": -2.0153214043349577,
+            "macroBrierSkillVsPriorPct": -4.964822638435429
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "macroBrierSkillVsPricePct": -3.8296268702023184,
+              "macroBrierSkillVsPriorPct": -2.8499230734489123
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": 7.074704537940546,
+              "macroBrierSkillVsPriorPct": -2.1619628135097324
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -7.5070569064361825,
+              "macroBrierSkillVsPriorPct": -8.334794603334794
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -3.5977627818475355,
+              "macroBrierSkillVsPriorPct": -4.126734733389337
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -3.167042094398864,
+              "macroBrierSkillVsPriorPct": -3.101813503877837
+            },
+            "2026": {
+              "n": 191,
+              "macroBrierSkillVsPricePct": -6.065137958037181,
+              "macroBrierSkillVsPriorPct": -5.4506606478494035
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "priorBrier": 0.2438508262491265,
+          "priceBrier": 0.25022875926954413,
+          "macroBrier": 0.2619764683378185,
+          "macroBrierSkillVsPriorPct": -7.4330861894124745,
+          "macroBrierSkillVsPricePct": -4.694787722469518,
+          "macroReturnMseSkillVsPricePct": -16.402639426860155,
+          "historicalPriorAccuracy": 61.61689730517116,
+          "priceAccuracy": 61.61689730517116,
+          "macroAccuracy": 56.88273852876912,
+          "nonOverlapping": {
+            "n": 138,
+            "macroBrierSkillVsPricePct": -11.589662821247071,
+            "macroBrierSkillVsPriorPct": -13.432112595016775
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "macroBrierSkillVsPricePct": -6.1724250862520424,
+              "macroBrierSkillVsPriorPct": -7.030071329916399
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": 13.340965379582281,
+              "macroBrierSkillVsPriorPct": 5.182492169259579
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -16.520951053939847,
+              "macroBrierSkillVsPriorPct": -16.446994642592717
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -9.966241575080549,
+              "macroBrierSkillVsPriorPct": -12.396290455295933
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -11.632831009387212,
+              "macroBrierSkillVsPriorPct": -12.5220035634658
+            },
+            "2026": {
+              "n": 186,
+              "macroBrierSkillVsPricePct": -7.626877312529001,
+              "macroBrierSkillVsPriorPct": -6.289284113670823
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "priorBrier": 0.238175075084149,
+          "priceBrier": 0.24822450303385424,
+          "macroBrier": 0.2693281618445587,
+          "macroBrierSkillVsPriorPct": -13.079910544545047,
+          "macroBrierSkillVsPricePct": -8.501843513742969,
+          "macroReturnMseSkillVsPricePct": -24.96317219562709,
+          "historicalPriorAccuracy": 65.33628972653362,
+          "priceAccuracy": 65.33628972653362,
+          "macroAccuracy": 57.57575757575758,
+          "nonOverlapping": {
+            "n": 68,
+            "macroBrierSkillVsPricePct": -3.2245827339214106,
+            "macroBrierSkillVsPriorPct": -6.050335489129988
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "macroBrierSkillVsPricePct": -2.7276516041840226,
+              "macroBrierSkillVsPriorPct": 0.16775104082620285
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": 6.2979217956428135,
+              "macroBrierSkillVsPriorPct": -6.964016729479305
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -34.612046276009046,
+              "macroBrierSkillVsPriorPct": -39.05790194821317
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -18.03040048692537,
+              "macroBrierSkillVsPriorPct": -19.58231929611214
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -9.822175516354271,
+              "macroBrierSkillVsPriorPct": -10.670780520382884
+            },
+            "2026": {
+              "n": 176,
+              "macroBrierSkillVsPricePct": -1.6565737992917162,
+              "macroBrierSkillVsPriorPct": -0.2776039798749741
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "nasdaq100",
+      "ticker": "^NDX",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "harMSE": 0.000030991347922104784,
+          "harMAE": 0.003820814190295204,
+          "persistenceMSE": 0.000035372230985149146,
+          "persistenceMAE": 0.004112256342333301,
+          "historicalMeanMSE": 0.00004545716894517825,
+          "historicalMeanMAE": 0.00517812226088754,
+          "skillVsPersistencePct": 12.385091188858443,
+          "skillVsMeanPct": 31.822969530987233,
+          "maeSkillVsPersistencePct": 7.087159159750545,
+          "nonOverlapping": {
+            "n": 277,
+            "skillVsPersistencePct": 10.096619828691777,
+            "skillVsMeanPct": 35.12486889085983
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "skillVsPersistencePct": 11.707126645910193,
+              "skillVsMeanPct": 60.6581509667336
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -13.605831634418442,
+              "skillVsMeanPct": 26.610094986435573
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 9.614504814557833,
+              "skillVsMeanPct": 54.03879534145252
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 15.32990997789585,
+              "skillVsMeanPct": 37.13571383060611
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 25.262621107362026,
+              "skillVsMeanPct": 22.153214817239363
+            },
+            "2026": {
+              "n": 191,
+              "skillVsPersistencePct": 14.900752016684116,
+              "skillVsMeanPct": 10.008296329642441
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "harMSE": 0.000024724437069978438,
+          "harMAE": 0.0034894133943571782,
+          "persistenceMSE": 0.000028383421436915865,
+          "persistenceMAE": 0.0036946244550273492,
+          "historicalMeanMSE": 0.00003779454891647863,
+          "historicalMeanMAE": 0.004770467680111927,
+          "skillVsPersistencePct": 12.891273080202026,
+          "skillVsMeanPct": 34.582002487669726,
+          "maeSkillVsPersistencePct": 5.554314468712407,
+          "nonOverlapping": {
+            "n": 138,
+            "skillVsPersistencePct": 9.836209224016612,
+            "skillVsMeanPct": 38.74561103604092
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "skillVsPersistencePct": -8.599525742401504,
+              "skillVsMeanPct": 57.290684094525034
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -25.963249813981882,
+              "skillVsMeanPct": 32.98403249018881
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 15.328132553327888,
+              "skillVsMeanPct": 69.12806568954437
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 23.142263614112903,
+              "skillVsMeanPct": 42.14205050859171
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 26.17582599042072,
+              "skillVsMeanPct": 20.208274655352465
+            },
+            "2026": {
+              "n": 186,
+              "skillVsPersistencePct": 24.897977179017182,
+              "skillVsMeanPct": 3.308864725509786
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "harMSE": 0.000021294686867161367,
+          "harMAE": 0.0033197983952525075,
+          "persistenceMSE": 0.000024915338031195514,
+          "persistenceMAE": 0.003437524583507524,
+          "historicalMeanMSE": 0.000032552127214307606,
+          "historicalMeanMAE": 0.004593880353663015,
+          "skillVsPersistencePct": 14.531816343414139,
+          "skillVsMeanPct": 34.58281012799147,
+          "maeSkillVsPersistencePct": 3.424737347911355,
+          "nonOverlapping": {
+            "n": 68,
+            "skillVsPersistencePct": 8.624045321610208,
+            "skillVsMeanPct": 34.90896210829993
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "skillVsPersistencePct": -46.26647977792708,
+              "skillVsMeanPct": 44.674410778627525
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -37.25440570934357,
+              "skillVsMeanPct": 35.501713316848196
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 3.805984812650698,
+              "skillVsMeanPct": 75.35918021940113
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 31.999598969837173,
+              "skillVsMeanPct": 41.149340796323784
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 32.321711980300094,
+              "skillVsMeanPct": 18.77908568372284
+            },
+            "2026": {
+              "n": 176,
+              "skillVsPersistencePct": 36.21754401289895,
+              "skillVsMeanPct": -6.533327985140613
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 256,
+          "positiveRatePct": 47.65625,
+          "meanForwardLogReturnPct": -0.020650862019315715,
+          "medianForwardLogReturnPct": -0.7679576819818095
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 55,
+          "positiveRatePct": 61.81818181818181,
+          "meanForwardLogReturnPct": 1.0248450778033564,
+          "medianForwardLogReturnPct": 1.8863618157930206
+        },
+        {
+          "regime": "up-highvol",
+          "count": 371,
+          "positiveRatePct": 59.83827493261455,
+          "meanForwardLogReturnPct": 0.7679828456199235,
+          "medianForwardLogReturnPct": 1.2603997285887767
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 527,
+          "positiveRatePct": 71.34724857685009,
+          "meanForwardLogReturnPct": 1.7663998334137627,
+          "medianForwardLogReturnPct": 2.1932129577689516
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "priorBrier": 0.24539087564326495,
+          "priceBrier": 0.2505839527651053,
+          "macroBrier": 0.2570752755369252,
+          "macroBrierSkillVsPriorPct": -4.761546191573296,
+          "macroBrierSkillVsPricePct": -2.5904782410008487,
+          "macroReturnMseSkillVsPricePct": -6.213625744074869,
+          "historicalPriorAccuracy": 58.06218365871294,
+          "priceAccuracy": 58.06218365871294,
+          "macroAccuracy": 53.00072306579898,
+          "nonOverlapping": {
+            "n": 277,
+            "macroBrierSkillVsPricePct": -4.893167394616538,
+            "macroBrierSkillVsPriorPct": -8.131221400359268
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "macroBrierSkillVsPricePct": -7.963900584124439,
+              "macroBrierSkillVsPriorPct": -9.207268078421338
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": 7.325615769200167,
+              "macroBrierSkillVsPriorPct": -0.3896552386658758
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -10.14874140641744,
+              "macroBrierSkillVsPriorPct": -11.126538825625222
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -0.6329131816553035,
+              "macroBrierSkillVsPriorPct": -0.8419667633040362
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -1.8045739948057138,
+              "macroBrierSkillVsPriorPct": -2.721740809127149
+            },
+            "2026": {
+              "n": 191,
+              "macroBrierSkillVsPricePct": -6.49731893780956,
+              "macroBrierSkillVsPriorPct": -6.201036986542241
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "priorBrier": 0.25115357644222736,
+          "priceBrier": 0.26074363961287006,
+          "macroBrier": 0.2742926634107135,
+          "macroBrierSkillVsPriorPct": -9.21312262252767,
+          "macroBrierSkillVsPricePct": -5.196300787225305,
+          "macroReturnMseSkillVsPricePct": -11.915373899381553,
+          "historicalPriorAccuracy": 59.723233794610344,
+          "priceAccuracy": 59.359067734887105,
+          "macroAccuracy": 52.14857975236708,
+          "nonOverlapping": {
+            "n": 138,
+            "macroBrierSkillVsPricePct": -7.453856316014629,
+            "macroBrierSkillVsPriorPct": -10.377449863002198
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "macroBrierSkillVsPricePct": -9.416408818838097,
+              "macroBrierSkillVsPriorPct": -12.146244437923514
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": 17.767309704519242,
+              "macroBrierSkillVsPriorPct": 9.265778946364678
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -34.90980361404539,
+              "macroBrierSkillVsPriorPct": -38.32730422660817
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -5.602097606091716,
+              "macroBrierSkillVsPriorPct": -7.268661915644059
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -10.972904205388012,
+              "macroBrierSkillVsPriorPct": -13.260143309535044
+            },
+            "2026": {
+              "n": 186,
+              "macroBrierSkillVsPricePct": -0.5748538584268381,
+              "macroBrierSkillVsPriorPct": -0.8917514015539751
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "priorBrier": 0.2388339980703975,
+          "priceBrier": 0.2514000198357569,
+          "macroBrier": 0.27724882653568167,
+          "macroBrierSkillVsPriorPct": -16.08432165254847,
+          "macroBrierSkillVsPricePct": -10.281942983462034,
+          "macroReturnMseSkillVsPricePct": -20.448642481213895,
+          "historicalPriorAccuracy": 63.784183296378416,
+          "priceAccuracy": 63.118994826311905,
+          "macroAccuracy": 55.654101995565405,
+          "nonOverlapping": {
+            "n": 68,
+            "macroBrierSkillVsPricePct": -10.141464886213235,
+            "macroBrierSkillVsPriorPct": -15.580666639995444
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "macroBrierSkillVsPricePct": -24.082014322980825,
+              "macroBrierSkillVsPriorPct": -25.640309473581404
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": 15.994369994217262,
+              "macroBrierSkillVsPriorPct": 1.7571981815361237
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -62.03692730934145,
+              "macroBrierSkillVsPriorPct": -65.93262057321382
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -6.12774887544405,
+              "macroBrierSkillVsPriorPct": -7.5789679634536755
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -8.091599752831558,
+              "macroBrierSkillVsPriorPct": -9.5802061557402
+            },
+            "2026": {
+              "n": 176,
+              "macroBrierSkillVsPricePct": -1.2353382309013394,
+              "macroBrierSkillVsPriorPct": -1.4040720777520166
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "dow",
+      "ticker": "^DJI",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "harMSE": 0.00001612224191492452,
+          "harMAE": 0.0027305922860682047,
+          "persistenceMSE": 0.00001892211732896108,
+          "persistenceMAE": 0.003063706538514793,
+          "historicalMeanMSE": 0.000021331061205652725,
+          "historicalMeanMAE": 0.003516483093811126,
+          "skillVsPersistencePct": 14.796839937945183,
+          "skillVsMeanPct": 24.418941188673116,
+          "maeSkillVsPersistencePct": 10.872916457856096,
+          "nonOverlapping": {
+            "n": 277,
+            "skillVsPersistencePct": 12.123541483265877,
+            "skillVsMeanPct": 25.909722539138457
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "skillVsPersistencePct": 25.348127796690346,
+              "skillVsMeanPct": 52.70855360868592
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -9.43827319927706,
+              "skillVsMeanPct": -9.392521059794579
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 15.517507304193767,
+              "skillVsMeanPct": 65.19228713309818
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 19.298295227335384,
+              "skillVsMeanPct": 40.102306897156616
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 21.585620538032234,
+              "skillVsMeanPct": 12.003959329320157
+            },
+            "2026": {
+              "n": 191,
+              "skillVsPersistencePct": 20.173656044772827,
+              "skillVsMeanPct": 0.7273476417624547
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "harMSE": 0.000012365658333693266,
+          "harMAE": 0.002346724166033735,
+          "persistenceMSE": 0.000015175848959603042,
+          "persistenceMAE": 0.0027123122464186473,
+          "historicalMeanMSE": 0.000016873503708518766,
+          "historicalMeanMAE": 0.0031604661557160995,
+          "skillVsPersistencePct": 18.51751841620387,
+          "skillVsMeanPct": 26.715526619107965,
+          "maeSkillVsPersistencePct": 13.478834557770291,
+          "nonOverlapping": {
+            "n": 138,
+            "skillVsPersistencePct": 13.937677617231303,
+            "skillVsMeanPct": 28.994937512186926
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "skillVsPersistencePct": 37.97928110169024,
+              "skillVsMeanPct": 57.13497935580585
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -17.3230378018439,
+              "skillVsMeanPct": -13.582881081902709
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 20.89377031773064,
+              "skillVsMeanPct": 77.5487976282853
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 32.295959447986654,
+              "skillVsMeanPct": 48.876339879594454
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 20.757822121912483,
+              "skillVsMeanPct": 5.416590065218029
+            },
+            "2026": {
+              "n": 186,
+              "skillVsPersistencePct": 34.61373755248235,
+              "skillVsMeanPct": 2.155519667686878
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "harMSE": 0.00000999981273755473,
+          "harMAE": 0.0021002988000915065,
+          "persistenceMSE": 0.000013288377259616747,
+          "persistenceMAE": 0.0025092220585094375,
+          "historicalMeanMSE": 0.000013713846868213709,
+          "historicalMeanMAE": 0.002891394476392719,
+          "skillVsPersistencePct": 24.74767579075238,
+          "skillVsMeanPct": 27.082365483221626,
+          "maeSkillVsPersistencePct": 16.29681426684274,
+          "nonOverlapping": {
+            "n": 68,
+            "skillVsPersistencePct": 25.70824747785645,
+            "skillVsMeanPct": 26.039223901607755
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "skillVsPersistencePct": 60.914226596078855,
+              "skillVsMeanPct": 69.22169754238216
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": -9.1070916549868,
+              "skillVsMeanPct": -22.260389372882685
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 2.778282750214023,
+              "skillVsMeanPct": 79.69806359402651
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 51.21653674313153,
+              "skillVsMeanPct": 62.22607258826773
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 22.67249482345699,
+              "skillVsMeanPct": -3.518696025049084
+            },
+            "2026": {
+              "n": 176,
+              "skillVsPersistencePct": 46.57325891010359,
+              "skillVsMeanPct": 1.4316217709670842
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 235,
+          "positiveRatePct": 62.12765957446808,
+          "meanForwardLogReturnPct": 1.4662002692234812,
+          "medianForwardLogReturnPct": 2.5812811517377794
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 55,
+          "positiveRatePct": 60,
+          "meanForwardLogReturnPct": 0.7812966970512978,
+          "medianForwardLogReturnPct": 1.451154720931318
+        },
+        {
+          "regime": "up-highvol",
+          "count": 397,
+          "positiveRatePct": 61.96473551637279,
+          "meanForwardLogReturnPct": 0.41499080784935033,
+          "medianForwardLogReturnPct": 1.2086524176124538
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 522,
+          "positiveRatePct": 62.06896551724138,
+          "meanForwardLogReturnPct": 0.37817726462586587,
+          "medianForwardLogReturnPct": 0.8723775130422157
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "priorBrier": 0.249692648480651,
+          "priceBrier": 0.2541446832965981,
+          "macroBrier": 0.2622049668298266,
+          "macroBrierSkillVsPriorPct": -5.011088001713904,
+          "macroBrierSkillVsPricePct": -3.171533407142646,
+          "macroReturnMseSkillVsPricePct": -13.653595861188705,
+          "historicalPriorAccuracy": 55.748373101952275,
+          "priceAccuracy": 53.940708604483014,
+          "macroAccuracy": 54.15762834417932,
+          "nonOverlapping": {
+            "n": 277,
+            "macroBrierSkillVsPricePct": -3.7121093053055887,
+            "macroBrierSkillVsPriorPct": -6.0593323126525656
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "macroBrierSkillVsPricePct": -0.3859682615022786,
+              "macroBrierSkillVsPriorPct": -0.8584688355958159
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -7.364361566417377,
+              "macroBrierSkillVsPriorPct": -16.499097624869297
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": 4.33793851316433,
+              "macroBrierSkillVsPriorPct": 3.2223245031305803
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -3.376983193447991,
+              "macroBrierSkillVsPriorPct": -3.4840980510969954
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -4.472563666929785,
+              "macroBrierSkillVsPriorPct": -3.965540958413305
+            },
+            "2026": {
+              "n": 191,
+              "macroBrierSkillVsPricePct": -7.523298068546147,
+              "macroBrierSkillVsPriorPct": -7.16077486004052
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "priorBrier": 0.24806488085735015,
+          "priceBrier": 0.2524635250227739,
+          "macroBrier": 0.2702490516901444,
+          "macroBrierSkillVsPriorPct": -8.94289056803299,
+          "macroBrierSkillVsPricePct": -7.044790595301298,
+          "macroReturnMseSkillVsPricePct": -26.99431829788004,
+          "historicalPriorAccuracy": 58.4122359796067,
+          "priceAccuracy": 56.59140568099053,
+          "macroAccuracy": 55.790240349599415,
+          "nonOverlapping": {
+            "n": 138,
+            "macroBrierSkillVsPricePct": -9.343753774228357,
+            "macroBrierSkillVsPriorPct": -12.91326328163549
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "macroBrierSkillVsPricePct": -7.512558171972317,
+              "macroBrierSkillVsPriorPct": -8.304558264442186
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -13.06794529149371,
+              "macroBrierSkillVsPriorPct": -21.970687106851862
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": 1.7586308882162616,
+              "macroBrierSkillVsPriorPct": 1.6255924198592453
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -9.279691795567002,
+              "macroBrierSkillVsPriorPct": -12.008322053445376
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -5.262019894966974,
+              "macroBrierSkillVsPriorPct": -3.0263670007705468
+            },
+            "2026": {
+              "n": 186,
+              "macroBrierSkillVsPricePct": -8.145274280476356,
+              "macroBrierSkillVsPriorPct": -8.177067606559497
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "priorBrier": 0.25075534935624644,
+          "priceBrier": 0.25735305708528333,
+          "macroBrier": 0.279902979237848,
+          "macroBrierSkillVsPriorPct": -11.623931436131297,
+          "macroBrierSkillVsPricePct": -8.762251518578989,
+          "macroReturnMseSkillVsPricePct": -32.197776196332775,
+          "historicalPriorAccuracy": 61.714708056171474,
+          "priceAccuracy": 60.82779009608278,
+          "macroAccuracy": 55.654101995565405,
+          "nonOverlapping": {
+            "n": 68,
+            "macroBrierSkillVsPricePct": -5.658613913860022,
+            "macroBrierSkillVsPriorPct": -5.709099794338601
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "macroBrierSkillVsPricePct": 1.462283492985994,
+              "macroBrierSkillVsPriorPct": 0.5931558140596871
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -6.015412114990237,
+              "macroBrierSkillVsPriorPct": -12.882068285822967
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -31.488509580828893,
+              "macroBrierSkillVsPriorPct": -33.32641585386995
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -10.546271628413638,
+              "macroBrierSkillVsPriorPct": -10.216284934106067
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -5.606488179009661,
+              "macroBrierSkillVsPriorPct": -5.721719702367989
+            },
+            "2026": {
+              "n": 176,
+              "macroBrierSkillVsPricePct": 4.87404453186705,
+              "macroBrierSkillVsPriorPct": -1.0337007478042448
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "russell2000",
+      "ticker": "^RUT",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "harMSE": 0.000028340999440660345,
+          "harMAE": 0.003854727318186054,
+          "persistenceMSE": 0.00003386021262344379,
+          "persistenceMAE": 0.004336766750050202,
+          "historicalMeanMSE": 0.00003500276034826363,
+          "historicalMeanMAE": 0.0046983629651781485,
+          "skillVsPersistencePct": 16.29999564433364,
+          "skillVsMeanPct": 19.03210158662173,
+          "maeSkillVsPersistencePct": 11.115180032649164,
+          "nonOverlapping": {
+            "n": 277,
+            "skillVsPersistencePct": 14.344705545612246,
+            "skillVsMeanPct": 20.445624213399803
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "skillVsPersistencePct": 19.63632882257268,
+              "skillVsMeanPct": 42.16104836422293
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 0.6142530711272687,
+              "skillVsMeanPct": -13.655324078628261
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 11.936678903054931,
+              "skillVsMeanPct": 36.169835557947806
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 21.324704511565194,
+              "skillVsMeanPct": 12.446063673983366
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 22.672130775516784,
+              "skillVsMeanPct": 6.819850574077346
+            },
+            "2026": {
+              "n": 191,
+              "skillVsPersistencePct": 13.480943187098738,
+              "skillVsMeanPct": 43.56847496823235
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "harMSE": 0.00001954590282080651,
+          "harMAE": 0.0032663043224333606,
+          "persistenceMSE": 0.000024954929974113503,
+          "persistenceMAE": 0.0036811242638082045,
+          "historicalMeanMSE": 0.000025332365751516683,
+          "historicalMeanMAE": 0.004052652649602081,
+          "skillVsPersistencePct": 21.67518465857423,
+          "skillVsMeanPct": 22.842173476686554,
+          "maeSkillVsPersistencePct": 11.268838312611141,
+          "nonOverlapping": {
+            "n": 138,
+            "skillVsPersistencePct": 17.980577122864606,
+            "skillVsMeanPct": 27.46359889735237
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "skillVsPersistencePct": 23.85339529149909,
+              "skillVsMeanPct": 54.36898579574005
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 3.1260214663555663,
+              "skillVsMeanPct": -13.821973219538819
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 15.283971521314854,
+              "skillVsMeanPct": 49.71452264331533
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 28.310831616675912,
+              "skillVsMeanPct": 10.845784598796293
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 27.143341766242912,
+              "skillVsMeanPct": 3.260164636882601
+            },
+            "2026": {
+              "n": 186,
+              "skillVsPersistencePct": 18.23543610101015,
+              "skillVsMeanPct": 52.42171699205282
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "harMSE": 0.000013978676705485414,
+          "harMAE": 0.0028543895539222502,
+          "persistenceMSE": 0.00001971879119087338,
+          "persistenceMAE": 0.0032946175613486448,
+          "historicalMeanMSE": 0.000018821604393120266,
+          "historicalMeanMAE": 0.0035221391798720496,
+          "skillVsPersistencePct": 29.109870021062513,
+          "skillVsMeanPct": 25.730684730601684,
+          "maeSkillVsPersistencePct": 13.362036692543711,
+          "nonOverlapping": {
+            "n": 68,
+            "skillVsPersistencePct": 29.22092461843395,
+            "skillVsMeanPct": 29.84396762204685
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "skillVsPersistencePct": 25.611612420956565,
+              "skillVsMeanPct": 65.3998791749105
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 11.558071032672556,
+              "skillVsMeanPct": -11.762239705421873
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 14.286976303165467,
+              "skillVsMeanPct": 56.79497753333058
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 39.270983229826285,
+              "skillVsMeanPct": 11.158156478304837
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 35.32398782116526,
+              "skillVsMeanPct": 0.5891089893917734
+            },
+            "2026": {
+              "n": 176,
+              "skillVsPersistencePct": 18.63636841263051,
+              "skillVsMeanPct": 52.0469169631393
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 304,
+          "positiveRatePct": 52.63157894736842,
+          "meanForwardLogReturnPct": 0.41366030157697675,
+          "medianForwardLogReturnPct": 0.46350885228107236
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 169,
+          "positiveRatePct": 58.57988165680473,
+          "meanForwardLogReturnPct": 0.9058297249438246,
+          "medianForwardLogReturnPct": 1.8828926571880276
+        },
+        {
+          "regime": "up-highvol",
+          "count": 289,
+          "positiveRatePct": 64.3598615916955,
+          "meanForwardLogReturnPct": 0.9448084404568606,
+          "medianForwardLogReturnPct": 1.1915270033822134
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 447,
+          "positiveRatePct": 48.99328859060403,
+          "meanForwardLogReturnPct": -0.18277592395031364,
+          "medianForwardLogReturnPct": -0.12617943839820409
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "priorBrier": 0.25370187264838445,
+          "priceBrier": 0.25342016919932814,
+          "macroBrier": 0.26167368582486744,
+          "macroBrierSkillVsPriorPct": -3.142197214890663,
+          "macroBrierSkillVsPricePct": -3.256850728028482,
+          "macroReturnMseSkillVsPricePct": -11.226632500017786,
+          "historicalPriorAccuracy": 51.4822848879248,
+          "priceAccuracy": 51.120751988430946,
+          "macroAccuracy": 51.120751988430946,
+          "nonOverlapping": {
+            "n": 277,
+            "macroBrierSkillVsPricePct": -1.4364868845959888,
+            "macroBrierSkillVsPriorPct": -2.8957714925474054
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "macroBrierSkillVsPricePct": 3.5679577944970675,
+              "macroBrierSkillVsPriorPct": 1.3980560991893598
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -4.93361225026725,
+              "macroBrierSkillVsPriorPct": -7.338640086025894
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -4.146085511181652,
+              "macroBrierSkillVsPriorPct": -2.55320039673137
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -7.047837087338404,
+              "macroBrierSkillVsPriorPct": -6.37080233516174
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -3.2969500965007725,
+              "macroBrierSkillVsPriorPct": -2.051151039804444
+            },
+            "2026": {
+              "n": 191,
+              "macroBrierSkillVsPricePct": -1.9924753691773267,
+              "macroBrierSkillVsPriorPct": -0.10293639747323002
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "priorBrier": 0.2555815559695283,
+          "priceBrier": 0.2535283377851867,
+          "macroBrier": 0.27276121894507765,
+          "macroBrierSkillVsPriorPct": -6.721792936262427,
+          "macroBrierSkillVsPricePct": -7.586087349409798,
+          "macroReturnMseSkillVsPricePct": -16.94438272762584,
+          "historicalPriorAccuracy": 53.75091041514931,
+          "priceAccuracy": 51.20174799708666,
+          "macroAccuracy": 47.341587764020396,
+          "nonOverlapping": {
+            "n": 138,
+            "macroBrierSkillVsPricePct": -11.348953963837683,
+            "macroBrierSkillVsPriorPct": -8.625650412559672
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "macroBrierSkillVsPricePct": -1.6845235766177247,
+              "macroBrierSkillVsPriorPct": 1.067320962762286
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -5.311845033248197,
+              "macroBrierSkillVsPriorPct": -7.264679177293454
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -11.870555354762136,
+              "macroBrierSkillVsPriorPct": -9.626037895487416
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -14.582145404374746,
+              "macroBrierSkillVsPriorPct": -13.018491104708318
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -6.926931411844883,
+              "macroBrierSkillVsPriorPct": -6.528191641768699
+            },
+            "2026": {
+              "n": 186,
+              "macroBrierSkillVsPricePct": -3.327088844874382,
+              "macroBrierSkillVsPriorPct": -2.5973766028010603
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "priorBrier": 0.2597034260053326,
+          "priceBrier": 0.25706745263589875,
+          "macroBrier": 0.2806267866589118,
+          "macroBrierSkillVsPriorPct": -8.05663636225946,
+          "macroBrierSkillVsPricePct": -9.164650671036778,
+          "macroReturnMseSkillVsPricePct": -22.669485620140904,
+          "historicalPriorAccuracy": 55.28455284552846,
+          "priceAccuracy": 52.25424981522543,
+          "macroAccuracy": 52.03252032520326,
+          "nonOverlapping": {
+            "n": 68,
+            "macroBrierSkillVsPricePct": -8.585953466832908,
+            "macroBrierSkillVsPriorPct": -6.294022219481654
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "macroBrierSkillVsPricePct": 7.859463044041581,
+              "macroBrierSkillVsPriorPct": 12.41960236915135
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": 3.4171722668306925,
+              "macroBrierSkillVsPriorPct": 0.12257523449770158
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -25.032777738571976,
+              "macroBrierSkillVsPriorPct": -19.612183510529093
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -25.84442438794694,
+              "macroBrierSkillVsPriorPct": -24.037017570833406
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -11.809814323167611,
+              "macroBrierSkillVsPriorPct": -13.844999350910037
+            },
+            "2026": {
+              "n": 176,
+              "macroBrierSkillVsPricePct": -0.4544383493667148,
+              "macroBrierSkillVsPriorPct": 1.5755179128225771
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "gold",
+      "ticker": "GLD",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "harMSE": 0.000028741054376020276,
+          "harMAE": 0.003330577424440558,
+          "persistenceMSE": 0.00003008528403949531,
+          "persistenceMAE": 0.00373061035651751,
+          "historicalMeanMSE": 0.000034868339812939125,
+          "historicalMeanMAE": 0.003729034123519269,
+          "skillVsPersistencePct": 4.468063727470084,
+          "skillVsMeanPct": 17.57263313880262,
+          "maeSkillVsPersistencePct": 10.722988836882418,
+          "nonOverlapping": {
+            "n": 277,
+            "skillVsPersistencePct": 6.373419199748831,
+            "skillVsMeanPct": 17.998380631569933
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "skillVsPersistencePct": 23.504075938286473,
+              "skillVsMeanPct": 20.413473744295942
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 17.529376309229804,
+              "skillVsMeanPct": -14.759138094030423
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 22.53769724071315,
+              "skillVsMeanPct": 14.547290309991146
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 1.9379422712376804,
+              "skillVsMeanPct": -6.738523263915219
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 0.27489144474865945,
+              "skillVsMeanPct": 8.69431409143786
+            },
+            "2026": {
+              "n": 191,
+              "skillVsPersistencePct": -1.6807674268237482,
+              "skillVsMeanPct": 26.694654294573837
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "harMSE": 0.000023391208424864868,
+          "harMAE": 0.0029121331206376218,
+          "persistenceMSE": 0.000025351711318836988,
+          "persistenceMAE": 0.0033180546898462114,
+          "historicalMeanMSE": 0.000028947122210399196,
+          "historicalMeanMAE": 0.003330289866513361,
+          "skillVsPersistencePct": 7.7332171754236345,
+          "skillVsMeanPct": 19.19331996165884,
+          "maeSkillVsPersistencePct": 12.233721476947801,
+          "nonOverlapping": {
+            "n": 138,
+            "skillVsPersistencePct": 6.947873103601642,
+            "skillVsMeanPct": 21.199524384618517
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "skillVsPersistencePct": 27.78116007519642,
+              "skillVsMeanPct": 23.219253657628858
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 31.50586813905193,
+              "skillVsMeanPct": -16.31544207002451
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 29.221876206888286,
+              "skillVsMeanPct": 16.07659351347942
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 10.323938087632456,
+              "skillVsMeanPct": -4.228951630473854
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 10.94435306906194,
+              "skillVsMeanPct": 6.562363497740398
+            },
+            "2026": {
+              "n": 186,
+              "skillVsPersistencePct": -3.9011586626691575,
+              "skillVsMeanPct": 27.60427802167451
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "harMSE": 0.000020831208062722386,
+          "harMAE": 0.002739598633067459,
+          "persistenceMSE": 0.00002297502510422438,
+          "persistenceMAE": 0.003169091875985186,
+          "historicalMeanMSE": 0.00002466544783894411,
+          "historicalMeanMAE": 0.003061714408526213,
+          "skillVsPersistencePct": 9.331075947803047,
+          "skillVsMeanPct": 15.544983416712455,
+          "maeSkillVsPersistencePct": 13.552565205583045,
+          "nonOverlapping": {
+            "n": 68,
+            "skillVsPersistencePct": 2.974094772580649,
+            "skillVsMeanPct": 15.888090497912943
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "skillVsPersistencePct": -2.130201139818544,
+              "skillVsMeanPct": -6.118379833498344
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 46.50070375478227,
+              "skillVsMeanPct": -19.757648041948595
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 29.1584266442534,
+              "skillVsMeanPct": 10.766390334591025
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 27.43770736699226,
+              "skillVsMeanPct": -6.399781744794164
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": 23.090570385714628,
+              "skillVsMeanPct": 1.612458900451108
+            },
+            "2026": {
+              "n": 176,
+              "skillVsPersistencePct": -8.590331187843713,
+              "skillVsMeanPct": 24.52077442664994
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 149,
+          "positiveRatePct": 60.40268456375839,
+          "meanForwardLogReturnPct": 0.669750477871582,
+          "medianForwardLogReturnPct": 0.7422871904471553
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 102,
+          "positiveRatePct": 65.68627450980392,
+          "meanForwardLogReturnPct": 1.8331805539404986,
+          "medianForwardLogReturnPct": 1.6914445614009632
+        },
+        {
+          "regime": "up-highvol",
+          "count": 524,
+          "positiveRatePct": 60.49618320610687,
+          "meanForwardLogReturnPct": 1.2139074280319173,
+          "medianForwardLogReturnPct": 0.9531588502950217
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 434,
+          "positiveRatePct": 62.67281105990783,
+          "meanForwardLogReturnPct": 1.7360895804139016,
+          "medianForwardLogReturnPct": 1.6168694415713356
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "priorBrier": 0.24701562852359446,
+          "priceBrier": 0.2520175441372924,
+          "macroBrier": 0.26101590186592244,
+          "macroBrierSkillVsPriorPct": -5.667768240417503,
+          "macroBrierSkillVsPricePct": -3.570528297715647,
+          "macroReturnMseSkillVsPricePct": -5.615924552516538,
+          "historicalPriorAccuracy": 56.54374548083876,
+          "priceAccuracy": 52.85610990600145,
+          "macroAccuracy": 48.95155459146782,
+          "nonOverlapping": {
+            "n": 277,
+            "macroBrierSkillVsPricePct": -5.1938134378817225,
+            "macroBrierSkillVsPriorPct": -8.183570272099994
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "macroBrierSkillVsPricePct": -3.9511183806695716,
+              "macroBrierSkillVsPriorPct": -7.866799268617508
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -0.6653980678763105,
+              "macroBrierSkillVsPriorPct": -2.3472609800909927
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -2.178321003473771,
+              "macroBrierSkillVsPriorPct": -2.2008687567006024
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -10.331499580851066,
+              "macroBrierSkillVsPriorPct": -11.623651411306412
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -2.992389559139985,
+              "macroBrierSkillVsPriorPct": -5.780930136336693
+            },
+            "2026": {
+              "n": 191,
+              "macroBrierSkillVsPricePct": -1.1079379443813098,
+              "macroBrierSkillVsPriorPct": -4.858542861500581
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "priorBrier": 0.24714435905271118,
+          "priceBrier": 0.2545704584156164,
+          "macroBrier": 0.26883440060579583,
+          "macroBrierSkillVsPriorPct": -8.776264057258377,
+          "macroBrierSkillVsPricePct": -5.603141181013194,
+          "macroReturnMseSkillVsPricePct": -8.544826504761648,
+          "historicalPriorAccuracy": 57.53823743627095,
+          "priceAccuracy": 52.73124544792426,
+          "macroAccuracy": 51.347414420975966,
+          "nonOverlapping": {
+            "n": 138,
+            "macroBrierSkillVsPricePct": -5.903641756804889,
+            "macroBrierSkillVsPriorPct": -7.855473972118476
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "macroBrierSkillVsPricePct": -6.945466418307844,
+              "macroBrierSkillVsPriorPct": -8.015965897149213
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -7.731869644618783,
+              "macroBrierSkillVsPriorPct": -11.918661229562556
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -6.417077627082612,
+              "macroBrierSkillVsPriorPct": -4.192458951161049
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -5.216439830660047,
+              "macroBrierSkillVsPriorPct": -5.178192514042768
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": 2.0424451313842296,
+              "macroBrierSkillVsPriorPct": -5.009393097589987
+            },
+            "2026": {
+              "n": 186,
+              "macroBrierSkillVsPricePct": -9.75117199197706,
+              "macroBrierSkillVsPriorPct": -19.80084507665232
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "priorBrier": 0.24478110854120355,
+          "priceBrier": 0.2547238204218599,
+          "macroBrier": 0.2800128618298129,
+          "macroBrierSkillVsPriorPct": -14.393166816906877,
+          "macroBrierSkillVsPricePct": -9.928023757680226,
+          "macroReturnMseSkillVsPricePct": -17.886848421728963,
+          "historicalPriorAccuracy": 58.1670362158167,
+          "priceAccuracy": 54.767184035476724,
+          "macroAccuracy": 54.54545454545454,
+          "nonOverlapping": {
+            "n": 68,
+            "macroBrierSkillVsPricePct": -14.341161513264765,
+            "macroBrierSkillVsPriorPct": -14.965465495459318
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "macroBrierSkillVsPricePct": -4.897398074398462,
+              "macroBrierSkillVsPriorPct": 0.31701602832882037
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -41.37061110843141,
+              "macroBrierSkillVsPriorPct": -54.04145835708483
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -7.514851158203051,
+              "macroBrierSkillVsPriorPct": -4.536454930914191
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": 6.333358176336501,
+              "macroBrierSkillVsPriorPct": 2.80148548215422
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": 20.649143393848636,
+              "macroBrierSkillVsPriorPct": 11.10418094289044
+            },
+            "2026": {
+              "n": 176,
+              "macroBrierSkillVsPricePct": -25.847608859680783,
+              "macroBrierSkillVsPriorPct": -33.78125821452369
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "silver",
+      "ticker": "SLV",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "harMSE": 0.00013686269799869597,
+          "harMAE": 0.006242450346612174,
+          "persistenceMSE": 0.00013060917950462512,
+          "persistenceMAE": 0.006750874750285406,
+          "historicalMeanMSE": 0.00018241890090309805,
+          "historicalMeanMAE": 0.007649346836989221,
+          "skillVsPersistencePct": -4.7879624677141575,
+          "skillVsMeanPct": 24.97340060644363,
+          "maeSkillVsPersistencePct": 7.531237394853719,
+          "nonOverlapping": {
+            "n": 277,
+            "skillVsPersistencePct": 5.422941027698302,
+            "skillVsMeanPct": 22.00532394301675
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "skillVsPersistencePct": -4.592121174141273,
+              "skillVsMeanPct": 60.34455398512226
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 10.185804824413802,
+              "skillVsMeanPct": -4.978138714890457
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 23.705796271472956,
+              "skillVsMeanPct": 16.833700181038225
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": -3.3565902066087006,
+              "skillVsMeanPct": -5.380529282922852
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": -23.687894192454408,
+              "skillVsMeanPct": 7.221921326286829
+            },
+            "2026": {
+              "n": 191,
+              "skillVsPersistencePct": -6.148840363915697,
+              "skillVsMeanPct": 28.99979132948478
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "harMSE": 0.0001116530479979414,
+          "harMAE": 0.005299241699137512,
+          "persistenceMSE": 0.00011094619022451145,
+          "persistenceMAE": 0.005744236750085883,
+          "historicalMeanMSE": 0.00016054610051956597,
+          "historicalMeanMAE": 0.006963090919322723,
+          "skillVsPersistencePct": -0.6371176621743802,
+          "skillVsMeanPct": 30.454213689024424,
+          "maeSkillVsPersistencePct": 7.746809024570888,
+          "nonOverlapping": {
+            "n": 138,
+            "skillVsPersistencePct": -0.4845279665352198,
+            "skillVsMeanPct": 28.848858598158998
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "skillVsPersistencePct": -110.7982604106609,
+              "skillVsMeanPct": 61.85685200534618
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 22.114162688809657,
+              "skillVsMeanPct": 6.0000900811080555
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 32.88533072746315,
+              "skillVsMeanPct": 28.313298024637746
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 5.1051062772823785,
+              "skillVsMeanPct": 2.9984980391949967
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": -23.221843214752248,
+              "skillVsMeanPct": 14.189619134162058
+            },
+            "2026": {
+              "n": 186,
+              "skillVsPersistencePct": 0.7504901768641048,
+              "skillVsMeanPct": 32.61268831337788
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "harMSE": 0.00010399425712420983,
+          "harMAE": 0.004999778269751781,
+          "persistenceMSE": 0.00010471152303040949,
+          "persistenceMAE": 0.005429069116638728,
+          "historicalMeanMSE": 0.00014946922772070764,
+          "historicalMeanMAE": 0.00678302827226465,
+          "skillVsPersistencePct": 0.6849923345985109,
+          "skillVsMeanPct": 30.424302908335466,
+          "maeSkillVsPersistencePct": 7.907264351659826,
+          "nonOverlapping": {
+            "n": 68,
+            "skillVsPersistencePct": -12.057929984240424,
+            "skillVsMeanPct": 31.809658906917228
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "skillVsPersistencePct": -598.0546585865483,
+              "skillVsMeanPct": 27.39715893152991
+            },
+            "2022": {
+              "n": 251,
+              "skillVsPersistencePct": 32.02632826863021,
+              "skillVsMeanPct": 21.119421405978866
+            },
+            "2023": {
+              "n": 250,
+              "skillVsPersistencePct": 42.99684505763097,
+              "skillVsMeanPct": 43.715515973217
+            },
+            "2024": {
+              "n": 252,
+              "skillVsPersistencePct": 20.05855842851848,
+              "skillVsMeanPct": 5.196687745810058
+            },
+            "2025": {
+              "n": 250,
+              "skillVsPersistencePct": -26.41185105162831,
+              "skillVsMeanPct": 16.344350250910367
+            },
+            "2026": {
+              "n": 176,
+              "skillVsPersistencePct": 8.56391655307549,
+              "skillVsMeanPct": 34.00551563741809
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 197,
+          "positiveRatePct": 56.852791878172596,
+          "meanForwardLogReturnPct": 1.0040796868503667,
+          "medianForwardLogReturnPct": 1.6222853332575533
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 208,
+          "positiveRatePct": 63.942307692307686,
+          "meanForwardLogReturnPct": 2.832669194524357,
+          "medianForwardLogReturnPct": 2.302327088578364
+        },
+        {
+          "regime": "up-highvol",
+          "count": 485,
+          "positiveRatePct": 55.876288659793815,
+          "meanForwardLogReturnPct": 1.7086213737825144,
+          "medianForwardLogReturnPct": 1.3223383619172513
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 319,
+          "positiveRatePct": 56.42633228840125,
+          "meanForwardLogReturnPct": 1.074429516307711,
+          "medianForwardLogReturnPct": 1.033306004415881
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "priorBrier": 0.25006839682105747,
+          "priceBrier": 0.2556509936460523,
+          "macroBrier": 0.2648740060024594,
+          "macroBrierSkillVsPriorPct": -5.920623865156571,
+          "macroBrierSkillVsPricePct": -3.607657543148979,
+          "macroReturnMseSkillVsPricePct": -5.274087037974806,
+          "historicalPriorAccuracy": 54.229934924078094,
+          "priceAccuracy": 49.7469269703543,
+          "macroAccuracy": 50.03615328994938,
+          "nonOverlapping": {
+            "n": 277,
+            "macroBrierSkillVsPricePct": -3.8591281394165566,
+            "macroBrierSkillVsPriorPct": -6.8702205979946696
+          },
+          "byYear": {
+            "2021": {
+              "n": 189,
+              "macroBrierSkillVsPricePct": -11.23056855285669,
+              "macroBrierSkillVsPriorPct": -12.82477679657601
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -0.18304831028428392,
+              "macroBrierSkillVsPriorPct": -1.6512754227201443
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -2.4697690850782994,
+              "macroBrierSkillVsPriorPct": -3.2413410125848863
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -5.583350761252737,
+              "macroBrierSkillVsPriorPct": -3.1236827216927
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -4.31112162303211,
+              "macroBrierSkillVsPriorPct": -12.922781380583782
+            },
+            "2026": {
+              "n": 191,
+              "macroBrierSkillVsPricePct": 1.0357028581915673,
+              "macroBrierSkillVsPriorPct": -3.5411520082822445
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "priorBrier": 0.25240223538864653,
+          "priceBrier": 0.25944416361582706,
+          "macroBrier": 0.27718430800369737,
+          "macroBrierSkillVsPriorPct": -9.818483808945523,
+          "macroBrierSkillVsPricePct": -6.837750420217237,
+          "macroReturnMseSkillVsPricePct": -8.290476797227475,
+          "historicalPriorAccuracy": 53.53241077931536,
+          "priceAccuracy": 50.910415149308086,
+          "macroAccuracy": 46.90458849235251,
+          "nonOverlapping": {
+            "n": 138,
+            "macroBrierSkillVsPricePct": -5.067270648740241,
+            "macroBrierSkillVsPriorPct": -6.484186237438738
+          },
+          "byYear": {
+            "2021": {
+              "n": 184,
+              "macroBrierSkillVsPricePct": -5.319367826279131,
+              "macroBrierSkillVsPriorPct": -10.618236216056133
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -7.888472716635686,
+              "macroBrierSkillVsPriorPct": -9.50802801481483
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -7.9171090233269625,
+              "macroBrierSkillVsPriorPct": -4.128977606631445
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -8.24232572090966,
+              "macroBrierSkillVsPriorPct": -3.4585694492941688
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -6.400780767847336,
+              "macroBrierSkillVsPriorPct": -21.994232269673407
+            },
+            "2026": {
+              "n": 186,
+              "macroBrierSkillVsPricePct": -4.683830013045065,
+              "macroBrierSkillVsPriorPct": -10.691851102410421
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "priorBrier": 0.25237753333827767,
+          "priceBrier": 0.26202306875438375,
+          "macroBrier": 0.2915228385483767,
+          "macroBrierSkillVsPriorPct": -15.510614075790198,
+          "macroBrierSkillVsPricePct": -11.258462827044259,
+          "macroReturnMseSkillVsPricePct": -16.507105704399017,
+          "historicalPriorAccuracy": 53.28898743532889,
+          "priceAccuracy": 53.215077605321504,
+          "macroAccuracy": 51.071692535107175,
+          "nonOverlapping": {
+            "n": 68,
+            "macroBrierSkillVsPricePct": -15.323951654793234,
+            "macroBrierSkillVsPriorPct": -16.344002624335484
+          },
+          "byYear": {
+            "2021": {
+              "n": 174,
+              "macroBrierSkillVsPricePct": -18.053340780022342,
+              "macroBrierSkillVsPriorPct": -42.70870318257598
+            },
+            "2022": {
+              "n": 251,
+              "macroBrierSkillVsPricePct": -20.976635132192456,
+              "macroBrierSkillVsPriorPct": -24.020334248825414
+            },
+            "2023": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -8.989961666852775,
+              "macroBrierSkillVsPriorPct": -0.12595738647132038
+            },
+            "2024": {
+              "n": 252,
+              "macroBrierSkillVsPricePct": -8.569858439819189,
+              "macroBrierSkillVsPriorPct": 0.05258809179228274
+            },
+            "2025": {
+              "n": 250,
+              "macroBrierSkillVsPricePct": -4.154495747765963,
+              "macroBrierSkillVsPriorPct": -25.12128196818577
+            },
+            "2026": {
+              "n": 176,
+              "macroBrierSkillVsPricePct": -5.38981930228748,
+              "macroBrierSkillVsPriorPct": -6.043550140708631
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "btc",
+      "ticker": "BTC-USD",
+      "barCount": 2477,
+      "range": [
+        "2020-01-01",
+        "2026-10-12"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 2156,
+          "first": "2020-11-12",
+          "last": "2026-10-07",
+          "harMSE": 0.0001885839718131711,
+          "harMAE": 0.009928341888381417,
+          "persistenceMSE": 0.0002194336935367507,
+          "persistenceMAE": 0.01124174004775453,
+          "historicalMeanMSE": 0.00023340749028540107,
+          "historicalMeanMAE": 0.01246383140358191,
+          "skillVsPersistencePct": 14.058789799485783,
+          "skillVsMeanPct": 19.203976023829238,
+          "maeSkillVsPersistencePct": 11.683228341821117,
+          "nonOverlapping": {
+            "n": 432,
+            "skillVsPersistencePct": 15.730841107324245,
+            "skillVsMeanPct": 19.205762149716488
+          },
+          "byYear": {
+            "2020": {
+              "n": 50,
+              "skillVsPersistencePct": -71.11559926022808,
+              "skillVsMeanPct": -60.39828706931125
+            },
+            "2021": {
+              "n": 365,
+              "skillVsPersistencePct": -11.706775985320906,
+              "skillVsMeanPct": 4.833474241475844
+            },
+            "2022": {
+              "n": 365,
+              "skillVsPersistencePct": 23.098153560741864,
+              "skillVsMeanPct": 6.430204463411182
+            },
+            "2023": {
+              "n": 365,
+              "skillVsPersistencePct": 20.64862670929345,
+              "skillVsMeanPct": 46.33011018451463
+            },
+            "2024": {
+              "n": 366,
+              "skillVsPersistencePct": 12.743157899163727,
+              "skillVsMeanPct": 8.052950175801598
+            },
+            "2025": {
+              "n": 365,
+              "skillVsPersistencePct": 20.273825893412766,
+              "skillVsMeanPct": 45.40831348737624
+            },
+            "2026": {
+              "n": 280,
+              "skillVsPersistencePct": 25.801272268560048,
+              "skillVsMeanPct": 19.495534691109828
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 2146,
+          "first": "2020-11-17",
+          "last": "2026-10-02",
+          "harMSE": 0.00013211531056423373,
+          "harMAE": 0.008557365927468502,
+          "persistenceMSE": 0.0001672806898532913,
+          "persistenceMAE": 0.009722788823006558,
+          "historicalMeanMSE": 0.00017937557630083435,
+          "historicalMeanMAE": 0.01111531163943753,
+          "skillVsPersistencePct": 21.021780409859836,
+          "skillVsMeanPct": 26.347101824687368,
+          "maeSkillVsPersistencePct": 11.986508364558668,
+          "nonOverlapping": {
+            "n": 215,
+            "skillVsPersistencePct": 24.511662877647222,
+            "skillVsMeanPct": 24.36601663049023
+          },
+          "byYear": {
+            "2020": {
+              "n": 45,
+              "skillVsPersistencePct": -117.7994101593674,
+              "skillVsMeanPct": -75.79734392899131
+            },
+            "2021": {
+              "n": 365,
+              "skillVsPersistencePct": -8.5213331522189,
+              "skillVsMeanPct": 11.904921347535735
+            },
+            "2022": {
+              "n": 365,
+              "skillVsPersistencePct": 30.90819474833062,
+              "skillVsMeanPct": 8.72497882797052
+            },
+            "2023": {
+              "n": 365,
+              "skillVsPersistencePct": 24.748000389140323,
+              "skillVsMeanPct": 54.88913477150583
+            },
+            "2024": {
+              "n": 366,
+              "skillVsPersistencePct": 22.140229087697506,
+              "skillVsMeanPct": 12.903605677193585
+            },
+            "2025": {
+              "n": 365,
+              "skillVsPersistencePct": 27.932112323607484,
+              "skillVsMeanPct": 56.26929899934816
+            },
+            "2026": {
+              "n": 275,
+              "skillVsPersistencePct": 29.335868333525262,
+              "skillVsMeanPct": 20.196728704989
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 2126,
+          "first": "2020-11-27",
+          "last": "2026-09-22",
+          "harMSE": 0.00009915442302000242,
+          "harMAE": 0.007827817229301915,
+          "persistenceMSE": 0.00013798682407220519,
+          "persistenceMAE": 0.008968204190141315,
+          "historicalMeanMSE": 0.0001391672128861036,
+          "historicalMeanMAE": 0.010032552276099737,
+          "skillVsPersistencePct": 28.14210799712493,
+          "skillVsMeanPct": 28.751592445016637,
+          "maeSkillVsPersistencePct": 12.715889788649315,
+          "nonOverlapping": {
+            "n": 107,
+            "skillVsPersistencePct": 30.83152666943414,
+            "skillVsMeanPct": 29.832994653025324
+          },
+          "byYear": {
+            "2020": {
+              "n": 35,
+              "skillVsPersistencePct": -150.6936894230627,
+              "skillVsMeanPct": -30.44026006731584
+            },
+            "2021": {
+              "n": 365,
+              "skillVsPersistencePct": -4.173768958799484,
+              "skillVsMeanPct": 11.79633134555057
+            },
+            "2022": {
+              "n": 365,
+              "skillVsPersistencePct": 43.39632847999321,
+              "skillVsMeanPct": 2.674170646551599
+            },
+            "2023": {
+              "n": 365,
+              "skillVsPersistencePct": 22.033100371625082,
+              "skillVsMeanPct": 60.34540128094162
+            },
+            "2024": {
+              "n": 366,
+              "skillVsPersistencePct": 37.02749493800827,
+              "skillVsMeanPct": 17.647763963655283
+            },
+            "2025": {
+              "n": 365,
+              "skillVsPersistencePct": 28.122949642898664,
+              "skillVsMeanPct": 59.47960012147255
+            },
+            "2026": {
+              "n": 265,
+              "skillVsPersistencePct": 37.073928781372544,
+              "skillVsMeanPct": 18.153299232178565
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 419,
+          "positiveRatePct": 49.16467780429594,
+          "meanForwardLogReturnPct": -0.9586278438095526,
+          "medianForwardLogReturnPct": -0.1746509617229909
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 526,
+          "positiveRatePct": 55.51330798479087,
+          "meanForwardLogReturnPct": 1.1303347290420551,
+          "medianForwardLogReturnPct": 1.144032118340191
+        },
+        {
+          "regime": "up-highvol",
+          "count": 424,
+          "positiveRatePct": 55.188679245283026,
+          "meanForwardLogReturnPct": 0.6911635211309296,
+          "medianForwardLogReturnPct": 1.38240927915536
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 613,
+          "positiveRatePct": 45.840130505709624,
+          "meanForwardLogReturnPct": 0.5911705794159223,
+          "medianForwardLogReturnPct": -0.7767784732319216
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 2156,
+          "first": "2020-11-12",
+          "last": "2026-10-07",
+          "priorBrier": 0.2514687789080067,
+          "priceBrier": 0.25349265298213486,
+          "macroBrier": 0.25572930325566,
+          "macroBrierSkillVsPriorPct": -1.6942557903826039,
+          "macroBrierSkillVsPricePct": -0.8823333722744131,
+          "macroReturnMseSkillVsPricePct": -14.997419432899296,
+          "historicalPriorAccuracy": 52.13358070500927,
+          "priceAccuracy": 50.278293135435995,
+          "macroAccuracy": 49.814471243042675,
+          "nonOverlapping": {
+            "n": 432,
+            "macroBrierSkillVsPricePct": -0.9454494954222792,
+            "macroBrierSkillVsPriorPct": -1.5476676638776388
+          },
+          "byYear": {
+            "2020": {
+              "n": 50,
+              "macroBrierSkillVsPricePct": 7.886383067550728,
+              "macroBrierSkillVsPriorPct": -6.4341543219346375
+            },
+            "2021": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 0.49918117628617864,
+              "macroBrierSkillVsPriorPct": -2.4933215465869907
+            },
+            "2022": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -1.3322923306966716,
+              "macroBrierSkillVsPriorPct": -0.23078985179583178
+            },
+            "2023": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -5.553225354857005,
+              "macroBrierSkillVsPriorPct": -6.173370296509373
+            },
+            "2024": {
+              "n": 366,
+              "macroBrierSkillVsPricePct": -2.2407536731567035,
+              "macroBrierSkillVsPriorPct": -2.4174497328329103
+            },
+            "2025": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 2.0390128202246283,
+              "macroBrierSkillVsPriorPct": 1.9899981212494366
+            },
+            "2026": {
+              "n": 280,
+              "macroBrierSkillVsPricePct": 0.3985414312071889,
+              "macroBrierSkillVsPriorPct": -0.010132687427377718
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 2146,
+          "first": "2020-11-17",
+          "last": "2026-10-02",
+          "priorBrier": 0.2527951351053414,
+          "priceBrier": 0.2570004089916319,
+          "macroBrier": 0.2649606512838112,
+          "macroBrierSkillVsPriorPct": -4.812401224968332,
+          "macroBrierSkillVsPricePct": -3.0973656125342863,
+          "macroReturnMseSkillVsPricePct": -20.516713770889684,
+          "historicalPriorAccuracy": 53.215284249767,
+          "priceAccuracy": 50.931966449207835,
+          "macroAccuracy": 46.83131407269338,
+          "nonOverlapping": {
+            "n": 215,
+            "macroBrierSkillVsPricePct": -1.3097369270211434,
+            "macroBrierSkillVsPriorPct": -3.30068921500164
+          },
+          "byYear": {
+            "2020": {
+              "n": 45,
+              "macroBrierSkillVsPricePct": -9.033839431061885,
+              "macroBrierSkillVsPriorPct": -73.20039414589313
+            },
+            "2021": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 1.3225836131304791,
+              "macroBrierSkillVsPriorPct": -4.483903246266574
+            },
+            "2022": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -7.743008477223934,
+              "macroBrierSkillVsPriorPct": -6.387092392979188
+            },
+            "2023": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -10.379714941388784,
+              "macroBrierSkillVsPriorPct": -10.778159001211908
+            },
+            "2024": {
+              "n": 366,
+              "macroBrierSkillVsPricePct": -2.7194326747684405,
+              "macroBrierSkillVsPriorPct": -3.4139545934422477
+            },
+            "2025": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 1.6445022854535973,
+              "macroBrierSkillVsPriorPct": 1.8675124711187596
+            },
+            "2026": {
+              "n": 275,
+              "macroBrierSkillVsPricePct": 0.13084348605506557,
+              "macroBrierSkillVsPriorPct": 0.9131673371012616
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 2126,
+          "first": "2020-11-27",
+          "last": "2026-09-22",
+          "priorBrier": 0.25689689751890665,
+          "priceBrier": 0.26339940008792423,
+          "macroBrier": 0.2765032435902671,
+          "macroBrierSkillVsPriorPct": -7.631990211138118,
+          "macroBrierSkillVsPricePct": -4.974894968617538,
+          "macroReturnMseSkillVsPricePct": -35.6920640516057,
+          "historicalPriorAccuracy": 52.634054562558795,
+          "priceAccuracy": 48.73000940733772,
+          "macroAccuracy": 49.905926622765755,
+          "nonOverlapping": {
+            "n": 107,
+            "macroBrierSkillVsPricePct": -2.223621333654413,
+            "macroBrierSkillVsPriorPct": -7.127738392940031
+          },
+          "byYear": {
+            "2020": {
+              "n": 35,
+              "macroBrierSkillVsPricePct": -39.13836706224778,
+              "macroBrierSkillVsPriorPct": -421.93329957456956
+            },
+            "2021": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 6.620841575866853,
+              "macroBrierSkillVsPriorPct": 3.01160965463827
+            },
+            "2022": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -8.490092510693547,
+              "macroBrierSkillVsPriorPct": -4.909331953884144
+            },
+            "2023": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -18.48950219983947,
+              "macroBrierSkillVsPriorPct": -23.426258890152816
+            },
+            "2024": {
+              "n": 366,
+              "macroBrierSkillVsPricePct": -2.774386561402964,
+              "macroBrierSkillVsPriorPct": -6.791388074260873
+            },
+            "2025": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -5.4799812026171235,
+              "macroBrierSkillVsPriorPct": -3.162022015003818
+            },
+            "2026": {
+              "n": 265,
+              "macroBrierSkillVsPricePct": 4.7790491216475495,
+              "macroBrierSkillVsPriorPct": 7.818466322557727
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "eth",
+      "ticker": "ETH-USD",
+      "barCount": 2477,
+      "range": [
+        "2020-01-01",
+        "2026-10-12"
+      ],
+      "volatility": [
+        {
+          "horizonBars": 5,
+          "n": 2156,
+          "first": "2020-11-12",
+          "last": "2026-10-07",
+          "harMSE": 0.0003633817449115136,
+          "harMAE": 0.013281550518327152,
+          "persistenceMSE": 0.00044877394702592455,
+          "persistenceMAE": 0.015505146584140346,
+          "historicalMeanMSE": 0.0004482393208015917,
+          "historicalMeanMAE": 0.01658924759000648,
+          "skillVsPersistencePct": 19.027887576877987,
+          "skillVsMeanPct": 18.93131011762338,
+          "maeSkillVsPersistencePct": 14.34101931088888,
+          "nonOverlapping": {
+            "n": 432,
+            "skillVsPersistencePct": 20.730810658568565,
+            "skillVsMeanPct": 18.786421742417836
+          },
+          "byYear": {
+            "2020": {
+              "n": 50,
+              "skillVsPersistencePct": -12.8664937103512,
+              "skillVsMeanPct": -33.62522884493011
+            },
+            "2021": {
+              "n": 365,
+              "skillVsPersistencePct": 10.273254336737935,
+              "skillVsMeanPct": 11.820273622908417
+            },
+            "2022": {
+              "n": 365,
+              "skillVsPersistencePct": 25.748393509787924,
+              "skillVsMeanPct": 6.7126276621048975
+            },
+            "2023": {
+              "n": 365,
+              "skillVsPersistencePct": 8.58065290423321,
+              "skillVsMeanPct": 74.54829117640666
+            },
+            "2024": {
+              "n": 366,
+              "skillVsPersistencePct": 20.22306227686801,
+              "skillVsMeanPct": 11.555345364355851
+            },
+            "2025": {
+              "n": 365,
+              "skillVsPersistencePct": 25.078610739173367,
+              "skillVsMeanPct": -12.452156066519148
+            },
+            "2026": {
+              "n": 280,
+              "skillVsPersistencePct": 22.856652124931852,
+              "skillVsMeanPct": 19.884940409108264
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 2146,
+          "first": "2020-11-17",
+          "last": "2026-10-02",
+          "harMSE": 0.0002671558713840421,
+          "harMAE": 0.011569607925837399,
+          "persistenceMSE": 0.00035966137840671633,
+          "persistenceMAE": 0.013726591173664983,
+          "historicalMeanMSE": 0.0003500311048776719,
+          "historicalMeanMAE": 0.014970974304016726,
+          "skillVsPersistencePct": 25.720166961620805,
+          "skillVsMeanPct": 23.67653398191365,
+          "maeSkillVsPersistencePct": 15.713903186435996,
+          "nonOverlapping": {
+            "n": 215,
+            "skillVsPersistencePct": 28.80425194248636,
+            "skillVsMeanPct": 22.089070231238328
+          },
+          "byYear": {
+            "2020": {
+              "n": 45,
+              "skillVsPersistencePct": 6.313593607257706,
+              "skillVsMeanPct": -30.987708729313933
+            },
+            "2021": {
+              "n": 365,
+              "skillVsPersistencePct": 19.358703678168997,
+              "skillVsMeanPct": 13.76970256104375
+            },
+            "2022": {
+              "n": 365,
+              "skillVsPersistencePct": 33.575036427556235,
+              "skillVsMeanPct": 8.8256109658451
+            },
+            "2023": {
+              "n": 365,
+              "skillVsPersistencePct": -8.177635576214382,
+              "skillVsMeanPct": 78.02753963020422
+            },
+            "2024": {
+              "n": 366,
+              "skillVsPersistencePct": 26.675531364749983,
+              "skillVsMeanPct": 15.533943184224741
+            },
+            "2025": {
+              "n": 365,
+              "skillVsPersistencePct": 34.051379268553895,
+              "skillVsMeanPct": -20.79101849167295
+            },
+            "2026": {
+              "n": 275,
+              "skillVsPersistencePct": 26.84036899501814,
+              "skillVsMeanPct": 20.99834595108114
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 2126,
+          "first": "2020-11-27",
+          "last": "2026-09-22",
+          "harMSE": 0.000196269433073446,
+          "harMAE": 0.010432209227147724,
+          "persistenceMSE": 0.0002862318946305172,
+          "persistenceMAE": 0.012391245479854774,
+          "historicalMeanMSE": 0.0002698122328433572,
+          "historicalMeanMAE": 0.013185736773268557,
+          "skillVsPersistencePct": 31.429922117239716,
+          "skillVsMeanPct": 27.257029451517635,
+          "maeSkillVsPersistencePct": 15.809841358497644,
+          "nonOverlapping": {
+            "n": 107,
+            "skillVsPersistencePct": 34.193501427430604,
+            "skillVsMeanPct": 28.138597575631607
+          },
+          "byYear": {
+            "2020": {
+              "n": 35,
+              "skillVsPersistencePct": 5.297255000537882,
+              "skillVsMeanPct": -17.851310694784516
+            },
+            "2021": {
+              "n": 365,
+              "skillVsPersistencePct": 27.968122050488297,
+              "skillVsMeanPct": 17.105907419879117
+            },
+            "2022": {
+              "n": 365,
+              "skillVsPersistencePct": 41.43207204549818,
+              "skillVsMeanPct": 2.51524577614598
+            },
+            "2023": {
+              "n": 365,
+              "skillVsPersistencePct": -58.56715347984745,
+              "skillVsMeanPct": 75.58930395537276
+            },
+            "2024": {
+              "n": 366,
+              "skillVsPersistencePct": 38.32319862522582,
+              "skillVsMeanPct": 22.464490224184264
+            },
+            "2025": {
+              "n": 365,
+              "skillVsPersistencePct": 40.64697788891033,
+              "skillVsMeanPct": -27.456180427920795
+            },
+            "2026": {
+              "n": 265,
+              "skillVsPersistencePct": 38.13598995020324,
+              "skillVsMeanPct": 18.607765566290237
+            }
+          }
+        }
+      ],
+      "regimes": [
+        {
+          "regime": "down-highvol",
+          "count": 431,
+          "positiveRatePct": 47.56380510440835,
+          "meanForwardLogReturnPct": -0.6715258731558222,
+          "medianForwardLogReturnPct": -0.720517369041931
+        },
+        {
+          "regime": "down-lowvol",
+          "count": 560,
+          "positiveRatePct": 48.214285714285715,
+          "meanForwardLogReturnPct": 0.03312406382093338,
+          "medianForwardLogReturnPct": -0.486793976022476
+        },
+        {
+          "regime": "up-highvol",
+          "count": 462,
+          "positiveRatePct": 43.073593073593074,
+          "meanForwardLogReturnPct": -1.3681075774493845,
+          "medianForwardLogReturnPct": -2.17326415007459
+        },
+        {
+          "regime": "up-lowvol",
+          "count": 529,
+          "positiveRatePct": 49.33837429111531,
+          "meanForwardLogReturnPct": 1.380318603859707,
+          "medianForwardLogReturnPct": -0.1013268999054519
+        }
+      ],
+      "macro": [
+        {
+          "horizonBars": 5,
+          "n": 2156,
+          "first": "2020-11-12",
+          "last": "2026-10-07",
+          "priorBrier": 0.2510684439240982,
+          "priceBrier": 0.2542429304840354,
+          "macroBrier": 0.25857925110914354,
+          "macroBrierSkillVsPriorPct": -2.9915377128461262,
+          "macroBrierSkillVsPricePct": -1.7055815934989838,
+          "macroReturnMseSkillVsPricePct": -9.787941407627132,
+          "historicalPriorAccuracy": 52.13358070500927,
+          "priceAccuracy": 52.319109461966605,
+          "macroAccuracy": 49.721706864564005,
+          "nonOverlapping": {
+            "n": 432,
+            "macroBrierSkillVsPricePct": -0.9773718459957115,
+            "macroBrierSkillVsPriorPct": -2.147093587250426
+          },
+          "byYear": {
+            "2020": {
+              "n": 50,
+              "macroBrierSkillVsPricePct": -7.281388992969995,
+              "macroBrierSkillVsPriorPct": -3.4075555563508386
+            },
+            "2021": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -4.5193306192022,
+              "macroBrierSkillVsPriorPct": -9.931510158536172
+            },
+            "2022": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 0.21564523817726444,
+              "macroBrierSkillVsPriorPct": -2.312321581132326
+            },
+            "2023": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -3.6585946988977547,
+              "macroBrierSkillVsPriorPct": -3.9927223697750147
+            },
+            "2024": {
+              "n": 366,
+              "macroBrierSkillVsPricePct": -2.979794134892999,
+              "macroBrierSkillVsPriorPct": -3.540710330604302
+            },
+            "2025": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 1.3323108476778645,
+              "macroBrierSkillVsPriorPct": 1.4298734302644167
+            },
+            "2026": {
+              "n": 280,
+              "macroBrierSkillVsPricePct": 0.3828025395829604,
+              "macroBrierSkillVsPriorPct": 1.0419018366225719
+            }
+          }
+        },
+        {
+          "horizonBars": 10,
+          "n": 2146,
+          "first": "2020-11-17",
+          "last": "2026-10-02",
+          "priorBrier": 0.25480126290013927,
+          "priceBrier": 0.2612362913124821,
+          "macroBrier": 0.26883339279061585,
+          "macroBrierSkillVsPriorPct": -5.507088046096542,
+          "macroBrierSkillVsPricePct": -2.908134026847886,
+          "macroReturnMseSkillVsPricePct": -21.201576233315798,
+          "historicalPriorAccuracy": 52.00372786579683,
+          "priceAccuracy": 50.60577819198508,
+          "macroAccuracy": 50.931966449207835,
+          "nonOverlapping": {
+            "n": 215,
+            "macroBrierSkillVsPricePct": -3.324330837657352,
+            "macroBrierSkillVsPriorPct": -6.331104834589807
+          },
+          "byYear": {
+            "2020": {
+              "n": 45,
+              "macroBrierSkillVsPricePct": -44.42282511423823,
+              "macroBrierSkillVsPriorPct": -71.83461688046593
+            },
+            "2021": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -2.7168560997703484,
+              "macroBrierSkillVsPriorPct": -15.234875981661823
+            },
+            "2022": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 0.607568003561243,
+              "macroBrierSkillVsPriorPct": -0.6764321720254207
+            },
+            "2023": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -11.769101803808567,
+              "macroBrierSkillVsPriorPct": -11.38148909575798
+            },
+            "2024": {
+              "n": 366,
+              "macroBrierSkillVsPricePct": -0.6633100706918027,
+              "macroBrierSkillVsPriorPct": -1.6970298202820366
+            },
+            "2025": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 2.745820217524697,
+              "macroBrierSkillVsPriorPct": 2.1730168179574294
+            },
+            "2026": {
+              "n": 275,
+              "macroBrierSkillVsPricePct": -2.2705960264083336,
+              "macroBrierSkillVsPriorPct": -0.4804405740945761
+            }
+          }
+        },
+        {
+          "horizonBars": 20,
+          "n": 2126,
+          "first": "2020-11-27",
+          "last": "2026-09-22",
+          "priorBrier": 0.2608962132053071,
+          "priceBrier": 0.27127215161503476,
+          "macroBrier": 0.2850900166770333,
+          "macroBrierSkillVsPriorPct": -9.273344052980704,
+          "macroBrierSkillVsPricePct": -5.093727822680316,
+          "macroReturnMseSkillVsPricePct": -28.535298579522326,
+          "historicalPriorAccuracy": 49.81185324553151,
+          "priceAccuracy": 49.48259642521167,
+          "macroAccuracy": 52.634054562558795,
+          "nonOverlapping": {
+            "n": 107,
+            "macroBrierSkillVsPricePct": -6.179128851086957,
+            "macroBrierSkillVsPriorPct": -11.065323432371788
+          },
+          "byYear": {
+            "2020": {
+              "n": 35,
+              "macroBrierSkillVsPricePct": -62.0102429653814,
+              "macroBrierSkillVsPriorPct": -305.14712051349625
+            },
+            "2021": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -0.4377728043363671,
+              "macroBrierSkillVsPriorPct": -14.70689170676902
+            },
+            "2022": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -1.7494995974242533,
+              "macroBrierSkillVsPriorPct": -9.227277740595596
+            },
+            "2023": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": -22.442461837151328,
+              "macroBrierSkillVsPriorPct": -22.43903595650543
+            },
+            "2024": {
+              "n": 366,
+              "macroBrierSkillVsPricePct": 0.042625564079246114,
+              "macroBrierSkillVsPriorPct": -0.8895429091553275
+            },
+            "2025": {
+              "n": 365,
+              "macroBrierSkillVsPricePct": 3.3334811869711434,
+              "macroBrierSkillVsPriorPct": 5.96951338558741
+            },
+            "2026": {
+              "n": 265,
+              "macroBrierSkillVsPricePct": -7.371434598271676,
+              "macroBrierSkillVsPriorPct": -2.891291588623246
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "contexts": {
+    "vix": {
+      "symbol": "^VIX",
+      "barCount": 1706,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ]
+    },
+    "us10y": {
+      "symbol": "^TNX",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ]
+    },
+    "dxy": {
+      "symbol": "DX-Y.NYB",
+      "barCount": 1706,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ]
+    },
+    "oil": {
+      "symbol": "CL=F",
+      "barCount": 1705,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ]
+    }
+  },
+  "errors": []
+}

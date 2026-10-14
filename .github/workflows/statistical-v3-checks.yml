@@ -1,0 +1,23 @@
+name: Isolated statistical v3 correctness
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'research/statistical/**'
+      - '.github/workflows/statistical-v3-checks.yml'
+permissions:
+  contents: read
+jobs:
+  correctness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node research/statistical/test.mjs
+      - run: node research/statistical/phase2-test.mjs
+      - run: node research/statistical/v3/test.mjs
+      # Synthetic fixtures validate causality only. No provider fetch, live
+      # signals, artifact backfill, portfolio writes or deployments here.

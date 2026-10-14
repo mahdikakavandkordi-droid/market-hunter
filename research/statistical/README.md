@@ -1,5 +1,18 @@
 # Cross-asset statistical forecasts (isolated research v0.1)
 
+## Audit follow-up: research v3
+
+Original engines and summaries below remain frozen. Read `v3/PROTOCOL.md` for the new exploratory evidence and benchmark protocol and `INDEPENDENT-AUDIT-2026-10-14.md` for findings. Original Actions summaries are preserved byte-for-byte in `original-evidence/`.
+
+```
+node research/statistical/v3/test.mjs
+node research/statistical/v3/run.mjs --from 2020-01-01 --asof 2026-10-13 --output-dir /absolute/private/new-evidence-directory
+node research/statistical/v3/run.mjs --from 2020-01-01 --asof 2026-10-13 --input-bundle /absolute/private/new-evidence-directory --output-dir /absolute/private/new-replay-directory
+node research/statistical/v3/run.mjs --from 2020-01-01 --asof 2026-10-13 --data-bundle /absolute/private/new-evidence-directory --output-dir /absolute/private/new-version-directory
+```
+
+Output directories must not exist. Exact replay requires matching code and configuration hashes; `--data-bundle` labels changed code on the preserved data vintage as a new experiment. Raw provider data stays private and outside git. Runs preserve source snapshots, hashes, timestamps, fit snapshots and per-origin forecasts, compare fixed EWMA/HAR/GARCH-style benchmarks, report calibration and dependence diagnostics, and fail for missing required sections. No live signal or prospective schedule is activated. Historical reruns are exploratory, not new blind validation.
+
 STATUS: Research only. No Market Hunter scanner changes, SMC engine edits, live portfolio writes, Telegram signals, production deployments or trade execution.
 
 ## Instruments and sources
