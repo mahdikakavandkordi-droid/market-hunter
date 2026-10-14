@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — metals-5 — Corrected Evidence v2
 
-Mode: stock; generated 2026-10-13T03:31:34.922Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-10-14T01:52:56.234Z; start 2026-10-01; universe 5.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
