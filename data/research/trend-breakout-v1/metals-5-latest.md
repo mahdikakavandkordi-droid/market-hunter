@@ -1,13 +1,13 @@
 # Trend Breakout V1 — metals-5
-Generated: 2026-10-14T13:56:33.186Z; mode: forward_shadow.
+Generated: 2026-10-14T18:48:42.925Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 5; failed fetch/review symbols 0.
-Open 3; pending 0; closed 1; lifecycle reviews 0.
-Realized equity $990.62; marked equity $995.90; mark quality fresh.
+Open 2; pending 1; closed 2; lifecycle reviews 0.
+Realized equity $986.51; marked equity $1013.43; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
 |---|---:|---:|---:|
-| prospective | 1 | -1.0500000000000016 | 0 |
+| prospective | 2 | -1.0500000000000016 | 0 |
 | reconstructed | 0 | n/a | n/a |
 | historical_simulated | 0 | n/a | n/a |
 | pending | 0 | n/a | n/a |
@@ -15,14 +15,14 @@ Realized equity $990.62; marked equity $995.90; mark quality fresh.
 
 ## Positions
 
-- PALL: Short open; entry 20.350000381469727; current stop 21.012215205601283; provenance prospective; gap none
-- SLV: Short open; entry 54.89500045776367; current stop 55.64850616455078; provenance prospective; gap none
-- CPER: Long open; entry 40.58000183105469; current stop 39.938573019845144; provenance prospective; gap none
+- PALL: Short open; entry 20.350000381469727; current stop 20.710357666015625; provenance prospective; gap none
+- SLV: Short open; entry 54.89500045776367; current stop 53.048150471278596; provenance prospective; gap none
+- PPLT: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
 SMC ledger as of 2026-10-14T01:52:56.234Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 0; challenger closed 1. No winner is claimed from a small sample.
+SMC closed 0; challenger closed 2. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
