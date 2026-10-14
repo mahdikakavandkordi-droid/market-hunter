@@ -1,8 +1,8 @@
 # Trend Breakout V1 — metals-5
-Generated: 2026-10-14T18:48:42.925Z; mode: forward_shadow.
+Generated: 2026-10-14T22:30:57.191Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 5; failed fetch/review symbols 0.
 Open 2; pending 1; closed 2; lifecycle reviews 0.
-Realized equity $986.51; marked equity $1013.43; mark quality fresh.
+Realized equity $986.51; marked equity $1014.05; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -16,7 +16,7 @@ Realized equity $986.51; marked equity $1013.43; mark quality fresh.
 ## Positions
 
 - PALL: Short open; entry 20.350000381469727; current stop 20.710357666015625; provenance prospective; gap none
-- SLV: Short open; entry 54.89500045776367; current stop 53.048150471278596; provenance prospective; gap none
+- SLV: Short open; entry 54.89500045776367; current stop 52.901362555367605; provenance prospective; gap none
 - PPLT: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
