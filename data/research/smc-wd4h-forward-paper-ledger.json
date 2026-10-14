@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-ledger-v2",
-  "updatedAt": "2026-10-13T03:06:08.987Z",
+  "updatedAt": "2026-10-14T01:18:50.710Z",
   "forwardStart": "2026-10-01",
   "runLog": [
     {
@@ -565,6 +565,48 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 0
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|38494997713|1",
+      "observedAt": "2026-10-14T01:18:50.710Z",
+      "tracker": "smc-forward-paper",
+      "cohort": "tsx-core",
+      "github": {
+        "runId": "38494997713",
+        "runAttempt": "1",
+        "sha": "672cf326b5a78d2260943c584d0f38891aac2c87",
+        "workflow": "SMC Forward Paper Track",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "CSU.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 2,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 1,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 0
     }
   ],
   "discrepancyLog": [],
@@ -652,6 +694,15 @@
         "SU.TO"
       ],
       "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|38494997713|1",
+      "observedAt": "2026-10-14T01:18:50.710Z",
+      "quality": "fresh",
+      "markedEquity": 1001.9239743879318,
+      "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
     }
   ],
   "markedSeriesCoverageStartAt": "2026-10-04T14:55:43.524Z",
@@ -665,9 +716,9 @@
       "stop": 63.445358221871516,
       "target": 58.449279894147594,
       "risk": 1.6653594425746405,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-10-13T17:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 48.8,
@@ -725,7 +776,20 @@
           }
         }
       },
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "stop",
+      "exitPriceAssumed": 63.445358221871516,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-10-13T13:30:00.000Z",
+        "exitBarEndT": "2026-10-13T17:30:00.000Z"
+      }
     },
     {
       "symbol": "SU.TO",
@@ -736,9 +800,9 @@
       "stop": 94.97857289995466,
       "target": 107.31284321376256,
       "risk": 4.111423437935969,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 2,
+      "exitT": "2026-10-13T20:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 78.5,
@@ -796,7 +860,20 @@
           }
         }
       },
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "target",
+      "exitPriceAssumed": 107.31284321376256,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-10-13T17:30:00.000Z",
+        "exitBarEndT": "2026-10-13T20:30:00.000Z"
+      }
     },
     {
       "symbol": "NTR.TO",

@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper — Corrected Evidence v2
 
-Generated: 2026-10-13T03:06:08.987Z
+Generated: 2026-10-14T01:18:50.710Z
 
 Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
 The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
@@ -9,33 +9,32 @@ The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5f
 
 | Metric | Raw | +0.03R cost | +0.05R cost |
 |---|---:|---:|---:|
-| Closed trades | 1 | 1 | 1 |
-| Win rate | 0.0% | 0.0% | 0.0% |
-| PF | 0.000 | 0.000 | 0.000 |
-| Avg R | -1.000 | -1.030 | -1.050 |
+| Closed trades | 3 | 3 | 3 |
+| Win rate | 33.3% | 33.3% | 33.3% |
+| PF | 1.000 | 0.956 | 0.929 |
+| Avg R | 0.000 | -0.030 | -0.050 |
 
 ## $1,000 paper account — realized vs marked
 
-Realized-only equity: $989.50; realized return: -1.0%.
-Marked equity: n/a; marked return: n/a; mark quality: incomplete_missing_marks.
-Unrealized P/L: n/a.
-Realized-event max drawdown: -1.0%; observed marked max drawdown: -0.9%.
+Realized-only equity: $1001.92; realized return: 0.2%.
+Marked equity: $1001.92; marked return: 0.2%; mark quality: fresh.
+Unrealized P/L: $0.00.
+Realized-event max drawdown: -1.8%; observed marked max drawdown: -0.9%.
 Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; first complete marked-equity observation: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
-Missing/invalid marks: L.TO, SU.TO; stale marks: none.
+Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
 
 ### Open positions with marks
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---|---:|
-| L.TO | Short | 61.780 | n/a |  | missing | n/a |
-| SU.TO | Long | 99.090 | n/a |  | missing | n/a |
+| None | | | | | | |
 
 ## Evidence integrity
 
 Legacy trades without first-observation provenance: 2.
 Prospective entries: 0; reconstructed entries: 1; pending signals: 0.
-This run discrepancies: 0; prior records not re-observed: 3; candle/data diagnostics: 0.
+This run discrepancies: 0; prior records not re-observed: 0; candle/data diagnostics: 1.
 
 ### Performance by evidence provenance
 
@@ -43,15 +42,15 @@ This run discrepancies: 0; prior records not re-observed: 3; candle/data diagnos
 |---|---:|---:|---:|---:|
 | prospective | 0 | n/a | n/a | n/a |
 | reconstructed | 1 | 0.0% | -1.050 | 0.000 |
-| legacy unprovenanced | 0 | n/a | n/a | n/a |
+| legacy unprovenanced | 2 | 50.0% | 0.450 | 1.857 |
 
 ## Momentum shadow (observational only)
 
 | Bucket | Closed | Win rate | Avg R after cost | PF after cost |
 |---|---:|---:|---:|---:|
-| high | 0 | n/a | n/a | n/a |
+| high | 1 | 100.0% | 1.950 | n/a |
 | medium | 0 | n/a | n/a | n/a |
-| low | 1 | 0.0% | -1.050 | 0.000 |
+| low | 2 | 0.0% | -1.050 | 0.000 |
 | unavailable | 0 | n/a | n/a | n/a |
 
 ## Execution qualifications
@@ -63,38 +62,5 @@ This run discrepancies: 0; prior records not re-observed: 3; candle/data diagnos
 
 ## Fetch/data gaps
 
-- Fetch failure ^GSPTSE: momentum_benchmark_http_429
-- Fetch failure RY.TO: http_429
-- Fetch failure TD.TO: http_429
-- Fetch failure BMO.TO: http_429
-- Fetch failure BNS.TO: http_429
-- Fetch failure CM.TO: http_429
-- Fetch failure AEM.TO: http_429
-- Fetch failure WPM.TO: http_429
-- Fetch failure ABX.TO: http_429
-- Fetch failure LUN.TO: http_429
-- Fetch failure CNQ.TO: http_429
-- Fetch failure SU.TO: http_429
-- Fetch failure TRP.TO: http_429
-- Fetch failure CNR.TO: http_429
-- Fetch failure CP.TO: http_429
-- Fetch failure SHOP.TO: http_429
-- Fetch failure NTR.TO: http_429
-- Fetch failure MFC.TO: http_429
-- Fetch failure BCE.TO: http_429
-- Fetch failure NA.TO: http_429
-- Fetch failure SLF.TO: http_429
-- Fetch failure POW.TO: http_429
-- Fetch failure ENB.TO: http_429
-- Fetch failure IMO.TO: http_429
-- Fetch failure TOU.TO: http_429
-- Fetch failure FNV.TO: http_429
-- Fetch failure K.TO: http_429
-- Fetch failure FTS.TO: http_429
-- Fetch failure EMA.TO: http_429
-- Fetch failure WCN.TO: http_429
-- Fetch failure CSU.TO: http_429
-- Fetch failure ATD.TO: http_429
-- Fetch failure MRU.TO: http_429
-- Fetch failure L.TO: http_429
-- No candle/data diagnostics this run.
+- No fetch failures this run.
+- Data diagnostic: {"symbol":"CSU.TO","type":"incomplete_or_missing_exchange_bar","date":"2026-09-21","segment":1,"expected":[4,5,6],"present":[5,6]}
