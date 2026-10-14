@@ -76,13 +76,26 @@ export function volatilityBacktest(bars,{horizons=[5,10,20],minTrain=252,refit=2
     const modelM=metrics(samples,'actual','har');
     const persistM=metrics(samples,'actual','persistence');
     const meanM=metrics(samples,'actual','mean');
+    // Overlapping future windows can exaggerate nominal sample counts.
+    // Record a phase-fixed, disjoint h-bar subsample and separate calendar years.
+    const nonOverlapping=samples.filter((_,i)=>i%h===0);
+    const scoreSubset=items=>{
+      const har=metrics(items,'actual','har').mse;
+      const persist=metrics(items,'actual','persistence').mse;
+      const base=metrics(items,'actual','mean').mse;
+      return {n:items.length,skillVsPersistencePct:100*(1-har/persist),
+        skillVsMeanPct:100*(1-har/base)};
+    };
+    const years=[...new Set(samples.map(x=>x.date.slice(0,4)))];
+    const byYear=Object.fromEntries(years.map(y=>[y,scoreSubset(samples.filter(x=>x.date.startsWith(y)))]));
     out.push({horizonBars:h,n:samples.length,first:samples[0].date,last:samples.at(-1).date,
       harMSE:modelM.mse,harMAE:modelM.mae,
       persistenceMSE:persistM.mse,persistenceMAE:persistM.mae,
       historicalMeanMSE:meanM.mse,historicalMeanMAE:meanM.mae,
       skillVsPersistencePct:100*(1-modelM.mse/persistM.mse),
       skillVsMeanPct:100*(1-modelM.mse/meanM.mse),
-      maeSkillVsPersistencePct:100*(1-modelM.mae/persistM.mae)});
+      maeSkillVsPersistencePct:100*(1-modelM.mae/persistM.mae),
+      nonOverlapping:scoreSubset(nonOverlapping),byYear});
   }
   return out;
 }
@@ -168,12 +181,21 @@ export function macroBacktest(bars,contexts,{horizons=[5,10,20],minTrain=252,ref
     const mse=(key)=>mean(scores.map(v=>(v[key]-v.actual)**2));
     const bs=(key)=>mean(scores.map(v=>brier(v[key],actual(v))));
     const correct=(key)=>100*mean(scores.map(v=>+((v[key]>=.5)===Boolean(actual(v)))));
+    const macroSkill=items=>{
+      const score=(key)=>mean(items.map(v=>brier(v[key],actual(v))));
+      return {n:items.length,macroBrierSkillVsPricePct:100*(1-score('macroProb')/score('priceProb')),
+        macroBrierSkillVsPriorPct:100*(1-score('macroProb')/score('prior'))};
+    };
+    const nonOverlapping=scores.filter((_,i)=>i%h===0);
+    const years=[...new Set(scores.map(x=>x.date.slice(0,4)))];
+    const byYear=Object.fromEntries(years.map(y=>[y,macroSkill(scores.filter(x=>x.date.startsWith(y)))]));
     results.push({horizonBars:h,n:scores.length,first:scores[0].date,last:scores.at(-1).date,
       priorBrier:bs('prior'),priceBrier:bs('priceProb'),macroBrier:bs('macroProb'),
       macroBrierSkillVsPriorPct:100*(1-bs('macroProb')/bs('prior')),
       macroBrierSkillVsPricePct:100*(1-bs('macroProb')/bs('priceProb')),
       macroReturnMseSkillVsPricePct:100*(1-mse('macroReturn')/mse('priceReturn')),
-      historicalPriorAccuracy:correct('prior'),priceAccuracy:correct('priceProb'),macroAccuracy:correct('macroProb')});
+      historicalPriorAccuracy:correct('prior'),priceAccuracy:correct('priceProb'),macroAccuracy:correct('macroProb'),
+      nonOverlapping:macroSkill(nonOverlapping),byYear});
   }
   return results;
 }
