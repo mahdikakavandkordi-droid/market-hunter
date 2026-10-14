@@ -70,6 +70,8 @@ assert.throws(()=>assertComplete({errors:[],markets:[],contexts:{}}),/Incomplete
 const tsx=MARKETS.find(s=>s.id==='tsx');
 for(const date of ['2022-01-03','2022-12-26','2022-12-27','2026-05-18','2026-10-12'])assert(marketHoliday(date,tsx));
 assert(!marketHoliday('2026-06-19',tsx));assert(marketHoliday('2026-06-19',spx));
+for(const date of ['2007-01-02','2012-10-29','2012-10-30','2018-12-05'])assert(marketHoliday(date,spx));
+assert(!marketHoliday('2007-02-19',tsx));assert(marketHoliday('2008-02-18',tsx));
 assert.throws(()=>normalizeYahoo(rawFor(['2020-03-05T14:30:00Z','2020-03-09T13:30:00Z'],[100,101],'America/New_York'),spx,{from:'2020-03-01',asof:'2020-03-10',retrievedAt:'2020-03-11T00:00:00Z'}),/Unexplained missing weekday/);
 
 // Complete private bundle + network-disabled replay, then integrity corruption.

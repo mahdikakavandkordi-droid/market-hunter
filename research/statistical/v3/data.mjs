@@ -25,6 +25,10 @@ function usHoliday(date){
  const newyear=new Date(Date.UTC(year,0,1));if(newyear.getUTCDay()===0)newyear.setUTCDate(2);
  const holidays=[iso(newyear),nth(1,1,3),nth(2,1,3),iso(friday),last(5,1),observed(7,4),nth(9,1,1),nth(11,4,4),observed(12,25)];
  if(year>=2022)holidays.push(observed(6,19));
+ // Historical special closures, declared before the pre-2020 replication.
+ if(year===2007)holidays.push('2007-01-02');
+ if(year===2012)holidays.push('2012-10-29','2012-10-30');
+ if(year===2018)holidays.push('2018-12-05');
  if(year===2025)holidays.push('2025-01-09');
  return holidays.includes(date);
 }
@@ -35,7 +39,7 @@ function canadianHoliday(date){
  const victoria=new Date(Date.UTC(year,4,24));victoria.setUTCDate(24-(victoria.getUTCDay()+6)%7);
  const christmas=new Date(Date.UTC(year,11,25)),wd=christmas.getUTCDay();
  const christmasDates=wd===6?[27,28]:wd===0?[26,27]:wd===5?[25,28]:[25,26];
- return [followingMonday(1,1),nth(2,1,3),iso(victoria),followingMonday(7,1),nth(8,1,1),nth(9,1,1),nth(10,1,2),...christmasDates.map(d=>iso(new Date(Date.UTC(year,11,d))))].includes(date)
+ return [followingMonday(1,1),...(year>=2008?[nth(2,1,3)]:[]),iso(victoria),followingMonday(7,1),nth(8,1,1),nth(9,1,1),nth(10,1,2),...christmasDates.map(d=>iso(new Date(Date.UTC(year,11,d))))].includes(date)
   ||(['03','04'].includes(date.slice(5,7))&&usHoliday(date));
 }
 export const marketHoliday=(date,spec)=>spec.id==='tsx'?canadianHoliday(date):usHoliday(date);
