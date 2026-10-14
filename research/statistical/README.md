@@ -2,6 +2,13 @@
 
 ## Audit follow-up: research v3
 
+Pre-2020 replication: read `v3/PRE2020-PROTOCOL-2026-10-14.md` and `v3/PRE2020-RESULTS-2026-10-14.md`. The unchanged model failed to reproduce its broad h20 equity advantage against EWMA; limited crypto improvements do not establish a robust risk-control edge. The protocol was published before input retrieval. Both historical periods are now inspected.
+
+```
+node research/statistical/v3/replicate-pre2020.mjs --output-dir /absolute/private/new-pre2020-directory
+node research/statistical/v3/replicate-pre2020.mjs --input-bundle /absolute/private/new-pre2020-directory --output-dir /absolute/private/new-pre2020-replay
+```
+
 Original engines and summaries below remain frozen. Read `v3/PROTOCOL.md` for the new exploratory evidence and benchmark protocol and `INDEPENDENT-AUDIT-2026-10-14.md` for findings. Original Actions summaries are preserved byte-for-byte in `original-evidence/`.
 
 ```
