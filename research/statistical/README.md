@@ -4,6 +4,8 @@
 
 Risk-event hypothesis v1: `risk-events/PROTOCOL-2026-10-14.md` defines a separate exploratory binary-event experiment on the already-inspected source vintages. It predicts crossing an asset-relative high-volatility threshold and tests whether acceleration/shocks add value beyond calibrated current volatility, including calm-origin transitions. It is not a return/crash forecast or portfolio strategy.
 
+See `risk-events/RESULTS-2026-10-14.md` for findings: later S&P500 h10 overall Brier improvement survives the declared 36-test correction, while no calm-origin test does. This is a narrow historical research candidate, not a cross-asset crisis-warning system. No prospective collection was enabled.
+
 ```
 node research/statistical/risk-events/test.mjs
 node research/statistical/risk-events/run.mjs --pre2020-bundle /private/pre2020-evidence --post2020-bundle /private/v3-evidence --output-dir /private/new-risk-event-directory
