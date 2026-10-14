@@ -23,9 +23,10 @@ have independent status; a provider failure is recorded without inventing a row.
 The first bootstrap/live connection check had zero forecasts:2026-10-14 was still
 incomplete. Training-only history ends2026-10-13; no historical prospective backfill.
 
-Weekday-evening assistant collection and Friday descriptive reporting are prepared,
-but automatic scheduling has NOT been activated. Continue manually until a schedule
-is successfully created. Access and persistence must succeed on each run;
+Weekday-evening assistant collection and Friday descriptive reporting were activated
+on2026-10-14 at15:56:45Z, after the original scheduling-capacity block was resolved.
+The first scheduled iteration is the evening of2026-10-14 in America/St_Johns.
+Access and persistence must succeed on each run;
 missed decision windows remain missing. This is assistant-run research collection,
 not guaranteed service uptime. Persistent checkpoint replacements must use the
 observed Library version guard and preserve the same file identity. Keep immutable
