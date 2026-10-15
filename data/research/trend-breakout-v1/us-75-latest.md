@@ -1,8 +1,8 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-10-15T20:28:43.624Z; mode: forward_shadow.
+Generated: 2026-10-15T23:11:49.886Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
 Open 26; pending 6; closed 13; lifecycle reviews 0.
-Realized equity $992.07; marked equity $1025.72; mark quality fresh.
+Realized equity $992.07; marked equity $1022.83; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -17,12 +17,12 @@ Realized equity $992.07; marked equity $1025.72; mark quality fresh.
 
 - EOG: Long open; entry 143.16000366210938; current stop 148.37752532958984; provenance prospective; gap none
 - GE: Short open; entry 306.5; current stop 315.1583557128906; provenance prospective; gap none
-- MSFT: Long open; entry 531.6799926757812; current stop 524.8020673479352; provenance prospective; gap none
+- MSFT: Long open; entry 531.6799926757812; current stop 524.968523297991; provenance prospective; gap none
 - OXY: Long open; entry 57.529998779296875; current stop 59.02563340323312; provenance prospective; gap none
 - CVX: Long open; entry 208.44000244140625; current stop 213.52432795933314; provenance prospective; gap none
 - XOM: Long open; entry 165.60000610351562; current stop 170.51036725725447; provenance prospective; gap none
 - ABBV: Long open; entry 270.9800109863281; current stop 271.28228541782926; provenance prospective; gap none
-- MA: Long open; entry 568.489990234375; current stop 592.2410452706473; provenance prospective; gap none
+- MA: Long open; entry 568.489990234375; current stop 593.0638863699777; provenance prospective; gap none
 - SCHW: Short open; entry 95.5999984741211; current stop 97.82551574707031; provenance prospective; gap none
 - UNH: Long open; entry 375.3800048828125; current stop 378.4481222970145; provenance prospective; gap none
 - V: Long open; entry 371.3999938964844; current stop 383.5212184361049; provenance prospective; gap none
@@ -32,8 +32,8 @@ Realized equity $992.07; marked equity $1025.72; mark quality fresh.
 - PG: Long open; entry 150.57000732421875; current stop 153.0165023803711; provenance prospective; gap none
 - PM: Long open; entry 199.30999755859375; current stop 197.05223083496094; provenance prospective; gap none
 - KO: Long open; entry 90.55999755859375; current stop 89.47358213152204; provenance prospective; gap none
-- MDT: Long open; entry 92.3499984741211; current stop 89.97402954101562; provenance prospective; gap none
-- UNP: Long open; entry 282.69000244140625; current stop 279.56073216029574; provenance prospective; gap none
+- MDT: Long open; entry 92.3499984741211; current stop 90.066892351423; provenance prospective; gap none
+- UNP: Long open; entry 282.69000244140625; current stop 280.0903647286551; provenance prospective; gap none
 - AAPL: Long open; entry 344.6050109863281; current stop 336.23075212751115; provenance prospective; gap none
 - CAT: Short open; entry 761.5999755859375; current stop 792.1471688406808; provenance prospective; gap none
 - APD: Long open; entry 294.67999267578125; current stop 288.3145054408482; provenance prospective; gap none
