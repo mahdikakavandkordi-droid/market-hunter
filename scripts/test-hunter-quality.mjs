@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {summarizeHunterQuality} from '../lib/hunter-quality.js';
+const row=(id,symbol,ret,extra={})=>({outcomeId:id,symbol,scope:'integrated',entryStage:'Recovery',horizonSessions:5,decisionDate:'2026-10-01',targetDate:'2026-10-08',returnPct:ret,benchmarkReturnPct:1,...extra});
+const rows=[row('1','A',3),row('2','A',5),row('3','B',-1),row('4','C',null),row('5','FUTURE',100,{targetDate:'2026-10-20'}),row('6','STAGE',9,{scope:'stage'})];
+const before=JSON.stringify(rows),q=summarizeHunterQuality(rows,'2026-10-10'),s=q.groups[0].horizons[5];
+assert.equal(s.observations,3);assert.equal(s.uniqueSymbols,2);assert.equal(s.excludedMissing,1);
+assert.equal(s.meanExcessPct,4/3);assert.equal(s.medianExcessPct,2);assert.equal(s.symbolBalancedExcessPct,.5);
+assert.equal(q.groups[0].horizons[20].meanExcessPct,null);
+assert.equal(q.groups.find(g=>g.stage==='Recovery').horizons[5].meanExcessPct,8);
+assert.equal(JSON.stringify(rows),before);
+assert.throws(()=>summarizeHunterQuality([rows[0],rows[0]],'2026-10-10'),/duplicate/);
+console.log('Hunter quality: scopes, horizons, future isolation, repeats, missing values and immutability passed');
