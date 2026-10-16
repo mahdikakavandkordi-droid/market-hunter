@@ -41,18 +41,25 @@ jobs:
       - name: Select asset group
         id: target
         shell: bash
+        env:
+          REFRESH_SCHEDULE: ${{ github.event.schedule }}
+          REFRESH_GROUP: ${{ inputs.group }}
         run: |
           set -euo pipefail
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-            group="${{ inputs.group }}"
+            group="$REFRESH_GROUP"
           else
-            hour="$(date -u +%H)"
-            case "$hour" in
-              00|01) group="crypto" ;;
-              04|05) group="metals" ;;
-              *) echo "Unexpected scheduled hour: $hour"; exit 1 ;;
+            # Select by triggering cron, never delayed runner wall-clock time.
+            case "$REFRESH_SCHEDULE" in
+              '15 0 * * *'|'15 1 * * *') group="crypto" ;;
+              '15 4 * * 2-6'|'15 5 * * 2-6') group="metals" ;;
+              *) echo "Unknown refresh schedule"; exit 1 ;;
             esac
           fi
+          case "$group" in
+            crypto|metals) ;;
+            *) echo "Invalid asset group"; exit 1 ;;
+          esac
           if [ "$group" = "crypto" ]; then
             echo "keys=BTC,ETH" >> "$GITHUB_OUTPUT"
           else
@@ -62,6 +69,7 @@ jobs:
 
       - name: Validate targeted refresh code
         run: |
+          node scripts/test-asset-refresh-routing.mjs
           node --check lib/market-freshness.js
           node --check scripts/scan-market-pulse.mjs
           node --check scripts/build-market-pulse-report.mjs

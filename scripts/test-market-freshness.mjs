@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import './test-asset-refresh-routing.mjs';
 import {assessFreshness,expectedCompletedSession,mergeAssetRefresh,torontoDateFromSeconds} from '../lib/market-freshness.js';
 
 const sec=s=>Date.parse(s)/1000;
