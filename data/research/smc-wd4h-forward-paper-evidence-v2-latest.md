@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper — Corrected Evidence v2
 
-Generated: 2026-10-15T00:40:47.020Z
+Generated: 2026-10-16T00:31:52.857Z
 
 Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
 The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
@@ -17,9 +17,9 @@ The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5f
 ## $1,000 paper account — realized vs marked
 
 Realized-only equity: $1001.92; realized return: 0.2%.
-Marked equity: $1001.73; marked return: 0.2%; mark quality: fresh.
-Unrealized P/L: $-0.20.
-Realized-event max drawdown: -1.8%; observed marked max drawdown: -0.9%.
+Marked equity: $987.51; marked return: -1.2%; mark quality: fresh.
+Unrealized P/L: $-14.42.
+Realized-event max drawdown: -1.8%; observed marked max drawdown: -1.4%.
 Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; first complete marked-equity observation: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -28,15 +28,15 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---|---:|
-| AEM.TO | Short | 250.290 | 251.920 | 2026-10-14T20:30:00.000Z | fresh | $-0.76 |
-| FNV.TO | Short | 335.780 | 334.480 | 2026-10-14T20:30:00.000Z | fresh | $0.70 |
-| LUN.TO | Short | 32.710 | 32.750 | 2026-10-14T20:30:00.000Z | fresh | $-0.14 |
-| WPM.TO | Short | 184.410 | 184.390 | 2026-10-14T20:30:00.000Z | fresh | $0.01 |
+| AEM.TO | Short | 250.290 | 266.290 | 2026-10-15T20:30:00.000Z | fresh | $-7.49 |
+| FNV.TO | Short | 335.780 | 341.810 | 2026-10-15T20:30:00.000Z | fresh | $-3.23 |
+| LUN.TO | Short | 32.710 | 32.920 | 2026-10-15T20:30:00.000Z | fresh | $-0.74 |
+| WPM.TO | Short | 184.410 | 188.890 | 2026-10-15T20:30:00.000Z | fresh | $-2.95 |
 
 ## Evidence integrity
 
 Legacy trades without first-observation provenance: 2.
-Prospective entries: 0; reconstructed entries: 5; pending signals: 0.
+Prospective entries: 0; reconstructed entries: 6; pending signals: 0.
 This run discrepancies: 3; prior records not re-observed: 0; candle/data diagnostics: 1.
 
 ### Performance by evidence provenance
