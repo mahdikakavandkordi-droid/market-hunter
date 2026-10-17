@@ -1,8 +1,8 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-10-17T01:25:51.936Z; mode: forward_shadow.
+Generated: 2026-10-17T05:56:16.856Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
-Open 29; pending 2; closed 16; lifecycle reviews 0.
-Realized equity $980.99; marked equity $1029.88; mark quality fresh.
+Open 29; pending 2; closed 16; lifecycle reviews 1.
+Realized equity $980.99; marked equity $1028.43; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,7 +15,7 @@ Realized equity $980.99; marked equity $1029.88; mark quality fresh.
 
 ## Positions
 
-- EOG: Long open; entry 143.16000366210938; current stop 151.86359514508928; provenance prospective; gap none
+- EOG: Long open; entry 143.16000366210938; current stop 151.86359514508928; provenance prospective; gap last_observed_bar_unavailable
 - OXY: Long open; entry 57.529998779296875; current stop 59.606513432094026; provenance prospective; gap none
 - CVX: Long open; entry 208.44000244140625; current stop 216.22418648856026; provenance prospective; gap none
 - XOM: Long open; entry 165.60000610351562; current stop 172.0982219151088; provenance prospective; gap none
