@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-ledger-v2",
-  "updatedAt": "2026-10-16T00:31:52.857Z",
+  "updatedAt": "2026-10-17T00:39:30.630Z",
   "forwardStart": "2026-10-01",
   "runLog": [
     {
@@ -691,6 +691,48 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 3
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|38987344034|1",
+      "observedAt": "2026-10-17T00:39:30.630Z",
+      "tracker": "smc-forward-paper",
+      "cohort": "tsx-core",
+      "github": {
+        "runId": "38987344034",
+        "runAttempt": "1",
+        "sha": "cf876429e01f0ed6980395b7c374a52de3d822d3",
+        "workflow": "SMC Forward Paper Track",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "CSU.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 1,
+      "lifecycleUpdates": 1,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 7,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 3
     }
   ],
   "discrepancyLog": [
@@ -831,6 +873,15 @@
       "quality": "fresh",
       "markedEquity": 987.5076341747674,
       "totalUnrealizedPnl": -14.416340213164275,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|38987344034|1",
+      "observedAt": "2026-10-17T00:39:30.630Z",
+      "quality": "fresh",
+      "markedEquity": 981.6034268096349,
+      "totalUnrealizedPnl": -9.800345847223474,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -1119,9 +1170,9 @@
       "stop": 271.68966391427176,
       "target": 207.4906520298549,
       "risk": 21.39967062813895,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-10-16T17:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 47.3,
@@ -1200,7 +1251,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "stop",
+      "exitPriceAssumed": 271.68966391427176,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-10-16T13:30:00.000Z",
+        "exitBarEndT": "2026-10-16T17:30:00.000Z"
+      }
     },
     {
       "symbol": "FNV.TO",
@@ -1563,6 +1627,98 @@
           "runId": "38829962429",
           "runAttempt": "1",
           "sha": "e06f9a44e9b8438ff42866cede0b9fcb8d90ae51",
+          "workflow": "SMC Forward Paper Track",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
+      "symbol": "SLF.TO",
+      "signalT": "2026-10-16T13:30:00.000Z",
+      "entryT": "2026-10-16T17:30:00.000Z",
+      "dir": 1,
+      "entry": 112.02999877929688,
+      "stop": 110.05464641026089,
+      "target": 115.98070351736885,
+      "risk": 1.9753523690359884,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 39.1,
+        "bucket": "low",
+        "asOfDate": "2026-10-15",
+        "direction": "long",
+        "ret20": -0.008009981496885032,
+        "ret60": -0.01797357634825858,
+        "rsi14": 46.335288351839054,
+        "ma20": 111.70400009155273,
+        "ma50": 111.3747998046875,
+        "ma20Slope5": -0.0020102028948348893,
+        "volumeRatio20": 0.7105053162809757,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": 0.01819603021118832,
+        "benchmarkRet60": 0.03366105997237723,
+        "rs20": -0.02620601170807335,
+        "rs60": -0.05163463632063581,
+        "components": {
+          "return20": {
+            "score": 46,
+            "weight": 20
+          },
+          "return60": {
+            "score": 45.5,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 40.8,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 0,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 45,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 33.6,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 32.8,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 110.16000366210938,
+        "atr14": 1.053572518484933,
+        "signalCompletedAt": "2026-10-16T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "SLF.TO|2026-10-16T13:30:00.000Z|1",
+      "firstObservedAt": "2026-10-17T00:39:30.630Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-paper",
+        "cohort": "tsx-core",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "38987344034",
+          "runAttempt": "1",
+          "sha": "cf876429e01f0ed6980395b7c374a52de3d822d3",
           "workflow": "SMC Forward Paper Track",
           "ref": "refs/heads/main"
         }
