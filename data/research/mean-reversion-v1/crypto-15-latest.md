@@ -1,5 +1,5 @@
 # Mean Reversion V1 — crypto-15
-Generated: 2026-10-17T19:43:51.054Z; mode: forward_shadow.
+Generated: 2026-10-17T21:47:09.741Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 15; failed fetch/review symbols 0.
 Open 0; pending 0; closed 4; lifecycle reviews 0.
 Realized equity $969.23; marked equity $969.23; mark quality fresh.
