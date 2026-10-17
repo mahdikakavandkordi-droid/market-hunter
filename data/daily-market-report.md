@@ -4,7 +4,7 @@
 
 ## Executive read
 
-- Mixed cross-market environment.
+- Current cross-market assessment is incomplete; some inputs require an update.
 - Completed-session dates differ by instrument: TSX 2026-10-16 · SP500 2026-10-16 · NASDAQ100 2026-10-16 · GOLD 2026-10-15 · SILVER 2026-10-15 · BTC 2026-10-15 · ETH 2026-10-15.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
@@ -20,7 +20,7 @@
 
 - **Equities: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Constructive but uneven** — Most tracked markets remain constructive, but leadership is not uniform.
+- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
 
 ## Key divergences
 
