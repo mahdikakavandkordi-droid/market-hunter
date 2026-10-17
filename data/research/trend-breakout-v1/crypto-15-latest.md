@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-17T19:37:57.628Z; mode: forward_shadow.
+Generated: 2026-10-17T22:31:52.099Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 2; pending 1; closed 16; lifecycle reviews 0.
-Realized equity $923.13; marked equity $948.30; mark quality fresh.
+Open 3; pending 0; closed 16; lifecycle reviews 0.
+Realized equity $923.13; marked equity $944.15; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -17,7 +17,7 @@ Realized equity $923.13; marked equity $948.30; mark quality fresh.
 
 - DOGE-USD: Short open; entry 0.08425000309944153; current stop 0.08311714551278523; provenance prospective; gap none
 - SHIB-USD: Short open; entry 0.0000052400000640773214; current stop 0.000005141428541069867; provenance prospective; gap none
-- TRX-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- TRX-USD: Long open; entry 0.33492782711982727; current stop 0.332123943737575; provenance prospective; gap none
 
 ## Common-window comparison
 
