@@ -3,6 +3,7 @@ import {UNIVERSE} from '../lib/universe.js';
 import {completedDailyRows} from '../lib/completed-daily-session.js';
 import {referenceSession,quoteSessionIssue} from '../lib/scan-session-integrity.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
+import {volumeMetrics} from '../lib/volume-context.js';
 
 const range=process.env.V2_SCAN_RANGE||'2y';
 const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
@@ -105,7 +106,7 @@ for(const symbol of symbols){
     freshReclaimAge:m.freshReclaimAge,freshHighBreakAge:m.freshHighBreakAge,maxRvol5:round(m.maxRvol5,2),
     swingTrend:m.swingTrend,higherLow:m.higherLow,localLow:round(m.localLow),localHigh:round(m.localHigh),
     lowBroken:m.lowBroken,highBroken:m.highBroken,
-    evidence:evidence(m,stage)
+    evidence:evidence(m,stage),volumeContext:volumeMetrics(r)
   });
 }
 

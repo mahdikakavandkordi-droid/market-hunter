@@ -1,0 +1,884 @@
+{
+  "sourceCommit": "d86840b67eb17aa721d7eb69c84e556fa03cf300",
+  "version": "volume-retrospective-v1",
+  "asOf": "2026-10-16",
+  "rule": "Recorded maxRvol5 >= 1.5; avgDollar20 >= CAD 3m; no threshold search",
+  "limitations": [
+    "Post-hoc hypothesis, not out-of-sample validation",
+    "Recent 5-session spike is not rising volume or same-day breakout confirmation",
+    "Only recorded matured outcomes; missing outcomes are not zero",
+    "Overlapping dates and repeated symbols are not independent",
+    "Selection returns, not an executable portfolio; no transaction costs",
+    "Stage groups overlap; the existing scanner already uses volume"
+  ],
+  "groups": {
+    "all": {
+      "version": "hunter-quality-v1",
+      "asOf": "2026-10-16",
+      "descriptiveOnly": true,
+      "groups": [
+        {
+          "scope": "integrated",
+          "stage": null,
+          "horizons": {
+            "5": {
+              "recorded": 33,
+              "observations": 33,
+              "excludedMissing": 0,
+              "uniqueSymbols": 29,
+              "decisionDates": 8,
+              "meanReturnPct": 0.35953281441022356,
+              "meanExcessPct": -0.5970741026484169,
+              "medianExcessPct": -0.9638683575864393,
+              "symbolBalancedExcessPct": -0.8903373093641256,
+              "beatBenchmarkPct": 42.42424242424242
+            },
+            "10": {
+              "recorded": 13,
+              "observations": 13,
+              "excludedMissing": 0,
+              "uniqueSymbols": 13,
+              "decisionDates": 3,
+              "meanReturnPct": -2.083169419452025,
+              "meanExcessPct": -3.729280023570255,
+              "medianExcessPct": -0.3240224677522274,
+              "symbolBalancedExcessPct": -3.729280023570255,
+              "beatBenchmarkPct": 46.15384615384615
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Early Watch",
+          "horizons": {
+            "5": {
+              "recorded": 21,
+              "observations": 21,
+              "excludedMissing": 0,
+              "uniqueSymbols": 18,
+              "decisionDates": 8,
+              "meanReturnPct": 0.9434522474569995,
+              "meanExcessPct": 0.1137422069487241,
+              "medianExcessPct": 0.38658838657650296,
+              "symbolBalancedExcessPct": 0.1291656879041012,
+              "beatBenchmarkPct": 52.38095238095238
+            },
+            "10": {
+              "recorded": 9,
+              "observations": 9,
+              "excludedMissing": 0,
+              "uniqueSymbols": 9,
+              "decisionDates": 3,
+              "meanReturnPct": 1.7873098872550937,
+              "meanExcessPct": -0.7188208239788348,
+              "medianExcessPct": -0.3240224677522274,
+              "symbolBalancedExcessPct": -0.7188208239788348,
+              "beatBenchmarkPct": 33.333333333333336
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Recovery",
+          "horizons": {
+            "5": {
+              "recorded": 18,
+              "observations": 18,
+              "excludedMissing": 0,
+              "uniqueSymbols": 18,
+              "decisionDates": 6,
+              "meanReturnPct": 1.87376781111666,
+              "meanExcessPct": 0.45407964263490386,
+              "medianExcessPct": 0.340685724886991,
+              "symbolBalancedExcessPct": 0.45407964263490386,
+              "beatBenchmarkPct": 50
+            },
+            "10": {
+              "recorded": 2,
+              "observations": 2,
+              "excludedMissing": 0,
+              "uniqueSymbols": 2,
+              "decisionDates": 1,
+              "meanReturnPct": 4.534457509964362,
+              "meanExcessPct": 1.6280265893119705,
+              "medianExcessPct": 1.6280265893119705,
+              "symbolBalancedExcessPct": 1.6280265893119705,
+              "beatBenchmarkPct": 100
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Attractive Growth",
+          "horizons": {
+            "5": {
+              "recorded": 16,
+              "observations": 16,
+              "excludedMissing": 0,
+              "uniqueSymbols": 14,
+              "decisionDates": 7,
+              "meanReturnPct": -2.0376951351374113,
+              "meanExcessPct": -3.103882394366287,
+              "medianExcessPct": -4.691088160264206,
+              "symbolBalancedExcessPct": -2.673307524161571,
+              "beatBenchmarkPct": 31.25
+            },
+            "10": {
+              "recorded": 6,
+              "observations": 6,
+              "excludedMissing": 0,
+              "uniqueSymbols": 6,
+              "decisionDates": 3,
+              "meanReturnPct": -7.596274922436957,
+              "meanExcessPct": -8.740377021358368,
+              "medianExcessPct": -8.2225577201109,
+              "symbolBalancedExcessPct": -8.740377021358368,
+              "beatBenchmarkPct": 16.666666666666668
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Established Move",
+          "horizons": {
+            "5": {
+              "recorded": 8,
+              "observations": 8,
+              "excludedMissing": 0,
+              "uniqueSymbols": 7,
+              "decisionDates": 5,
+              "meanReturnPct": -0.7264447164793326,
+              "meanExcessPct": -1.3165437886723987,
+              "medianExcessPct": -0.8915413672579253,
+              "symbolBalancedExcessPct": -1.1031749882406914,
+              "beatBenchmarkPct": 50
+            },
+            "10": {
+              "recorded": 3,
+              "observations": 3,
+              "excludedMissing": 0,
+              "uniqueSymbols": 3,
+              "decisionDates": 2,
+              "meanReturnPct": -5.343607523278712,
+              "meanExcessPct": -6.429575764492867,
+              "medianExcessPct": -8.35334315313878,
+              "symbolBalancedExcessPct": -6.429575764492867,
+              "beatBenchmarkPct": 33.333333333333336
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        }
+      ]
+    },
+    "spike": {
+      "version": "hunter-quality-v1",
+      "asOf": "2026-10-16",
+      "descriptiveOnly": true,
+      "groups": [
+        {
+          "scope": "integrated",
+          "stage": null,
+          "horizons": {
+            "5": {
+              "recorded": 15,
+              "observations": 15,
+              "excludedMissing": 0,
+              "uniqueSymbols": 12,
+              "decisionDates": 8,
+              "meanReturnPct": 1.308576664146408,
+              "meanExcessPct": 0.03975579857541813,
+              "medianExcessPct": -1.1078246752534548,
+              "symbolBalancedExcessPct": -0.18795213045321213,
+              "beatBenchmarkPct": 40
+            },
+            "10": {
+              "recorded": 6,
+              "observations": 6,
+              "excludedMissing": 0,
+              "uniqueSymbols": 6,
+              "decisionDates": 3,
+              "meanReturnPct": -0.8102125984799776,
+              "meanExcessPct": -1.9543146974013883,
+              "medianExcessPct": -0.27910436212794654,
+              "symbolBalancedExcessPct": -1.9543146974013883,
+              "beatBenchmarkPct": 50
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Early Watch",
+          "horizons": {
+            "5": {
+              "recorded": 11,
+              "observations": 11,
+              "excludedMissing": 0,
+              "uniqueSymbols": 9,
+              "decisionDates": 7,
+              "meanReturnPct": 1.4493917286796398,
+              "meanExcessPct": 0.570810636206379,
+              "medianExcessPct": 1.1065769397369585,
+              "symbolBalancedExcessPct": 0.5415057951266505,
+              "beatBenchmarkPct": 54.54545454545455
+            },
+            "10": {
+              "recorded": 6,
+              "observations": 6,
+              "excludedMissing": 0,
+              "uniqueSymbols": 6,
+              "decisionDates": 3,
+              "meanReturnPct": 2.363496256515037,
+              "meanExcessPct": -0.000618207716914417,
+              "medianExcessPct": -1.1446139108264752,
+              "symbolBalancedExcessPct": -0.000618207716914417,
+              "beatBenchmarkPct": 33.333333333333336
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Recovery",
+          "horizons": {
+            "5": {
+              "recorded": 3,
+              "observations": 3,
+              "excludedMissing": 0,
+              "uniqueSymbols": 3,
+              "decisionDates": 2,
+              "meanReturnPct": 3.4896422972072885,
+              "meanExcessPct": 1.4668488294215927,
+              "medianExcessPct": 1.1294236555146941,
+              "symbolBalancedExcessPct": 1.4668488294215927,
+              "beatBenchmarkPct": 66.66666666666667
+            },
+            "10": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Attractive Growth",
+          "horizons": {
+            "5": {
+              "recorded": 4,
+              "observations": 4,
+              "excludedMissing": 0,
+              "uniqueSymbols": 3,
+              "decisionDates": 3,
+              "meanReturnPct": 0.4051453565209695,
+              "meanExcessPct": 0.19066308403195298,
+              "medianExcessPct": 0.38691431048825664,
+              "symbolBalancedExcessPct": 0.2560801595173876,
+              "beatBenchmarkPct": 50
+            },
+            "10": {
+              "recorded": 3,
+              "observations": 3,
+              "excludedMissing": 0,
+              "uniqueSymbols": 3,
+              "decisionDates": 2,
+              "meanReturnPct": -1.7881635764755248,
+              "meanExcessPct": -2.9903995331041897,
+              "medianExcessPct": -4.771001254310003,
+              "symbolBalancedExcessPct": -2.9903995331041897,
+              "beatBenchmarkPct": 33.333333333333336
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Established Move",
+          "horizons": {
+            "5": {
+              "recorded": 3,
+              "observations": 3,
+              "excludedMissing": 0,
+              "uniqueSymbols": 3,
+              "decisionDates": 2,
+              "meanReturnPct": 2.558097918594219,
+              "meanExcessPct": 2.050364990981716,
+              "medianExcessPct": 3.5216126097852296,
+              "symbolBalancedExcessPct": 2.050364990981716,
+              "beatBenchmarkPct": 66.66666666666667
+            },
+            "10": {
+              "recorded": 2,
+              "observations": 2,
+              "excludedMissing": 0,
+              "uniqueSymbols": 2,
+              "decisionDates": 1,
+              "meanReturnPct": -5.11755359555311,
+              "meanExcessPct": -5.46769207016991,
+              "medianExcessPct": -5.46769207016991,
+              "symbolBalancedExcessPct": -5.46769207016991,
+              "beatBenchmarkPct": 50
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        }
+      ]
+    },
+    "no_spike": {
+      "version": "hunter-quality-v1",
+      "asOf": "2026-10-16",
+      "descriptiveOnly": true,
+      "groups": [
+        {
+          "scope": "integrated",
+          "stage": null,
+          "horizons": {
+            "5": {
+              "recorded": 18,
+              "observations": 18,
+              "excludedMissing": 0,
+              "uniqueSymbols": 18,
+              "decisionDates": 8,
+              "meanReturnPct": -0.4313370603699301,
+              "meanExcessPct": -1.1277656870016126,
+              "medianExcessPct": -0.2529554635783471,
+              "symbolBalancedExcessPct": -1.1277656870016126,
+              "beatBenchmarkPct": 44.44444444444444
+            },
+            "10": {
+              "recorded": 7,
+              "observations": 7,
+              "excludedMissing": 0,
+              "uniqueSymbols": 7,
+              "decisionDates": 3,
+              "meanReturnPct": -3.174275265999494,
+              "meanExcessPct": -5.25067887457214,
+              "medianExcessPct": -0.3240224677522274,
+              "symbolBalancedExcessPct": -5.25067887457214,
+              "beatBenchmarkPct": 42.857142857142854
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Early Watch",
+          "horizons": {
+            "5": {
+              "recorded": 10,
+              "observations": 10,
+              "excludedMissing": 0,
+              "uniqueSymbols": 9,
+              "decisionDates": 6,
+              "meanReturnPct": 0.38691881811209516,
+              "meanExcessPct": -0.38903306523469633,
+              "medianExcessPct": -0.02316653596465823,
+              "symbolBalancedExcessPct": -0.2831744193184482,
+              "beatBenchmarkPct": 50
+            },
+            "10": {
+              "recorded": 3,
+              "observations": 3,
+              "excludedMissing": 0,
+              "uniqueSymbols": 3,
+              "decisionDates": 2,
+              "meanReturnPct": 0.6349371487352077,
+              "meanExcessPct": -2.1552260565026757,
+              "medianExcessPct": -0.3240224677522274,
+              "symbolBalancedExcessPct": -2.1552260565026757,
+              "beatBenchmarkPct": 33.333333333333336
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Recovery",
+          "horizons": {
+            "5": {
+              "recorded": 15,
+              "observations": 15,
+              "excludedMissing": 0,
+              "uniqueSymbols": 15,
+              "decisionDates": 6,
+              "meanReturnPct": 1.5505929138985344,
+              "meanExcessPct": 0.251525805277566,
+              "medianExcessPct": -0.44805220574071214,
+              "symbolBalancedExcessPct": 0.251525805277566,
+              "beatBenchmarkPct": 46.666666666666664
+            },
+            "10": {
+              "recorded": 2,
+              "observations": 2,
+              "excludedMissing": 0,
+              "uniqueSymbols": 2,
+              "decisionDates": 1,
+              "meanReturnPct": 4.534457509964362,
+              "meanExcessPct": 1.6280265893119705,
+              "medianExcessPct": 1.6280265893119705,
+              "symbolBalancedExcessPct": 1.6280265893119705,
+              "beatBenchmarkPct": 100
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Attractive Growth",
+          "horizons": {
+            "5": {
+              "recorded": 12,
+              "observations": 12,
+              "excludedMissing": 0,
+              "uniqueSymbols": 11,
+              "decisionDates": 6,
+              "meanReturnPct": -2.8519752990235383,
+              "meanExcessPct": -4.202064220499034,
+              "medianExcessPct": -6.6406172197192195,
+              "symbolBalancedExcessPct": -3.4722314378921966,
+              "beatBenchmarkPct": 25
+            },
+            "10": {
+              "recorded": 3,
+              "observations": 3,
+              "excludedMissing": 0,
+              "uniqueSymbols": 3,
+              "decisionDates": 2,
+              "meanReturnPct": -13.40438626839839,
+              "meanExcessPct": -14.490354509612546,
+              "medianExcessPct": -11.536145437284361,
+              "symbolBalancedExcessPct": -14.490354509612546,
+              "beatBenchmarkPct": 0
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Established Move",
+          "horizons": {
+            "5": {
+              "recorded": 5,
+              "observations": 5,
+              "excludedMissing": 0,
+              "uniqueSymbols": 4,
+              "decisionDates": 3,
+              "meanReturnPct": -2.6971702975234635,
+              "meanExcessPct": -3.3366890564648677,
+              "medianExcessPct": -5.335497662662703,
+              "symbolBalancedExcessPct": -3.4683299726574965,
+              "beatBenchmarkPct": 40
+            },
+            "10": {
+              "recorded": 1,
+              "observations": 1,
+              "excludedMissing": 0,
+              "uniqueSymbols": 1,
+              "decisionDates": 1,
+              "meanReturnPct": -5.795715378729915,
+              "meanExcessPct": -8.35334315313878,
+              "medianExcessPct": -8.35334315313878,
+              "symbolBalancedExcessPct": -8.35334315313878,
+              "beatBenchmarkPct": 0
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        }
+      ]
+    },
+    "unknown": {
+      "version": "hunter-quality-v1",
+      "asOf": "2026-10-16",
+      "descriptiveOnly": true,
+      "groups": [
+        {
+          "scope": "integrated",
+          "stage": null,
+          "horizons": {
+            "5": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "10": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Early Watch",
+          "horizons": {
+            "5": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "10": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Recovery",
+          "horizons": {
+            "5": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "10": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Attractive Growth",
+          "horizons": {
+            "5": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "10": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        },
+        {
+          "scope": "stage",
+          "stage": "Established Move",
+          "horizons": {
+            "5": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "10": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            },
+            "20": {
+              "recorded": 0,
+              "observations": 0,
+              "excludedMissing": 0,
+              "uniqueSymbols": 0,
+              "decisionDates": 0,
+              "meanReturnPct": null,
+              "meanExcessPct": null,
+              "medianExcessPct": null,
+              "symbolBalancedExcessPct": null,
+              "beatBenchmarkPct": null
+            }
+          }
+        }
+      ]
+    }
+  }
+}

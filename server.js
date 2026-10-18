@@ -21,6 +21,7 @@ const staticFiles=new Map([
   ['/','index.html'],
   ['/index.html','index.html'],
   ['/app.js','app.js'],
+  ['/volume-context.js','volume-context.js'],
   ['/i18n.js','i18n.js'],
   ['/market-status.js','market-status.js'],
   ['/pwa.js','pwa.js'],
