@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import {volumeMetrics,volumeReading} from '../lib/volume-context.js';
+import {compactPick} from '../lib/market-hunter-forward-validation.js';
+import {auditVolume} from './audit-volume-context.mjs';
+const base={avgDollar20:4000000,maxRvol5:2};
+assert.equal(volumeReading(base).kind,'spike');
+assert.equal(volumeReading({...base,avgDollar20:null}).kind,'unavailable');
+assert.equal(volumeReading({...base,avgDollar20:100}).kind,'unavailable');
+assert.equal(volumeReading({...base,maxRvol5:null}).kind,'unavailable');
+const rows=Array.from({length:25},()=>({volume:100,close:10,high:11,low:9}));
+assert.equal(volumeMetrics(rows).relativeVolume,1);
+assert.equal(volumeMetrics(rows.slice(1)).relativeVolume,null);
+assert.equal(volumeMetrics([...rows.slice(1),{...rows[0],volume:null}]).relativeVolume,null);
+const rising=rows.map((r,i)=>({...r,volume:i>=20?200:100}));
+const v=volumeMetrics(rising);
+assert.equal(v.recentVsPrior,2);
+assert.equal(v.elevatedSessions,5);
+assert.equal(v.relativeVolume,200/120); // latest session excluded from its denominator
+assert.equal(volumeReading({...base,volumeContext:v}).kind,'building');
+assert.equal(volumeReading({...base,freshHighBreakAge:0,volumeContext:{...v,dailyChangePct:2,closeLocation:.9}}).kind,'breakout');
+assert.equal(volumeReading({...base,freshHighBreakAge:0,volumeContext:{...v,dailyChangePct:-2,closeLocation:.9}}).kind,'warning');
+assert.equal(volumeReading({...base,volumeContext:{...v,dailyChangePct:2,closeLocation:.2}}).kind,'warning');
+assert.equal(volumeReading({...base,volumeContext:{...v,version:'other'}}).kind,'spike');
+assert.deepEqual(compactPick({...base,volumeContext:v}).volumeContext,v);
+assert.equal('volumeContext' in compactPick(base),false); // legacy canonical shape preserved
+console.log('Volume context tests passed');
+const episode={episodeId:'one',symbol:'TEST',startDate:'2026-10-01',scope:'integrated',decision:base};
+const outcome={episodeId:'one',outcomeId:'one|h5',symbol:'TEST',scope:'integrated',decisionDate:'2026-10-01',targetDate:'2026-10-08',horizonSessions:5,returnPct:3,benchmarkReturnPct:1};
+const audit=auditVolume([episode],[outcome],'2026-10-08');
+assert.equal(audit.groups.spike.groups[0].horizons[5].meanExcessPct,2);
+assert.equal(audit.groups.no_spike.groups[0].horizons[5].observations,0);
+assert.equal(auditVolume([episode],[outcome],'2026-10-07').groups.all.groups[0].horizons[5].observations,0);
+assert.throws(()=>auditVolume([],[outcome],'2026-10-08'),/mismatch/);
