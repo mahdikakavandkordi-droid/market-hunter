@@ -1,0 +1,804 @@
+{
+  "createdAt": "2026-10-14T03:34:17.482Z",
+  "asOf": "2026-10-13",
+  "from": "2020-01-01",
+  "method": {
+    "input": "Daily adjusted closes where provided, otherwise close",
+    "features": [
+      "return_1",
+      "return_5",
+      "return_20",
+      "return_60",
+      "sma20_distance",
+      "realized_vol20"
+    ],
+    "horizons": [
+      5,
+      10,
+      20
+    ],
+    "models": "Ridge regression for log returns and penalized logistic regression for positive-return probability",
+    "modelSelection": "Fixed lambda=20, no hyperparameter tuning",
+    "validation": "Expanding walk-forward; 252 matured training labels; h-bar label purge; refit every 21 bars",
+    "baselines": "Expanding empirical up rate, expanding mean return, 20-bar momentum direction",
+    "calendar": "Each asset own trading calendar; crypto includes weekends",
+    "limitations": "Overlapping forward returns make samples dependent. Not a tradable strategy or evidence of net profitability. No costs, slippage, confidence intervals or adjusted trading returns."
+  },
+  "markets": [
+    {
+      "id": "tsx",
+      "ticker": "^GSPTSE",
+      "label": "S&P/TSX Composite",
+      "type": "index",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPTSE?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 1702,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 1381,
+          "first": "2021-04-06",
+          "last": "2026-10-05",
+          "directionAccuracy": 60.53584359160029,
+          "historicalPriorAccuracy": 60.53584359160029,
+          "trend20Accuracy": 51.48443157132513,
+          "independentDirectionAccuracy": 63.1768953068592,
+          "independentCount": 277,
+          "brierSkillPct": -1.4563852379856357,
+          "mseSkillPct": -1.1497280255925668,
+          "meanAbsoluteErrorPct": 1.366107314914381,
+          "baselineAbsoluteErrorPct": 1.355322113114247,
+          "baselinePositiveRate": 0.6053584359160029
+        },
+        {
+          "horizonBars": 10,
+          "count": 1371,
+          "first": "2021-04-13",
+          "last": "2026-09-28",
+          "directionAccuracy": 63.31145149525893,
+          "historicalPriorAccuracy": 63.45733041575492,
+          "trend20Accuracy": 52.95404814004377,
+          "independentDirectionAccuracy": 63.04347826086957,
+          "independentCount": 138,
+          "brierSkillPct": -1.6922908272615667,
+          "mseSkillPct": -0.9633409337125753,
+          "meanAbsoluteErrorPct": 1.9453021218252362,
+          "baselineAbsoluteErrorPct": 1.9237897143925,
+          "baselinePositiveRate": 0.6345733041575492
+        },
+        {
+          "horizonBars": 20,
+          "count": 1351,
+          "first": "2021-04-27",
+          "last": "2026-09-14",
+          "directionAccuracy": 65.13693560325684,
+          "historicalPriorAccuracy": 65.72908956328646,
+          "trend20Accuracy": 51.22131754256106,
+          "independentDirectionAccuracy": 67.64705882352942,
+          "independentCount": 68,
+          "brierSkillPct": -0.5563112983445029,
+          "mseSkillPct": 3.2720705012877382,
+          "meanAbsoluteErrorPct": 2.67838232486468,
+          "baselineAbsoluteErrorPct": 2.7191397896680463,
+          "baselinePositiveRate": 0.6572908956328646
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 5,
+          "expectedLogReturn": 0.0024034576801654434,
+          "probabilityUp": 0.6116574166089489,
+          "trainedSamples": 1637
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 10,
+          "expectedLogReturn": 0.005108518319143766,
+          "probabilityUp": 0.6529305411500447,
+          "trainedSamples": 1632
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 20,
+          "expectedLogReturn": 0.010007641443308466,
+          "probabilityUp": 0.6828353198058905,
+          "trainedSamples": 1622
+        }
+      ]
+    },
+    {
+      "id": "sp500",
+      "ticker": "^GSPC",
+      "label": "S&P 500",
+      "type": "index",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "directionAccuracy": 58.85755603759942,
+          "historicalPriorAccuracy": 58.85755603759942,
+          "trend20Accuracy": 54.4468546637744,
+          "independentDirectionAccuracy": 58.12274368231047,
+          "independentCount": 277,
+          "brierSkillPct": -2.037693143037611,
+          "mseSkillPct": -5.701266497861623,
+          "meanAbsoluteErrorPct": 1.6805767111421135,
+          "baselineAbsoluteErrorPct": 1.635605237462924,
+          "baselinePositiveRate": 0.5885755603759942
+        },
+        {
+          "horizonBars": 10,
+          "count": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "directionAccuracy": 61.61689730517116,
+          "historicalPriorAccuracy": 61.61689730517116,
+          "trend20Accuracy": 56.59140568099053,
+          "independentDirectionAccuracy": 63.04347826086957,
+          "independentCount": 138,
+          "brierSkillPct": -2.6155060118195905,
+          "mseSkillPct": -8.021197394932255,
+          "meanAbsoluteErrorPct": 2.3581437273819965,
+          "baselineAbsoluteErrorPct": 2.2833144279027286,
+          "baselinePositiveRate": 0.6161689730517116
+        },
+        {
+          "horizonBars": 20,
+          "count": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "directionAccuracy": 65.33628972653362,
+          "historicalPriorAccuracy": 65.33628972653362,
+          "trend20Accuracy": 55.50628233555063,
+          "independentDirectionAccuracy": 63.23529411764706,
+          "independentCount": 68,
+          "brierSkillPct": -4.21934492774052,
+          "mseSkillPct": -6.672581864895499,
+          "meanAbsoluteErrorPct": 3.349058111173172,
+          "baselineAbsoluteErrorPct": 3.2720971912289674,
+          "baselinePositiveRate": 0.6533628972653363
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 5,
+          "expectedLogReturn": 0.0014119790428104729,
+          "probabilityUp": 0.5858637027490191,
+          "trainedSamples": 1639
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 10,
+          "expectedLogReturn": 0.0028473901586182956,
+          "probabilityUp": 0.6190601045957641,
+          "trainedSamples": 1634
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 20,
+          "expectedLogReturn": 0.006878775438686562,
+          "probabilityUp": 0.6589488755183244,
+          "trainedSamples": 1624
+        }
+      ]
+    },
+    {
+      "id": "nasdaq100",
+      "ticker": "^NDX",
+      "label": "NASDAQ 100",
+      "type": "index",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/%5ENDX?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "directionAccuracy": 58.06218365871294,
+          "historicalPriorAccuracy": 58.06218365871294,
+          "trend20Accuracy": 53.50686912509038,
+          "independentDirectionAccuracy": 58.844765342960294,
+          "independentCount": 277,
+          "brierSkillPct": -2.116247031690688,
+          "mseSkillPct": -4.486867809332429,
+          "meanAbsoluteErrorPct": 2.341827895576726,
+          "baselineAbsoluteErrorPct": 2.2802414450696387,
+          "baselinePositiveRate": 0.5806218365871294
+        },
+        {
+          "horizonBars": 10,
+          "count": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "directionAccuracy": 59.359067734887105,
+          "historicalPriorAccuracy": 59.723233794610344,
+          "trend20Accuracy": 55.1347414420976,
+          "independentDirectionAccuracy": 57.2463768115942,
+          "independentCount": 138,
+          "brierSkillPct": -3.818405975536132,
+          "mseSkillPct": -8.306010771022176,
+          "meanAbsoluteErrorPct": 3.312306119089546,
+          "baselineAbsoluteErrorPct": 3.191318522374252,
+          "baselinePositiveRate": 0.5972323379461034
+        },
+        {
+          "horizonBars": 20,
+          "count": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "directionAccuracy": 63.118994826311905,
+          "historicalPriorAccuracy": 63.784183296378416,
+          "trend20Accuracy": 55.35846267553585,
+          "independentDirectionAccuracy": 60.29411764705882,
+          "independentCount": 68,
+          "brierSkillPct": -5.261404099451306,
+          "mseSkillPct": -9.987985391102194,
+          "meanAbsoluteErrorPct": 4.685466585617529,
+          "baselineAbsoluteErrorPct": 4.4795651370576435,
+          "baselinePositiveRate": 0.6378418329637842
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 5,
+          "expectedLogReturn": 0.004976169898637017,
+          "probabilityUp": 0.6043975024455595,
+          "trainedSamples": 1639
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 10,
+          "expectedLogReturn": 0.006186990224955739,
+          "probabilityUp": 0.6392421029607397,
+          "trainedSamples": 1634
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 20,
+          "expectedLogReturn": 0.015521118797208227,
+          "probabilityUp": 0.7045404518276842,
+          "trainedSamples": 1624
+        }
+      ]
+    },
+    {
+      "id": "dow",
+      "ticker": "^DJI",
+      "label": "Dow Jones Industrial Average",
+      "type": "index",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/%5EDJI?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "directionAccuracy": 53.940708604483014,
+          "historicalPriorAccuracy": 55.748373101952275,
+          "trend20Accuracy": 51.9884309472162,
+          "independentDirectionAccuracy": 53.068592057761734,
+          "independentCount": 277,
+          "brierSkillPct": -1.7830059647479413,
+          "mseSkillPct": -5.792647781854554,
+          "meanAbsoluteErrorPct": 1.5244521259524115,
+          "baselineAbsoluteErrorPct": 1.4832847184878122,
+          "baselinePositiveRate": 0.5574837310195228
+        },
+        {
+          "horizonBars": 10,
+          "count": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "directionAccuracy": 56.59140568099053,
+          "historicalPriorAccuracy": 58.4122359796067,
+          "trend20Accuracy": 50.47341587764021,
+          "independentDirectionAccuracy": 55.072463768115945,
+          "independentCount": 138,
+          "brierSkillPct": -1.7731829472279026,
+          "mseSkillPct": -6.931036577821925,
+          "meanAbsoluteErrorPct": 2.1739076436960523,
+          "baselineAbsoluteErrorPct": 2.1022787852612255,
+          "baselinePositiveRate": 0.584122359796067
+        },
+        {
+          "horizonBars": 20,
+          "count": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "directionAccuracy": 60.82779009608278,
+          "historicalPriorAccuracy": 61.714708056171474,
+          "trend20Accuracy": 49.37176644493718,
+          "independentDirectionAccuracy": 61.76470588235294,
+          "independentCount": 68,
+          "brierSkillPct": -2.631133391959506,
+          "mseSkillPct": -3.0991503473043913,
+          "meanAbsoluteErrorPct": 3.1013505042941447,
+          "baselineAbsoluteErrorPct": 3.0491099413294567,
+          "baselinePositiveRate": 0.6171470805617147
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 5,
+          "expectedLogReturn": 0.0019261048714923998,
+          "probabilityUp": 0.5629177995979082,
+          "trainedSamples": 1639
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 10,
+          "expectedLogReturn": 0.00430942131931124,
+          "probabilityUp": 0.5899569563025303,
+          "trainedSamples": 1634
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 20,
+          "expectedLogReturn": 0.0073373851673619395,
+          "probabilityUp": 0.5994959242357073,
+          "trainedSamples": 1624
+        }
+      ]
+    },
+    {
+      "id": "russell2000",
+      "ticker": "^RUT",
+      "label": "Russell 2000",
+      "type": "index",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/%5ERUT?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "directionAccuracy": 51.120751988430946,
+          "historicalPriorAccuracy": 51.4822848879248,
+          "trend20Accuracy": 49.0238611713666,
+          "independentDirectionAccuracy": 48.73646209386281,
+          "independentCount": 277,
+          "brierSkillPct": 0.11103719736698103,
+          "mseSkillPct": -2.1070882906714328,
+          "meanAbsoluteErrorPct": 2.307476041662844,
+          "baselineAbsoluteErrorPct": 2.3082108713413407,
+          "baselinePositiveRate": 0.514822848879248
+        },
+        {
+          "horizonBars": 10,
+          "count": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "directionAccuracy": 51.20174799708666,
+          "historicalPriorAccuracy": 53.75091041514931,
+          "trend20Accuracy": 47.26875455207575,
+          "independentDirectionAccuracy": 55.79710144927537,
+          "independentCount": 138,
+          "brierSkillPct": 0.8033514689872234,
+          "mseSkillPct": -0.7405309716644437,
+          "meanAbsoluteErrorPct": 3.2978747716688477,
+          "baselineAbsoluteErrorPct": 3.2833812982498585,
+          "baselinePositiveRate": 0.5375091041514931
+        },
+        {
+          "horizonBars": 20,
+          "count": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "directionAccuracy": 52.25424981522543,
+          "historicalPriorAccuracy": 55.28455284552846,
+          "trend20Accuracy": 45.45454545454545,
+          "independentDirectionAccuracy": 52.94117647058824,
+          "independentCount": 68,
+          "brierSkillPct": 1.0149936833639295,
+          "mseSkillPct": 2.338485711609828,
+          "meanAbsoluteErrorPct": 4.723392858831065,
+          "baselineAbsoluteErrorPct": 4.779864946250438,
+          "baselinePositiveRate": 0.5528455284552846
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 5,
+          "expectedLogReturn": -0.0016056792399914005,
+          "probabilityUp": 0.486998099252895,
+          "trainedSamples": 1639
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 10,
+          "expectedLogReturn": -0.003683832952733037,
+          "probabilityUp": 0.4444987196806726,
+          "trainedSamples": 1634
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 20,
+          "expectedLogReturn": -0.006714652523282984,
+          "probabilityUp": 0.4381123193235144,
+          "trainedSamples": 1624
+        }
+      ]
+    },
+    {
+      "id": "gold",
+      "ticker": "GLD",
+      "label": "Gold ETF proxy (GLD)",
+      "type": "etf",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/GLD?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "directionAccuracy": 52.85610990600145,
+          "historicalPriorAccuracy": 56.54374548083876,
+          "trend20Accuracy": 50.180766449746926,
+          "independentDirectionAccuracy": 53.79061371841155,
+          "independentCount": 277,
+          "brierSkillPct": -2.0249389253603978,
+          "mseSkillPct": -2.5163149902975412,
+          "meanAbsoluteErrorPct": 1.8973935405864113,
+          "baselineAbsoluteErrorPct": 1.8650595977998725,
+          "baselinePositiveRate": 0.5654374548083876
+        },
+        {
+          "horizonBars": 10,
+          "count": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "directionAccuracy": 52.73124544792426,
+          "historicalPriorAccuracy": 57.53823743627095,
+          "trend20Accuracy": 50.7647487254188,
+          "independentDirectionAccuracy": 53.62318840579711,
+          "independentCount": 138,
+          "brierSkillPct": -3.0047618288230327,
+          "mseSkillPct": -3.717444592716035,
+          "meanAbsoluteErrorPct": 2.677274047625135,
+          "baselineAbsoluteErrorPct": 2.6378981063843625,
+          "baselinePositiveRate": 0.5753823743627094
+        },
+        {
+          "horizonBars": 20,
+          "count": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "directionAccuracy": 54.767184035476724,
+          "historicalPriorAccuracy": 58.1670362158167,
+          "trend20Accuracy": 52.84552845528455,
+          "independentDirectionAccuracy": 52.94117647058824,
+          "independentCount": 68,
+          "brierSkillPct": -4.061878769938954,
+          "mseSkillPct": -2.3121019010533317,
+          "meanAbsoluteErrorPct": 3.800881147502508,
+          "baselineAbsoluteErrorPct": 3.7551754730588236,
+          "baselinePositiveRate": 0.6016260162601627
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 5,
+          "expectedLogReturn": 0.0035550878435702486,
+          "probabilityUp": 0.5873182805658467,
+          "trainedSamples": 1639
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 10,
+          "expectedLogReturn": 0.0055375420179504566,
+          "probabilityUp": 0.6035630586970047,
+          "trainedSamples": 1634
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 20,
+          "expectedLogReturn": 0.006237944774627637,
+          "probabilityUp": 0.5812829815062568,
+          "trainedSamples": 1624
+        }
+      ]
+    },
+    {
+      "id": "silver",
+      "ticker": "SLV",
+      "label": "Silver ETF proxy (SLV)",
+      "type": "etf",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/SLV?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 1704,
+      "range": [
+        "2020-01-02",
+        "2026-10-13"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 1383,
+          "first": "2021-04-06",
+          "last": "2026-10-06",
+          "directionAccuracy": 49.7469269703543,
+          "historicalPriorAccuracy": 54.229934924078094,
+          "trend20Accuracy": 49.38539407086045,
+          "independentDirectionAccuracy": 47.65342960288809,
+          "independentCount": 277,
+          "brierSkillPct": -2.2324279660934643,
+          "mseSkillPct": -2.81103452066076,
+          "meanAbsoluteErrorPct": 3.7771891635290245,
+          "baselineAbsoluteErrorPct": 3.705563143606548,
+          "baselinePositiveRate": 0.5422993492407809
+        },
+        {
+          "horizonBars": 10,
+          "count": 1373,
+          "first": "2021-04-13",
+          "last": "2026-09-29",
+          "directionAccuracy": 50.910415149308086,
+          "historicalPriorAccuracy": 53.53241077931536,
+          "trend20Accuracy": 47.12308812818645,
+          "independentDirectionAccuracy": 50.72463768115942,
+          "independentCount": 138,
+          "brierSkillPct": -2.7899627023260765,
+          "mseSkillPct": -5.815618503338493,
+          "meanAbsoluteErrorPct": 5.519711027116941,
+          "baselineAbsoluteErrorPct": 5.398311051005357,
+          "baselinePositiveRate": 0.5353241077931536
+        },
+        {
+          "horizonBars": 20,
+          "count": 1353,
+          "first": "2021-04-27",
+          "last": "2026-09-15",
+          "directionAccuracy": 53.215077605321504,
+          "historicalPriorAccuracy": 53.28898743532889,
+          "trend20Accuracy": 48.26311899482631,
+          "independentDirectionAccuracy": 44.11764705882353,
+          "independentCount": 68,
+          "brierSkillPct": -3.821867695004988,
+          "mseSkillPct": -9.91714366615919,
+          "meanAbsoluteErrorPct": 7.69671962009551,
+          "baselineAbsoluteErrorPct": 7.346553930859996,
+          "baselinePositiveRate": 0.549889135254989
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 5,
+          "expectedLogReturn": 0.006678894058600108,
+          "probabilityUp": 0.580975171139523,
+          "trainedSamples": 1639
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 10,
+          "expectedLogReturn": 0.009647868682199997,
+          "probabilityUp": 0.5807649980977587,
+          "trainedSamples": 1634
+        },
+        {
+          "asOf": "2026-10-13",
+          "horizonBars": 20,
+          "expectedLogReturn": 0.016329987581120222,
+          "probabilityUp": 0.5820973503170997,
+          "trainedSamples": 1624
+        }
+      ]
+    },
+    {
+      "id": "btc",
+      "ticker": "BTC-USD",
+      "label": "Bitcoin / USD",
+      "type": "crypto",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/BTC-USD?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 2477,
+      "range": [
+        "2020-01-01",
+        "2026-10-12"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 2156,
+          "first": "2020-11-12",
+          "last": "2026-10-07",
+          "directionAccuracy": 50.278293135435995,
+          "historicalPriorAccuracy": 52.13358070500927,
+          "trend20Accuracy": 49.02597402597403,
+          "independentDirectionAccuracy": 52.31481481481482,
+          "independentCount": 432,
+          "brierSkillPct": -0.8048212119678544,
+          "mseSkillPct": -2.5558551593968915,
+          "meanAbsoluteErrorPct": 4.913733701400503,
+          "baselineAbsoluteErrorPct": 4.8401561195183875,
+          "baselinePositiveRate": 0.5213358070500927
+        },
+        {
+          "horizonBars": 10,
+          "count": 2146,
+          "first": "2020-11-17",
+          "last": "2026-10-02",
+          "directionAccuracy": 50.931966449207835,
+          "historicalPriorAccuracy": 53.215284249767,
+          "trend20Accuracy": 51.770736253494874,
+          "independentDirectionAccuracy": 50.697674418604656,
+          "independentCount": 215,
+          "brierSkillPct": -1.6635106069339933,
+          "mseSkillPct": -5.941312437481039,
+          "meanAbsoluteErrorPct": 7.24946929916298,
+          "baselineAbsoluteErrorPct": 7.066057312531935,
+          "baselinePositiveRate": 0.53215284249767
+        },
+        {
+          "horizonBars": 20,
+          "count": 2126,
+          "first": "2020-11-27",
+          "last": "2026-09-22",
+          "directionAccuracy": 48.73000940733772,
+          "historicalPriorAccuracy": 52.634054562558795,
+          "trend20Accuracy": 52.304797742238954,
+          "independentDirectionAccuracy": 44.85981308411215,
+          "independentCount": 107,
+          "brierSkillPct": -2.531172089588596,
+          "mseSkillPct": -9.20346785371664,
+          "meanAbsoluteErrorPct": 11.044872029289069,
+          "baselineAbsoluteErrorPct": 10.757290541376992,
+          "baselinePositiveRate": 0.526340545625588
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-12",
+          "horizonBars": 5,
+          "expectedLogReturn": 0.0029512883780178608,
+          "probabilityUp": 0.5068830758883998,
+          "trainedSamples": 2412
+        },
+        {
+          "asOf": "2026-10-12",
+          "horizonBars": 10,
+          "expectedLogReturn": 0.0048388049603111,
+          "probabilityUp": 0.4877337787553613,
+          "trainedSamples": 2407
+        },
+        {
+          "asOf": "2026-10-12",
+          "horizonBars": 20,
+          "expectedLogReturn": 0.006678985560811632,
+          "probabilityUp": 0.448041795856086,
+          "trainedSamples": 2397
+        }
+      ]
+    },
+    {
+      "id": "eth",
+      "ticker": "ETH-USD",
+      "label": "Ethereum / USD",
+      "type": "crypto",
+      "source": "Yahoo Finance chart API",
+      "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/ETH-USD?period1=1577836800&period2=1791936000&interval=1d&events=history&includeAdjustedClose=true",
+      "barCount": 2477,
+      "range": [
+        "2020-01-01",
+        "2026-10-12"
+      ],
+      "metrics": [
+        {
+          "horizonBars": 5,
+          "count": 2156,
+          "first": "2020-11-12",
+          "last": "2026-10-07",
+          "directionAccuracy": 52.319109461966605,
+          "historicalPriorAccuracy": 52.13358070500927,
+          "trend20Accuracy": 50.139146567717994,
+          "independentDirectionAccuracy": 52.31481481481482,
+          "independentCount": 432,
+          "brierSkillPct": -1.2643909008719811,
+          "mseSkillPct": -4.032310167677466,
+          "meanAbsoluteErrorPct": 6.495825346929703,
+          "baselineAbsoluteErrorPct": 6.4255605419049555,
+          "baselinePositiveRate": 0.5213358070500927
+        },
+        {
+          "horizonBars": 10,
+          "count": 2146,
+          "first": "2020-11-17",
+          "last": "2026-10-02",
+          "directionAccuracy": 50.60577819198508,
+          "historicalPriorAccuracy": 52.00372786579683,
+          "trend20Accuracy": 53.8210624417521,
+          "independentDirectionAccuracy": 51.627906976744185,
+          "independentCount": 215,
+          "brierSkillPct": -2.525508837397261,
+          "mseSkillPct": -6.968749720492462,
+          "meanAbsoluteErrorPct": 9.688451500647972,
+          "baselineAbsoluteErrorPct": 9.451200222694762,
+          "baselinePositiveRate": 0.5200372786579683
+        },
+        {
+          "horizonBars": 20,
+          "count": 2126,
+          "first": "2020-11-27",
+          "last": "2026-09-22",
+          "directionAccuracy": 49.48259642521167,
+          "historicalPriorAccuracy": 49.81185324553151,
+          "trend20Accuracy": 55.87958607714016,
+          "independentDirectionAccuracy": 46.728971962616825,
+          "independentCount": 107,
+          "brierSkillPct": -3.9770368002860046,
+          "mseSkillPct": -9.124251252416936,
+          "meanAbsoluteErrorPct": 14.744480340704975,
+          "baselineAbsoluteErrorPct": 14.398661980014538,
+          "baselinePositiveRate": 0.4981185324553151
+        }
+      ],
+      "current": [
+        {
+          "asOf": "2026-10-12",
+          "horizonBars": 5,
+          "expectedLogReturn": -0.001430605326308009,
+          "probabilityUp": 0.5233094370305724,
+          "trainedSamples": 2412
+        },
+        {
+          "asOf": "2026-10-12",
+          "horizonBars": 10,
+          "expectedLogReturn": -0.007469978497629502,
+          "probabilityUp": 0.44287214034827554,
+          "trainedSamples": 2407
+        },
+        {
+          "asOf": "2026-10-12",
+          "horizonBars": 20,
+          "expectedLogReturn": -0.027634306361294145,
+          "probabilityUp": 0.39499269028316225,
+          "trainedSamples": 2397
+        }
+      ]
+    }
+  ],
+  "failures": []
+}
