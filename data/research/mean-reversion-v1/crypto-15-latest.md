@@ -1,8 +1,8 @@
 # Mean Reversion V1 — crypto-15
-Generated: 2026-10-19T11:17:49.225Z; mode: forward_shadow.
+Generated: 2026-10-19T17:47:37.450Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 15; failed fetch/review symbols 0.
-Open 0; pending 1; closed 4; lifecycle reviews 0.
-Realized equity $969.23; marked equity $969.23; mark quality fresh.
+Open 1; pending 0; closed 4; lifecycle reviews 0.
+Realized equity $969.23; marked equity $968.81; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,11 +15,11 @@ Realized equity $969.23; marked equity $969.23; mark quality fresh.
 
 ## Positions
 
-- BNB-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- BNB-USD: Long open; entry 725.0700073242188; current stop 700.2671704973493; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-19T01:12:23.453Z; stale false. Trend ledger as of 2026-10-19T11:05:06.913Z; stale false.
+SMC ledger as of 2026-10-19T01:12:23.453Z; stale true. Trend ledger as of 2026-10-19T17:39:43.453Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
 SMC closed 8; Trend closed 18; challenger closed 4. No winner is claimed from a small sample.
 

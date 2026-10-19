@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-19T11:17:49.225Z",
+  "updatedAt": "2026-10-19T17:47:37.450Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -220,7 +220,7 @@
       "symbol": "BNB-USD",
       "signalT": "2026-10-18T00:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-19T00:00:00.000Z",
         "dailyAsOf": "2026-10-18",
@@ -235,11 +235,11 @@
         "signalClose": 722.25537109375,
         "initialStop": 700.2671704973493
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-19T12:00:00.000Z",
+      "entry": 725.0700073242188,
+      "stop": 700.2671704973493,
+      "target": 755.01240234375,
+      "risk": 24.802836826869452,
       "R": null,
       "exitT": null,
       "decisionId": "BNB-USD|2026-10-18T00:00:00.000Z|1",
@@ -252,7 +252,11 @@
         "runKey": "mean-reversion-v1|39243527945|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 700.2671704973493,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-10-19T16:00:00.000Z",
+      "entryObservedAt": "2026-10-19T17:47:37.450Z"
     }
   ],
   "runLog": [
@@ -3988,6 +3992,12 @@
       "observedAt": "2026-10-19T11:17:49.225Z",
       "failures": [],
       "diagnosticCount": 30
+    },
+    {
+      "runKey": "mean-reversion-v1|39297040152|1",
+      "observedAt": "2026-10-19T17:47:37.450Z",
+      "failures": [],
+      "diagnosticCount": 30
     }
   ],
   "markedEquitySeries": [
@@ -5211,6 +5221,15 @@
       "quality": "fresh",
       "markedEquity": 969.2252012373581,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|39297040152|1",
+      "observedAt": "2026-10-19T17:47:37.450Z",
+      "quality": "fresh",
+      "markedEquity": 968.814162284119,
+      "totalUnrealizedPnl": -0.4110389532390259,
       "missingSymbols": [],
       "staleSymbols": []
     }
