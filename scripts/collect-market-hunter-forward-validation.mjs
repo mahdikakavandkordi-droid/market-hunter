@@ -1,5 +1,6 @@
 import {fetchChart} from '../lib/hunter-monitor-source.js';
 import {buildHunterMonitor} from '../lib/hunter-monitor.js';
+import {refreshGrowthProjection} from '../lib/hunter-growth-review.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import {
@@ -83,6 +84,10 @@ async function collect(){
       status:'no_completed_market_session',marketCalendarDate:today,todayUtc:attemptedAt.slice(0,10),latestBenchmarkDate,
       sourceMarketDate:candidateSession.marketDate
     });
+    // Refresh derived research on closed days without recomputing quote rows or decisions.
+    const monitorFile=path.join(ROOT,'monitor.json');
+    const prior=readText(monitorFile);
+    if(prior){const projected=refreshGrowthProjection(JSON.parse(prior),readStore(),attemptedAt);if(projected)writeText(monitorFile,JSON.stringify(projected,null,2)+'\n');}
     return {status:'no_completed_market_session',latestBenchmarkDate};
   }
   if(candidateSession.marketDate!==latestBenchmarkDate){
