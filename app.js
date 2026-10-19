@@ -1053,14 +1053,16 @@ async function load(){
   void loadFundamentals();
   const b=q('#refreshBtn');b.classList.add('busy');b.disabled=true;
   try{
-    const [daily,pulse,v2,intraday,monitor]=await Promise.allSettled([
+    const [daily,pulse,v2,intraday,monitor,exposure]=await Promise.allSettled([
       getJsonFallback('/api/research-data?kind=daily','/data/daily-market-report.json'),
       getJsonFallback('/api/research-data?kind=pulse','/data/market-pulse-report.json'),
       getJsonFallback('/api/research-data?kind=v2','/data/v2-latest-scan.json'),
       getJson('/api/intraday'),
-      getJson('/api/hunter-monitor')
+      getJson('/api/hunter-monitor'),
+      import('/lib/portfolio-exposure.js')
     ]);
     state.hunterMonitor=monitor.status==='fulfilled'&&monitor.value?.version==='hunter-monitor-v1'?monitor.value:null;
+    sectorExposure=exposure.status==='fulfilled'?exposure.value.portfolioExposure:null;
     state.daily=daily.status==='fulfilled'?daily.value:null;
     state.pulse=pulse.status==='fulfilled'?pulse.value:null;
     state.v2=v2.status==='fulfilled'?v2.value:null;
@@ -1130,7 +1132,7 @@ function homeHtml(){
       <details class="market-context reading-copy"><summary>${ui("What to watch","چه چیزی را دنبال کنم؟")}</summary><p>${fresh.usable?esc(window.MHI18n.outlook(view.outlook)):ui("These levels belong to the last recorded session; current assessment is unavailable.","این سطوح مربوط به آخرین جلسهٔ ثبت‌شده‌اند؛ ارزیابی فعلی در دسترس نیست.")}</p>${marketLevelsHtml(view.levels||x.levels)}</details>
     </div>`;
   }).join('');
-  const rows=picks.map(x=>`<button class="home-pick" data-chart="${esc(x.symbol)}"><span><b><bdi>${short(x.symbol)}</bdi></b><small>${esc(x.name||x.symbol)}</small><em>${esc(stageLabel(x.stage))}</em></span><span class="home-pick-quote"><b><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi></b><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small>${quoteMetaHtml(x.displayQuote)}</span><span class="home-pick-arrow" aria-hidden="true">↗</span></button>`).join('');
+  const rows=picks.map(x=>`<button class="home-pick" data-chart="${esc(x.symbol)}"><span><b><bdi>${short(x.symbol)}</bdi></b><small>${esc(x.name||x.symbol)}</small><em>${esc(stageLabel(x.stage))}</em>${stockSectorHtml(x)}</span><span class="home-pick-quote"><b><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi></b><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small>${quoteMetaHtml(x.displayQuote)}</span><span class="home-pick-arrow" aria-hidden="true">↗</span></button>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
     const fresh=window.MarketHunterStatus.freshness(m);
     const h5=m?.evidence?.horizons?.['5'];
@@ -1210,6 +1212,11 @@ function hunterQualityHtml(q){
   return `<details class="dashboard-disclosure hunter-quality"><summary>${ui('Selection quality · equal holding periods','کیفیت انتخاب‌ها · بازه‌های یکسان')}</summary><p class="reading-copy">${ui('Forward observations, not trades. Excess return is stock return minus TSX return over the same dates, in percentage points. Repeated symbols and overlapping dates are not independent evidence. These figures do not establish predictive superiority.','مشاهدات پس از معرفی‌اند، نه معاملات. بازده مازاد، اختلاف بازده سهم و TSX در تاریخ‌های یکسان و بر حسب واحد درصد است. سهم‌های تکراری و بازه‌های هم‌پوشان شواهد مستقل نیستند. این ارقام برتری پیش‌بینی را ثابت نمی‌کنند.')}</p>${[5,10,20].map(h=>`<details><summary>${h} ${ui('market sessions','جلسهٔ بازار')}</summary><div class="hunter-monitor-scroll"><table><thead><tr><th>${ui('Selection','انتخاب')}</th><th>${ui('Observations / stocks','مشاهده / سهم')}</th><th>${ui('Mean excess · pp','میانگین مازاد · واحد درصد')}</th><th>${ui('Median excess · pp','میانهٔ مازاد · واحد درصد')}</th><th>${ui('Equal weight per stock · pp','وزن برابر هر سهم · واحد درصد')}</th></tr></thead><tbody>${q.groups.map(g=>{const r=g.horizons[h];return `<tr><td>${g.scope==='integrated'?ui('Final shortlist','فهرست نهایی'):esc(stageLabel(g.stage))}</td><td><bdi>${r.observations} / ${r.uniqueSymbols}</bdi><small>${r.decisionDates} ${ui('selection dates','تاریخ معرفی')} · ${r.excludedMissing} ${ui('excluded records','رکورد کنارگذاشته‌شده')}</small></td><td>${fmt(r.meanExcessPct)}</td><td>${fmt(r.medianExcessPct)}</td><td>${fmt(r.symbolBalancedExcessPct)}</td></tr>`;}).join('')}</tbody></table></div></details>`).join('')}<p class="reading-copy">${ui('Only recorded outcomes are counted; missing unrecorded outcomes are not included. No matured observations means unknown, not zero. Stage groups can contain the same stock; do not add them together. Equal stock weights reduce repeated-symbol influence but do not eliminate overlapping-market exposure.','فقط نتایج ثبت‌شده شمرده می‌شوند؛ نتایج مفقود و ثبت‌نشده در شمارش نیستند. نبود مشاهدهٔ کامل یعنی نتیجه نامعلوم، نه صفر. یک سهم ممکن است در چند دسته باشد؛ دسته‌ها را با هم جمع نکن. وزن برابر سهم‌ها اثر تکرار نماد را کم می‌کند، اما هم‌پوشانی شرایط بازار را حذف نمی‌کند.')}</p></details>`;
 }
 
+function growthExperimentHtml(r){
+  if(r?.version!=='hunter-growth-review-v1')return '';
+  const counts=r.prospectiveDecisions.stage;
+  return `<details class="dashboard-disclosure hunter-growth-review"><summary>${ui('Attractive Growth · volume study','رشد جذاب · بررسی حجم')}</summary><p class="reading-copy">${ui('Comparing future selections with a recent volume spike against all Attractive Growth selections. Starts','مقایسهٔ انتخاب‌های دارای جهش حجم با تمام انتخاب‌های رشد جذاب. شروع')}: <bdi>${esc(r.experiment.startDate)}</bdi>. ${ui('No ranking changes.','رتبه‌بندی تغییری نکرده است.')}</p><p class="reading-copy">${ui('Recorded selections','انتخاب‌های ثبت‌شده')}: ${counts.total} · ${ui('Volume group','گروه حجمی')}: ${counts.spike} · ${ui('Other','سایر')}: ${counts.no_spike} · ${ui('Missing volume','حجم ناموجود')}: ${counts.unknown}</p>${[5,10,20].map(h=>{const s=r.prospective.stage[h];return `<details><summary>${h} ${ui('market sessions','جلسهٔ بازار')}</summary><div class="hunter-monitor-scroll"><table><thead><tr><th>${ui('Group','گروه')}</th><th>${ui('Observations / stocks','مشاهده / سهم')}</th><th>${ui('Mean excess · pp','میانگین مازاد · واحد درصد')}</th><th>${ui('Median excess · pp','میانهٔ مازاد · واحد درصد')}</th></tr></thead><tbody>${[[ui('All Attractive Growth','تمام رشد جذاب'),s.baseline],[ui('Recent volume spike','جهش حجم اخیر'),s.volume.spike],[ui('Without spike','بدون جهش حجم'),s.volume.no_spike],[ui('Missing volume','حجم ناموجود'),s.volume.unknown]].map(([label,v])=>`<tr><td>${label}</td><td>${v.observations} / ${v.symbols}</td><td>${fmt(v.meanExcessPct)}</td><td>${fmt(v.medianExcessPct)}</td></tr>`).join('')}</tbody></table></div>${s.baseline.sourceReviewCount?'<p class="setup-caution">'+ui('Some recorded price paths need source review.','مسیر قیمت بعضی رکوردها به بررسی منبع نیاز دارد.')+'</p>':''}</details>`;}).join('')}<p class="reading-copy">${ui('Volume group: a session in the preceding 5 completed sessions traded at least 1.5× its previous 20-session average. Outcomes compare identical holding periods with TSX. Sector and selection-date concentration can influence results. No matured observations means unknown, not zero.','گروه حجمی: حجم یکی از ۵ جلسهٔ کامل اخیر حداقل ۱٫۵ برابر میانگین ۲۰ جلسهٔ قبلش بوده. نتایج در بازه‌های یکسان با TSX مقایسه می‌شوند. تمرکز بخشی و تاریخ معرفی ممکن است بر نتیجه اثر بگذارد. نبود نتیجهٔ کامل یعنی نامعلوم، نه صفر.')}</p></details>`;
+}
 function hunterMonitorHtml(){
   const d=state.hunterMonitor;
   const heading=ui('Market Hunter follow-up','پیگیری سهم‌های مارکت هانتر');
@@ -1221,6 +1228,7 @@ function hunterMonitorHtml(){
     <p class="reading-copy">${ui('Tracked since','شروع ثبت')} ${esc(d.firstRecordedDate)} · ${d.summary.up} ${ui('up','مثبت')} · ${d.summary.down} ${ui('down','منفی')} · ${d.summary.new} ${ui('new','تازه‌وارد')} · ${d.summary.missing} ${ui('missing quotes','قیمت ناموجود')}. ${ui('Returns start at each stock’s first recorded selection; holding periods differ.','بازده از اولین معرفی ثبت‌شدهٔ هر سهم است؛ مدت پیگیری یکسان نیست.')}</p>
     ${overdue?`<p class="setup-caution">${ui('Monitor is behind the latest scan.','مانیتور از آخرین اسکن عقب‌تر است.')}</p>`:''}
     ${hunterQualityHtml(d.quality)}
+    ${growthExperimentHtml(d.growthReview)}
     <div class="hunter-monitor-scroll"><table><thead><tr><th>${ui('Stock / first selection','سهم / اولین معرفی')}</th><th>${ui('Since selection','از معرفی')}</th><th>${ui('Follow-up','وضعیت پیگیری')}</th></tr></thead><tbody>${d.rows.map(r=>`<tr><td><button class="symbol-link" data-chart="${esc(r.symbol)}"><bdi>${esc(short(r.symbol))}</bdi> ↗</button><small>${esc(r.firstDate)} · ${esc(stageLabel(r.entryStage))}</small></td><td class="${cls(r.sinceSelectionPct)}"><bdi>${pct(r.sinceSelectionPct)}</bdi></td><td><b>${ui(...(labels[r.status]||labels.unavailable))}</b><small>${r.reasons.map(x=>ui(...(reasons[x]||[x,x]))).map(esc).join(' · ')}</small><small>${r.surfaced?ui('Still selected','هنوز منتخب'):ui('Outside current shortlist; tracking continues','خارج از فهرست منتخب؛ پیگیری ادامه دارد')}${r.currentStage?' · '+esc(stageLabel(r.currentStage)):''}</small></td></tr>`).join('')}</tbody></table></div>
     <p class="reading-copy">${ui('Descriptive follow-up, not trades or portfolio profit. Leaving the shortlist is not automatically a failed setup.','پیگیری توصیفی است، نه معامله یا سود پورتفولیو. خروج از فهرست به‌تنهایی شکست نیست.')}</p></details>`;
 }
@@ -1246,11 +1254,19 @@ function volumeContextHtml(x){
   const trend=Number.isFinite(v.recentVsPrior)?ui('Last 5 sessions / preceding 20','میانگین ۵ جلسهٔ اخیر / ۲۰ جلسهٔ پیش از آن')+': '+fmt(v.recentVsPrior)+'×':'';
   return `<details class="stock-volume" data-volume-kind="${v.kind}"><summary><span>${v.kind==='warning'?'⚠':'◉'} ${esc(labels[v.kind])}</span></summary><p class="reading-copy">${esc(detail)}</p>${trend?'<p class="reading-copy">'+esc(trend)+'</p>':''}<small>${ui('Completed session','جلسهٔ کامل')}: <bdi>${esc(x.date||'—')}</bdi></small><p class="explanation-note">${ui('Attention marker, not a buy signal or proof of accumulation. Rankings are unchanged.','نشان توجه است؛ نه سیگنال خرید یا اثبات جمع‌آوری سهم. رتبه‌بندی تغییری نکرده است.')}</p></details>`;
 }
+let sectorExposure=null;
+function stockSectorHtml(x){
+  const raw=typeof x.sector==='string'?x.sector.trim():'';
+  const sector=sectorExposure?sectorExposure(x.symbol,{sector:raw}).group:raw;
+  const labels={Financials:'مالی',Energy:'انرژی',Materials:'مواد اولیه',Industrials:'صنعتی',Technology:'فناوری',Communication:'ارتباطات',Utilities:'خدمات عمومی',Consumer:'مصرفی','Real Estate':'املاک','Health Care':'سلامت',Gold:'طلا',Silver:'نقره','Gold & silver':'طلا و نقره'};
+  const known=sector&&!/^(cdr|unknown|other|n\/a)$/i.test(sector);
+  return `<span class="tag stock-sector">${ui('Sector','بخش')}: ${known?esc(ui(sector,labels[sector]||sector)):ui('Unavailable','ناموجود')}${raw==='CDR'?' · CDR':''}</span>`;
+}
 function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
   return `<article class="card hunter-card">
     <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart"><bdi>${short(x.symbol)}</bdi> ↗</button><small><bdi>${esc(x.name||x.symbol)}</bdi></small></div><div class="cardprice"><div class="price-line"><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
-    <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span><span class="tag"><bdi>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></span></div>
+    <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span>${stockSectorHtml(x)}<span class="tag"><bdi>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></span></div>
     ${window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
     ${volumeContextHtml(x)}
     ${stockSummaryHtml(x)}

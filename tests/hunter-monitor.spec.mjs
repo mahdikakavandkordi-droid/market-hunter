@@ -1,4 +1,5 @@
 import {summarizeHunterQuality} from '../lib/hunter-quality.js';
+import {summarizeGrowthReview} from '../lib/hunter-growth-review.js';
 import {test,expect} from '@playwright/test';
 test('mobile monitor keeps removed picks and stale market labels clear',async({page})=>{
   await page.setViewportSize({width:390,height:844});
@@ -6,7 +7,7 @@ test('mobile monitor keeps removed picks and stale market labels clear',async({p
   await page.route('**/api/intraday',r=>r.fulfill({json:{quotes:{},failures:[]}}));
   await page.route('**/api/portfolio?**',r=>r.fulfill({json:{items:[],failures:[]}}));
   await page.route('**/api/research-data?kind=pulse',r=>r.fulfill({json:{markets:[{key:'BTC',group:'Crypto',name:'Bitcoin',asOf:'2020-01-01',price:100,regime:'Strong Bull',condition:'Positive Momentum',freshness:{status:'fresh'},current:{returns:{d1:1}}}]}}));
-  await page.route('**/api/hunter-monitor',r=>r.fulfill({json:{version:'hunter-monitor-v1',quality:summarizeHunterQuality([{outcomeId:'fixture',scope:'integrated',symbol:'FIX.TO',horizonSessions:5,decisionDate:'2026-09-29',targetDate:'2026-10-06',returnPct:2,benchmarkReturnPct:1}],'2026-10-06'),marketAsOf:'2026-10-06',firstRecordedDate:'2026-09-29',summary:{total:2,up:0,down:1,new:0,missing:1},rows:[{symbol:'CURA.TO',firstDate:'2026-09-29',entryStage:'Attractive Growth',sinceSelectionPct:-7.54,status:'cooling',reasons:['below_ma20'],surfaced:false,currentStage:null},{symbol:'MISS.TO',firstDate:'2026-09-29',entryStage:'Early Watch',sinceSelectionPct:null,status:'unavailable',reasons:['quote_unavailable'],surfaced:false}]}}));
+  await page.route('**/api/hunter-monitor',r=>r.fulfill({json:{version:'hunter-monitor-v1',growthReview:summarizeGrowthReview({asOf:'2026-10-06'}),quality:summarizeHunterQuality([{outcomeId:'fixture',scope:'integrated',symbol:'FIX.TO',horizonSessions:5,decisionDate:'2026-09-29',targetDate:'2026-10-06',returnPct:2,benchmarkReturnPct:1}],'2026-10-06'),marketAsOf:'2026-10-06',firstRecordedDate:'2026-09-29',summary:{total:2,up:0,down:1,new:0,missing:1},rows:[{symbol:'CURA.TO',firstDate:'2026-09-29',entryStage:'Attractive Growth',sinceSelectionPct:-7.54,status:'cooling',reasons:['below_ma20'],surfaced:false,currentStage:null},{symbol:'MISS.TO',firstDate:'2026-09-29',entryStage:'Early Watch',sinceSelectionPct:null,status:'unavailable',reasons:['quote_unavailable'],surfaced:false}]}}));
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('/');
   await expect(page.locator('.market-state')).toHaveText('Update required');
@@ -20,6 +21,11 @@ test('mobile monitor keeps removed picks and stale market labels clear',async({p
   await page.locator('.hunter-quality > details > summary').first().click();
   await expect(page.locator('.hunter-quality')).toContainText('Final shortlist');
   await expect(page.locator('.hunter-quality')).toContainText('1 / 1');
+  await page.locator('.hunter-growth-review > summary').click();
+  await expect(page.locator('.hunter-growth-review')).toContainText('2026-10-19');
+  await page.locator('.hunter-growth-review > details > summary').first().click();
+  await expect(page.locator('.hunter-growth-review table').first()).toContainText('—');
+  await expect(page.locator('.hunter-growth-review table').first()).not.toContainText('0%');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
   expect(errors).toEqual([]);
 });
