@@ -19,7 +19,19 @@ for(const width of [320,390,1440])test(`home overview is comparable and navigabl
  await expect(page.locator('.overview-headline')).toContainText('4 of 5');
  await expect(page.locator('#homeBriefGroups .brief-group')).toHaveCount(3);
  expect(await page.locator('#homeBriefGroups').evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBeTruthy();
+ await expect(page.locator('.report-details')).not.toHaveAttribute('open');
+ const brief=await page.locator('#homeBrief').boundingBox();expect(brief.height).toBeLessThan(width<=390?430:450);
+ if(width<=390){
+  const focus=await page.locator('.home-focus-panel').boundingBox(),map=await page.locator('.home-market-panel').boundingBox();
+  expect(focus.y).toBeLessThan(map.y);expect(focus.y).toBeLessThan(600);
+  const rail=page.locator('#homeFocus');expect(await rail.evaluate(el=>el.scrollWidth>el.clientWidth)).toBeTruthy();
+  await page.locator('[data-swipe="homeFocus"][data-step="1"]').click();
+  await expect.poll(()=>rail.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);
+ }
+ await page.locator('.report-details>summary').click();
+ await expect(page.locator('.equity-comparison')).toBeVisible();
  await expect(page.locator('.equity-comparison')).toContainText('+2.0%');
+ await page.locator('.report-details>summary').click();
  await expect(page.locator('.home-focus-list')).not.toContainText('Bitcoin');
  await expect(page.locator('#homeMarkets .market-board-item')).toHaveCount(7);
  await expect(page.locator('#market-BTC .board-state')).toContainText('Update required');
@@ -33,6 +45,7 @@ for(const width of [320,390,1440])test(`home overview is comparable and navigabl
  await page.locator('#languageBtn').click();
  await expect(page.locator('.overview-headline')).toContainText('ضعف کوتاه‌مدت');
  await expect(page.locator('#pageTitle')).toHaveText('خانه');
+ if(width===390)await page.screenshot({path:'test-results/home-reading-persian-390.png',fullPage:true});
  await expect(page.locator('#market-BTC .board-state')).toContainText('نیازمند بروزرسانی');
  await page.locator('#themeBtn').click();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();

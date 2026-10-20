@@ -105,7 +105,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await page.locator('.report-details>summary').click();
   await page.screenshot({path:'test-results/home-mobile.png',fullPage:true});
   await page.locator('#languageBtn').click();
-  await expect(page.locator('.report-tone')).toHaveText('بازار در یک نگاه');
+  await expect(page.locator('.overview-headline')).toContainText('بازار');
   await expect(page.locator('.brief-group').first()).toContainText('شاخص‌های سهام');
   await expect(page.locator('.market-read').first()).toContainText('روند اصلی');
   await expect(page.locator('.market-read').first()).toHaveCSS('direction','rtl');

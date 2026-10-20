@@ -1155,7 +1155,11 @@ function homeHtml(){
       </details>
     </article>`;
   }).join('');
-  const focus=overview.attention.map(m=>`<article class="focus-market"><div><b><bdi>${esc(m.name)}</bdi></b><span>${esc(words(m.condition))} · <bdi>${esc(m.asOf)}</bdi></span></div><p>${esc(window.MHI18n.outlook(m.report.outlook||''))}</p><div class="focus-levels"><span>${ui('Upper recorded level','سطح بالایی ثبت‌شده')}<b><bdi>${fmt(m.report.levels?.bullishTrigger)}</bdi></b></span><span>${ui('Lower recorded level','سطح پایینی ثبت‌شده')}<b><bdi>${fmt(m.report.levels?.bearishTrigger)}</bdi></b></span></div><button class="btn ghost" data-market-focus="${m.key}">${ui('Review context ↓','بررسی توضیحات ↓')}</button></article>`).join('');
+  const focus=overview.attention.map(m=>`<article class="focus-market">
+    <div class="focus-heading"><b><bdi>${esc(m.name)}</bdi></b><span>${esc(words(m.condition))} · <bdi>${esc(m.asOf)}</bdi></span></div>
+    <div class="focus-levels">${[['bullishTrigger',ui('Upper level','سطح بالایی')],['bearishTrigger',ui('Lower level','سطح پایینی')]].map(([key,label])=>`<span>${label}<b><bdi>${fmt(m.report.levels?.[key])}</bdi></b></span>`).join('')}</div>
+    <button class="btn ghost" data-market-focus="${m.key}">${ui('What to watch ↗','چه چیزی را دنبال کنم؟ ↗')}</button>
+  </article>`).join('');
   const rows=picks.map(x=>`<button class="home-pick" data-chart="${esc(x.symbol)}"><span><b><bdi>${short(x.symbol)}</bdi></b><small>${esc(x.name||x.symbol)}</small><em>${esc(stageLabel(x.stage))}</em></span><span class="home-pick-quote"><b><bdi>${money(x.price,x.displayQuote?.currency||x.currency||'CAD')}</bdi></b><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small>${quoteMetaHtml(x.displayQuote)}</span><span class="home-pick-arrow" aria-hidden="true">↗</span></button>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
     const fresh=window.MarketHunterStatus.freshness(m);
@@ -1180,21 +1184,18 @@ function homeHtml(){
   return `<div class="stack dashboard-layout">
     <section class="panel report-panel home-overview ${overview.equityComparison.length?'has-comparison':''}" id="homeBrief"><div class="panel-inner report-shell">
       <div class="report-topline"><div class="eyebrow">${ui('THE BIG PICTURE','نمای کلی بازار')}</div><span class="overview-coverage">${ui('Current assessments','ارزیابی‌های به‌روز')} <bdi>${overview.current}/${overview.total}</bdi></span></div>
-      <h2 class="report-tone">${ui('Market at a glance','بازار در یک نگاه')}</h2>
-      <p class="overview-headline reading-copy">${!overview.current?ui('A current overview is unavailable; the recorded data is shown below.','نمای کلی فعلی در دسترس نیست؛ داده‌های ثبت‌شده در پایین نمایش داده می‌شوند.'):overview.weakening?ui(overview.weakening+' of '+overview.current+' current assessments show short-term weakness.',overview.weakening+' بازار از '+overview.current+' بازارِ به‌روز، ضعف کوتاه‌مدت دارند.'):ui('Short-term conditions vary across the current market assessments.','وضعیت کوتاه‌مدت بازارهای به‌روز یکسان نیست.')}</p>
-      <p class="overview-basis reading-copy">${ui('Only the tracked markets are counted. Each assessment uses its own completed session; dates can differ.','فقط بازارهای زیر نظر شمرده می‌شوند؛ تاریخ آخرین جلسهٔ کامل آن‌ها ممکن است متفاوت باشد.')}</p>
-      ${overview.equityComparison.length?`<div class="equity-comparison reading-copy"><span>${ui('Equities · same closing date · 20 sessions','شاخص‌های سهام · پایان یکسان · ۲۰ جلسه')} <bdi>${esc(overview.equityComparison[0].asOf)}</bdi></span><div>${overview.equityComparison.map(m=>`<span><bdi>${esc(m.name)}</bdi><b class="${cls(m.d20)}"><bdi>${pct(m.d20)}</bdi></b></span>`).join('')}</div></div>`:''}
+      <h2 class="overview-headline reading-copy">${!overview.current?ui('A current overview is unavailable; the recorded data is shown below.','نمای کلی فعلی در دسترس نیست؛ داده‌های ثبت‌شده در پایین نمایش داده می‌شوند.'):overview.weakening?ui(overview.weakening+' of '+overview.current+' current assessments show short-term weakness.',overview.weakening+' بازار از '+overview.current+' بازارِ به‌روز، ضعف کوتاه‌مدت دارند.'):ui('Short-term conditions vary across the current market assessments.','وضعیت کوتاه‌مدت بازارهای به‌روز یکسان نیست.')}</h2>
       <div class="report-badges" id="homeBriefGroups" aria-label="Market brief groups">${overview.groups.map(g=>`<button type="button" class="brief-group reading-copy" data-home-group="${g.key}" aria-pressed="${activeGroup===g.key}"><small>${esc(words(g.label))}</small><b>${g.complete?(g.state?esc(words(g.state)):ui('See individual markets','وضعیت هر بازار را ببین')):ui('Assessment incomplete','ارزیابی کامل نیست')}</b><p><bdi>${g.current}/${g.total}</bdi> ${ui('current assessments','ارزیابی به‌روز')}</p><span>${ui('See markets ↓','مشاهدهٔ بازارها ↓')}</span></button>`).join('')}</div>
-      ${overview.attention.length?`<div class="overview-shortcuts"><span>${ui('Focus from the report','پیگیری گزارش')}:</span>${overview.attention.map(m=>`<button type="button" data-market-focus="${m.key}"><bdi>${esc(m.name)}</bdi><span aria-hidden="true">↓</span></button>`).join('')}</div>`:''}
-      <details class="report-details"><summary>${ui('Source brief & data coverage','گزارش منبع و پوشش داده')}</summary><div class="report-copy reading-copy">${briefFresh?esc(window.MHI18n.headline(d?.executiveSummary?.[0]||d?.summary||d?.headline)):ui('Current cross-market assessment is incomplete; some inputs require an update.','ارزیابی فعلی بازار کامل نیست؛ بعضی داده‌ها نیاز به بروزرسانی دارند.')}</div><div class="overview-dates">${overview.markets.map(m=>`<div><bdi>${esc(m.name)}</bdi><bdi>${esc(m.asOf||'—')}</bdi><span>${m.current?ui('Current','به‌روز'):ui('Update required','نیازمند بروزرسانی')}</span></div>`).join('')}</div>${changes?`<div class="brief-focus reading-copy"><h4>${ui('Recorded developments','تحولات ثبت‌شده')}</h4><div class="change-list">${changes}</div></div>`:''}</details>
+      <details class="report-details" data-reading-key="home-sources"><summary>${ui('Comparison, context & sources','مقایسه، توضیح و منابع')}</summary><p class="overview-basis reading-copy">${ui('Only tracked markets are counted; each uses its own completed session.','جمع‌بندی فقط مربوط به بازارهای زیر نظر است؛ هر بازار از آخرین جلسهٔ کامل خودش استفاده می‌کند.')}</p>${overview.equityComparison.length?`<div class="equity-comparison reading-copy"><span>${ui('Equities · same closing date · 20 sessions','شاخص‌های سهام · پایان یکسان · ۲۰ جلسه')} <bdi>${esc(overview.equityComparison[0].asOf)}</bdi></span><div>${overview.equityComparison.map(m=>`<span><bdi>${esc(m.name)}</bdi><b class="${cls(m.d20)}"><bdi>${pct(m.d20)}</bdi></b></span>`).join('')}</div></div>`:''}<div class="report-copy reading-copy">${briefFresh?esc(window.MHI18n.headline(d?.executiveSummary?.[0]||d?.summary||d?.headline)):ui('Current cross-market assessment is incomplete; some inputs require an update.','ارزیابی فعلی بازار کامل نیست؛ بعضی داده‌ها نیاز به بروزرسانی دارند.')}</div><div class="overview-dates">${overview.markets.map(m=>`<div><bdi>${esc(m.name)}</bdi><bdi>${esc(m.asOf||'—')}</bdi><span>${m.current?ui('Current','به‌روز'):ui('Update required','نیازمند بروزرسانی')}</span></div>`).join('')}</div>${changes?`<div class="brief-focus reading-copy"><h4>${ui('Recorded developments','تحولات ثبت‌شده')}</h4><div class="change-list">${changes}</div></div>`:''}</details>
     </div></section>
     <div class="home-overview-grid">
+      <section class="panel home-focus-panel"><div class="panel-head"><div><h3>${ui('Follow next','بعد چه چیزی را دنبال کنم؟')}</h3><p>${ui('Current focus from the report · chart reference levels','پیگیری‌های به‌روز گزارش · سطوح مرجع نمودار')}</p></div></div>${swipeTools("homeFocus",overview.attention.length)}<div class="home-focus-list mobile-rail" id="homeFocus" tabindex="0" aria-label="${ui('Markets to follow','بازارهای قابل پیگیری')}">${focus||'<div class="empty">'+ui('No current monitoring levels are available.','سطح پیگیریِ به‌روز در دسترس نیست.')+'</div>'}</div><p class="focus-footnote reading-copy">${ui('Recorded chart levels, not trading orders.','سطوح ثبت‌شدهٔ نمودارند، نه دستور معامله.')}</p></section>
       <section class="panel home-market-panel"><div class="panel-head"><div><h3>${ui('Market map','نقشهٔ بازارها')}</h3><p>${ui('Price, primary trend and completed-session returns.','قیمت، روند اصلی و بازده جلسات کامل')}</p></div></div>
         <div class="home-market-filters" role="group" aria-label="${ui('Market group','گروه بازار')}">${[['all',ui('All markets','همهٔ بازارها')],['equities',ui('Equities','سهام')],['metals',ui('Metals','فلزات')],['crypto',ui('Crypto','رمزارزها')]].map(([key,label])=>`<button type="button" data-home-group="${key}" aria-pressed="${activeGroup===key}">${label}</button>`).join('')}</div>
         <p class="board-legend reading-copy">${ui('The price may update intraday. Trend and 5/20-session returns use the dated completed session shown for each market.','قیمت ممکن است حین بازار تغییر کند؛ روند و بازده ۵ و ۲۰جلسه‌ای از جلسهٔ کاملِ درج‌شده برای همان بازارند.')}</p>
         <div class="home-market-board" id="homeMarkets" aria-label="Markets">${overview.hasData?markets:'<div class="empty">'+ui('Market data is unavailable. Refresh to retry.','دادهٔ بازار موجود نیست؛ بروزرسانی را امتحان کن.')+'</div>'}</div>
       </section>
-      <section class="panel home-focus-panel"><div class="panel-head"><div><h3>${ui('Next to monitor','در ادامه چه چیزی را دنبال کنم؟')}</h3><p>${ui('Recorded focus markets with current assessments.','بازارهای مورد توجه در گزارشِ دارای ارزیابی به‌روز')}</p></div></div><div class="home-focus-list">${focus||'<div class="empty">'+ui('No current monitoring levels are available.','سطح پیگیریِ به‌روز در دسترس نیست.')+'</div>'}</div><p class="focus-footnote reading-copy">${ui('These are chart reference levels, not orders or forecasts. Historical comparisons are available below.','این‌ها سطوح مرجع نمودارند، نه دستور معامله یا پیش‌بینی. مقایسه‌های تاریخی در پایین صفحه‌اند.')}</p></section>
+
     </div>
 
     <div class="grid home-lower">
@@ -1246,23 +1247,29 @@ function hunterMonitorHtml(){
 function stockSummaryHtml(x){
   const r=window.MHI18n?.technical(x);
   if(!r)return `<p class="analysis-copy">${esc(stockNarrative(x))}</p>`;
-  const benchmark=({'^GSPTSE':'TSX','^GSPC':'S&P 500','^IXIC':'Nasdaq'})[x.benchmark]||x.benchmark||ui('benchmark','شاخص مبنا');
-  const finite=v=>typeof v==='number'&&Number.isFinite(v);
-  const reasons=r.reasons;
   return `<div class="stock-summary analysis-copy">
-    <small class="technical-session">${ui('Technical snapshot','دادهٔ تحلیل تکنیکال')}: <bdi>${esc(r.completedSession||ui('Unavailable','ناموجود'))}</bdi></small>
+    <small class="technical-session">${ui('Analysis through','تحلیل تا')} <bdi>${esc(r.completedSession||ui('Unavailable','ناموجود'))}</bdi></small>
+    <small class="explanation-eyebrow">${ui('Why it appears','دلیل نمایش سهم')}</small>
+    <p class="stock-summary-lead">${esc(r.lead)}</p>
+    ${r.reasons.length?'<p class="selection-preview">'+esc(r.reasons[0])+'</p>':'<p class="explanation-note">'+ui('The scan did not include stock-specific selection evidence.','اسکن، دلیل اختصاصی انتخاب این سهم را ثبت نکرده است.')+'</p>'}
+    ${r.cautions.length?'<aside class="stock-cautions"><h4>'+ui('Keep in mind','نکات احتیاط')+'</h4><ul>'+r.cautions.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul></aside>':''}
+  </div>`;
+}
+function stockAnalysisHtml(x){
+  const r=window.MHI18n?.technical(x);if(!r)return '';
+  const benchmark=({'^GSPTSE':'TSX','^GSPC':'S&P 500','^IXIC':'Nasdaq'})[x.benchmark]||x.benchmark||ui('benchmark','شاخص مبنا');
+  const finite=v=>typeof v==='number'&&Number.isFinite(v),reasons=r.reasons;
+  return `<details class="stock-analysis analysis-copy" data-reading-key="evidence-${esc(x.symbol)}"><summary><span>${ui('Evidence & levels','دلایل و سطوح پیگیری')}</span><small>${ui('Reasons · comparison · chart levels','دلایل · مقایسه با شاخص · سطوح نمودار')}</small></summary><div class="stock-analysis-body">
+    <h4>${ui('Recorded selection reasons','دلایل ثبت‌شدهٔ انتخاب')}</h4>
+    ${reasons.length?'<ul class="selection-reasons">'+reasons.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul>':'<p class="explanation-note">'+ui('The scan did not include stock-specific selection evidence.','اسکن، دلیل اختصاصی انتخاب این سهم را ثبت نکرده است.')+'</p>'}
     <div class="stock-key-metrics">
       <div><small>${ui('20-session return','بازده ۲۰ جلسه')}</small><b class="${finite(x.ret20)?cls(x.ret20):''}"><bdi>${finite(x.ret20)?pct(x.ret20):'—'}</bdi></b></div>
       <div><small>${ui('Vs ','نسبت به ')}<bdi>${esc(benchmark)}</bdi></small><b class="${finite(x.rs20)?cls(x.rs20):''}"><bdi>${finite(x.rs20)?(x.rs20>0?'+':'')+x.rs20.toFixed(1)+' pp':'—'}</bdi></b></div>
       <div><small>${ui('Daily range · ATR14','دامنهٔ روزانه · ATR14')}</small><b><bdi>${finite(x.atr14Pct)?x.atr14Pct.toFixed(1)+'%':'—'}</bdi></b></div>
     </div>
     <p class="metric-basis">${ui('Return and benchmark gap: 20 sessions · pp = percentage points.','بازده و مقایسه با شاخص: ۲۰ جلسه؛ pp یعنی واحد درصد.')}</p><details class="metric-help"><summary>${ui('About these numbers','این عددها چه می‌گویند؟')}</summary><p class="explanation-note">${ui('The return is the stock’s completed-session price change. The benchmark gap is stock return minus index return over the same 20 sessions. ATR14 describes typical daily range, including gaps, over 14 sessions; it is not a loss limit or a forecast.','بازده، تغییر قیمت سهم در جلسات کامل است. اختلاف با شاخص از کم‌کردن بازده شاخص از بازده سهم در همان ۲۰ جلسه به‌دست می‌آید. ATR14 دامنهٔ معمول روزانه، با احتساب شکاف قیمت، در ۱۴ جلسه است؛ حد ضرر یا پیش‌بینی نیست.')}</p></details>
-    ${r.cautions.length?'<aside class="stock-cautions"><h4>'+ui('What weakens the setup','نقاط ضعف این وضعیت')+'</h4><ul>'+r.cautions.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul></aside>':''}
-    <small class="explanation-eyebrow">${ui('Why it appears','دلیل نمایش سهم')}</small>
-    <p class="stock-summary-lead">${esc(r.lead)}</p>
-    ${reasons.length?'<ul class="selection-reasons">'+reasons.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul>':'<p class="explanation-note">'+ui('The scan did not include stock-specific selection evidence.','اسکن، دلیل اختصاصی انتخاب این سهم را ثبت نکرده است.')+'</p>'}
     <div class="technical-monitor"><h4>${ui('Levels to monitor','سطوح قابل پیگیری')}</h4>${r.monitor.length?'<ul>'+r.monitor.map(v=>'<li>'+esc(v.text)+(v.level!==null?' <bdi class="technical-level">'+money(v.level,x.currency||'CAD')+'</bdi>':'')+'</li>').join('')+'</ul>':'<p>'+ui('Insufficient data for stock-specific monitoring conditions.','دادهٔ کافی برای تعیین موارد پیگیری اختصاصی این سهم موجود نیست.')+'</p>'}<p class="level-note">${ui('Recorded chart levels; they are not entry targets or stop-loss orders.','این‌ها سطوح ثبت‌شدهٔ نمودارند؛ نه قیمت پیشنهادی ورود و نه دستور حد ضرر.')}</p></div>
-  </div>`;
+  </div></details>`;
 }
 function fundamentalHtml(x){
   const r=window.MHFundamentals?.reading(state.fundamentals,x.symbol,window.MHI18n?.language()||'en');
@@ -1288,9 +1295,10 @@ function stockCard(x,rank=''){
     ${x.market==='US'?'':window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
     ${volumeContextHtml(x)}
     ${stockSummaryHtml(x)}
+    <div class="actions"><button class="btn primary" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ghost" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
+    ${stockAnalysisHtml(x)}
     ${fundamentalHtml(x)}
     <details class="stock-technical"><summary>${ui('Technical details','جزئیات تکنیکال')}</summary><div class="technical-grid"><div><small>${ui('RSI · 14 sessions','قدرت حرکت · RSI14')}</small><b><bdi>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></b></div><div><small>${ui('Momentum shift · pp','تغییر شتاب · واحد درصد')}</small><b><bdi>${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+' pp':'—'}</bdi></b></div><div><small>${ui('Benchmark','شاخص مبنا')}</small><b><bdi>${esc(x.benchmark||'—')}</bdi></b></div><div><small>${ui('From 60-day high','فاصله از سقف ۶۰روزه')}</small><b><bdi>${pct(x.pullback60)}</bdi></b></div><div><small>${ui('ATR','نوسان (ATR)')}</small><b><bdi>${pct(x.atr14Pct)}</bdi></b></div><div><small>${ui('Above / below MA20','فاصله از میانگین ۲۰روزه')}</small><b><bdi>${pct(x.dist20)}</bdi></b></div><div><small>${ui('Above / below MA50','فاصله از میانگین ۵۰روزه')}</small><b><bdi>${pct(x.dist50)}</bdi></b></div></div>${(()=>{const r=window.MHI18n?.read(x);return r&&(r.now.length||r.watch.length)?'<div class="copy"><strong>'+ui('Supporting observations','مشاهدات پشتیبان')+'</strong><p>'+esc([...r.now,...r.watch].join(' '))+'</p></div>':''})()}</details>
-    <div class="actions"><button class="btn primary" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ghost" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
   </article>`;
 }
 let usLoadSequence=0;
@@ -1318,7 +1326,7 @@ function shortlistHtml(){
   return `<div class="stack"><section class="panel soft">
     ${marketTabs}${marketNote}
     ${us&&scan?.sourceSessionRecoveries?.length?`<details class="us-source-note"><summary>${ui('Data source · Yahoo','منبع داده · یاهو')}</summary><p class="reading-copy"><bdi>${scan.sourceSessionRecoveries.length}</bdi> ${ui('completed-session records use the provider’s regular-session summary because daily close fields were missing. Historical rows are unchanged. This is recovery from the same provider, not independent verification of every stock.','رکورد جلسهٔ کامل از خلاصهٔ جلسهٔ عادی همان ارائه‌دهنده بازیابی شده، چون فیلد قیمت پایانی روزانه خالی بوده است. تاریخچه تغییر نکرده. این بازیابی از همان منبع است، نه تأیید مستقل همهٔ سهم‌ها.')}</p></details>`:''}
-    <div class="sectionhead"><div><h2>${ui('Choose a stage','انتخاب مرحله')}</h2><small data-fundamental-coverage>${esc(fundamentalCoverageHtml())}</small><p>${ui('Choose a stage, then review each chart.','مرحله را انتخاب کن و سهم‌ها را بررسی کن.')}</p></div><span class="tag"><bdi>${Object.values(counts).reduce((x,y)=>x+y,0)}</bdi> <span>${ui(Object.values(counts).reduce((x,y)=>x+y,0)===1?'chart':'charts','سهم')}</span></span></div>
+    <div class="sectionhead"><div><h2>${ui('Review stage','مرحلهٔ بررسی')}</h2><small data-fundamental-coverage>${esc(fundamentalCoverageHtml())}</small></div><span class="tag"><bdi>${Object.values(counts).reduce((x,y)=>x+y,0)}</bdi> <span>${ui(Object.values(counts).reduce((x,y)=>x+y,0)===1?'chart':'charts','سهم')}</span></span></div>
     <div class="stage-tabs">${tabs}</div>
     <div class="stage-summary"><b>${esc(stageLabel(stage))}</b><span><bdi>${picks.length}</bdi> ${ui(picks.length===1?'chart to review':'charts to review','سهم برای بررسی')} <small class="review-swipe-hint">· ${ui('Swipe ↔','ورق بزن ↔')}</small></span></div>
     ${swipeTools("reviewCards",picks.length)}<div class="cards mobile-rail" id="reviewCards" tabindex="0" aria-label="${ui('Stocks in this stage','سهم‌های این مرحله')}">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">'+(us&&!scan?ui('US scan unavailable; no selection can be inferred.','اسکن آمریکا موجود نیست؛ نمی‌توان نتیجهٔ انتخاب استنباط کرد.'):ui('No charts meet this stage’s criteria.','سهمی با معیارهای این مرحله پیدا نشده.'))+'</div>'}</div>
@@ -1625,11 +1633,14 @@ function updateAsOf(){
   if(q('#asOf'))q('#asOf').textContent=label;
 }
 function renderView(view){
+  const container=document.getElementById(view+'View');
+  const expanded=new Set([...(container?.querySelectorAll('details[data-reading-key][open]')||[])].map(d=>d.dataset.readingKey));
   if(view==='engines')q('#enginesView').innerHTML=window.MarketHunterEngines?.html(state.engines,state.engineSelection)||'';
   if(view==='home')q('#homeView').innerHTML=homeHtml();
   if(view==='shortlist'){q('#shortlistView').innerHTML=shortlistHtml();if(state.view==='shortlist')updateAsOf();}
   if(view==='portfolio')q('#portfolioView').innerHTML=portfolioHtml();
   if(view==='watchlist')q('#watchlistView').innerHTML=watchlistHtml();
+  container?.querySelectorAll('details[data-reading-key]').forEach(d=>{if(expanded.has(d.dataset.readingKey))d.open=true});
 }
 function renderAll(){['home','shortlist','portfolio','watchlist','engines'].forEach(renderView)}
 function updatePageTitle(view){
