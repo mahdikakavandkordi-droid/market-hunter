@@ -24,6 +24,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Compare provider request shapes without modifying data
+        if: github.event_name == 'push'
+        run: node scripts/diagnose-us-source.mjs
       - name: Scan US instruments independently
         env:
           MH_HUNTER_MARKET: US
