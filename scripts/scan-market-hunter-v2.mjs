@@ -22,7 +22,13 @@ async function fetchRows(symbol){
     const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
     return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
   }).filter(x=>[x.close,x.rawClose,x.high,x.low,x.volume].every(Number.isFinite)&&x.volume>0),z?.meta);
-  return {rows,splitDays,currency:z?.meta?.currency||null};
+  const lastIndex=(z?.timestamp?.length||0)-1;
+  return {rows,splitDays,currency:z?.meta?.currency||null,sourceDiagnostic:{
+    providerLastDate:lastIndex>=0?dayKey(z.timestamp[lastIndex]):null,
+    rawClose:q.close?.[lastIndex]??null,adjustedClose:adj[lastIndex]??null,
+    high:q.high?.[lastIndex]??null,low:q.low?.[lastIndex]??null,volume:q.volume?.[lastIndex]??null,
+    regular:z?.meta?.currentTradingPeriod?.regular||null
+  }};
 }
 
 function recentSplit(rows,splitDays,lookback=30){
@@ -161,7 +167,7 @@ const report={
   byStage,all:rows
 };
 fs.mkdirSync('data',{recursive:true});
-console.log(JSON.stringify({market:market.market,marketAsOf,universeCount:symbols.length,sourceUsableCount,usableCount,excluded,sessionExclusions:sessionExclusions.slice(0,10)},null,2));
+console.log(JSON.stringify({market:market.market,marketAsOf,universeCount:symbols.length,sourceUsableCount,usableCount,excluded,sessionExclusions:sessionExclusions.slice(0,10),sourceDiagnostics:Object.fromEntries([...symbols.slice(0,3),market.referenceSymbol].map(s=>[s,data[s]?.sourceDiagnostic||null]))},null,2));
 if(market.market==='US'&&(usableCount===0||sourceUsableCount/symbols.length<0.9))throw new Error('us_scan_insufficient_source_coverage');
 const output=market.file;
 fs.writeFileSync(output+'.tmp',JSON.stringify(report,null,2));
