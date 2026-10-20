@@ -24,6 +24,23 @@ no more granular industry classification is inferred.
 
 ## Operation and separation
 
+When both newest close fields are null, the US adapter may use the explicit
+regular-session OHLCV summary from that same Yahoo response. This is real provider
+data, not a carried or estimated price. It requires exact symbol/USD/equity/daily
+identity, the same session date, a quote timestamp within 60 seconds of the regular
+close, at least 15 minutes after the close, and positive/coherent OHLCV. The prior
+adjustment factor must already be one and no dividend or split may intervene;
+otherwise the normalization basis is unknown and recovery is refused. Existing
+numeric daily closes and all historical rows remain untouched. Extended-hours
+`fulldayPrice` is never used.
+
+Every such recovery is recorded in `sourceSessionRecoveries` with the actual
+OHLCV, provider timestamp and session end; selected rows carry `sourceBarMethod`.
+The US UI discloses these same-provider recoveries. They are not an independent
+market-wide verification. In source checks on 2026-10-19, the Yahoo summary closes
+for AAPL/NVDA/MSFT matched independently retrieved Alpaca SIP closes; only those
+three closes were cross-checked, not all symbols or volume/high/low fields.
+
 Run `MH_HUNTER_MARKET=US node scripts/scan-market-hunter-v2.mjs` to write only
 `data/v2-us-latest-scan.json`. The default remains Canada and its original file.
 US relative strength and session anchoring use `^GSPC`; currency must be USD.

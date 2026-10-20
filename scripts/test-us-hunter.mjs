@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import './test-us-session-summary.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -31,7 +32,14 @@ globalThis.fetch=async url=>{
   let timestamp=Array.from({length:220},(_,i)=>Math.floor(Date.UTC(2025,0,1+i,16)/1000));
   if((process.env.FIXTURE_FAIL==='stale'||(process.env.FIXTURE_FAIL==='retry'&&String(url).includes('query1.')))&&!symbol.startsWith('^'))timestamp=timestamp.slice(0,-1);
   const close=timestamp.map((_,i)=>symbol.startsWith('^')?100+i*.02:30*Math.pow(1.005,i));
-  return {ok:true,json:async()=>({chart:{result:[{meta:{currency:wrong?'CAD':'USD'},timestamp,indicators:{quote:[{close,high:close.map(x=>x*1.006),low:close.map(x=>x*.994),volume:close.map(()=>2000000)}],adjclose:[{adjclose:close}]}}]}})};
+  const high=close.map(x=>x*1.006),low=close.map(x=>x*.994),volume=close.map(()=>2000000),adjclose=[...close];
+  const meta={currency:wrong?'CAD':'USD'};
+  if(process.env.FIXTURE_FAIL==='meta'&&!symbol.startsWith('^')){
+    const n=close.length-1,end=timestamp[n]+4*3600;
+    Object.assign(meta,{symbol,instrumentType:'EQUITY',dataGranularity:'1d',regularMarketPrice:close[n],regularMarketDayHigh:high[n],regularMarketDayLow:low[n],regularMarketVolume:volume[n],regularMarketTime:end,currentTradingPeriod:{regular:{start:timestamp[n]-9000,end}}});
+    close[n]=null;adjclose[n]=null;
+  }
+  return {ok:true,json:async()=>({chart:{result:[{meta,timestamp,indicators:{quote:[{close,high,low,volume}],adjclose:[{adjclose}]}}]}})};
 };`;
 try{
   const preload=path.join(dir,'fixture.mjs');fs.writeFileSync(preload,fixture);
@@ -59,6 +67,12 @@ try{
   assert.equal(retryReport.replacementRetries.attempted,502);
   assert.equal(retryReport.replacementRetries.recovered,502);
   assert.equal(retryReport.sourceUsableCount,502,'only complete whole-series replacement may restore source coverage');
+  const metaRun=run('meta');assert.equal(metaRun.status,0,metaRun.stderr);
+  const metaReport=JSON.parse(fs.readFileSync(output,'utf8'));
+  assert.equal(metaReport.sourceUsableCount,502);
+  assert.equal(metaReport.sourceSessionRecoveries.length,502);
+  assert.equal(metaReport.replacementRetries.attempted,0);
+  assert.ok(metaReport.all.every(x=>x.sourceBarMethod==='yahoo-completed-session-summary-v1'));
   assert.equal(fs.readFileSync(canadianFile,'utf8'),'preserve-canada');
   const originalFetch=globalThis.fetch;
   try{

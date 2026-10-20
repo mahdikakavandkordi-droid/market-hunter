@@ -4,6 +4,7 @@ import {completedDailyRows} from '../lib/completed-daily-session.js';
 import {referenceSession,quoteSessionIssue} from '../lib/scan-session-integrity.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 import {volumeMetrics} from '../lib/volume-context.js';
+import {recoverUSSessionSummary} from '../lib/us-session-summary.js';
 
 const market=hunterMarket(process.env.MH_HUNTER_MARKET||'CA');
 const sourceDeadline=market.market==='US'?Date.now()+180000:Infinity;
@@ -19,13 +20,15 @@ async function fetchRows(symbol,host='query1',deadline=sourceDeadline){
   const res=await fetch(url,{signal:AbortSignal.timeout(Math.max(1,Math.min(12000,deadline-Date.now()))),headers:{'User-Agent':'Mozilla/5.0 MarketHunterV2ResearchScan/1.0'}});
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
+  const recovery=market.market==='US'?recoverUSSessionSummary(z,symbol):null;
   const splitDays=new Set(Object.values(z?.events?.splits||{}).map(x=>dayKey(Number(x.date))));
   const rows=completedDailyRows((z?.timestamp||[]).map((t,i)=>{
+    if(recovery&&i===z.timestamp.length-1)return recovery.row;
     const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
     return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
   }).filter(x=>[x.close,x.rawClose,x.high,x.low,x.volume].every(Number.isFinite)&&x.volume>0),z?.meta);
   const lastIndex=(z?.timestamp?.length||0)-1;
-  return {rows,splitDays,currency:z?.meta?.currency||null,sourceDiagnostic:{
+  return {rows,splitDays,currency:z?.meta?.currency||null,sourceRecovery:recovery?.evidence||null,sourceDiagnostic:{
     providerLastDate:lastIndex>=0?dayKey(z.timestamp[lastIndex]):null,
     rawClose:q.close?.[lastIndex]??null,adjustedClose:adj[lastIndex]??null,
     high:q.high?.[lastIndex]??null,low:q.low?.[lastIndex]??null,volume:q.volume?.[lastIndex]??null,
@@ -137,7 +140,7 @@ for(const symbol of symbols){
   rows.push({
     symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,date,stage,
     market:market.market,currency:market.currency,exchange:meta.get(symbol)?.exchange||null,benchmark:benchSymbol(symbol),
-    asOf:date,dayChangePct:round((r.at(-1).rawClose/r.at(-2).rawClose-1)*100),
+    asOf:date,dayChangePct:round((r.at(-1).rawClose/r.at(-2).rawClose-1)*100),sourceBarMethod:pack.sourceRecovery?.method||'yahoo-daily-bar',
     score,surfaceScore,stageAge,priorityBand:priorityBand(stage,score),reviewLane:lane,riskFlags:flags,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),
     rs20:round(m.rs20),rs60:round(m.rs60),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),
     dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),avgDollar20:round(m.avgDollar20),
@@ -175,6 +178,7 @@ const report={
   version:VERSION,market:market.market,currency:market.currency,universeSource:market.source,validationStatus:market.market==='US'?'unvalidated-market-extension':'existing-canadian-evidence',generatedAt:new Date().toISOString(),marketAsOf,engineCommit:process.env.GITHUB_SHA||null,range,
   purpose:ASSUMPTIONS.purpose,
   universeCount:symbols.length,sourceUsableCount,usableCount,classifiedCount:rows.length,excluded,replacementRetries,
+  sourceSessionRecoveries:symbols.map(s=>data[s]?.sourceRecovery).filter(Boolean),
   sessionIntegrity:{referenceSymbol:market.referenceSymbol,completedSession:marketAsOf,exclusions:sessionExclusions},
   stageCounts:Object.fromEntries(stages.map(s=>[s,byStage[s].length])),
   priorityFloors:PRIORITY_FLOORS,
