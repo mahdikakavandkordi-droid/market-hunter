@@ -161,6 +161,7 @@ const report={
   byStage,all:rows
 };
 fs.mkdirSync('data',{recursive:true});
+console.log(JSON.stringify({market:market.market,marketAsOf,universeCount:symbols.length,sourceUsableCount,usableCount,excluded,sessionExclusions:sessionExclusions.slice(0,10)},null,2));
 if(market.market==='US'&&(usableCount===0||sourceUsableCount/symbols.length<0.9))throw new Error('us_scan_insufficient_source_coverage');
 const output=market.file;
 fs.writeFileSync(output+'.tmp',JSON.stringify(report,null,2));
