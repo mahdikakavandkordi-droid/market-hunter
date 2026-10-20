@@ -45,3 +45,18 @@ assert.deepEqual(Array.from(persian.monitor,x=>({kind:x.kind,level:x.level})),Ar
 assert.match(persian.summary.join(' '),/کف اخیر شکسته/);
 assert.match(persian.monitor[0].text,/بازگشت قیمت/);
 console.log('Bilingual reading, missing evidence and warning tests passed');
+
+const flagged={stage:'Recovery',date:'2026-10-19',dist20:7,rsi14:76,atr14Pct:7,momentumShift:2,rs20:4,evidence:['higher low','relative strength recovered'],riskFlags:['Extended above MA20','High RSI','High ATR']};
+const original=JSON.stringify(flagged),shown=ui.technical(flagged);
+assert.equal(shown.reasons.length,2);
+assert.ok(shown.cautions.some(v=>v.includes('ATR')),'recorded ATR flag must be visible');
+assert.equal(shown.cautions.length,3,'backend and descriptive warnings must not be duplicated');
+assert.equal(JSON.stringify(flagged),original);
+assert.equal(ui.technical({stage:'Recovery'}).reasons.length,0,'do not invent a reason from a stage label');
+assert.equal(ui.technical({evidence:['unknown recorded reason'],riskFlags:['unknown recorded flag']}).reasons[0],'unknown recorded reason');
+assert.equal(ui.technical({riskFlags:['unknown recorded flag']}).cautions[0],'unknown recorded flag');
+ui.toggle();
+assert.match(ui.technical({stage:'Early Watch',sellingFading:false}).lead,/Early signals after weakness/,'do not claim selling volume is fading from the stage alone');
+assert.match(ui.technical(flagged).reasons.join(' '),/higher local low/);
+assert.equal(ui.technical(flagged).cautions.length,3);
+console.log('Recorded selection evidence and all risk flags remain visible in both languages');

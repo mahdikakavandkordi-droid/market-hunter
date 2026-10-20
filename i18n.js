@@ -7,7 +7,7 @@ window.MHI18n=(()=>{
   function read(x){
     if(!x)return {lead:t('Market data unavailable.','دادهٔ سهم در دسترس نیست.'),now:[],watch:[]};
     const leads={
-      'Early Watch':['Selling pressure is easing; a reversal is not confirmed.','فشار فروش کمتر شده؛ برگشت روند هنوز تأیید نشده.'],
+      'Early Watch':['Early signals after weakness; a reversal is not confirmed.','نشانه‌های اولیه پس از افت دیده شده؛ برگشت روند هنوز تأیید نشده.'],
       Recovery:['The chart is rebuilding after earlier weakness.','سهم پس از افت قبلی در حال بازسازی است.'],
       'Attractive Growth':['Price is participating in a stronger uptrend.','قیمت در یک روند صعودی قوی‌تر حرکت می‌کند.'],
       'Established Move':['The uptrend is established; watch for an overstretched move.','روند صعودی جا افتاده؛ فاصلهٔ زیاد از میانگین‌ها را زیر نظر بگیر.']};
@@ -36,7 +36,33 @@ window.MHI18n=(()=>{
     if(!invalidLevels&&finite(x?.localHigh)&&x.localHigh>0)monitor.push({kind:'local-high',level:x.localHigh,text:x.highBroken===true?t('Watch whether price holds above the recorded local high.','حفظ قیمت بالای سقف ثبت‌شده را دنبال کن.'):t('Watch whether price clears the recorded local high.','عبور قیمت از سقف ثبت‌شده را دنبال کن.')});
     if(monitor.length<2&&finite(x?.rs20))monitor.push({kind:'relative-strength',level:null,text:x.rs20>0?t('Watch whether outperformance versus the benchmark persists.','تداوم عملکرد بهتر از شاخص مبنا را دنبال کن.'):x.rs20<0?t('Watch whether the performance gap behind the benchmark narrows.','کمترشدن عقب‌ماندگی از شاخص مبنا را دنبال کن.'):t('Watch whether relative performance improves or deteriorates.','بهتر یا ضعیف‌ترشدن عملکرد نسبت به شاخص مبنا را دنبال کن.')});
     if(monitor.length<2&&finite(x?.momentumShift))monitor.push({kind:'momentum',level:null,text:x.momentumShift>0?t('Watch whether improving momentum persists or cools.','ادامهٔ بهبود یا کاهش شتاب حرکت را دنبال کن.'):t('Watch whether momentum recovers from its recorded level.','بهبود شتاب حرکت نسبت به وضعیت ثبت‌شده را دنبال کن.')});
-    return {summary:summary.slice(0,3),monitor:monitor.slice(0,2),completedSession:/^\d{4}-\d{2}-\d{2}$/.test(x?.date||'')&&Number.isFinite(Date.parse(x.date))?x.date:null,evidence:r.now,cautions:r.watch};
+    const reasonLabels={
+      'downside decelerating':['The decline is slowing.','سرعت افت کمتر شده است.'],
+      'volume shock near recent low':['A volume surge was recorded near a recent low.','نزدیک کف اخیر جهش حجم ثبت شده است.'],
+      'fresh low reclaim':['Price recently reclaimed a local low.','قیمت به‌تازگی بالای کف محلی برگشته است.'],
+      'selling volume fading':['Volume on down sessions is fading.','حجم معاملات در جلسات منفی کمتر شده است.'],
+      'relative strength recovered':['20-session performance has caught up with the benchmark.','بازده ۲۰جلسه‌ای به شاخص مبنا رسیده یا از آن جلو افتاده است.'],
+      'momentum improving':['The pace of price change is improving.','شتاب تغییر قیمت رو به بهبود است.'],
+      'higher low':['A higher local low has formed.','کف محلی بالاتری تشکیل شده است.'],
+      'rising MA20':['The 20-session average is rising.','میانگین قیمت ۲۰جلسه‌ای صعودی است.'],
+      'positive relative strength':['20-session performance is at or above the benchmark.','بازده ۲۰جلسه‌ای برابر یا بهتر از شاخص مبناست.'],
+      'strong 20-session trend':['A strong 20-session advance was recorded.','رشد قوی در ۲۰ جلسهٔ اخیر ثبت شده است.'],
+      'durable MA50 slope':['The 50-session average has a sustained upward slope.','شیب صعودی میانگین ۵۰جلسه‌ای حفظ شده است.'],
+      'mature 60-session advance':['An established advance is visible over 60 sessions.','رشد جاافتاده در بازهٔ ۶۰جلسه‌ای دیده می‌شود.']
+    };
+    const riskLabels={
+      'Very extended above MA20':['Price is very extended above its 20-day average.','قیمت فاصلهٔ زیادی بالای میانگین ۲۰روزه دارد.'],
+      'Extended above MA20':['Price is extended above its 20-day average.','قیمت از میانگین ۲۰روزه فاصله گرفته است.'],
+      'Very high RSI':['RSI is very high; the move may be stretched.','شاخص قدرت حرکت (RSI) بسیار بالاست؛ حرکت ممکن است بیش از حد کشیده شده باشد.'],
+      'High RSI':['RSI is high; watch for a pause in momentum.','شاخص قدرت حرکت (RSI) بالاست؛ احتمال مکث حرکت را زیر نظر بگیر.'],
+      'High ATR':['Large typical daily price swings are recorded (ATR).','دامنهٔ معمول نوسان روزانه بالاست (ATR).']
+    };
+    const reasons=[...new Set((Array.isArray(x?.evidence)?x.evidence:[]).filter(v=>typeof v==='string'&&v.trim()).map(v=>reasonLabels[v]?t(...reasonLabels[v]):v))];
+    const flags=(Array.isArray(x?.riskFlags)?x.riskFlags:[]).filter(v=>typeof v==='string'&&v.trim()).map(v=>riskLabels[v]?t(...riskLabels[v]):v);
+    // Relative performance is already visible numerically; keep distinct cautions visible.
+    const distinctWeakness=negative.filter(v=>!(finite(x?.rs20)&&x.rs20<=-3&&v===r.now.at(-1)));
+    const visibleCautions=[...new Set([...flags,...r.watch,...distinctWeakness])];
+    return {lead:r.lead,reasons,cautions:visibleCautions,summary:summary.slice(0,3),monitor:monitor.slice(0,2),completedSession:/^\d{4}-\d{2}-\d{2}$/.test(x?.date||'')&&Number.isFinite(Date.parse(x.date))?x.date:null,evidence:r.now};
   }
   // Presentation only: retain backend classifications, evidence and levels.
   const words={

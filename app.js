@@ -700,7 +700,19 @@ function quoteFor(symbol,fallback=null){
 }
 function quoteMetaHtml(display){
   const when=display?.quoteAt?quoteTimeLabel(display.quoteAt):'';
-  return '<small class="quote-meta '+esc(display?.state||'unavailable')+'">'+esc(display?.label||'Quote unavailable')+(when?' · <bdi class="quote-time">'+esc(when)+'</bdi>':'')+'</small>';
+  const labels={
+    'Completed session':['Completed session','قیمت جلسهٔ کامل'],
+    'Completed session · hourly quote unavailable':['Completed session · hourly quote unavailable','قیمت جلسهٔ کامل · قیمت ساعتی موجود نیست'],
+    'Completed session · session closed':['Completed session · session closed','قیمت جلسهٔ کامل · بازار بسته است'],
+    'Completed session · newer than hourly snapshot':['Completed session · newer than hourly snapshot','قیمت جلسهٔ کامل · تازه‌تر از دادهٔ ساعتی'],
+    'Intraday quote · current session':['Intraday quote · current session','قیمت حین بازار · جلسهٔ جاری'],
+    'Intraday quote · stale':['Intraday quote · stale','قیمت حین بازار · قدیمی'],
+    'Intraday quote · stale · completed close pending':['Intraday quote · stale · completed close pending','قیمت حین بازار قدیمی است · قیمت پایانی جدید موجود نیست'],
+    'Quote unavailable':['Quote unavailable','قیمت موجود نیست'],
+    'Hourly feed unavailable':['Hourly feed unavailable','دادهٔ ساعتی موجود نیست']
+  };
+  const label=labels[display?.label]?ui(...labels[display.label]):display?.label||ui('Quote unavailable','قیمت موجود نیست');
+  return '<small class="quote-meta '+esc(display?.state||'unavailable')+'">'+esc(label)+(when?' · <bdi class="quote-time">'+esc(when)+'</bdi>':'')+'</small>';
 }
 function enrichCandidate(x){
   const completed=x?.market==='US'?x:state.liveItems.get(x?.symbol)||x;
@@ -1040,7 +1052,7 @@ async function loadFundamentals(){
 function fundamentalCoverageHtml(){
   const count=(reviewScan()?.integratedSurfacePicks??[]).length;
   const covered=(reviewScan()?.integratedSurfacePicks??[]).filter(x=>window.MHFundamentals?.reading(state.fundamentals,x.symbol)?.status!=='unavailable'&&window.MHFundamentals?.reading(state.fundamentals,x.symbol)).length;
-  return count?ui('Financial context for '+covered+' of '+count+' selected stocks','توضیح مالی برای '+covered+' از '+count+' سهم منتخب'):'';
+  return count?(covered?ui('Verified financial context for '+covered+' of '+count+' final selections','دادهٔ مالی تأییدشده برای '+covered+' از '+count+' سهم فهرست نهایی'):ui('Verified financial context is unavailable for the final selections.','دادهٔ مالی تأییدشده برای سهم‌های فهرست نهایی موجود نیست.')):'';
 }
 function updateFundamentalDisclosures(){
   const coverage=document.querySelector('[data-fundamental-coverage]');if(coverage)coverage.textContent=fundamentalCoverageHtml();
@@ -1095,10 +1107,7 @@ async function load(){
 
     if(contextActive(accountCtx))await loadCandidateLiveData(accountCtx);
     if(contextActive(accountCtx))await loadPortfolio(accountCtx);
-    const asOf=state.daily?.asOf;
-    q('#asOf').textContent=asOf?.mixedDates&&asOf?.earliest&&asOf?.latest
-      ?'Completed markets through '+asOf.earliest+' · 24/7 through '+asOf.latest
-      :asOf?.latest?'Completed-session data through '+asOf.latest:'Research dashboard';
+    updateAsOf();
     renderAll();
     if(bridgeRequested)setView('portfolio');
   }finally{b.classList.remove('busy');b.disabled=false}
@@ -1233,7 +1242,23 @@ function hunterMonitorHtml(){
 function stockSummaryHtml(x){
   const r=window.MHI18n?.technical(x);
   if(!r)return `<p class="analysis-copy">${esc(stockNarrative(x))}</p>`;
-  return `<div class="stock-summary analysis-copy"><small class="explanation-eyebrow">${ui('Technical','تکنیکال')}</small><p class="stock-summary-lead">${esc(r.summary.join(' '))}</p><small class="technical-session">${ui('Completed session','جلسهٔ کامل ثبت‌شده')}: <bdi>${esc(r.completedSession||ui('Unavailable','ناموجود'))}</bdi></small><div class="technical-monitor"><h4>${ui('What to watch','موارد قابل پیگیری')}</h4>${r.monitor.length?'<ul>'+r.monitor.map(v=>'<li>'+esc(v.text)+(v.level!==null?' <bdi class="technical-level">'+fmt(v.level)+'</bdi>':'')+'</li>').join('')+'</ul>':'<p>'+ui('Insufficient data for stock-specific monitoring conditions.','دادهٔ کافی برای تعیین موارد پیگیری اختصاصی این سهم موجود نیست.')+'</p>'}</div></div>`;
+  const benchmark=({'^GSPTSE':'TSX','^GSPC':'S&P 500','^IXIC':'Nasdaq'})[x.benchmark]||x.benchmark||ui('benchmark','شاخص مبنا');
+  const finite=v=>typeof v==='number'&&Number.isFinite(v);
+  const reasons=r.reasons;
+  return `<div class="stock-summary analysis-copy">
+    <small class="technical-session">${ui('Technical snapshot','دادهٔ تحلیل تکنیکال')}: <bdi>${esc(r.completedSession||ui('Unavailable','ناموجود'))}</bdi></small>
+    <div class="stock-key-metrics">
+      <div><small>${ui('20-session return','بازده ۲۰ جلسه')}</small><b class="${finite(x.ret20)?cls(x.ret20):''}"><bdi>${finite(x.ret20)?pct(x.ret20):'—'}</bdi></b></div>
+      <div><small>${ui('Vs ','نسبت به ')}<bdi>${esc(benchmark)}</bdi></small><b class="${finite(x.rs20)?cls(x.rs20):''}"><bdi>${finite(x.rs20)?(x.rs20>0?'+':'')+x.rs20.toFixed(1)+' pp':'—'}</bdi></b></div>
+      <div><small>${ui('Daily range · ATR14','دامنهٔ روزانه · ATR14')}</small><b><bdi>${finite(x.atr14Pct)?x.atr14Pct.toFixed(1)+'%':'—'}</bdi></b></div>
+    </div>
+    <p class="metric-basis">${ui('Return and benchmark gap: 20 sessions · pp = percentage points.','بازده و مقایسه با شاخص: ۲۰ جلسه؛ pp یعنی واحد درصد.')}</p><details class="metric-help"><summary>${ui('About these numbers','این عددها چه می‌گویند؟')}</summary><p class="explanation-note">${ui('The return is the stock’s completed-session price change. The benchmark gap is stock return minus index return over the same 20 sessions. ATR14 describes typical daily range, including gaps, over 14 sessions; it is not a loss limit or a forecast.','بازده، تغییر قیمت سهم در جلسات کامل است. اختلاف با شاخص از کم‌کردن بازده شاخص از بازده سهم در همان ۲۰ جلسه به‌دست می‌آید. ATR14 دامنهٔ معمول روزانه، با احتساب شکاف قیمت، در ۱۴ جلسه است؛ حد ضرر یا پیش‌بینی نیست.')}</p></details>
+    ${r.cautions.length?'<aside class="stock-cautions"><h4>'+ui('What weakens the setup','نقاط ضعف این وضعیت')+'</h4><ul>'+r.cautions.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul></aside>':''}
+    <small class="explanation-eyebrow">${ui('Why it appears','دلیل نمایش سهم')}</small>
+    <p class="stock-summary-lead">${esc(r.lead)}</p>
+    ${reasons.length?'<ul class="selection-reasons">'+reasons.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul>':'<p class="explanation-note">'+ui('The scan did not include stock-specific selection evidence.','اسکن، دلیل اختصاصی انتخاب این سهم را ثبت نکرده است.')+'</p>'}
+    <div class="technical-monitor"><h4>${ui('Levels to monitor','سطوح قابل پیگیری')}</h4>${r.monitor.length?'<ul>'+r.monitor.map(v=>'<li>'+esc(v.text)+(v.level!==null?' <bdi class="technical-level">'+money(v.level,x.currency||'CAD')+'</bdi>':'')+'</li>').join('')+'</ul>':'<p>'+ui('Insufficient data for stock-specific monitoring conditions.','دادهٔ کافی برای تعیین موارد پیگیری اختصاصی این سهم موجود نیست.')+'</p>'}<p class="level-note">${ui('Recorded chart levels; they are not entry targets or stop-loss orders.','این‌ها سطوح ثبت‌شدهٔ نمودارند؛ نه قیمت پیشنهادی ورود و نه دستور حد ضرر.')}</p></div>
+  </div>`;
 }
 function fundamentalHtml(x){
   const r=window.MHFundamentals?.reading(state.fundamentals,x.symbol,window.MHI18n?.language()||'en');
@@ -1255,12 +1280,12 @@ function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
   return `<article class="card hunter-card">
     <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart"><bdi>${short(x.symbol)}</bdi> ↗</button><small><bdi>${esc(x.name||x.symbol)}</bdi></small></div><div class="cardprice"><div class="price-line"><bdi>${money(x.price,x.displayQuote?.currency||x.currency||'CAD')}</bdi><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
-    <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span>${x.sector?'<span class="tag stock-sector">'+esc(x.sector)+'</span>':''}${x.market==='US'?'<span class="tag">US · USD</span>':''}<span class="tag"><bdi>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></span></div>
+    <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span>${x.sector?'<span class="tag stock-sector">'+esc(x.sector)+'</span>':''}${x.market==='US'?'<span class="tag">US · USD</span>':''}</div>
     ${x.market==='US'?'':window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
     ${volumeContextHtml(x)}
     ${stockSummaryHtml(x)}
     ${fundamentalHtml(x)}
-    <details class="stock-technical"><summary>${ui('Technical details','جزئیات تکنیکال')}</summary><div class="metrics"><div class="metric"><small>${ui('20-day move','تغییر ۲۰روزه')}</small><b class="${cls(x.ret20)}"><bdi>${pct(x.ret20)}</bdi></b></div><div class="metric"><small>${ui('Vs benchmark · 20D','نسبت به شاخص · ۲۰روز')}</small><b class="${cls(x.rs20)}"><bdi>${Number.isFinite(x.rs20)?(x.rs20>=0?'+':'')+x.rs20.toFixed(1)+' pp':'—'}</bdi></b></div><div class="metric"><small>${ui('Momentum shift','تغییر شتاب')}</small><b class="${cls(x.momentumShift)}"><bdi>${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</bdi></b></div></div><p class="explanation-note reading-copy">${ui('Relative strength compares 20-day returns with the benchmark. Momentum shift shows how much the pace changed. Both use percentage points (pp), not your portfolio return.','قدرت نسبی، اختلاف بازده ۲۰روزه با شاخص مبناست. تغییر شتاب می‌گوید سرعت حرکت چقدر تغییر کرده. واحد هر دو «واحد درصد» (pp) است؛ این اعداد سود پورتفولیوی تو نیستند.')}</p><div class="technical-grid"><div><small>${ui('Benchmark','شاخص مبنا')}</small><b><bdi>${esc(x.benchmark||'—')}</bdi></b></div><div><small>${ui('From 60-day high','فاصله از سقف ۶۰روزه')}</small><b><bdi>${pct(x.pullback60)}</bdi></b></div><div><small>${ui('ATR','نوسان (ATR)')}</small><b><bdi>${pct(x.atr14Pct)}</bdi></b></div><div><small>${ui('Above / below MA20','فاصله از میانگین ۲۰روزه')}</small><b><bdi>${pct(x.dist20)}</bdi></b></div><div><small>${ui('Above / below MA50','فاصله از میانگین ۵۰روزه')}</small><b><bdi>${pct(x.dist50)}</bdi></b></div></div>${(()=>{const r=window.MHI18n?.read(x);return r&&(r.now.length||r.watch.length)?'<div class="copy"><strong>'+ui('Supporting observations','مشاهدات پشتیبان')+'</strong><p>'+esc([...r.now,...r.watch].join(' '))+'</p></div>':''})()}</details>
+    <details class="stock-technical"><summary>${ui('Technical details','جزئیات تکنیکال')}</summary><div class="technical-grid"><div><small>${ui('RSI · 14 sessions','قدرت حرکت · RSI14')}</small><b><bdi>${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></b></div><div><small>${ui('Momentum shift · pp','تغییر شتاب · واحد درصد')}</small><b><bdi>${Number.isFinite(x.momentumShift)?(x.momentumShift>0?'+':'')+x.momentumShift.toFixed(1)+' pp':'—'}</bdi></b></div><div><small>${ui('Benchmark','شاخص مبنا')}</small><b><bdi>${esc(x.benchmark||'—')}</bdi></b></div><div><small>${ui('From 60-day high','فاصله از سقف ۶۰روزه')}</small><b><bdi>${pct(x.pullback60)}</bdi></b></div><div><small>${ui('ATR','نوسان (ATR)')}</small><b><bdi>${pct(x.atr14Pct)}</bdi></b></div><div><small>${ui('Above / below MA20','فاصله از میانگین ۲۰روزه')}</small><b><bdi>${pct(x.dist20)}</bdi></b></div><div><small>${ui('Above / below MA50','فاصله از میانگین ۵۰روزه')}</small><b><bdi>${pct(x.dist50)}</bdi></b></div></div>${(()=>{const r=window.MHI18n?.read(x);return r&&(r.now.length||r.watch.length)?'<div class="copy"><strong>'+ui('Supporting observations','مشاهدات پشتیبان')+'</strong><p>'+esc([...r.now,...r.watch].join(' '))+'</p></div>':''})()}</details>
     <div class="actions"><button class="btn primary" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ghost" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
   </article>`;
 }
@@ -1584,10 +1609,21 @@ async function loadEngines(){
     if(sequence===engineLoadSequence){state.engineSelection.loading=false;renderView('engines');renderView('shortlist');renderView('watchlist');}
   }
 }
+function updateAsOf(){
+  const dateText=value=>'\u2066'+value+'\u2069';
+  const scan=state.view==='shortlist'?reviewScan():null;
+  const asOf=state.daily?.asOf;
+  const label=scan?.marketAsOf
+    ?ui('Scan session: ','جلسهٔ اسکن: ')+dateText(scan.marketAsOf)+' · '+(scan.currency||(state.reviewMarket==='US'?'USD':'CAD'))
+    :asOf?.mixedDates&&asOf?.earliest&&asOf?.latest
+      ?ui('Completed markets through ','دادهٔ بازارهای بسته تا ')+dateText(asOf.earliest)+ui(' · 24/7 through ',' · بازارهای شبانه‌روزی تا ')+dateText(asOf.latest)
+      :asOf?.latest?ui('Completed-session data through ','دادهٔ جلسهٔ کامل تا ')+dateText(asOf.latest):ui('Research dashboard','داشبورد بررسی بازار');
+  if(q('#asOf'))q('#asOf').textContent=label;
+}
 function renderView(view){
   if(view==='engines')q('#enginesView').innerHTML=window.MarketHunterEngines?.html(state.engines,state.engineSelection)||'';
   if(view==='home')q('#homeView').innerHTML=homeHtml();
-  if(view==='shortlist')q('#shortlistView').innerHTML=shortlistHtml();
+  if(view==='shortlist'){q('#shortlistView').innerHTML=shortlistHtml();if(state.view==='shortlist')updateAsOf();}
   if(view==='portfolio')q('#portfolioView').innerHTML=portfolioHtml();
   if(view==='watchlist')q('#watchlistView').innerHTML=watchlistHtml();
 }
@@ -1598,7 +1634,7 @@ function setView(view){
   qa('.navbtn').forEach(el=>{const active=el.dataset.view===view;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')});
   const titles={home:'Market overview',shortlist:'Review',portfolio:'Portfolio',watchlist:'Watchlist',engines:'Engines'};
   const title=q('#pageTitle');if(title)title.textContent=window.MHI18n?.t(titles[view]||'Market Hunter',({home:'خانه',shortlist:'بررسی سهم‌ها',portfolio:'پورتفولیو',watchlist:'دیده‌بان',engines:'موتورها'})[view]||'مارکت هانتر')||titles[view];
-  renderView(view);window.scrollTo({top:0,behavior:'smooth'});
+  renderView(view);updateAsOf();window.scrollTo({top:0,behavior:'smooth'});
   document.querySelector('.app-shell')?.scrollTo({top:0,behavior:'instant'});
 }
 let modalTrigger=null;
