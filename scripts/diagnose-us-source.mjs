@@ -14,6 +14,7 @@ for(const symbol of ['AAPL','NVDA','MSFT','^GSPC']){
       if(!response.ok){console.log(JSON.stringify({symbol,variant,status:response.status}));continue}
       const z=(await response.json())?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},a=z?.indicators?.adjclose?.[0]?.adjclose||[];
       console.log(JSON.stringify({symbol,variant,currency:z?.meta?.currency,regularMarketTime:z?.meta?.regularMarketTime,regularMarketPrice:z?.meta?.regularMarketPrice,
+        sessionMetadata:variant==='range2y'?z?.meta:null,
         rows:(z?.timestamp||[]).slice(-3).map((t,i)=>{const n=z.timestamp.length-3+i;return {date:new Date(t*1000).toISOString().slice(0,10),close:q.close?.[n]??null,adjclose:a[n]??null,volume:q.volume?.[n]??null}})}));
     }catch(e){console.log(JSON.stringify({symbol,variant,error:e.message}))}
   }
