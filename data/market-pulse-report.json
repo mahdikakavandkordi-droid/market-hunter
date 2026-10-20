@@ -1,7 +1,7 @@
 {
   "version": "market-pulse-report-v0.3-2026-09-26",
   "sourceVersion": "market-pulse-v0.1-2026-09-26",
-  "generatedAt": "2026-10-20T21:44:19.975Z",
+  "generatedAt": "2026-10-20T23:19:09.726Z",
   "status": "research",
   "analogPolicy": {
     "exactMinimum": {
@@ -34,8 +34,8 @@
     "groups": [
       {
         "label": "Equities",
-        "state": "Weakening",
-        "detail": "Most tracked markets in this group show weakening short-term conditions."
+        "state": "Mixed",
+        "detail": "Signals are mixed across the tracked markets."
       },
       {
         "label": "Metals",
@@ -50,9 +50,14 @@
     ]
   },
   "freshness": {
-    "attemptedAt": "2026-10-20T21:44:19.564Z",
-    "mode": "targeted",
+    "attemptedAt": "2026-10-20T23:18:32.146Z",
+    "mode": "full",
     "targetKeys": [
+      "TSX",
+      "SP500",
+      "NASDAQ100",
+      "GOLD",
+      "SILVER",
       "BTC",
       "ETH"
     ],
@@ -64,48 +69,48 @@
       "name": "TSX Composite",
       "symbol": "^GSPTSE",
       "group": "Equity Index",
-      "asOf": "2026-10-19",
-      "price": 35928.6,
+      "asOf": "2026-10-20",
+      "price": 36107.96,
       "freshness": {
         "status": "fresh",
-        "latestCompletedSession": "2026-10-19",
-        "expectedCompletedSession": "2026-10-19",
+        "latestCompletedSession": "2026-10-20",
+        "expectedCompletedSession": "2026-10-20",
         "partialBarExcluded": false,
-        "assessedAt": "2026-10-20T12:26:00.855Z"
+        "assessedAt": "2026-10-20T23:18:32.146Z"
       },
       "regime": "Mixed",
-      "condition": "Breakout / Near High",
-      "whatHappened": "TSX Composite: 1D -0.7%, 5D +0.7%, 20D +0.3%, 60D +1.3%.",
-      "whereWeAre": "Mixed / Breakout / Near High · Daily Mixed · Weekly Down · Structure improving.",
+      "condition": "Positive Momentum",
+      "whatHappened": "TSX Composite: 1D +0.5%, 5D +0.3%, 20D +0.3%, 60D +2.6%.",
+      "whereWeAre": "Mixed / Positive Momentum · Daily Mixed · Weekly Mixed · Higher highs + higher lows.",
       "historicalAnalog": {
         "5": {
           "label": "Historically Favorable",
-          "analogLevel": "Exact State",
-          "analogKey": "Mixed | Breakout / Near High",
+          "analogLevel": "State Family",
+          "analogKey": "Mixed | Advance",
           "confidence": "High",
           "sample": {
-            "overall": 209,
-            "recent": 63
+            "overall": 223,
+            "recent": 68
           },
           "stateOverall": {
-            "n": 209,
+            "n": 223,
             "mean": 0.64,
-            "median": 0.86,
-            "positiveRate": 71.3,
-            "avgMAE": -0.43,
-            "avgMFE": 1.13,
+            "median": null,
+            "positiveRate": 71.8,
+            "avgMAE": -0.42,
+            "avgMFE": 1.16,
             "hitPlus5": 0,
-            "hitMinus5": 1.9
+            "hitMinus5": 1.8
           },
           "stateRecent": {
-            "n": 63,
-            "mean": 0.71,
-            "median": 0.79,
-            "positiveRate": 73,
-            "avgMAE": -0.38,
-            "avgMFE": 1.12,
+            "n": 68,
+            "mean": 0.7,
+            "median": null,
+            "positiveRate": 73.5,
+            "avgMAE": -0.35,
+            "avgMFE": 1.17,
             "hitPlus5": 0,
-            "hitMinus5": 1.6
+            "hitMinus5": 1.5
           },
           "baselineOverall": {
             "n": 2269,
@@ -121,7 +126,7 @@
             "n": 681,
             "mean": 0.41,
             "median": 0.55,
-            "positiveRate": 65.9,
+            "positiveRate": 65.8,
             "avgMAE": -0.58,
             "avgMFE": 1.04,
             "hitPlus5": 0.3,
@@ -130,52 +135,61 @@
           "lift": {
             "overall": {
               "meanLift": 0.43,
-              "positiveRateLift": 10.8,
-              "maeDelta": 0.31,
-              "mfeDelta": 0.17
+              "positiveRateLift": 11.3,
+              "maeDelta": 0.32,
+              "mfeDelta": 0.2
             },
             "recent": {
-              "meanLift": 0.3,
-              "positiveRateLift": 7.1,
-              "maeDelta": 0.2,
-              "mfeDelta": 0.08
+              "meanLift": 0.29,
+              "positiveRateLift": 7.7,
+              "maeDelta": 0.23,
+              "mfeDelta": 0.13
             }
           },
-          "specificSetup": null
+          "specificSetup": {
+            "sample": {
+              "overall": 14,
+              "recent": 5
+            },
+            "recentMeanGap": -0.18,
+            "recentPositiveRateGap": 6.5,
+            "warning": false,
+            "note": null
+          }
         },
         "10": {
           "label": "Historically Favorable",
-          "analogLevel": "Exact State",
-          "analogKey": "Mixed | Breakout / Near High",
+          "analogLevel": "State Family",
+          "analogKey": "Mixed | Advance",
           "confidence": "High",
           "sample": {
-            "overall": 209,
-            "recent": 63
+            "overall": 223,
+            "recent": 68
           },
           "stateOverall": {
-            "n": 209,
-            "mean": 1.07,
-            "median": 1.65,
-            "positiveRate": 76.1,
-            "avgMAE": -0.87,
-            "avgMFE": 2.04,
-            "hitPlus5": 1.4,
-            "hitMinus5": 3.8
+            "n": 223,
+            "mean": 1.02,
+            "median": null,
+            "positiveRate": 75.4,
+            "avgMAE": -0.91,
+            "avgMFE": 2.05,
+            "hitPlus5": 1.3,
+            "hitMinus5": 4
           },
           "stateRecent": {
-            "n": 63,
-            "mean": 1.32,
-            "median": 1.86,
-            "positiveRate": 84.1,
-            "avgMAE": -0.82,
-            "avgMFE": 2.22,
+            "n": 68,
+            "mean": 1.08,
+            "median": null,
+            "positiveRate": 80.9,
+            "avgMAE": -0.94,
+            "avgMFE": 2.2,
             "hitPlus5": 0,
-            "hitMinus5": 4.8
+            "hitMinus5": 5.9
           },
           "baselineOverall": {
             "n": 2269,
             "mean": 0.43,
-            "median": 0.67,
+            "median": 0.66,
             "positiveRate": 63.4,
             "avgMAE": -1.3,
             "avgMFE": 1.62,
@@ -187,62 +201,71 @@
             "mean": 0.81,
             "median": 1.06,
             "positiveRate": 70.3,
-            "avgMAE": -1,
+            "avgMAE": -1.01,
             "avgMFE": 1.75,
             "hitPlus5": 2.2,
             "hitMinus5": 2.6
           },
           "lift": {
             "overall": {
-              "meanLift": 0.64,
-              "positiveRateLift": 12.7,
-              "maeDelta": 0.43,
-              "mfeDelta": 0.42
+              "meanLift": 0.59,
+              "positiveRateLift": 12,
+              "maeDelta": 0.39,
+              "mfeDelta": 0.43
             },
             "recent": {
-              "meanLift": 0.51,
-              "positiveRateLift": 13.8,
-              "maeDelta": 0.18,
-              "mfeDelta": 0.47
+              "meanLift": 0.27,
+              "positiveRateLift": 10.6,
+              "maeDelta": 0.07,
+              "mfeDelta": 0.45
             }
           },
-          "specificSetup": null
+          "specificSetup": {
+            "sample": {
+              "overall": 14,
+              "recent": 5
+            },
+            "recentMeanGap": -3,
+            "recentPositiveRateGap": -40.9,
+            "warning": false,
+            "note": null
+          }
         },
         "20": {
           "label": "Historically Favorable",
-          "analogLevel": "Exact State",
-          "analogKey": "Mixed | Breakout / Near High",
+          "analogLevel": "State Family",
+          "analogKey": "Mixed | Advance",
           "confidence": "High",
           "sample": {
-            "overall": 209,
-            "recent": 63
+            "overall": 223,
+            "recent": 68
           },
           "stateOverall": {
-            "n": 209,
-            "mean": 1.44,
-            "median": 1.66,
-            "positiveRate": 67.5,
-            "avgMAE": -1.35,
-            "avgMFE": 2.95,
-            "hitPlus5": 15.3,
-            "hitMinus5": 6.2
+            "n": 223,
+            "mean": 1.47,
+            "median": null,
+            "positiveRate": 66.8,
+            "avgMAE": -1.42,
+            "avgMFE": 2.98,
+            "hitPlus5": 16.6,
+            "hitMinus5": 6.3
           },
           "stateRecent": {
-            "n": 63,
-            "mean": 1.92,
-            "median": 2.15,
-            "positiveRate": 79.4,
-            "avgMAE": -1.21,
-            "avgMFE": 3.4,
-            "hitPlus5": 23.8,
-            "hitMinus5": 4.8
+            "n": 68,
+            "mean": 1.68,
+            "median": null,
+            "positiveRate": 75,
+            "avgMAE": -1.45,
+            "avgMFE": 3.29,
+            "hitPlus5": 22.1,
+            "hitMinus5": 5.9
           },
           "baselineOverall": {
             "n": 2269,
             "mean": 0.84,
             "median": 1.32,
             "positiveRate": 66.6,
-            "avgMAE": -2.11,
+            "avgMAE": -2.12,
             "avgMFE": 2.6,
             "hitPlus5": 12.2,
             "hitMinus5": 11.4
@@ -252,35 +275,44 @@
             "mean": 1.61,
             "median": 1.95,
             "positiveRate": 74.2,
-            "avgMAE": -1.55,
+            "avgMAE": -1.56,
             "avgMFE": 2.88,
             "hitPlus5": 13.1,
             "hitMinus5": 6.5
           },
           "lift": {
             "overall": {
-              "meanLift": 0.6,
-              "positiveRateLift": 0.9,
-              "maeDelta": 0.76,
-              "mfeDelta": 0.35
+              "meanLift": 0.63,
+              "positiveRateLift": 0.2,
+              "maeDelta": 0.7,
+              "mfeDelta": 0.38
             },
             "recent": {
-              "meanLift": 0.31,
-              "positiveRateLift": 5.2,
-              "maeDelta": 0.34,
-              "mfeDelta": 0.52
+              "meanLift": 0.07,
+              "positiveRateLift": 0.8,
+              "maeDelta": 0.11,
+              "mfeDelta": 0.41
             }
           },
-          "specificSetup": null
+          "specificSetup": {
+            "sample": {
+              "overall": 14,
+              "recent": 5
+            },
+            "recentMeanGap": -3.06,
+            "recentPositiveRateGap": -55,
+            "warning": false,
+            "note": null
+          }
         }
       },
       "outlook": "Current analogs have historically outperformed this market's baseline across the tested horizons.",
-      "watchNext": "bullish continuation above 36410.6 · trend warning near 35663.91 · structure risk below 35722.",
+      "watchNext": "bullish continuation above 36410.6 · trend warning near 35668.84 · structure risk below 35722.",
       "levels": {
         "support": 35722,
         "resistance": 36410.6,
         "bullishTrigger": 36410.6,
-        "warningLevel": 35663.91,
+        "warningLevel": 35668.84,
         "bearishTrigger": 35722
       },
       "current": {
@@ -289,72 +321,70 @@
         "name": "TSX Composite",
         "group": "Equity Index",
         "version": "market-pulse-v0.1-2026-09-26",
-        "asOf": "2026-10-19",
+        "asOf": "2026-10-20",
         "currency": "CAD",
         "exchange": "TSI",
-        "price": 35928.6,
+        "price": 36107.96,
         "returns": {
-          "d1": -0.69,
-          "d5": 0.74,
-          "d20": 0.34,
-          "d60": 1.25,
-          "d120": 6.24
+          "d1": 0.5,
+          "d5": 0.34,
+          "d20": 0.27,
+          "d60": 2.6,
+          "d120": 7.51
         },
         "trend": {
           "daily": "Mixed",
-          "weekly": "Down",
-          "ma20": 35663.91,
-          "ma50": 36041.34,
-          "ma200": 34420.07,
-          "dist20": 0.74,
-          "dist50": -0.31,
-          "dist200": 4.38
+          "weekly": "Mixed",
+          "ma20": 35668.84,
+          "ma50": 36035.88,
+          "ma200": 34441.2,
+          "dist20": 1.23,
+          "dist50": 0.2,
+          "dist200": 4.84
         },
         "momentum": {
-          "rsi14": 52.5,
-          "momentumShift": 0.28,
-          "atr14Pct": 1.1
+          "rsi14": 54.9,
+          "momentumShift": -0.97,
+          "atr14Pct": 1.2
         },
         "structure": {
-          "swingTrend": "Structure improving",
-          "higherHigh": false,
+          "swingTrend": "Higher highs + higher lows",
+          "higherHigh": true,
           "higherLow": true,
-          "highBroken": true,
+          "highBroken": false,
           "lowBroken": false,
-          "localHigh": 35755.3,
+          "localHigh": 36462.5,
           "localLow": 34953
         },
         "range": {
-          "pullback20": -1.12,
-          "pullback60": -2.78,
-          "pullback252": -2.78,
-          "rebound20": 2.53,
-          "rebound60": 2.53
+          "pullback20": -0.63,
+          "pullback60": -2.3,
+          "pullback252": -2.3,
+          "rebound20": 3.04,
+          "rebound60": 3.04
         },
         "levels": {
           "support": 35722,
           "resistance": 36410.6,
           "bullishTrigger": 36410.6,
-          "warningLevel": 35663.91,
+          "warningLevel": 35668.84,
           "bearishTrigger": 35722
         },
         "descriptiveState": {
-          "state": "Weak",
-          "tone": "Bearish",
+          "state": "Trend Weakening",
+          "tone": "Caution",
           "regime": "Mixed",
-          "condition": "Breakout / Near High",
+          "condition": "Positive Momentum",
           "reasons": [
-            "20D +0.3%",
-            "Recent swing high broken",
-            "Swing structure improving"
+            "20D +0.3%"
           ]
         },
         "freshness": {
           "status": "fresh",
-          "latestCompletedSession": "2026-10-19",
-          "expectedCompletedSession": "2026-10-19",
+          "latestCompletedSession": "2026-10-20",
+          "expectedCompletedSession": "2026-10-20",
           "partialBarExcluded": false,
-          "assessedAt": "2026-10-20T12:26:00.855Z"
+          "assessedAt": "2026-10-20T23:18:32.146Z"
         }
       }
     },
@@ -363,47 +393,47 @@
       "name": "S&P 500",
       "symbol": "^GSPC",
       "group": "Equity Index",
-      "asOf": "2026-10-19",
-      "price": 7690.73,
+      "asOf": "2026-10-20",
+      "price": 7712.57,
       "freshness": {
         "status": "fresh",
-        "latestCompletedSession": "2026-10-19",
-        "expectedCompletedSession": "2026-10-19",
+        "latestCompletedSession": "2026-10-20",
+        "expectedCompletedSession": "2026-10-20",
         "partialBarExcluded": false,
-        "assessedAt": "2026-10-20T12:26:00.855Z"
+        "assessedAt": "2026-10-20T23:18:32.146Z"
       },
-      "regime": "Mixed",
-      "condition": "Weakening",
-      "whatHappened": "S&P 500: 1D +0.4%, 5D -1.5%, 20D -0.9%, 60D +3.8%.",
-      "whereWeAre": "Mixed / Weakening · Daily Mixed · Weekly Mixed · Structure improving.",
+      "regime": "Bull",
+      "condition": "Pullback",
+      "whatHappened": "S&P 500: 1D +0.3%, 5D -1.2%, 20D -0.7%, 60D +4%.",
+      "whereWeAre": "Bull / Pullback · Daily Mixed · Weekly Up · Lower highs + lower lows.",
       "historicalAnalog": {
         "5": {
           "label": "Historically Favorable",
           "analogLevel": "Exact State",
-          "analogKey": "Mixed | Weakening",
-          "confidence": "High",
+          "analogKey": "Bull | Pullback",
+          "confidence": "Moderate",
           "sample": {
-            "overall": 280,
-            "recent": 84
+            "overall": 112,
+            "recent": 34
           },
           "stateOverall": {
-            "n": 280,
-            "mean": 0.58,
-            "median": 0.73,
-            "positiveRate": 61.4,
-            "avgMAE": -0.98,
-            "avgMFE": 1.67,
-            "hitPlus5": 5,
-            "hitMinus5": 3.9
+            "n": 112,
+            "mean": 0.63,
+            "median": 1.14,
+            "positiveRate": 70.5,
+            "avgMAE": -0.65,
+            "avgMFE": 1.32,
+            "hitPlus5": 0,
+            "hitMinus5": 1.8
           },
           "stateRecent": {
-            "n": 84,
-            "mean": 0.93,
-            "median": 0.86,
-            "positiveRate": 64.3,
-            "avgMAE": -0.74,
-            "avgMFE": 1.76,
-            "hitPlus5": 3.6,
+            "n": 34,
+            "mean": 1.06,
+            "median": 1.17,
+            "positiveRate": 85.3,
+            "avgMAE": -0.23,
+            "avgMFE": 1.42,
+            "hitPlus5": 0,
             "hitMinus5": 0
           },
           "baselineOverall": {
@@ -412,7 +442,7 @@
             "median": 0.49,
             "positiveRate": 61,
             "avgMAE": -0.94,
-            "avgMFE": 1.21,
+            "avgMFE": 1.2,
             "hitPlus5": 2.5,
             "hitMinus5": 3.5
           },
@@ -420,7 +450,7 @@
             "n": 682,
             "mean": 0.38,
             "median": 0.49,
-            "positiveRate": 61.3,
+            "positiveRate": 61.1,
             "avgMAE": -0.75,
             "avgMFE": 1.11,
             "hitPlus5": 1.3,
@@ -428,48 +458,48 @@
           },
           "lift": {
             "overall": {
-              "meanLift": 0.3,
-              "positiveRateLift": 0.4,
-              "maeDelta": -0.04,
-              "mfeDelta": 0.46
+              "meanLift": 0.35,
+              "positiveRateLift": 9.5,
+              "maeDelta": 0.29,
+              "mfeDelta": 0.12
             },
             "recent": {
-              "meanLift": 0.55,
-              "positiveRateLift": 3,
-              "maeDelta": 0.01,
-              "mfeDelta": 0.65
+              "meanLift": 0.68,
+              "positiveRateLift": 24.2,
+              "maeDelta": 0.52,
+              "mfeDelta": 0.31
             }
           },
           "specificSetup": null
         },
         "10": {
-          "label": "Mixed / Near Baseline",
+          "label": "Historically Favorable",
           "analogLevel": "Exact State",
-          "analogKey": "Mixed | Weakening",
-          "confidence": "High",
+          "analogKey": "Bull | Pullback",
+          "confidence": "Moderate",
           "sample": {
-            "overall": 280,
-            "recent": 84
+            "overall": 112,
+            "recent": 34
           },
           "stateOverall": {
-            "n": 280,
-            "mean": 0.72,
-            "median": 1.31,
-            "positiveRate": 61.4,
-            "avgMAE": -1.83,
-            "avgMFE": 2.51,
-            "hitPlus5": 12.1,
-            "hitMinus5": 12.1
+            "n": 112,
+            "mean": 0.93,
+            "median": 1.58,
+            "positiveRate": 68.8,
+            "avgMAE": -1.26,
+            "avgMFE": 2.1,
+            "hitPlus5": 2.7,
+            "hitMinus5": 5.4
           },
           "stateRecent": {
-            "n": 84,
-            "mean": 1.02,
-            "median": 1.4,
-            "positiveRate": 63.1,
-            "avgMAE": -1.44,
-            "avgMFE": 2.53,
-            "hitPlus5": 15.5,
-            "hitMinus5": 8.3
+            "n": 34,
+            "mean": 1.33,
+            "median": 1.69,
+            "positiveRate": 70.6,
+            "avgMAE": -0.61,
+            "avgMFE": 2.34,
+            "hitPlus5": 2.9,
+            "hitMinus5": 0
           },
           "baselineOverall": {
             "n": 2272,
@@ -485,7 +515,7 @@
             "n": 682,
             "mean": 0.75,
             "median": 0.88,
-            "positiveRate": 65.1,
+            "positiveRate": 65.2,
             "avgMAE": -1.31,
             "avgMFE": 1.83,
             "hitPlus5": 6,
@@ -493,53 +523,53 @@
           },
           "lift": {
             "overall": {
-              "meanLift": 0.16,
-              "positiveRateLift": -3.8,
-              "maeDelta": -0.21,
-              "mfeDelta": 0.51
+              "meanLift": 0.37,
+              "positiveRateLift": 3.6,
+              "maeDelta": 0.36,
+              "mfeDelta": 0.1
             },
             "recent": {
-              "meanLift": 0.27,
-              "positiveRateLift": -2,
-              "maeDelta": -0.13,
-              "mfeDelta": 0.7
+              "meanLift": 0.58,
+              "positiveRateLift": 5.4,
+              "maeDelta": 0.7,
+              "mfeDelta": 0.51
             }
           },
           "specificSetup": null
         },
         "20": {
-          "label": "Mixed / Near Baseline",
+          "label": "Historically Favorable",
           "analogLevel": "Exact State",
-          "analogKey": "Mixed | Weakening",
-          "confidence": "High",
+          "analogKey": "Bull | Pullback",
+          "confidence": "Moderate",
           "sample": {
-            "overall": 280,
-            "recent": 84
+            "overall": 112,
+            "recent": 34
           },
           "stateOverall": {
-            "n": 280,
-            "mean": 1.17,
-            "median": 2.32,
-            "positiveRate": 67.9,
-            "avgMAE": -2.83,
-            "avgMFE": 3.66,
-            "hitPlus5": 29.3,
-            "hitMinus5": 21.1
+            "n": 112,
+            "mean": 1.67,
+            "median": 2.1,
+            "positiveRate": 76.8,
+            "avgMAE": -1.8,
+            "avgMFE": 3.1,
+            "hitPlus5": 16.1,
+            "hitMinus5": 12.5
           },
           "stateRecent": {
-            "n": 84,
-            "mean": 1.98,
-            "median": 3.08,
-            "positiveRate": 77.4,
-            "avgMAE": -2.1,
-            "avgMFE": 3.64,
-            "hitPlus5": 28.6,
-            "hitMinus5": 19
+            "n": 34,
+            "mean": 1.76,
+            "median": 1.96,
+            "positiveRate": 79.4,
+            "avgMAE": -1.05,
+            "avgMFE": 2.87,
+            "hitPlus5": 11.8,
+            "hitMinus5": 2.9
           },
           "baselineOverall": {
             "n": 2272,
             "mean": 1.11,
-            "median": 1.79,
+            "median": 1.78,
             "positiveRate": 68.6,
             "avgMAE": -2.56,
             "avgMFE": 3.2,
@@ -550,36 +580,36 @@
             "n": 682,
             "mean": 1.47,
             "median": 1.81,
-            "positiveRate": 72,
+            "positiveRate": 71.8,
             "avgMAE": -2.05,
-            "avgMFE": 2.94,
+            "avgMFE": 2.93,
             "hitPlus5": 14.5,
             "hitMinus5": 11.4
           },
           "lift": {
             "overall": {
-              "meanLift": 0.06,
-              "positiveRateLift": -0.7,
-              "maeDelta": -0.27,
-              "mfeDelta": 0.46
+              "meanLift": 0.56,
+              "positiveRateLift": 8.2,
+              "maeDelta": 0.76,
+              "mfeDelta": -0.1
             },
             "recent": {
-              "meanLift": 0.51,
-              "positiveRateLift": 5.4,
-              "maeDelta": -0.05,
-              "mfeDelta": 0.7
+              "meanLift": 0.29,
+              "positiveRateLift": 7.6,
+              "maeDelta": 1,
+              "mfeDelta": -0.06
             }
           },
           "specificSetup": null
         }
       },
-      "outlook": "Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.",
-      "watchNext": "bullish continuation above 7756.76 · trend warning near 7735.54 · structure risk below 7662.57.",
+      "outlook": "Primary trend remains constructive and recent pullback analogs have generally held up better than baseline. Continuation is supported historically, but confirmation still matters.",
+      "watchNext": "bullish continuation above 7756.76 · trend warning near 7732.94 · structure risk below 7662.57.",
       "levels": {
         "support": 7662.57,
         "resistance": 7756.76,
         "bullishTrigger": 7756.76,
-        "warningLevel": 7735.54,
+        "warningLevel": 7732.94,
         "bearishTrigger": 7662.57
       },
       "current": {
@@ -588,72 +618,71 @@
         "name": "S&P 500",
         "group": "Equity Index",
         "version": "market-pulse-v0.1-2026-09-26",
-        "asOf": "2026-10-19",
+        "asOf": "2026-10-20",
         "currency": "USD",
         "exchange": "SNP",
-        "price": 7690.73,
+        "price": 7712.57,
         "returns": {
-          "d1": 0.41,
-          "d5": -1.49,
-          "d20": -0.95,
-          "d60": 3.76,
-          "d120": 7.73
+          "d1": 0.28,
+          "d5": -1.19,
+          "d20": -0.67,
+          "d60": 4.04,
+          "d120": 8.08
         },
         "trend": {
           "daily": "Mixed",
-          "weekly": "Mixed",
-          "ma20": 7735.54,
-          "ma50": 7705.08,
-          "ma200": 7275.66,
-          "dist20": -0.58,
-          "dist50": -0.19,
-          "dist200": 5.7
+          "weekly": "Up",
+          "ma20": 7732.94,
+          "ma50": 7704.27,
+          "ma200": 7279.93,
+          "dist20": -0.26,
+          "dist50": 0.11,
+          "dist200": 5.94
         },
         "momentum": {
-          "rsi14": 47.3,
-          "momentumShift": -1.92,
+          "rsi14": 49.4,
+          "momentumShift": -1.02,
           "atr14Pct": 0.9
         },
         "structure": {
-          "swingTrend": "Structure improving",
+          "swingTrend": "Lower highs + lower lows",
           "higherHigh": false,
-          "higherLow": true,
+          "higherLow": false,
           "highBroken": false,
-          "lowBroken": true,
+          "lowBroken": false,
           "localHigh": 7821.67,
-          "localLow": 7731.26
+          "localLow": 7631.77
         },
         "range": {
-          "pullback20": -1.64,
-          "pullback60": -1.64,
-          "pullback252": -1.64,
-          "rebound20": 0.51,
-          "rebound60": 5.12
+          "pullback20": -1.36,
+          "pullback60": -1.36,
+          "pullback252": -1.36,
+          "rebound20": 0.8,
+          "rebound60": 5.42
         },
         "levels": {
           "support": 7662.57,
           "resistance": 7756.76,
           "bullishTrigger": 7756.76,
-          "warningLevel": 7735.54,
+          "warningLevel": 7732.94,
           "bearishTrigger": 7662.57
         },
         "descriptiveState": {
-          "state": "Recovery Attempt",
-          "tone": "Improving",
-          "regime": "Mixed",
-          "condition": "Weakening",
+          "state": "Constructive",
+          "tone": "Bullish",
+          "regime": "Bull",
+          "condition": "Pullback",
           "reasons": [
-            "20D -1%",
-            "Recent swing low broken",
-            "Swing structure improving"
+            "Weekly trend up",
+            "20D -0.7%"
           ]
         },
         "freshness": {
           "status": "fresh",
-          "latestCompletedSession": "2026-10-19",
-          "expectedCompletedSession": "2026-10-19",
+          "latestCompletedSession": "2026-10-20",
+          "expectedCompletedSession": "2026-10-20",
           "partialBarExcluded": false,
-          "assessedAt": "2026-10-20T12:26:00.855Z"
+          "assessedAt": "2026-10-20T23:18:32.146Z"
         }
       }
     },
@@ -662,19 +691,19 @@
       "name": "Nasdaq-100",
       "symbol": "^NDX",
       "group": "Equity Index",
-      "asOf": "2026-10-19",
-      "price": 29529.35,
+      "asOf": "2026-10-20",
+      "price": 29490.28,
       "freshness": {
         "status": "fresh",
-        "latestCompletedSession": "2026-10-19",
-        "expectedCompletedSession": "2026-10-19",
+        "latestCompletedSession": "2026-10-20",
+        "expectedCompletedSession": "2026-10-20",
         "partialBarExcluded": false,
-        "assessedAt": "2026-10-20T12:26:00.855Z"
+        "assessedAt": "2026-10-20T23:18:32.146Z"
       },
       "regime": "Mixed",
       "condition": "Weakening",
-      "whatHappened": "Nasdaq-100: 1D +1.2%, 5D -3.7%, 20D -3.1%, 60D +5%.",
-      "whereWeAre": "Mixed / Weakening · Daily Mixed · Weekly Mixed · Higher highs + higher lows.",
+      "whatHappened": "Nasdaq-100: 1D -0.1%, 5D -3.5%, 20D -4%, 60D +5.2%.",
+      "whereWeAre": "Mixed / Weakening · Daily Mixed · Weekly Mixed · Structure improving.",
       "historicalAnalog": {
         "5": {
           "label": "Mixed / Near Baseline",
@@ -707,9 +736,9 @@
           },
           "baselineOverall": {
             "n": 2272,
-            "mean": 0.41,
+            "mean": 0.4,
             "median": 0.64,
-            "positiveRate": 59.9,
+            "positiveRate": 59.8,
             "avgMAE": -1.23,
             "avgMFE": 1.64,
             "hitPlus5": 6.5,
@@ -718,8 +747,8 @@
           "baselineRecent": {
             "n": 682,
             "mean": 0.49,
-            "median": 0.61,
-            "positiveRate": 59.5,
+            "median": 0.6,
+            "positiveRate": 59.4,
             "avgMAE": -1.07,
             "avgMFE": 1.56,
             "hitPlus5": 5.6,
@@ -727,14 +756,14 @@
           },
           "lift": {
             "overall": {
-              "meanLift": 0.09,
-              "positiveRateLift": -0.9,
+              "meanLift": 0.1,
+              "positiveRateLift": -0.8,
               "maeDelta": -0.15,
               "mfeDelta": 0.36
             },
             "recent": {
               "meanLift": 0.41,
-              "positiveRateLift": 0.3,
+              "positiveRateLift": 0.4,
               "maeDelta": 0.07,
               "mfeDelta": 0.54
             }
@@ -775,7 +804,7 @@
             "mean": 0.81,
             "median": 1.31,
             "positiveRate": 64,
-            "avgMAE": -2.09,
+            "avgMAE": -2.1,
             "avgMFE": 2.74,
             "hitPlus5": 16.6,
             "hitMinus5": 15.4
@@ -794,7 +823,7 @@
             "overall": {
               "meanLift": 0.24,
               "positiveRateLift": 1.2,
-              "maeDelta": -0.27,
+              "maeDelta": -0.26,
               "mfeDelta": 0.39
             },
             "recent": {
@@ -839,46 +868,46 @@
             "n": 2272,
             "mean": 1.61,
             "median": 2.21,
-            "positiveRate": 66.2,
-            "avgMAE": -3.23,
+            "positiveRate": 66.1,
+            "avgMAE": -3.24,
             "avgMFE": 4.43,
             "hitPlus5": 38.6,
             "hitMinus5": 26.1
           },
           "baselineRecent": {
             "n": 682,
-            "mean": 1.86,
-            "median": 1.79,
-            "positiveRate": 67.7,
+            "mean": 1.85,
+            "median": 1.76,
+            "positiveRate": 67.6,
             "avgMAE": -2.83,
-            "avgMFE": 4.15,
-            "hitPlus5": 33.6,
-            "hitMinus5": 22.1
+            "avgMFE": 4.14,
+            "hitPlus5": 33.4,
+            "hitMinus5": 22.3
           },
           "lift": {
             "overall": {
               "meanLift": 0.28,
-              "positiveRateLift": 2.3,
-              "maeDelta": -0.12,
+              "positiveRateLift": 2.4,
+              "maeDelta": -0.11,
               "mfeDelta": 0.31
             },
             "recent": {
-              "meanLift": -0.04,
-              "positiveRateLift": 4,
+              "meanLift": -0.03,
+              "positiveRateLift": 4.1,
               "maeDelta": 0.13,
-              "mfeDelta": -0.02
+              "mfeDelta": -0.01
             }
           },
           "specificSetup": null
         }
       },
       "outlook": "Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.",
-      "watchNext": "bullish continuation above 29655.73 · trend warning near 30476.56 · structure risk below 29427.61.",
+      "watchNext": "bullish continuation above 29655.73 · trend warning near 30414.46 · structure risk below 29427.61.",
       "levels": {
         "support": 29427.61,
         "resistance": 29655.73,
         "bullishTrigger": 29655.73,
-        "warningLevel": 30476.56,
+        "warningLevel": 30414.46,
         "bearishTrigger": 29427.61
       },
       "current": {
@@ -887,71 +916,71 @@
         "name": "Nasdaq-100",
         "group": "Equity Index",
         "version": "market-pulse-v0.1-2026-09-26",
-        "asOf": "2026-10-19",
+        "asOf": "2026-10-20",
         "currency": "USD",
         "exchange": "NIM",
-        "price": 29529.35,
+        "price": 29490.28,
         "returns": {
-          "d1": 1.17,
-          "d5": -3.7,
-          "d20": -3.13,
-          "d60": 4.98,
-          "d120": 9.25
+          "d1": -0.13,
+          "d5": -3.53,
+          "d20": -4.04,
+          "d60": 5.18,
+          "d120": 8.47
         },
         "trend": {
           "daily": "Mixed",
           "weekly": "Mixed",
-          "ma20": 30476.56,
-          "ma50": 29864.14,
-          "ma200": 27759.38,
-          "dist20": -3.11,
-          "dist50": -1.12,
-          "dist200": 6.38
+          "ma20": 30414.46,
+          "ma50": 29861.51,
+          "ma200": 27780.8,
+          "dist20": -3.04,
+          "dist50": -1.24,
+          "dist200": 6.15
         },
         "momentum": {
-          "rsi14": 41.2,
-          "momentumShift": -2.38,
-          "atr14Pct": 1.5
+          "rsi14": 40.7,
+          "momentumShift": -1.43,
+          "atr14Pct": 1.6
         },
         "structure": {
-          "swingTrend": "Higher highs + higher lows",
+          "swingTrend": "Structure improving",
           "higherHigh": true,
-          "higherLow": true,
+          "higherLow": false,
           "highBroken": false,
-          "lowBroken": true,
+          "lowBroken": false,
           "localHigh": 31361.37,
-          "localLow": 30556.4
+          "localLow": 29073.29
         },
         "range": {
-          "pullback20": -5.43,
-          "pullback60": -5.43,
-          "pullback252": -5.43,
-          "rebound20": 1.17,
-          "rebound60": 8.59
+          "pullback20": -5.55,
+          "pullback60": -5.55,
+          "pullback252": -5.55,
+          "rebound20": 1.04,
+          "rebound60": 8.45
         },
         "levels": {
           "support": 29427.61,
           "resistance": 29655.73,
           "bullishTrigger": 29655.73,
-          "warningLevel": 30476.56,
+          "warningLevel": 30414.46,
           "bearishTrigger": 29427.61
         },
         "descriptiveState": {
-          "state": "Mixed / Range",
-          "tone": "Neutral",
+          "state": "Recovery Attempt",
+          "tone": "Improving",
           "regime": "Mixed",
           "condition": "Weakening",
           "reasons": [
-            "20D -3.1%",
-            "Recent swing low broken"
+            "20D -4%",
+            "Swing structure improving"
           ]
         },
         "freshness": {
           "status": "fresh",
-          "latestCompletedSession": "2026-10-19",
-          "expectedCompletedSession": "2026-10-19",
+          "latestCompletedSession": "2026-10-20",
+          "expectedCompletedSession": "2026-10-20",
           "partialBarExcluded": false,
-          "assessedAt": "2026-10-20T12:26:00.855Z"
+          "assessedAt": "2026-10-20T23:18:32.146Z"
         }
       }
     },
@@ -967,7 +996,7 @@
         "latestCompletedSession": "2026-10-19",
         "expectedCompletedSession": "2026-10-19",
         "partialBarExcluded": true,
-        "assessedAt": "2026-10-20T12:26:00.855Z"
+        "assessedAt": "2026-10-20T23:18:32.146Z"
       },
       "regime": "Strong Bear",
       "condition": "Weakening",
@@ -1249,7 +1278,7 @@
           "latestCompletedSession": "2026-10-19",
           "expectedCompletedSession": "2026-10-19",
           "partialBarExcluded": true,
-          "assessedAt": "2026-10-20T12:26:00.855Z"
+          "assessedAt": "2026-10-20T23:18:32.146Z"
         }
       }
     },
@@ -1265,7 +1294,7 @@
         "latestCompletedSession": "2026-10-19",
         "expectedCompletedSession": "2026-10-19",
         "partialBarExcluded": true,
-        "assessedAt": "2026-10-20T12:26:00.855Z"
+        "assessedAt": "2026-10-20T23:18:32.146Z"
       },
       "regime": "Strong Bear",
       "condition": "Weakening",
@@ -1546,7 +1575,7 @@
           "latestCompletedSession": "2026-10-19",
           "expectedCompletedSession": "2026-10-19",
           "partialBarExcluded": true,
-          "assessedAt": "2026-10-20T12:26:00.855Z"
+          "assessedAt": "2026-10-20T23:18:32.146Z"
         }
       }
     },
@@ -1562,7 +1591,7 @@
         "latestCompletedSession": "2026-10-19",
         "expectedCompletedSession": "2026-10-19",
         "partialBarExcluded": true,
-        "assessedAt": "2026-10-20T21:44:19.564Z"
+        "assessedAt": "2026-10-20T23:18:32.146Z"
       },
       "regime": "Bull",
       "condition": "Range / Mixed",
@@ -1871,7 +1900,7 @@
           "latestCompletedSession": "2026-10-19",
           "expectedCompletedSession": "2026-10-19",
           "partialBarExcluded": true,
-          "assessedAt": "2026-10-20T21:44:19.564Z"
+          "assessedAt": "2026-10-20T23:18:32.146Z"
         }
       }
     },
@@ -1887,7 +1916,7 @@
         "latestCompletedSession": "2026-10-19",
         "expectedCompletedSession": "2026-10-19",
         "partialBarExcluded": true,
-        "assessedAt": "2026-10-20T21:44:19.564Z"
+        "assessedAt": "2026-10-20T23:18:32.146Z"
       },
       "regime": "Mixed",
       "condition": "Weakening",
@@ -2168,7 +2197,7 @@
           "latestCompletedSession": "2026-10-19",
           "expectedCompletedSession": "2026-10-19",
           "partialBarExcluded": true,
-          "assessedAt": "2026-10-20T21:44:19.564Z"
+          "assessedAt": "2026-10-20T23:18:32.146Z"
         }
       }
     }
