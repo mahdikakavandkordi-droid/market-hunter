@@ -82,7 +82,7 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   const technicalCard=page.locator('#shortlistView .hunter-card').first();
   await expect(technicalCard.locator('.explanation-eyebrow')).toHaveText('Why it appears');
   await expect(technicalCard.locator('.technical-monitor li')).toHaveCount(2);
-  await expect(technicalCard.locator('.technical-session')).toContainText('Technical snapshot');
+  await expect(technicalCard.locator('.technical-session')).toContainText('Analysis through');
   await expect(technicalCard.locator('.stock-technical')).not.toHaveAttribute('open');
   await expect(page.locator('#shortlistView .engine-confirmation')).toHaveCount(0);
   await expect(page.locator('#shortlistView')).not.toContainText('What would trigger an entry');

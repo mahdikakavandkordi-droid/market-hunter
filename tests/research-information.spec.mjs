@@ -19,6 +19,16 @@ async function setup(page,missing=false){
 }
 for(const width of [320,390,1440])test(`recorded reasons, weakness and comparable metrics remain readable at ${width}px`,async({page})=>{
  await page.setViewportSize({width,height:844});const card=await setup(page);
+ await expect(card.locator('.stock-analysis')).not.toHaveAttribute('open');
+ await expect(card.locator('.selection-preview')).toContainText('higher local low');
+ const order=await card.evaluate(el=>{
+  const y=s=>el.querySelector(s).getBoundingClientRect().top;
+  return {lead:y('.stock-summary-lead'),cautions:y('.stock-cautions'),actions:y('.actions'),details:y('.stock-analysis')};
+ });
+ expect(order.lead).toBeLessThan(order.cautions);expect(order.cautions).toBeLessThan(order.actions);expect(order.actions).toBeLessThan(order.details);
+ for(const caution of await card.locator('.stock-cautions li').all())await expect(caution).toBeVisible();
+ await card.locator('.stock-analysis>summary').focus();await page.keyboard.press('Enter');
+ await expect(card.locator('.stock-analysis')).toHaveAttribute('open','');
  await expect(card.locator('.selection-reasons')).toContainText('higher local low');
  await expect(card.locator('.stock-cautions')).toContainText('ATR');
  await expect(card.locator('.stock-cautions')).toContainText('RSI');
@@ -31,6 +41,7 @@ for(const width of [320,390,1440])test(`recorded reasons, weakness and comparabl
  await expect(page.locator('#asOf')).toContainText(date);
  await expect(card.locator('.technical-monitor')).toContainText('CA$190.00');
  await page.locator('#languageBtn').click();
+ await expect(card.locator('.stock-analysis')).toHaveAttribute('open','');
  await expect(card.locator('.selection-reasons')).toContainText('کف محلی بالاتر');
  await expect(card.locator('.stock-cautions')).toContainText('دامنهٔ معمول');
  await expect(card.locator('.quote-meta')).toContainText('قیمت حین بازار');
@@ -39,6 +50,7 @@ for(const width of [320,390,1440])test(`recorded reasons, weakness and comparabl
 });
 test('missing metrics and unrecorded selection reasons stay unknown',async({page})=>{
  await page.setViewportSize({width:390,height:844});const card=await setup(page,true);
+ await card.locator('.stock-analysis>summary').click();
  await expect(card.locator('.stock-key-metrics b')).toHaveText(['—','—','—']);
  await expect(card.locator('.selection-reasons')).toHaveCount(0);
  await expect(card.locator('.stock-summary')).toContainText('did not include stock-specific selection evidence');

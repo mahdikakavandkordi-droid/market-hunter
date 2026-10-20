@@ -1553,3 +1553,89 @@ html[data-language="fa"] .stock-key-metrics small{font-size:11px!important;line-
   html[data-language="fa"] :is(.technical-monitor ul,.stock-cautions ul){font-size:13px!important;line-height:2!important}
   html[data-language="fa"] :is(.stock-fundamental>summary,.stock-technical>summary,.market-context>summary){font-size:12px!important}
 }
+
+/* Reading order: conclusion and cautions first, supporting detail on demand. */
+.home-overview .report-shell,
+.home-overview.has-comparison .report-shell{display:block!important;padding:22px 24px!important}
+.home-overview .overview-headline{font-size:23px!important;line-height:1.7!important;font-weight:600!important;max-width:none;margin:16px 0!important;color:var(--text)}
+#homeView #homeBriefGroups{margin:16px 0 10px!important;gap:10px!important}
+#homeView #homeBriefGroups .brief-group{padding:12px 14px;border-radius:10px;background:transparent;text-align:start}
+#homeView #homeBriefGroups .brief-group b{font-size:14px;margin:4px 0}
+#homeView #homeBriefGroups .brief-group>span{display:none}
+.home-overview .report-details{padding-top:0!important;margin-top:8px!important}
+.home-overview .report-details>summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;list-style:none}
+.home-overview .report-details>summary:after{content:'+';font-size:19px;color:var(--blue)}
+.home-overview .report-details[open]>summary:after{content:'−'}
+.home-overview .report-details>summary::-webkit-details-marker{display:none}
+.home-overview .overview-basis{margin-top:12px}
+.home-overview-grid{grid-template-areas:"focus" "markets"}
+.home-focus-panel{grid-area:focus;min-width:0}
+.home-market-panel{grid-area:markets}
+.home-focus-panel .panel-head{padding-bottom:12px}
+.home-focus-list{display:flex;align-items:stretch;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:thin;padding:0 24px 12px;direction:ltr}
+.focus-market{flex:1 0 250px;min-width:0;border:1px solid var(--line-soft);border-radius:11px;background:var(--panel2);padding:16px;scroll-snap-align:start}
+.focus-heading>span{font-size:11px!important;line-height:1.8;color:var(--muted)}
+.focus-levels{padding:12px 0 4px;gap:10px}
+.focus-levels b{font-size:19px}
+.focus-market .btn{width:100%;font-size:12px;margin-top:12px}
+.home-focus-panel .focus-footnote{padding-bottom:16px;margin:0;line-height:1.8}
+.home-focus-panel .swipe-tools{margin-top:0;padding-top:0;padding-bottom:10px}
+.stock-summary{margin-bottom:0!important;padding-top:12px}
+.stock-summary .technical-session{display:block;margin-bottom:8px}
+.stock-summary .explanation-eyebrow{margin:0 0 4px;letter-spacing:0}
+.stock-summary .stock-summary-lead{margin:0 0 8px;font-size:15px!important;line-height:1.85!important}
+.selection-preview{font-size:13px;line-height:1.9;color:var(--muted);margin:0 0 10px;font-weight:400}
+.stock-summary .stock-cautions{margin:12px 0 0;padding:10px 12px;background:transparent}
+.stock-summary .stock-cautions h4{font-size:11px!important;line-height:1.7!important;margin-bottom:4px}
+.stock-summary .stock-cautions ul{font-size:12px!important;line-height:1.85!important}
+.hunter-card .actions{margin:14px 0 16px!important}
+.hunter-card .actions .btn{min-height:44px}
+.stock-analysis{margin:0;border-top:1px solid var(--line-soft);padding:0}
+.stock-analysis>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;font-size:12px;font-weight:500;line-height:1.8;color:var(--blue);list-style:none}
+.stock-analysis>summary:after{content:'+';font-size:20px;font-weight:400}
+.stock-analysis[open]>summary:after{content:'−'}
+.stock-analysis>summary::-webkit-details-marker{display:none}
+.stock-analysis>summary>small{font-size:10px;color:var(--muted);font-weight:400;margin-inline-start:auto}
+.stock-analysis-body{padding:8px 0 16px}
+.stock-analysis-body>h4{font-size:12px;font-weight:500;margin:0 0 10px;color:var(--muted)}
+.stock-analysis-body .stock-key-metrics{margin-top:16px}
+html[data-language=fa] :is(.selection-preview,.stock-analysis){direction:rtl;text-align:right;font-family:var(--font-ui)}
+html[data-language=fa] .home-overview .overview-headline{font-weight:600!important}
+@media(min-width:1150px){
+ .home-overview-grid{grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr);grid-template-areas:"markets focus"}
+ .home-focus-list{display:grid;gap:10px}
+ .home-focus-panel .swipe-tools{display:none}
+ .focus-market{padding:14px}
+}
+@media(max-width:700px){
+ .home-overview .report-shell,.home-overview.has-comparison .report-shell{padding:16px 18px 8px!important}
+ .home-overview .overview-headline{font-size:19px!important;line-height:1.8!important;margin:12px 0!important}
+ .home-overview .eyebrow{font-size:10px;letter-spacing:0}
+ .home-overview .overview-coverage{font-size:10px;padding:5px 7px}
+ #homeView #homeBriefGroups{gap:6px!important;margin:12px 0 6px!important}
+ #homeView #homeBriefGroups .brief-group{padding:10px 7px}
+ #homeView #homeBriefGroups .brief-group b{font-size:12px!important;line-height:1.8!important;min-height:43px;margin:4px 0}
+ #homeView #homeBriefGroups .brief-group small{font-size:10px}
+ #homeView #homeBriefGroups .brief-group p{font-size:10px;line-height:1.7}
+ .home-focus-list{padding:0 18px 12px;gap:10px}
+ .focus-market{flex:0 0 calc(100% - 14px);padding:14px}
+ .home-focus-panel .panel-head{padding-bottom:10px}
+ .focus-levels{padding-top:10px}
+ .home-focus-panel .focus-footnote{font-size:10px;padding-bottom:12px}
+ .stock-analysis>summary>small{display:none}
+ .hunter-card .tags{margin:10px 0!important}
+ .stock-summary .stock-summary-lead{font-size:14px!important}
+ .stock-summary .stock-cautions li+li{margin-top:3px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.mobile-rail{scroll-behavior:auto!important}}
+
+@media(max-width:700px){
+ #shortlistView .hunter-market-tabs{margin-top:12px!important}
+ #shortlistView .sectionhead{padding:12px 18px 10px!important}
+ #shortlistView .sectionhead h2{font-size:15px!important}
+ #shortlistView [data-fundamental-coverage]{font-size:10px;line-height:1.7;margin-top:3px}
+ #shortlistView .stage-tabs{padding-bottom:12px!important;gap:6px!important}
+ #shortlistView .stage-tab{min-height:44px;padding:7px 9px!important}
+ #shortlistView .stage-summary{padding-top:12px!important}
+ #shortlistView .cards{padding-top:12px!important}
+}
