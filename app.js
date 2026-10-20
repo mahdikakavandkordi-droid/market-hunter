@@ -149,7 +149,7 @@ const initialEnvelope=readEnvelopeFor(initialSession);
 const initialDaily=readDailyFor(initialSession);
 const state={
   engines:null,engineSelection:{engine:'all',cohort:'tsx-core',mode:'open',loading:false,error:false},
-  view:'home',reviewStage:'Early Watch',daily:null,pulse:null,v2:null,hunterMonitor:null,fundamentals:null,
+  view:'home',reviewStage:'Early Watch',reviewMarket:'CA',usScan:null,usStatus:'idle',daily:null,pulse:null,v2:null,hunterMonitor:null,fundamentals:null,
   envelope:initialEnvelope,watch:visibleWatch(initialEnvelope),positions:visiblePositions(initialEnvelope),
   portfolioItems:new Map(),liveItems:new Map(),intraday:null,intradayStatus:'loading',analytics:null,previous:previousMapFromDaily(initialDaily),
   cloud:{session:initialSession,epoch:1,status:'local',message:'',showAuth:false,ready:false,reconciled:false,revision:0}
@@ -703,14 +703,14 @@ function quoteMetaHtml(display){
   return '<small class="quote-meta '+esc(display?.state||'unavailable')+'">'+esc(display?.label||'Quote unavailable')+(when?' · '+esc(when):'')+'</small>';
 }
 function enrichCandidate(x){
-  const completed=state.liveItems.get(x?.symbol)||x;
+  const completed=x?.market==='US'?x:state.liveItems.get(x?.symbol)||x;
   const display=quoteFor(x?.symbol,completed);
   return {...x,price:numeric(display.price)?display.price:x.price,dayChangePct:display.changePct,displayQuote:display};
 }
 function allCandidates(){
   const out=[],seen=new Set();
-  for(const x of state.v2?.integratedSurfacePicks||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
-  for(const list of Object.values(state.v2?.surfacePicks||{}))for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
+  for(const x of [...(state.v2?.integratedSurfacePicks||[]),...(state.usScan?.integratedSurfacePicks||[])]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
+  for(const list of [...Object.values(state.v2?.surfacePicks||{}),...Object.values(state.usScan?.surfacePicks||{})])for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
   return out;
 }
 async function loadCandidateLiveData(ctx=captureSessionContext()){
@@ -729,16 +729,17 @@ async function loadCandidateLiveData(ctx=captureSessionContext()){
   }catch(e){if(contextActive(ctx))state.liveItems=new Map()}
 }
 const REVIEW_STAGES=['Early Watch','Recovery','Attractive Growth','Established Move'];
-function stageEligiblePicks(stage){
-  const rows=state.v2?.reviewFirst?.[stage]||state.v2?.surfacePicks?.[stage]||[];
-  const policy=state.v2?.surfacePolicy?.[stage]||{};
+function reviewScan(){return state.reviewMarket==='US'?state.usScan:state.v2}
+function stageEligiblePicks(stage,scan=reviewScan()){
+  const rows=scan?.reviewFirst?.[stage]||scan?.surfacePicks?.[stage]||[];
+  const policy=scan?.surfacePolicy?.[stage]||{};
   return [...rows].filter(x=>{
     if(Number.isFinite(policy.minScore)&&(!Number.isFinite(x?.score)||x.score<policy.minScore))return false;
     if(Number.isFinite(policy.maxStageAge)&&(!Number.isFinite(x?.stageAge)||x.stageAge>policy.maxStageAge))return false;
     return true;
   }).sort((x,y)=>(y?.surfaceScore??y?.score??-Infinity)-(x?.surfaceScore??x?.score??-Infinity)||String(x?.symbol||'').localeCompare(String(y?.symbol||''))).map(enrichCandidate);
 }
-function stageLeaders(){return REVIEW_STAGES.map(stage=>stageEligiblePicks(stage)[0]).filter(Boolean)}
+function stageLeaders(){return REVIEW_STAGES.map(stage=>stageEligiblePicks(stage,state.v2)[0]).filter(Boolean)}
 function toneClass(value){
   return /constructive|favorable|strong|bull/i.test(value||'')?'metric-good':/cautious|weaker|risk|bear/i.test(value||'')?'metric-bad':'metric-flat';
 }
@@ -749,13 +750,16 @@ function candidate(symbol){return allCandidates().find(x=>x.symbol===symbol)||nu
 function normalizeSymbol(raw){
   let s=String(raw||'').trim().toUpperCase();
   if(!s)return'';
+  if(allCandidates().some(x=>x.symbol===s))return s;
   if(!s.includes('.')){const hit=allCandidates().find(x=>short(x.symbol)===s);s=hit?hit.symbol:s+'.TO'}
   return s;
 }
 function openChart(symbol){
   const clean=short(symbol),cdr=new Set(['AAPL.TO','MSFT.TO','NVDA.TO','AMZN.TO','GOOG.TO','META.TO','TSLA.TO','AMD.TO','COST.TO']);
-  const prefix=symbol.endsWith('.NE')||cdr.has(symbol)?'NEO:':symbol.endsWith('.V')?'TSXV:':'TSX:';
-  window.open('https://www.tradingview.com/chart/?symbol='+encodeURIComponent(prefix+clean),'_blank','noopener');
+  const us=candidate(symbol)||state.portfolioItems.get(symbol)||state.liveItems.get(symbol);
+  const isUS=us?.market==='US'||!(/\.(TO|NE|V)$/.test(symbol));
+  const prefix=isUS?(us.exchange==='NASDAQ'?'NASDAQ:':us.exchange==='NYSE'?'NYSE:':''):symbol.endsWith('.NE')||cdr.has(symbol)?'NEO:':symbol.endsWith('.V')?'TSXV:':'TSX:';
+  window.open('https://www.tradingview.com/chart/?symbol='+encodeURIComponent(prefix+(isUS?clean.replace('-','.'):clean)),'_blank','noopener');
 }
 function health(x){
   if(!x)return{label:'Data unavailable',tone:'watch',notes:['Current data unavailable']};
@@ -1034,8 +1038,8 @@ async function loadFundamentals(){
   }
 }
 function fundamentalCoverageHtml(){
-  const count=(state.v2?.integratedSurfacePicks??[]).length;
-  const covered=(state.v2?.integratedSurfacePicks??[]).filter(x=>window.MHFundamentals?.reading(state.fundamentals,x.symbol)?.status!=='unavailable'&&window.MHFundamentals?.reading(state.fundamentals,x.symbol)).length;
+  const count=(reviewScan()?.integratedSurfacePicks??[]).length;
+  const covered=(reviewScan()?.integratedSurfacePicks??[]).filter(x=>window.MHFundamentals?.reading(state.fundamentals,x.symbol)?.status!=='unavailable'&&window.MHFundamentals?.reading(state.fundamentals,x.symbol)).length;
   return count?ui('Financial context for '+covered+' of '+count+' selected stocks','توضیح مالی برای '+covered+' از '+count+' سهم منتخب'):'';
 }
 function updateFundamentalDisclosures(){
@@ -1050,6 +1054,7 @@ function updateFundamentalDisclosures(){
 }
 async function load(){
   loadEngines();
+  if(state.reviewMarket==='US')void loadUSScan();
   void loadFundamentals();
   const b=q('#refreshBtn');b.classList.add('busy');b.disabled=true;
   try{
@@ -1130,7 +1135,7 @@ function homeHtml(){
       <details class="market-context reading-copy"><summary>${ui("What to watch","چه چیزی را دنبال کنم؟")}</summary><p>${fresh.usable?esc(window.MHI18n.outlook(view.outlook)):ui("These levels belong to the last recorded session; current assessment is unavailable.","این سطوح مربوط به آخرین جلسهٔ ثبت‌شده‌اند؛ ارزیابی فعلی در دسترس نیست.")}</p>${marketLevelsHtml(view.levels||x.levels)}</details>
     </div>`;
   }).join('');
-  const rows=picks.map(x=>`<button class="home-pick" data-chart="${esc(x.symbol)}"><span><b><bdi>${short(x.symbol)}</bdi></b><small>${esc(x.name||x.symbol)}</small><em>${esc(stageLabel(x.stage))}</em></span><span class="home-pick-quote"><b><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi></b><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small>${quoteMetaHtml(x.displayQuote)}</span><span class="home-pick-arrow" aria-hidden="true">↗</span></button>`).join('');
+  const rows=picks.map(x=>`<button class="home-pick" data-chart="${esc(x.symbol)}"><span><b><bdi>${short(x.symbol)}</bdi></b><small>${esc(x.name||x.symbol)}</small><em>${esc(stageLabel(x.stage))}</em></span><span class="home-pick-quote"><b><bdi>${money(x.price,x.displayQuote?.currency||x.currency||'CAD')}</bdi></b><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small>${quoteMetaHtml(x.displayQuote)}</span><span class="home-pick-arrow" aria-hidden="true">↗</span></button>`).join('');
   const outlook=(d?.markets||[]).map(m=>{
     const fresh=window.MarketHunterStatus.freshness(m);
     const h5=m?.evidence?.horizons?.['5'];
@@ -1249,9 +1254,9 @@ function volumeContextHtml(x){
 function stockCard(x,rank=''){
   const watched=state.watch.has(x.symbol),owned=state.positions.has(x.symbol);
   return `<article class="card hunter-card">
-    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart"><bdi>${short(x.symbol)}</bdi> ↗</button><small><bdi>${esc(x.name||x.symbol)}</bdi></small></div><div class="cardprice"><div class="price-line"><bdi>${money(x.price,x.displayQuote?.currency||'CAD')}</bdi><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
-    <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span><span class="tag"><bdi>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></span></div>
-    ${window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
+    <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart"><bdi>${short(x.symbol)}</bdi> ↗</button><small><bdi>${esc(x.name||x.symbol)}</bdi></small></div><div class="cardprice"><div class="price-line"><bdi>${money(x.price,x.displayQuote?.currency||x.currency||'CAD')}</bdi><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
+    <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span>${x.sector?'<span class="tag stock-sector">'+esc(x.sector)+'</span>':''}${x.market==='US'?'<span class="tag">US · USD</span>':''}<span class="tag"><bdi>RSI ${Number.isFinite(x.rsi14)?x.rsi14.toFixed(0):'—'}</bdi></span></div>
+    ${x.market==='US'?'':window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
     ${volumeContextHtml(x)}
     ${stockSummaryHtml(x)}
     ${fundamentalHtml(x)}
@@ -1259,16 +1264,35 @@ function stockCard(x,rank=''){
     <div class="actions"><button class="btn" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
   </article>`;
 }
+let usLoadSequence=0;
+async function loadUSScan(){
+  const sequence=++usLoadSequence;
+  state.usStatus='loading';renderView('shortlist');
+  try{
+    const scan=await getJsonFallback('/api/research-data?kind=v2-us','/data/v2-us-latest-scan.json');
+    if(scan?.market!=='US'||scan?.currency!=='USD'||scan?.sessionIntegrity?.referenceSymbol!=='^GSPC'||!Array.isArray(scan.integratedSurfacePicks)||scan.integratedSurfacePicks.length>6)throw new Error('invalid_us_snapshot');
+    const lists=[scan.all||[],scan.integratedSurfacePicks,...Object.values(scan.surfacePicks||{}),...Object.values(scan.reviewFirst||{})];
+    if(lists.some(list=>!Array.isArray(list)||list.some(x=>x?.market!=='US'||x.currency!=='USD'||x.benchmark!=='^GSPC'||x.date!==scan.marketAsOf)))throw new Error('invalid_us_row_identity');
+    if(sequence!==usLoadSequence)return;
+    state.usScan=scan;state.usStatus='available';
+  }catch{if(sequence===usLoadSequence)state.usStatus=state.usScan?'retained':'unavailable'}
+  finally{if(sequence===usLoadSequence)renderView('shortlist')}
+}
 function shortlistHtml(){
   const stage=REVIEW_STAGES.includes(state.reviewStage)?state.reviewStage:REVIEW_STAGES[0];
   const counts=Object.fromEntries(REVIEW_STAGES.map(s=>[s,stageEligiblePicks(s).length]));
   const picks=stageEligiblePicks(stage);
   const tabs=REVIEW_STAGES.map(s=>`<button class="stage-tab ${s===stage?'active':''}" data-stage-tab="${esc(s)}" aria-pressed="${s===stage}"><span>${esc(stageLabel(s))}</span><bdi>${counts[s]}</bdi></button>`).join('');
+  const scan=reviewScan(),us=state.reviewMarket==='US';
+  const marketTabs=`<div class="allocation-tabs hunter-market-tabs" role="group" aria-label="${ui('Stock market','بازار سهام')}">${[['CA',ui('Canada · CAD','کانادا · CAD')],['US',ui('United States · USD','آمریکا · USD')]].map(([market,label])=>`<button type="button" data-hunter-market="${market}" aria-pressed="${state.reviewMarket===market}">${label}</button>`).join('')}</div>`;
+  const marketNote=us?`<p class="reading-copy us-market-note">${ui('US large-cap discovery · rules extended from Canada; US performance has not been validated. Separate from Canadian results and the strategy engines.','شکار سهام بزرگ آمریکا · قواعد از کانادا تعمیم یافته‌اند؛ عملکرد در آمریکا هنوز اعتبارسنجی نشده. نتایج کانادا و موتورهای استراتژی جدا هستند.')}</p><p class="reading-copy">${scan?ui('Completed session','جلسهٔ کامل')+': <bdi>'+esc(scan.marketAsOf)+'</bdi> · S&P 500 · '+esc(scan.sourceUsableCount??'—')+'/'+esc(scan.universeCount??'—')+' '+ui('usable sources','منبع قابل استفاده'):ui('US snapshot is not available yet.','خروجی اسکن آمریکا هنوز موجود نیست.')}${state.usStatus==='loading'?' · '+ui('Loading','در حال دریافت'):state.usStatus==='retained'?' · '+ui('Refresh failed; previous snapshot retained','به‌روزرسانی ناموفق؛ خروجی قبلی حفظ شد'):''}</p>`:'';
   return `<div class="stack"><section class="panel soft">
+    ${marketTabs}${marketNote}
+    ${us&&scan?.sourceSessionRecoveries?.length?`<details class="us-source-note"><summary>${ui('Data source · Yahoo','منبع داده · یاهو')}</summary><p class="reading-copy"><bdi>${scan.sourceSessionRecoveries.length}</bdi> ${ui('completed-session records use the provider’s regular-session summary because daily close fields were missing. Historical rows are unchanged. This is recovery from the same provider, not independent verification of every stock.','رکورد جلسهٔ کامل از خلاصهٔ جلسهٔ عادی همان ارائه‌دهنده بازیابی شده، چون فیلد قیمت پایانی روزانه خالی بوده است. تاریخچه تغییر نکرده. این بازیابی از همان منبع است، نه تأیید مستقل همهٔ سهم‌ها.')}</p></details>`:''}
     <div class="sectionhead"><div><h2>${ui('Choose a stage','انتخاب مرحله')}</h2><small data-fundamental-coverage>${esc(fundamentalCoverageHtml())}</small><p>${ui('Choose a stage, then review each chart.','مرحله را انتخاب کن و سهم‌ها را بررسی کن.')}</p></div><span class="tag"><bdi>${Object.values(counts).reduce((x,y)=>x+y,0)}</bdi> <span>${ui(Object.values(counts).reduce((x,y)=>x+y,0)===1?'chart':'charts','سهم')}</span></span></div>
     <div class="stage-tabs">${tabs}</div>
     <div class="stage-summary"><b>${esc(stageLabel(stage))}</b><span><bdi>${picks.length}</bdi> ${ui(picks.length===1?'chart to review':'charts to review','سهم برای بررسی')} <small class="review-swipe-hint">· ${ui('Swipe ↔','ورق بزن ↔')}</small></span></div>
-    <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">'+ui('No charts meet this stage’s criteria.','سهمی با معیارهای این مرحله پیدا نشده.')+'</div>'}</div>
+    <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">'+(us&&!scan?ui('US scan unavailable; no selection can be inferred.','اسکن آمریکا موجود نیست؛ نمی‌توان نتیجهٔ انتخاب استنباط کرد.'):ui('No charts meet this stage’s criteria.','سهمی با معیارهای این مرحله پیدا نشده.'))+'</div>'}</div>
   </section></div>`;
 }
 function portfolioSummary(){
@@ -1655,6 +1679,7 @@ document.addEventListener('click',async e=>{
   const engineOpen=e.target.closest('[data-engine-open]');if(engineOpen){state.engineSelection.engine=engineOpen.dataset.engineOpen;state.engineSelection.cohort=engineOpen.dataset.engineCohort;state.engineSelection.mode=engineOpen.dataset.enginePending==='true'?'pending':'open';setView('engines');return}
   const stageTab=e.target.closest('[data-stage-tab]');if(stageTab){state.reviewStage=stageTab.dataset.stageTab;renderView('shortlist');qa('[data-stage-tab]').find(el=>el.dataset.stageTab===state.reviewStage)?.focus({preventScroll:true});return}
   const open=e.target.closest('[data-open]');if(open){setView(open.dataset.open);return}
+  const hunterMarketButton=e.target.closest('[data-hunter-market]');if(hunterMarketButton){state.reviewMarket=hunterMarketButton.dataset.hunterMarket==='US'?'US':'CA';renderView('shortlist');if(state.reviewMarket==='US'&&!state.usScan)void loadUSScan();return}
   const engineChart=e.target.closest('[data-engine-chart]');if(engineChart){const symbol=engineChart.dataset.engineChart;if(/\.(TO|V|NE)$/.test(symbol))openChart(symbol);else window.open('https://www.tradingview.com/chart/?symbol='+encodeURIComponent(symbol.replace('-USD','USD')),'_blank','noopener,noreferrer');return}
   const chart=e.target.closest('[data-chart]');if(chart){openChart(chart.dataset.chart);return}
   const watch=e.target.closest('[data-watch]');if(watch){const s=watch.dataset.watch,present=!state.watch.has(s);setWatchMembership(s,present);renderAll();toast(present?'Saved':'Removed');return}
