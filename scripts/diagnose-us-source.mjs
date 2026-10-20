@@ -4,7 +4,7 @@ const variants={
   range2y:'range=2y',range1y:'range=1y',range5d:'range=5d',
   explicit2y:`period1=${start}&period2=${end}`
 };
-for(const symbol of ['AAPL','NVDA','MSFT','^GSPC']){
+for(const symbol of ['XOM','ABBV','CVX','MRK']){
   for(const [variant,period] of Object.entries(variants)){
     if(Date.now()>=deadline)break;
     try{
