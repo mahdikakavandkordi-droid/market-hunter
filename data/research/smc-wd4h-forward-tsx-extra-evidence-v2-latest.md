@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-10-17T00:47:46.632Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-10-20T01:18:28.359Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1014.48; return 1.4%; realized-event max DD -0.7%.
-Marked equity $1005.30; return 0.5%; observed marked max DD -1.4%; quality fresh.
+Marked equity $1008.35; return 0.8%; observed marked max DD -1.4%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,10 +23,10 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| AGI.TO | Short | 43.430 | 45.480 | fresh | $-5.26 |
-| CCO.TO | Short | 116.670 | 115.250 | fresh | $0.80 |
-| PAAS.TO | Short | 60.220 | 62.520 | fresh | $-3.42 |
-| BEP-UN.TO | Short | 39.820 | 40.160 | fresh | $-1.29 |
+| AGI.TO | Short | 43.430 | 45.130 | fresh | $-4.36 |
+| CCO.TO | Short | 116.670 | 113.920 | fresh | $1.54 |
+| PAAS.TO | Short | 60.220 | 62.720 | fresh | $-3.72 |
+| BEP-UN.TO | Short | 39.820 | 39.710 | fresh | $0.42 |
 
 ## Evidence integrity
 
