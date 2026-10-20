@@ -36,6 +36,8 @@ The US job fetches at most four instruments concurrently, with a bounded timeout
 When a stock's latest valid session differs from the index, it retries the same
 full history range once through Yahoo query2. Only a complete USD replacement
 matching the reference session is accepted; rows are never spliced or imputed.
+The US scan has a three-minute source budget and at most one minute for recovery;
+superseded US workflow runs are cancelled. Canadian scan timing is unchanged.
 Publication requires usable source histories for at least 90% of membership and
 at least one liquid instrument, independently of whether any setup qualifies.
 This is a source-reliability guard, not an optimized selection threshold. Failed

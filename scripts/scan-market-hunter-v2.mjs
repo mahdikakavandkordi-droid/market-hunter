@@ -6,15 +6,17 @@ import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_PO
 import {volumeMetrics} from '../lib/volume-context.js';
 
 const market=hunterMarket(process.env.MH_HUNTER_MARKET||'CA');
+const sourceDeadline=market.market==='US'?Date.now()+180000:Infinity;
 const UNIVERSE=market.instruments.map(x=>[x.symbol,x.name,x.sector]);
 const range=process.env.V2_SCAN_RANGE||'2y';
 const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
 const benchSymbol=s=>market.market==='US'?market.referenceSymbol:CDR.has(s)?'^IXIC':'^GSPTSE';
 const meta=new Map(market.instruments.map(x=>[x.symbol,x]));
 
-async function fetchRows(symbol,host='query1'){
+async function fetchRows(symbol,host='query1',deadline=sourceDeadline){
+  if(Date.now()>=deadline)throw new Error('source_deadline');
   const url='https://'+host+'.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?range='+range+'&interval=1d&includePrePost=false&events=div%2Csplits';
-  const res=await fetch(url,{signal:AbortSignal.timeout(12000),headers:{'User-Agent':'Mozilla/5.0 MarketHunterV2ResearchScan/1.0'}});
+  const res=await fetch(url,{signal:AbortSignal.timeout(Math.max(1,Math.min(12000,deadline-Date.now()))),headers:{'User-Agent':'Mozilla/5.0 MarketHunterV2ResearchScan/1.0'}});
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
   const splitDays=new Set(Object.values(z?.events?.splits||{}).map(x=>dayKey(Number(x.date))));
@@ -95,13 +97,14 @@ if(market.market==='US'){
   // Incomplete vendor responses can omit the newest stock close while supplying
   // the index close. Retry the same full range once; never patch or splice bars.
   const retry=symbols.filter(s=>data[s]?.currency==='USD'&&quoteSessionIssue(data[s].rows,marketAsOf));
-  replacementRetries.attempted=retry.length;
+  const retryDeadline=Math.min(sourceDeadline,Date.now()+60000);
   let retryIndex=0;
   await Promise.all(Array.from({length:4},async()=>{
-    while(retryIndex<retry.length){
+    while(retryIndex<retry.length&&Date.now()<retryDeadline){
       const symbol=retry[retryIndex++];
+      replacementRetries.attempted++;
       try{
-        const replacement=await fetchRows(symbol,'query2');
+        const replacement=await fetchRows(symbol,'query2',retryDeadline);
         if(replacement.currency==='USD'&&replacement.rows.length>=120&&!quoteSessionIssue(replacement.rows,marketAsOf)){
           data[symbol]=replacement;replacementRetries.recovered++;
         }
