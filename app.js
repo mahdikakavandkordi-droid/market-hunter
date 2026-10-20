@@ -700,7 +700,7 @@ function quoteFor(symbol,fallback=null){
 }
 function quoteMetaHtml(display){
   const when=display?.quoteAt?quoteTimeLabel(display.quoteAt):'';
-  return '<small class="quote-meta '+esc(display?.state||'unavailable')+'">'+esc(display?.label||'Quote unavailable')+(when?' · '+esc(when):'')+'</small>';
+  return '<small class="quote-meta '+esc(display?.state||'unavailable')+'">'+esc(display?.label||'Quote unavailable')+(when?' · <bdi class="quote-time">'+esc(when)+'</bdi>':'')+'</small>';
 }
 function enrichCandidate(x){
   const completed=x?.market==='US'?x:state.liveItems.get(x?.symbol)||x;
