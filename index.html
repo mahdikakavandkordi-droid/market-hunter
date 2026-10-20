@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#08111d" id="themeColor">
+  <meta name="theme-color" content="#0c111a" id="themeColor">
   <script>
     try{
       const saved=localStorage.getItem('marketHunterTheme')||'dark';
@@ -25,6 +25,7 @@
   <title>Market Hunter</title>
 </head>
 <body>
+  <a class="skip-link" href="#mainContent">Skip to content</a>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
@@ -36,11 +37,11 @@
       </div>
 
       <nav class="side-nav" aria-label="Primary">
-        <button class="navbtn active" aria-current="page" data-view="home"><span>⌂</span>Home</button>
-        <button class="navbtn" data-view="shortlist"><span>◎</span>Charts to Review</button>
-        <button class="navbtn" data-view="portfolio"><span>▣</span>Portfolio</button>
-        <button class="navbtn" data-view="watchlist"><span>☆</span>Watchlist</button>
-        <button class="navbtn" data-view="engines"><span>◈</span>Paper Engines</button>
+        <button class="navbtn active" aria-current="page" data-view="home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span>Home</button>
+        <button class="navbtn" data-view="shortlist"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5M8 11h6m-3-3v6"/></svg></span>Charts to Review</button>
+        <button class="navbtn" data-view="portfolio"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="3"/><path d="M3 9h18m-6 5h3M7 5V3h10v2"/></svg></span>Portfolio</button>
+        <button class="navbtn" data-view="watchlist"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg></span>Watchlist</button>
+        <button class="navbtn" data-view="engines"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 9-9 9-9-9zM8 12h8m-4-4v8"/></svg></span>Paper Engines</button>
       </nav>
 
       <div class="side-note">
@@ -63,11 +64,11 @@
           <button class="btn" id="languageBtn" type="button">فارسی</button>
           <div class="market-status"><span></span><b>Market Hunter</b></div>
           <button class="iconbtn themebtn" id="themeBtn" aria-label="Switch theme" title="Switch theme">☼</button>
-          <button class="iconbtn" id="refreshBtn" aria-label="Refresh data" title="Refresh">↻</button>
+          <button class="iconbtn" id="refreshBtn" aria-label="Refresh data" title="Refresh"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 7a7 7 0 0 1 12-1l2 3M4 15l2 3a7 7 0 0 0 12-1"/></svg></button>
         </div>
       </header>
 
-      <main class="main">
+      <main class="main" id="mainContent" tabindex="-1">
         <section class="view active" id="homeView"></section>
         <section class="view" id="shortlistView"></section>
         <section class="view" id="portfolioView"></section>
@@ -78,11 +79,11 @@
   </div>
 
   <nav class="mobile-nav" aria-label="Mobile primary">
-    <button class="navbtn active" aria-current="page" data-view="home"><span>⌂</span><small>Home</small></button>
-    <button class="navbtn" data-view="shortlist"><span>◎</span><small>Review</small></button>
-    <button class="navbtn" data-view="portfolio"><span>▣</span><small>Portfolio</small></button>
-    <button class="navbtn" data-view="watchlist"><span>☆</span><small>Watchlist</small></button>
-    <button class="navbtn" data-view="engines"><span>◈</span><small>Engines</small></button>
+    <button class="navbtn active" aria-current="page" data-view="home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><small>Home</small></button>
+    <button class="navbtn" data-view="shortlist"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5M8 11h6m-3-3v6"/></svg></span><small>Review</small></button>
+    <button class="navbtn" data-view="portfolio"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="3"/><path d="M3 9h18m-6 5h3M7 5V3h10v2"/></svg></span><small>Portfolio</small></button>
+    <button class="navbtn" data-view="watchlist"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg></span><small>Watchlist</small></button>
+    <button class="navbtn" data-view="engines"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 9-9 9-9-9zM8 12h8m-4-4v8"/></svg></span><small>Engines</small></button>
   </nav>
 
   <input id="backupFile" type="file" accept="application/json,.json" hidden>

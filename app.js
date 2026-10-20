@@ -675,12 +675,12 @@ function applyTheme(theme){
   try{localStorage.setItem('marketHunterTheme',next)}catch{}
   const b=q('#themeBtn');
   if(b){
-    b.textContent=next==='dark'?'☼':'☾';
+    b.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(next==='dark'?'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>':'<path d="M21 13a9 9 0 1 1-10-10 7 7 0 0 0 10 10z"/>')+'</svg>';
     b.title=next==='dark'?'Switch to light theme':'Switch to dark theme';
     b.setAttribute('aria-label',b.title);
   }
   const meta=q('#themeColor');
-  if(meta)meta.setAttribute('content',next==='light'?'#f4f6f8':'#08111d');
+  if(meta)meta.setAttribute('content',next==='light'?'#f3f5f8':'#0c111a');
 }
 function toast(msg){const e=q('#toast');e.textContent=msg;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),1400)}
 async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url);return r.json()}
@@ -1261,7 +1261,7 @@ function stockCard(x,rank=''){
     ${stockSummaryHtml(x)}
     ${fundamentalHtml(x)}
     <details class="stock-technical"><summary>${ui('Technical details','جزئیات تکنیکال')}</summary><div class="metrics"><div class="metric"><small>${ui('20-day move','تغییر ۲۰روزه')}</small><b class="${cls(x.ret20)}"><bdi>${pct(x.ret20)}</bdi></b></div><div class="metric"><small>${ui('Vs benchmark · 20D','نسبت به شاخص · ۲۰روز')}</small><b class="${cls(x.rs20)}"><bdi>${Number.isFinite(x.rs20)?(x.rs20>=0?'+':'')+x.rs20.toFixed(1)+' pp':'—'}</bdi></b></div><div class="metric"><small>${ui('Momentum shift','تغییر شتاب')}</small><b class="${cls(x.momentumShift)}"><bdi>${Number.isFinite(x.momentumShift)?x.momentumShift.toFixed(1)+'pp':'—'}</bdi></b></div></div><p class="explanation-note reading-copy">${ui('Relative strength compares 20-day returns with the benchmark. Momentum shift shows how much the pace changed. Both use percentage points (pp), not your portfolio return.','قدرت نسبی، اختلاف بازده ۲۰روزه با شاخص مبناست. تغییر شتاب می‌گوید سرعت حرکت چقدر تغییر کرده. واحد هر دو «واحد درصد» (pp) است؛ این اعداد سود پورتفولیوی تو نیستند.')}</p><div class="technical-grid"><div><small>${ui('Benchmark','شاخص مبنا')}</small><b><bdi>${esc(x.benchmark||'—')}</bdi></b></div><div><small>${ui('From 60-day high','فاصله از سقف ۶۰روزه')}</small><b><bdi>${pct(x.pullback60)}</bdi></b></div><div><small>${ui('ATR','نوسان (ATR)')}</small><b><bdi>${pct(x.atr14Pct)}</bdi></b></div><div><small>${ui('Above / below MA20','فاصله از میانگین ۲۰روزه')}</small><b><bdi>${pct(x.dist20)}</bdi></b></div><div><small>${ui('Above / below MA50','فاصله از میانگین ۵۰روزه')}</small><b><bdi>${pct(x.dist50)}</bdi></b></div></div>${(()=>{const r=window.MHI18n?.read(x);return r&&(r.now.length||r.watch.length)?'<div class="copy"><strong>'+ui('Supporting observations','مشاهدات پشتیبان')+'</strong><p>'+esc([...r.now,...r.watch].join(' '))+'</p></div>':''})()}</details>
-    <div class="actions"><button class="btn" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ${owned?'':'primary'}" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
+    <div class="actions"><button class="btn primary" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ghost" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>
   </article>`;
 }
 let usLoadSequence=0;
@@ -1292,7 +1292,7 @@ function shortlistHtml(){
     <div class="sectionhead"><div><h2>${ui('Choose a stage','انتخاب مرحله')}</h2><small data-fundamental-coverage>${esc(fundamentalCoverageHtml())}</small><p>${ui('Choose a stage, then review each chart.','مرحله را انتخاب کن و سهم‌ها را بررسی کن.')}</p></div><span class="tag"><bdi>${Object.values(counts).reduce((x,y)=>x+y,0)}</bdi> <span>${ui(Object.values(counts).reduce((x,y)=>x+y,0)===1?'chart':'charts','سهم')}</span></span></div>
     <div class="stage-tabs">${tabs}</div>
     <div class="stage-summary"><b>${esc(stageLabel(stage))}</b><span><bdi>${picks.length}</bdi> ${ui(picks.length===1?'chart to review':'charts to review','سهم برای بررسی')} <small class="review-swipe-hint">· ${ui('Swipe ↔','ورق بزن ↔')}</small></span></div>
-    <div class="cards">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">'+(us&&!scan?ui('US scan unavailable; no selection can be inferred.','اسکن آمریکا موجود نیست؛ نمی‌توان نتیجهٔ انتخاب استنباط کرد.'):ui('No charts meet this stage’s criteria.','سهمی با معیارهای این مرحله پیدا نشده.'))+'</div>'}</div>
+    ${swipeTools("reviewCards",picks.length)}<div class="cards mobile-rail" id="reviewCards" tabindex="0" aria-label="${ui('Stocks in this stage','سهم‌های این مرحله')}">${picks.length?picks.map((x,i)=>stockCard(x,i+1)).join(''):'<div class="empty">'+(us&&!scan?ui('US scan unavailable; no selection can be inferred.','اسکن آمریکا موجود نیست؛ نمی‌توان نتیجهٔ انتخاب استنباط کرد.'):ui('No charts meet this stage’s criteria.','سهمی با معیارهای این مرحله پیدا نشده.'))+'</div>'}</div>
   </section></div>`;
 }
 function portfolioSummary(){
@@ -1525,9 +1525,9 @@ function cloudPanelHtml(){
   const connected=telegramBridgeEnabled();
   const updated=telegramBridgeUpdatedAt?quoteTimeLabel(telegramBridgeUpdatedAt):'';
   if(connected){
-    return `<div class="cloud-panel"><div class="cloud-row"><div><b>Backend portfolio</b><small>Supabase is the source of truth. This browser keeps only a local cache.</small></div><span class="cloud-badge synced">Connected</span></div><div class="cloud-message">Your holdings can be restored from the backend even if browser storage is cleared.${updated?' Last backend update: '+esc(updated)+'.':''}</div><div class="cloud-actions"><button class="btn ghost" data-backend-sync>Sync now</button></div></div>`;
+    return `<div class="cloud-panel"><div class="cloud-row"><div><b>${ui('Saved portfolio','پورتفولیوی ذخیره‌شده')}</b><small>${ui('Your holdings are saved and can be restored on another device.','سهم‌هایت ذخیره شده‌اند و در دستگاه دیگری هم قابل بازیابی‌اند.')}</small></div><span class="cloud-badge synced">${ui('Connected','متصل')}</span></div><div class="cloud-message">${ui('Clearing this browser will not remove your saved holdings.','پاک‌کردن اطلاعات این مرورگر، سهم‌های ذخیره‌شده را حذف نمی‌کند.')}${updated?' '+ui('Last saved: ','آخرین ذخیره: ')+esc(updated)+'.':''}</div><div class="cloud-actions"><button class="btn ghost" data-backend-sync>${ui('Sync now','همگام‌سازی')}</button></div></div>`;
   }
-  return `<div class="cloud-panel"><div class="cloud-row"><div><b>Backend portfolio</b><small>This browser is not paired yet. Pair it from the private Telegram bot; no email/password account is required.</small></div><span class="cloud-badge">Not paired</span></div><div class="cloud-message">Open Telegram → Portfolio → اتصال پورتفولیوی سایت, then open the signed link in the browser that currently contains your portfolio.</div></div>`;
+  return `<div class="cloud-panel"><div class="cloud-row"><div><b>${ui('Saved portfolio','پورتفولیوی ذخیره‌شده')}</b><small>${ui('Connect through your private Telegram bot to restore your saved holdings.','برای بازیابی سهم‌های ذخیره‌شده، از بات خصوصی تلگرام وصل شو.')}</small></div><span class="cloud-badge">${ui('Not connected','متصل نیست')}</span></div><div class="cloud-message">${ui('In Telegram, open Portfolio → اتصال پورتفولیوی سایت, then open the secure link in your usual browser.','در تلگرام «پورتفولیو ← اتصال پورتفولیوی سایت» را باز کن و لینک امن را در مرورگر همیشگی‌ات باز کن.')}</div></div>`;
 }
 function portfolioReconnectHtml(){
   if(state.positions.size||telegramBridgeEnabled()||state.cloud.session)return '';
@@ -1538,7 +1538,7 @@ function portfolioHtml(){
   const s=portfolioSummary();
   if(!s.rows.length)return `<div class="stack portfolio-layout">${portfolioReconnectHtml()}${telegramBridgeNoticeHtml()}<section class="panel soft"><div class="empty portfolio-empty"><strong>${ui(telegramBridgeEnabled()?'No saved holdings':'No holdings in this browser',telegramBridgeEnabled()?'پوزیشن ذخیره‌شده‌ای نیست':'این مرورگر هنوز پوزیشنی ندارد')}</strong><p>${ui('If you are starting a new portfolio, add a holding with your purchase price and date.','اگر می‌خواهی پورتفولیوی تازه بسازی، سهم را با قیمت و تاریخ خرید ثبت کن.')}</p><button class="btn primary" data-add>${ui('Add holding','افزودن سهم')}</button></div></section><section class="panel soft portfolio-account" id="portfolioAccount">${cloudPanelHtml()}</section></div>`;
   const syncLabel=telegramBridgeEnabled()
-    ?'Backend portfolio'
+    ?ui('Saved portfolio','پورتفولیوی ذخیره‌شده')
     :state.cloud.session?(state.cloud.status==='error'?'Sync issue':state.cloud.status==='synced'?'Cloud synced':state.cloud.status==='syncing'?'Syncing…':'Cloud connected'):'Local cache';
   const changeBlock=s.changed.length?`<section class="panel soft"><div class="sectionhead"><div><h3>What changed today</h3><p>Versus prior saved market-day snapshot.</p></div></div><div class="devs">${s.changed.map(x=>`<div class="dev"><b>${short(x.symbol)}</b><span>${esc(x.reasons.join(' · '))}</span></div>`).join('')}</div></section>`:'';
   const attentionBlock=s.attention.length?`<details class="panel soft attention-panel portfolio-disclosure"><summary>Current attention <span>${s.attention.length} holding(s) to review</span></summary><div class="attention-cards">${s.attention.map(({p,x})=>{const display=quoteFor(p.symbol,x);return `<article class="attention-card"><div class="attention-head"><b>${short(p.symbol)}</b><span class="day-change ${cls(display.changePct)}">${pct(display.changePct)}</span><span class="health ${health(x).tone}">${esc(health(x).label)}</span></div>${quoteMetaHtml(display)}${insightRowsHtml(x)}<button class="btn ghost" data-chart="${p.symbol}">Chart ↗</button></article>`}).join('')}</div></details>`:'';
@@ -1552,7 +1552,7 @@ function portfolioHtml(){
 
 
     </section>
-    <a class="portfolio-sync-link" href="#portfolioAccount">${esc(syncLabel)} <span>Backend & backup ↗</span></a>
+    <a class="portfolio-sync-link" href="#portfolioAccount">${esc(syncLabel)} <span>${ui('Connection & backup ↗','اتصال و پشتیبان ↗')}</span></a>
     ${allocationHtml(s)}
     <section class="panel soft holdings-panel"><div class="sectionhead"><div><h3>Your holdings <span class="holdings-count">${s.rows.length}</span></h3><p>Price, performance and the next thing to watch.</p></div><span class="swipe-hint">${s.rows.length>1?'Swipe to browse ↔':''}</span></div><div class="portfolio-carousel">${s.rows.length?s.rows.map(({p,x})=>positionCard(p,x,s.value)).join(''):'<div class="empty portfolio-empty"><span aria-hidden="true">＋</span><strong>Your portfolio starts here</strong><p>Add a holding with your purchase price and date to see its progress.</p><button class="btn primary" data-add>Add your first holding</button></div>'}</div></section>
     ${changeBlock}${attentionBlock}
