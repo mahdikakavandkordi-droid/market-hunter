@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-ledger-v2",
-  "updatedAt": "2026-10-17T00:39:30.630Z",
+  "updatedAt": "2026-10-20T01:08:35.184Z",
   "forwardStart": "2026-10-01",
   "runLog": [
     {
@@ -733,6 +733,48 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 3
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|39351721944|1",
+      "observedAt": "2026-10-20T01:08:35.184Z",
+      "tracker": "smc-forward-paper",
+      "cohort": "tsx-core",
+      "github": {
+        "runId": "39351721944",
+        "runAttempt": "1",
+        "sha": "62c035d8fbf2c06c0950d93e8389664f3b070d6f",
+        "workflow": "SMC Forward Paper Track",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "CSU.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 7,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 3
     }
   ],
   "discrepancyLog": [
@@ -882,6 +924,15 @@
       "quality": "fresh",
       "markedEquity": 981.6034268096349,
       "totalUnrealizedPnl": -9.800345847223474,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|39351721944|1",
+      "observedAt": "2026-10-20T01:08:35.184Z",
+      "quality": "fresh",
+      "markedEquity": 983.4732440795997,
+      "totalUnrealizedPnl": -7.930528577258767,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -1723,7 +1774,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
