@@ -36,7 +36,7 @@ for(const width of [320,390,768,1440]){
       const link=card.locator('.symbol-link'),symbol=link.locator('bdi');
       const a=await link.boundingBox(),b=await symbol.boundingBox();
       expect(a.height-b.height).toBeLessThan(12); // the chart arrow must not wrap below the symbol
-      const price=await card.locator('.cardprice').boundingBox();
+      const price=await card.locator('.price-line').boundingBox();
       const name=await card.locator('.name').boundingBox();
       if(width<=700||width>=1000)expect(price.x).toBeGreaterThanOrEqual(name.x+name.width-1);
       else expect(price.y).toBeGreaterThanOrEqual(name.y+name.height-1);
