@@ -2,122 +2,32 @@
   "version": "trend-breakout-v1",
   "mode": "forward_shadow",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "generatedAt": "2026-10-20T17:26:28.364Z",
+  "generatedAt": "2026-10-20T20:47:47.634Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "cohort": "metals-5",
   "universe": 5,
   "failures": [],
-  "diagnostics": [
-    {
-      "symbol": "CPER",
-      "type": "off_session_grid",
-      "date": "2026-10-20",
-      "t": 1792517094000
-    },
-    {
-      "symbol": "CPER",
-      "type": "live_incomplete_exchange_bar_dropped",
-      "date": "2026-10-20",
-      "segment": 0,
-      "endT": 1792517400000
-    },
-    {
-      "symbol": "PPLT",
-      "type": "live_incomplete_exchange_bar_dropped",
-      "date": "2026-10-20",
-      "segment": 0,
-      "endT": 1792517400000
-    },
-    {
-      "symbol": "PPLT",
-      "type": "incomplete_or_missing_exchange_bar",
-      "date": "2026-10-20",
-      "segment": 1,
-      "expected": [
-        4,
-        5,
-        6
-      ],
-      "present": [
-        4
-      ]
-    },
-    {
-      "symbol": "SLV",
-      "type": "live_incomplete_exchange_bar_dropped",
-      "date": "2026-10-20",
-      "segment": 0,
-      "endT": 1792517400000
-    },
-    {
-      "symbol": "SLV",
-      "type": "incomplete_or_missing_exchange_bar",
-      "date": "2026-10-20",
-      "segment": 1,
-      "expected": [
-        4,
-        5,
-        6
-      ],
-      "present": [
-        4
-      ]
-    },
-    {
-      "symbol": "GLD",
-      "type": "live_incomplete_exchange_bar_dropped",
-      "date": "2026-10-20",
-      "segment": 0,
-      "endT": 1792517400000
-    },
-    {
-      "symbol": "GLD",
-      "type": "incomplete_or_missing_exchange_bar",
-      "date": "2026-10-20",
-      "segment": 1,
-      "expected": [
-        4,
-        5,
-        6
-      ],
-      "present": [
-        4
-      ]
-    },
-    {
-      "symbol": "PALL",
-      "type": "off_session_grid",
-      "date": "2026-10-20",
-      "t": 1792516948000
-    },
-    {
-      "symbol": "PALL",
-      "type": "live_incomplete_exchange_bar_dropped",
-      "date": "2026-10-20",
-      "segment": 0,
-      "endT": 1792517400000
-    }
-  ],
+  "diagnostics": [],
   "inputs": [
     {
-      "symbol": "CPER",
-      "sha256": "be5be43d0bf12c235c43c50841d6f249bd1c5a92ccce8fdca77d5771c6a7695b"
+      "symbol": "SLV",
+      "sha256": "06522943a878d437d397b7f863f76021ca1d63e090b04029754ed013b08af0e6"
     },
     {
       "symbol": "PPLT",
-      "sha256": "55edca7106854c735b198a64920cc218dbf0a3a6b209bb4505990d7a1da48925"
+      "sha256": "369761712750e46c6bb2328423e2a7a23203ef54e900a0479093f64af551cd9f"
     },
     {
-      "symbol": "SLV",
-      "sha256": "8801cec5983663a7360c8ca9a51271b18e1043144727de9d99543853d0369680"
+      "symbol": "CPER",
+      "sha256": "9ff178a208d2941b4f4e83ffb9cff83bef243328acaf5a24f0036b07139f75bc"
     },
     {
       "symbol": "GLD",
-      "sha256": "1a2da6d03b64aa578171a2af6fcc2ccf495128d165bb7cb1710fc41bd9ffd39c"
+      "sha256": "59a60fb1ed38a457df4bee285539077fee2903655a81778ecd819148d2f288fd"
     },
     {
       "symbol": "PALL",
-      "sha256": "da9a7faa615643c5687d8cbed23daeb11791e745005b46e93478d0e0debe2ae1"
+      "sha256": "0fa1f17270ba4545ec06959e46a2c94c1542c4fadbfdec2f18d08ca3b222dd28"
     }
   ],
   "trades": [
@@ -153,11 +63,11 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 20.62478542327881,
+      "currentStop": 20.613000052315847,
       "bestClose": 19.844999313354492,
-      "holdingBars": 16,
+      "holdingBars": 18,
       "entryObservedAt": "2026-10-08T21:26:43.880Z",
-      "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z"
+      "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z"
     },
     {
       "symbol": "PPLT",
@@ -210,7 +120,7 @@
       "symbol": "SLV",
       "signalT": "2026-10-08T13:30:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-08T17:30:00.000Z",
         "dailyAsOf": "2026-10-07",
@@ -226,8 +136,8 @@
       "stop": 56.57867213657924,
       "target": null,
       "risk": 1.6836716788155692,
-      "R": null,
-      "exitT": null,
+      "R": 1.2780154786245628,
+      "exitT": "2026-10-20T17:30:00.000Z",
       "decisionId": "SLV|2026-10-08T13:30:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-10-08T21:26:43.880Z",
@@ -240,9 +150,18 @@
       "entryObservationClass": "prospective",
       "currentStop": 52.74324199131557,
       "bestClose": 50.209999084472656,
-      "holdingBars": 14,
+      "holdingBars": 15,
       "entryObservedAt": "2026-10-09T20:14:42.830Z",
-      "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z"
+      "lastEvaluatedEndT": "2026-10-20T17:30:00.000Z",
+      "exitPriceAssumed": 52.74324199131557,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "trailing_or_initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapFillAssumption": "boundary stop / completed time-exit close",
+        "exitBarStartT": "2026-10-20T13:30:00.000Z",
+        "exitBarEndT": "2026-10-20T17:30:00.000Z"
+      }
     },
     {
       "symbol": "CPER",
@@ -323,49 +242,49 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 15.15268611907959,
+      "currentStop": 15.140836375100273,
       "bestClose": 14.630000114440918,
-      "holdingBars": 6,
+      "holdingBars": 8,
       "entryObservedAt": "2026-10-15T20:28:43.624Z",
-      "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z"
+      "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z"
     }
   ],
   "summary": {
     "raw": {
-      "n": 2,
-      "wr": 0,
-      "pf": 0,
-      "avgR": -1.0000000000000016,
-      "sumR": -2.000000000000003,
+      "n": 3,
+      "wr": 0.3333333333333333,
+      "pf": 0.6390077393122804,
+      "avgR": -0.24066150712514678,
+      "sumR": -0.7219845213754403,
       "maxDD": -2.000000000000003
     },
     "afterCost": {
-      "n": 2,
-      "wr": 0,
-      "pf": 0,
-      "avgR": -1.0500000000000016,
-      "sumR": -2.100000000000003,
+      "n": 3,
+      "wr": 0.3333333333333333,
+      "pf": 0.5847692755355052,
+      "avgR": -0.2906615071251468,
+      "sumR": -0.8719845213754405,
       "maxDD": -2.100000000000003
     },
     "byProvenance": {
       "prospective": {
         "raw": {
-          "n": 2,
-          "wr": 0,
-          "pf": 0,
-          "avgR": -1.0000000000000016,
-          "sumR": -2.000000000000003,
+          "n": 3,
+          "wr": 0.3333333333333333,
+          "pf": 0.6390077393122804,
+          "avgR": -0.24066150712514678,
+          "sumR": -0.7219845213754403,
           "maxDD": -2.000000000000003
         },
         "afterCost": {
-          "n": 2,
-          "wr": 0,
-          "pf": 0,
-          "avgR": -1.0500000000000016,
-          "sumR": -2.100000000000003,
+          "n": 3,
+          "wr": 0.3333333333333333,
+          "pf": 0.5847692755355052,
+          "avgR": -0.2906615071251468,
+          "sumR": -0.8719845213754405,
           "maxDD": -2.100000000000003
         },
-        "open": 3
+        "open": 2
       },
       "reconstructed": {
         "raw": {
@@ -445,7 +364,7 @@
       }
     },
     "pending": 0,
-    "open": 3,
+    "open": 2,
     "needsReview": 0
   },
   "portfolio": {
@@ -459,11 +378,11 @@
       "fractionalShares": true
     },
     "startingCapital": 1000,
-    "cash": 239.88298841133826,
-    "reservedEntryNotional": 746.6276628037795,
-    "openRiskAmount": 24.61427478850085,
-    "realizedCurrentEquity": 986.5106512151177,
-    "realizedReturnPct": -0.013489348784882282,
+    "cash": 499.29903206406635,
+    "reservedEntryNotional": 496.6276628037794,
+    "openRiskAmount": 16.946583446959693,
+    "realizedCurrentEquity": 995.9266948678458,
+    "realizedReturnPct": -0.0040733051321542035,
     "realizedMaxDrawdownPct": -0.013489348784882393,
     "realizedEquityCurve": [
       {
@@ -497,16 +416,20 @@
       {
         "t": "2026-10-15T13:30:00.000Z",
         "equity": 986.5106512151177
+      },
+      {
+        "t": "2026-10-20T17:30:00.000Z",
+        "equity": 995.9266948678458
       }
     ],
-    "markedCurrentEquity": 999.8539373277556,
-    "markedReturnPct": -0.00014606267224437364,
+    "markedCurrentEquity": 995.6533900624369,
+    "markedReturnPct": -0.004346609937563084,
     "markedObservation": {
-      "runKey": "trend-breakout-v1|39465981180|1",
-      "observedAt": "2026-10-20T17:26:28.364Z",
+      "runKey": "trend-breakout-v1|39494944830|1",
+      "observedAt": "2026-10-20T20:47:47.634Z",
       "quality": "fresh",
-      "markedEquity": 999.8539373277556,
-      "totalUnrealizedPnl": 13.343286112638008,
+      "markedEquity": 995.6533900624369,
+      "totalUnrealizedPnl": -0.2733048054089089,
       "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
@@ -543,11 +466,11 @@
             "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
           },
           "entryObservationClass": "prospective",
-          "currentStop": 20.62478542327881,
+          "currentStop": 20.613000052315847,
           "bestClose": 19.844999313354492,
-          "holdingBars": 16,
+          "holdingBars": 18,
           "entryObservedAt": "2026-10-08T21:26:43.880Z",
-          "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
+          "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z",
           "accountEquityBefore": 1000,
           "notional": 250,
           "allocationPct": 0.25,
@@ -559,67 +482,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 20.239999771118164,
-          "markT": "2026-10-19T20:30:00.000Z",
+          "markPrice": 19.940000534057617,
+          "markT": "2026-10-20T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 1.3513588241959777,
-          "markedPositionValue": 251.35135882419598
-        },
-        {
-          "symbol": "SLV",
-          "signalT": "2026-10-08T13:30:00.000Z",
-          "dir": -1,
-          "status": "open",
-          "signalSnapshot": {
-            "signalCompletedAt": "2026-10-08T17:30:00.000Z",
-            "dailyAsOf": "2026-10-07",
-            "dailyClose": 53.81999969482422,
-            "dailySma": 65.84945007324218,
-            "breakoutHigh": 58.51499938964844,
-            "breakoutLow": 53.599998474121094,
-            "atr14": 0.8418358394077846,
-            "signalClose": 53.40999984741211
-          },
-          "entryT": "2026-10-09T13:30:00.000Z",
-          "entry": 54.89500045776367,
-          "stop": 56.57867213657924,
-          "target": null,
-          "risk": 1.6836716788155692,
-          "R": null,
-          "exitT": null,
-          "decisionId": "SLV|2026-10-08T13:30:00.000Z|-1",
-          "historicalDiagnostic": false,
-          "decisionAvailableAt": "2026-10-08T21:26:43.880Z",
-          "firstObservedAt": "2026-10-08T21:26:43.880Z",
-          "firstObservedProvenance": {
-            "tracker": "trend-breakout-v1",
-            "runKey": "trend-breakout-v1|37846746324|1",
-            "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
-          },
-          "entryObservationClass": "prospective",
-          "currentStop": 52.74324199131557,
-          "bestClose": 50.209999084472656,
-          "holdingBars": 14,
-          "entryObservedAt": "2026-10-09T20:14:42.830Z",
-          "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
-          "accountEquityBefore": 1000,
-          "notional": 250,
-          "allocationPct": 0.25,
-          "quantity": 4.5541487916071794,
-          "stopPct": 0.030670765366164626,
-          "riskAmount": 7.667691341541157,
-          "riskPctEquity": 0.007667691341541156,
-          "pnl": null,
-          "portfolioStatus": "open",
-          "effectiveExitMs": null,
-          "legacyExitTimingAdjusted": false,
-          "markPrice": 51.540000915527344,
-          "markT": "2026-10-19T20:30:00.000Z",
-          "markStatus": "fresh",
-          "markSource": "completed_4h_close",
-          "unrealizedPnl": 15.279167111118214,
-          "markedPositionValue": 265.2791671111182
+          "unrealizedPnl": 5.036853067892894,
+          "markedPositionValue": 255.0368530678929
         },
         {
           "symbol": "PPLT",
@@ -653,11 +521,11 @@
             "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
           },
           "entryObservationClass": "prospective",
-          "currentStop": 15.15268611907959,
+          "currentStop": 15.140836375100273,
           "bestClose": 14.630000114440918,
-          "holdingBars": 6,
+          "holdingBars": 8,
           "entryObservedAt": "2026-10-15T20:28:43.624Z",
-          "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
+          "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z",
           "accountEquityBefore": 986.5106512151176,
           "notional": 246.6276628037794,
           "allocationPct": 0.25,
@@ -669,12 +537,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 14.824999809265137,
-          "markT": "2026-10-19T20:30:00.000Z",
+          "markPrice": 14.944999694824219,
+          "markT": "2026-10-20T20:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -3.2872398226761836,
-          "markedPositionValue": 243.34042298110322
+          "unrealizedPnl": -5.310157873301803,
+          "markedPositionValue": 241.3175049304776
         }
       ]
     },
@@ -2005,11 +1873,20 @@
         "totalUnrealizedPnl": 13.343286112638008,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "trend-breakout-v1|39494944830|1",
+        "observedAt": "2026-10-20T20:47:47.634Z",
+        "quality": "fresh",
+        "markedEquity": 995.6533900624369,
+        "totalUnrealizedPnl": -0.2733048054089089,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T19:58:21.240Z",
     "firstCompleteMarkedEquityAt": "2026-10-04T19:58:21.240Z",
-    "markedObservedMaxDrawdownPct": -0.017852260910873996,
+    "markedObservedMaxDrawdownPct": -0.018142482515435487,
     "costAccounting": {
       "closedTradeCostR": 0.05,
       "chargedOnceOnSettlement": true,
@@ -2021,8 +1898,8 @@
       "missingOrInvalidMarkMakesTotalMarkedEquityNull": true
     },
     "enteredCount": 5,
-    "closedCount": 2,
-    "openCount": 3,
+    "closedCount": 3,
+    "openCount": 2,
     "skippedCount": 0,
     "entered": [
       {
@@ -2057,11 +1934,11 @@
           "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
         },
         "entryObservationClass": "prospective",
-        "currentStop": 20.62478542327881,
+        "currentStop": 20.613000052315847,
         "bestClose": 19.844999313354492,
-        "holdingBars": 16,
+        "holdingBars": 18,
         "entryObservedAt": "2026-10-08T21:26:43.880Z",
-        "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
+        "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z",
         "accountEquityBefore": 1000,
         "notional": 250,
         "allocationPct": 0.25,
@@ -2137,7 +2014,7 @@
         "symbol": "SLV",
         "signalT": "2026-10-08T13:30:00.000Z",
         "dir": -1,
-        "status": "open",
+        "status": "closed",
         "signalSnapshot": {
           "signalCompletedAt": "2026-10-08T17:30:00.000Z",
           "dailyAsOf": "2026-10-07",
@@ -2153,8 +2030,8 @@
         "stop": 56.57867213657924,
         "target": null,
         "risk": 1.6836716788155692,
-        "R": null,
-        "exitT": null,
+        "R": 1.2780154786245628,
+        "exitT": "2026-10-20T17:30:00.000Z",
         "decisionId": "SLV|2026-10-08T13:30:00.000Z|-1",
         "historicalDiagnostic": false,
         "decisionAvailableAt": "2026-10-08T21:26:43.880Z",
@@ -2167,9 +2044,18 @@
         "entryObservationClass": "prospective",
         "currentStop": 52.74324199131557,
         "bestClose": 50.209999084472656,
-        "holdingBars": 14,
+        "holdingBars": 15,
         "entryObservedAt": "2026-10-09T20:14:42.830Z",
-        "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
+        "lastEvaluatedEndT": "2026-10-20T17:30:00.000Z",
+        "exitPriceAssumed": 52.74324199131557,
+        "exitTimeConvention": "bar_end",
+        "exitReason": "trailing_or_initial_stop",
+        "executionAudit": {
+          "gapThroughStop": false,
+          "gapFillAssumption": "boundary stop / completed time-exit close",
+          "exitBarStartT": "2026-10-20T13:30:00.000Z",
+          "exitBarEndT": "2026-10-20T17:30:00.000Z"
+        },
         "accountEquityBefore": 1000,
         "notional": 250,
         "allocationPct": 0.25,
@@ -2177,10 +2063,11 @@
         "stopPct": 0.030670765366164626,
         "riskAmount": 7.667691341541157,
         "riskPctEquity": 0.007667691341541156,
-        "pnl": null,
-        "portfolioStatus": "open",
-        "effectiveExitMs": null,
-        "legacyExitTimingAdjusted": false
+        "pnl": 9.41604365272808,
+        "portfolioStatus": "closed",
+        "effectiveExitMs": 1792517400000,
+        "legacyExitTimingAdjusted": false,
+        "accountEquityAfter": 995.9266948678458
       },
       {
         "symbol": "CPER",
@@ -2273,11 +2160,11 @@
           "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
         },
         "entryObservationClass": "prospective",
-        "currentStop": 15.15268611907959,
+        "currentStop": 15.140836375100273,
         "bestClose": 14.630000114440918,
-        "holdingBars": 6,
+        "holdingBars": 8,
         "entryObservedAt": "2026-10-15T20:28:43.624Z",
-        "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
+        "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z",
         "accountEquityBefore": 986.5106512151176,
         "notional": 246.6276628037794,
         "allocationPct": 0.25,
@@ -2324,11 +2211,11 @@
           "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
         },
         "entryObservationClass": "prospective",
-        "currentStop": 20.62478542327881,
+        "currentStop": 20.613000052315847,
         "bestClose": 19.844999313354492,
-        "holdingBars": 16,
+        "holdingBars": 18,
         "entryObservedAt": "2026-10-08T21:26:43.880Z",
-        "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
+        "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z",
         "accountEquityBefore": 1000,
         "notional": 250,
         "allocationPct": 0.25,
@@ -2340,67 +2227,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 20.239999771118164,
-        "markT": "2026-10-19T20:30:00.000Z",
+        "markPrice": 19.940000534057617,
+        "markT": "2026-10-20T20:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 1.3513588241959777,
-        "markedPositionValue": 251.35135882419598
-      },
-      {
-        "symbol": "SLV",
-        "signalT": "2026-10-08T13:30:00.000Z",
-        "dir": -1,
-        "status": "open",
-        "signalSnapshot": {
-          "signalCompletedAt": "2026-10-08T17:30:00.000Z",
-          "dailyAsOf": "2026-10-07",
-          "dailyClose": 53.81999969482422,
-          "dailySma": 65.84945007324218,
-          "breakoutHigh": 58.51499938964844,
-          "breakoutLow": 53.599998474121094,
-          "atr14": 0.8418358394077846,
-          "signalClose": 53.40999984741211
-        },
-        "entryT": "2026-10-09T13:30:00.000Z",
-        "entry": 54.89500045776367,
-        "stop": 56.57867213657924,
-        "target": null,
-        "risk": 1.6836716788155692,
-        "R": null,
-        "exitT": null,
-        "decisionId": "SLV|2026-10-08T13:30:00.000Z|-1",
-        "historicalDiagnostic": false,
-        "decisionAvailableAt": "2026-10-08T21:26:43.880Z",
-        "firstObservedAt": "2026-10-08T21:26:43.880Z",
-        "firstObservedProvenance": {
-          "tracker": "trend-breakout-v1",
-          "runKey": "trend-breakout-v1|37846746324|1",
-          "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
-        },
-        "entryObservationClass": "prospective",
-        "currentStop": 52.74324199131557,
-        "bestClose": 50.209999084472656,
-        "holdingBars": 14,
-        "entryObservedAt": "2026-10-09T20:14:42.830Z",
-        "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
-        "accountEquityBefore": 1000,
-        "notional": 250,
-        "allocationPct": 0.25,
-        "quantity": 4.5541487916071794,
-        "stopPct": 0.030670765366164626,
-        "riskAmount": 7.667691341541157,
-        "riskPctEquity": 0.007667691341541156,
-        "pnl": null,
-        "portfolioStatus": "open",
-        "effectiveExitMs": null,
-        "legacyExitTimingAdjusted": false,
-        "markPrice": 51.540000915527344,
-        "markT": "2026-10-19T20:30:00.000Z",
-        "markStatus": "fresh",
-        "markSource": "completed_4h_close",
-        "unrealizedPnl": 15.279167111118214,
-        "markedPositionValue": 265.2791671111182
+        "unrealizedPnl": 5.036853067892894,
+        "markedPositionValue": 255.0368530678929
       },
       {
         "symbol": "PPLT",
@@ -2434,11 +2266,11 @@
           "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
         },
         "entryObservationClass": "prospective",
-        "currentStop": 15.15268611907959,
+        "currentStop": 15.140836375100273,
         "bestClose": 14.630000114440918,
-        "holdingBars": 6,
+        "holdingBars": 8,
         "entryObservedAt": "2026-10-15T20:28:43.624Z",
-        "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z",
+        "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z",
         "accountEquityBefore": 986.5106512151176,
         "notional": 246.6276628037794,
         "allocationPct": 0.25,
@@ -2450,12 +2282,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 14.824999809265137,
-        "markT": "2026-10-19T20:30:00.000Z",
+        "markPrice": 14.944999694824219,
+        "markT": "2026-10-20T20:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -3.2872398226761836,
-        "markedPositionValue": 243.34042298110322
+        "unrealizedPnl": -5.310157873301803,
+        "markedPositionValue": 241.3175049304776
       }
     ],
     "skipped": []
@@ -2605,8 +2437,8 @@
         "markedCurrentEquity": 1000,
         "markedReturnPct": 0,
         "markedObservation": {
-          "runKey": "trend-breakout-v1|39465981180|1",
-          "observedAt": "2026-10-20T17:26:28.364Z",
+          "runKey": "trend-breakout-v1|39494944830|1",
+          "observedAt": "2026-10-20T20:47:47.634Z",
           "quality": "fresh",
           "markedEquity": 1000,
           "totalUnrealizedPnl": 0,
@@ -2617,8 +2449,8 @@
         },
         "markedEquitySeries": [
           {
-            "runKey": "trend-breakout-v1|39465981180|1",
-            "observedAt": "2026-10-20T17:26:28.364Z",
+            "runKey": "trend-breakout-v1|39494944830|1",
+            "observedAt": "2026-10-20T20:47:47.634Z",
             "quality": "fresh",
             "markedEquity": 1000,
             "totalUnrealizedPnl": 0,
@@ -2626,8 +2458,8 @@
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-10-20T17:26:28.364Z",
-        "firstCompleteMarkedEquityAt": "2026-10-20T17:26:28.364Z",
+        "markedSeriesCoverageStartAt": "2026-10-20T20:47:47.634Z",
+        "firstCompleteMarkedEquityAt": "2026-10-20T20:47:47.634Z",
         "markedObservedMaxDrawdownPct": 0,
         "costAccounting": {
           "closedTradeCostR": 0.05,
@@ -2650,40 +2482,40 @@
     },
     "challenger": {
       "raw": {
-        "n": 2,
-        "wr": 0,
-        "pf": 0,
-        "avgR": -1.0000000000000016,
-        "sumR": -2.000000000000003,
+        "n": 3,
+        "wr": 0.3333333333333333,
+        "pf": 0.6390077393122804,
+        "avgR": -0.24066150712514678,
+        "sumR": -0.7219845213754403,
         "maxDD": -2.000000000000003
       },
       "afterCost": {
-        "n": 2,
-        "wr": 0,
-        "pf": 0,
-        "avgR": -1.0500000000000016,
-        "sumR": -2.100000000000003,
+        "n": 3,
+        "wr": 0.3333333333333333,
+        "pf": 0.5847692755355052,
+        "avgR": -0.2906615071251468,
+        "sumR": -0.8719845213754405,
         "maxDD": -2.100000000000003
       },
       "provenance": {
         "prospective": {
           "raw": {
-            "n": 2,
-            "wr": 0,
-            "pf": 0,
-            "avgR": -1.0000000000000016,
-            "sumR": -2.000000000000003,
+            "n": 3,
+            "wr": 0.3333333333333333,
+            "pf": 0.6390077393122804,
+            "avgR": -0.24066150712514678,
+            "sumR": -0.7219845213754403,
             "maxDD": -2.000000000000003
           },
           "afterCost": {
-            "n": 2,
-            "wr": 0,
-            "pf": 0,
-            "avgR": -1.0500000000000016,
-            "sumR": -2.100000000000003,
+            "n": 3,
+            "wr": 0.3333333333333333,
+            "pf": 0.5847692755355052,
+            "avgR": -0.2906615071251468,
+            "sumR": -0.8719845213754405,
             "maxDD": -2.100000000000003
           },
-          "open": 3
+          "open": 2
         },
         "reconstructed": {
           "raw": {

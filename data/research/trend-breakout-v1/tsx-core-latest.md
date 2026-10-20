@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-10-20T17:26:28.364Z; mode: forward_shadow.
+Generated: 2026-10-20T20:47:47.634Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
-Open 11; pending 0; closed 8; lifecycle reviews 0.
-Realized equity $988.42; marked equity $1011.53; mark quality fresh.
+Open 11; pending 2; closed 8; lifecycle reviews 0.
+Realized equity $988.42; marked equity $1010.03; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,7 +15,7 @@ Realized equity $988.42; marked equity $1011.53; mark quality fresh.
 
 ## Positions
 
-- EMA.TO: Short open; entry 66.5; current stop 67.46999740600586; provenance prospective; gap none
+- EMA.TO: Short open; entry 66.5; current stop 67.36178534371513; provenance prospective; gap none
 - CNQ.TO: Long open; entry 69.83999633789062; current stop 72.9528579711914; provenance prospective; gap none
 - SU.TO: Long open; entry 100.83000183105469; current stop 105.01785714285714; provenance prospective; gap none
 - IMO.TO: Long open; entry 185; current stop 181.07642473493303; provenance prospective; gap none
@@ -23,9 +23,11 @@ Realized equity $988.42; marked equity $1011.53; mark quality fresh.
 - L.TO: Long open; entry 66.61000061035156; current stop 66.89857183183942; provenance prospective; gap none
 - CM.TO: Long open; entry 159.8699951171875; current stop 156.27284676688058; provenance prospective; gap none
 - FTS.TO: Long open; entry 77.51000213623047; current stop 76.70214571271624; provenance prospective; gap none
-- MFC.TO: Long open; entry 62.20000076293945; current stop 60.83785792759487; provenance prospective; gap none
-- MRU.TO: Long open; entry 95.44000244140625; current stop 93.1460712977818; provenance prospective; gap none
-- TD.TO: Long open; entry 170; current stop 166.0971418108259; provenance prospective; gap none
+- MFC.TO: Long open; entry 62.20000076293945; current stop 60.86249787466867; provenance prospective; gap none
+- MRU.TO: Long open; entry 95.44000244140625; current stop 93.14928545270648; provenance prospective; gap none
+- TD.TO: Long open; entry 170; current stop 166.827152797154; provenance prospective; gap none
+- ATD.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- WCN.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 

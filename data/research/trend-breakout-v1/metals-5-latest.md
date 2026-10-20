@@ -1,13 +1,13 @@
 # Trend Breakout V1 — metals-5
-Generated: 2026-10-20T17:26:28.364Z; mode: forward_shadow.
+Generated: 2026-10-20T20:47:47.634Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 5; failed fetch/review symbols 0.
-Open 3; pending 0; closed 2; lifecycle reviews 0.
-Realized equity $986.51; marked equity $999.85; mark quality fresh.
+Open 2; pending 0; closed 3; lifecycle reviews 0.
+Realized equity $995.93; marked equity $995.65; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
 |---|---:|---:|---:|
-| prospective | 2 | -1.0500000000000016 | 0 |
+| prospective | 3 | -0.2906615071251468 | 0.5847692755355052 |
 | reconstructed | 0 | n/a | n/a |
 | historical_simulated | 0 | n/a | n/a |
 | pending | 0 | n/a | n/a |
@@ -15,14 +15,13 @@ Realized equity $986.51; marked equity $999.85; mark quality fresh.
 
 ## Positions
 
-- PALL: Short open; entry 20.350000381469727; current stop 20.62478542327881; provenance prospective; gap none
-- SLV: Short open; entry 54.89500045776367; current stop 52.74324199131557; provenance prospective; gap none
-- PPLT: Short open; entry 14.630000114440918; current stop 15.15268611907959; provenance prospective; gap none
+- PALL: Short open; entry 20.350000381469727; current stop 20.613000052315847; provenance prospective; gap none
+- PPLT: Short open; entry 14.630000114440918; current stop 15.140836375100273; provenance prospective; gap none
 
 ## Common-window comparison
 
 SMC ledger as of 2026-10-20T01:47:46.171Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 0; challenger closed 2. No winner is claimed from a small sample.
+SMC closed 0; challenger closed 3. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.

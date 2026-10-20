@@ -1,7 +1,7 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-10-20T17:26:28.364Z",
+  "updatedAt": "2026-10-20T20:47:47.634Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
@@ -36,11 +36,11 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 20.62478542327881,
+      "currentStop": 20.613000052315847,
       "bestClose": 19.844999313354492,
-      "holdingBars": 16,
+      "holdingBars": 18,
       "entryObservedAt": "2026-10-08T21:26:43.880Z",
-      "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z"
+      "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z"
     },
     {
       "symbol": "PPLT",
@@ -93,7 +93,7 @@
       "symbol": "SLV",
       "signalT": "2026-10-08T13:30:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-08T17:30:00.000Z",
         "dailyAsOf": "2026-10-07",
@@ -109,8 +109,8 @@
       "stop": 56.57867213657924,
       "target": null,
       "risk": 1.6836716788155692,
-      "R": null,
-      "exitT": null,
+      "R": 1.2780154786245628,
+      "exitT": "2026-10-20T17:30:00.000Z",
       "decisionId": "SLV|2026-10-08T13:30:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-10-08T21:26:43.880Z",
@@ -123,9 +123,18 @@
       "entryObservationClass": "prospective",
       "currentStop": 52.74324199131557,
       "bestClose": 50.209999084472656,
-      "holdingBars": 14,
+      "holdingBars": 15,
       "entryObservedAt": "2026-10-09T20:14:42.830Z",
-      "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z"
+      "lastEvaluatedEndT": "2026-10-20T17:30:00.000Z",
+      "exitPriceAssumed": 52.74324199131557,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "trailing_or_initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapFillAssumption": "boundary stop / completed time-exit close",
+        "exitBarStartT": "2026-10-20T13:30:00.000Z",
+        "exitBarEndT": "2026-10-20T17:30:00.000Z"
+      }
     },
     {
       "symbol": "CPER",
@@ -206,11 +215,11 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 15.15268611907959,
+      "currentStop": 15.140836375100273,
       "bestClose": 14.630000114440918,
-      "holdingBars": 6,
+      "holdingBars": 8,
       "entryObservedAt": "2026-10-15T20:28:43.624Z",
-      "lastEvaluatedEndT": "2026-10-19T20:30:00.000Z"
+      "lastEvaluatedEndT": "2026-10-20T20:30:00.000Z"
     }
   ],
   "runLog": [
@@ -1116,6 +1125,12 @@
       "observedAt": "2026-10-20T17:26:28.364Z",
       "failures": [],
       "diagnosticCount": 10
+    },
+    {
+      "runKey": "trend-breakout-v1|39494944830|1",
+      "observedAt": "2026-10-20T20:47:47.634Z",
+      "failures": [],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -2443,6 +2458,15 @@
       "quality": "fresh",
       "markedEquity": 999.8539373277556,
       "totalUnrealizedPnl": 13.343286112638008,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|39494944830|1",
+      "observedAt": "2026-10-20T20:47:47.634Z",
+      "quality": "fresh",
+      "markedEquity": 995.6533900624369,
+      "totalUnrealizedPnl": -0.2733048054089089,
       "missingSymbols": [],
       "staleSymbols": []
     }
