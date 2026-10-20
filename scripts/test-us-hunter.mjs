@@ -28,7 +28,8 @@ const fixture=`
 globalThis.fetch=async url=>{
   const symbol=decodeURIComponent(String(url).split('/chart/')[1].split('?')[0]);
   const wrong=!symbol.startsWith('^')&&(process.env.FIXTURE_FAIL==='all'||symbol==='NVDA');
-  const timestamp=Array.from({length:220},(_,i)=>Math.floor(Date.UTC(2025,0,1+i,16)/1000));
+  let timestamp=Array.from({length:220},(_,i)=>Math.floor(Date.UTC(2025,0,1+i,16)/1000));
+  if((process.env.FIXTURE_FAIL==='stale'||(process.env.FIXTURE_FAIL==='retry'&&String(url).includes('query1.')))&&!symbol.startsWith('^'))timestamp=timestamp.slice(0,-1);
   const close=timestamp.map((_,i)=>symbol.startsWith('^')?100+i*.02:30*Math.pow(1.005,i));
   return {ok:true,json:async()=>({chart:{result:[{meta:{currency:wrong?'CAD':'USD'},timestamp,indicators:{quote:[{close,high:close.map(x=>x*1.006),low:close.map(x=>x*.994),volume:close.map(()=>2000000)}],adjclose:[{adjclose:close}]}}]}})};
 };`;
@@ -51,6 +52,13 @@ try{
   assert.equal(choosePublishedResearch('v2-us',{...report,marketAsOf:'2020-01-01'},report).data,report);
   const bad=run('all');assert.notEqual(bad.status,0);assert.match(bad.stderr,/insufficient_source_coverage/);
   assert.equal(fs.readFileSync(output,'utf8'),text,'failed collection must retain accepted US snapshot');
+  const stale=run('stale');assert.notEqual(stale.status,0);assert.match(stale.stdout,/session_mismatch/);
+  assert.equal(fs.readFileSync(output,'utf8'),text,'a newer index must not make stale stock quotes publishable');
+  const recovered=run('retry');assert.equal(recovered.status,0,recovered.stderr);
+  const retryReport=JSON.parse(fs.readFileSync(output,'utf8'));
+  assert.equal(retryReport.replacementRetries.attempted,502);
+  assert.equal(retryReport.replacementRetries.recovered,502);
+  assert.equal(retryReport.sourceUsableCount,502,'only complete whole-series replacement may restore source coverage');
   assert.equal(fs.readFileSync(canadianFile,'utf8'),'preserve-canada');
   const originalFetch=globalThis.fetch;
   try{

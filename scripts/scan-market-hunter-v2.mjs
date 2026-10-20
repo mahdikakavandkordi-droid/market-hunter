@@ -12,8 +12,8 @@ const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
 const benchSymbol=s=>market.market==='US'?market.referenceSymbol:CDR.has(s)?'^IXIC':'^GSPTSE';
 const meta=new Map(market.instruments.map(x=>[x.symbol,x]));
 
-async function fetchRows(symbol){
-  const url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?range='+range+'&interval=1d&includePrePost=false&events=div%2Csplits';
+async function fetchRows(symbol,host='query1'){
+  const url='https://'+host+'.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?range='+range+'&interval=1d&includePrePost=false&events=div%2Csplits';
   const res=await fetch(url,{signal:AbortSignal.timeout(12000),headers:{'User-Agent':'Mozilla/5.0 MarketHunterV2ResearchScan/1.0'}});
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
@@ -90,6 +90,25 @@ await Promise.all(Array.from({length:market.market==='US'?4:1},async()=>{
 // stale instrument must not enter today's ranking with months-old candles.
 if(market.market==='US'&&data[market.referenceSymbol]?.currency!=='USD')throw new Error('us_benchmark_currency_mismatch');
 const marketAsOf=referenceSession(data[market.referenceSymbol]?.rows);
+const replacementRetries={attempted:0,recovered:0};
+if(market.market==='US'){
+  // Incomplete vendor responses can omit the newest stock close while supplying
+  // the index close. Retry the same full range once; never patch or splice bars.
+  const retry=symbols.filter(s=>data[s]?.currency==='USD'&&quoteSessionIssue(data[s].rows,marketAsOf));
+  replacementRetries.attempted=retry.length;
+  let retryIndex=0;
+  await Promise.all(Array.from({length:4},async()=>{
+    while(retryIndex<retry.length){
+      const symbol=retry[retryIndex++];
+      try{
+        const replacement=await fetchRows(symbol,'query2');
+        if(replacement.currency==='USD'&&replacement.rows.length>=120&&!quoteSessionIssue(replacement.rows,marketAsOf)){
+          data[symbol]=replacement;replacementRetries.recovered++;
+        }
+      }catch(e){console.log('RETRY SKIP '+e.message)}
+    }
+  }));
+}
 const rows=[],excluded={},sessionExclusions=[];
 let usableCount=0,sourceUsableCount=0;
 for(const symbol of symbols){
@@ -152,7 +171,7 @@ const integratedSurfaceCounts={
 const report={
   version:VERSION,market:market.market,currency:market.currency,universeSource:market.source,validationStatus:market.market==='US'?'unvalidated-market-extension':'existing-canadian-evidence',generatedAt:new Date().toISOString(),marketAsOf,engineCommit:process.env.GITHUB_SHA||null,range,
   purpose:ASSUMPTIONS.purpose,
-  universeCount:symbols.length,sourceUsableCount,usableCount,classifiedCount:rows.length,excluded,
+  universeCount:symbols.length,sourceUsableCount,usableCount,classifiedCount:rows.length,excluded,replacementRetries,
   sessionIntegrity:{referenceSymbol:market.referenceSymbol,completedSession:marketAsOf,exclusions:sessionExclusions},
   stageCounts:Object.fromEntries(stages.map(s=>[s,byStage[s].length])),
   priorityFloors:PRIORITY_FLOORS,
