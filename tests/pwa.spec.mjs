@@ -13,10 +13,12 @@ test('installable mobile shell caches assets and opens offline',async({page,cont
   for(const icon of manifest.icons){const r=await page.request.get(icon.src);expect(r.ok()).toBe(true);const b=await r.body();const size=Number(icon.sizes.split('x')[0]);expect(b.readUInt32BE(16)).toBe(size);expect(b.readUInt32BE(20)).toBe(size);}
   await page.evaluate(()=>navigator.serviceWorker.ready);
   await expect.poll(()=>page.evaluate(()=>caches.keys())).toContain(shellCache);
-  await expect.poll(()=>page.evaluate(async cacheName=>{const c=await caches.open(cacheName);return Boolean(await c.match('/i18n.js'))&&Boolean(await c.match('/engine-dashboard.js'));},shellCache)).toBe(true);
+  await expect.poll(()=>page.evaluate(async cacheName=>{const c=await caches.open(cacheName);return Boolean(await c.match('/i18n.js'))&&Boolean(await c.match('/engine-dashboard.js'))&&Boolean(await c.match('/fonts/vazirmatn-nl-v33.003.woff2'));},shellCache)).toBe(true);
   await page.locator('#languageBtn').click();
   await context.setOffline(true);await page.reload();
   await expect(page.locator('#languageBtn')).toHaveText('EN');
+  await page.evaluate(()=>document.fonts.ready);
+  expect(await page.evaluate(()=>document.fonts.check('400 14px Vazirmatn','بررسی'))).toBe(true);
   await expect(page.locator('[data-view="engines"]:visible')).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   expect(errors).toEqual([]);

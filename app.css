@@ -1,4 +1,13 @@
+@font-face{
+  font-family:"Vazirmatn";
+  src:url("/fonts/vazirmatn-nl-v33.003.woff2") format("woff2");
+  font-style:normal;
+  font-weight:100 900;
+  font-display:swap;
+  unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F,U+202A-202E,U+2066-2069;
+}
 :root{
+  --font-ui:"Vazirmatn",Inter,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;
   --bg:#07101a;
   --bg2:#0a1420;
   --panel:#0d1825;
@@ -27,7 +36,8 @@ body{
     radial-gradient(circle at 72% -10%,rgba(85,167,255,.11),transparent 28%),
     radial-gradient(circle at 10% 20%,rgba(101,215,244,.05),transparent 24%),
     linear-gradient(180deg,#07101a 0%,#08121e 48%,#07101a 100%);
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;
+  font-family:var(--font-ui);
+  font-synthesis:none;
   -webkit-font-smoothing:antialiased;
 }
 button,input,select,textarea{font:inherit}
