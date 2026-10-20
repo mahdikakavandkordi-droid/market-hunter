@@ -35,6 +35,7 @@ const staticFiles=new Map([
   ['/clean-ui.css','clean-ui.css'],
   ['/quote-policy.js','quote-policy.js'],
   ['/app.css','app.css'],
+  ['/fonts/vazirmatn-nl-v33.003.woff2','fonts/vazirmatn-nl-v33.003.woff2'],
   ['/mobile-polish.css','mobile-polish.css'],
   ['/theme.css','theme.css'],
   ['/ui-polish.css','ui-polish.css'],
@@ -54,6 +55,7 @@ const mime={
   '.css':'text/css; charset=utf-8',
   '.json':'application/json; charset=utf-8',
   '.webmanifest':'application/manifest+json; charset=utf-8',
+  '.woff2':'font/woff2',
   '.svg':'image/svg+xml',
   '.png':'image/png'
 };
