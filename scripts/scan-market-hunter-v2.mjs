@@ -1,18 +1,20 @@
 import fs from 'node:fs';
-import {UNIVERSE} from '../lib/universe.js';
+import {hunterMarket,scanCurrencyIssue} from '../lib/hunter-markets.js';
 import {completedDailyRows} from '../lib/completed-daily-session.js';
 import {referenceSession,quoteSessionIssue} from '../lib/scan-session-integrity.js';
 import {VERSION,ASSUMPTIONS,PRIORITY_FLOORS,SURFACE_POLICY,INTEGRATED_SURFACE_POLICY,priorityBand,riskFlags,reviewLane,surfaceEligible,surfaceSelect,integratedSurfaceSelect,round,dayKey,benchmarkHist,metrics,classify,rank,surfaceRank} from '../lib/market-hunter-v2-engine.js';
 import {volumeMetrics} from '../lib/volume-context.js';
 
+const market=hunterMarket(process.env.MH_HUNTER_MARKET||'CA');
+const UNIVERSE=market.instruments.map(x=>[x.symbol,x.name,x.sector]);
 const range=process.env.V2_SCAN_RANGE||'2y';
 const CDR=new Set(UNIVERSE.filter(x=>x[2]==='CDR').map(x=>x[0]));
-const benchSymbol=s=>CDR.has(s)?'^IXIC':'^GSPTSE';
-const meta=new Map(UNIVERSE.map(x=>[x[0],{name:x[1],sector:x[2]}]));
+const benchSymbol=s=>market.market==='US'?market.referenceSymbol:CDR.has(s)?'^IXIC':'^GSPTSE';
+const meta=new Map(market.instruments.map(x=>[x.symbol,x]));
 
 async function fetchRows(symbol){
   const url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?range='+range+'&interval=1d&includePrePost=false&events=div%2Csplits';
-  const res=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 MarketHunterV2ResearchScan/1.0'}});
+  const res=await fetch(url,{signal:AbortSignal.timeout(12000),headers:{'User-Agent':'Mozilla/5.0 MarketHunterV2ResearchScan/1.0'}});
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
   const splitDays=new Set(Object.values(z?.events?.splits||{}).map(x=>dayKey(Number(x.date))));
@@ -20,7 +22,7 @@ async function fetchRows(symbol){
     const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
     return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
   }).filter(x=>[x.close,x.rawClose,x.high,x.low,x.volume].every(Number.isFinite)&&x.volume>0),z?.meta);
-  return {rows,splitDays};
+  return {rows,splitDays,currency:z?.meta?.currency||null};
 }
 
 function recentSplit(rows,splitDays,lookback=30){
@@ -68,36 +70,46 @@ function evidence(m,stage){
 }
 
 const symbols=UNIVERSE.map(x=>x[0]),needed=[...new Set([...symbols,...symbols.map(benchSymbol)])],data={};
-for(const s of needed){
-  process.stdout.write('fetch '+s+'... ');
-  try{data[s]=await fetchRows(s);console.log(data[s].rows.length)}
-  catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set()}}
-}
+// Bound vendor load; failed fetches remain explicit exclusions.
+let next=0;
+await Promise.all(Array.from({length:market.market==='US'?4:1},async()=>{
+  while(next<needed.length){
+    const s=needed[next++];
+    try{data[s]=await fetchRows(s)}
+    catch(e){console.log('SKIP '+e.message);data[s]={rows:[],splitDays:new Set(),currency:null}}
+  }
+}));
 
-// Anchor the scan to the completed Canadian benchmark session. A suspended or
+// Anchor each market to its own completed benchmark session. A suspended or
 // stale instrument must not enter today's ranking with months-old candles.
-const marketAsOf=referenceSession(data['^GSPTSE']?.rows);
+if(market.market==='US'&&data[market.referenceSymbol]?.currency!=='USD')throw new Error('us_benchmark_currency_mismatch');
+const marketAsOf=referenceSession(data[market.referenceSymbol]?.rows);
 const rows=[],excluded={},sessionExclusions=[];
+let usableCount=0,sourceUsableCount=0;
 for(const symbol of symbols){
   const pack=data[symbol],r=pack?.rows||[],bench=data[benchSymbol(symbol)]?.rows||[];
-  let reason=null;
-  if(r.length<120||bench.length<80)reason='insufficient_history';
-  else if(recentSplit(r,pack.splitDays))reason='recent_split';
+  let reason=market.market==='US'?scanCurrencyIssue(pack?.currency,market.currency):null;
+  if(!reason&&(r.length<120||bench.length<80))reason='insufficient_history';
+  else if(!reason&&recentSplit(r,pack.splitDays))reason='recent_split';
   if(reason){excluded[reason]=(excluded[reason]||0)+1;continue}
   const issue=quoteSessionIssue(r,marketAsOf);
   if(issue){excluded[issue.reason]=(excluded[issue.reason]||0)+1;sessionExclusions.push({symbol,...issue});continue}
   const date=dayKey(r.at(-1).t),bh=benchmarkHist(bench,date);
   if(!bh||bh.length<65){excluded.benchmark_alignment=(excluded.benchmark_alignment||0)+1;continue}
+  sourceUsableCount++;
   const m=metrics(r,bh);
   if(!m){excluded.metrics=(excluded.metrics||0)+1;continue}
   if(r.at(-1).rawClose<ASSUMPTIONS.liquidity.minPrice){excluded.price=(excluded.price||0)+1;continue}
   if(m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){excluded.liquidity=(excluded.liquidity||0)+1;continue}
+  usableCount++;
   const stage=classify(m);
   if(!stage){excluded.unclassified=(excluded.unclassified||0)+1;continue}
   const stageAge=stage==='Recovery'?recoveryStageAge(r,bench):null;
   const baseScore=rank(m,stage),score=round(baseScore,1),surfaceScore=round(surfaceRank(m,stage,baseScore),1),flags=riskFlags(m),lane=reviewLane(stage,score,m);
   rows.push({
     symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,date,stage,
+    market:market.market,currency:market.currency,exchange:meta.get(symbol)?.exchange||null,benchmark:benchSymbol(symbol),
+    asOf:date,dayChangePct:round((r.at(-1).rawClose/r.at(-2).rawClose-1)*100),
     score,surfaceScore,stageAge,priorityBand:priorityBand(stage,score),reviewLane:lane,riskFlags:flags,price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),
     rs20:round(m.rs20),rs60:round(m.rs60),rsi14:round(m.rsi14,1),atr14Pct:round(m.atr14Pct,1),
     dist20:round(m.dist20),dist50:round(m.dist50),pullback60:round(m.pullback60),avgDollar20:round(m.avgDollar20),
@@ -132,10 +144,10 @@ const integratedSurfaceCounts={
   byStage:Object.fromEntries(stages.map(stage=>[stage,integratedSurfacePicks.filter(x=>x.stage===stage).length]))
 };
 const report={
-  version:VERSION,generatedAt:new Date().toISOString(),marketAsOf,engineCommit:process.env.GITHUB_SHA||null,range,
+  version:VERSION,market:market.market,currency:market.currency,universeSource:market.source,validationStatus:market.market==='US'?'unvalidated-market-extension':'existing-canadian-evidence',generatedAt:new Date().toISOString(),marketAsOf,engineCommit:process.env.GITHUB_SHA||null,range,
   purpose:ASSUMPTIONS.purpose,
-  universeCount:symbols.length,classifiedCount:rows.length,excluded,
-  sessionIntegrity:{referenceSymbol:'^GSPTSE',completedSession:marketAsOf,exclusions:sessionExclusions},
+  universeCount:symbols.length,sourceUsableCount,usableCount,classifiedCount:rows.length,excluded,
+  sessionIntegrity:{referenceSymbol:market.referenceSymbol,completedSession:marketAsOf,exclusions:sessionExclusions},
   stageCounts:Object.fromEntries(stages.map(s=>[s,byStage[s].length])),
   priorityFloors:PRIORITY_FLOORS,
   surfacePolicy:SURFACE_POLICY,surfacePicks,surfaceCounts,
@@ -149,5 +161,8 @@ const report={
   byStage,all:rows
 };
 fs.mkdirSync('data',{recursive:true});
-fs.writeFileSync('data/v2-latest-scan.json',JSON.stringify(report,null,2));
+if(market.market==='US'&&(usableCount===0||sourceUsableCount/symbols.length<0.9))throw new Error('us_scan_insufficient_source_coverage');
+const output=market.file;
+fs.writeFileSync(output+'.tmp',JSON.stringify(report,null,2));
+fs.renameSync(output+'.tmp',output);
 console.log(JSON.stringify({version:VERSION,stageCounts:report.stageCounts,top:Object.fromEntries(stages.map(s=>[s,byStage[s].slice(0,8)]))},null,2));

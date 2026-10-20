@@ -1,0 +1,54 @@
+name: US Hunter Discovery Refresh
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, feat/us-hunter-universe-20261019]
+    paths:
+      - '.github/workflows/us-hunter-refresh.yml'
+      - 'lib/hunter-markets.js'
+      - 'data/universes/**'
+      - 'scripts/scan-market-hunter-v2.mjs'
+  schedule:
+    - cron: '0 23 * * 1-5'
+permissions:
+  contents: write
+concurrency:
+  group: us-hunter-refresh-${{ github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Scan US instruments independently
+        env:
+          MH_HUNTER_MARKET: US
+        run: node scripts/scan-market-hunter-v2.mjs
+      - name: Validate US identity and source coverage
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import {validResearch} from './lib/published-research.js';
+          const report=JSON.parse(fs.readFileSync('data/v2-us-latest-scan.json','utf8'));
+          if(!validResearch('v2-us',report)||report.sourceUsableCount/report.universeCount<0.9)throw new Error('invalid_us_scan');
+          NODE
+      - name: Commit only the US snapshot
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "market-hunter-bot"
+          git config user.email "market-hunter-bot@users.noreply.github.com"
+          git add data/v2-us-latest-scan.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data: refresh independent US Hunter discovery snapshot"
+          for attempt in 1 2 3; do
+            git pull --rebase origin "$TARGET_BRANCH"
+            if git push origin "HEAD:$TARGET_BRANCH"; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          exit 1

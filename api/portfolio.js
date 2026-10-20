@@ -1,8 +1,10 @@
 import {metrics,classify} from '../lib/market-hunter-v2-engine.js';
+import {US_META} from '../lib/hunter-markets.js';
 import {UNIVERSE} from '../lib/universe.js';
 import {portfolioExposure} from '../lib/portfolio-exposure.js';
 
-const UNIVERSE_META=new Map(UNIVERSE.map(([symbol,name,sector])=>[symbol,{name,sector}]));
+const UNIVERSE_META=new Map([...UNIVERSE.map(([symbol,name,sector])=>[symbol,{name,sector}]),...US_META]);
+const benchmarkFor=s=>US_META.has(s)?'^GSPC':CDR_BENCHMARK[s]||'^GSPTSE';
 
 const CDR_BENCHMARK={
   'AAPL.TO':'^IXIC','MSFT.TO':'^IXIC','NVDA.TO':'^IXIC','AMZN.TO':'^IXIC',
@@ -277,7 +279,7 @@ export default async function handler(req,res){
   }
   if(!symbols.length)return res.status(200).json({generatedAt:new Date().toISOString(),items:[],failures:[]});
   const deadline=Date.now()+23000;
-  const benchmarks=[...new Set(['^GSPTSE',...symbols.map(s=>CDR_BENCHMARK[s]||'^GSPTSE')])];
+  const benchmarks=[...new Set(['^GSPTSE',...symbols.map(benchmarkFor)])];
   try{
     const benchResults=await mapLimit(benchmarks,3,s=>chart(s,deadline));
     const benchMap=new Map();
@@ -288,7 +290,7 @@ export default async function handler(req,res){
       const symbol=symbols[i];
       if(r.status!=='fulfilled'){failures.push({symbol,reason:String(r.reason?.message||r.reason||'unavailable')});return}
       seriesMap.set(symbol,r.value);
-      const benchmark=CDR_BENCHMARK[symbol]||'^GSPTSE',bench=benchMap.get(benchmark);
+      const benchmark=benchmarkFor(symbol),bench=benchMap.get(benchmark);
       if(!bench){failures.push({symbol,reason:'benchmark_unavailable'});return}
       const m=metrics(r.value.rows,bench);
       if(!m){failures.push({symbol,reason:'insufficient_history'});return}
@@ -297,7 +299,7 @@ export default async function handler(req,res){
       const entryStats=sinceEntryStats(r.value.rows,bench,entryMap.get(symbol));
       const dayChangePct=r.value.rows.length>1?pct(r.value.rows.at(-1).close,r.value.rows.at(-2).close):null;
       items.push({
-        symbol,name:meta.name||exposure.name||symbol,sector:meta.sector||null,exposure,price:m.last,dayChangePct,currency:r.value.currency,benchmark,entryStats,
+        symbol,name:meta.name||exposure.name||symbol,sector:meta.sector||null,market:meta.market||null,exchange:meta.exchange||null,exposure,price:m.last,dayChangePct,currency:r.value.currency,benchmark,entryStats,
         stage:stage||null,
         ret5:m.ret5,ret20:m.ret20,ret60:m.ret60,
         momentumShift:m.momentumShift,rs20:m.rs20,rs60:m.rs60,rsi14:m.rsi14,atr14Pct:m.atr14Pct,

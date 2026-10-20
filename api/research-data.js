@@ -3,7 +3,8 @@ import {choosePublishedResearch} from '../lib/published-research.js';
 const FILES=Object.freeze({
   daily:'daily-market-report.json',
   pulse:'market-pulse-report.json',
-  v2:'v2-latest-scan.json'
+  v2:'v2-latest-scan.json',
+  'v2-us':'v2-us-latest-scan.json'
 });
 export default async function handler(req,res){
   if((req.method||'GET')!=='GET')return res.status(405).json({error:'method_not_allowed'});

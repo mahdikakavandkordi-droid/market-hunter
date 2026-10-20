@@ -14,7 +14,8 @@ const port=Number(process.env.PORT||3000);
 const localResearchData=Object.freeze({
   daily:'data/daily-market-report.json',
   pulse:'data/market-pulse-report.json',
-  v2:'data/v2-latest-scan.json'
+  v2:'data/v2-latest-scan.json',
+  'v2-us':'data/v2-us-latest-scan.json'
 });
 
 const staticFiles=new Map([
