@@ -80,9 +80,9 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await page.locator('[data-view="shortlist"]:visible').click();
   await page.locator('[data-stage-tab="Recovery"]').click();
   const technicalCard=page.locator('#shortlistView .hunter-card').first();
-  await expect(technicalCard.locator('.explanation-eyebrow')).toHaveText('Technical');
+  await expect(technicalCard.locator('.explanation-eyebrow')).toHaveText('Why it appears');
   await expect(technicalCard.locator('.technical-monitor li')).toHaveCount(2);
-  await expect(technicalCard.locator('.technical-session')).toContainText('Completed session');
+  await expect(technicalCard.locator('.technical-session')).toContainText('Technical snapshot');
   await expect(technicalCard.locator('.stock-technical')).not.toHaveAttribute('open');
   await expect(page.locator('#shortlistView .engine-confirmation')).toHaveCount(0);
   await expect(page.locator('#shortlistView')).not.toContainText('What would trigger an entry');
@@ -106,8 +106,8 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await page.screenshot({path:`test-results/engines-${width}-persian.png`,fullPage:true});
   await page.locator('[data-view="shortlist"]:visible').click();
   await expect(page.locator('#shortlistView .analysis-copy').first()).toContainText('بازسازی');
-  await expect(page.locator('#shortlistView .technical-monitor').first()).toContainText('موارد قابل پیگیری');
-  await expect(page.locator('#shortlistView .explanation-eyebrow').first()).toHaveText('تکنیکال');
+  await expect(page.locator('#shortlistView .technical-monitor').first()).toContainText('سطوح قابل پیگیری');
+  await expect(page.locator('#shortlistView .explanation-eyebrow').first()).toHaveText('دلیل نمایش سهم');
   await expect(page.locator('#shortlistView .stock-summary')).toHaveCount(1);
   await expect(page.locator('#shortlistView .stock-summary')).toHaveCSS('direction','rtl');
   await page.screenshot({path:`test-results/review-${width}-persian.png`,fullPage:true});
