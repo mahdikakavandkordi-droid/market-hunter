@@ -1420,3 +1420,97 @@ html[data-language="fa"] .quote-meta{direction:rtl;text-align:right}
 @media(max-width:700px){.stock-key-metrics{gap:7px}.stock-key-metrics b{font-size:17px}.stock-key-metrics small{font-size:9px;min-height:32px}.selection-reasons{font-size:12px}.stock-cautions{padding:11px 12px}.stock-cautions ul{font-size:12px}}
 .stock-summary>.technical-session{margin-top:0}.metric-help{margin:0 0 16px}.metric-help>summary{min-height:36px;font-size:10px;color:var(--muted)}.metric-help .explanation-note{margin:0 0 12px!important}.metric-help+.stock-cautions{margin-top:0}.stock-summary>.stock-cautions+.explanation-eyebrow{margin-top:18px}.stock-key-metrics+.metric-basis{margin-bottom:0!important}.stock-cautions+.explanation-eyebrow{margin-top:16px}.technical-monitor{margin-top:16px}
 html[data-language="fa"] .metric-help{direction:rtl;text-align:right;font-family:Tahoma,Arial,sans-serif}
+
+/* Home: a current overview first, a comparable market board, then deeper context. */
+.home-overview .report-shell{padding:26px!important}
+.home-overview .report-topline{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.home-overview .eyebrow{font-size:10px;letter-spacing:.1em;color:var(--muted2)}
+.home-overview .report-tone{font-size:27px!important;margin:14px 0 10px!important;font-weight:600!important}
+.overview-coverage{font-size:11px;color:var(--muted);padding:7px 10px;border:1px solid var(--line-soft);border-radius:8px;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.overview-coverage bdi{color:var(--text);font-weight:600}
+.overview-headline{font-size:19px;line-height:1.7;font-weight:550;margin:0 0 8px;max-width:880px}
+.overview-basis{font-size:11px;line-height:1.85;color:var(--muted);max-width:850px;margin:0 0 18px}
+.equity-comparison{padding:14px 16px;border:1px solid var(--line-soft);border-radius:10px;background:var(--bg);margin:18px 0}
+.equity-comparison>span{font-size:10px;color:var(--muted)}
+.equity-comparison>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:12px}
+.equity-comparison>div>span{display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--muted)}
+.equity-comparison b{font-size:19px;letter-spacing:-.02em;font-weight:600}
+#homeView #homeBriefGroups{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;overflow:visible!important;gap:12px!important;padding:0!important;margin:20px 0!important;width:100%;direction:ltr;scroll-snap-type:none!important}
+#homeView #homeBriefGroups .brief-group{display:block;min-width:0;max-width:none;flex:none;border:1px solid var(--line-soft);border-radius:12px;padding:16px;text-align:start;background:var(--panel2);color:var(--text);font-weight:400}
+#homeView #homeBriefGroups .brief-group small{font-size:11px;color:var(--blue)}
+#homeView #homeBriefGroups .brief-group b{font-size:15px;font-weight:550;line-height:1.6;margin:7px 0}
+#homeView #homeBriefGroups .brief-group p{font-size:11px;color:var(--muted);margin:0;line-height:1.7}
+#homeView #homeBriefGroups .brief-group>span{display:block;font-size:10px;color:var(--blue);margin-top:12px}
+#homeView #homeBriefGroups .brief-group[aria-pressed=true]{border-color:var(--blue);background:var(--panel3)}
+.overview-dates{margin-top:18px}
+.overview-dates>div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:11px}
+.overview-dates>div>span{color:var(--muted);font-size:10px}
+.home-overview-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+.home-market-panel{min-width:0}
+.home-market-filters{display:flex;flex-wrap:wrap;gap:6px;margin:0 24px 12px}
+.home-market-filters button{min-height:44px;padding:8px 12px;border:1px solid var(--line-soft);background:transparent;color:var(--muted);border-radius:9px;font-size:11px}
+.home-market-filters button[aria-pressed=true]{background:var(--panel3);border-color:var(--blue);color:var(--text)}
+.board-legend{font-size:11px;color:var(--muted);line-height:1.8;margin:0 24px 16px}
+#homeView #homeMarkets.home-market-board{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-auto-flow:row!important;overflow:visible!important;padding:0 24px 24px!important;margin:0!important;gap:0!important;scroll-snap-type:none!important;width:100%!important}
+.market-board-item{min-width:0;border-top:1px solid var(--line-soft);padding:18px 0 14px;scroll-margin-top:120px}
+.board-main{display:grid;grid-template-columns:minmax(110px,1.2fr) minmax(100px,1fr) minmax(110px,1.1fr) minmax(100px,.9fr);gap:14px;align-items:start}
+.board-market-name b{font-size:13px;font-weight:600;line-height:1.5;display:block}
+.board-market-name small{font-size:9px;color:var(--muted2);display:block;margin-top:5px}
+.board-price{display:flex;justify-content:flex-end;align-items:baseline;flex-wrap:wrap;gap:4px 7px;font-size:17px;font-weight:600;letter-spacing:-.02em}
+.board-price .day-change{font-size:10px;white-space:nowrap;letter-spacing:0}
+.board-price>small{flex-basis:100%;font-size:9px;color:var(--muted2);text-align:right;font-weight:400;letter-spacing:0}
+.board-state>span{font-size:9px;color:var(--muted2);display:block}
+.board-state>b{display:block;font-size:12px;font-weight:550;margin-top:4px;line-height:1.5}
+.board-state>small{font-size:10px;color:var(--muted);display:block;margin-top:3px;line-height:1.5}
+.board-returns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;text-align:end}
+.board-returns small{display:block;font-size:9px;color:var(--muted2);white-space:nowrap}
+.board-returns b{display:block;font-size:13px;font-weight:550;margin-top:7px;white-space:nowrap}
+.board-session{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;margin-top:12px;color:var(--muted2);font-size:9px;line-height:1.7}
+.board-stale{color:var(--amber)}
+.market-board-item[data-current=false] .board-state>b{color:var(--amber)}
+.market-board-item .market-context{border:0!important;margin:0!important;padding:0!important}
+.market-board-item .market-context>summary{display:flex;align-items:center;justify-content:space-between;list-style:none;min-height:44px;font-size:10px;font-weight:450;color:var(--muted)}
+.market-board-item .market-context>summary:after{content:'+';font-size:18px;color:var(--muted2)}
+.market-board-item .market-context[open]>summary:after{content:'−'}
+.market-board-item .market-context>summary::-webkit-details-marker{display:none}
+.market-board-item .market-context>p{font-size:12px;line-height:1.85;margin:8px 0 14px}
+.market-board-item .quote-meta{font-size:10px!important;line-height:1.7;margin:0 0 10px!important}
+.market-board-item .market-levels{margin:14px 0 6px}
+.home-focus-list{padding:0 24px}
+.focus-market{padding:20px 0;border-top:1px solid var(--line-soft)}
+.focus-market>div:first-child{display:flex;flex-direction:column;gap:6px}
+.focus-market>div:first-child>b{font-size:15px;font-weight:600}
+.focus-market>div:first-child>span{font-size:10px;color:var(--muted)}
+.focus-market>p{font-size:12px;line-height:1.9;color:var(--muted);margin:12px 0}
+.focus-levels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px 0}
+.focus-levels span{font-size:10px;color:var(--muted)}
+.focus-levels b{display:block;font-size:17px;font-weight:550;color:var(--text);margin-top:6px}
+.focus-market .btn{margin-top:8px;min-height:44px}
+.focus-footnote{font-size:10px;line-height:1.9;color:var(--muted2);margin:0;padding:0 24px 24px}
+html[data-language=fa] .overview-coverage,html[data-language=fa] .home-market-filters,html[data-language=fa] .board-session,html[data-language=fa] .focus-market,html[data-language=fa] .board-state{direction:rtl;text-align:right;font-family:Tahoma,Arial,sans-serif}
+html[data-language=fa] #homeBriefGroups .brief-group{text-align:right!important;direction:rtl}
+@media(min-width:1300px){.home-overview-grid{grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr)}}
+@media(max-width:700px){
+ .home-overview .report-shell{padding:20px 18px!important}.home-overview .report-tone{font-size:24px!important;margin:12px 0 8px!important}.home-overview .report-topline{gap:10px}.home-overview .eyebrow{font-size:8px}.overview-coverage{font-size:9px;padding:6px 8px;gap:6px}.overview-headline{font-size:16px;line-height:1.9}.overview-basis{font-size:10px;line-height:1.9;margin-bottom:14px}.equity-comparison{padding:12px;margin:14px 0}.equity-comparison>span{font-size:9px}.equity-comparison>div{gap:10px}.equity-comparison>div>span{font-size:9px;line-height:1.6}.equity-comparison b{font-size:17px}
+ #homeView #homeBriefGroups{gap:7px!important;margin:14px 0!important}#homeView #homeBriefGroups .brief-group{padding:12px 9px;border-radius:10px}#homeView #homeBriefGroups .brief-group small{font-size:10px}#homeView #homeBriefGroups .brief-group b{font-size:12px;line-height:1.7;margin:6px 0}#homeView #homeBriefGroups .brief-group p{font-size:9px}#homeView #homeBriefGroups .brief-group>span{font-size:9px;line-height:1.8;margin-top:8px}.overview-dates>div{grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;font-size:10px}.overview-dates>div>span{grid-column:1/-1;font-size:9px}.home-overview-grid{gap:18px}
+ .home-market-filters{margin:0 18px 12px;gap:5px}.home-market-filters button{font-size:10px;padding:8px 10px}.board-legend{margin:0 18px 16px;font-size:10px}
+ #homeView #homeMarkets.home-market-board{padding:0 18px 16px!important}.market-board-item{padding:16px 0 10px;scroll-margin-top:125px}.board-main{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px 12px}.board-market-name b{font-size:14px}.board-market-name small{font-size:10px}.board-price{font-size:19px;gap:4px 6px}.board-price .day-change{font-size:11px}.board-price>small{font-size:9px}.board-state{grid-column:1;grid-row:2}.board-returns{grid-column:2;grid-row:2;gap:12px}.board-state>span{font-size:9px}.board-state>b{font-size:12px}.board-state>small{font-size:10px}.board-returns small{font-size:10px}.board-returns b{font-size:14px}.board-session{font-size:9px;line-height:1.8}.market-board-item .market-context>summary{font-size:10px;min-height:44px}.market-board-item .market-context>p{font-size:12px}
+ .home-focus-list{padding:0 18px}.focus-market{padding:18px 0}.focus-market>p{font-size:12px}.focus-levels b{font-size:18px}.focus-footnote{padding:0 18px 18px}.focus-market>div:first-child>b{font-size:15px}
+}
+@media(max-width:360px){#homeView #homeBriefGroups .brief-group{padding:10px 7px}.home-overview .eyebrow{font-size:7px}.overview-coverage{font-size:8px;padding:6px}.board-price{font-size:17px}.board-market-name b{font-size:13px}.home-market-filters button{padding:8px;font-size:9px}}
+html[data-language=fa] .topbar #asOf{direction:rtl;text-align:right}
+.overview-shortcuts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0;color:var(--muted);font-size:11px}
+.overview-shortcuts button{display:inline-flex;align-items:center;gap:8px;min-height:44px;border:1px solid var(--line-soft);background:transparent;color:var(--blue);border-radius:9px;padding:8px 12px;font-size:11px}
+html[data-language=fa] .home-overview .report-tone,html[data-language=fa] .overview-shortcuts{direction:rtl;text-align:right}
+@media(min-width:1000px){
+ .home-overview.has-comparison .report-shell{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px;align-items:start}
+ .home-overview.has-comparison .report-topline{grid-column:1/-1}
+ .home-overview.has-comparison .report-tone{grid-column:1;grid-row:2}
+ .home-overview.has-comparison .overview-headline{grid-column:1;grid-row:3;font-size:18px}
+ .home-overview.has-comparison .overview-basis{grid-column:1;grid-row:4;margin-bottom:0}
+ .home-overview.has-comparison .equity-comparison{grid-column:2;grid-row:2/5;align-self:center;margin:14px 0 0}
+ .home-overview.has-comparison #homeBriefGroups{grid-column:1/-1;margin-bottom:8px!important}
+ .home-overview.has-comparison .overview-shortcuts,.home-overview.has-comparison .report-details{grid-column:1/-1}
+ .home-overview.has-comparison .overview-shortcuts{margin:10px 0}
+}
+@media(max-width:700px){#homeView #homeBriefGroups .brief-group>span{display:none}.overview-shortcuts{gap:6px;font-size:10px}.overview-shortcuts>span{flex-basis:100%}.overview-shortcuts button{font-size:10px;padding:8px 10px}}

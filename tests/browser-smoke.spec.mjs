@@ -83,42 +83,20 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
-  const briefRail=page.locator('#homeBriefGroups');
-  await expect(briefRail.locator('.brief-group')).toHaveCount(3);
-  expect(await briefRail.evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
-  await expect(briefRail).toHaveCSS('overflow-x','auto');
-  await expect(briefRail).toHaveCSS('flex-wrap','nowrap');
-  await page.locator('[data-swipe="homeBriefGroups"][data-step="1"]').click();
-  await expect.poll(()=>briefRail.evaluate(r=>r.scrollLeft)).toBeGreaterThan(0);
-  await page.locator('[data-swipe="homeBriefGroups"][data-step="1"]').click();
-  await expect.poll(()=>briefRail.evaluate(r=>r.scrollLeft+r.clientWidth>=r.scrollWidth-2)).toBe(true);
-  await page.locator('[data-swipe="homeBriefGroups"][data-step="-1"]').click();
-  await expect.poll(()=>briefRail.evaluate(r=>r.scrollLeft+r.clientWidth<r.scrollWidth-2)).toBe(true);
-  await briefRail.evaluate(r=>r.scrollTo({left:0,behavior:'instant'}));
-  // Native touch events exercise the same horizontal pan as a mobile finger.
-  const touch=await page.context().newCDPSession(page);
-  await touch.send('Emulation.setTouchEmulationEnabled',{enabled:true});
-  const bounds=await briefRail.boundingBox();
-  const y=bounds.y+Math.min(bounds.height/2,100),x=bounds.x+bounds.width*.85;
-  await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
-  for(let step=1;step<=8;step++){
-    await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-bounds.width*.65*step/8,y}]});
-  }
-  await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-  await expect.poll(()=>briefRail.evaluate(r=>r.scrollLeft)).toBeGreaterThan(0);
-  await touch.detach();
-  await briefRail.evaluate(r=>r.scrollTo({left:0,behavior:'instant'}));
-
-  const nasdaq100=page.locator('.market-row').filter({hasText:'Nasdaq-100'}).first();
-  await expect(nasdaq100).toBeVisible();
+  const briefGroups=page.locator('#homeBriefGroups');
+  await expect(briefGroups.locator('.brief-group')).toHaveCount(3);
+  expect(await briefGroups.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
+  await expect(page.locator('#homeMarkets .market-board-item')).toHaveCount(7);
+  await briefGroups.locator('[data-home-group="metals"]').click();
+  await expect(page.locator('#homeMarkets .market-board-item')).toHaveCount(2);
+  await page.locator('.home-market-filters [data-home-group="all"]').click();
+  const nasdaq100=page.locator('#market-NASDAQ100');
   await expect(nasdaq100).not.toContainText('99,999');
+  await nasdaq100.locator('.market-context>summary').click();
   await expect(nasdaq100).toContainText('Completed session · hourly quote unavailable');
+  await nasdaq100.locator('.market-context>summary').click();
   await expect(page.locator('.outlook-panel')).not.toHaveAttribute('open','');
-  const marketRail=page.locator('#homeMarkets');
-  expect(await marketRail.evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
-  await page.locator('[data-swipe="homeMarkets"][data-step="1"]').click();
-  await expect.poll(()=>marketRail.evaluate(r=>r.scrollLeft)).toBeGreaterThan(0);
-  await marketRail.evaluate(r=>r.scrollTo({left:0,behavior:'instant'}));
+  expect(await page.locator('#homeMarkets').evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
   expect(await page.locator('#homePicks').evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
   await page.locator('.report-details>summary').click();
   await expect(page.locator('.report-title')).toHaveCount(0);
