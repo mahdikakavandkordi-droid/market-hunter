@@ -16,6 +16,7 @@ try {
   const cases = [
     ['schedule', '15 0 * * *', '', 'crypto'],
     ['schedule', '15 1 * * *', '', 'crypto'],
+    ['schedule', '23 6,12,18 * * *', '', 'crypto'],
     ['schedule', '15 4 * * 2-6', '', 'metals'],
     ['schedule', '15 5 * * 2-6', '', 'metals'],
     ['workflow_dispatch', '', 'crypto', 'crypto'],
@@ -33,5 +34,5 @@ try {
     assert.equal(result.status, 0, result.stderr);
     assert.equal(readFileSync(output, 'utf8'), `keys=${expected==='crypto'?'BTC,ETH':'GOLD,SILVER'}\ngroup=${expected}\n`);
   });
-  console.log('Asset refresh routing: 10 cases passed');
+  console.log('Asset refresh routing: 11 cases passed');
 } finally { rmSync(dir, {recursive:true, force:true}); }

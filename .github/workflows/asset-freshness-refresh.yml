@@ -13,6 +13,8 @@ on:
     # Crypto daily bars complete at the documented UTC day boundary. Run two light retries.
     - cron: '15 0 * * *'
     - cron: '15 1 * * *'
+    # Catch a delayed daily publication later in the day without rescanning equities.
+    - cron: '23 6,12,18 * * *'
     # Yahoo/COMEX daily session metadata currently completes near 03:59 UTC.
     # Tue-Sat captures the Mon-Fri metals sessions, with one delayed-provider retry.
     - cron: '15 4 * * 2-6'
@@ -51,7 +53,7 @@ jobs:
           else
             # Select by triggering cron, never delayed runner wall-clock time.
             case "$REFRESH_SCHEDULE" in
-              '15 0 * * *'|'15 1 * * *') group="crypto" ;;
+              '15 0 * * *'|'15 1 * * *'|'23 6,12,18 * * *') group="crypto" ;;
               '15 4 * * 2-6'|'15 5 * * 2-6') group="metals" ;;
               *) echo "Unknown refresh schedule"; exit 1 ;;
             esac
@@ -70,6 +72,7 @@ jobs:
       - name: Validate targeted refresh code
         run: |
           node scripts/test-asset-refresh-routing.mjs
+          node scripts/test-crypto-completed-refresh.mjs
           node --check lib/market-freshness.js
           node --check scripts/scan-market-pulse.mjs
           node --check scripts/build-market-pulse-report.mjs
@@ -113,3 +116,10 @@ jobs:
             sleep $((attempt * 2))
           done
           exit 1
+
+      # Commit valid progress/provider-failure metadata first, but never mark a
+      # stale refresh successful merely because the report files were rebuilt.
+      - name: Verify target assets actually reached completed sessions
+        env:
+          MARKET_PULSE_KEYS: ${{ steps.target.outputs.keys }}
+        run: node scripts/verify-asset-refresh.mjs

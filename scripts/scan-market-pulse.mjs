@@ -1,13 +1,14 @@
 import fs from 'node:fs';
+import {refreshCompletedCryptoRows} from '../lib/crypto-completed-refresh.js';
 import {MARKET_PULSE_VERSION,MARKET_PULSE_UNIVERSE,round,dayKey,pulseMetrics,descriptiveState,scenarioLevels} from '../lib/market-pulse-engine.js';
 import {completedDailyRows,completedCryptoDailyRows} from '../lib/completed-daily-session.js';
 import {marketKind,assessFreshness,mergeAssetRefresh} from '../lib/market-freshness.js';
 
 const range=process.env.MARKET_PULSE_RANGE||'10y';
 
-async function fetchRows(symbol,kind){
+async function fetchRows(symbol,kind,nowMs){
   const url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(symbol)+'?range='+range+'&interval=1d&includePrePost=false&events=div%2Csplits';
-  const res=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 MarketHunterMarketPulse/1.0'}});
+  const res=await fetch(url,{signal:AbortSignal.timeout(20000),headers:{'User-Agent':'Mozilla/5.0 MarketHunterMarketPulse/1.0'}});
   if(!res.ok)throw new Error(symbol+': HTTP '+res.status);
   const j=await res.json(),z=j?.chart?.result?.[0],q=z?.indicators?.quote?.[0]||{},adj=z?.indicators?.adjclose?.[0]?.adjclose||q.close||[];
   if(!z)throw new Error(symbol+': unavailable');
@@ -15,8 +16,12 @@ async function fetchRows(symbol,kind){
     const rawClose=q.close?.[i],factor=Number.isFinite(adj[i])&&Number.isFinite(rawClose)&&rawClose?adj[i]/rawClose:1;
     return {t,close:adj[i],rawClose,high:Number.isFinite(q.high?.[i])?q.high[i]*factor:null,low:Number.isFinite(q.low?.[i])?q.low[i]*factor:null,volume:q.volume?.[i]};
   }).filter(x=>Number.isFinite(x.close)&&x.close>0&&Number.isFinite(x.high)&&Number.isFinite(x.low));
-  const rows=kind==='crypto'?completedCryptoDailyRows(rawRows):completedDailyRows(rawRows,z.meta);
-  return {rows,rawRows,meta:z.meta||{},currency:z.meta?.currency||null,exchange:z.meta?.exchangeName||null};
+  let rows=kind==='crypto'?completedCryptoDailyRows(rawRows,nowMs):completedDailyRows(rawRows,z.meta,nowMs),sourceRefresh=null;
+  if(kind==='crypto'){
+    try{const recovered=await refreshCompletedCryptoRows({symbol,rows,nowMs});rows=recovered.rows;sourceRefresh=recovered.recovery;}
+    catch(e){sourceRefresh={method:'yahoo-completed-crypto-window-v1',status:'failed',reason:String(e?.message||e),checkedAt:new Date(nowMs).toISOString()};}
+  }
+  return {rows,rawRows,meta:z.meta||{},currency:z.meta?.currency||null,exchange:z.meta?.exchangeName||null,sourceRefresh};
 }
 
 const requestedKeys=String(process.env.MARKET_PULSE_KEYS||'').split(',').map(x=>x.trim()).filter(Boolean);
@@ -28,7 +33,7 @@ const nowMs=Date.now();
 for(const item of targets){
   process.stdout.write('pulse '+item.symbol+'... ');
   try{
-    const data=await fetchRows(item.symbol,marketKind(item)),m=pulseMetrics(data.rows);
+    const data=await fetchRows(item.symbol,marketKind(item),nowMs),m=pulseMetrics(data.rows);
     if(!m){console.log('insufficient');failures.push({key:item.key,reason:'insufficient_completed_history'});continue}
     const state=descriptiveState(m),levels=scenarioLevels(m);
     const freshness=assessFreshness({
@@ -48,7 +53,8 @@ for(const item of targets){
       range:{pullback20:round(m.pullback20),pullback60:round(m.pullback60),pullback252:round(m.pullback252),rebound20:round(m.rebound20),rebound60:round(m.rebound60)},
       levels:{support:round(m.support),resistance:round(m.resistance),...levels},
       descriptiveState:state,
-      freshness
+      freshness,
+      ...(data.sourceRefresh?{sourceRefresh:data.sourceRefresh}:{})
     };
     updates.push(row);
     console.log(row.asOf,state.state,freshness.status);
