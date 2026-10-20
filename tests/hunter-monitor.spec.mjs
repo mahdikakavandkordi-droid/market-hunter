@@ -9,8 +9,8 @@ test('mobile monitor keeps removed picks and stale market labels clear',async({p
   await page.route('**/api/hunter-monitor',r=>r.fulfill({json:{version:'hunter-monitor-v1',quality:summarizeHunterQuality([{outcomeId:'fixture',scope:'integrated',symbol:'FIX.TO',horizonSessions:5,decisionDate:'2026-09-29',targetDate:'2026-10-06',returnPct:2,benchmarkReturnPct:1}],'2026-10-06'),marketAsOf:'2026-10-06',firstRecordedDate:'2026-09-29',summary:{total:2,up:0,down:1,new:0,missing:1},rows:[{symbol:'CURA.TO',firstDate:'2026-09-29',entryStage:'Attractive Growth',sinceSelectionPct:-7.54,status:'cooling',reasons:['below_ma20'],surfaced:false,currentStage:null},{symbol:'MISS.TO',firstDate:'2026-09-29',entryStage:'Early Watch',sinceSelectionPct:null,status:'unavailable',reasons:['quote_unavailable'],surfaced:false}]}}));
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('/');
-  await expect(page.locator('.market-state')).toHaveText('Update required');
-  await expect(page.locator('.market-read')).toContainText('Current trend assessment unavailable');
+  await expect(page.locator('#market-BTC .board-state>b')).toHaveText('Update required');
+  await expect(page.locator('#market-BTC .market-read')).toContainText('Current trend assessment unavailable');
   await page.locator('.hunter-monitor > summary').click();
   await expect(page.locator('.hunter-monitor')).toContainText('CURA');
   await expect(page.locator('.hunter-monitor')).toContainText('-7.5%');
