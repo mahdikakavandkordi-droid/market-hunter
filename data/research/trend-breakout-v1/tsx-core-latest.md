@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-10-20T11:57:21.106Z; mode: forward_shadow.
-Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 32.
+Generated: 2026-10-20T17:26:28.364Z; mode: forward_shadow.
+Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
 Open 11; pending 0; closed 8; lifecycle reviews 0.
-Realized equity $988.42; marked equity n/a; mark quality incomplete_missing_marks.
+Realized equity $988.42; marked equity $1011.53; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |

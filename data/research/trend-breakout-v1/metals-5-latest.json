@@ -2,34 +2,124 @@
   "version": "trend-breakout-v1",
   "mode": "forward_shadow",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "generatedAt": "2026-10-20T11:57:21.106Z",
+  "generatedAt": "2026-10-20T17:26:28.364Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "cohort": "metals-5",
   "universe": 5,
-  "failures": [
+  "failures": [],
+  "diagnostics": [
     {
-      "symbol": "GLD",
-      "error": "http_429"
+      "symbol": "CPER",
+      "type": "off_session_grid",
+      "date": "2026-10-20",
+      "t": 1792517094000
     },
     {
       "symbol": "CPER",
-      "error": "http_429"
-    },
-    {
-      "symbol": "SLV",
-      "error": "http_429"
+      "type": "live_incomplete_exchange_bar_dropped",
+      "date": "2026-10-20",
+      "segment": 0,
+      "endT": 1792517400000
     },
     {
       "symbol": "PPLT",
-      "error": "http_429"
+      "type": "live_incomplete_exchange_bar_dropped",
+      "date": "2026-10-20",
+      "segment": 0,
+      "endT": 1792517400000
+    },
+    {
+      "symbol": "PPLT",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-20",
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4
+      ]
+    },
+    {
+      "symbol": "SLV",
+      "type": "live_incomplete_exchange_bar_dropped",
+      "date": "2026-10-20",
+      "segment": 0,
+      "endT": 1792517400000
+    },
+    {
+      "symbol": "SLV",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-20",
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4
+      ]
+    },
+    {
+      "symbol": "GLD",
+      "type": "live_incomplete_exchange_bar_dropped",
+      "date": "2026-10-20",
+      "segment": 0,
+      "endT": 1792517400000
+    },
+    {
+      "symbol": "GLD",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-10-20",
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4
+      ]
     },
     {
       "symbol": "PALL",
-      "error": "http_429"
+      "type": "off_session_grid",
+      "date": "2026-10-20",
+      "t": 1792516948000
+    },
+    {
+      "symbol": "PALL",
+      "type": "live_incomplete_exchange_bar_dropped",
+      "date": "2026-10-20",
+      "segment": 0,
+      "endT": 1792517400000
     }
   ],
-  "diagnostics": [],
-  "inputs": [],
+  "inputs": [
+    {
+      "symbol": "CPER",
+      "sha256": "be5be43d0bf12c235c43c50841d6f249bd1c5a92ccce8fdca77d5771c6a7695b"
+    },
+    {
+      "symbol": "PPLT",
+      "sha256": "55edca7106854c735b198a64920cc218dbf0a3a6b209bb4505990d7a1da48925"
+    },
+    {
+      "symbol": "SLV",
+      "sha256": "8801cec5983663a7360c8ca9a51271b18e1043144727de9d99543853d0369680"
+    },
+    {
+      "symbol": "GLD",
+      "sha256": "1a2da6d03b64aa578171a2af6fcc2ccf495128d165bb7cb1710fc41bd9ffd39c"
+    },
+    {
+      "symbol": "PALL",
+      "sha256": "da9a7faa615643c5687d8cbed23daeb11791e745005b46e93478d0e0debe2ae1"
+    }
+  ],
   "trades": [
     {
       "symbol": "PALL",
@@ -409,19 +499,15 @@
         "equity": 986.5106512151177
       }
     ],
-    "markedCurrentEquity": null,
-    "markedReturnPct": null,
+    "markedCurrentEquity": 999.8539373277556,
+    "markedReturnPct": -0.00014606267224437364,
     "markedObservation": {
-      "runKey": "trend-breakout-v1|39418586137|1",
-      "observedAt": "2026-10-20T11:57:21.106Z",
-      "quality": "incomplete_missing_marks",
-      "markedEquity": null,
-      "totalUnrealizedPnl": null,
-      "missingSymbols": [
-        "PALL",
-        "SLV",
-        "PPLT"
-      ],
+      "runKey": "trend-breakout-v1|39465981180|1",
+      "observedAt": "2026-10-20T17:26:28.364Z",
+      "quality": "fresh",
+      "markedEquity": 999.8539373277556,
+      "totalUnrealizedPnl": 13.343286112638008,
+      "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
       "positions": [
@@ -473,11 +559,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": null,
-          "markT": null,
-          "markStatus": "missing",
-          "unrealizedPnl": null,
-          "markedPositionValue": null
+          "markPrice": 20.239999771118164,
+          "markT": "2026-10-19T20:30:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": 1.3513588241959777,
+          "markedPositionValue": 251.35135882419598
         },
         {
           "symbol": "SLV",
@@ -527,11 +614,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": null,
-          "markT": null,
-          "markStatus": "missing",
-          "unrealizedPnl": null,
-          "markedPositionValue": null
+          "markPrice": 51.540000915527344,
+          "markT": "2026-10-19T20:30:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": 15.279167111118214,
+          "markedPositionValue": 265.2791671111182
         },
         {
           "symbol": "PPLT",
@@ -581,11 +669,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": null,
-          "markT": null,
-          "markStatus": "missing",
-          "unrealizedPnl": null,
-          "markedPositionValue": null
+          "markPrice": 14.824999809265137,
+          "markT": "2026-10-19T20:30:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -3.2872398226761836,
+          "markedPositionValue": 243.34042298110322
         }
       ]
     },
@@ -1907,6 +1996,15 @@
           "PPLT"
         ],
         "staleSymbols": []
+      },
+      {
+        "runKey": "trend-breakout-v1|39465981180|1",
+        "observedAt": "2026-10-20T17:26:28.364Z",
+        "quality": "fresh",
+        "markedEquity": 999.8539373277556,
+        "totalUnrealizedPnl": 13.343286112638008,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T19:58:21.240Z",
@@ -2242,11 +2340,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": null,
-        "markT": null,
-        "markStatus": "missing",
-        "unrealizedPnl": null,
-        "markedPositionValue": null
+        "markPrice": 20.239999771118164,
+        "markT": "2026-10-19T20:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": 1.3513588241959777,
+        "markedPositionValue": 251.35135882419598
       },
       {
         "symbol": "SLV",
@@ -2296,11 +2395,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": null,
-        "markT": null,
-        "markStatus": "missing",
-        "unrealizedPnl": null,
-        "markedPositionValue": null
+        "markPrice": 51.540000915527344,
+        "markT": "2026-10-19T20:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": 15.279167111118214,
+        "markedPositionValue": 265.2791671111182
       },
       {
         "symbol": "PPLT",
@@ -2350,11 +2450,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": null,
-        "markT": null,
-        "markStatus": "missing",
-        "unrealizedPnl": null,
-        "markedPositionValue": null
+        "markPrice": 14.824999809265137,
+        "markT": "2026-10-19T20:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -3.2872398226761836,
+        "markedPositionValue": 243.34042298110322
       }
     ],
     "skipped": []
@@ -2504,8 +2605,8 @@
         "markedCurrentEquity": 1000,
         "markedReturnPct": 0,
         "markedObservation": {
-          "runKey": "trend-breakout-v1|39418586137|1",
-          "observedAt": "2026-10-20T11:57:21.106Z",
+          "runKey": "trend-breakout-v1|39465981180|1",
+          "observedAt": "2026-10-20T17:26:28.364Z",
           "quality": "fresh",
           "markedEquity": 1000,
           "totalUnrealizedPnl": 0,
@@ -2516,8 +2617,8 @@
         },
         "markedEquitySeries": [
           {
-            "runKey": "trend-breakout-v1|39418586137|1",
-            "observedAt": "2026-10-20T11:57:21.106Z",
+            "runKey": "trend-breakout-v1|39465981180|1",
+            "observedAt": "2026-10-20T17:26:28.364Z",
             "quality": "fresh",
             "markedEquity": 1000,
             "totalUnrealizedPnl": 0,
@@ -2525,8 +2626,8 @@
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-10-20T11:57:21.106Z",
-        "firstCompleteMarkedEquityAt": "2026-10-20T11:57:21.106Z",
+        "markedSeriesCoverageStartAt": "2026-10-20T17:26:28.364Z",
+        "firstCompleteMarkedEquityAt": "2026-10-20T17:26:28.364Z",
         "markedObservedMaxDrawdownPct": 0,
         "costAccounting": {
           "closedTradeCostR": 0.05,
