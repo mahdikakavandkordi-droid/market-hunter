@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-21T05:09:12.516Z; mode: forward_shadow.
+Generated: 2026-10-21T10:27:49.915Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 3; pending 1; closed 20; lifecycle reviews 0.
-Realized equity $932.86; marked equity $936.69; mark quality fresh.
+Realized equity $932.86; marked equity $941.50; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,10 +15,10 @@ Realized equity $932.86; marked equity $936.69; mark quality fresh.
 
 ## Positions
 
-- TRX-USD: Short open; entry 0.3311067521572113; current stop 0.3333614000252315; provenance prospective; gap none
-- BNB-USD: Long open; entry 729.6099853515625; current stop 720.9371468680246; provenance prospective; gap none
+- TRX-USD: Short open; entry 0.3311067521572113; current stop 0.33329178180013386; provenance prospective; gap none
+- BNB-USD: Long open; entry 729.6099853515625; current stop 728.8849792480469; provenance prospective; gap none
 - LTC-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- XRP-USD: Long open; entry 1.3279000520706177; current stop 1.2837428535733904; provenance prospective; gap none
+- XRP-USD: Long open; entry 1.3279000520706177; current stop 1.2911357198442732; provenance prospective; gap none
 
 ## Common-window comparison
 
