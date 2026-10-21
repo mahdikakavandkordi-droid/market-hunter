@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-21T19:40:07.586Z",
+  "updatedAt": "2026-10-21T22:47:46.505Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -453,9 +453,47 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 167.65214811052596,
-      "holdingBars": 7,
-      "lastEvaluatedEndT": "2026-10-21T17:30:00.000Z",
+      "holdingBars": 8,
+      "lastEvaluatedEndT": "2026-10-21T20:30:00.000Z",
       "entryObservedAt": "2026-10-16T20:06:43.004Z"
+    },
+    {
+      "symbol": "AMD",
+      "signalT": "2026-10-21T13:30:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-21T21:00:00.000Z",
+        "dailyAsOf": "2026-10-21",
+        "dipDate": "2026-10-20",
+        "dipClose": 534.739990234375,
+        "dipHigh": 548.1099853515625,
+        "dipLow": 524.5999755859375,
+        "dailySma": 397.4233001708984,
+        "meanTarget": 602.0754943847656,
+        "atr14": 27.364998953683035,
+        "averageDollarVolume": 11658532027.118835,
+        "signalClose": 552.719970703125,
+        "initialStop": 510.91747610909596
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "AMD|2026-10-21T13:30:00.000Z|1",
+      "entryWaitHours": 120,
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-21T22:47:46.505Z",
+      "firstObservedAt": "2026-10-21T22:47:46.505Z",
+      "firstObservedProvenance": {
+        "tracker": "mean-reversion-v1",
+        "runKey": "mean-reversion-v1|39688954179|1",
+        "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
+      },
+      "entryObservationClass": "pending"
     }
   ],
   "runLog": [
@@ -3421,6 +3459,29 @@
         }
       ],
       "diagnosticCount": 150
+    },
+    {
+      "runKey": "mean-reversion-v1|39688954179|1",
+      "observedAt": "2026-10-21T22:47:46.505Z",
+      "failures": [
+        {
+          "symbol": "EOG",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "TMO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "HON",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "CMCSA",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -4726,6 +4787,15 @@
       "quality": "fresh",
       "markedEquity": 1008.3942433926502,
       "totalUnrealizedPnl": 4.008574422467281,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|39688954179|1",
+      "observedAt": "2026-10-21T22:47:46.505Z",
+      "quality": "fresh",
+      "markedEquity": 1008.2706963911414,
+      "totalUnrealizedPnl": 3.8850274209585827,
       "missingSymbols": [],
       "staleSymbols": []
     }
