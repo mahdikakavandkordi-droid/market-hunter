@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-21T10:27:49.915Z; mode: forward_shadow.
+Generated: 2026-10-21T15:30:10.448Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 3; pending 1; closed 20; lifecycle reviews 0.
-Realized equity $932.86; marked equity $941.50; mark quality fresh.
+Open 4; pending 1; closed 20; lifecycle reviews 0.
+Realized equity $932.86; marked equity $943.36; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,14 +15,15 @@ Realized equity $932.86; marked equity $941.50; mark quality fresh.
 
 ## Positions
 
-- TRX-USD: Short open; entry 0.3311067521572113; current stop 0.33329178180013386; provenance prospective; gap none
-- BNB-USD: Long open; entry 729.6099853515625; current stop 728.8849792480469; provenance prospective; gap none
-- LTC-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- XRP-USD: Long open; entry 1.3279000520706177; current stop 1.2911357198442732; provenance prospective; gap none
+- TRX-USD: Short open; entry 0.3311067521572113; current stop 0.3330028397696359; provenance prospective; gap none
+- BNB-USD: Long open; entry 729.6099853515625; current stop 729.4485648018973; provenance prospective; gap none
+- XRP-USD: Long open; entry 1.3279000520706177; current stop 1.2979856899806432; provenance prospective; gap none
+- BTC-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- LTC-USD: Long open; entry 61.534000396728516; current stop 59.100713457380024; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-21T01:32:40.941Z; stale false.
+SMC ledger as of 2026-10-21T01:32:40.941Z; stale true.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 8; challenger closed 20. No winner is claimed from a small sample.
 
