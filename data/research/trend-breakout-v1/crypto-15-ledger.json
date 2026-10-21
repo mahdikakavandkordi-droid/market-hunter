@@ -1,7 +1,7 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-10-21T00:02:18.846Z",
+  "updatedAt": "2026-10-21T05:09:12.516Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
@@ -901,7 +901,7 @@
       "symbol": "XLM-USD",
       "signalT": "2026-10-18T16:00:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-18T20:00:00.000Z",
         "dailyAsOf": "2026-10-17",
@@ -917,8 +917,8 @@
       "stop": 0.18317528069019318,
       "target": null,
       "risk": 0.005491286516189575,
-      "R": null,
-      "exitT": null,
+      "R": -1,
+      "exitT": "2026-10-21T04:00:00.000Z",
       "decisionId": "XLM-USD|2026-10-18T16:00:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-10-18T21:45:07.429Z",
@@ -931,9 +931,18 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.18317528069019318,
       "bestClose": 0.17516399919986725,
-      "holdingBars": 11,
+      "holdingBars": 13,
       "entryObservedAt": "2026-10-19T05:05:51.194Z",
-      "lastEvaluatedEndT": "2026-10-20T20:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-21T04:00:00.000Z",
+      "exitPriceAssumed": 0.18317528069019318,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "trailing_or_initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapFillAssumption": "boundary stop / completed time-exit close",
+        "exitBarStartT": "2026-10-21T00:00:00.000Z",
+        "exitBarEndT": "2026-10-21T04:00:00.000Z"
+      }
     },
     {
       "symbol": "TRX-USD",
@@ -969,9 +978,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.3333614000252315,
       "bestClose": 0.330706924200058,
-      "holdingBars": 8,
+      "holdingBars": 10,
       "entryObservedAt": "2026-10-19T17:39:43.453Z",
-      "lastEvaluatedEndT": "2026-10-20T20:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-21T04:00:00.000Z"
     },
     {
       "symbol": "BNB-USD",
@@ -1005,17 +1014,50 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 715.4278390066964,
-      "bestClose": 737.8099975585938,
-      "holdingBars": 4,
+      "currentStop": 720.9371468680246,
+      "bestClose": 740.9000244140625,
+      "holdingBars": 6,
       "entryObservedAt": "2026-10-20T17:26:28.364Z",
-      "lastEvaluatedEndT": "2026-10-20T20:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-21T04:00:00.000Z"
+    },
+    {
+      "symbol": "LTC-USD",
+      "signalT": "2026-10-20T20:00:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-21T00:00:00.000Z",
+        "dailyAsOf": "2026-10-19",
+        "dailyClose": 59.6541748046875,
+        "dailySma": 51.95719026565552,
+        "breakoutHigh": 60.93199920654297,
+        "breakoutLow": 56.66899871826172,
+        "atr14": 1.2166434696742467,
+        "signalClose": 61.529998779296875
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "LTC-USD|2026-10-20T20:00:00.000Z|1",
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-21T05:09:12.516Z",
+      "firstObservedAt": "2026-10-21T05:09:12.516Z",
+      "firstObservedProvenance": {
+        "tracker": "trend-breakout-v1",
+        "runKey": "trend-breakout-v1|39547882280|1",
+        "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
+      },
+      "entryObservationClass": "pending"
     },
     {
       "symbol": "XRP-USD",
       "signalT": "2026-10-20T12:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-20T16:00:00.000Z",
         "dailyAsOf": "2026-10-19",
@@ -1026,11 +1068,11 @@
         "atr14": 0.02207859924861363,
         "signalClose": 1.3213000297546387
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
+      "entryT": "2026-10-20T20:00:00.000Z",
+      "entry": 1.3279000520706177,
+      "stop": 1.2837428535733904,
       "target": null,
-      "risk": null,
+      "risk": 0.04415719849722726,
       "R": null,
       "exitT": null,
       "decisionId": "XRP-USD|2026-10-20T12:00:00.000Z|1",
@@ -1042,7 +1084,12 @@
         "runKey": "trend-breakout-v1|39465981180|1",
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 1.2837428535733904,
+      "bestClose": 1.3345999717712402,
+      "holdingBars": 2,
+      "entryObservedAt": "2026-10-21T05:09:12.516Z",
+      "lastEvaluatedEndT": "2026-10-21T04:00:00.000Z"
     }
   ],
   "runLog": [
@@ -2000,6 +2047,12 @@
       "observedAt": "2026-10-21T00:02:18.846Z",
       "failures": [],
       "diagnosticCount": 29
+    },
+    {
+      "runKey": "trend-breakout-v1|39547882280|1",
+      "observedAt": "2026-10-21T05:09:12.516Z",
+      "failures": [],
+      "diagnosticCount": 30
     }
   ],
   "markedEquitySeries": [
@@ -3345,6 +3398,15 @@
       "quality": "fresh",
       "markedEquity": 940.7170733702199,
       "totalUnrealizedPnl": 0.38839307407021506,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|39547882280|1",
+      "observedAt": "2026-10-21T05:09:12.516Z",
+      "quality": "fresh",
+      "markedEquity": 936.6916562124461,
+      "totalUnrealizedPnl": 3.8353969436715345,
       "missingSymbols": [],
       "staleSymbols": []
     }
