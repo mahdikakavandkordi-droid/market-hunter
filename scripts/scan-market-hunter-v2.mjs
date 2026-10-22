@@ -115,26 +115,31 @@ if(market.market==='US'){
     }
   }));
 }
-const rows=[],excluded={},sessionExclusions=[];
+const rows=[],excluded={},sessionExclusions=[],screening=[];
 let usableCount=0,sourceUsableCount=0;
 for(const symbol of symbols){
   const pack=data[symbol],r=pack?.rows||[],bench=data[benchSymbol(symbol)]?.rows||[];
+  const screen={symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,asOf:r.length?dayKey(r.at(-1).t):null};
+  screening.push(screen);
+  const exclude=reason=>{screen.reason=reason;excluded[reason]=(excluded[reason]||0)+1;};
   let reason=market.market==='US'?scanCurrencyIssue(pack?.currency,market.currency):null;
   if(!reason&&(r.length<120||bench.length<80))reason='insufficient_history';
   else if(!reason&&recentSplit(r,pack.splitDays))reason='recent_split';
-  if(reason){excluded[reason]=(excluded[reason]||0)+1;continue}
+  if(reason){exclude(reason);continue}
   const issue=quoteSessionIssue(r,marketAsOf);
-  if(issue){excluded[issue.reason]=(excluded[issue.reason]||0)+1;sessionExclusions.push({symbol,...issue});continue}
+  if(issue){exclude(issue.reason);sessionExclusions.push({symbol,...issue});continue}
   const date=dayKey(r.at(-1).t),bh=benchmarkHist(bench,date);
-  if(!bh||bh.length<65){excluded.benchmark_alignment=(excluded.benchmark_alignment||0)+1;continue}
+  if(!bh||bh.length<65){exclude('benchmark_alignment');continue}
   sourceUsableCount++;
   const m=metrics(r,bh);
-  if(!m){excluded.metrics=(excluded.metrics||0)+1;continue}
-  if(r.at(-1).rawClose<ASSUMPTIONS.liquidity.minPrice){excluded.price=(excluded.price||0)+1;continue}
-  if(m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){excluded.liquidity=(excluded.liquidity||0)+1;continue}
+  if(!m){exclude('metrics');continue}
+  Object.assign(screen,{price:round(m.last),rawPrice:r.at(-1).rawClose,avgDollar20:round(m.avgDollar20)});
+  if(r.at(-1).rawClose<ASSUMPTIONS.liquidity.minPrice){exclude('price');continue}
+  if(m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){exclude('liquidity');continue}
   usableCount++;
   const stage=classify(m);
-  if(!stage){excluded.unclassified=(excluded.unclassified||0)+1;continue}
+  if(!stage){exclude('unclassified');continue}
+  screen.reason='classified';screen.stage=stage;
   const stageAge=stage==='Recovery'?recoveryStageAge(r,bench):null;
   const baseScore=rank(m,stage),score=round(baseScore,1),surfaceScore=round(surfaceRank(m,stage,baseScore),1),flags=riskFlags(m),lane=reviewLane(stage,score,m);
   rows.push({
@@ -177,7 +182,7 @@ const integratedSurfaceCounts={
 const report={
   version:VERSION,market:market.market,currency:market.currency,universeSource:market.source,validationStatus:market.market==='US'?'unvalidated-market-extension':'existing-canadian-evidence',generatedAt:new Date().toISOString(),marketAsOf,engineCommit:process.env.GITHUB_SHA||null,range,
   purpose:ASSUMPTIONS.purpose,
-  universeCount:symbols.length,sourceUsableCount,usableCount,classifiedCount:rows.length,excluded,replacementRetries,
+  universeCount:symbols.length,sourceUsableCount,usableCount,classifiedCount:rows.length,excluded,screening,replacementRetries,
   sourceSessionRecoveries:symbols.map(s=>data[s]?.sourceRecovery).filter(Boolean),
   sessionIntegrity:{referenceSymbol:market.referenceSymbol,completedSession:marketAsOf,exclusions:sessionExclusions},
   stageCounts:Object.fromEntries(stages.map(s=>[s,byStage[s].length])),

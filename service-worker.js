@@ -1,4 +1,4 @@
-const CACHE='market-hunter-shell-v39';
+const CACHE='market-hunter-shell-v40';
 const SHELL=['/','/index.html','/app.css','/mobile-polish.css','/theme.css','/ui-polish.css','/app.js','/i18n.js','/market-status.js','/quote-policy.js','/engine-dashboard.js','/engine-matches.js','/fundamental-context.js','/engine-dashboard.css','/clean-ui.css','/manifest.webmanifest','/market-hunter-icon.svg','/icons/icon-192.png','/icons/icon-512.png','/icons/icon-maskable.png','/icons/apple-touch-icon.png'];
 SHELL.push('/volume-context.js','/home-overview.js','/fonts/vazirmatn-nl-v33.003.woff2');
 self.addEventListener('install',event=>{
