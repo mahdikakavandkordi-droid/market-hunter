@@ -1,13 +1,13 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-10-22T14:00:31.882Z; mode: forward_shadow.
+Generated: 2026-10-22T18:43:46.889Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
-Open 13; pending 7; closed 8; lifecycle reviews 0.
-Realized equity $988.42; marked equity $1008.16; mark quality fresh.
+Open 19; pending 7; closed 9; lifecycle reviews 0.
+Realized equity $985.05; marked equity $1004.11; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
 |---|---:|---:|---:|
-| prospective | 8 | -0.8037732777376063 | 0 |
+| prospective | 9 | -0.784505257002447 | 0 |
 | reconstructed | 0 | n/a | n/a |
 | historical_simulated | 0 | n/a | n/a |
 | pending | 0 | n/a | n/a |
@@ -15,31 +15,37 @@ Realized equity $988.42; marked equity $1008.16; mark quality fresh.
 
 ## Positions
 
-- EMA.TO: Short open; entry 66.5; current stop 67.32535716465541; provenance prospective; gap none
 - CNQ.TO: Long open; entry 69.83999633789062; current stop 72.9528579711914; provenance prospective; gap none
 - SU.TO: Long open; entry 100.83000183105469; current stop 105.52999932425362; provenance prospective; gap none
 - IMO.TO: Long open; entry 185; current stop 181.07642473493303; provenance prospective; gap none
 - TOU.TO: Long open; entry 65.33000183105469; current stop 63.665715898786274; provenance prospective; gap none
 - L.TO: Long open; entry 66.61000061035156; current stop 66.89857183183942; provenance prospective; gap none
-- CM.TO: Long open; entry 159.8699951171875; current stop 156.65606362479073; provenance prospective; gap none
-- FTS.TO: Long open; entry 77.51000213623047; current stop 76.70214571271624; provenance prospective; gap none
-- MFC.TO: Long open; entry 62.20000076293945; current stop 61.83142934526716; provenance prospective; gap none
-- MRU.TO: Long open; entry 95.44000244140625; current stop 93.18249947684151; provenance prospective; gap none
-- TD.TO: Long open; entry 170; current stop 169.76499829973494; provenance prospective; gap none
+- CM.TO: Long open; entry 159.8699951171875; current stop 156.73428235735213; provenance prospective; gap none
+- FTS.TO: Long open; entry 77.51000213623047; current stop 77.99821526663644; provenance prospective; gap none
+- MFC.TO: Long open; entry 62.20000076293945; current stop 61.91071564810617; provenance prospective; gap none
+- MRU.TO: Long open; entry 95.44000244140625; current stop 93.42821666172573; provenance prospective; gap none
+- TD.TO: Long open; entry 170; current stop 170.28499603271484; provenance prospective; gap none
 - ATD.TO: Long open; entry 85.19000244140625; current stop 82.76428876604352; provenance prospective; gap none
-- BMO.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- BNS.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- NA.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- NTR.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- POW.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- RY.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- SLF.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- WCN.TO: Long open; entry 237.25999450683594; current stop 230.28499276297433; provenance prospective; gap none
+- WCN.TO: Long open; entry 237.25999450683594; current stop 245.10213688441684; provenance prospective; gap none
+- ABX.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- AEM.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- BMO.TO: Long open; entry 238; current stop 233.41214425223214; provenance prospective; gap none
+- BNS.TO: Long open; entry 131; current stop 128.59356907435827; provenance prospective; gap none
+- CNR.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- CP.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- CSU.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- LUN.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- NA.TO: Long open; entry 205.75999450683594; current stop 200.7364262172154; provenance prospective; gap none
+- NTR.TO: Short open; entry 95.79000091552734; current stop 99.00857325962612; provenance prospective; gap none
+- POW.TO: Long open; entry 94.2300033569336; current stop 91.7328600202288; provenance prospective; gap none
+- RY.TO: Long open; entry 281.1199951171875; current stop 275.9078456333705; provenance prospective; gap none
+- SLF.TO: Long open; entry 113.08999633789062; current stop 111.07642364501953; provenance prospective; gap none
+- WPM.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
 SMC ledger as of 2026-10-22T00:46:38.682Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 2; challenger closed 8. No winner is claimed from a small sample.
+SMC closed 2; challenger closed 9. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
