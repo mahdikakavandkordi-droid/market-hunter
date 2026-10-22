@@ -1,12 +1,24 @@
 {
   "format": "market-hunter-forward-validation-audit-v1",
-  "generatedAt": "2026-10-22T01:30:51.257Z",
+  "generatedAt": "2026-10-22T01:47:35.900Z",
   "counts": {
     "sessions": 15,
     "presences": 301,
     "episodes": 181,
     "outcomes": 196,
-    "runs": 42
+    "runs": 43,
+    "experimentSessions": 1,
+    "experimentOutcomes": 0
+  },
+  "coverage": {
+    "firstDate": "2026-09-29",
+    "asOf": "2026-10-21",
+    "expectedSessions": 16,
+    "recordedSessions": 15,
+    "missingDates": [
+      "2026-10-09"
+    ],
+    "historicalBackfill": false
   },
   "checks": [
     {
@@ -45,9 +57,45 @@
       "name": "runId unique",
       "pass": true,
       "detail": {
-        "records": 42,
-        "unique": 42
+        "records": 43,
+        "unique": 43
       }
+    },
+    {
+      "name": "experiment session IDs unique",
+      "pass": true,
+      "detail": {
+        "records": 1,
+        "unique": 1
+      }
+    },
+    {
+      "name": "experiment outcome IDs unique",
+      "pass": true,
+      "detail": {
+        "records": 0,
+        "unique": 0
+      }
+    },
+    {
+      "name": "experiment policy frozen with each capture",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "experiment captures are same-day and source-identified",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "experiment baseline and shadow respect caps and membership",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "experiment outcomes reference frozen candidates",
+      "pass": true,
+      "detail": {}
     },
     {
       "name": "session dates are unique",
@@ -120,7 +168,7 @@
       "detail": {}
     }
   ],
-  "totalChecks": 19,
-  "passedChecks": 19,
+  "totalChecks": 25,
+  "passedChecks": 25,
   "failedChecks": 0
 }
