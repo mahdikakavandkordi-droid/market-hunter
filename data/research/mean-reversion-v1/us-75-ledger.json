@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-22T18:52:17.183Z",
+  "updatedAt": "2026-10-22T22:47:20.203Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -419,7 +419,7 @@
       "symbol": "QCOM",
       "signalT": "2026-10-15T13:30:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-15T21:00:00.000Z",
         "dailyAsOf": "2026-10-15",
@@ -439,8 +439,8 @@
       "stop": 167.65214811052596,
       "target": 184.4669982910156,
       "risk": 7.347851889474043,
-      "R": null,
-      "exitT": null,
+      "R": -0.28715883799647407,
+      "exitT": "2026-10-22T20:30:00.000Z",
       "decisionId": "QCOM|2026-10-15T13:30:00.000Z|1",
       "entryWaitHours": 120,
       "historicalDiagnostic": false,
@@ -453,9 +453,20 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 167.65214811052596,
-      "holdingBars": 9,
-      "lastEvaluatedEndT": "2026-10-22T17:30:00.000Z",
-      "entryObservedAt": "2026-10-16T20:06:43.004Z"
+      "holdingBars": 10,
+      "lastEvaluatedEndT": "2026-10-22T20:30:00.000Z",
+      "entryObservedAt": "2026-10-16T20:06:43.004Z",
+      "exitPriceAssumed": 172.88999938964844,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "max_hold_close",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "stopTargetCollision": false,
+        "collisionPolicy": "stop_first",
+        "exitBarStartT": "2026-10-22T17:30:00.000Z",
+        "exitBarEndT": "2026-10-22T20:30:00.000Z"
+      }
     },
     {
       "symbol": "AMD",
@@ -3557,6 +3568,29 @@
         }
       ],
       "diagnosticCount": 150
+    },
+    {
+      "runKey": "mean-reversion-v1|39867357224|1",
+      "observedAt": "2026-10-22T22:47:20.203Z",
+      "failures": [
+        {
+          "symbol": "EOG",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "TMO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "HON",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "CMCSA",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -4907,6 +4941,15 @@
       "quality": "fresh",
       "markedEquity": 995.7726626771846,
       "totalUnrealizedPnl": -2.217080058779607,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|39867357224|1",
+      "observedAt": "2026-10-22T22:47:20.203Z",
+      "quality": "fresh",
+      "markedEquity": 994.5887765501382,
+      "totalUnrealizedPnl": 0,
       "missingSymbols": [],
       "staleSymbols": []
     }
