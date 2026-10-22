@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-22T07:59:15.995Z",
+  "updatedAt": "2026-10-22T14:08:04.948Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -273,7 +273,7 @@
       "symbol": "SOL-USD",
       "signalT": "2026-10-19T00:00:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-20T00:00:00.000Z",
         "dailyAsOf": "2026-10-19",
@@ -293,8 +293,8 @@
       "stop": 98.1294435773577,
       "target": 112.30902099609375,
       "risk": 7.6705594744001075,
-      "R": null,
-      "exitT": null,
+      "R": -0.19555288046538621,
+      "exitT": "2026-10-22T08:00:00.000Z",
       "decisionId": "SOL-USD|2026-10-19T00:00:00.000Z|1",
       "entryWaitHours": 36,
       "historicalDiagnostic": false,
@@ -307,9 +307,20 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 98.1294435773577,
-      "holdingBars": 9,
-      "lastEvaluatedEndT": "2026-10-22T04:00:00.000Z",
-      "entryObservedAt": "2026-10-20T20:54:53.189Z"
+      "holdingBars": 10,
+      "lastEvaluatedEndT": "2026-10-22T08:00:00.000Z",
+      "entryObservedAt": "2026-10-20T20:54:53.189Z",
+      "exitPriceAssumed": 104.30000305175781,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "max_hold_close",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "stopTargetCollision": false,
+        "collisionPolicy": "stop_first",
+        "exitBarStartT": "2026-10-22T04:00:00.000Z",
+        "exitBarEndT": "2026-10-22T08:00:00.000Z"
+      }
     },
     {
       "symbol": "ADA-USD",
@@ -349,8 +360,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 0.2086979342358453,
-      "holdingBars": 4,
-      "lastEvaluatedEndT": "2026-10-22T04:00:00.000Z",
+      "holdingBars": 6,
+      "lastEvaluatedEndT": "2026-10-22T12:00:00.000Z",
       "entryObservedAt": "2026-10-21T19:40:07.586Z"
     },
     {
@@ -391,8 +402,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 11.531165293284825,
-      "holdingBars": 4,
-      "lastEvaluatedEndT": "2026-10-22T04:00:00.000Z",
+      "holdingBars": 6,
+      "lastEvaluatedEndT": "2026-10-22T12:00:00.000Z",
       "entryObservedAt": "2026-10-21T19:40:07.586Z"
     },
     {
@@ -433,8 +444,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 57.67502920968192,
-      "holdingBars": 4,
-      "lastEvaluatedEndT": "2026-10-22T04:00:00.000Z",
+      "holdingBars": 6,
+      "lastEvaluatedEndT": "2026-10-22T12:00:00.000Z",
       "entryObservedAt": "2026-10-21T19:40:07.586Z"
     },
     {
@@ -475,8 +486,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 1.2679838410445623,
-      "holdingBars": 4,
-      "lastEvaluatedEndT": "2026-10-22T04:00:00.000Z",
+      "holdingBars": 6,
+      "lastEvaluatedEndT": "2026-10-22T12:00:00.000Z",
       "entryObservedAt": "2026-10-21T19:40:07.586Z"
     }
   ],
@@ -4474,6 +4485,12 @@
       "observedAt": "2026-10-22T07:59:15.995Z",
       "failures": [],
       "diagnosticCount": 30
+    },
+    {
+      "runKey": "mean-reversion-v1|39792955185|1",
+      "observedAt": "2026-10-22T14:08:04.948Z",
+      "failures": [],
+      "diagnosticCount": 30
     }
   ],
   "markedEquitySeries": [
@@ -5824,6 +5841,15 @@
       "quality": "fresh",
       "markedEquity": 966.3857537481665,
       "totalUnrealizedPnl": -7.294066155182479,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|39792955185|1",
+      "observedAt": "2026-10-22T14:08:04.948Z",
+      "quality": "fresh",
+      "markedEquity": 956.405708191818,
+      "totalUnrealizedPnl": -14.894151311696248,
       "missingSymbols": [],
       "staleSymbols": []
     }
