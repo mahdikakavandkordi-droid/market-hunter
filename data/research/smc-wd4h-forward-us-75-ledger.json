@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-10-21T01:00:50.174Z",
+  "updatedAt": "2026-10-22T00:57:00.831Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -764,6 +764,63 @@
       "prospectiveCount": 3,
       "pendingCount": 0,
       "discrepancyCount": 6
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|39702715727|1",
+      "observedAt": "2026-10-22T00:57:00.831Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "39702715727",
+        "runAttempt": "1",
+        "sha": "6edf4537af6645793595b74ed1ccd8042c05dc34",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "EOG",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-10-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        },
+        {
+          "symbol": "TMO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-10-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 1,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 14,
+      "prospectiveCount": 3,
+      "pendingCount": 0,
+      "discrepancyCount": 6
     }
   ],
   "discrepancyLog": [
@@ -965,6 +1022,15 @@
       "quality": "fresh",
       "markedEquity": 977.200484851493,
       "totalUnrealizedPnl": -7.0141810079064895,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|39702715727|1",
+      "observedAt": "2026-10-22T00:57:00.831Z",
+      "quality": "fresh",
+      "markedEquity": 973.595225825813,
+      "totalUnrealizedPnl": -10.619440033586361,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -2559,7 +2625,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "NFLX",
@@ -2646,6 +2713,98 @@
           "runId": "39524705537",
           "runAttempt": "1",
           "sha": "36b5d5f0546c73d537e0b8021f36419619ae1bd5",
+          "workflow": "SMC Expanded Forward Cohorts",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
+      "symbol": "NVDA",
+      "signalT": "2026-10-21T13:30:00.000Z",
+      "entryT": "2026-10-21T17:30:00.000Z",
+      "dir": 1,
+      "entry": 221.45050048828125,
+      "stop": 212.4681040082659,
+      "target": 239.41529344831196,
+      "risk": 8.982396480015353,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 37.9,
+        "bucket": "low",
+        "asOfDate": "2026-10-20",
+        "direction": "long",
+        "ret20": -0.05417920287076183,
+        "ret60": 0.10157247606646713,
+        "rsi14": 36.45050213414825,
+        "ma20": 227.04250106811523,
+        "ma50": 222.91760040283202,
+        "ma20Slope5": -0.005593038090089486,
+        "volumeRatio20": 0.769030433991742,
+        "benchmarkSymbol": "^GSPC",
+        "benchmarkRet20": -0.006706081876706849,
+        "benchmarkRet60": 0.04038612867060776,
+        "rs20": -0.047473120994054985,
+        "rs60": 0.061186347395859375,
+        "components": {
+          "return20": {
+            "score": 22.9,
+            "weight": 20
+          },
+          "return60": {
+            "score": 75.4,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 16.1,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 0,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 36,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 1.5,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 20.3,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 70.4,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 212.85000610351562,
+        "atr14": 3.8190209524972096,
+        "signalCompletedAt": "2026-10-21T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "NVDA|2026-10-21T13:30:00.000Z|1",
+      "firstObservedAt": "2026-10-22T00:57:00.831Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-expanded",
+        "cohort": "us-75",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "39702715727",
+          "runAttempt": "1",
+          "sha": "6edf4537af6645793595b74ed1ccd8042c05dc34",
           "workflow": "SMC Expanded Forward Cohorts",
           "ref": "refs/heads/main"
         }
