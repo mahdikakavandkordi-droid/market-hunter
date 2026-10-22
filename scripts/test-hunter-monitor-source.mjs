@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {loadHunterMonitor} from '../lib/hunter-monitor.js';
+const current={version:'hunter-monitor-v1',marketAsOf:'2026-10-21',rows:[],measurement:{version:'same-source-adjusted-endpoints-v1',originalLedgerPreserved:true},coverage:{missingDates:['2026-10-09']},experiment:{version:'hunter-selection-experiment-v1'}};
+const legacy={version:'hunter-monitor-v1',marketAsOf:'2026-10-21',rows:[{symbol:'AMD.TO',sinceSelectionPct:-87}]};
+let calls=[];
+const response=d=>({ok:true,json:async()=>d});
+assert.deepEqual(await loadHunterMonitor({fetcher:async(url,options)=>{calls.push({url,options});return response(current);}}),current);
+assert.equal(calls.length,1,'healthy raw source does not consume an API fallback request');
+calls=[];
+assert.deepEqual(await loadHunterMonitor({fetcher:async(url,options)=>{calls.push({url,options});return response(calls.length===1?legacy:current);}}),current);
+assert.equal(calls.length,2);assert.match(calls[1].url,/api.github.com/);assert.equal(calls[1].options.headers.Accept,'application/vnd.github.raw+json');
+assert.equal(calls[0].options.signal,calls[1].options.signal,'both requests share one total timeout');
+assert.equal(calls[1].options.cache,'no-store');
+await assert.rejects(loadHunterMonitor({fetcher:async()=>response(legacy)}),/unavailable/,'legacy split-scale returns never leak back into the API');
+assert.deepEqual(await loadHunterMonitor({fetcher:async url=>{if(url.includes('raw.githubusercontent'))throw Error('network');return response(current);}}),current);
+await assert.rejects(loadHunterMonitor({fetcher:async()=>({ok:false})}),/unavailable/);
+console.log('Hunter published source: compatible schema, raw-CDN fallback, shared budget and fail-closed legacy rejection passed');

@@ -6,6 +6,8 @@ A saved selection price could be on a pre-split scale while later Yahoo history 
 
 Missing entry/target/benchmark bars produce unknown returns. A material change of entry-price scale must agree within 1% with the product of declared splits; an unrelated dividend cannot justify an arbitrary price change. Small differences include saved-price rounding and ordinary adjustments. Unsupported material changes are excluded explicitly rather than falling back to the old calculation. Large dividend adjustments may therefore remain unmeasurable pending source review.
 
+The public reader also validates this repaired measurement contract. Raw GitHub CDN edges can retain a pre-repair snapshot after the new evidence commit exists. On an incompatible/failed raw response, the reader tries GitHub's public Contents API with the raw media type, within the same total eight-second budget. A legacy calculation is never returned as a fallback; if neither source supplies a compatible report the endpoint returns unavailable. Healthy raw reads do not consume Contents API requests.
+
 October 9's two captures failed because the source still contained October 8. A later October 9 report exists, but it is not a prospective ledger record. That historical gap remains visible and is never backfilled. Collection now additionally follows successful `Research Daily Refresh` completion, using trusted main code and the current main snapshot. Existing schedules remain recovery paths. Exchange-local same-day and completed-session checks continue to reject stale or retrospective captures. The API and mobile follow-up disclose missing benchmark-session dates.
 
 ## Frozen experiment: hunter-momentum-peer-order-v1-20261022
