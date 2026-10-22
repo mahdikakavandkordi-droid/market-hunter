@@ -2,6 +2,10 @@ name: Market Hunter Forward Validation
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: [Research Daily Refresh]
+    branches: [main]
+    types: [completed]
   push:
     branches:
       - main
@@ -10,6 +14,8 @@ on:
       - 'lib/market-hunter-forward-validation.js'
       - 'lib/hunter-monitor.js'
       - 'lib/hunter-monitor-source.js'
+      - 'lib/hunter-measurement.js'
+      - 'lib/hunter-selection-experiment.js'
       - 'scripts/collect-market-hunter-forward-validation.mjs'
   schedule:
     # Primary post-close capture after the validated daily refresh, plus recovery.
@@ -25,6 +31,7 @@ concurrency:
 
 jobs:
   collect:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
@@ -57,6 +64,7 @@ jobs:
           node --check scripts/audit-market-hunter-forward-validation.mjs
           node scripts/test-market-hunter-forward-validation.mjs
           node scripts/test-hunter-monitor.mjs
+          node scripts/test-hunter-selection-experiment.mjs
 
       - name: Collect canonical session and reconcile matured outcomes
         id: collector
@@ -107,6 +115,7 @@ jobs:
             evidence/data/research/market-hunter-forward-validation/presences.jsonl
             evidence/data/research/market-hunter-forward-validation/episodes.jsonl
             evidence/data/research/market-hunter-forward-validation/outcomes.jsonl
+            evidence/data/research/market-hunter-forward-validation/selection-experiment/
           if-no-files-found: warn
           retention-days: 90
 

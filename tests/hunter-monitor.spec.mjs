@@ -1,4 +1,5 @@
 import {summarizeHunterQuality} from '../lib/hunter-quality.js';
+import {experimentReport} from '../lib/hunter-selection-experiment.js';
 import {test,expect} from '@playwright/test';
 test('mobile monitor keeps removed picks and stale market labels clear',async({page})=>{
   await page.setViewportSize({width:390,height:844});
@@ -6,7 +7,9 @@ test('mobile monitor keeps removed picks and stale market labels clear',async({p
   await page.route('**/api/intraday',r=>r.fulfill({json:{quotes:{},failures:[]}}));
   await page.route('**/api/portfolio?**',r=>r.fulfill({json:{items:[],failures:[]}}));
   await page.route('**/api/research-data?kind=pulse',r=>r.fulfill({json:{markets:[{key:'BTC',group:'Crypto',name:'Bitcoin',asOf:'2020-01-01',price:100,regime:'Strong Bull',condition:'Positive Momentum',freshness:{status:'fresh'},current:{returns:{d1:1}}}]}}));
-  await page.route('**/api/hunter-monitor',r=>r.fulfill({json:{version:'hunter-monitor-v1',quality:summarizeHunterQuality([{outcomeId:'fixture',scope:'integrated',symbol:'FIX.TO',horizonSessions:5,decisionDate:'2026-09-29',targetDate:'2026-10-06',returnPct:2,benchmarkReturnPct:1}],'2026-10-06'),marketAsOf:'2026-10-06',firstRecordedDate:'2026-09-29',summary:{total:2,up:0,down:1,new:0,missing:1},rows:[{symbol:'CURA.TO',firstDate:'2026-09-29',entryStage:'Attractive Growth',sinceSelectionPct:-7.54,status:'cooling',reasons:['below_ma20'],surfaced:false,currentStage:null},{symbol:'MISS.TO',firstDate:'2026-09-29',entryStage:'Early Watch',sinceSelectionPct:null,status:'unavailable',reasons:['quote_unavailable'],surfaced:false}]}}));
+  const experiment=experimentReport([],[],[],'2026-10-06');
+  experiment.latest={marketDate:'2026-10-06',baseline:['CURA.TO'],shadow:['ALT.TO'],candidates:[{symbol:'CURA.TO',sector:'Health Care',omissionReason:'home_selected',shadowSelected:false},{symbol:'ALT.TO',sector:'Technology',omissionReason:'home_cap',shadowSelected:true}]};
+  await page.route('**/api/hunter-monitor',r=>r.fulfill({json:{version:'hunter-monitor-v1',experiment,coverage:{missingDates:['2026-10-02']},measurement:{excluded:1},quality:summarizeHunterQuality([{outcomeId:'fixture',scope:'integrated',symbol:'FIX.TO',horizonSessions:5,decisionDate:'2026-09-29',targetDate:'2026-10-06',returnPct:2,benchmarkReturnPct:1}],'2026-10-06'),marketAsOf:'2026-10-06',firstRecordedDate:'2026-09-29',summary:{total:2,up:0,down:1,new:0,missing:1},rows:[{symbol:'CURA.TO',firstDate:'2026-09-29',entryStage:'Attractive Growth',sinceSelectionPct:-7.54,status:'cooling',reasons:['below_ma20'],surfaced:false,currentStage:null},{symbol:'MISS.TO',firstDate:'2026-09-29',entryStage:'Early Watch',sinceSelectionPct:null,status:'unavailable',reasons:['entry_basis_unavailable'],surfaced:false}]}}));
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('/');
   await expect(page.locator('#market-BTC .board-state>b')).toHaveText('Update required');
@@ -16,10 +19,22 @@ test('mobile monitor keeps removed picks and stale market labels clear',async({p
   await expect(page.locator('.hunter-monitor')).toContainText('-7.5%');
   await expect(page.locator('.hunter-monitor')).toContainText('Outside current shortlist; tracking continues');
   await expect(page.locator('.hunter-monitor')).toContainText('Quote unavailable');
+  await expect(page.locator('.hunter-monitor')).toContainText('Comparable entry-price basis unavailable');
+  await expect(page.locator('.hunter-coverage')).toContainText('2026-10-02');
+  await page.locator('.hunter-experiment > summary').click();
+  await expect(page.locator('.hunter-experiment')).toContainText('main shortlist is unchanged');
+  await expect(page.locator('.hunter-experiment')).toContainText('0 / 0');
+  await page.locator('.hunter-experiment > details > summary').click();
+  await expect(page.locator('.hunter-experiment')).toContainText('ALT');
+  await expect(page.locator('.hunter-experiment')).toContainText('Category selected; outside home cap');
   await page.locator('.hunter-quality > summary').click();
   await page.locator('.hunter-quality > details > summary').first().click();
   await expect(page.locator('.hunter-quality')).toContainText('Final shortlist');
   await expect(page.locator('.hunter-quality')).toContainText('1 / 1');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
+  await page.locator('#languageBtn').click();
+  await expect(page.locator('.hunter-experiment')).toContainText('آزمون رتبه‌بندی');
+  await expect(page.locator('.hunter-coverage')).toContainText('جلسه‌های مفقود');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
   expect(errors).toEqual([]);
 });

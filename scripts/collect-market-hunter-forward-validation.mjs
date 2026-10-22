@@ -1,5 +1,6 @@
 import {fetchChart} from '../lib/hunter-monitor-source.js';
 import {buildHunterMonitor} from '../lib/hunter-monitor.js';
+import {experimentSession,experimentPending,experimentOutcome,experimentReport} from '../lib/hunter-selection-experiment.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import {
@@ -15,6 +16,8 @@ const EPISODES=path.join(ROOT,'episodes.jsonl');
 const OUTCOMES=path.join(ROOT,'outcomes.jsonl');
 const RUNS=path.join(ROOT,'runs.jsonl');
 const STATUS=path.join(ROOT,'status.json');
+const EXPERIMENT_SESSIONS=path.join(ROOT,'selection-experiment','sessions.jsonl');
+const EXPERIMENT_OUTCOMES=path.join(ROOT,'selection-experiment','outcomes.jsonl');
 const BENCHMARK='^GSPTSE';
 
 function readText(file){return fs.existsSync(file)?fs.readFileSync(file,'utf8'):''}
@@ -105,6 +108,15 @@ async function collect(){
   }
 
   const afterCanonical=readStore();
+  // Capture only today's authentic source, never recreate a missed historical choice.
+  // A same-day retry can finish an interrupted capture only if its source is identical.
+  const experimentSessions=parseJsonl(readText(EXPERIMENT_SESSIONS));
+  if(!experimentSessions.some(s=>s.marketDate===canonicalSession.marketDate)&&canonicalSession.sourceReportHash===candidateSession.sourceReportHash){
+    appendFile(EXPERIMENT_SESSIONS,[experimentSession(report,attemptedAt)],x=>x.sessionId);
+  }
+  const frozenExperimentSessions=parseJsonl(readText(EXPERIMENT_SESSIONS));
+  const recordedExperimentOutcomes=parseJsonl(readText(EXPERIMENT_OUTCOMES));
+  const pendingExperiment=experimentPending(frozenExperimentSessions,recordedExperimentOutcomes,benchmarkRows,canonicalSession.marketDate);
   const outcomeKeys=new Set(afterCanonical.outcomes.map(x=>x.outcomeId));
   const pending=[];
   for(const episode of afterCanonical.episodes){
@@ -115,7 +127,7 @@ async function collect(){
       if(targetDate)pending.push({episode,horizon,targetDate});
     }
   }
-  const neededSymbols=[...new Set([...pending.map(x=>x.episode.symbol),...afterCanonical.episodes.filter(x=>x.scope==='stage').map(x=>x.symbol)])];
+  const neededSymbols=[...new Set([...pending.map(x=>x.episode.symbol),...afterCanonical.episodes.filter(x=>x.scope==='stage').map(x=>x.symbol),...pendingExperiment.map(x=>x.candidate.symbol)])];
   const fetched=await mapLimit(neededSymbols,8,fetchChart);
   const symbolRows=new Map();
   const fetchFailures=[];
@@ -137,7 +149,12 @@ async function collect(){
     if(outcome)outcomes.push(outcome);
   }
   const addedOutcomes=appendFile(OUTCOMES,outcomes,x=>x.outcomeId).length;
+  const experimentOutcomes=pendingExperiment.map(item=>experimentOutcome(item,symbolRows.get(item.candidate.symbol)||[],benchmarkRows,attemptedAt)).filter(Boolean);
+  const addedExperimentOutcomes=appendFile(EXPERIMENT_OUTCOMES,experimentOutcomes,x=>x.outcomeId).length;
+  const experiment=experimentReport(frozenExperimentSessions,parseJsonl(readText(EXPERIMENT_OUTCOMES)),benchmarkRows,canonicalSession.marketDate);
   const monitor=buildHunterMonitor({...readStore(),symbolRows,benchmarkRows,generatedAt:attemptedAt});
+  monitor.experiment=experiment;
+  writeText(path.join(ROOT,'selection-experiment','report.json'),JSON.stringify(experiment,null,2)+'\n');
   writeText(path.join(ROOT,'monitor.json'),JSON.stringify(monitor,null,2)+'\n');
   const canonicalSourceChanged=Boolean(existingSession&&existingSession.sourceReportHash!==candidateSession.sourceReportHash);
 
@@ -147,6 +164,7 @@ async function collect(){
     sourceReportHash:candidateSession.sourceReportHash,
     canonicalSourceChangedSameDay:canonicalSourceChanged,
     addedSessions,addedPresences,addedEpisodes,addedOutcomes,
+    addedExperimentOutcomes,experimentSessions:frozenExperimentSessions.length,missingExperimentOutcomes:experiment.horizons[5].missingMatured,
     pendingMaturedOutcomes:pending.length,fetchFailures
   });
   return {

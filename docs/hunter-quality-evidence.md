@@ -10,6 +10,8 @@ The source remains the append-only prospective ledger. No historical picks are r
 
 ## Current development decision
 
+The prospective momentum/peer-order experiment and measurement repair are specified in [hunter-evidence-and-ranking-experiment.md](hunter-evidence-and-ranking-experiment.md). Production selection is unchanged. The monitor's quality figures now use a derived same-source adjusted-price projection; original stored outcomes remain immutable, and missing measurement bases are explicitly excluded.
+
 Do not promote a new selection filter on the basis of this short forward sample. Existing stage ranking already penalizes extension above MA20 and high ATR; an additional similar filter could duplicate those effects. The next filter experiment must specify one hypothesis and rule before collecting its evaluation window, preserve the baseline, and compare retained and excluded selections over identical horizons. Prospective results, symbol concentration, overlapping dates and omitted outcomes must be reviewed together.
 
 Fundamental context remains supplementary, without numerical scores or an exclusion rule. Four reconciled issuer mappings do not cover the current Canadian universe. Broader coverage requires verified issuer mappings, sector-appropriate statement measures and an accessible authorized source. Public coverage must be calculated against the current shortlist, not a historical sample. Failed source checks retain previously verified snapshots with their original dates. More measurements or template text do not establish fundamental coverage.
