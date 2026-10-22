@@ -1,6 +1,7 @@
 import './test-hunter-quality.mjs';
 import './test-hunter-measurement.mjs';
 import './test-hunter-selection-experiment.mjs';
+import './test-hunter-monitor-source.mjs';
 import assert from 'node:assert/strict';
 import {buildHunterMonitor} from '../lib/hunter-monitor.js';
 import {hunterMonitorReport} from '../lib/telegram-fa.js';
