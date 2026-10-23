@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-10-21 to 2026-10-22 (TSX 2026-10-22 · SP500 2026-10-22 · NASDAQ100 2026-10-22 · GOLD 2026-10-22 · SILVER 2026-10-22 · BTC 2026-10-21 · ETH 2026-10-21)
+**As of:** 2026-10-22
 
 ## Executive read
 
-- Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
-- Completed-session dates differ by instrument: TSX 2026-10-22 · SP500 2026-10-22 · NASDAQ100 2026-10-22 · GOLD 2026-10-22 · SILVER 2026-10-22 · BTC 2026-10-21 · ETH 2026-10-21.
+- Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.
+- All tracked markets are aligned to 2026-10-22.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -20,7 +20,7 @@
 
 - **Equities: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
+- **Crypto: Constructive but uneven** — Most tracked markets remain constructive, but leadership is not uniform.
 
 ## Key divergences
 
@@ -29,7 +29,7 @@
 ## What to watch next
 
 - **TSX Composite:** bullish continuation above 36410.6 · trend warning near 35679.41 · structure risk below 35805.
-- **Ethereum:** bullish continuation above 2531.74 · trend warning near 2520.52 · structure risk below 2406.91.
+- **Ethereum:** bullish continuation above 2531.74 · trend warning near 2506.42 · structure risk below 2357.96.
 - **Silver:** bullish continuation above 57.71 · trend warning near 59.21 · structure risk below 55.5.
 - **Gold:** bullish continuation above 4170.7 · trend warning near 4170.93 · structure risk below 4046.2.
 - **Nasdaq-100:** bullish continuation above 29192.29 · trend warning near 30306.06 · structure risk below 28890.74.
@@ -77,20 +77,20 @@
 - **Watch next:** bullish continuation above 57.71 · trend warning near 59.21 · structure risk below 55.5.
 
 ### Bitcoin
-- **State:** Strong Bull / Range / Mixed
-- **Returns:** 1D +1.3% · 5D +3.1% · 20D -1% · 60D +9%
-- **Historical read:** 5 sessions: Mixed · 10: Supportive · 20: Supportive
-- **Framing:** Historical analogs supportive
-- **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 84249.22 · trend warning near 83172.21 · structure risk below 82906.62.
+- **State:** Bull / Pullback
+- **Returns:** 1D -3.2% · 5D -0.1% · 20D -3.8% · 60D +4.6%
+- **Historical read:** 5 sessions: Mixed · 10: Supportive · 20: Improving, longer-term caution
+- **Framing:** Primary trend intact, pullback unresolved
+- **Outlook:** Primary trend remains constructive and recent pullback analogs have generally held up better than baseline. Continuation is supported historically, but confirmation still matters.
+- **Watch next:** bullish continuation above 82262.21 · trend warning near 83012.95 · structure risk below 80615.4.
 
 ### Ethereum
 - **State:** Mixed / Recovery Attempt
-- **Returns:** 1D +1% · 5D +2.1% · 20D -8.7% · 60D +1.9%
+- **Returns:** 1D -3.4% · 5D -0.6% · 20D -10.6% · 60D -3.1%
 - **Historical read:** 5 sessions: Mixed · 10: Improving, longer-term caution · 20: Mixed
 - **Framing:** Two-sided / evidence mixed
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 2531.74 · trend warning near 2520.52 · structure risk below 2406.91.
+- **Watch next:** bullish continuation above 2531.74 · trend warning near 2506.42 · structure risk below 2357.96.
 
 
 ## Hunter context
