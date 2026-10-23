@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-10-22
+**As of:** 2026-10-22 to 2026-10-23 (TSX 2026-10-23 · SP500 2026-10-23 · NASDAQ100 2026-10-23 · GOLD 2026-10-22 · SILVER 2026-10-22 · BTC 2026-10-22 · ETH 2026-10-22)
 
 ## Executive read
 
 - Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.
-- All tracked markets are aligned to 2026-10-22.
+- Completed-session dates differ by instrument: TSX 2026-10-23 · SP500 2026-10-23 · NASDAQ100 2026-10-23 · GOLD 2026-10-22 · SILVER 2026-10-22 · BTC 2026-10-22 · ETH 2026-10-22.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -28,37 +28,37 @@
 
 ## What to watch next
 
-- **TSX Composite:** bullish continuation above 36410.6 · trend warning near 35679.41 · structure risk below 35805.
+- **TSX Composite:** bullish continuation above 36410.6 · trend warning near 35683.5 · structure risk below 35722.
 - **Ethereum:** bullish continuation above 2531.74 · trend warning near 2506.42 · structure risk below 2357.96.
 - **Silver:** bullish continuation above 57.71 · trend warning near 59.21 · structure risk below 55.5.
 - **Gold:** bullish continuation above 4170.7 · trend warning near 4170.93 · structure risk below 4046.2.
-- **Nasdaq-100:** bullish continuation above 29192.29 · trend warning near 30306.06 · structure risk below 28890.74.
+- **Nasdaq-100:** bullish continuation above 29192.29 · trend warning near 30223.53 · structure risk below 28890.74.
 
 ## Market detail
 
 ### TSX Composite
 - **State:** Mixed / Weakening
-- **Returns:** 1D -1% · 5D -0.5% · 20D +0.6% · 60D +1.1%
+- **Returns:** 1D -0.5% · 5D -1.1% · 20D +0.2% · 60D +0.1%
 - **Historical read:** 5 sessions: Cautious · 10: Mixed · 20: Mixed
 - **Framing:** Short-term damage, confirmation required
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 36410.6 · trend warning near 35679.41 · structure risk below 35805.
+- **Watch next:** bullish continuation above 36410.6 · trend warning near 35683.5 · structure risk below 35722.
 
 ### S&P 500
 - **State:** Mixed / Weakening
-- **Returns:** 1D -1.2% · 5D -1% · 20D -0.5% · 60D +4.8%
+- **Returns:** 1D -0.5% · 5D -0.5% · 20D -1.6% · 60D +2.5%
 - **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Mixed
 - **Framing:** Short-term damage, confirmation required
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 7677.02 · trend warning near 7733.46 · structure risk below 7638.17.
+- **Watch next:** bullish continuation above 7677.02 · trend warning near 7727.48 · structure risk below 7611.2.
 
 ### Nasdaq-100
 - **State:** Mixed / Weakening
-- **Returns:** 1D -2.9% · 5D -3.3% · 20D -5% · 60D +6.5%
-- **Historical read:** 5 sessions: Mixed · 10: Supportive · 20: Mixed
-- **Framing:** Short-term damage, confirmation required
+- **Returns:** 1D +0% · 5D -0.8% · 20D -5.4% · 60D +3%
+- **Historical read:** 5 sessions: Mixed · 10: Supportive · 20: Supportive
+- **Framing:** Historical analogs supportive
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 29192.29 · trend warning near 30306.06 · structure risk below 28890.74.
+- **Watch next:** bullish continuation above 29192.29 · trend warning near 30223.53 · structure risk below 28890.74.
 
 ### Gold
 - **State:** Strong Bear / Weakening
@@ -95,14 +95,14 @@
 
 ## Hunter context
 
-Final shortlist: 6 charts. 7 additional validated stage picks remain in the backend.
+Final shortlist: 6 charts. 10 additional validated stage picks remain in the backend.
 
-1. ENB.TO — Early Watch
-2. ATH.TO — Attractive Growth
+1. AMZN.TO — Early Watch
+2. LSPD.TO — Attractive Growth
 3. SHOP.TO — Established Move
-4. GIL.TO — Early Watch
-5. DOL.TO — Attractive Growth
-6. PXT.TO — Established Move
+4. CPX.TO — Early Watch
+5. COST.TO — Attractive Growth
+6. IPCO.TO — Established Move
 
 ---
 Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal.
