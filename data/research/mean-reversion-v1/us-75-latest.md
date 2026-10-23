@@ -1,6 +1,6 @@
 # Mean Reversion V1 — us-75
-Generated: 2026-10-23T18:45:16.505Z; mode: forward_shadow.
-Forward start: 2026-10-04T20:24:23.948534+00:00; universe 75; failed fetch/review symbols 2.
+Generated: 2026-10-23T21:44:03.669Z; mode: forward_shadow.
+Forward start: 2026-10-04T20:24:23.948534+00:00; universe 75; failed fetch/review symbols 4.
 Open 0; pending 0; closed 9; lifecycle reviews 0.
 Realized equity $994.59; marked equity $994.59; mark quality fresh.
 ## Evidence provenance

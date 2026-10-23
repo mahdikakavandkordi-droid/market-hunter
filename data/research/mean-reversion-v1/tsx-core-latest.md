@@ -1,6 +1,6 @@
 # Mean Reversion V1 — tsx-core
-Generated: 2026-10-23T18:45:16.505Z; mode: forward_shadow.
-Forward start: 2026-10-04T20:24:23.948534+00:00; universe 33; failed fetch/review symbols 2.
+Generated: 2026-10-23T21:44:03.669Z; mode: forward_shadow.
+Forward start: 2026-10-04T20:24:23.948534+00:00; universe 33; failed fetch/review symbols 1.
 Open 0; pending 0; closed 7; lifecycle reviews 0.
 Realized equity $997.74; marked equity $997.74; mark quality fresh.
 ## Evidence provenance
