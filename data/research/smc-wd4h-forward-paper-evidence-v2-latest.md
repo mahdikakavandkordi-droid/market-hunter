@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper — Corrected Evidence v2
 
-Generated: 2026-10-22T00:46:38.682Z
+Generated: 2026-10-23T00:46:57.203Z
 
 Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
 The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
@@ -17,8 +17,8 @@ The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5f
 ## $1,000 paper account — realized vs marked
 
 Realized-only equity: $991.40; realized return: -0.9%.
-Marked equity: $992.66; marked return: -0.7%; mark quality: fresh.
-Unrealized P/L: $1.25.
+Marked equity: $1018.83; marked return: 1.9%; mark quality: fresh.
+Unrealized P/L: $27.43.
 Realized-event max drawdown: -1.8%; observed marked max drawdown: -2.0%.
 Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; first complete marked-equity observation: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
 Missing/invalid marks: none; stale marks: none.
@@ -28,10 +28,10 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---|---:|
-| FNV.TO | Short | 335.780 | 342.060 | 2026-10-21T20:30:00.000Z | fresh | $-3.36 |
-| LUN.TO | Short | 32.710 | 31.980 | 2026-10-21T20:30:00.000Z | fresh | $2.59 |
-| WPM.TO | Short | 184.410 | 185.660 | 2026-10-21T20:30:00.000Z | fresh | $-0.82 |
-| SLF.TO | Long | 112.030 | 113.320 | 2026-10-21T20:30:00.000Z | fresh | $2.85 |
+| FNV.TO | Short | 335.780 | 324.700 | 2026-10-22T20:30:00.000Z | fresh | $5.93 |
+| LUN.TO | Short | 32.710 | 29.510 | 2026-10-22T20:30:00.000Z | fresh | $11.34 |
+| WPM.TO | Short | 184.410 | 172.790 | 2026-10-22T20:30:00.000Z | fresh | $7.66 |
+| SLF.TO | Long | 112.030 | 113.160 | 2026-10-22T20:30:00.000Z | fresh | $2.50 |
 
 ## Evidence integrity
 
