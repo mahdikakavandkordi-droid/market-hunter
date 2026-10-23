@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-extra
-Generated: 2026-10-23T18:37:31.425Z; mode: forward_shadow.
+Generated: 2026-10-23T22:30:51.515Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 0.
 Open 16; pending 0; closed 15; lifecycle reviews 0.
-Realized equity $977.94; marked equity $1036.90; mark quality fresh.
+Realized equity $977.94; marked equity $1038.82; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -16,15 +16,15 @@ Realized equity $977.94; marked equity $1036.90; mark quality fresh.
 ## Positions
 
 - TFII.TO: Short open; entry 165.2899932861328; current stop 165.43214852469308; provenance prospective; gap none
-- DOL.TO: Long open; entry 188.74000549316406; current stop 201.0328652518136; provenance prospective; gap none
+- DOL.TO: Long open; entry 188.74000549316406; current stop 201.28143419538225; provenance prospective; gap none
 - KEY.TO: Long open; entry 54.560001373291016; current stop 53.31428582327707; provenance prospective; gap none
-- TRI.TO: Long open; entry 148.22999572753906; current stop 160.8567831856864; provenance prospective; gap none
+- TRI.TO: Long open; entry 148.22999572753906; current stop 161.15035356794084; provenance prospective; gap none
 - WCP.TO: Long open; entry 18.940000534057617; current stop 19.430358341762; provenance prospective; gap none
 - OTEX.TO: Long open; entry 35.40999984741211; current stop 37.029997144426616; provenance prospective; gap none
-- AGI.TO: Short open; entry 44.130001068115234; current stop 45.065712792532786; provenance prospective; gap none
+- AGI.TO: Short open; entry 44.130001068115234; current stop 45.019641331263955; provenance prospective; gap none
 - CCO.TO: Short open; entry 113.44999694824219; current stop 116.69928904942104; provenance prospective; gap none
 - CTC-A.TO: Long open; entry 195.91000366210938; current stop 200.8489259992327; provenance prospective; gap none
-- EDV.TO: Short open; entry 76.58000183105469; current stop 77.94071415492466; provenance prospective; gap none
+- EDV.TO: Short open; entry 76.58000183105469; current stop 77.56285694667271; provenance prospective; gap none
 - CCL-B.TO: Long open; entry 97; current stop 95.80392401559013; provenance prospective; gap none
 - GIB-A.TO: Long open; entry 106.29000091552734; current stop 109.36035047258649; provenance prospective; gap none
 - QSR.TO: Long open; entry 105.94999694824219; current stop 103.5364249093192; provenance prospective; gap none
