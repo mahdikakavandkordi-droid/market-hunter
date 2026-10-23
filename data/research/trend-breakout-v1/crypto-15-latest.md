@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-23T01:45:43.718Z; mode: forward_shadow.
+Generated: 2026-10-23T07:50:47.897Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 0; pending 1; closed 30; lifecycle reviews 0.
-Realized equity $912.54; marked equity $912.54; mark quality fresh.
+Open 1; pending 0; closed 30; lifecycle reviews 0.
+Realized equity $912.54; marked equity $911.98; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,7 +15,7 @@ Realized equity $912.54; marked equity $912.54; mark quality fresh.
 
 ## Positions
 
-- TRX-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- TRX-USD: Short open; entry 0.3281685709953308; current stop 0.33028516599110197; provenance prospective; gap none
 
 ## Common-window comparison
 
