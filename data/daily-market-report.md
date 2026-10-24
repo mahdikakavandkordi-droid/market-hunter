@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-10-22 to 2026-10-23 (TSX 2026-10-23 · SP500 2026-10-23 · NASDAQ100 2026-10-23 · GOLD 2026-10-23 · SILVER 2026-10-23 · BTC 2026-10-22 · ETH 2026-10-22)
+**As of:** 2026-10-23
 
 ## Executive read
 
-- Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
-- Completed-session dates differ by instrument: TSX 2026-10-23 · SP500 2026-10-23 · NASDAQ100 2026-10-23 · GOLD 2026-10-23 · SILVER 2026-10-23 · BTC 2026-10-22 · ETH 2026-10-22.
+- Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.
+- All tracked markets are aligned to 2026-10-23.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -20,7 +20,7 @@
 
 - **Equities: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
+- **Crypto: Mixed** — Signals are mixed across the tracked markets.
 
 ## Key divergences
 
@@ -28,11 +28,11 @@
 
 ## What to watch next
 
+- **Bitcoin:** bullish continuation above 81235.03 · trend warning near 82828.48 · structure risk below 80615.4.
 - **Silver:** bullish continuation above 57.71 · trend warning near 58.68 · structure risk below 55.5.
 - **TSX Composite:** bullish continuation above 36410.6 · trend warning near 35683.5 · structure risk below 35722.
-- **Ethereum:** bullish continuation above 2531.74 · trend warning near 2506.42 · structure risk below 2357.96.
+- **Ethereum:** bullish continuation above 2522.84 · trend warning near 2491.27 · structure risk below 2357.96.
 - **Gold:** bullish continuation above 4170.7 · trend warning near 4155.26 · structure risk below 3993.8.
-- **Nasdaq-100:** bullish continuation above 29192.29 · trend warning near 30223.53 · structure risk below 28890.74.
 
 ## Market detail
 
@@ -77,20 +77,20 @@
 - **Watch next:** bullish continuation above 57.71 · trend warning near 58.68 · structure risk below 55.5.
 
 ### Bitcoin
-- **State:** Bull / Pullback
-- **Returns:** 1D -3.2% · 5D -0.1% · 20D -3.8% · 60D +4.6%
-- **Historical read:** 5 sessions: Mixed · 10: Supportive · 20: Improving, longer-term caution
-- **Framing:** Primary trend intact, pullback unresolved
-- **Outlook:** Primary trend remains constructive and recent pullback analogs have generally held up better than baseline. Continuation is supported historically, but confirmation still matters.
-- **Watch next:** bullish continuation above 82262.21 · trend warning near 83012.95 · structure risk below 80615.4.
+- **State:** Mixed / Range / Mixed
+- **Returns:** 1D -0.3% · 5D -1.1% · 20D -4.3% · 60D +2.7%
+- **Historical read:** 5 sessions: Cautious · 10: Cautious · 20: Cautious
+- **Framing:** Historical analogs cautious
+- **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
+- **Watch next:** bullish continuation above 81235.03 · trend warning near 82828.48 · structure risk below 80615.4.
 
 ### Ethereum
 - **State:** Mixed / Recovery Attempt
-- **Returns:** 1D -3.4% · 5D -0.6% · 20D -10.6% · 60D -3.1%
+- **Returns:** 1D -0.1% · 5D -1% · 20D -11.3% · 60D -3.9%
 - **Historical read:** 5 sessions: Mixed · 10: Improving, longer-term caution · 20: Mixed
 - **Framing:** Two-sided / evidence mixed
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 2531.74 · trend warning near 2506.42 · structure risk below 2357.96.
+- **Watch next:** bullish continuation above 2522.84 · trend warning near 2491.27 · structure risk below 2357.96.
 
 
 ## Hunter context
