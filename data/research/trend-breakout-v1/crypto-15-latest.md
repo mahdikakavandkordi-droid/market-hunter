@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-24T06:15:28.114Z; mode: forward_shadow.
+Generated: 2026-10-24T11:26:11.200Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 0; pending 1; closed 31; lifecycle reviews 0.
-Realized equity $910.99; marked equity $910.99; mark quality fresh.
+Open 1; pending 0; closed 31; lifecycle reviews 0.
+Realized equity $910.99; marked equity $913.85; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,7 +15,7 @@ Realized equity $910.99; marked equity $910.99; mark quality fresh.
 
 ## Positions
 
-- XLM-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- XLM-USD: Short open; entry 0.17306199669837952; current stop 0.17883642230715072; provenance prospective; gap none
 
 ## Common-window comparison
 
