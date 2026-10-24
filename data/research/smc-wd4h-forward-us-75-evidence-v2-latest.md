@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75 — Corrected Evidence v2
 
-Generated: 2026-10-23T00:59:28.534Z; forward start: 2026-10-01; universe: 75.
+Generated: 2026-10-24T01:09:46.677Z; forward start: 2026-10-01; universe: 75.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $984.21; return -1.6%; realized-event max DD -2.8%.
-Marked equity $979.43; return -2.1%; observed marked max DD -2.5%; quality fresh.
+Marked equity $985.16; return -1.5%; observed marked max DD -2.5%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:54.783Z; first complete marked-equity observation 2026-10-04T14:55:54.783Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,15 +23,15 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| MS | Short | 179.900 | 183.980 | fresh | $-3.95 |
-| CRM | Long | 250.510 | 250.240 | fresh | $-0.15 |
-| TMO | Long | 698.000 | 677.485 | fresh | $-3.03 |
-| GE | Short | 299.000 | 293.590 | fresh | $2.35 |
+| MS | Short | 179.900 | 179.480 | fresh | $0.41 |
+| CRM | Long | 250.510 | 248.560 | fresh | $-1.09 |
+| TMO | Long | 698.000 | 669.680 | fresh | $-4.18 |
+| GE | Short | 299.000 | 285.620 | fresh | $5.81 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 1; prospective 3; reconstructed 16; pending 1.
-This run discrepancies 6; prior not re-observed 0; candle/data diagnostics 2.
+Legacy provenance unknown 1; prospective 4; reconstructed 16; pending 0.
+This run discrepancies 4; prior not re-observed 0; candle/data diagnostics 2.
 
 ### Performance by evidence provenance
 
@@ -53,5 +53,5 @@ This run discrepancies 6; prior not re-observed 0; candle/data diagnostics 2.
 ## Fetch/data gaps
 
 - No fetch failures this run.
-- Data diagnostic: {"symbol":"EOG","type":"incomplete_or_missing_exchange_bar","date":"2026-10-22","segment":1,"expected":[4,5,6],"present":[4,5]}
-- Data diagnostic: {"symbol":"TMO","type":"incomplete_or_missing_exchange_bar","date":"2026-10-22","segment":1,"expected":[4,5,6],"present":[4,5]}
+- Data diagnostic: {"symbol":"EOG","type":"incomplete_or_missing_exchange_bar","date":"2026-10-23","segment":1,"expected":[4,5,6],"present":[4,5]}
+- Data diagnostic: {"symbol":"TMO","type":"incomplete_or_missing_exchange_bar","date":"2026-10-23","segment":1,"expected":[4,5,6],"present":[4,5]}
