@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-25T06:11:16.160Z",
+  "generatedAt": "2026-10-25T11:47:16.850Z",
   "status": "PASS",
   "decision": "Daily Market Report v0.2 is defensible for research use: deterministic summary from frozen Market Pulse evidence, explicit mixed timestamps, 7-market coverage, cross-market divergences, scenario watch levels, horizon evidence metadata, Hunter context, JSON + Markdown outputs, and Home rendering.",
   "checks": [
@@ -40,16 +40,30 @@
       "pass": true,
       "detail": [
         {
+          "market": "ETH",
+          "name": "Ethereum",
+          "regime": "Mixed",
+          "condition": "Weakening",
+          "text": "Ethereum: bullish continuation above 2522.84 · trend warning near 2472.74 · structure risk below 2327.05.",
+          "levels": {
+            "support": 2327.05,
+            "resistance": 2522.84,
+            "bullishTrigger": 2522.84,
+            "warningLevel": 2472.74,
+            "bearishTrigger": 2327.05
+          }
+        },
+        {
           "market": "BTC",
           "name": "Bitcoin",
           "regime": "Mixed",
-          "condition": "Range / Mixed",
-          "text": "Bitcoin: bullish continuation above 81235.03 · trend warning near 82828.48 · structure risk below 80615.4.",
+          "condition": "Weakening",
+          "text": "Bitcoin: bullish continuation above 81235.03 · trend warning near 82544 · structure risk below 80615.4.",
           "levels": {
             "support": 80615.4,
             "resistance": 81235.03,
             "bullishTrigger": 81235.03,
-            "warningLevel": 82828.48,
+            "warningLevel": 82544,
             "bearishTrigger": 80615.4
           }
         },
@@ -82,20 +96,6 @@
           }
         },
         {
-          "market": "ETH",
-          "name": "Ethereum",
-          "regime": "Mixed",
-          "condition": "Recovery Attempt",
-          "text": "Ethereum: bullish continuation above 2522.84 · trend warning near 2491.27 · structure risk below 2357.96.",
-          "levels": {
-            "support": 2357.96,
-            "resistance": 2522.84,
-            "bullishTrigger": 2522.84,
-            "warningLevel": 2491.27,
-            "bearishTrigger": 2357.96
-          }
-        },
-        {
           "market": "GOLD",
           "name": "Gold",
           "regime": "Strong Bear",
@@ -117,21 +117,21 @@
       "detail": {
         "asOf": {
           "earliest": "2026-10-23",
-          "latest": "2026-10-23",
-          "mixedDates": false,
+          "latest": "2026-10-24",
+          "mixedDates": true,
           "byMarket": {
             "TSX": "2026-10-23",
             "SP500": "2026-10-23",
             "NASDAQ100": "2026-10-23",
             "GOLD": "2026-10-23",
             "SILVER": "2026-10-23",
-            "BTC": "2026-10-23",
-            "ETH": "2026-10-23"
+            "BTC": "2026-10-24",
+            "ETH": "2026-10-24"
           }
         },
         "summary": [
-          "Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.",
-          "All tracked markets are aligned to 2026-10-23.",
+          "Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.",
+          "Completed-session dates differ by instrument: TSX 2026-10-23 · SP500 2026-10-23 · NASDAQ100 2026-10-23 · GOLD 2026-10-23 · SILVER 2026-10-23 · BTC 2026-10-24 · ETH 2026-10-24.",
           "The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets."
         ]
       }
@@ -140,10 +140,10 @@
       "name": "highest_attention_present",
       "pass": true,
       "detail": [
+        "ETH",
         "BTC",
         "SILVER",
-        "TSX",
-        "ETH"
+        "TSX"
       ]
     },
     {
@@ -229,16 +229,16 @@
       "name": "pulse_report_not_older_than_source",
       "pass": true,
       "detail": {
-        "pulseGeneratedAt": "2026-10-25T06:11:16.075Z",
-        "sourceGeneratedAt": "2026-10-25T06:11:16.003Z"
+        "pulseGeneratedAt": "2026-10-25T11:47:16.788Z",
+        "sourceGeneratedAt": "2026-10-25T11:47:16.738Z"
       }
     },
     {
       "name": "daily_report_not_older_than_inputs",
       "pass": true,
       "detail": {
-        "dailyGeneratedAt": "2026-10-25T06:11:16.121Z",
-        "pulseGeneratedAt": "2026-10-25T06:11:16.075Z",
+        "dailyGeneratedAt": "2026-10-25T11:47:16.822Z",
+        "pulseGeneratedAt": "2026-10-25T11:47:16.788Z",
         "hunterGeneratedAt": "2026-10-23T23:23:08.740Z"
       }
     },
@@ -797,7 +797,7 @@
       "pass": true,
       "detail": {
         "regime": "Mixed",
-        "condition": "Range / Mixed"
+        "condition": "Weakening"
       }
     },
     {
@@ -813,7 +813,7 @@
     {
       "name": "BTC_watch_next_present",
       "pass": true,
-      "detail": "bullish continuation above 81235.03 · trend warning near 82828.48 · structure risk below 80615.4."
+      "detail": "bullish continuation above 81235.03 · trend warning near 82544 · structure risk below 80615.4."
     },
     {
       "name": "BTC_evidence_5_10_20",
@@ -828,39 +828,39 @@
           "High"
         ],
         "analogLevels": [
-          "State Family",
-          "State Family",
-          "State Family"
+          "Exact State",
+          "Exact State",
+          "Exact State"
         ],
         "horizons": {
           "5": {
             "tone": "Cautious",
             "label": "Historically Weaker",
             "confidence": "High",
-            "analogLevel": "State Family",
+            "analogLevel": "Exact State",
             "sample": {
-              "overall": 401,
-              "recent": 121
+              "overall": 380,
+              "recent": 114
             }
           },
           "10": {
             "tone": "Cautious",
             "label": "Historically Weaker",
             "confidence": "High",
-            "analogLevel": "State Family",
+            "analogLevel": "Exact State",
             "sample": {
-              "overall": 401,
-              "recent": 121
+              "overall": 380,
+              "recent": 114
             }
           },
           "20": {
             "tone": "Cautious",
             "label": "Historically Weaker",
             "confidence": "High",
-            "analogLevel": "State Family",
+            "analogLevel": "Exact State",
             "sample": {
-              "overall": 401,
-              "recent": 121
+              "overall": 380,
+              "recent": 114
             }
           }
         }
@@ -874,30 +874,30 @@
           "tone": "Cautious",
           "label": "Historically Weaker",
           "confidence": "High",
-          "analogLevel": "State Family",
+          "analogLevel": "Exact State",
           "sample": {
-            "overall": 401,
-            "recent": 121
+            "overall": 380,
+            "recent": 114
           }
         },
         "10": {
           "tone": "Cautious",
           "label": "Historically Weaker",
           "confidence": "High",
-          "analogLevel": "State Family",
+          "analogLevel": "Exact State",
           "sample": {
-            "overall": 401,
-            "recent": 121
+            "overall": 380,
+            "recent": 114
           }
         },
         "20": {
           "tone": "Cautious",
           "label": "Historically Weaker",
           "confidence": "High",
-          "analogLevel": "State Family",
+          "analogLevel": "Exact State",
           "sample": {
-            "overall": 401,
-            "recent": 121
+            "overall": 380,
+            "recent": 114
           }
         }
       }
@@ -907,31 +907,31 @@
       "pass": true,
       "detail": {
         "regime": "Mixed",
-        "condition": "Recovery Attempt"
+        "condition": "Weakening"
       }
     },
     {
       "name": "ETH_framing_present",
       "pass": true,
-      "detail": "Two-sided / evidence mixed"
+      "detail": "Historical analogs cautious"
     },
     {
       "name": "ETH_outlook_present",
       "pass": true,
-      "detail": "The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure."
+      "detail": "Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels."
     },
     {
       "name": "ETH_watch_next_present",
       "pass": true,
-      "detail": "bullish continuation above 2522.84 · trend warning near 2491.27 · structure risk below 2357.96."
+      "detail": "bullish continuation above 2522.84 · trend warning near 2472.74 · structure risk below 2327.05."
     },
     {
       "name": "ETH_evidence_5_10_20",
       "pass": true,
       "detail": {
-        "sessions5": "Mixed",
-        "sessions10": "Improving, longer-term caution",
-        "sessions20": "Mixed",
+        "sessions5": "Cautious",
+        "sessions10": "Cautious",
+        "sessions20": "Cautious",
         "confidence": [
           "High",
           "High",
@@ -944,33 +944,33 @@
         ],
         "horizons": {
           "5": {
-            "tone": "Mixed",
-            "label": "Mixed / Near Baseline",
+            "tone": "Cautious",
+            "label": "Historically Weaker",
             "confidence": "High",
             "analogLevel": "Exact State",
             "sample": {
-              "overall": 226,
-              "recent": 68
+              "overall": 391,
+              "recent": 118
             }
           },
           "10": {
-            "tone": "Improving, longer-term caution",
-            "label": "Long-term Weaker · Recent Better",
+            "tone": "Cautious",
+            "label": "Historically Weaker",
             "confidence": "High",
             "analogLevel": "Exact State",
             "sample": {
-              "overall": 226,
-              "recent": 68
+              "overall": 391,
+              "recent": 118
             }
           },
           "20": {
-            "tone": "Mixed",
-            "label": "Mixed / Near Baseline",
+            "tone": "Cautious",
+            "label": "Historically Weaker",
             "confidence": "High",
             "analogLevel": "Exact State",
             "sample": {
-              "overall": 226,
-              "recent": 68
+              "overall": 391,
+              "recent": 118
             }
           }
         }
@@ -981,33 +981,33 @@
       "pass": true,
       "detail": {
         "5": {
-          "tone": "Mixed",
-          "label": "Mixed / Near Baseline",
+          "tone": "Cautious",
+          "label": "Historically Weaker",
           "confidence": "High",
           "analogLevel": "Exact State",
           "sample": {
-            "overall": 226,
-            "recent": 68
+            "overall": 391,
+            "recent": 118
           }
         },
         "10": {
-          "tone": "Improving, longer-term caution",
-          "label": "Long-term Weaker · Recent Better",
+          "tone": "Cautious",
+          "label": "Historically Weaker",
           "confidence": "High",
           "analogLevel": "Exact State",
           "sample": {
-            "overall": 226,
-            "recent": 68
+            "overall": 391,
+            "recent": 118
           }
         },
         "20": {
-          "tone": "Mixed",
-          "label": "Mixed / Near Baseline",
+          "tone": "Cautious",
+          "label": "Historically Weaker",
           "confidence": "High",
           "analogLevel": "Exact State",
           "sample": {
-            "overall": 226,
-            "recent": 68
+            "overall": 391,
+            "recent": 118
           }
         }
       }
@@ -1015,7 +1015,7 @@
     {
       "name": "markdown_title",
       "pass": true,
-      "detail": "# Market Hunter — Daily Market Report\n\n**As of:** 2026-10-23\n\n## Executive read\n"
+      "detail": "# Market Hunter — Daily Market Report\n\n**As of:** 2026-10-23 to 2026-10-24 (TSX "
     },
     {
       "name": "markdown_all_markets",
