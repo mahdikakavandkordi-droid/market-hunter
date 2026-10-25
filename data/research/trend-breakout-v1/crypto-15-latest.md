@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-24T23:32:54.833Z; mode: forward_shadow.
+Generated: 2026-10-25T01:30:28.143Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 1; pending 4; closed 31; lifecycle reviews 0.
-Realized equity $910.99; marked equity $914.64; mark quality fresh.
+Open 5; pending 0; closed 31; lifecycle reviews 0.
+Realized equity $910.99; marked equity $907.90; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,15 +15,15 @@ Realized equity $910.99; marked equity $914.64; mark quality fresh.
 
 ## Positions
 
-- XLM-USD: Short open; entry 0.17306199669837952; current stop 0.17689542578799383; provenance prospective; gap none
-- ADA-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- BCH-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- DOGE-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- SHIB-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- XLM-USD: Short open; entry 0.17306199669837952; current stop 0.17678399916206086; provenance prospective; gap none
+- ADA-USD: Short open; entry 0.20614999532699585; current stop 0.21511571535042354; provenance prospective; gap none
+- BCH-USD: Short open; entry 274.6300048828125; current stop 286.672860281808; provenance prospective; gap none
+- DOGE-USD: Short open; entry 0.07706999778747559; current stop 0.07973856798240117; provenance prospective; gap none
+- SHIB-USD: Short open; entry 0.000004900000021734741; current stop 0.00000507857157572289; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-24T01:33:44.948Z; stale true.
+SMC ledger as of 2026-10-25T01:06:45.868Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 8; challenger closed 31. No winner is claimed from a small sample.
 
