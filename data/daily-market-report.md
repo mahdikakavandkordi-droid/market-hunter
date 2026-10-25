@@ -4,7 +4,7 @@
 
 ## Executive read
 
-- Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.
+- Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
 - All tracked markets are aligned to 2026-10-23.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
@@ -20,7 +20,7 @@
 
 - **Equities: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Mixed** — Signals are mixed across the tracked markets.
+- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
 
 ## Key divergences
 
