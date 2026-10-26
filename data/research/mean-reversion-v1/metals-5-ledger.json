@@ -1,14 +1,14 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-26T15:30:02.629Z",
+  "updatedAt": "2026-10-26T20:46:05.407Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
       "symbol": "CPER",
       "signalT": "2026-10-23T13:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "cancelled",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-23T21:00:00.000Z",
         "dailyAsOf": "2026-10-23",
@@ -40,7 +40,9 @@
         "runKey": "mean-reversion-v1|40028804015|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "pending",
+      "cancelReason": "entry_open_invalid_reward_or_stop",
+      "cancelledAt": "2026-10-26T20:46:05.407Z"
     }
   ],
   "runLog": [
@@ -2631,6 +2633,21 @@
         }
       ],
       "diagnosticCount": 2
+    },
+    {
+      "runKey": "mean-reversion-v1|40398447522|1",
+      "observedAt": "2026-10-26T20:46:05.407Z",
+      "failures": [
+        {
+          "symbol": "PPLT",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "PALL",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -4176,6 +4193,15 @@
     {
       "runKey": "mean-reversion-v1|40349778419|1",
       "observedAt": "2026-10-26T15:30:02.629Z",
+      "quality": "fresh",
+      "markedEquity": 1000,
+      "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|40398447522|1",
+      "observedAt": "2026-10-26T20:46:05.407Z",
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
