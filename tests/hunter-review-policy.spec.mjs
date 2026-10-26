@@ -1,0 +1,20 @@
+import {test,expect} from '@playwright/test';
+test('home filters canonical picks, discloses omissions and preserves full review',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ const good={symbol:'GOOD.TO',name:'Synthetic candidate',date:'2026-10-23',stage:'Early Watch',price:10,momentumShift:1,rs20:2,lowBroken:false,swingTrend:'Structure improving',riskFlags:[],market:'CA',currency:'CAD'};
+ const bad={...good,symbol:'BAD.TO',lowBroken:true};
+ const scan={marketAsOf:good.date,integratedSurfacePicks:[bad,good],surfacePicks:{'Early Watch':[bad,good]}};
+ await page.route('**/api/**',r=>{const u=new URL(r.request().url());return r.fulfill({json:u.searchParams.get('kind')==='v2'?scan:{markets:[],reports:[],items:[],rows:[],quotes:{}}})});
+ await page.goto('/');await expect(page.locator('#refreshBtn')).toBeEnabled();
+ await expect(page.locator('#homePicks .home-pick')).toHaveCount(1);
+ await expect(page.locator('#homePicks')).toContainText('GOOD');
+ const omitted=page.locator('details').filter({has:page.locator('summary', {hasText:'Deferred for caution checks'})});
+ await omitted.locator('summary').click();await expect(omitted).toContainText('BAD.TO');await expect(omitted).toContainText('Recent low broken');
+ await expect(page.locator('#homeView')).toContainText('no validated return history');
+ await page.locator('[data-view="shortlist"]:visible').click();
+ await expect(page.locator('#reviewCards .hunter-card')).toHaveCount(2);
+ await expect(page.locator('[data-review-caution]').first()).toContainText('Recent low broken');
+ await page.locator('[data-view="home"]:visible').click();await page.locator('#languageBtn').click();
+ await expect(page.locator('#homeView')).toContainText('بازده این فیلتر هنوز اعتبارسنجی نشده');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();
+});

@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import '../hunter-review-policy.js';
+const {assess,select}=globalThis.MarketHunterReviewPolicy;
+const session='2026-10-23',good={symbol:'OK.TO',date:session,momentumShift:1,rs20:1,lowBroken:false,swingTrend:'Structure improving',riskFlags:[]};
+assert.equal(assess(good,session).eligible,true);
+for(const delta of [{lowBroken:true},{momentumShift:0},{momentumShift:-1},{rs20:0},{rs20:-1},{riskFlags:['High ATR']},{swingTrend:'Lower highs + lower lows'},{date:'2026-10-22'},{momentumShift:null},{rs20:'1'},{lowBroken:undefined},{riskFlags:null}])assert.equal(assess({...good,...delta},session).eligible,false,JSON.stringify(delta));
+const bad={...good,symbol:'BAD.TO',lowBroken:true},scan={marketAsOf:session,integratedSurfacePicks:[bad,good],surfacePicks:{Recovery:[{...good,symbol:'EXTRA.TO'}]}};
+const original=JSON.stringify(scan),r=select(scan);
+assert.deepEqual(r.selected.map(x=>x.row.symbol),['OK.TO']);
+assert.deepEqual(r.deferred.map(x=>x.row.symbol),['BAD.TO']);
+assert.equal(JSON.stringify(scan),original);
+assert.equal(select({...scan,integratedSurfacePicks:[]}).selected.length,0);
+assert.equal(select({...scan,integratedSurfacePicks:[bad]}).selected.length,0);
+console.log('Cautious review: missing data, contradictory structure, canonical identity and no forced fill passed');

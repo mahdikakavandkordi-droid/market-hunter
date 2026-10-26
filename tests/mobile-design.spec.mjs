@@ -54,7 +54,10 @@ for(const width of [320,390,768,1440]){
 }
 
 test('review arrows move between cards without moving the mobile page sideways',async({page})=>{
- await page.setViewportSize({width:390,height:844});await isolate(page);await page.goto('/');
+ await page.setViewportSize({width:390,height:844});await isolate(page);
+ const rows=['TEST1.TO','TEST2.TO','TEST3.TO'].map(symbol=>({symbol,name:symbol,stage:'Established Move',price:10,score:90,date:'2026-10-23',momentumShift:1,rs20:1,lowBroken:false,swingTrend:'Structure improving',riskFlags:[]}));
+ await page.route('**/api/research-data?kind=v2',r=>r.fulfill({json:{marketAsOf:'2026-10-23',integratedSurfacePicks:rows,surfacePicks:{'Established Move':rows}}}));
+ await page.goto('/');
  await expect(page.locator('#refreshBtn')).toBeEnabled();await page.locator('[data-view="shortlist"]:visible').click();
  await page.locator('[data-stage-tab="Established Move"]').click();
  const cards=page.locator('#reviewCards');expect(await cards.locator('.hunter-card').count()).toBeGreaterThan(1);

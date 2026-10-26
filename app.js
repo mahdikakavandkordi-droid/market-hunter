@@ -1118,7 +1118,7 @@ function marketLevelsHtml(levels){
   return `<div class="market-levels reading-copy">${rows.map(([key,label,note])=>`<div><span>${label}<small>${note}</small></span><b><bdi>${fmt(levels[key])}</bdi></b></div>`).join('')}</div>`;
 }
 function homeHtml(){
-  const d=state.daily,p=state.pulse,picks=stageLeaders();
+  const d=state.daily,p=state.pulse,review=window.MarketHunterReviewPolicy.select(state.v2),picks=review.selected.map(x=>enrichCandidate(x.row));
   const s=portfolioSummary();
   const words=value=>window.MHI18n?.text(value)||value||'—';
   const marketRead=value=>window.MHI18n?.marketRead(value)||value?.outlook||'';
@@ -1200,8 +1200,9 @@ function homeHtml(){
 
     <div class="grid home-lower">
       <section class="panel soft">
-        <div class="panel-head"><div><h2>${ui("Today’s shortlist","سهم‌های منتخب امروز")}</h2><p>${ui("Canadian selections · organized by stage.","منتخب‌های کانادا · مرتب‌شده بر اساس مرحله")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
-        ${swipeTools("homePicks",picks.length)}<div class="home-picks mobile-rail" id="homePicks" tabindex="0" aria-label="Selected stocks">${rows||'<div class="empty">'+ui('No current shortlist.','فهرست منتخب فعلاً خالی است.')+'</div>'}</div>
+        <div class="panel-head"><div><h2>${ui("Cautious review list","فهرست بررسی با احتیاط")}</h2><p>${ui("Canadian canonical shortlist · caution filter applied","فهرست نهایی ثبت‌شدهٔ کانادا · با فیلتر احتیاطی")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
+        <p class="reading-copy">${ui("Assessment session","جلسهٔ ارزیابی")}: <bdi>${esc(state.v2?.marketAsOf||"—")}</bdi></p>${reviewPolicyNoteHtml(review)}${selectionEvidenceHtml()}
+        ${swipeTools("homePicks",picks.length)}<div class="home-picks mobile-rail" id="homePicks" tabindex="0" aria-label="Selected stocks">${rows||'<div class="empty">'+ui('No candidate passes the caution checks. No replacement is forced.','هیچ سهمی از بررسی احتیاطی عبور نکرده؛ فهرست را اجباری پُر نمی‌کنیم.')+'</div>'}</div>
       </section>
 
       <section class="panel soft">
@@ -1224,6 +1225,23 @@ function homeHtml(){
   </div>`;
 }
 
+function cautionReasons(a){
+  const labels={session:ui('Session mismatch or missing date','تاریخ نامشخص یا ناهماهنگ'),missing:ui('Incomplete assessment data','اطلاعات ارزیابی ناقص'),broken:ui('Recent low broken','کف اخیر شکسته'),structure:ui('Lower highs and lows','سقف و کف نزولی'),momentum:ui('Momentum is not improving','شتاب بهبود پیدا نکرده'),relative:ui('Not outperforming its benchmark','قدرت بیشتر از شاخص ندارد'),risk:ui('Recorded extension or volatility warning','هشدار ثبت‌شدهٔ کشیدگی قیمت یا نوسان')};
+  return a.reasons.map(k=>labels[k]).join(' · ');
+}
+function candidateCautionHtml(x){
+  const scan=x.market==='US'?state.usScan:state.v2;
+  const a=window.MarketHunterReviewPolicy.assess(x,scan?.marketAsOf);
+  return a.eligible?'':`<p class="setup-caution reading-copy" data-review-caution>${esc(cautionReasons(a))}</p>`;
+}
+function reviewPolicyNoteHtml(review){
+  return `<p class="reading-copy">${ui('Requires improving momentum, positive relative strength, complete assessment fields and no recorded structural or risk warning. This filter has no validated return history; passing is not a buy signal.','شتاب رو به بهبود، قدرت نسبی مثبت، اطلاعات کامل و نبود هشدار ساختاری یا ریسک لازم است. بازده این فیلتر هنوز اعتبارسنجی نشده؛ عبور از آن سیگنال خرید نیست.')}</p>${review.deferred.length?`<details class="dashboard-disclosure"><summary>${ui('Deferred for caution checks','کنارگذاشته‌شده در بررسی احتیاطی')} · <bdi>${review.deferred.length}</bdi></summary>${review.deferred.map(({row,assessment})=>`<p class="reading-copy"><bdi>${esc(row.symbol)}</bdi>: ${esc(cautionReasons(assessment))}</p>`).join('')}</details>`:''}`;
+}
+function selectionEvidenceHtml(){
+  const d=state.hunterMonitor,g=d?.quality?.groups?.find(g=>g.scope==='integrated'),h=g?.horizons?.['10'];
+  if(!h?.observations)return `<p class="setup-caution reading-copy">${ui('Comparable shortlist outcomes are unavailable. Selection quality is unproven.','نتایج قابل مقایسهٔ فهرست در دسترس نیست؛ کیفیت انتخاب‌ها اثبات نشده است.')}</p>`;
+  return `<p class="setup-caution reading-copy" data-selection-evidence>${ui('Original unfiltered shortlist · 10 sessions · mean excess vs TSX','فهرست اصلی قبل از فیلتر · ۱۰ جلسه · میانگین اختلاف بازده با TSX')}: <bdi>${fmt(h.meanExcessPct)}</bdi> ${ui('pp','واحد درصد')} · <bdi>${h.observations}</bdi> ${ui('observations through','مشاهده تا')} <bdi>${esc(d.marketAsOf)}</bdi>. ${ui('Not the performance of this new filtered list.','این آمار عملکرد فهرست فیلترشدهٔ جدید نیست.')}</p>`;
+}
 function hunterQualityHtml(q){
   if(q?.version!=='hunter-quality-v1')return '';
   return `<details class="dashboard-disclosure hunter-quality"><summary>${ui('Selection quality · equal holding periods','کیفیت انتخاب‌ها · بازه‌های یکسان')}</summary><p class="reading-copy">${ui('Forward observations, not trades. Excess return is stock return minus TSX return over the same dates, in percentage points. Repeated symbols and overlapping dates are not independent evidence. These figures do not establish predictive superiority.','مشاهدات پس از معرفی‌اند، نه معاملات. بازده مازاد، اختلاف بازده سهم و TSX در تاریخ‌های یکسان و بر حسب واحد درصد است. سهم‌های تکراری و بازه‌های هم‌پوشان شواهد مستقل نیستند. این ارقام برتری پیش‌بینی را ثابت نمی‌کنند.')}</p>${[5,10,20].map(h=>`<details><summary>${h} ${ui('market sessions','جلسهٔ بازار')}</summary><div class="hunter-monitor-scroll"><table><thead><tr><th>${ui('Selection','انتخاب')}</th><th>${ui('Observations / stocks','مشاهده / سهم')}</th><th>${ui('Mean excess · pp','میانگین مازاد · واحد درصد')}</th><th>${ui('Median excess · pp','میانهٔ مازاد · واحد درصد')}</th><th>${ui('Equal weight per stock · pp','وزن برابر هر سهم · واحد درصد')}</th></tr></thead><tbody>${q.groups.map(g=>{const r=g.horizons[h];return `<tr><td>${g.scope==='integrated'?ui('Final shortlist','فهرست نهایی'):esc(stageLabel(g.stage))}</td><td><bdi>${r.observations} / ${r.uniqueSymbols}</bdi><small>${r.decisionDates} ${ui('selection dates','تاریخ معرفی')} · ${r.excludedMissing} ${ui('excluded records','رکورد کنارگذاشته‌شده')}</small></td><td>${fmt(r.meanExcessPct)}</td><td>${fmt(r.medianExcessPct)}</td><td>${fmt(r.symbolBalancedExcessPct)}</td></tr>`;}).join('')}</tbody></table></div></details>`).join('')}<p class="reading-copy">${ui('Only recorded outcomes are counted; missing unrecorded outcomes are not included. No matured observations means unknown, not zero. Stage groups can contain the same stock; do not add them together. Equal stock weights reduce repeated-symbol influence but do not eliminate overlapping-market exposure.','فقط نتایج ثبت‌شده شمرده می‌شوند؛ نتایج مفقود و ثبت‌نشده در شمارش نیستند. نبود مشاهدهٔ کامل یعنی نتیجه نامعلوم، نه صفر. یک سهم ممکن است در چند دسته باشد؛ دسته‌ها را با هم جمع نکن. وزن برابر سهم‌ها اثر تکرار نماد را کم می‌کند، اما هم‌پوشانی شرایط بازار را حذف نمی‌کند.')}</p></details>`;
@@ -1308,6 +1326,7 @@ function stockCard(x,rank=''){
     <div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}" aria-label="Open ${esc(x.symbol)} chart"><bdi>${short(x.symbol)}</bdi> ↗</button><small><bdi>${esc(x.name||x.symbol)}</bdi></small></div><div class="cardprice"><div class="price-line"><bdi>${money(x.price,x.displayQuote?.currency||x.currency||'CAD')}</bdi><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small></div>${quoteMetaHtml(x.displayQuote||quoteFor(x.symbol,state.liveItems.get(x.symbol)||x))}</div></div>
     <div class="tags"><span class="tag">${rank?'<bdi>'+rank+'</bdi> · ':''}${esc(stageLabel(x.stage))}</span>${x.sector?'<span class="tag stock-sector">'+esc(x.sector)+'</span>':''}${x.market==='US'?'<span class="tag">US · USD</span>':''}</div>
     ${x.market==='US'?'':window.MarketHunterEngines?.confirmation(state.engines,x.symbol,state.v2)||''}
+    ${candidateCautionHtml(x)}
     ${volumeContextHtml(x)}
     ${stockSummaryHtml(x)}
     <div class="actions"><button class="btn primary" data-chart="${x.symbol}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${x.symbol}" aria-pressed="${watched}">${watched?ui('♥ Saved','♥ ذخیره شد'):ui('♡ Watch','♡ دیده‌بان')}</button><button class="btn ghost" data-buy="${x.symbol}">${owned?ui('Edit','ویرایش'):ui('Bought','خریده‌ام')}</button></div>

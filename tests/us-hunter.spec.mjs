@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-const stock=(symbol,market)=>({symbol,name:market==='US'?'Synthetic US Apple':'Synthetic CAD CDR',sector:'Information Technology',market,currency:market==='US'?'USD':'CAD',exchange:'NASDAQ',benchmark:market==='US'?'^GSPC':'^IXIC',stage:'Early Watch',price:200,date:'2026-10-16',asOf:'2026-10-16',dayChangePct:1.5});
+const stock=(symbol,market)=>({symbol,name:market==='US'?'Synthetic US Apple':'Synthetic CAD CDR',sector:'Information Technology',market,currency:market==='US'?'USD':'CAD',exchange:'NASDAQ',benchmark:market==='US'?'^GSPC':'^IXIC',stage:'Early Watch',momentumShift:1,rs20:1,lowBroken:false,swingTrend:'Structure improving',riskFlags:[],price:200,date:'2026-10-16',asOf:'2026-10-16',dayChangePct:1.5});
 const report=(market)=>{const x=stock(market==='US'?'AAPL':'AAPL.TO',market);return {market,currency:x.currency,marketAsOf:x.date,sourceUsableCount:503,universeCount:503,sourceSessionRecoveries:market==='US'?[{method:'yahoo-completed-session-summary-v1',symbol:x.symbol}]:[],sessionIntegrity:{referenceSymbol:market==='US'?'^GSPC':'^GSPTSE'},all:[x],integratedSurfacePicks:[x],surfacePicks:{'Early Watch':[x]}}};
 async function setup(page,unavailable=false){
   await page.setViewportSize({width:390,height:844});
