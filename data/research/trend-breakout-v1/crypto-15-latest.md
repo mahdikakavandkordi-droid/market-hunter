@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-26T01:29:51.173Z; mode: forward_shadow.
+Generated: 2026-10-26T06:44:30.094Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 5; pending 0; closed 31; lifecycle reviews 0.
-Realized equity $910.99; marked equity $912.84; mark quality fresh.
+Realized equity $910.99; marked equity $925.45; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,11 +15,11 @@ Realized equity $910.99; marked equity $912.84; mark quality fresh.
 
 ## Positions
 
-- XLM-USD: Short open; entry 0.17306199669837952; current stop 0.17632543402058737; provenance prospective; gap none
-- ADA-USD: Short open; entry 0.20614999532699585; current stop 0.21511571535042354; provenance prospective; gap none
+- XLM-USD: Short open; entry 0.17306199669837952; current stop 0.1743998612676348; provenance prospective; gap none
+- ADA-USD: Short open; entry 0.20614999532699585; current stop 0.21374286924089703; provenance prospective; gap none
 - BCH-USD: Short open; entry 274.6300048828125; current stop 286.672860281808; provenance prospective; gap none
 - DOGE-USD: Short open; entry 0.07706999778747559; current stop 0.07973856798240117; provenance prospective; gap none
-- SHIB-USD: Short open; entry 0.000004900000021734741; current stop 0.00000507857157572289; provenance prospective; gap none
+- SHIB-USD: Short open; entry 0.000004900000021734741; current stop 0.0000050564287578578974; provenance prospective; gap none
 
 ## Common-window comparison
 
