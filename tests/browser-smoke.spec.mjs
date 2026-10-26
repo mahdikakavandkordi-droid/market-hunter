@@ -97,7 +97,9 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await nasdaq100.locator('.market-context>summary').click();
   await expect(page.locator('.outlook-panel')).not.toHaveAttribute('open','');
   expect(await page.locator('#homeMarkets').evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
-  expect(await page.locator('#homePicks').evaluate(r=>r.scrollWidth>r.clientWidth)).toBe(true);
+  // Cautious filtering may leave zero or one candidate; do not force filler cards.
+  expect(await page.locator('#homePicks').count()).toBe(1);
+  await expect(page.locator('#homeView')).toContainText('no validated return history');
   await page.locator('.report-details>summary').click();
   await expect(page.locator('.report-title')).toHaveCount(0);
   expect(await page.locator('.report-copy').evaluate(r=>parseFloat(getComputedStyle(r).fontSize))).toBeLessThanOrEqual(14);
