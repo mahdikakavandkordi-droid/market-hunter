@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-27T05:24:05.477Z; mode: forward_shadow.
+Generated: 2026-10-27T10:48:00.752Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 6; pending 0; closed 31; lifecycle reviews 0.
-Realized equity $910.99; marked equity $914.34; mark quality fresh.
+Open 6; pending 1; closed 31; lifecycle reviews 0.
+Realized equity $910.99; marked equity $914.59; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,12 +15,13 @@ Realized equity $910.99; marked equity $914.34; mark quality fresh.
 
 ## Positions
 
-- XLM-USD: Short open; entry 0.17306199669837952; current stop 0.1734212189912796; provenance prospective; gap none
-- ADA-USD: Short open; entry 0.20614999532699585; current stop 0.2123007188950266; provenance prospective; gap none
+- XLM-USD: Short open; entry 0.17306199669837952; current stop 0.17338392989976065; provenance prospective; gap none
+- ADA-USD: Short open; entry 0.20614999532699585; current stop 0.21207357410873687; provenance prospective; gap none
 - BCH-USD: Short open; entry 274.6300048828125; current stop 286.672860281808; provenance prospective; gap none
-- DOGE-USD: Short open; entry 0.07706999778747559; current stop 0.07928071064608437; provenance prospective; gap none
-- SHIB-USD: Short open; entry 0.000004900000021734741; current stop 0.000004995000153940055; provenance prospective; gap none
-- DOT-USD: Short open; entry 1.0216000080108643; current stop 1.0507714365209853; provenance prospective; gap none
+- DOGE-USD: Short open; entry 0.07706999778747559; current stop 0.07924213952251843; provenance prospective; gap none
+- SHIB-USD: Short open; entry 0.000004900000021734741; current stop 0.000004990714484977486; provenance prospective; gap none
+- DOT-USD: Short open; entry 1.0216000080108643; current stop 1.05045000570161; provenance prospective; gap none
+- TRX-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
