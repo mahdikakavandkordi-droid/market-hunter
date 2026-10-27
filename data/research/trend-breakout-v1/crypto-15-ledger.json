@@ -1,7 +1,7 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-10-27T10:48:00.752Z",
+  "updatedAt": "2026-10-27T16:48:22.229Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
@@ -1495,9 +1495,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.17338392989976065,
       "bestClose": 0.16680599749088287,
-      "holdingBars": 19,
+      "holdingBars": 21,
       "entryObservedAt": "2026-10-24T11:26:11.200Z",
-      "lastEvaluatedEndT": "2026-10-27T08:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-27T16:00:00.000Z"
     },
     {
       "symbol": "ADA-USD",
@@ -1533,15 +1533,15 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.21207357410873687,
       "bestClose": 0.20122000575065613,
-      "holdingBars": 15,
+      "holdingBars": 17,
       "entryObservedAt": "2026-10-25T01:30:28.143Z",
-      "lastEvaluatedEndT": "2026-10-27T08:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-27T16:00:00.000Z"
     },
     {
       "symbol": "BCH-USD",
       "signalT": "2026-10-24T12:00:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-24T16:00:00.000Z",
         "dailyAsOf": "2026-10-23",
@@ -1557,8 +1557,8 @@
       "stop": 286.672860281808,
       "target": null,
       "risk": 12.042855398995536,
-      "R": null,
-      "exitT": null,
+      "R": -0.9999999999999992,
+      "exitT": "2026-10-27T16:00:00.000Z",
       "decisionId": "BCH-USD|2026-10-24T12:00:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-10-24T18:18:38.674Z",
@@ -1571,9 +1571,18 @@
       "entryObservationClass": "prospective",
       "currentStop": 286.672860281808,
       "bestClose": 273.760009765625,
-      "holdingBars": 15,
+      "holdingBars": 17,
       "entryObservedAt": "2026-10-25T01:30:28.143Z",
-      "lastEvaluatedEndT": "2026-10-27T08:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-27T16:00:00.000Z",
+      "exitPriceAssumed": 286.672860281808,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "trailing_or_initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapFillAssumption": "boundary stop / completed time-exit close",
+        "exitBarStartT": "2026-10-27T12:00:00.000Z",
+        "exitBarEndT": "2026-10-27T16:00:00.000Z"
+      }
     },
     {
       "symbol": "DOGE-USD",
@@ -1609,9 +1618,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.07924213952251843,
       "bestClose": 0.07620999962091446,
-      "holdingBars": 15,
+      "holdingBars": 17,
       "entryObservedAt": "2026-10-25T01:30:28.143Z",
-      "lastEvaluatedEndT": "2026-10-27T08:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-27T16:00:00.000Z"
     },
     {
       "symbol": "SHIB-USD",
@@ -1647,9 +1656,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.000004990714484977486,
       "bestClose": 0.000004800000169780105,
-      "holdingBars": 15,
+      "holdingBars": 17,
       "entryObservedAt": "2026-10-25T01:30:28.143Z",
-      "lastEvaluatedEndT": "2026-10-27T08:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-27T16:00:00.000Z"
     },
     {
       "symbol": "DOT-USD",
@@ -1683,17 +1692,50 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 1.05045000570161,
-      "bestClose": 0.9894000291824341,
-      "holdingBars": 4,
+      "currentStop": 1.0438999448503767,
+      "bestClose": 0.9829999804496765,
+      "holdingBars": 6,
       "entryObservedAt": "2026-10-26T20:03:54.277Z",
-      "lastEvaluatedEndT": "2026-10-27T08:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-27T16:00:00.000Z"
+    },
+    {
+      "symbol": "BNB-USD",
+      "signalT": "2026-10-27T12:00:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-27T16:00:00.000Z",
+        "dailyAsOf": "2026-10-26",
+        "dailyClose": 741.4193725585938,
+        "dailySma": 651.9188668823242,
+        "breakoutHigh": 747.7899780273438,
+        "breakoutLow": 717.27001953125,
+        "atr14": 7.909999302455357,
+        "signalClose": 749.0399780273438
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "BNB-USD|2026-10-27T12:00:00.000Z|1",
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-27T16:48:22.229Z",
+      "firstObservedAt": "2026-10-27T16:48:22.229Z",
+      "firstObservedProvenance": {
+        "tracker": "trend-breakout-v1",
+        "runKey": "trend-breakout-v1|40544385592|1",
+        "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
+      },
+      "entryObservationClass": "pending"
     },
     {
       "symbol": "TRX-USD",
       "signalT": "2026-10-27T04:00:00.000Z",
       "dir": -1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-27T08:00:00.000Z",
         "dailyAsOf": "2026-10-26",
@@ -1704,11 +1746,11 @@
         "atr14": 0.0008914598396846227,
         "signalClose": 0.32760173082351685
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
+      "entryT": "2026-10-27T12:00:00.000Z",
+      "entry": 0.3276340961456299,
+      "stop": 0.3294170158249991,
       "target": null,
-      "risk": null,
+      "risk": 0.0017829196793692453,
       "R": null,
       "exitT": null,
       "decisionId": "TRX-USD|2026-10-27T04:00:00.000Z|-1",
@@ -1718,6 +1760,44 @@
       "firstObservedProvenance": {
         "tracker": "trend-breakout-v1",
         "runKey": "trend-breakout-v1|40491191623|1",
+        "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
+      },
+      "entryObservationClass": "prospective",
+      "currentStop": 0.3294170158249991,
+      "bestClose": 0.3276340961456299,
+      "holdingBars": 1,
+      "entryObservedAt": "2026-10-27T16:48:22.229Z",
+      "lastEvaluatedEndT": "2026-10-27T16:00:00.000Z"
+    },
+    {
+      "symbol": "XRP-USD",
+      "signalT": "2026-10-27T12:00:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-10-27T16:00:00.000Z",
+        "dailyAsOf": "2026-10-26",
+        "dailyClose": 1.306900978088379,
+        "dailySma": 1.2786332005262375,
+        "breakoutHigh": 1.3135000467300415,
+        "breakoutLow": 1.253600001335144,
+        "atr14": 0.018957155091421946,
+        "signalClose": 1.3188999891281128
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "XRP-USD|2026-10-27T12:00:00.000Z|1",
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-10-27T16:48:22.229Z",
+      "firstObservedAt": "2026-10-27T16:48:22.229Z",
+      "firstObservedProvenance": {
+        "tracker": "trend-breakout-v1",
+        "runKey": "trend-breakout-v1|40544385592|1",
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "pending"
@@ -2886,6 +2966,12 @@
     {
       "runKey": "trend-breakout-v1|40491191623|1",
       "observedAt": "2026-10-27T10:48:00.752Z",
+      "failures": [],
+      "diagnosticCount": 30
+    },
+    {
+      "runKey": "trend-breakout-v1|40544385592|1",
+      "observedAt": "2026-10-27T16:48:22.229Z",
       "failures": [],
       "diagnosticCount": 30
     }
@@ -4548,6 +4634,15 @@
       "quality": "fresh",
       "markedEquity": 914.5939442373856,
       "totalUnrealizedPnl": 3.60080433103731,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|40544385592|1",
+      "observedAt": "2026-10-27T16:48:22.229Z",
+      "quality": "fresh",
+      "markedEquity": 904.6067855980734,
+      "totalUnrealizedPnl": 3.1790736607416687,
       "missingSymbols": [],
       "staleSymbols": []
     }
