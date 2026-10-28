@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-28T16:18:03.372Z",
+  "updatedAt": "2026-10-28T21:21:42.733Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -61,7 +61,7 @@
       "symbol": "TECK-B.TO",
       "signalT": "2026-10-27T13:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-27T21:00:00.000Z",
         "dailyAsOf": "2026-10-27",
@@ -76,11 +76,11 @@
         "signalClose": 87.38999938964844,
         "initialStop": 81.18249620710101
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-10-28T13:30:00.000Z",
+      "entry": 86.69999694824219,
+      "stop": 81.18249620710101,
+      "target": 91.6745002746582,
+      "risk": 5.517500741141177,
       "R": null,
       "exitT": null,
       "decisionId": "TECK-B.TO|2026-10-27T13:30:00.000Z|1",
@@ -93,7 +93,11 @@
         "runKey": "mean-reversion-v1|40600663617|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 81.18249620710101,
+      "holdingBars": 2,
+      "lastEvaluatedEndT": "2026-10-28T20:30:00.000Z",
+      "entryObservedAt": "2026-10-28T21:21:42.733Z"
     }
   ],
   "runLog": [
@@ -3828,6 +3832,29 @@
         }
       ],
       "diagnosticCount": 66
+    },
+    {
+      "runKey": "mean-reversion-v1|40771181113|1",
+      "observedAt": "2026-10-28T21:21:42.733Z",
+      "failures": [
+        {
+          "symbol": "FM.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "ARX.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "GSY.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "WSP.TO",
+          "error": "invalid_source_quotes_require_review"
+        }
+      ],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -5448,6 +5475,15 @@
       "quality": "fresh",
       "markedEquity": 1006.6153887656612,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|40771181113|1",
+      "observedAt": "2026-10-28T21:21:42.733Z",
+      "quality": "fresh",
+      "markedEquity": 1009.5709292740524,
+      "totalUnrealizedPnl": 2.95554050839118,
       "missingSymbols": [],
       "staleSymbols": []
     }
