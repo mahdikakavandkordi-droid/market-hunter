@@ -1,15 +1,15 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-10-27T01:38:03.136Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-10-28T01:46:05.746Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|
-| Closed trades | 8 | 8 |
-| Win rate | 62.5% | 62.5% |
-| PF | 3.502 | 3.027 |
-| Avg R | 0.464 | 0.414 |
+| Closed trades | 9 | 9 |
+| Win rate | 66.7% | 66.7% |
+| PF | 3.667 | 3.146 |
+| Avg R | 0.439 | 0.389 |
 
 ## Realized vs marked paper account
 
@@ -35,7 +35,7 @@ This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 4.
 | Evidence class | Closed | Win rate | Avg R after 0.05R cost | PF after 0.05R cost |
 |---|---:|---:|---:|---:|
 | prospective | 2 | 50.0% | 0.911 | 15.193 |
-| reconstructed | 4 | 75.0% | -0.002 | 0.993 |
+| reconstructed | 5 | 80.0% | 0.038 | 1.179 |
 | legacy unprovenanced | 2 | 50.0% | 0.748 | 4.290 |
 
 ## Momentum shadow (observational only)
@@ -44,7 +44,7 @@ This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 4.
 |---|---:|---:|---:|---:|
 | high | 2 | 50.0% | 0.069 | 2.076 |
 | medium | 5 | 60.0% | 0.244 | 1.812 |
-| low | 1 | 100.0% | 1.950 | n/a |
+| low | 2 | 100.0% | 1.072 | n/a |
 | unavailable | 0 | n/a | n/a | n/a |
 
 ## Fetch/data gaps
