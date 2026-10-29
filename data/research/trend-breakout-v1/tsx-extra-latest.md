@@ -1,5 +1,5 @@
 # Trend Breakout V1 — tsx-extra
-Generated: 2026-10-29T06:14:58.739Z; mode: forward_shadow.
+Generated: 2026-10-29T13:32:04.646Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 0.
 Open 11; pending 1; closed 20; lifecycle reviews 0.
 Realized equity $994.85; marked equity $1018.00; mark quality fresh.
