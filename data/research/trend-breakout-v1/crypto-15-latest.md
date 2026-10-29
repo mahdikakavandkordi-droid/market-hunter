@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-28T19:46:00.229Z; mode: forward_shadow.
+Generated: 2026-10-29T00:13:03.088Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 7; pending 2; closed 35; lifecycle reviews 0.
-Realized equity $894.72; marked equity $898.03; mark quality fresh.
+Open 9; pending 0; closed 35; lifecycle reviews 0.
+Realized equity $894.72; marked equity $897.28; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -20,10 +20,10 @@ Realized equity $894.72; marked equity $898.03; mark quality fresh.
 - DOT-USD: Short open; entry 1.0216000080108643; current stop 1.0413499304226466; provenance prospective; gap none
 - BNB-USD: Long open; entry 748.2999877929688; current stop 735.9678126743862; provenance prospective; gap none
 - XRP-USD: Long open; entry 1.3224999904632568; current stop 1.284585680280413; provenance prospective; gap none
-- BCH-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- BTC-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 - LINK-USD: Long open; entry 11.765999794006348; current stop 11.386285373142787; provenance prospective; gap none
-- LTC-USD: Long open; entry 57.652000427246094; current stop 56.05942916870117; provenance prospective; gap none
+- LTC-USD: Long open; entry 57.652000427246094; current stop 56.93721444266183; provenance prospective; gap none
+- BCH-USD: Long open; entry 292.4200134277344; current stop 279.70572771344865; provenance prospective; gap none
+- BTC-USD: Long open; entry 80434.796875; current stop 79311.74386160714; provenance prospective; gap none
 
 ## Common-window comparison
 
