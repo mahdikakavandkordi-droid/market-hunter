@@ -149,7 +149,7 @@ const initialEnvelope=readEnvelopeFor(initialSession);
 const initialDaily=readDailyFor(initialSession);
 const state={
   engines:null,engineSelection:{engine:'all',cohort:'tsx-core',mode:'open',loading:false,error:false},
-  view:'home',homeMarketGroup:'all',reviewStage:'Early Watch',reviewMarket:'CA',usScan:null,usStatus:'idle',daily:null,pulse:null,v2:null,hunterMonitor:null,fundamentals:null,
+  view:'home',cautionFilter:false,homeMarketGroup:'all',reviewStage:'Early Watch',reviewMarket:'CA',usScan:null,usStatus:'idle',daily:null,pulse:null,v2:null,hunterMonitor:null,fundamentals:null,
   envelope:initialEnvelope,watch:visibleWatch(initialEnvelope),positions:visiblePositions(initialEnvelope),
   portfolioItems:new Map(),liveItems:new Map(),intraday:null,intradayStatus:'loading',analytics:null,previous:previousMapFromDaily(initialDaily),
   cloud:{session:initialSession,epoch:1,status:'local',message:'',showAuth:false,ready:false,reconciled:false,revision:0}
@@ -1118,7 +1118,7 @@ function marketLevelsHtml(levels){
   return `<div class="market-levels reading-copy">${rows.map(([key,label,note])=>`<div><span>${label}<small>${note}</small></span><b><bdi>${fmt(levels[key])}</bdi></b></div>`).join('')}</div>`;
 }
 function homeHtml(){
-  const d=state.daily,p=state.pulse,review=window.MarketHunterReviewPolicy.select(state.v2),picks=review.selected.map(x=>enrichCandidate(x.row));
+  const d=state.daily,p=state.pulse,review=window.MarketHunterReviewPolicy.select(state.v2),picks=(state.cautionFilter?review.selected.map(x=>x.row):(state.v2?.integratedSurfacePicks||[])).map(enrichCandidate);
   const s=portfolioSummary();
   const words=value=>window.MHI18n?.text(value)||value||'—';
   const marketRead=value=>window.MHI18n?.marketRead(value)||value?.outlook||'';
@@ -1200,8 +1200,8 @@ function homeHtml(){
 
     <div class="grid home-lower">
       <section class="panel soft">
-        <div class="panel-head"><div><h2>${ui("Cautious review list","فهرست بررسی با احتیاط")}</h2><p>${ui("Canadian canonical shortlist · caution filter applied","فهرست نهایی ثبت‌شدهٔ کانادا · با فیلتر احتیاطی")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
-        <p class="reading-copy">${ui("Assessment session","جلسهٔ ارزیابی")}: <bdi>${esc(state.v2?.marketAsOf||"—")}</bdi></p>${reviewPolicyNoteHtml(review)}${selectionEvidenceHtml()}
+        <div class="panel-head"><div><h2>${ui("Research shortlist","فهرست بررسی سهم‌ها")}</h2><p>${ui("Canadian canonical shortlist · selection quality unproven","فهرست ثبت‌شدهٔ کانادا · کیفیت انتخاب اثبات نشده")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
+        <p class="reading-copy">${ui("Assessment session","جلسهٔ ارزیابی")}: <bdi>${esc(state.v2?.marketAsOf||"—")}</bdi></p><button class="btn" data-caution-filter aria-pressed="${state.cautionFilter}">${ui("Experimental caution filter","فیلتر احتیاطی آزمایشی")}: ${state.cautionFilter?ui("On","روشن"):ui("Off","خاموش")}</button>${state.cautionFilter?reviewPolicyNoteHtml(review):""}${selectionEvidenceHtml()}
         ${swipeTools("homePicks",picks.length)}<div class="home-picks mobile-rail" id="homePicks" tabindex="0" aria-label="Selected stocks">${rows||'<div class="empty">'+ui('No candidate passes the caution checks. No replacement is forced.','هیچ سهمی از بررسی احتیاطی عبور نکرده؛ فهرست را اجباری پُر نمی‌کنیم.')+'</div>'}</div>
       </section>
 
@@ -1737,6 +1737,8 @@ function closeRiskInfo(except=null){
 }
 for(const event of ['pointerdown','wheel'])document.addEventListener(event,e=>{const rail=e.target.closest?.('.mobile-rail');if(rail)pendingRailTargets.delete(rail)},{passive:true});
 document.addEventListener('click',async e=>{
+  const cautionToggle=e.target.closest('[data-caution-filter]');
+  if(cautionToggle){state.cautionFilter=!state.cautionFilter;renderView('home');document.querySelector('[data-caution-filter]')?.focus({preventScroll:true});return;}
   const homeGroup=e.target.closest('[data-home-group]');
   if(homeGroup){state.homeMarketGroup=homeGroup.dataset.homeGroup;renderView('home');document.querySelector('.home-market-filters [data-home-group="'+state.homeMarketGroup+'"]')?.focus({preventScroll:true});if(homeGroup.classList.contains('brief-group'))q('#homeMarkets')?.scrollIntoView({block:'start',behavior:'smooth'});return;}
   const focusMarket=e.target.closest('[data-market-focus]');
