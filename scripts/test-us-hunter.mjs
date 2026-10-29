@@ -52,6 +52,10 @@ try{
   assert.equal(report.sourceUsableCount,502);
   assert.equal(report.excluded.currency_mismatch,1);
   assert.ok(report.all.length>0);
+  assert.equal(report.universeRows.length,report.usableCount);
+  assert.equal(report.industryContext.asOf,report.marketAsOf);
+  assert.equal(report.industryContext.version,'industry-context-v1');
+  assert.ok(report.universeRows.every(x=>!Object.hasOwn(x,'stage')&&x.date===report.marketAsOf));
   assert.ok(report.all.every(x=>x.currency==='USD'&&x.market==='US'&&x.benchmark==='^GSPC'&&x.asOf===report.marketAsOf&&Number.isFinite(x.dayChangePct)));
   assert.equal(validResearch('v2-us',report),true);
   assert.equal(validResearch('v2',report),false);
