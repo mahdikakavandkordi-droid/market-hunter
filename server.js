@@ -22,6 +22,7 @@ const staticFiles=new Map([
   ['/','index.html'],
   ['/index.html','index.html'],
   ['/app.js','app.js'],
+  ['/hunter-discovery.js','hunter-discovery.js'],
   ['/hunter-review-policy.js','hunter-review-policy.js'],
   ['/volume-context.js','volume-context.js'],
   ['/i18n.js','i18n.js'],
