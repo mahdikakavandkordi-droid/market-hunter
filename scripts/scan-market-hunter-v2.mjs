@@ -1,3 +1,4 @@
+import {industryContext} from '../lib/industry-context.js';
 import fs from 'node:fs';
 import {hunterMarket,scanCurrencyIssue} from '../lib/hunter-markets.js';
 import {completedDailyRows} from '../lib/completed-daily-session.js';
@@ -115,7 +116,7 @@ if(market.market==='US'){
     }
   }));
 }
-const rows=[],excluded={},sessionExclusions=[],screening=[];
+const rows=[],universeRows=[],excluded={},sessionExclusions=[],screening=[];
 let usableCount=0,sourceUsableCount=0;
 for(const symbol of symbols){
   const pack=data[symbol],r=pack?.rows||[],bench=data[benchSymbol(symbol)]?.rows||[];
@@ -137,6 +138,7 @@ for(const symbol of symbols){
   if(r.at(-1).rawClose<ASSUMPTIONS.liquidity.minPrice){exclude('price');continue}
   if(m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){exclude('liquidity');continue}
   usableCount++;
+  universeRows.push({symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,date,market:market.market,currency:market.currency,benchmark:benchSymbol(symbol),price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),rs20:round(m.rs20),rs60:round(m.rs60),dist20:round(m.dist20),dist50:round(m.dist50),momentumShift:round(m.momentumShift),avgDollar20:round(m.avgDollar20),atr14Pct:round(m.atr14Pct),upDownVolumeRatio:round(m.upDownVolumeRatio),lowBroken:m.lowBroken,swingTrend:m.swingTrend,riskFlags:riskFlags(m)});
   const stage=classify(m);
   if(!stage){exclude('unclassified');continue}
   screen.reason='classified';screen.stage=stage;
@@ -195,6 +197,7 @@ const report={
   },
   reviewFirst:Object.fromEntries(stages.map(s=>[s,byStage[s].filter(x=>x.reviewLane==='Review First')])),
   highIntensity:Object.fromEntries(stages.map(s=>[s,byStage[s].filter(x=>x.reviewLane==='High Intensity')])),
+  universeRows,industryContext:industryContext(universeRows,market.instruments,marketAsOf),
   byStage,all:rows
 };
 fs.mkdirSync('data',{recursive:true});
