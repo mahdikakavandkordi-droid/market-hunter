@@ -1,9 +1,11 @@
+import {industryFixture} from './industry-fixture.mjs';
 import {test,expect} from '@playwright/test';
 const fontUrl='/fonts/vazirmatn-nl-v33.003.woff2';
 async function setup(page){
  await page.addInitScript(()=>localStorage.setItem('mh-language','fa'));
  await page.route('**/*',route=>{
-  const u=new URL(route.request().url());if(u.hostname!=='127.0.0.1')return route.abort();
+  const u=new URL(route.request().url());
+  if(u.pathname==='/api/research-data'&&u.searchParams.get('kind')==='v2')return route.fulfill({json:industryFixture()});if(u.hostname!=='127.0.0.1')return route.abort();
   if(['/api/engines','/api/portfolio','/api/intraday','/api/hunter-monitor'].includes(u.pathname))return route.fulfill({json:{reports:[],items:[],quotes:{},rows:[],summary:{},failures:[]}});
   return route.continue();
  });
