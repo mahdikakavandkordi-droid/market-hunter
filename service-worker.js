@@ -1,6 +1,6 @@
-const CACHE='market-hunter-shell-v42';
+const CACHE='market-hunter-shell-v43';
 const SHELL=['/','/index.html','/app.css','/mobile-polish.css','/theme.css','/ui-polish.css','/app.js','/i18n.js','/market-status.js','/quote-policy.js','/engine-dashboard.js','/engine-matches.js','/fundamental-context.js','/engine-dashboard.css','/clean-ui.css','/manifest.webmanifest','/market-hunter-icon.svg','/icons/icon-192.png','/icons/icon-512.png','/icons/icon-maskable.png','/icons/apple-touch-icon.png'];
-SHELL.push('/hunter-review-policy.js','/volume-context.js','/home-overview.js','/fonts/vazirmatn-nl-v33.003.woff2');
+SHELL.push('/hunter-discovery.js','/hunter-review-policy.js','/volume-context.js','/home-overview.js','/fonts/vazirmatn-nl-v33.003.woff2');
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
 });
