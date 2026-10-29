@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-10-28T01:46:16.333Z",
+  "updatedAt": "2026-10-29T01:57:39.548Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -987,6 +987,32 @@
       "prospectiveCount": 5,
       "pendingCount": 0,
       "discrepancyCount": 13
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|40803443339|1",
+      "observedAt": "2026-10-29T01:57:39.548Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "40803443339",
+        "runAttempt": "1",
+        "sha": "a5c6303a6b2eb137aa24c136a4c21c5201730df7",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 19,
+      "prospectiveCount": 5,
+      "pendingCount": 0,
+      "discrepancyCount": 10
     }
   ],
   "discrepancyLog": [
@@ -1190,6 +1216,42 @@
       "recomputed": 0.35894195828165615,
       "firstDetectedAt": "2026-10-28T01:46:16.333Z",
       "runKey": "smc-forward-expanded|us-75|40616959467|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "TMO|2026-10-15T17:30:00.000Z|1",
+      "field": "entry",
+      "recorded": 698,
+      "recomputed": 692.260009765625,
+      "firstDetectedAt": "2026-10-29T01:57:39.548Z",
+      "runKey": "smc-forward-expanded|us-75|40803443339|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "TMO|2026-10-15T17:30:00.000Z|1",
+      "field": "target",
+      "recorded": 825.9564060756138,
+      "recomputed": 808.7364353724888,
+      "firstDetectedAt": "2026-10-29T01:57:39.548Z",
+      "runKey": "smc-forward-expanded|us-75|40803443339|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "TMO|2026-10-15T17:30:00.000Z|1",
+      "field": "risk",
+      "recorded": 63.97820303780691,
+      "recomputed": 58.23821280343191,
+      "firstDetectedAt": "2026-10-29T01:57:39.548Z",
+      "runKey": "smc-forward-expanded|us-75|40803443339|1"
+    },
+    {
+      "type": "closed_outcome_revision",
+      "identity": "TMO|2026-10-15T17:30:00.000Z|1",
+      "field": "R",
+      "recorded": -0.07924585379840551,
+      "recomputed": 0.011504180466828624,
+      "firstDetectedAt": "2026-10-29T01:57:39.548Z",
+      "runKey": "smc-forward-expanded|us-75|40803443339|1"
     }
   ],
   "markedEquitySeries": [
@@ -1370,6 +1432,15 @@
       "quality": "fresh",
       "markedEquity": 972.1049643481872,
       "totalUnrealizedPnl": 0.5926924110351548,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|40803443339|1",
+      "observedAt": "2026-10-29T01:57:39.548Z",
+      "quality": "fresh",
+      "markedEquity": 970.6242692206094,
+      "totalUnrealizedPnl": -0.8880027165426667,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -3670,7 +3741,7 @@
       "stop": 171.06584963117328,
       "target": 200.6582787649972,
       "risk": 9.864143044607971,
-      "lifecycleRefreshSource": "recorded_signal_snapshot"
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "AMD",
@@ -3761,7 +3832,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "BA",
@@ -3852,7 +3924,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
