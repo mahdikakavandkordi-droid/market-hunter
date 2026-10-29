@@ -12,6 +12,9 @@ on:
       - 'scripts/scan-market-pulse.mjs'
       - 'scripts/backtest-market-pulse.mjs'
       - 'scripts/scan-market-hunter-v2.mjs'
+      - 'hunter-discovery.js'
+      - 'lib/industry-context.js'
+      - 'lib/discovery-outcomes.js'
       - 'scripts/build-market-pulse-report.mjs'
       - 'scripts/build-daily-market-report.mjs'
       - 'scripts/audit-daily-market-report-final.mjs'
@@ -178,7 +181,7 @@ jobs:
           set -euo pipefail
           git config user.name "market-hunter-bot"
           git config user.email "market-hunter-bot@users.noreply.github.com"
-          git add             data/market-pulse-latest.json             data/market-pulse-state-backtest.json             data/market-pulse-report.json             data/v2-latest-scan.json             data/daily-market-report.json             data/daily-market-report.md             data/daily-market-report-final-audit.json
+          git add data/industry-history/CA             data/market-pulse-latest.json             data/market-pulse-state-backtest.json             data/market-pulse-report.json             data/v2-latest-scan.json             data/daily-market-report.json             data/daily-market-report.md             data/daily-market-report-final-audit.json
           if git diff --cached --quiet; then
             echo "No validated daily refresh changes."
             exit 0
