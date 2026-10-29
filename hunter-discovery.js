@@ -19,12 +19,13 @@
    if(!Array.isArray(row.riskFlags))reasons.push('missing_risk_checks');else if(row.riskFlags.length)reasons.push('risk_flags');
    if(reasons.length)excluded.push({symbol:row.symbol,reasons});else selected.push(row);
   }
+  const incompleteCount=excluded.filter(x=>x.reasons.some(r=>r.startsWith('missing_')||r==='low_not_confirmed_intact'&&rows.find(y=>y.symbol===x.symbol)?.lowBroken==null)).length;
   selected.sort((a,b)=>a.symbol.localeCompare(b.symbol));
   const mapped=new Set(context.industries.map(x=>x.sector));
   const industries=context.industries.map(x=>({...x,selected:selected.filter(r=>r.sector===x.sector)}));
   const unmapped=rows.filter(r=>!mapped.has(r.sector));
   if(unmapped.length)industries.push({sector:'Unmapped',status:'unmapped',usableMembers:unmapped.length,universeMembers:null,selected:selected.filter(r=>!mapped.has(r.sector))});
-  return {version,status:rows.length?'available':'no_usable_data',asOf:scan.marketAsOf,selected,excluded,industries};
+  return {version,status:!rows.length?'no_usable_data':incompleteCount===rows.length?'incomplete':'available',incompleteCount,asOf:scan.marketAsOf,selected,excluded,industries};
  }
  root.MarketHunterDiscovery={version,build};
 })(globalThis);
