@@ -1,3 +1,5 @@
+import '../hunter-discovery.js';
+import {discoveryOutcomes} from '../lib/discovery-outcomes.js';
 import {industryContext} from '../lib/industry-context.js';
 import fs from 'node:fs';
 import {hunterMarket,scanCurrencyIssue} from '../lib/hunter-markets.js';
@@ -138,7 +140,7 @@ for(const symbol of symbols){
   if(r.at(-1).rawClose<ASSUMPTIONS.liquidity.minPrice){exclude('price');continue}
   if(m.avgDollar20<ASSUMPTIONS.liquidity.minAvgDollar20){exclude('liquidity');continue}
   usableCount++;
-  universeRows.push({symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,date,market:market.market,currency:market.currency,benchmark:benchSymbol(symbol),price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),rs20:round(m.rs20),rs60:round(m.rs60),dist20:round(m.dist20),dist50:round(m.dist50),momentumShift:round(m.momentumShift),avgDollar20:round(m.avgDollar20),atr14Pct:round(m.atr14Pct),upDownVolumeRatio:round(m.upDownVolumeRatio),lowBroken:m.lowBroken,swingTrend:m.swingTrend,riskFlags:riskFlags(m)});
+  universeRows.push({asOf:date,exchange:meta.get(symbol)?.exchange||null,dayChangePct:round((r.at(-1).rawClose/r.at(-2).rawClose-1)*100),symbol,name:meta.get(symbol)?.name,sector:meta.get(symbol)?.sector,date,market:market.market,currency:market.currency,benchmark:benchSymbol(symbol),price:round(m.last),ret5:round(m.ret5),ret20:round(m.ret20),ret60:round(m.ret60),rs20:round(m.rs20),rs60:round(m.rs60),dist20:round(m.dist20),dist50:round(m.dist50),rsi14:round(m.rsi14),momentumShift:round(m.momentumShift),avgDollar20:round(m.avgDollar20),atr14Pct:round(m.atr14Pct),upDownVolumeRatio:round(m.upDownVolumeRatio),lowBroken:m.lowBroken,swingTrend:m.swingTrend,riskFlags:riskFlags(m)});
   const stage=classify(m);
   if(!stage){exclude('unclassified');continue}
   screen.reason='classified';screen.stage=stage;
@@ -200,9 +202,17 @@ const report={
   universeRows,industryContext:industryContext(universeRows,market.instruments,marketAsOf),
   byStage,all:rows
 };
+report.discovery=globalThis.MarketHunterDiscovery.build(report);
 fs.mkdirSync('data',{recursive:true});
 console.log(JSON.stringify({market:market.market,marketAsOf,universeCount:symbols.length,sourceUsableCount,usableCount,excluded,sessionExclusions:sessionExclusions.slice(0,10),sourceDiagnostics:Object.fromEntries([...symbols.slice(0,3),market.referenceSymbol].map(s=>[s,data[s]?.sourceDiagnostic||null]))},null,2));
 if(market.market==='US'&&(usableCount===0||sourceUsableCount/symbols.length<0.9))throw new Error('us_scan_insufficient_source_coverage');
+const historyDir='data/industry-history/'+market.market;
+fs.mkdirSync(historyDir,{recursive:true});
+const historyFile=historyDir+'/'+marketAsOf+'.json';
+// First successful observation is immutable, including same-session reruns.
+if(!fs.existsSync(historyFile))fs.writeFileSync(historyFile,JSON.stringify({version:report.discovery.version,generatedAt:report.generatedAt,engineCommit:report.engineCommit,market:report.market,currency:report.currency,asOf:marketAsOf,universeRows,industryContext:report.industryContext,selectedSymbols:report.discovery.selected.map(x=>x.symbol)},null,2),{flag:'wx'});
+const snapshots=fs.readdirSync(historyDir).filter(name=>/^\d{4}-\d{2}-\d{2}\.json$/.test(name)).map(name=>JSON.parse(fs.readFileSync(historyDir+'/'+name,'utf8')));
+report.discoveryEvidence=discoveryOutcomes(snapshots,data,marketAsOf,market.referenceSymbol);
 const output=market.file;
 fs.writeFileSync(output+'.tmp',JSON.stringify(report,null,2));
 fs.renameSync(output+'.tmp',output);
