@@ -6,6 +6,9 @@ test('home filters canonical picks, discloses omissions and preserves full revie
  const scan={marketAsOf:good.date,integratedSurfacePicks:[bad,good],surfacePicks:{'Early Watch':[bad,good]}};
  await page.route('**/api/**',r=>{const u=new URL(r.request().url());return r.fulfill({json:u.searchParams.get('kind')==='v2'?scan:{markets:[],reports:[],items:[],rows:[],quotes:{}}})});
  await page.goto('/');await expect(page.locator('#refreshBtn')).toBeEnabled();
+ await expect(page.locator('#homePicks .home-pick')).toHaveCount(2);
+ await expect(page.locator('[data-caution-filter]')).toHaveAttribute('aria-pressed','false');
+ await page.locator('[data-caution-filter]').click();
  await expect(page.locator('#homePicks .home-pick')).toHaveCount(1);
  await expect(page.locator('#homePicks')).toContainText('GOOD');
  const omitted=page.locator('details').filter({has:page.locator('summary', {hasText:'Deferred for caution checks'})});
