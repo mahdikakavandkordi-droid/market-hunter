@@ -1,7 +1,7 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-10-29T19:08:54.890Z",
+  "updatedAt": "2026-10-29T23:30:06.479Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
@@ -1542,9 +1542,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.20921929074185236,
       "bestClose": 0.19724999368190765,
-      "holdingBars": 29,
+      "holdingBars": 30,
       "entryObservedAt": "2026-10-25T01:30:28.143Z",
-      "lastEvaluatedEndT": "2026-10-29T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-29T20:00:00.000Z"
     },
     {
       "symbol": "BCH-USD",
@@ -1721,9 +1721,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 1.0403499603271484,
       "bestClose": 0.9693999886512756,
-      "holdingBars": 18,
+      "holdingBars": 19,
       "entryObservedAt": "2026-10-26T20:03:54.277Z",
-      "lastEvaluatedEndT": "2026-10-29T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-29T20:00:00.000Z"
     },
     {
       "symbol": "TRX-USD",
@@ -1806,15 +1806,15 @@
       "entryObservationClass": "prospective",
       "currentStop": 735.9678126743862,
       "bestClose": 759.969970703125,
-      "holdingBars": 11,
+      "holdingBars": 12,
       "entryObservedAt": "2026-10-28T07:09:46.778Z",
-      "lastEvaluatedEndT": "2026-10-29T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-29T20:00:00.000Z"
     },
     {
       "symbol": "XRP-USD",
       "signalT": "2026-10-27T12:00:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-27T16:00:00.000Z",
         "dailyAsOf": "2026-10-26",
@@ -1830,8 +1830,8 @@
       "stop": 1.284585680280413,
       "target": null,
       "risk": 0.03791431018284389,
-      "R": null,
-      "exitT": null,
+      "R": -0.9999999999999991,
+      "exitT": "2026-10-29T20:00:00.000Z",
       "decisionId": "XRP-USD|2026-10-27T12:00:00.000Z|1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-10-27T16:48:22.229Z",
@@ -1844,9 +1844,18 @@
       "entryObservationClass": "prospective",
       "currentStop": 1.284585680280413,
       "bestClose": 1.3351000547409058,
-      "holdingBars": 11,
+      "holdingBars": 12,
       "entryObservedAt": "2026-10-28T07:09:46.778Z",
-      "lastEvaluatedEndT": "2026-10-29T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-29T20:00:00.000Z",
+      "exitPriceAssumed": 1.284585680280413,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "trailing_or_initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapFillAssumption": "boundary stop / completed time-exit close",
+        "exitBarStartT": "2026-10-29T16:00:00.000Z",
+        "exitBarEndT": "2026-10-29T20:00:00.000Z"
+      }
     },
     {
       "symbol": "LINK-USD",
@@ -2023,9 +2032,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 79432.71316964286,
       "bestClose": 81683.9609375,
-      "holdingBars": 6,
+      "holdingBars": 7,
       "entryObservedAt": "2026-10-29T00:13:03.088Z",
-      "lastEvaluatedEndT": "2026-10-29T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-10-29T20:00:00.000Z"
     }
   ],
   "runLog": [
@@ -3251,6 +3260,12 @@
     {
       "runKey": "trend-breakout-v1|40937315345|1",
       "observedAt": "2026-10-29T19:08:54.890Z",
+      "failures": [],
+      "diagnosticCount": 30
+    },
+    {
+      "runKey": "trend-breakout-v1|40973486841|1",
+      "observedAt": "2026-10-29T23:30:06.479Z",
       "failures": [],
       "diagnosticCount": 30
     }
@@ -5003,6 +5018,15 @@
       "quality": "fresh",
       "markedEquity": 886.4595507560493,
       "totalUnrealizedPnl": 0.12055003253068741,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|40973486841|1",
+      "observedAt": "2026-10-29T23:30:06.479Z",
+      "quality": "fresh",
+      "markedEquity": 889.3217346958457,
+      "totalUnrealizedPnl": 2.982733972327037,
       "missingSymbols": [],
       "staleSymbols": []
     }

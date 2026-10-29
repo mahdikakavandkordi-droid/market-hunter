@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-extra
-Generated: 2026-10-29T19:08:54.890Z; mode: forward_shadow.
+Generated: 2026-10-29T23:30:06.479Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 0.
 Open 8; pending 2; closed 24; lifecycle reviews 0.
-Realized equity $1002.55; marked equity $1015.87; mark quality fresh.
+Realized equity $1002.55; marked equity $1013.40; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -17,8 +17,8 @@ Realized equity $1002.55; marked equity $1015.87; mark quality fresh.
 
 - TFII.TO: Short open; entry 165.2899932861328; current stop 165.15071323939733; provenance prospective; gap none
 - KEY.TO: Long open; entry 54.560001373291016; current stop 53.720357349940706; provenance prospective; gap none
-- AGI.TO: Short open; entry 44.130001068115234; current stop 44.18892533438546; provenance prospective; gap none
-- EDV.TO: Short open; entry 76.58000183105469; current stop 77.19643020629883; provenance prospective; gap none
+- AGI.TO: Short open; entry 44.130001068115234; current stop 43.85749789646694; provenance prospective; gap none
+- EDV.TO: Short open; entry 76.58000183105469; current stop 77.15035792759487; provenance prospective; gap none
 - CCL-B.TO: Long open; entry 97; current stop 95.80392401559013; provenance prospective; gap none
 - PAAS.TO: Short open; entry 57; current stop 60.25571496146066; provenance prospective; gap none
 - TIH.TO: Short open; entry 200.24000549316406; current stop 209.36286054338728; provenance prospective; gap none
