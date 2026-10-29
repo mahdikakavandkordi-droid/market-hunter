@@ -721,7 +721,7 @@ function enrichCandidate(x){
 }
 function allCandidates(){
   const out=[],seen=new Set();
-  for(const x of [...(state.v2?.integratedSurfacePicks||[]),...(state.usScan?.integratedSurfacePicks||[])]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
+  for(const x of [...(state.v2?.universeRows||[]),...(state.usScan?.universeRows||[]),...(state.v2?.integratedSurfacePicks||[]),...(state.usScan?.integratedSurfacePicks||[])]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
   for(const list of [...Object.values(state.v2?.surfacePicks||{}),...Object.values(state.usScan?.surfacePicks||{})])for(const x of list||[]){if(!seen.has(x.symbol)){seen.add(x.symbol);out.push(enrichCandidate(x))}}
   return out;
 }
@@ -1199,11 +1199,11 @@ function homeHtml(){
     </div>
 
     <div class="grid home-lower">
-      <section class="panel soft">
+      ${Array.isArray(state.v2?.universeRows)?industryHomeHtml():`<section class="panel soft">
         <div class="panel-head"><div><h2>${ui("Research shortlist","فهرست بررسی سهم‌ها")}</h2><p>${ui("Canadian canonical shortlist · selection quality unproven","فهرست ثبت‌شدهٔ کانادا · کیفیت انتخاب اثبات نشده")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
         <p class="reading-copy">${ui("Assessment session","جلسهٔ ارزیابی")}: <bdi>${esc(state.v2?.marketAsOf||"—")}</bdi></p><button class="btn" data-caution-filter aria-pressed="${state.cautionFilter}">${ui("Experimental caution filter","فیلتر احتیاطی آزمایشی")}: ${state.cautionFilter?ui("On","روشن"):ui("Off","خاموش")}</button>${state.cautionFilter?reviewPolicyNoteHtml(review):""}${selectionEvidenceHtml()}
         ${swipeTools("homePicks",picks.length)}<div class="home-picks mobile-rail" id="homePicks" tabindex="0" aria-label="Selected stocks">${rows||'<div class="empty">'+ui('No candidate passes the caution checks. No replacement is forced.','هیچ سهمی از بررسی احتیاطی عبور نکرده؛ فهرست را اجباری پُر نمی‌کنیم.')+'</div>'}</div>
-      </section>
+      </section>`}
 
       <section class="panel soft">
         <div class="panel-head"><div><h3>${ui("Your portfolio","پورتفولیوی تو")}</h3><p>${ui("Holdings and performance.","سهم‌ها و عملکرد")}</p></div><button class="btn ghost" data-open="portfolio">${ui("Open ↗","مشاهده ↗")}</button></div>
@@ -1350,6 +1350,7 @@ async function loadUSScan(){
   finally{if(sequence===usLoadSequence)renderView('shortlist')}
 }
 function shortlistHtml(){
+  if(Array.isArray(reviewScan()?.universeRows))return industryPageHtml();
   const stage=REVIEW_STAGES.includes(state.reviewStage)?state.reviewStage:REVIEW_STAGES[0];
   const counts=Object.fromEntries(REVIEW_STAGES.map(s=>[s,stageEligiblePicks(s).length]));
   const picks=stageEligiblePicks(stage);
@@ -1819,3 +1820,31 @@ if('serviceWorker' in navigator){
 }
 window.addEventListener('scroll',()=>closeRiskInfo(),{passive:true});
 load();
+
+function industryName(value){
+ const names={Technology:'فناوری','Information Technology':'فناوری اطلاعات',Financials:'مالی',Energy:'انرژی',Materials:'مواد اولیه',Industrials:'صنعتی',Consumer:'مصرفی','Consumer Discretionary':'کالاهای مصرفی اختیاری','Consumer Staples':'کالاهای مصرفی ضروری',Healthcare:'سلامت','Health Care':'سلامت',Utilities:'خدمات عمومی','Real Estate':'املاک','Communication Services':'خدمات ارتباطی',Unmapped:'صنعت مشخص نشده'};
+ return ui(value,names[value]||value);
+}
+function discoveryMethodHtml(){return `<details class="reading-copy"><summary>${ui('Selection criteria & limits','معیار انتخاب و محدودیت‌ها')}</summary><p>${ui('Positive 20-session return, ahead of its benchmark, above MA50, recent low intact, and no recorded extension, RSI or ATR risk flags. All qualifying stocks appear alphabetically, with no quota or industry allocation.','بازده ۲۰جلسه‌ای مثبت، عملکرد بهتر از شاخص مبنا، بالای میانگین ۵۰روزه، کف اخیر حفظ‌شده و بدون هشدار ثبت‌شدهٔ فاصله از میانگین، RSI یا ATR. همهٔ سهم‌های واجد معیار به ترتیب نام نمایش داده می‌شوند؛ تعداد و سهم هر صنعت از قبل تعیین نشده.')}</p><p>${ui('A new technical research screen, with no established return advantage. These conditions do not prove undervaluation or predict profit. Sector figures describe tracked liquid stocks, not an industry index.','این غربال فنی جدید است و برتری بازده آن هنوز اثبات نشده؛ این شروط ارزندگی یا سود را اثبات نمی‌کنند. اعداد صنایع مربوط به سهم‌های نقدشوندهٔ تحت پوشش‌اند، نه شاخص کل صنعت.')}</p></details>`}
+function discoveryCardHtml(row){
+ const x=enrichCandidate(row);
+ return `<article class="card hunter-card discovery-card" data-discovery-symbol="${esc(x.symbol)}"><div class="cardtop"><div class="name"><button class="symbol-link" data-chart="${esc(x.symbol)}"><bdi>${esc(short(x.symbol))}</bdi> ↗</button><small>${esc(x.name||x.symbol)}</small></div><div class="price-line"><bdi>${money(x.price,x.currency)}</bdi><small class="day-change ${cls(x.dayChangePct)}"><bdi>${pct(x.dayChangePct)}</bdi></small></div></div><p class="stock-sector">${esc(industryName(x.sector||'Unmapped'))} · <bdi>${esc(x.market)} · ${esc(x.currency)}</bdi></p>${quoteMetaHtml(x.displayQuote)}<div class="reading-copy"><p class="stock-summary-lead">${ui('Why it qualifies','دلیل ورود')}: ${ui('positive return, stronger than benchmark, above MA50, recent low intact.','بازده مثبت، قوی‌تر از شاخص مبنا، بالای میانگین ۵۰روزه و حفظ کف اخیر.')}</p><div class="industry-metrics"><span>${ui('20-session return','بازده ۲۰ جلسه')}<bdi>${pct(row.ret20)}</bdi></span><span>${ui('Ahead of benchmark','فاصله از شاخص مبنا')} <bdi>${esc(row.benchmark)}</bdi><bdi>${fmt(row.rs20)} ${ui('pp','واحد درصد')}</bdi></span><span>${ui('Distance from MA50','فاصله از میانگین ۵۰روزه')}<bdi>${pct(row.dist50)}</bdi></span><span>${ui('Daily range · ATR','دامنهٔ نوسان · ATR')}<bdi>${pct(row.atr14Pct)}</bdi></span></div><p class="explanation-note">${ui('No recorded flags does not mean no risk. A close below MA50, a broken recent low or loss of relative strength invalidates these selection conditions.','نبود هشدار ثبت‌شده به معنی بی‌ریسک‌بودن نیست. بسته‌شدن زیر میانگین ۵۰روزه، شکستن کف اخیر یا از دست‌رفتن قدرت نسبی، شروط این انتخاب را نقض می‌کند.')}</p></div><div class="actions"><button class="btn primary" data-chart="${esc(x.symbol)}">${ui('Chart ↗','نمودار ↗')}</button><button class="btn" data-watch="${esc(x.symbol)}">${ui('Watch','دیده‌بان')}</button><button class="btn ghost" data-buy="${esc(x.symbol)}">${ui('Bought','خریده‌ام')}</button></div></article>`;
+}
+function industryHomeHtml(){
+ const d=window.MarketHunterDiscovery.build(state.v2);
+ return `<section class="panel soft" id="industryHome"><div class="panel-head"><div><h2>${ui('Stocks by industry','سهم‌ها به تفکیک صنعت')}</h2><p>${ui('No fixed count · technical research screen','بدون تعداد ثابت · غربال فنی برای بررسی')}</p></div><button class="btn ghost" data-open="shortlist">${ui('Explore ↗','بررسی صنایع ↗')}</button></div><p class="reading-copy">${ui('Assessment session','جلسهٔ ارزیابی')}: <bdi>${esc(d.asOf||state.v2?.marketAsOf||'—')}</bdi> · <bdi>${d.selected.length}</bdi> ${ui('qualifying stocks','سهم واجد معیار')}</p>${d.status!=='available'?'<p class="empty">'+ui('Usable discovery data is unavailable.','دادهٔ قابل استفادهٔ غربال موجود نیست.')+'</p>':d.selected.length?`<div class="industry-home-list">${d.industries.filter(x=>x.selected.length).map(x=>`<button class="btn" data-open="shortlist">${esc(industryName(x.sector))} · <bdi>${x.selected.length}</bdi></button>`).join('')}</div>`:'<p class="empty">'+ui('No stocks meet the criteria in this session. No replacements are forced.','در این جلسه سهمی واجد معیارها نیست؛ جایگزین اجباری معرفی نمی‌کنیم.')+'</p>'}${discoveryMethodHtml()}</section>`;
+}
+function industryPageHtml(){
+ const scan=reviewScan(),d=window.MarketHunterDiscovery.build(scan);
+ const marketTabs=`<div class="allocation-tabs hunter-market-tabs" role="group" aria-label="${ui('Stock market','بازار سهام')}">${[['CA',ui('Canada · CAD','کانادا · CAD')],['US',ui('United States · USD','آمریکا · USD')]].map(([market,label])=>`<button type="button" data-hunter-market="${market}" aria-pressed="${state.reviewMarket===market}">${label}</button>`).join('')}</div>`;
+ return `<div class="stack"><section class="panel soft">${marketTabs}<div class="sectionhead"><h2>${ui('Industry discovery','بررسی صنایع و سهم‌ها')}</h2><span class="tag"><bdi>${d.selected.length}</bdi> ${ui('qualifying stocks','سهم واجد معیار')}</span></div><p class="reading-copy">${ui('Assessment session','جلسهٔ ارزیابی')}: <bdi>${esc(scan?.marketAsOf||'—')}</bdi> · ${ui('Usable stocks','سهم‌های قابل بررسی')}: <bdi>${scan?.universeRows?.length||0}/${scan?.universeCount??'—'}</bdi>${state.reviewMarket==='US'&&state.usStatus==='retained'?' · '+ui('Refresh failed; previous snapshot retained','به‌روزرسانی ناموفق؛ خروجی قبلی حفظ شد'):''}</p>${d.incompleteCount?'<p class="reading-copy">'+ui('Stocks missing required checks','سهم‌های فاقد دادهٔ لازم برای بررسی')+': <bdi>'+d.incompleteCount+'</bdi></p>':''}${discoveryMethodHtml()}${discoveryEvidenceHtml(scan)}${d.status!=='available'?'<div class="empty">'+ui('Discovery data is incomplete; no selection can be inferred.','دادهٔ غربال کامل نیست؛ نمی‌توان نتیجهٔ انتخاب استنباط کرد.')+'</div>':''}</section>${d.industries.map(group=>{
+  const measured=group.outperforming?.measured||0;
+  const condition=group.status==='unmapped'?ui('Sector comparison unavailable','مقایسهٔ صنعت موجود نیست'):group.status==='insufficient_members'?ui('Too few usable members','تعداد اعضای قابل بررسی کافی نیست'):!Number.isFinite(group.medianRS20)?ui('Relative performance unavailable','عملکرد نسبی موجود نیست'):group.medianRS20<=0?ui('Median stock lagging its benchmark','سهم میانی از شاخص مبنا عقب‌تر است'):ui('Median stock ahead of its benchmark','سهم میانی از شاخص مبنا جلوتر است');
+  return `<section class="panel soft industry-group"><div class="sectionhead"><h3>${esc(industryName(group.sector))}</h3><span><bdi>${group.selected.length}</bdi> ${ui('qualify','واجد معیار')}</span></div><p class="reading-copy">${condition}${group.status==='partial'?' · '+ui('Partial coverage','پوشش ناقص'):''}</p><div class="industry-metrics"><span>${ui('Usable / tracked','قابل بررسی / تحت پوشش')}<bdi>${group.usableMembers}/${group.universeMembers??'—'}</bdi></span><span>${ui('Median 20-session return','میانهٔ بازده ۲۰ جلسه')}<bdi>${pct(group.medianReturn20)}</bdi></span><span>${ui('Ahead of benchmark','بهتر از شاخص مبنا')}<bdi>${group.outperforming?.count??'—'}/${measured||'—'}</bdi></span><span>${ui('Above MA50','بالای میانگین ۵۰روزه')}<bdi>${group.aboveMA50?.count??'—'}/${group.aboveMA50?.measured||'—'}</bdi></span></div>${group.selected.length?`<div class="industry-cards">${group.selected.map(discoveryCardHtml).join('')}</div>`:'<div class="empty">'+ui('No qualifying stocks in this group for this session.','در این جلسه، سهم واجد معیار در این گروه نداریم.')+'</div>'}</section>`;
+ }).join('')}</div>`;
+}
+function discoveryEvidenceHtml(scan){
+ const e=scan?.discoveryEvidence;
+ if(e?.version!=='industry-discovery-v1'||e.asOf!==scan.marketAsOf)return '<p class="reading-copy">'+ui('Forward results for this new screen are not available yet.','نتیجهٔ پیگیری این غربال جدید هنوز موجود نیست.')+'</p>';
+ return `<details class="reading-copy discovery-evidence"><summary>${ui('Results of previous selections','نتیجهٔ انتخاب‌های قبلی')} · <bdi>${e.capturedSessions}</bdi> ${ui('recorded sessions','جلسهٔ ثبت‌شده')}</summary><p>${ui('Overlapping observations, not portfolio returns. Before costs; small samples do not establish an edge.','مشاهده‌های هم‌پوشان‌اند، نه بازده پورتفولیو. هزینهٔ معامله کسر نشده و نمونهٔ کوچک برتری موتور را اثبات نمی‌کند.')}</p>${[5,10,20].map(h=>{const x=e.horizons[h];return `<p><bdi>${h}</bdi> ${ui('sessions','جلسه')}: <bdi>${x.observations}</bdi> ${ui('outcomes across','نتیجه در')} <bdi>${x.decisionDates}</bdi> ${ui('decision dates','تاریخ انتخاب')} · ${ui('Mean return','میانگین بازده')} <bdi>${pct(x.meanReturnPct)}</bdi> · ${ui('Mean excess vs benchmark','میانگین اختلاف با شاخص')} <bdi>${Number.isFinite(x.meanExcessPct)?fmt(x.meanExcessPct):'—'}</bdi> ${ui('pp','واحد درصد')} · ${ui('Positive','مثبت')} <bdi>${x.positive}/${x.observations}</bdi> · ${ui('Pending / missing','در انتظار / دادهٔ ناقص')} <bdi>${x.pending}/${x.missing}</bdi></p>`}).join('')}</details>`;
+}

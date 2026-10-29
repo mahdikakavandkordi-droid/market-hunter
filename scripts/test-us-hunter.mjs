@@ -48,6 +48,9 @@ try{
   const run=fail=>spawnSync(process.execPath,['--import',preload,scan],{cwd:dir,env:{...process.env,MH_HUNTER_MARKET:'US',FIXTURE_FAIL:fail},encoding:'utf8',timeout:30000,maxBuffer:5e6});
   const good=run('');assert.equal(good.status,0,good.stderr);
   const output=path.join(dir,us.file),text=fs.readFileSync(output,'utf8'),report=JSON.parse(text);
+  const historyFile=path.join(dir,'data/industry-history/US',report.marketAsOf+'.json');
+  const initialHistory=fs.readFileSync(historyFile,'utf8');
+  assert.equal(JSON.parse(initialHistory).version,'industry-discovery-v1');
   assert.equal(report.sessionIntegrity.referenceSymbol,'^GSPC');
   assert.equal(report.sourceUsableCount,502);
   assert.equal(report.excluded.currency_mismatch,1);
@@ -78,6 +81,7 @@ try{
   assert.equal(metaReport.replacementRetries.attempted,0);
   assert.ok(metaReport.all.every(x=>x.sourceBarMethod==='yahoo-completed-session-summary-v1'));
   assert.equal(fs.readFileSync(canadianFile,'utf8'),'preserve-canada');
+  assert.equal(fs.readFileSync(historyFile,'utf8'),initialHistory,'same-session retries must preserve decision evidence');
   const originalFetch=globalThis.fetch;
   try{
     await import('file://'+preload);

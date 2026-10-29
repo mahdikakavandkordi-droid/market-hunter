@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {discoveryOutcomes} from '../lib/discovery-outcomes.js';
+const dates=Array.from({length:21},(_,i)=>new Date(Date.UTC(2026,9,i+1)).toISOString().slice(0,10));
+const series=closes=>({rows:closes.map((close,i)=>({t:Date.parse(dates[i])/1000,close}))});
+const data={IDX:series(dates.map((_,i)=>100+i)),A:series(dates.map((_,i)=>50+2*i))};
+const s={version:'industry-discovery-v1',asOf:dates[0],universeRows:[{symbol:'A',benchmark:'IDX',price:999}],selectedSymbols:['A']};
+const before=JSON.stringify(s),r=discoveryOutcomes([s],data,dates[10],'IDX');
+assert.equal(r.horizons[5].observations,1);assert.ok(Math.abs(r.horizons[5].meanExcessPct-15)<1e-8);
+assert.equal(r.horizons[10].decisionDates,1);assert.equal(r.horizons[20].pending,1);
+assert.equal(JSON.stringify(s),before);assert.equal(discoveryOutcomes([s],{IDX:data.IDX},dates[10],'IDX').horizons[5].missing,1);
+assert.equal(discoveryOutcomes([{...s,selectedSymbols:[]}],data,dates[10],'IDX').horizons[5].meanReturnPct,null);
+console.log('Outcomes: exact horizons, same-series prices, missing data, immutable decisions passed');

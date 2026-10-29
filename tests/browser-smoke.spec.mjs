@@ -1,3 +1,4 @@
+import {industryFixture} from './industry-fixture.mjs';
 import {test,expect} from '@playwright/test';
 
 const USER_ID='user-smoke';
@@ -80,6 +81,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   page.on('console',msg=>{if(msg.type()==='error')errors.push(msg.text())});
   page.on('pageerror',err=>errors.push(String(err)));
 
+  await page.route('**/api/research-data?kind=v2',route=>route.fulfill({json:industryFixture()}));
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
@@ -97,9 +99,8 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await nasdaq100.locator('.market-context>summary').click();
   await expect(page.locator('.outlook-panel')).not.toHaveAttribute('open','');
   expect(await page.locator('#homeMarkets').evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
-  // Cautious filtering may leave zero or one candidate; do not force filler cards.
-  expect(await page.locator('#homePicks').count()).toBe(1);
-  await expect(page.locator('[data-caution-filter]')).toHaveAttribute('aria-pressed','false');
+  await expect(page.locator('#industryHome')).toContainText('3 qualifying stocks');
+  await expect(page.locator('[data-caution-filter]')).toHaveCount(0);
   await page.locator('.report-details>summary').click();
   await expect(page.locator('.report-title')).toHaveCount(0);
   expect(await page.locator('.report-copy').evaluate(r=>parseFloat(getComputedStyle(r).fontSize))).toBeLessThanOrEqual(14);

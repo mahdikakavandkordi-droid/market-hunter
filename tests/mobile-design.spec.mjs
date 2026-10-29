@@ -1,9 +1,11 @@
+import {industryFixture} from './industry-fixture.mjs';
 import {test,expect} from '@playwright/test';
 
 // Public research fixtures only; never connect layout checks to a real portfolio.
 async function isolate(page){
   await page.route('**/*',route=>{
     const url=new URL(route.request().url());
+    if(url.pathname==='/api/research-data'&&url.searchParams.get('kind')==='v2')return route.fulfill({json:industryFixture()});
     if(url.hostname!=='127.0.0.1')return route.abort();
     if(['/api/engines','/api/portfolio','/api/intraday','/api/hunter-monitor'].includes(url.pathname))return route.fulfill({json:{reports:[],items:[],quotes:{},rows:[],summary:{},failures:[]}});
     return route.continue();
@@ -31,7 +33,7 @@ for(const width of [320,390,768,1440]){
       expect(bottomNav.y).toBeGreaterThan(700);
      }
      if(view==='shortlist'){
-      const card=page.locator('#reviewCards .hunter-card').first();
+      const card=page.locator('.discovery-card').first();
       await expect(card).toBeVisible();
       const link=card.locator('.symbol-link'),symbol=link.locator('bdi');
       const a=await link.boundingBox(),b=await symbol.boundingBox();
