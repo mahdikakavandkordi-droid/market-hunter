@@ -379,3 +379,25 @@ summary::-webkit-details-marker{display:none}
 .industry-home-list{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
 .discovery-card .reading-copy{line-height:1.8}
 .industry-group>.reading-copy{margin-block:12px}
+
+/* Industry summaries stay scannable; details never stretch a whole stock row. */
+.industry-group{padding:0!important;overflow:hidden}
+.industry-heading{display:flex!important;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px!important;cursor:pointer;font-size:16px;font-weight:650;list-style:none}
+.industry-heading::-webkit-details-marker{display:none}
+.industry-heading:after{content:'+';font-size:22px;color:var(--muted)}
+.industry-group[open]>.industry-heading:after{content:'−'}
+.industry-count{margin-inline-start:auto;font-size:12px;font-weight:400;color:var(--muted)}
+.industry-body{padding:0 24px 24px}
+.industry-body>.industry-metrics{grid-template-columns:repeat(4,minmax(0,1fr));margin-block:16px}
+.industry-cards{display:flex!important;align-items:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding-bottom:12px}
+.industry-cards .discovery-card{flex:0 0 320px;width:320px;max-width:100%;scroll-snap-align:start;padding:18px!important}
+.discovery-glance{display:flex;justify-content:space-between;gap:10px;margin:14px 0;font-size:12px}
+.discovery-glance bdi{display:block;margin-top:5px;font-size:16px;font-weight:650}
+.discovery-details{margin-block:12px}
+.discovery-details>summary{font-size:12px!important;padding-block:10px!important}
+.discovery-card .stock-sector,.discovery-card>.quote-meta{font-size:11px!important}
+.discovery-card .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.discovery-card .actions .btn{flex:1;padding:9px 10px!important;font-size:12px!important}
+.discovery-evidence>summary{display:block!important}
+#shortlistView>.stack>.panel:first-child{padding:20px 24px!important}
+@media(max-width:700px){.industry-heading{padding:16px!important}.industry-body{padding:0 16px 16px}.industry-body>.industry-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.industry-cards .discovery-card{flex-basis:calc(100% - 20px);width:calc(100% - 20px);max-width:340px}#shortlistView>.stack>.panel:first-child{padding:16px!important}}
