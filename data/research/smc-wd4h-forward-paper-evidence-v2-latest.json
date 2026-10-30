@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-paper-evidence-v2",
-  "generatedAt": "2026-10-29T01:53:46.188Z",
+  "generatedAt": "2026-10-30T02:04:10.295Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -47,23 +47,23 @@
     "run": {
       "tracker": "smc-forward-paper",
       "cohort": "tsx-core",
-      "observedAt": "2026-10-29T01:53:46.188Z",
+      "observedAt": "2026-10-30T02:04:10.295Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "40803078324",
+        "runId": "40989467663",
         "runAttempt": "1",
-        "sha": "8e056368a63216f2ac4d1d244933dcbc34dfe559",
+        "sha": "188a030d2fbf3a6005102cc30807a76a4e780d3c",
         "workflow": "SMC Forward Paper Track",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-paper|tsx-core|40803078324|1"
+      "runKey": "smc-forward-paper|tsx-core|40989467663|1"
     },
     "reconciliation": {
-      "newRecords": 0,
-      "lifecycleUpdates": 1,
+      "newRecords": 1,
+      "lifecycleUpdates": 0,
       "missingPreviouslyRecorded": 0,
       "legacyUnprovenancedCount": 2,
-      "reconstructedCount": 7,
+      "reconstructedCount": 8,
       "prospectiveCount": 0,
       "pendingCount": 0
     },
@@ -297,7 +297,7 @@
       "sumR": 0.11435750470642059,
       "maxDD": -2
     },
-    "openCount": 0,
+    "openCount": 1,
     "pendingCount": 0,
     "performanceByProvenance": {
       "prospective": {
@@ -443,13 +443,13 @@
     "startingCapital": 1000,
     "currentEquity": 1013.8090775650134,
     "realizedReturnPct": 0.013809077565013261,
-    "cash": 1013.8090775650134,
-    "reservedNotional": 0,
-    "openRiskAmount": 0,
+    "cash": 822.4423009109214,
+    "reservedNotional": 191.36677665409192,
+    "openRiskAmount": 10.138090775650134,
     "maxDrawdownPct": -0.01757602561206817,
-    "enteredCount": 8,
+    "enteredCount": 9,
     "closedCount": 8,
-    "openCount": 0,
+    "openCount": 1,
     "skippedCount": 1,
     "entered": [
       {
@@ -1325,9 +1325,210 @@
         "pnl": 2.7239361258126595,
         "portfolioStatus": "closed",
         "accountEquityAfter": 1013.8090775650134
+      },
+      {
+        "symbol": "BCE.TO",
+        "signalT": "2026-10-29T13:30:00.000Z",
+        "entryT": "2026-10-29T17:30:00.000Z",
+        "dir": -1,
+        "entry": 27.709999084472656,
+        "stop": 29.17799938746861,
+        "target": 24.77399847848075,
+        "risk": 1.4680003029959536,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 64,
+          "bucket": "medium",
+          "asOfDate": "2026-10-28",
+          "direction": "short",
+          "ret20": -0.018518541967300073,
+          "ret60": -0.0762906841981339,
+          "rsi14": 49.24471020549518,
+          "ma20": 28.23499994277954,
+          "ma50": 30.37480010986328,
+          "ma20Slope5": -0.009992992031977566,
+          "volumeRatio20": 0.7125785045250951,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": 0.022695825007653214,
+          "benchmarkRet60": 0.029495174143995273,
+          "rs20": -0.04121436697495329,
+          "rs60": -0.10578585834212917,
+          "components": {
+            "return20": {
+              "score": 59.3,
+              "weight": 20
+            },
+            "return60": {
+              "score": 69.1,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 51.9,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 75,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 75.8,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 85.3,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 29.139999389648438,
+          "atr14": 0.3799999782017299,
+          "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "BCE.TO|2026-10-29T13:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-30T02:04:10.295Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-paper",
+          "cohort": "tsx-core",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "40989467663",
+            "runAttempt": "1",
+            "sha": "188a030d2fbf3a6005102cc30807a76a4e780d3c",
+            "workflow": "SMC Forward Paper Track",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 1013.8090775650134,
+        "notional": 191.36677665409192,
+        "allocationPct": 0.1887601727868924,
+        "quantity": 6.906054961269364,
+        "stopPct": 0.052977277210324775,
+        "riskAmount": 10.138090775650134,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
       }
     ],
-    "open": [],
+    "open": [
+      {
+        "symbol": "BCE.TO",
+        "signalT": "2026-10-29T13:30:00.000Z",
+        "entryT": "2026-10-29T17:30:00.000Z",
+        "dir": -1,
+        "entry": 27.709999084472656,
+        "stop": 29.17799938746861,
+        "target": 24.77399847848075,
+        "risk": 1.4680003029959536,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 64,
+          "bucket": "medium",
+          "asOfDate": "2026-10-28",
+          "direction": "short",
+          "ret20": -0.018518541967300073,
+          "ret60": -0.0762906841981339,
+          "rsi14": 49.24471020549518,
+          "ma20": 28.23499994277954,
+          "ma50": 30.37480010986328,
+          "ma20Slope5": -0.009992992031977566,
+          "volumeRatio20": 0.7125785045250951,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": 0.022695825007653214,
+          "benchmarkRet60": 0.029495174143995273,
+          "rs20": -0.04121436697495329,
+          "rs60": -0.10578585834212917,
+          "components": {
+            "return20": {
+              "score": 59.3,
+              "weight": 20
+            },
+            "return60": {
+              "score": 69.1,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 51.9,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 75,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 75.8,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 85.3,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 29.139999389648438,
+          "atr14": 0.3799999782017299,
+          "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "BCE.TO|2026-10-29T13:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-30T02:04:10.295Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-paper",
+          "cohort": "tsx-core",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "40989467663",
+            "runAttempt": "1",
+            "sha": "188a030d2fbf3a6005102cc30807a76a4e780d3c",
+            "workflow": "SMC Forward Paper Track",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 1013.8090775650134,
+        "notional": 191.36677665409192,
+        "allocationPct": 0.1887601727868924,
+        "quantity": 6.906054961269364,
+        "stopPct": 0.052977277210324775,
+        "riskAmount": 10.138090775650134,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      }
+    ],
     "skipped": [
       {
         "symbol": "MFC.TO",
@@ -1503,6 +1704,10 @@
       {
         "t": "2026-10-28T17:30:00.000Z",
         "equity": 1013.8090775650134
+      },
+      {
+        "t": "2026-10-29T17:30:00.000Z",
+        "equity": 1013.8090775650134
       }
     ]
   },
@@ -1517,9 +1722,9 @@
       "fractionalShares": true
     },
     "startingCapital": 1000,
-    "cash": 1013.8090775650134,
-    "reservedEntryNotional": 0,
-    "openRiskAmount": 0,
+    "cash": 822.4423009109214,
+    "reservedEntryNotional": 191.36677665409192,
+    "openRiskAmount": 10.138090775650134,
     "realizedCurrentEquity": 1013.8090775650134,
     "realizedReturnPct": 0.013809077565013261,
     "realizedMaxDrawdownPct": -0.01757602561206817,
@@ -1591,20 +1796,133 @@
       {
         "t": "2026-10-28T17:30:00.000Z",
         "equity": 1013.8090775650134
+      },
+      {
+        "t": "2026-10-29T17:30:00.000Z",
+        "equity": 1013.8090775650134
       }
     ],
-    "markedCurrentEquity": 1013.8090775650134,
-    "markedReturnPct": 0.013809077565013261,
+    "markedCurrentEquity": 1011.6681910429966,
+    "markedReturnPct": 0.011668191042996545,
     "markedObservation": {
-      "runKey": "smc-forward-paper|tsx-core|40803078324|1",
-      "observedAt": "2026-10-29T01:53:46.188Z",
+      "runKey": "smc-forward-paper|tsx-core|40989467663|1",
+      "observedAt": "2026-10-30T02:04:10.295Z",
       "quality": "fresh",
-      "markedEquity": 1013.8090775650134,
-      "totalUnrealizedPnl": 0,
+      "markedEquity": 1011.6681910429966,
+      "totalUnrealizedPnl": -2.1408865220167344,
       "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
-      "positions": []
+      "positions": [
+        {
+          "symbol": "BCE.TO",
+          "signalT": "2026-10-29T13:30:00.000Z",
+          "entryT": "2026-10-29T17:30:00.000Z",
+          "dir": -1,
+          "entry": 27.709999084472656,
+          "stop": 29.17799938746861,
+          "target": 24.77399847848075,
+          "risk": 1.4680003029959536,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "momentumShadow": {
+            "available": true,
+            "score": 64,
+            "bucket": "medium",
+            "asOfDate": "2026-10-28",
+            "direction": "short",
+            "ret20": -0.018518541967300073,
+            "ret60": -0.0762906841981339,
+            "rsi14": 49.24471020549518,
+            "ma20": 28.23499994277954,
+            "ma50": 30.37480010986328,
+            "ma20Slope5": -0.009992992031977566,
+            "volumeRatio20": 0.7125785045250951,
+            "benchmarkSymbol": "^GSPTSE",
+            "benchmarkRet20": 0.022695825007653214,
+            "benchmarkRet60": 0.029495174143995273,
+            "rs20": -0.04121436697495329,
+            "rs60": -0.10578585834212917,
+            "components": {
+              "return20": {
+                "score": 59.3,
+                "weight": 20
+              },
+              "return60": {
+                "score": 69.1,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 51.9,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 75,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 0,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 75.8,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 85.3,
+                "weight": 7
+              }
+            }
+          },
+          "signalSnapshot": {
+            "opposingSwing": 29.139999389648438,
+            "atr14": 0.3799999782017299,
+            "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+            "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+          },
+          "decisionId": "BCE.TO|2026-10-29T13:30:00.000Z|-1",
+          "firstObservedAt": "2026-10-30T02:04:10.295Z",
+          "firstObservedProvenance": {
+            "tracker": "smc-forward-paper",
+            "cohort": "tsx-core",
+            "marketDataSource": "Yahoo Finance chart API",
+            "github": {
+              "runId": "40989467663",
+              "runAttempt": "1",
+              "sha": "188a030d2fbf3a6005102cc30807a76a4e780d3c",
+              "workflow": "SMC Forward Paper Track",
+              "ref": "refs/heads/main"
+            }
+          },
+          "entryObservationClass": "reconstructed",
+          "accountEquityBefore": 1013.8090775650134,
+          "notional": 191.36677665409192,
+          "allocationPct": 0.1887601727868924,
+          "quantity": 6.906054961269364,
+          "stopPct": 0.052977277210324775,
+          "riskAmount": 10.138090775650134,
+          "riskPctEquity": 0.01,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 28.020000457763672,
+          "markT": "2026-10-29T20:30:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -2.1408865220167344,
+          "markedPositionValue": 189.2258901320752
+        }
+      ]
     },
     "markedEquitySeries": [
       {
@@ -1798,6 +2116,15 @@
         "totalUnrealizedPnl": 0,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-paper|tsx-core|40989467663|1",
+        "observedAt": "2026-10-30T02:04:10.295Z",
+        "quality": "fresh",
+        "markedEquity": 1011.6681910429966,
+        "totalUnrealizedPnl": -2.1408865220167344,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T14:55:43.524Z",
@@ -1813,9 +2140,9 @@
       "markedEquity": "cash + marked open position values",
       "missingOrInvalidMarkMakesTotalMarkedEquityNull": true
     },
-    "enteredCount": 8,
+    "enteredCount": 9,
     "closedCount": 8,
-    "openCount": 0,
+    "openCount": 1,
     "skippedCount": 1,
     "entered": [
       {
@@ -2707,9 +3034,220 @@
         "effectiveExitMs": 1793208600000,
         "legacyExitTimingAdjusted": false,
         "accountEquityAfter": 1013.8090775650134
+      },
+      {
+        "symbol": "BCE.TO",
+        "signalT": "2026-10-29T13:30:00.000Z",
+        "entryT": "2026-10-29T17:30:00.000Z",
+        "dir": -1,
+        "entry": 27.709999084472656,
+        "stop": 29.17799938746861,
+        "target": 24.77399847848075,
+        "risk": 1.4680003029959536,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 64,
+          "bucket": "medium",
+          "asOfDate": "2026-10-28",
+          "direction": "short",
+          "ret20": -0.018518541967300073,
+          "ret60": -0.0762906841981339,
+          "rsi14": 49.24471020549518,
+          "ma20": 28.23499994277954,
+          "ma50": 30.37480010986328,
+          "ma20Slope5": -0.009992992031977566,
+          "volumeRatio20": 0.7125785045250951,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": 0.022695825007653214,
+          "benchmarkRet60": 0.029495174143995273,
+          "rs20": -0.04121436697495329,
+          "rs60": -0.10578585834212917,
+          "components": {
+            "return20": {
+              "score": 59.3,
+              "weight": 20
+            },
+            "return60": {
+              "score": 69.1,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 51.9,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 75,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 75.8,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 85.3,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 29.139999389648438,
+          "atr14": 0.3799999782017299,
+          "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "BCE.TO|2026-10-29T13:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-30T02:04:10.295Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-paper",
+          "cohort": "tsx-core",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "40989467663",
+            "runAttempt": "1",
+            "sha": "188a030d2fbf3a6005102cc30807a76a4e780d3c",
+            "workflow": "SMC Forward Paper Track",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 1013.8090775650134,
+        "notional": 191.36677665409192,
+        "allocationPct": 0.1887601727868924,
+        "quantity": 6.906054961269364,
+        "stopPct": 0.052977277210324775,
+        "riskAmount": 10.138090775650134,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
       }
     ],
-    "open": [],
+    "open": [
+      {
+        "symbol": "BCE.TO",
+        "signalT": "2026-10-29T13:30:00.000Z",
+        "entryT": "2026-10-29T17:30:00.000Z",
+        "dir": -1,
+        "entry": 27.709999084472656,
+        "stop": 29.17799938746861,
+        "target": 24.77399847848075,
+        "risk": 1.4680003029959536,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 64,
+          "bucket": "medium",
+          "asOfDate": "2026-10-28",
+          "direction": "short",
+          "ret20": -0.018518541967300073,
+          "ret60": -0.0762906841981339,
+          "rsi14": 49.24471020549518,
+          "ma20": 28.23499994277954,
+          "ma50": 30.37480010986328,
+          "ma20Slope5": -0.009992992031977566,
+          "volumeRatio20": 0.7125785045250951,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": 0.022695825007653214,
+          "benchmarkRet60": 0.029495174143995273,
+          "rs20": -0.04121436697495329,
+          "rs60": -0.10578585834212917,
+          "components": {
+            "return20": {
+              "score": 59.3,
+              "weight": 20
+            },
+            "return60": {
+              "score": 69.1,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 51.9,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 75,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 0,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 75.8,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 85.3,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 29.139999389648438,
+          "atr14": 0.3799999782017299,
+          "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "BCE.TO|2026-10-29T13:30:00.000Z|-1",
+        "firstObservedAt": "2026-10-30T02:04:10.295Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-paper",
+          "cohort": "tsx-core",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "40989467663",
+            "runAttempt": "1",
+            "sha": "188a030d2fbf3a6005102cc30807a76a4e780d3c",
+            "workflow": "SMC Forward Paper Track",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 1013.8090775650134,
+        "notional": 191.36677665409192,
+        "allocationPct": 0.1887601727868924,
+        "quantity": 6.906054961269364,
+        "stopPct": 0.052977277210324775,
+        "riskAmount": 10.138090775650134,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 28.020000457763672,
+        "markT": "2026-10-29T20:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -2.1408865220167344,
+        "markedPositionValue": 189.2258901320752
+      }
+    ],
     "skipped": [
       {
         "symbol": "MFC.TO",
@@ -3716,6 +4254,97 @@
         "exitBarStartT": "2026-10-28T13:30:00.000Z",
         "exitBarEndT": "2026-10-28T17:30:00.000Z"
       }
+    },
+    {
+      "symbol": "BCE.TO",
+      "signalT": "2026-10-29T13:30:00.000Z",
+      "entryT": "2026-10-29T17:30:00.000Z",
+      "dir": -1,
+      "entry": 27.709999084472656,
+      "stop": 29.17799938746861,
+      "target": 24.77399847848075,
+      "risk": 1.4680003029959536,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 64,
+        "bucket": "medium",
+        "asOfDate": "2026-10-28",
+        "direction": "short",
+        "ret20": -0.018518541967300073,
+        "ret60": -0.0762906841981339,
+        "rsi14": 49.24471020549518,
+        "ma20": 28.23499994277954,
+        "ma50": 30.37480010986328,
+        "ma20Slope5": -0.009992992031977566,
+        "volumeRatio20": 0.7125785045250951,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": 0.022695825007653214,
+        "benchmarkRet60": 0.029495174143995273,
+        "rs20": -0.04121436697495329,
+        "rs60": -0.10578585834212917,
+        "components": {
+          "return20": {
+            "score": 59.3,
+            "weight": 20
+          },
+          "return60": {
+            "score": 69.1,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 51.9,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 75,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 75.8,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 85.3,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 29.139999389648438,
+        "atr14": 0.3799999782017299,
+        "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "BCE.TO|2026-10-29T13:30:00.000Z|-1",
+      "firstObservedAt": "2026-10-30T02:04:10.295Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-paper",
+        "cohort": "tsx-core",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "40989467663",
+          "runAttempt": "1",
+          "sha": "188a030d2fbf3a6005102cc30807a76a4e780d3c",
+          "workflow": "SMC Forward Paper Track",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed"
     }
   ]
 }
