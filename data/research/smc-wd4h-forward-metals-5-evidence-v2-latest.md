@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — metals-5 — Corrected Evidence v2
 
-Mode: stock; generated 2026-10-29T02:24:14.449Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-10-30T02:34:45.299Z; start 2026-10-01; universe 5.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1000.00; return 0.0%; realized-event max DD 0.0%.
-Marked equity $1001.03; return 0.1%; observed marked max DD -0.6%; quality fresh.
+Marked equity $1010.83; return 1.1%; observed marked max DD -0.6%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:48.473Z; first complete marked-equity observation 2026-10-04T14:55:48.473Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,8 +23,8 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---|---|---:|
-| GLD | Short | 370.550 | 373.500 | 2026-10-28T20:30:00.000Z | fresh | $-1.99 |
-| PPLT | Short | 14.245 | 14.000 | 2026-10-28T20:30:00.000Z | fresh | $3.02 |
+| GLD | Short | 370.550 | 368.570 | 2026-10-29T20:30:00.000Z | fresh | $1.34 |
+| PPLT | Short | 14.245 | 13.475 | 2026-10-29T20:30:00.000Z | fresh | $9.50 |
 
 ## Evidence integrity
 
