@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-10-30T06:30:31.826Z",
+  "updatedAt": "2026-10-30T13:38:07.842Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -578,7 +578,7 @@
       "symbol": "AVAX-USD",
       "signalT": "2026-10-28T00:00:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-29T00:00:00.000Z",
         "dailyAsOf": "2026-10-28",
@@ -598,8 +598,8 @@
       "stop": 8.437174558639526,
       "target": 9.72774829864502,
       "risk": 0.18082547187805176,
-      "R": null,
-      "exitT": null,
+      "R": -1,
+      "exitT": "2026-10-30T00:00:00.000Z",
       "decisionId": "AVAX-USD|2026-10-28T00:00:00.000Z|1",
       "entryWaitHours": 36,
       "historicalDiagnostic": false,
@@ -612,9 +612,20 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 8.437174558639526,
-      "holdingBars": 2,
-      "lastEvaluatedEndT": "2026-10-29T16:00:00.000Z",
-      "entryObservedAt": "2026-10-29T14:40:56.836Z"
+      "holdingBars": 4,
+      "lastEvaluatedEndT": "2026-10-30T00:00:00.000Z",
+      "entryObservedAt": "2026-10-29T14:40:56.836Z",
+      "exitPriceAssumed": 8.437174558639526,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "stopTargetCollision": false,
+        "collisionPolicy": "stop_first",
+        "exitBarStartT": "2026-10-29T20:00:00.000Z",
+        "exitBarEndT": "2026-10-30T00:00:00.000Z"
+      }
     }
   ],
   "runLog": [
@@ -5427,6 +5438,12 @@
         }
       ],
       "diagnosticCount": 0
+    },
+    {
+      "runKey": "mean-reversion-v1|41064765614|1",
+      "observedAt": "2026-10-30T13:38:07.842Z",
+      "failures": [],
+      "diagnosticCount": 30
     }
   ],
   "markedEquitySeries": [
@@ -7117,6 +7134,15 @@
       "missingSymbols": [
         "AVAX-USD"
       ],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|41064765614|1",
+      "observedAt": "2026-10-30T13:38:07.842Z",
+      "quality": "fresh",
+      "markedEquity": 950.9468436534062,
+      "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
       "staleSymbols": []
     }
   ]
