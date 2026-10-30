@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75 — Corrected Evidence v2
 
-Generated: 2026-10-29T01:57:39.548Z; forward start: 2026-10-01; universe: 75.
+Generated: 2026-10-30T02:10:10.758Z; forward start: 2026-10-01; universe: 75.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $971.51; return -2.8%; realized-event max DD -2.8%.
-Marked equity $970.62; return -2.9%; observed marked max DD -2.8%; quality fresh.
+Marked equity $969.27; return -3.1%; observed marked max DD -3.0%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:54.783Z; first complete marked-equity observation 2026-10-04T14:55:54.783Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,12 +23,14 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| GE | Short | 299.000 | 301.350 | fresh | $-1.02 |
-| PM | Long | 202.525 | 202.780 | fresh | $0.13 |
+| GE | Short | 299.000 | 313.190 | fresh | $-6.16 |
+| PM | Long | 202.525 | 208.550 | fresh | $3.12 |
+| BLK | Long | 1169.710 | 1176.310 | fresh | $0.97 |
+| MA | Long | 636.250 | 635.705 | fresh | $-0.18 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 1; prospective 5; reconstructed 19; pending 0.
+Legacy provenance unknown 1; prospective 5; reconstructed 22; pending 0.
 This run discrepancies 10; prior not re-observed 0; candle/data diagnostics 0.
 
 ### Performance by evidence provenance
