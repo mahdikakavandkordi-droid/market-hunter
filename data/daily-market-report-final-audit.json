@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T22:29:48.008Z",
+  "generatedAt": "2026-10-30T23:58:43.635Z",
   "status": "PASS",
   "decision": "Daily Market Report v0.2 is defensible for research use: deterministic summary from frozen Market Pulse evidence, explicit mixed timestamps, 7-market coverage, cross-market divergences, scenario watch levels, horizon evidence metadata, Hunter context, JSON + Markdown outputs, and Home rendering.",
   "checks": [
@@ -82,6 +82,20 @@
           }
         },
         {
+          "market": "TSX",
+          "name": "TSX Composite",
+          "regime": "Mixed",
+          "condition": "Weakening",
+          "text": "TSX Composite: bullish continuation above 35730.8 · trend warning near 35838.9 · structure risk below 35491.6.",
+          "levels": {
+            "support": 35491.6,
+            "resistance": 35730.8,
+            "bullishTrigger": 35730.8,
+            "warningLevel": 35838.9,
+            "bearishTrigger": 35491.6
+          }
+        },
+        {
           "market": "GOLD",
           "name": "Gold",
           "regime": "Strong Bear",
@@ -94,20 +108,6 @@
             "warningLevel": 4128.21,
             "bearishTrigger": 3993.8
           }
-        },
-        {
-          "market": "NASDAQ100",
-          "name": "Nasdaq-100",
-          "regime": "Mixed",
-          "condition": "Recovery Attempt",
-          "text": "Nasdaq-100: bullish continuation above 29655.73 · trend warning near 30054.25 · structure risk below 29189.21.",
-          "levels": {
-            "support": 29189.21,
-            "resistance": 29655.73,
-            "bullishTrigger": 29655.73,
-            "warningLevel": 30054.25,
-            "bearishTrigger": 29189.21
-          }
         }
       ]
     },
@@ -117,12 +117,12 @@
       "detail": {
         "asOf": {
           "earliest": "2026-10-29",
-          "latest": "2026-10-29",
-          "mixedDates": false,
+          "latest": "2026-10-30",
+          "mixedDates": true,
           "byMarket": {
-            "TSX": "2026-10-29",
-            "SP500": "2026-10-29",
-            "NASDAQ100": "2026-10-29",
+            "TSX": "2026-10-30",
+            "SP500": "2026-10-30",
+            "NASDAQ100": "2026-10-30",
             "GOLD": "2026-10-29",
             "SILVER": "2026-10-29",
             "BTC": "2026-10-29",
@@ -131,7 +131,7 @@
         },
         "summary": [
           "Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.",
-          "All tracked markets are aligned to 2026-10-29.",
+          "Completed-session dates differ by instrument: TSX 2026-10-30 · SP500 2026-10-30 · NASDAQ100 2026-10-30 · GOLD 2026-10-29 · SILVER 2026-10-29 · BTC 2026-10-29 · ETH 2026-10-29.",
           "The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets."
         ]
       }
@@ -143,52 +143,52 @@
         "ETH",
         "BTC",
         "SILVER",
-        "GOLD"
+        "TSX"
       ]
     },
     {
       "name": "hunter_context_max6",
       "pass": true,
       "detail": {
-        "generatedAt": "2026-10-30T00:09:44.928Z",
+        "generatedAt": "2026-10-30T23:58:43.378Z",
         "visible": 6,
-        "hiddenByIntegratedCap": 6,
+        "hiddenByIntegratedCap": 8,
         "picks": [
           {
             "rank": 1,
-            "stage": "Attractive Growth",
-            "symbol": "TRI.TO",
-            "score": 77.7
+            "stage": "Early Watch",
+            "symbol": "AMZN.TO",
+            "score": 62.4
           },
           {
             "rank": 2,
-            "stage": "Established Move",
-            "symbol": "BTE.TO",
-            "score": 74.2
+            "stage": "Attractive Growth",
+            "symbol": "OTEX.TO",
+            "score": 71.9
           },
           {
             "rank": 3,
-            "stage": "Attractive Growth",
-            "symbol": "GIB-A.TO",
-            "score": 76
+            "stage": "Established Move",
+            "symbol": "BTE.TO",
+            "score": 76.3
           },
           {
             "rank": 4,
-            "stage": "Established Move",
-            "symbol": "IPCO.TO",
-            "score": 73
+            "stage": "Early Watch",
+            "symbol": "CG.TO",
+            "score": 58.7
           },
           {
             "rank": 5,
             "stage": "Attractive Growth",
-            "symbol": "ATZ.TO",
-            "score": 70.5
+            "symbol": "AIF.TO",
+            "score": 70.1
           },
           {
             "rank": 6,
             "stage": "Established Move",
-            "symbol": "SDE.TO",
-            "score": 69.5
+            "symbol": "VET.TO",
+            "score": 72.8
           }
         ]
       }
@@ -221,25 +221,25 @@
       "name": "daily_report_matches_latest_hunter",
       "pass": true,
       "detail": {
-        "dailyHunterGeneratedAt": "2026-10-30T00:09:44.928Z",
-        "hunterGeneratedAt": "2026-10-30T00:09:44.928Z"
+        "dailyHunterGeneratedAt": "2026-10-30T23:58:43.378Z",
+        "hunterGeneratedAt": "2026-10-30T23:58:43.378Z"
       }
     },
     {
       "name": "pulse_report_not_older_than_source",
       "pass": true,
       "detail": {
-        "pulseGeneratedAt": "2026-10-30T22:29:47.913Z",
-        "sourceGeneratedAt": "2026-10-30T22:29:47.846Z"
+        "pulseGeneratedAt": "2026-10-30T23:58:43.553Z",
+        "sourceGeneratedAt": "2026-10-30T23:58:00.929Z"
       }
     },
     {
       "name": "daily_report_not_older_than_inputs",
       "pass": true,
       "detail": {
-        "dailyGeneratedAt": "2026-10-30T22:29:47.963Z",
-        "pulseGeneratedAt": "2026-10-30T22:29:47.913Z",
-        "hunterGeneratedAt": "2026-10-30T00:09:44.928Z"
+        "dailyGeneratedAt": "2026-10-30T23:58:43.596Z",
+        "pulseGeneratedAt": "2026-10-30T23:58:43.553Z",
+        "hunterGeneratedAt": "2026-10-30T23:58:43.378Z"
       }
     },
     {
@@ -247,29 +247,249 @@
       "pass": true,
       "detail": {
         "regime": "Mixed",
-        "condition": "Breakout / Near High"
+        "condition": "Weakening"
       }
     },
     {
       "name": "TSX_framing_present",
       "pass": true,
-      "detail": "Historical analogs supportive"
+      "detail": "Short-term damage, confirmation required"
     },
     {
       "name": "TSX_outlook_present",
       "pass": true,
-      "detail": "Current analogs have historically outperformed this market's baseline across the tested horizons."
+      "detail": "Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call."
     },
     {
       "name": "TSX_watch_next_present",
       "pass": true,
-      "detail": "bullish continuation above 36410.6 · trend warning near 35815.64 · structure risk below 35805."
+      "detail": "bullish continuation above 35730.8 · trend warning near 35838.9 · structure risk below 35491.6."
     },
     {
       "name": "TSX_evidence_5_10_20",
       "pass": true,
       "detail": {
+        "sessions5": "Cautious",
+        "sessions10": "Mixed",
+        "sessions20": "Mixed",
+        "confidence": [
+          "High",
+          "High",
+          "High"
+        ],
+        "analogLevels": [
+          "Exact State",
+          "Exact State",
+          "Exact State"
+        ],
+        "horizons": {
+          "5": {
+            "tone": "Cautious",
+            "label": "Historically Weaker",
+            "confidence": "High",
+            "analogLevel": "Exact State",
+            "sample": {
+              "overall": 313,
+              "recent": 94
+            }
+          },
+          "10": {
+            "tone": "Mixed",
+            "label": "Mixed / Near Baseline",
+            "confidence": "High",
+            "analogLevel": "Exact State",
+            "sample": {
+              "overall": 313,
+              "recent": 94
+            }
+          },
+          "20": {
+            "tone": "Mixed",
+            "label": "Mixed / Near Baseline",
+            "confidence": "High",
+            "analogLevel": "Exact State",
+            "sample": {
+              "overall": 313,
+              "recent": 94
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TSX_evidence_metadata",
+      "pass": true,
+      "detail": {
+        "5": {
+          "tone": "Cautious",
+          "label": "Historically Weaker",
+          "confidence": "High",
+          "analogLevel": "Exact State",
+          "sample": {
+            "overall": 313,
+            "recent": 94
+          }
+        },
+        "10": {
+          "tone": "Mixed",
+          "label": "Mixed / Near Baseline",
+          "confidence": "High",
+          "analogLevel": "Exact State",
+          "sample": {
+            "overall": 313,
+            "recent": 94
+          }
+        },
+        "20": {
+          "tone": "Mixed",
+          "label": "Mixed / Near Baseline",
+          "confidence": "High",
+          "analogLevel": "Exact State",
+          "sample": {
+            "overall": 313,
+            "recent": 94
+          }
+        }
+      }
+    },
+    {
+      "name": "SP500_daily_market_present",
+      "pass": true,
+      "detail": {
+        "regime": "Mixed",
+        "condition": "Weakening"
+      }
+    },
+    {
+      "name": "SP500_framing_present",
+      "pass": true,
+      "detail": "Short-term damage, confirmation required"
+    },
+    {
+      "name": "SP500_outlook_present",
+      "pass": true,
+      "detail": "Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call."
+    },
+    {
+      "name": "SP500_watch_next_present",
+      "pass": true,
+      "detail": "bullish continuation above 7620.9 · trend warning near 7729.9 · structure risk below 7507.77."
+    },
+    {
+      "name": "SP500_evidence_5_10_20",
+      "pass": true,
+      "detail": {
         "sessions5": "Supportive",
+        "sessions10": "Mixed",
+        "sessions20": "Mixed",
+        "confidence": [
+          "High",
+          "High",
+          "High"
+        ],
+        "analogLevels": [
+          "Exact State",
+          "Exact State",
+          "Exact State"
+        ],
+        "horizons": {
+          "5": {
+            "tone": "Supportive",
+            "label": "Historically Favorable",
+            "confidence": "High",
+            "analogLevel": "Exact State",
+            "sample": {
+              "overall": 284,
+              "recent": 86
+            }
+          },
+          "10": {
+            "tone": "Mixed",
+            "label": "Mixed / Near Baseline",
+            "confidence": "High",
+            "analogLevel": "Exact State",
+            "sample": {
+              "overall": 284,
+              "recent": 86
+            }
+          },
+          "20": {
+            "tone": "Mixed",
+            "label": "Mixed / Near Baseline",
+            "confidence": "High",
+            "analogLevel": "Exact State",
+            "sample": {
+              "overall": 284,
+              "recent": 86
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "SP500_evidence_metadata",
+      "pass": true,
+      "detail": {
+        "5": {
+          "tone": "Supportive",
+          "label": "Historically Favorable",
+          "confidence": "High",
+          "analogLevel": "Exact State",
+          "sample": {
+            "overall": 284,
+            "recent": 86
+          }
+        },
+        "10": {
+          "tone": "Mixed",
+          "label": "Mixed / Near Baseline",
+          "confidence": "High",
+          "analogLevel": "Exact State",
+          "sample": {
+            "overall": 284,
+            "recent": 86
+          }
+        },
+        "20": {
+          "tone": "Mixed",
+          "label": "Mixed / Near Baseline",
+          "confidence": "High",
+          "analogLevel": "Exact State",
+          "sample": {
+            "overall": 284,
+            "recent": 86
+          }
+        }
+      }
+    },
+    {
+      "name": "NASDAQ100_daily_market_present",
+      "pass": true,
+      "detail": {
+        "regime": "Mixed",
+        "condition": "Weakening"
+      }
+    },
+    {
+      "name": "NASDAQ100_framing_present",
+      "pass": true,
+      "detail": "Historical analogs supportive"
+    },
+    {
+      "name": "NASDAQ100_outlook_present",
+      "pass": true,
+      "detail": "Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call."
+    },
+    {
+      "name": "NASDAQ100_watch_next_present",
+      "pass": true,
+      "detail": "bullish continuation above 29192.29 · trend warning near 29933.09 · structure risk below 28231.32."
+    },
+    {
+      "name": "NASDAQ100_evidence_5_10_20",
+      "pass": true,
+      "detail": {
+        "sessions5": "Mixed",
         "sessions10": "Supportive",
         "sessions20": "Supportive",
         "confidence": [
@@ -284,13 +504,13 @@
         ],
         "horizons": {
           "5": {
-            "tone": "Supportive",
-            "label": "Historically Favorable",
+            "tone": "Mixed",
+            "label": "Mixed / Near Baseline",
             "confidence": "High",
             "analogLevel": "Exact State",
             "sample": {
-              "overall": 207,
-              "recent": 63
+              "overall": 305,
+              "recent": 92
             }
           },
           "10": {
@@ -299,8 +519,8 @@
             "confidence": "High",
             "analogLevel": "Exact State",
             "sample": {
-              "overall": 207,
-              "recent": 63
+              "overall": 305,
+              "recent": 92
             }
           },
           "20": {
@@ -309,228 +529,8 @@
             "confidence": "High",
             "analogLevel": "Exact State",
             "sample": {
-              "overall": 207,
-              "recent": 63
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "TSX_evidence_metadata",
-      "pass": true,
-      "detail": {
-        "5": {
-          "tone": "Supportive",
-          "label": "Historically Favorable",
-          "confidence": "High",
-          "analogLevel": "Exact State",
-          "sample": {
-            "overall": 207,
-            "recent": 63
-          }
-        },
-        "10": {
-          "tone": "Supportive",
-          "label": "Historically Favorable",
-          "confidence": "High",
-          "analogLevel": "Exact State",
-          "sample": {
-            "overall": 207,
-            "recent": 63
-          }
-        },
-        "20": {
-          "tone": "Supportive",
-          "label": "Historically Favorable",
-          "confidence": "High",
-          "analogLevel": "Exact State",
-          "sample": {
-            "overall": 207,
-            "recent": 63
-          }
-        }
-      }
-    },
-    {
-      "name": "SP500_daily_market_present",
-      "pass": true,
-      "detail": {
-        "regime": "Bull",
-        "condition": "Positive Momentum"
-      }
-    },
-    {
-      "name": "SP500_framing_present",
-      "pass": true,
-      "detail": "Two-sided / evidence mixed"
-    },
-    {
-      "name": "SP500_outlook_present",
-      "pass": true,
-      "detail": "Trend is strong, but advance/near-high analogs have recently produced less follow-through than the market baseline. Consolidation or slower continuation is a meaningful base case."
-    },
-    {
-      "name": "SP500_watch_next_present",
-      "pass": true,
-      "detail": "bullish continuation above 7756.76 · trend warning near 7737.04 · structure risk below 7662.57."
-    },
-    {
-      "name": "SP500_evidence_5_10_20",
-      "pass": true,
-      "detail": {
-        "sessions5": "Cautious",
-        "sessions10": "Mixed",
-        "sessions20": "Mixed",
-        "confidence": [
-          "High",
-          "High",
-          "High"
-        ],
-        "analogLevels": [
-          "State Family",
-          "State Family",
-          "State Family"
-        ],
-        "horizons": {
-          "5": {
-            "tone": "Cautious",
-            "label": "Historically Weaker",
-            "confidence": "High",
-            "analogLevel": "State Family",
-            "sample": {
-              "overall": 915,
-              "recent": 276
-            }
-          },
-          "10": {
-            "tone": "Mixed",
-            "label": "Mixed / Near Baseline",
-            "confidence": "High",
-            "analogLevel": "State Family",
-            "sample": {
-              "overall": 915,
-              "recent": 276
-            }
-          },
-          "20": {
-            "tone": "Mixed",
-            "label": "Mixed / Near Baseline",
-            "confidence": "High",
-            "analogLevel": "State Family",
-            "sample": {
-              "overall": 915,
-              "recent": 276
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "SP500_evidence_metadata",
-      "pass": true,
-      "detail": {
-        "5": {
-          "tone": "Cautious",
-          "label": "Historically Weaker",
-          "confidence": "High",
-          "analogLevel": "State Family",
-          "sample": {
-            "overall": 915,
-            "recent": 276
-          }
-        },
-        "10": {
-          "tone": "Mixed",
-          "label": "Mixed / Near Baseline",
-          "confidence": "High",
-          "analogLevel": "State Family",
-          "sample": {
-            "overall": 915,
-            "recent": 276
-          }
-        },
-        "20": {
-          "tone": "Mixed",
-          "label": "Mixed / Near Baseline",
-          "confidence": "High",
-          "analogLevel": "State Family",
-          "sample": {
-            "overall": 915,
-            "recent": 276
-          }
-        }
-      }
-    },
-    {
-      "name": "NASDAQ100_daily_market_present",
-      "pass": true,
-      "detail": {
-        "regime": "Mixed",
-        "condition": "Recovery Attempt"
-      }
-    },
-    {
-      "name": "NASDAQ100_framing_present",
-      "pass": true,
-      "detail": "Two-sided / evidence mixed"
-    },
-    {
-      "name": "NASDAQ100_outlook_present",
-      "pass": true,
-      "detail": "The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure."
-    },
-    {
-      "name": "NASDAQ100_watch_next_present",
-      "pass": true,
-      "detail": "bullish continuation above 29655.73 · trend warning near 30054.25 · structure risk below 29189.21."
-    },
-    {
-      "name": "NASDAQ100_evidence_5_10_20",
-      "pass": true,
-      "detail": {
-        "sessions5": "Improving, longer-term caution",
-        "sessions10": "Improving, longer-term caution",
-        "sessions20": "Mixed",
-        "confidence": [
-          "Moderate",
-          "Moderate",
-          "Moderate"
-        ],
-        "analogLevels": [
-          "Exact State",
-          "Exact State",
-          "Exact State"
-        ],
-        "horizons": {
-          "5": {
-            "tone": "Improving, longer-term caution",
-            "label": "Long-term Weaker · Recent Better",
-            "confidence": "Moderate",
-            "analogLevel": "Exact State",
-            "sample": {
-              "overall": 150,
-              "recent": 45
-            }
-          },
-          "10": {
-            "tone": "Improving, longer-term caution",
-            "label": "Long-term Weaker · Recent Better",
-            "confidence": "Moderate",
-            "analogLevel": "Exact State",
-            "sample": {
-              "overall": 150,
-              "recent": 45
-            }
-          },
-          "20": {
-            "tone": "Mixed",
-            "label": "Mixed / Near Baseline",
-            "confidence": "Moderate",
-            "analogLevel": "Exact State",
-            "sample": {
-              "overall": 150,
-              "recent": 45
+              "overall": 305,
+              "recent": 92
             }
           }
         }
@@ -541,33 +541,33 @@
       "pass": true,
       "detail": {
         "5": {
-          "tone": "Improving, longer-term caution",
-          "label": "Long-term Weaker · Recent Better",
-          "confidence": "Moderate",
+          "tone": "Mixed",
+          "label": "Mixed / Near Baseline",
+          "confidence": "High",
           "analogLevel": "Exact State",
           "sample": {
-            "overall": 150,
-            "recent": 45
+            "overall": 305,
+            "recent": 92
           }
         },
         "10": {
-          "tone": "Improving, longer-term caution",
-          "label": "Long-term Weaker · Recent Better",
-          "confidence": "Moderate",
+          "tone": "Supportive",
+          "label": "Historically Favorable",
+          "confidence": "High",
           "analogLevel": "Exact State",
           "sample": {
-            "overall": 150,
-            "recent": 45
+            "overall": 305,
+            "recent": 92
           }
         },
         "20": {
-          "tone": "Mixed",
-          "label": "Mixed / Near Baseline",
-          "confidence": "Moderate",
+          "tone": "Supportive",
+          "label": "Historically Favorable",
+          "confidence": "High",
           "analogLevel": "Exact State",
           "sample": {
-            "overall": 150,
-            "recent": 45
+            "overall": 305,
+            "recent": 92
           }
         }
       }
@@ -1015,7 +1015,7 @@
     {
       "name": "markdown_title",
       "pass": true,
-      "detail": "# Market Hunter — Daily Market Report\n\n**As of:** 2026-10-29\n\n## Executive read\n"
+      "detail": "# Market Hunter — Daily Market Report\n\n**As of:** 2026-10-29 to 2026-10-30 (TSX "
     },
     {
       "name": "markdown_all_markets",
