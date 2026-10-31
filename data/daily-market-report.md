@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-10-29 to 2026-10-30 (TSX 2026-10-30 · SP500 2026-10-30 · NASDAQ100 2026-10-30 · GOLD 2026-10-29 · SILVER 2026-10-29 · BTC 2026-10-29 · ETH 2026-10-29)
+**As of:** 2026-10-29 to 2026-10-30 (TSX 2026-10-30 · SP500 2026-10-30 · NASDAQ100 2026-10-30 · GOLD 2026-10-30 · SILVER 2026-10-30 · BTC 2026-10-29 · ETH 2026-10-29)
 
 ## Executive read
 
 - Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
-- Completed-session dates differ by instrument: TSX 2026-10-30 · SP500 2026-10-30 · NASDAQ100 2026-10-30 · GOLD 2026-10-29 · SILVER 2026-10-29 · BTC 2026-10-29 · ETH 2026-10-29.
+- Completed-session dates differ by instrument: TSX 2026-10-30 · SP500 2026-10-30 · NASDAQ100 2026-10-30 · GOLD 2026-10-30 · SILVER 2026-10-30 · BTC 2026-10-29 · ETH 2026-10-29.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -30,9 +30,9 @@
 
 - **Ethereum:** bullish continuation above 2522.84 · trend warning near 2405.86 · structure risk below 1856.34.
 - **Bitcoin:** bullish continuation above 79463.71 · trend warning near 81595.79 · structure risk below 76909.35.
-- **Silver:** bullish continuation above 54.29 · trend warning near 57.25 · structure risk below 55.5.
+- **Silver:** bullish continuation above 54.29 · trend warning near 56.7 · structure risk below 55.5.
 - **TSX Composite:** bullish continuation above 35730.8 · trend warning near 35838.9 · structure risk below 35491.6.
-- **Gold:** bullish continuation above 4170.7 · trend warning near 4128.21 · structure risk below 3993.8.
+- **Gold:** bullish continuation above 4097.2 · trend warning near 4115.04 · structure risk below 3989.1.
 
 ## Market detail
 
@@ -62,19 +62,19 @@
 
 ### Gold
 - **State:** Strong Bear / Weakening
-- **Returns:** 1D -0.5% · 5D -0.7% · 20D -4.1% · 60D -6.4%
+- **Returns:** 1D -3.3% · 5D -2.7% · 20D -6.3% · 60D -9.3%
 - **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Supportive
 - **Framing:** Historical analogs supportive
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 4170.7 · trend warning near 4128.21 · structure risk below 3993.8.
+- **Watch next:** bullish continuation above 4097.2 · trend warning near 4115.04 · structure risk below 3989.1.
 
 ### Silver
 - **State:** Strong Bear / Weakening
-- **Returns:** 1D -2.4% · 5D -4.7% · 20D -14.1% · 60D -16%
+- **Returns:** 1D -5.9% · 5D -8.6% · 20D -18.1% · 60D -20.1%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Supportive
 - **Framing:** Historical analogs supportive
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 54.29 · trend warning near 57.25 · structure risk below 55.5.
+- **Watch next:** bullish continuation above 54.29 · trend warning near 56.7 · structure risk below 55.5.
 
 ### Bitcoin
 - **State:** Mixed / Weakening
