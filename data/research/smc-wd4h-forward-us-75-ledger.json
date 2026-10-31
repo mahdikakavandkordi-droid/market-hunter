@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-10-30T02:10:10.758Z",
+  "updatedAt": "2026-10-31T01:51:55.277Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -1039,6 +1039,32 @@
       "prospectiveCount": 5,
       "pendingCount": 0,
       "discrepancyCount": 10
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|41157301054|1",
+      "observedAt": "2026-10-31T01:51:55.277Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "41157301054",
+        "runAttempt": "1",
+        "sha": "7eb9f797eb096fd24721364fc773820a0541b129",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 4,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 22,
+      "prospectiveCount": 5,
+      "pendingCount": 0,
+      "discrepancyCount": 10
     }
   ],
   "discrepancyLog": [
@@ -1476,6 +1502,15 @@
       "quality": "fresh",
       "markedEquity": 969.2653836523939,
       "totalUnrealizedPnl": -2.2468882847581844,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|41157301054|1",
+      "observedAt": "2026-10-31T01:51:55.277Z",
+      "quality": "fresh",
+      "markedEquity": 969.9377074660426,
+      "totalUnrealizedPnl": 0.6756416409974173,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -3038,9 +3073,9 @@
       "stop": 321.67254507882257,
       "target": 253.65490984235487,
       "risk": 22.672545078822566,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -0.17862960593478616,
+      "exitT": "2026-10-30T17:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 72.4,
@@ -3119,7 +3154,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 303.04998779296875,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-10-30T13:30:00.000Z",
+        "exitBarEndT": "2026-10-30T17:30:00.000Z"
+      }
     },
     {
       "symbol": "NFLX",
@@ -3130,9 +3177,9 @@
       "stop": 73.18574409484863,
       "target": 61.273500823974615,
       "risk": 3.970747756958005,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 1.814744957694137,
+      "exitT": "2026-10-30T17:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 64.4,
@@ -3211,7 +3258,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 62.00910186767578,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-10-30T13:30:00.000Z",
+        "exitBarEndT": "2026-10-30T17:30:00.000Z"
+      }
     },
     {
       "symbol": "NVDA",
@@ -3690,9 +3749,9 @@
       "symbol": "QCOM",
       "signalT": "2026-10-26T17:30:00.000Z",
       "dir": 1,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-10-30T17:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 36.9,
@@ -3776,7 +3835,20 @@
       "stop": 171.06584963117328,
       "target": 200.6582787649972,
       "risk": 9.864143044607971,
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "stop",
+      "exitPriceAssumed": 171.06584963117328,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-10-30T13:30:00.000Z",
+        "exitBarEndT": "2026-10-30T17:30:00.000Z"
+      }
     },
     {
       "symbol": "AMD",
@@ -3787,9 +3859,9 @@
       "stop": 500.9375187465123,
       "target": 675.2602774483817,
       "risk": 58.107586233956454,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-10-30T17:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 29.4,
@@ -3868,7 +3940,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "stop",
+      "exitPriceAssumed": 500.9375187465123,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-10-30T13:30:00.000Z",
+        "exitBarEndT": "2026-10-30T17:30:00.000Z"
+      }
     },
     {
       "symbol": "BA",
@@ -4051,7 +4136,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "MA",
@@ -4142,7 +4228,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "TMO",
@@ -4233,7 +4320,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
