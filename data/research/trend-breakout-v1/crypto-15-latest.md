@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-10-30T21:39:50.845Z; mode: forward_shadow.
+Generated: 2026-10-31T01:44:31.193Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 4; pending 0; closed 43; lifecycle reviews 0.
-Realized equity $873.42; marked equity $888.49; mark quality fresh.
+Realized equity $873.42; marked equity $884.08; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
