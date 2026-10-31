@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-ledger-v2",
-  "updatedAt": "2026-10-30T02:04:10.295Z",
+  "updatedAt": "2026-10-31T01:42:59.835Z",
   "forwardStart": "2026-10-01",
   "runLog": [
     {
@@ -1111,6 +1111,48 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 9
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|41156646775|1",
+      "observedAt": "2026-10-31T01:42:59.835Z",
+      "tracker": "smc-forward-paper",
+      "cohort": "tsx-core",
+      "github": {
+        "runId": "41156646775",
+        "runAttempt": "1",
+        "sha": "0b4042308347a6908887767bd42b0a5f60ece926",
+        "workflow": "SMC Forward Paper Track",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "CSU.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 8,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 9
     }
   ],
   "discrepancyLog": [
@@ -1572,6 +1614,15 @@
       "quality": "fresh",
       "markedEquity": 1011.6681910429966,
       "totalUnrealizedPnl": -2.1408865220167344,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|41156646775|1",
+      "observedAt": "2026-10-31T01:42:59.835Z",
+      "quality": "fresh",
+      "markedEquity": 1008.4914120834949,
+      "totalUnrealizedPnl": -5.317665481518487,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -2565,7 +2616,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
