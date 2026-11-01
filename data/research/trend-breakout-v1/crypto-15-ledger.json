@@ -1,7 +1,7 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-11-01T16:15:43.551Z",
+  "updatedAt": "2026-11-01T20:42:38.803Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
@@ -1540,11 +1540,11 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 0.19729642676455633,
+      "currentStop": 0.19700499836887633,
       "bestClose": 0.189970001578331,
-      "holdingBars": 47,
+      "holdingBars": 48,
       "entryObservedAt": "2026-10-25T01:30:28.143Z",
-      "lastEvaluatedEndT": "2026-11-01T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-01T20:00:00.000Z"
     },
     {
       "symbol": "BCH-USD",
@@ -1691,7 +1691,7 @@
       "symbol": "DOT-USD",
       "signalT": "2026-10-26T04:00:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-26T08:00:00.000Z",
         "dailyAsOf": "2026-10-25",
@@ -1707,8 +1707,8 @@
       "stop": 1.065414275441851,
       "target": null,
       "risk": 0.043814267430986674,
-      "R": null,
-      "exitT": null,
+      "R": 1.5873832247933668,
+      "exitT": "2026-11-01T20:00:00.000Z",
       "decisionId": "DOT-USD|2026-10-26T04:00:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-10-26T14:28:43.386Z",
@@ -1721,9 +1721,18 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.9520499748843056,
       "bestClose": 0.9071999788284302,
-      "holdingBars": 36,
+      "holdingBars": 37,
       "entryObservedAt": "2026-10-26T20:03:54.277Z",
-      "lastEvaluatedEndT": "2026-11-01T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-01T20:00:00.000Z",
+      "exitPriceAssumed": 0.9520499748843056,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "trailing_or_initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapFillAssumption": "boundary stop / completed time-exit close",
+        "exitBarStartT": "2026-11-01T16:00:00.000Z",
+        "exitBarEndT": "2026-11-01T20:00:00.000Z"
+      }
     },
     {
       "symbol": "TRX-USD",
@@ -2086,11 +2095,11 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 0.07749071025422641,
-      "bestClose": 0.07507999986410141,
-      "holdingBars": 13,
+      "currentStop": 0.07736928122384208,
+      "bestClose": 0.0749799981713295,
+      "holdingBars": 14,
       "entryObservedAt": "2026-10-30T16:47:21.858Z",
-      "lastEvaluatedEndT": "2026-11-01T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-01T20:00:00.000Z"
     },
     {
       "symbol": "SHIB-USD",
@@ -2124,11 +2133,11 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 0.000004869285930908518,
+      "currentStop": 0.0000048564287291290905,
       "bestClose": 0.000004670000180340139,
-      "holdingBars": 13,
+      "holdingBars": 14,
       "entryObservedAt": "2026-10-30T16:47:21.858Z",
-      "lastEvaluatedEndT": "2026-11-01T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-01T20:00:00.000Z"
     },
     {
       "symbol": "XLM-USD",
@@ -2209,11 +2218,11 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 0.3202316846166338,
+      "currentStop": 0.3180828264781407,
       "bestClose": 0.30238431692123413,
-      "holdingBars": 7,
+      "holdingBars": 8,
       "entryObservedAt": "2026-10-31T19:28:04.613Z",
-      "lastEvaluatedEndT": "2026-11-01T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-01T20:00:00.000Z"
     }
   ],
   "runLog": [
@@ -3517,6 +3526,12 @@
     {
       "runKey": "trend-breakout-v1|41325354486|1",
       "observedAt": "2026-11-01T16:15:43.551Z",
+      "failures": [],
+      "diagnosticCount": 30
+    },
+    {
+      "runKey": "trend-breakout-v1|41348195973|1",
+      "observedAt": "2026-11-01T20:42:38.803Z",
       "failures": [],
       "diagnosticCount": 30
     }
@@ -5386,6 +5401,15 @@
       "quality": "fresh",
       "markedEquity": 892.9454597833351,
       "totalUnrealizedPnl": 19.523310997257788,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|41348195973|1",
+      "observedAt": "2026-11-01T20:42:38.803Z",
+      "quality": "fresh",
+      "markedEquity": 896.9578711299,
+      "totalUnrealizedPnl": 23.535722343822712,
       "missingSymbols": [],
       "staleSymbols": []
     }
