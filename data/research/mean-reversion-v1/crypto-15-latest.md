@@ -1,8 +1,8 @@
 # Mean Reversion V1 — crypto-15
-Generated: 2026-11-02T08:20:56.110Z; mode: forward_shadow.
+Generated: 2026-11-02T18:52:02.614Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 15; failed fetch/review symbols 0.
-Open 0; pending 3; closed 11; lifecycle reviews 0.
-Realized equity $950.95; marked equity $950.95; mark quality fresh.
+Open 3; pending 0; closed 11; lifecycle reviews 0.
+Realized equity $950.95; marked equity $946.64; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,14 +15,14 @@ Realized equity $950.95; marked equity $950.95; mark quality fresh.
 
 ## Positions
 
-- AVAX-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- BTC-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- ETH-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- AVAX-USD: Long open; entry 8.560999870300293; current stop 8.182019472122192; provenance prospective; gap none
+- BTC-USD: Long open; entry 77778.640625; current stop 76020.93219866071; provenance prospective; gap none
+- ETH-USD: Long open; entry 2283.419921875; current stop 2193.28329031808; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-02T05:56:01.530Z; stale false. Trend ledger as of 2026-11-02T07:59:08.231Z; stale false.
+SMC ledger as of 2026-11-02T05:56:01.530Z; stale true. Trend ledger as of 2026-11-02T18:42:37.554Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
-SMC closed 13; Trend closed 44; challenger closed 11. No winner is claimed from a small sample.
+SMC closed 13; Trend closed 45; challenger closed 11. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical fractional shares, fixed-R costs excluding FX/dividends and variable spreads, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.

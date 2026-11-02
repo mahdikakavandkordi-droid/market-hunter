@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-02T08:20:56.110Z",
+  "updatedAt": "2026-11-02T18:52:02.614Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -631,7 +631,7 @@
       "symbol": "AVAX-USD",
       "signalT": "2026-11-01T00:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-02T00:00:00.000Z",
         "dailyAsOf": "2026-11-01",
@@ -646,11 +646,11 @@
         "signalClose": 8.68956184387207,
         "initialStop": 8.182019472122192
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-11-02T12:00:00.000Z",
+      "entry": 8.560999870300293,
+      "stop": 8.182019472122192,
+      "target": 9.358821439743043,
+      "risk": 0.3789803981781006,
       "R": null,
       "exitT": null,
       "decisionId": "AVAX-USD|2026-11-01T00:00:00.000Z|1",
@@ -663,13 +663,17 @@
         "runKey": "mean-reversion-v1|41412284208|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 8.182019472122192,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-11-02T16:00:00.000Z",
+      "entryObservedAt": "2026-11-02T18:52:02.614Z"
     },
     {
       "symbol": "BTC-USD",
       "signalT": "2026-11-01T00:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-02T00:00:00.000Z",
         "dailyAsOf": "2026-11-01",
@@ -684,11 +688,11 @@
         "signalClose": 78248.453125,
         "initialStop": 76020.93219866071
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-11-02T12:00:00.000Z",
+      "entry": 77778.640625,
+      "stop": 76020.93219866071,
+      "target": 80997.85078125,
+      "risk": 1757.7084263392899,
       "R": null,
       "exitT": null,
       "decisionId": "BTC-USD|2026-11-01T00:00:00.000Z|1",
@@ -701,13 +705,17 @@
         "runKey": "mean-reversion-v1|41412284208|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 76020.93219866071,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-11-02T16:00:00.000Z",
+      "entryObservedAt": "2026-11-02T18:52:02.614Z"
     },
     {
       "symbol": "ETH-USD",
       "signalT": "2026-11-01T00:00:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-02T00:00:00.000Z",
         "dailyAsOf": "2026-11-01",
@@ -722,11 +730,11 @@
         "signalClose": 2273.05224609375,
         "initialStop": 2193.28329031808
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-11-02T12:00:00.000Z",
+      "entry": 2283.419921875,
+      "stop": 2193.28329031808,
+      "target": 2378.618298339844,
+      "risk": 90.13663155691984,
       "R": null,
       "exitT": null,
       "decisionId": "ETH-USD|2026-11-01T00:00:00.000Z|1",
@@ -739,7 +747,11 @@
         "runKey": "mean-reversion-v1|41412284208|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 2193.28329031808,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-11-02T16:00:00.000Z",
+      "entryObservedAt": "2026-11-02T18:52:02.614Z"
     }
   ],
   "runLog": [
@@ -5819,6 +5831,12 @@
       "observedAt": "2026-11-02T08:20:56.110Z",
       "failures": [],
       "diagnosticCount": 30
+    },
+    {
+      "runKey": "mean-reversion-v1|41504425987|1",
+      "observedAt": "2026-11-02T18:52:02.614Z",
+      "failures": [],
+      "diagnosticCount": 30
     }
   ],
   "markedEquitySeries": [
@@ -7634,6 +7652,15 @@
       "quality": "fresh",
       "markedEquity": 950.9468436534062,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|41504425987|1",
+      "observedAt": "2026-11-02T18:52:02.614Z",
+      "quality": "fresh",
+      "markedEquity": 946.6437496114695,
+      "totalUnrealizedPnl": -4.303094041936645,
       "missingSymbols": [],
       "staleSymbols": []
     }
