@@ -1,8 +1,8 @@
 # Mean Reversion V1 — tsx-extra
-Generated: 2026-11-02T18:52:02.614Z; mode: forward_shadow.
-Forward start: 2026-10-04T20:24:23.948534+00:00; universe 37; failed fetch/review symbols 3.
+Generated: 2026-11-03T10:06:27.333Z; mode: forward_shadow.
+Forward start: 2026-10-04T20:24:23.948534+00:00; universe 37; failed fetch/review symbols 4.
 Open 1; pending 0; closed 1; lifecycle reviews 0.
-Realized equity $1006.62; marked equity $1008.64; mark quality fresh.
+Realized equity $1006.62; marked equity $1008.51; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -19,8 +19,8 @@ Realized equity $1006.62; marked equity $1008.64; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-10-31T01:51:45.833Z; stale false. Trend ledger as of 2026-11-02T18:42:37.554Z; stale false.
+SMC ledger as of 2026-11-03T04:03:42.445Z; stale false. Trend ledger as of 2026-11-03T09:53:13.020Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
-SMC closed 7; Trend closed 25; challenger closed 1. No winner is claimed from a small sample.
+SMC closed 8; Trend closed 25; challenger closed 1. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical fractional shares, fixed-R costs excluding FX/dividends and variable spreads, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
