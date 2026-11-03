@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-02T18:42:37.554Z; mode: forward_shadow.
+Generated: 2026-11-03T01:43:55.159Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 3; pending 0; closed 45; lifecycle reviews 0.
-Realized equity $875.51; marked equity $899.32; mark quality fresh.
+Realized equity $875.51; marked equity $907.45; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,9 +15,9 @@ Realized equity $875.51; marked equity $899.32; mark quality fresh.
 
 ## Positions
 
-- ADA-USD: Short open; entry 0.20614999532699585; current stop 0.19588856718369893; provenance prospective; gap none
-- DOGE-USD: Short open; entry 0.07569999992847443; current stop 0.07709285404000964; provenance prospective; gap none
-- SHIB-USD: Short open; entry 0.0000047399998948094435; current stop 0.00000475428594524731; provenance prospective; gap none
+- ADA-USD: Short open; entry 0.20614999532699585; current stop 0.19463714957237244; provenance prospective; gap none
+- DOGE-USD: Short open; entry 0.07569999992847443; current stop 0.07616357558539935; provenance prospective; gap none
+- SHIB-USD: Short open; entry 0.0000047399998948094435; current stop 0.000004695000045882937; provenance prospective; gap none
 
 ## Common-window comparison
 
