@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper — Corrected Evidence v2
 
-Generated: 2026-10-31T01:42:59.835Z
+Generated: 2026-11-03T03:58:35.556Z
 
 Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
 The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
@@ -17,8 +17,8 @@ The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5f
 ## $1,000 paper account — realized vs marked
 
 Realized-only equity: $1013.81; realized return: 1.4%.
-Marked equity: $1008.49; marked return: 0.8%; mark quality: fresh.
-Unrealized P/L: $-5.32.
+Marked equity: $1003.95; marked return: 0.4%; mark quality: fresh.
+Unrealized P/L: $-9.86.
 Realized-event max drawdown: -1.8%; observed marked max drawdown: -2.0%.
 Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; first complete marked-equity observation: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
 Missing/invalid marks: none; stale marks: none.
@@ -28,12 +28,13 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---|---:|
-| BCE.TO | Short | 27.710 | 28.480 | 2026-10-30T20:30:00.000Z | fresh | $-5.32 |
+| BCE.TO | Short | 27.710 | 28.920 | 2026-11-02T21:30:00.000Z | fresh | $-8.36 |
+| MRU.TO | Long | 99.030 | 98.290 | 2026-11-02T21:30:00.000Z | fresh | $-1.50 |
 
 ## Evidence integrity
 
 Legacy trades without first-observation provenance: 2.
-Prospective entries: 0; reconstructed entries: 8; pending signals: 0.
+Prospective entries: 0; reconstructed entries: 9; pending signals: 0.
 This run discrepancies: 9; prior records not re-observed: 0; candle/data diagnostics: 1.
 
 ### Performance by evidence provenance

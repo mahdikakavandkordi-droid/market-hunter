@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-paper-evidence-v2",
-  "generatedAt": "2026-10-31T01:42:59.835Z",
+  "generatedAt": "2026-11-03T03:58:35.556Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -47,23 +47,23 @@
     "run": {
       "tracker": "smc-forward-paper",
       "cohort": "tsx-core",
-      "observedAt": "2026-10-31T01:42:59.835Z",
+      "observedAt": "2026-11-03T03:58:35.556Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "41156646775",
+        "runId": "41575290062",
         "runAttempt": "1",
-        "sha": "0b4042308347a6908887767bd42b0a5f60ece926",
+        "sha": "76391eead9e553105e008bcda035d44abf382fdc",
         "workflow": "SMC Forward Paper Track",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-paper|tsx-core|41156646775|1"
+      "runKey": "smc-forward-paper|tsx-core|41575290062|1"
     },
     "reconciliation": {
-      "newRecords": 0,
+      "newRecords": 1,
       "lifecycleUpdates": 0,
       "missingPreviouslyRecorded": 0,
       "legacyUnprovenancedCount": 2,
-      "reconstructedCount": 8,
+      "reconstructedCount": 9,
       "prospectiveCount": 0,
       "pendingCount": 0
     },
@@ -297,7 +297,7 @@
       "sumR": 0.11435750470642059,
       "maxDD": -2
     },
-    "openCount": 1,
+    "openCount": 2,
     "pendingCount": 0,
     "performanceByProvenance": {
       "prospective": {
@@ -443,13 +443,13 @@
     "startingCapital": 1000,
     "currentEquity": 1013.8090775650134,
     "realizedReturnPct": 0.013809077565013261,
-    "cash": 822.4423009109214,
-    "reservedNotional": 191.36677665409192,
-    "openRiskAmount": 10.138090775650134,
+    "cash": 621.374196411718,
+    "reservedNotional": 392.43488115329535,
+    "openRiskAmount": 20.27618155130027,
     "maxDrawdownPct": -0.01757602561206817,
-    "enteredCount": 9,
+    "enteredCount": 10,
     "closedCount": 8,
-    "openCount": 1,
+    "openCount": 2,
     "skippedCount": 1,
     "entered": [
       {
@@ -1426,6 +1426,106 @@
         "riskPctEquity": 0.01,
         "pnl": null,
         "portfolioStatus": "open"
+      },
+      {
+        "symbol": "MRU.TO",
+        "signalT": "2026-11-02T14:30:00.000Z",
+        "entryT": "2026-11-02T18:30:00.000Z",
+        "dir": 1,
+        "entry": 99.02999877929688,
+        "stop": 94.03678953988212,
+        "target": 109.01641725812638,
+        "risk": 4.993209239414753,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 80.3,
+          "bucket": "high",
+          "asOfDate": "2026-10-30",
+          "direction": "long",
+          "ret20": 0.08086435993474983,
+          "ret60": 0.05892625012925179,
+          "rsi14": 70.15740947708132,
+          "ma20": 93.77599983215332,
+          "ma50": 91.49720016479492,
+          "ma20Slope5": 0.014963174681628555,
+          "volumeRatio20": 1.0594731086235563,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": 0.013232878822004857,
+          "benchmarkRet60": -0.014562956760690415,
+          "rs20": 0.06763148111274497,
+          "rs60": 0.0734892068899422,
+          "components": {
+            "return20": {
+              "score": 90.4,
+              "weight": 20
+            },
+            "return60": {
+              "score": 64.7,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 87.4,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 24.8,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 92.3,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 74.5,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 94.16000366210938,
+          "atr14": 1.2321412222726005,
+          "signalCompletedAt": "2026-11-02T18:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "MRU.TO|2026-11-02T14:30:00.000Z|1",
+        "firstObservedAt": "2026-11-03T03:58:35.556Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-paper",
+          "cohort": "tsx-core",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "41575290062",
+            "runAttempt": "1",
+            "sha": "76391eead9e553105e008bcda035d44abf382fdc",
+            "workflow": "SMC Forward Paper Track",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 1013.8090775650134,
+        "notional": 201.06810449920343,
+        "allocationPct": 0.1983293589973891,
+        "quantity": 2.0303757142046797,
+        "stopPct": 0.050421178440513414,
+        "riskAmount": 10.138090775650134,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
       }
     ],
     "open": [
@@ -1525,6 +1625,106 @@
         "allocationPct": 0.1887601727868924,
         "quantity": 6.906054961269364,
         "stopPct": 0.052977277210324775,
+        "riskAmount": 10.138090775650134,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open"
+      },
+      {
+        "symbol": "MRU.TO",
+        "signalT": "2026-11-02T14:30:00.000Z",
+        "entryT": "2026-11-02T18:30:00.000Z",
+        "dir": 1,
+        "entry": 99.02999877929688,
+        "stop": 94.03678953988212,
+        "target": 109.01641725812638,
+        "risk": 4.993209239414753,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 80.3,
+          "bucket": "high",
+          "asOfDate": "2026-10-30",
+          "direction": "long",
+          "ret20": 0.08086435993474983,
+          "ret60": 0.05892625012925179,
+          "rsi14": 70.15740947708132,
+          "ma20": 93.77599983215332,
+          "ma50": 91.49720016479492,
+          "ma20Slope5": 0.014963174681628555,
+          "volumeRatio20": 1.0594731086235563,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": 0.013232878822004857,
+          "benchmarkRet60": -0.014562956760690415,
+          "rs20": 0.06763148111274497,
+          "rs60": 0.0734892068899422,
+          "components": {
+            "return20": {
+              "score": 90.4,
+              "weight": 20
+            },
+            "return60": {
+              "score": 64.7,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 87.4,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 24.8,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 92.3,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 74.5,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 94.16000366210938,
+          "atr14": 1.2321412222726005,
+          "signalCompletedAt": "2026-11-02T18:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "MRU.TO|2026-11-02T14:30:00.000Z|1",
+        "firstObservedAt": "2026-11-03T03:58:35.556Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-paper",
+          "cohort": "tsx-core",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "41575290062",
+            "runAttempt": "1",
+            "sha": "76391eead9e553105e008bcda035d44abf382fdc",
+            "workflow": "SMC Forward Paper Track",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 1013.8090775650134,
+        "notional": 201.06810449920343,
+        "allocationPct": 0.1983293589973891,
+        "quantity": 2.0303757142046797,
+        "stopPct": 0.050421178440513414,
         "riskAmount": 10.138090775650134,
         "riskPctEquity": 0.01,
         "pnl": null,
@@ -1710,6 +1910,10 @@
       {
         "t": "2026-10-29T17:30:00.000Z",
         "equity": 1013.8090775650134
+      },
+      {
+        "t": "2026-11-02T18:30:00.000Z",
+        "equity": 1013.8090775650134
       }
     ]
   },
@@ -1724,9 +1928,9 @@
       "fractionalShares": true
     },
     "startingCapital": 1000,
-    "cash": 822.4423009109214,
-    "reservedEntryNotional": 191.36677665409192,
-    "openRiskAmount": 10.138090775650134,
+    "cash": 621.374196411718,
+    "reservedEntryNotional": 392.43488115329535,
+    "openRiskAmount": 20.27618155130027,
     "realizedCurrentEquity": 1013.8090775650134,
     "realizedReturnPct": 0.013809077565013261,
     "realizedMaxDrawdownPct": -0.01757602561206817,
@@ -1802,16 +2006,20 @@
       {
         "t": "2026-10-29T17:30:00.000Z",
         "equity": 1013.8090775650134
+      },
+      {
+        "t": "2026-11-02T18:30:00.000Z",
+        "equity": 1013.8090775650134
       }
     ],
-    "markedCurrentEquity": 1008.4914120834949,
-    "markedReturnPct": 0.00849141208349491,
+    "markedCurrentEquity": 1003.9502705211441,
+    "markedReturnPct": 0.00395027052114405,
     "markedObservation": {
-      "runKey": "smc-forward-paper|tsx-core|41156646775|1",
-      "observedAt": "2026-10-31T01:42:59.835Z",
+      "runKey": "smc-forward-paper|tsx-core|41575290062|1",
+      "observedAt": "2026-11-03T03:58:35.556Z",
       "quality": "fresh",
-      "markedEquity": 1008.4914120834949,
-      "totalUnrealizedPnl": -5.317665481518487,
+      "markedEquity": 1003.9502705211441,
+      "totalUnrealizedPnl": -9.858807043869263,
       "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
@@ -1918,12 +2126,120 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 28.479999542236328,
-          "markT": "2026-10-30T20:30:00.000Z",
+          "markPrice": 28.920000076293945,
+          "markT": "2026-11-02T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -5.317665481518487,
-          "markedPositionValue": 186.04911117257345
+          "unrealizedPnl": -8.356333352708264,
+          "markedPositionValue": 183.01044330138365
+        },
+        {
+          "symbol": "MRU.TO",
+          "signalT": "2026-11-02T14:30:00.000Z",
+          "entryT": "2026-11-02T18:30:00.000Z",
+          "dir": 1,
+          "entry": 99.02999877929688,
+          "stop": 94.03678953988212,
+          "target": 109.01641725812638,
+          "risk": 4.993209239414753,
+          "status": "open",
+          "R": null,
+          "exitT": null,
+          "momentumShadow": {
+            "available": true,
+            "score": 80.3,
+            "bucket": "high",
+            "asOfDate": "2026-10-30",
+            "direction": "long",
+            "ret20": 0.08086435993474983,
+            "ret60": 0.05892625012925179,
+            "rsi14": 70.15740947708132,
+            "ma20": 93.77599983215332,
+            "ma50": 91.49720016479492,
+            "ma20Slope5": 0.014963174681628555,
+            "volumeRatio20": 1.0594731086235563,
+            "benchmarkSymbol": "^GSPTSE",
+            "benchmarkRet20": 0.013232878822004857,
+            "benchmarkRet60": -0.014562956760690415,
+            "rs20": 0.06763148111274497,
+            "rs60": 0.0734892068899422,
+            "components": {
+              "return20": {
+                "score": 90.4,
+                "weight": 20
+              },
+              "return60": {
+                "score": 64.7,
+                "weight": 20
+              },
+              "rsi14": {
+                "score": 100,
+                "weight": 15
+              },
+              "price_vs_ma20": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_vs_ma50": {
+                "score": 100,
+                "weight": 7
+              },
+              "ma20_slope5": {
+                "score": 87.4,
+                "weight": 6
+              },
+              "volume_ratio20": {
+                "score": 24.8,
+                "weight": 10
+              },
+              "relative_strength20": {
+                "score": 92.3,
+                "weight": 8
+              },
+              "relative_strength60": {
+                "score": 74.5,
+                "weight": 7
+              }
+            }
+          },
+          "signalSnapshot": {
+            "opposingSwing": 94.16000366210938,
+            "atr14": 1.2321412222726005,
+            "signalCompletedAt": "2026-11-02T18:30:00.000Z",
+            "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+          },
+          "decisionId": "MRU.TO|2026-11-02T14:30:00.000Z|1",
+          "firstObservedAt": "2026-11-03T03:58:35.556Z",
+          "firstObservedProvenance": {
+            "tracker": "smc-forward-paper",
+            "cohort": "tsx-core",
+            "marketDataSource": "Yahoo Finance chart API",
+            "github": {
+              "runId": "41575290062",
+              "runAttempt": "1",
+              "sha": "76391eead9e553105e008bcda035d44abf382fdc",
+              "workflow": "SMC Forward Paper Track",
+              "ref": "refs/heads/main"
+            }
+          },
+          "entryObservationClass": "reconstructed",
+          "accountEquityBefore": 1013.8090775650134,
+          "notional": 201.06810449920343,
+          "allocationPct": 0.1983293589973891,
+          "quantity": 2.0303757142046797,
+          "stopPct": 0.050421178440513414,
+          "riskAmount": 10.138090775650134,
+          "riskPctEquity": 0.01,
+          "pnl": null,
+          "portfolioStatus": "open",
+          "effectiveExitMs": null,
+          "legacyExitTimingAdjusted": false,
+          "markPrice": 98.29000091552734,
+          "markT": "2026-11-02T21:30:00.000Z",
+          "markStatus": "fresh",
+          "markSource": "completed_4h_close",
+          "unrealizedPnl": -1.5024736911609993,
+          "markedPositionValue": 199.56563080804244
         }
       ]
     },
@@ -2137,6 +2453,15 @@
         "totalUnrealizedPnl": -5.317665481518487,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-paper|tsx-core|41575290062|1",
+        "observedAt": "2026-11-03T03:58:35.556Z",
+        "quality": "fresh",
+        "markedEquity": 1003.9502705211441,
+        "totalUnrealizedPnl": -9.858807043869263,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T14:55:43.524Z",
@@ -2152,9 +2477,9 @@
       "markedEquity": "cash + marked open position values",
       "missingOrInvalidMarkMakesTotalMarkedEquityNull": true
     },
-    "enteredCount": 9,
+    "enteredCount": 10,
     "closedCount": 8,
-    "openCount": 1,
+    "openCount": 2,
     "skippedCount": 1,
     "entered": [
       {
@@ -3149,6 +3474,108 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false
+      },
+      {
+        "symbol": "MRU.TO",
+        "signalT": "2026-11-02T14:30:00.000Z",
+        "entryT": "2026-11-02T18:30:00.000Z",
+        "dir": 1,
+        "entry": 99.02999877929688,
+        "stop": 94.03678953988212,
+        "target": 109.01641725812638,
+        "risk": 4.993209239414753,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 80.3,
+          "bucket": "high",
+          "asOfDate": "2026-10-30",
+          "direction": "long",
+          "ret20": 0.08086435993474983,
+          "ret60": 0.05892625012925179,
+          "rsi14": 70.15740947708132,
+          "ma20": 93.77599983215332,
+          "ma50": 91.49720016479492,
+          "ma20Slope5": 0.014963174681628555,
+          "volumeRatio20": 1.0594731086235563,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": 0.013232878822004857,
+          "benchmarkRet60": -0.014562956760690415,
+          "rs20": 0.06763148111274497,
+          "rs60": 0.0734892068899422,
+          "components": {
+            "return20": {
+              "score": 90.4,
+              "weight": 20
+            },
+            "return60": {
+              "score": 64.7,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 87.4,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 24.8,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 92.3,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 74.5,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 94.16000366210938,
+          "atr14": 1.2321412222726005,
+          "signalCompletedAt": "2026-11-02T18:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "MRU.TO|2026-11-02T14:30:00.000Z|1",
+        "firstObservedAt": "2026-11-03T03:58:35.556Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-paper",
+          "cohort": "tsx-core",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "41575290062",
+            "runAttempt": "1",
+            "sha": "76391eead9e553105e008bcda035d44abf382fdc",
+            "workflow": "SMC Forward Paper Track",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 1013.8090775650134,
+        "notional": 201.06810449920343,
+        "allocationPct": 0.1983293589973891,
+        "quantity": 2.0303757142046797,
+        "stopPct": 0.050421178440513414,
+        "riskAmount": 10.138090775650134,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false
       }
     ],
     "open": [
@@ -3254,12 +3681,120 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 28.479999542236328,
-        "markT": "2026-10-30T20:30:00.000Z",
+        "markPrice": 28.920000076293945,
+        "markT": "2026-11-02T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -5.317665481518487,
-        "markedPositionValue": 186.04911117257345
+        "unrealizedPnl": -8.356333352708264,
+        "markedPositionValue": 183.01044330138365
+      },
+      {
+        "symbol": "MRU.TO",
+        "signalT": "2026-11-02T14:30:00.000Z",
+        "entryT": "2026-11-02T18:30:00.000Z",
+        "dir": 1,
+        "entry": 99.02999877929688,
+        "stop": 94.03678953988212,
+        "target": 109.01641725812638,
+        "risk": 4.993209239414753,
+        "status": "open",
+        "R": null,
+        "exitT": null,
+        "momentumShadow": {
+          "available": true,
+          "score": 80.3,
+          "bucket": "high",
+          "asOfDate": "2026-10-30",
+          "direction": "long",
+          "ret20": 0.08086435993474983,
+          "ret60": 0.05892625012925179,
+          "rsi14": 70.15740947708132,
+          "ma20": 93.77599983215332,
+          "ma50": 91.49720016479492,
+          "ma20Slope5": 0.014963174681628555,
+          "volumeRatio20": 1.0594731086235563,
+          "benchmarkSymbol": "^GSPTSE",
+          "benchmarkRet20": 0.013232878822004857,
+          "benchmarkRet60": -0.014562956760690415,
+          "rs20": 0.06763148111274497,
+          "rs60": 0.0734892068899422,
+          "components": {
+            "return20": {
+              "score": 90.4,
+              "weight": 20
+            },
+            "return60": {
+              "score": 64.7,
+              "weight": 20
+            },
+            "rsi14": {
+              "score": 100,
+              "weight": 15
+            },
+            "price_vs_ma20": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_vs_ma50": {
+              "score": 100,
+              "weight": 7
+            },
+            "ma20_slope5": {
+              "score": 87.4,
+              "weight": 6
+            },
+            "volume_ratio20": {
+              "score": 24.8,
+              "weight": 10
+            },
+            "relative_strength20": {
+              "score": 92.3,
+              "weight": 8
+            },
+            "relative_strength60": {
+              "score": 74.5,
+              "weight": 7
+            }
+          }
+        },
+        "signalSnapshot": {
+          "opposingSwing": 94.16000366210938,
+          "atr14": 1.2321412222726005,
+          "signalCompletedAt": "2026-11-02T18:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "decisionId": "MRU.TO|2026-11-02T14:30:00.000Z|1",
+        "firstObservedAt": "2026-11-03T03:58:35.556Z",
+        "firstObservedProvenance": {
+          "tracker": "smc-forward-paper",
+          "cohort": "tsx-core",
+          "marketDataSource": "Yahoo Finance chart API",
+          "github": {
+            "runId": "41575290062",
+            "runAttempt": "1",
+            "sha": "76391eead9e553105e008bcda035d44abf382fdc",
+            "workflow": "SMC Forward Paper Track",
+            "ref": "refs/heads/main"
+          }
+        },
+        "entryObservationClass": "reconstructed",
+        "accountEquityBefore": 1013.8090775650134,
+        "notional": 201.06810449920343,
+        "allocationPct": 0.1983293589973891,
+        "quantity": 2.0303757142046797,
+        "stopPct": 0.050421178440513414,
+        "riskAmount": 10.138090775650134,
+        "riskPctEquity": 0.01,
+        "pnl": null,
+        "portfolioStatus": "open",
+        "effectiveExitMs": null,
+        "legacyExitTimingAdjusted": false,
+        "markPrice": 98.29000091552734,
+        "markT": "2026-11-02T21:30:00.000Z",
+        "markStatus": "fresh",
+        "markSource": "completed_4h_close",
+        "unrealizedPnl": -1.5024736911609993,
+        "markedPositionValue": 199.56563080804244
       }
     ],
     "skipped": [
@@ -4360,6 +4895,97 @@
       },
       "entryObservationClass": "reconstructed",
       "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
+      "symbol": "MRU.TO",
+      "signalT": "2026-11-02T14:30:00.000Z",
+      "entryT": "2026-11-02T18:30:00.000Z",
+      "dir": 1,
+      "entry": 99.02999877929688,
+      "stop": 94.03678953988212,
+      "target": 109.01641725812638,
+      "risk": 4.993209239414753,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 80.3,
+        "bucket": "high",
+        "asOfDate": "2026-10-30",
+        "direction": "long",
+        "ret20": 0.08086435993474983,
+        "ret60": 0.05892625012925179,
+        "rsi14": 70.15740947708132,
+        "ma20": 93.77599983215332,
+        "ma50": 91.49720016479492,
+        "ma20Slope5": 0.014963174681628555,
+        "volumeRatio20": 1.0594731086235563,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": 0.013232878822004857,
+        "benchmarkRet60": -0.014562956760690415,
+        "rs20": 0.06763148111274497,
+        "rs60": 0.0734892068899422,
+        "components": {
+          "return20": {
+            "score": 90.4,
+            "weight": 20
+          },
+          "return60": {
+            "score": 64.7,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 100,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 87.4,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 24.8,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 92.3,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 74.5,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 94.16000366210938,
+        "atr14": 1.2321412222726005,
+        "signalCompletedAt": "2026-11-02T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "MRU.TO|2026-11-02T14:30:00.000Z|1",
+      "firstObservedAt": "2026-11-03T03:58:35.556Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-paper",
+        "cohort": "tsx-core",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "41575290062",
+          "runAttempt": "1",
+          "sha": "76391eead9e553105e008bcda035d44abf382fdc",
+          "workflow": "SMC Forward Paper Track",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed"
     }
   ]
 }
