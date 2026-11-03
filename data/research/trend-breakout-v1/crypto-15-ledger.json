@@ -1,7 +1,7 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-11-03T17:59:13.144Z",
+  "updatedAt": "2026-11-03T23:35:01.062Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
@@ -1512,7 +1512,7 @@
       "symbol": "ADA-USD",
       "signalT": "2026-10-24T12:00:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-10-24T16:00:00.000Z",
         "dailyAsOf": "2026-10-23",
@@ -1528,8 +1528,8 @@
       "stop": 0.21511571535042354,
       "target": null,
       "risk": 0.00896572002342769,
-      "R": null,
-      "exitT": null,
+      "R": 1.8079964290420503,
+      "exitT": "2026-11-03T20:00:00.000Z",
       "decisionId": "ADA-USD|2026-10-24T12:00:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-10-24T18:18:38.674Z",
@@ -1542,9 +1542,18 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.19463714957237244,
       "bestClose": 0.1872200071811676,
-      "holdingBars": 59,
+      "holdingBars": 60,
       "entryObservedAt": "2026-10-25T01:30:28.143Z",
-      "lastEvaluatedEndT": "2026-11-03T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-03T20:00:00.000Z",
+      "exitPriceAssumed": 0.18994000554084778,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "max_hold_close",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapFillAssumption": "boundary stop / completed time-exit close",
+        "exitBarStartT": "2026-11-03T16:00:00.000Z",
+        "exitBarEndT": "2026-11-03T20:00:00.000Z"
+      }
     },
     {
       "symbol": "BCH-USD",
@@ -2097,9 +2106,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.07616357558539935,
       "bestClose": 0.07365000247955322,
-      "holdingBars": 25,
+      "holdingBars": 26,
       "entryObservedAt": "2026-10-30T16:47:21.858Z",
-      "lastEvaluatedEndT": "2026-11-03T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-03T20:00:00.000Z"
     },
     {
       "symbol": "SHIB-USD",
@@ -2135,9 +2144,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.000004695000045882937,
       "bestClose": 0.000004529999841906829,
-      "holdingBars": 25,
+      "holdingBars": 26,
       "entryObservedAt": "2026-10-30T16:47:21.858Z",
-      "lastEvaluatedEndT": "2026-11-03T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-03T20:00:00.000Z"
     },
     {
       "symbol": "XLM-USD",
@@ -2267,9 +2276,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 0.16726329284054892,
       "bestClose": 0.16281400620937347,
-      "holdingBars": 1,
+      "holdingBars": 2,
       "entryObservedAt": "2026-11-03T17:59:13.144Z",
-      "lastEvaluatedEndT": "2026-11-03T16:00:00.000Z"
+      "lastEvaluatedEndT": "2026-11-03T20:00:00.000Z"
     }
   ],
   "runLog": [
@@ -3617,6 +3626,12 @@
       "observedAt": "2026-11-03T17:59:13.144Z",
       "failures": [],
       "diagnosticCount": 15
+    },
+    {
+      "runKey": "trend-breakout-v1|41740212642|1",
+      "observedAt": "2026-11-03T23:35:01.062Z",
+      "failures": [],
+      "diagnosticCount": 30
     }
   ],
   "markedEquitySeries": [
@@ -5547,6 +5562,15 @@
       "quality": "fresh",
       "markedEquity": 893.1953180589489,
       "totalUnrealizedPnl": 17.685071122423544,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|41740212642|1",
+      "observedAt": "2026-11-03T23:35:01.062Z",
+      "quality": "fresh",
+      "markedEquity": 897.8327824349839,
+      "totalUnrealizedPnl": 6.307308630086711,
       "missingSymbols": [],
       "staleSymbols": []
     }
