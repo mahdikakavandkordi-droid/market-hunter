@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-ledger-v2",
-  "updatedAt": "2026-11-03T03:58:35.556Z",
+  "updatedAt": "2026-11-04T03:04:34.432Z",
   "forwardStart": "2026-10-01",
   "runLog": [
     {
@@ -1195,6 +1195,48 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 9
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|41764748027|1",
+      "observedAt": "2026-11-04T03:04:34.432Z",
+      "tracker": "smc-forward-paper",
+      "cohort": "tsx-core",
+      "github": {
+        "runId": "41764748027",
+        "runAttempt": "1",
+        "sha": "985f8cf0e88e18482a2d56e11a7fb2c0f226d931",
+        "workflow": "SMC Forward Paper Track",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "CSU.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 9,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 9
     }
   ],
   "discrepancyLog": [
@@ -1674,6 +1716,15 @@
       "quality": "fresh",
       "markedEquity": 1003.9502705211441,
       "totalUnrealizedPnl": -9.858807043869263,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|41764748027|1",
+      "observedAt": "2026-11-04T03:04:34.432Z",
+      "quality": "fresh",
+      "markedEquity": 1004.7628335630781,
+      "totalUnrealizedPnl": -9.04624400193526,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -2759,7 +2810,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
