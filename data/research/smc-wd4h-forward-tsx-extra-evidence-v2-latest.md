@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-11-03T04:03:42.445Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-11-04T03:20:29.955Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1013.01; return 1.3%; realized-event max DD -1.2%.
-Marked equity $1012.92; return 1.3%; observed marked max DD -1.4%; quality fresh.
+Marked equity $1008.98; return 0.9%; observed marked max DD -1.8%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,14 +23,15 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| CCO.TO | Short | 105.000 | 102.580 | fresh | $2.09 |
-| CTC-A.TO | Long | 206.050 | 204.270 | fresh | $-2.19 |
-| DOL.TO | Long | 211.960 | 211.970 | fresh | $0.01 |
+| CCO.TO | Short | 105.000 | 101.680 | fresh | $2.87 |
+| CTC-A.TO | Long | 206.050 | 202.470 | fresh | $-4.40 |
+| DOL.TO | Long | 211.960 | 209.920 | fresh | $-1.91 |
+| TIH.TO | Long | 210.790 | 209.570 | fresh | $-0.59 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 2; prospective 2; reconstructed 9; pending 0.
-This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 4.
+Legacy provenance unknown 2; prospective 2; reconstructed 10; pending 0.
+This run discrepancies 4; prior not re-observed 0; candle/data diagnostics 4.
 
 ### Performance by evidence provenance
 
