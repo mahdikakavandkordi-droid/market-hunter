@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-11-04T03:20:29.955Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-11-05T03:45:21.160Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1013.01; return 1.3%; realized-event max DD -1.2%.
-Marked equity $1008.98; return 0.9%; observed marked max DD -1.8%; quality fresh.
+Marked equity $1022.98; return 2.3%; observed marked max DD -1.8%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,10 +23,10 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| CCO.TO | Short | 105.000 | 101.680 | fresh | $2.87 |
-| CTC-A.TO | Long | 206.050 | 202.470 | fresh | $-4.40 |
-| DOL.TO | Long | 211.960 | 209.920 | fresh | $-1.91 |
-| TIH.TO | Long | 210.790 | 209.570 | fresh | $-0.59 |
+| CCO.TO | Short | 105.000 | 100.080 | fresh | $4.25 |
+| CTC-A.TO | Long | 206.050 | 209.480 | fresh | $4.22 |
+| DOL.TO | Long | 211.960 | 220.060 | fresh | $7.59 |
+| TIH.TO | Long | 210.790 | 198.180 | fresh | $-6.08 |
 
 ## Evidence integrity
 

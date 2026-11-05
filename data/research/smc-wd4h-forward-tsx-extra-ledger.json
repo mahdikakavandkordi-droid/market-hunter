@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "tsx-extra",
-  "updatedAt": "2026-11-04T03:20:29.955Z",
+  "updatedAt": "2026-11-05T03:45:21.160Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "RCI-B.TO",
@@ -2038,6 +2038,93 @@
       "prospectiveCount": 2,
       "pendingCount": 0,
       "discrepancyCount": 4
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|41963505328|1",
+      "observedAt": "2026-11-05T03:45:21.160Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "tsx-extra",
+      "github": {
+        "runId": "41963505328",
+        "runAttempt": "1",
+        "sha": "2bc86a008c7f750aefee0c31278eab2b790be60f",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 0,
+          "expected": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "present": [
+            0
+          ]
+        },
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "GSY.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-10-26",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "WSP.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-22",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 10,
+      "prospectiveCount": 2,
+      "pendingCount": 0,
+      "discrepancyCount": 4
     }
   ],
   "discrepancyLog": [
@@ -2311,6 +2398,15 @@
       "quality": "fresh",
       "markedEquity": 1008.9771614674032,
       "totalUnrealizedPnl": -4.031081046093836,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|41963505328|1",
+      "observedAt": "2026-11-05T03:45:21.160Z",
+      "quality": "fresh",
+      "markedEquity": 1022.9785405874559,
+      "totalUnrealizedPnl": 9.970298073958972,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -3684,7 +3780,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
