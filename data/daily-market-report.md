@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-11-03 to 2026-11-04 (TSX 2026-11-04 · SP500 2026-11-04 · NASDAQ100 2026-11-04 · GOLD 2026-11-04 · SILVER 2026-11-03 · BTC 2026-11-04 · ETH 2026-11-04)
+**As of:** 2026-11-04
 
 ## Executive read
 
 - Mixed cross-market environment.
-- Completed-session dates differ by instrument: TSX 2026-11-04 · SP500 2026-11-04 · NASDAQ100 2026-11-04 · GOLD 2026-11-04 · SILVER 2026-11-03 · BTC 2026-11-04 · ETH 2026-11-04.
+- All tracked markets are aligned to 2026-11-04.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -32,7 +32,7 @@
 - **Bitcoin:** bullish continuation above 81235.03 · trend warning near 80203.57 · structure risk below 79735.86.
 - **Gold:** bullish continuation above 4097.2 · trend warning near 4089.96 · structure risk below 4046.2.
 - **Nasdaq-100:** bullish continuation above 29192.29 · trend warning near 29490.4 · structure risk below 28231.32.
-- **Silver:** bullish continuation above 54.29 · trend warning near 55.62 · structure risk below 55.5.
+- **Silver:** bullish continuation above 54.29 · trend warning near 55.23 · structure risk below 55.5.
 
 ## Market detail
 
@@ -70,11 +70,11 @@
 
 ### Silver
 - **State:** Strong Bear / Weakening
-- **Returns:** 1D -2.2% · 5D -8.7% · 20D -18.9% · 60D -23.8%
+- **Returns:** 1D +5.1% · 5D -2.5% · 20D -13% · 60D -19.5%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Supportive
 - **Framing:** Historical analogs supportive
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 54.29 · trend warning near 55.62 · structure risk below 55.5.
+- **Watch next:** bullish continuation above 54.29 · trend warning near 55.23 · structure risk below 55.5.
 
 ### Bitcoin
 - **State:** Mixed / Recovery Attempt
