@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-05T15:50:23.512Z",
+  "updatedAt": "2026-11-05T22:21:20.068Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -790,7 +790,7 @@
       "symbol": "SOL-USD",
       "signalT": "2026-11-04T00:00:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-05T00:00:00.000Z",
         "dailyAsOf": "2026-11-04",
@@ -810,8 +810,8 @@
       "stop": 89.43691716875348,
       "target": 100.77553100585938,
       "risk": 6.333079474312925,
-      "R": null,
-      "exitT": null,
+      "R": -1,
+      "exitT": "2026-11-05T16:00:00.000Z",
       "decisionId": "SOL-USD|2026-11-04T00:00:00.000Z|1",
       "entryWaitHours": 36,
       "historicalDiagnostic": false,
@@ -824,9 +824,20 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 89.43691716875348,
-      "holdingBars": 1,
-      "lastEvaluatedEndT": "2026-11-05T12:00:00.000Z",
-      "entryObservedAt": "2026-11-05T15:50:23.512Z"
+      "holdingBars": 2,
+      "lastEvaluatedEndT": "2026-11-05T16:00:00.000Z",
+      "entryObservedAt": "2026-11-05T15:50:23.512Z",
+      "exitPriceAssumed": 89.43691716875348,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "stopTargetCollision": false,
+        "collisionPolicy": "stop_first",
+        "exitBarStartT": "2026-11-05T12:00:00.000Z",
+        "exitBarEndT": "2026-11-05T16:00:00.000Z"
+      }
     }
   ],
   "runLog": [
@@ -6088,6 +6099,12 @@
       "observedAt": "2026-11-05T15:50:23.512Z",
       "failures": [],
       "diagnosticCount": 30
+    },
+    {
+      "runKey": "mean-reversion-v1|42120635869|1",
+      "observedAt": "2026-11-05T22:21:20.068Z",
+      "failures": [],
+      "diagnosticCount": 30
     }
   ],
   "markedEquitySeries": [
@@ -7997,6 +8014,15 @@
       "quality": "fresh",
       "markedEquity": 937.013865515422,
       "totalUnrealizedPnl": 0.9607268800029878,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|42120635869|1",
+      "observedAt": "2026-11-05T22:21:20.068Z",
+      "quality": "fresh",
+      "markedEquity": 926.2245806797471,
+      "totalUnrealizedPnl": 0,
       "missingSymbols": [],
       "staleSymbols": []
     }

@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-05T15:50:23.512Z",
+  "updatedAt": "2026-11-05T22:21:20.068Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -459,7 +459,7 @@
       "symbol": "SHOP.TO",
       "signalT": "2026-11-04T14:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-04T22:00:00.000Z",
         "dailyAsOf": "2026-11-04",
@@ -474,11 +474,11 @@
         "signalClose": 212.7100067138672,
         "initialStop": 184.78749465942383
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-11-05T14:30:00.000Z",
+      "entry": 212.38999938964844,
+      "stop": 184.78749465942383,
+      "target": 235.82049865722655,
+      "risk": 27.60250473022461,
       "R": null,
       "exitT": null,
       "decisionId": "SHOP.TO|2026-11-04T14:30:00.000Z|1",
@@ -491,7 +491,11 @@
         "runKey": "mean-reversion-v1|41942107645|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 184.78749465942383,
+      "holdingBars": 2,
+      "lastEvaluatedEndT": "2026-11-05T21:30:00.000Z",
+      "entryObservedAt": "2026-11-05T22:21:20.068Z"
     }
   ],
   "runLog": [
@@ -3401,6 +3405,17 @@
         }
       ],
       "diagnosticCount": 64
+    },
+    {
+      "runKey": "mean-reversion-v1|42120635869|1",
+      "observedAt": "2026-11-05T22:21:20.068Z",
+      "failures": [
+        {
+          "symbol": "CSU.TO",
+          "error": "invalid_source_quotes_require_review"
+        }
+      ],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -5282,6 +5297,15 @@
       "quality": "fresh",
       "markedEquity": 997.7439757961023,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|42120635869|1",
+      "observedAt": "2026-11-05T22:21:20.068Z",
+      "quality": "fresh",
+      "markedEquity": 993.8256570965898,
+      "totalUnrealizedPnl": -3.918318699512518,
       "missingSymbols": [],
       "staleSymbols": []
     }

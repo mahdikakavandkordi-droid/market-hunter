@@ -1,8 +1,8 @@
 # Mean Reversion V1 — tsx-core
-Generated: 2026-11-05T15:50:23.512Z; mode: forward_shadow.
+Generated: 2026-11-05T22:21:20.068Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 33; failed fetch/review symbols 1.
-Open 0; pending 1; closed 7; lifecycle reviews 0.
-Realized equity $997.74; marked equity $997.74; mark quality fresh.
+Open 1; pending 0; closed 7; lifecycle reviews 0.
+Realized equity $997.74; marked equity $993.83; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,12 +15,12 @@ Realized equity $997.74; marked equity $997.74; mark quality fresh.
 
 ## Positions
 
-- SHOP.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- SHOP.TO: Long open; entry 212.38999938964844; current stop 184.78749465942383; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-05T03:36:07.142Z; stale false. Trend ledger as of 2026-11-05T15:42:31.744Z; stale false.
+SMC ledger as of 2026-11-05T03:36:07.142Z; stale false. Trend ledger as of 2026-11-05T22:11:57.536Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
-SMC closed 8; Trend closed 31; challenger closed 7. No winner is claimed from a small sample.
+SMC closed 8; Trend closed 34; challenger closed 7. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical fractional shares, fixed-R costs excluding FX/dividends and variable spreads, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
