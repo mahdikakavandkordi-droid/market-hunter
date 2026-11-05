@@ -1,5 +1,5 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-11-05T00:29:31.538Z; mode: forward_shadow.
+Generated: 2026-11-05T07:11:17.116Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
 Open 12; pending 1; closed 31; lifecycle reviews 0.
 Realized equity $983.17; marked equity $991.02; mark quality fresh.
@@ -31,8 +31,8 @@ Realized equity $983.17; marked equity $991.02; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-04T03:04:34.432Z; stale false.
+SMC ledger as of 2026-11-05T03:36:07.142Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 7; challenger closed 31. No winner is claimed from a small sample.
+SMC closed 8; challenger closed 31. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
