@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-05T07:11:17.116Z; mode: forward_shadow.
+Generated: 2026-11-05T15:42:31.744Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 5; pending 0; closed 50; lifecycle reviews 0.
-Realized equity $876.69; marked equity $885.43; mark quality fresh.
+Open 5; pending 1; closed 50; lifecycle reviews 0.
+Realized equity $876.69; marked equity $885.62; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -20,6 +20,7 @@ Realized equity $876.69; marked equity $885.43; mark quality fresh.
 - ETH-USD: Long open; entry 2405.719970703125; current stop 2340.957101004464; provenance prospective; gap none
 - SOL-USD: Long open; entry 94.41999816894531; current stop 90.55857195172992; provenance prospective; gap none
 - XRP-USD: Long open; entry 1.298799991607666; current stop 1.255371400288173; provenance prospective; gap none
+- BCH-USD: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
