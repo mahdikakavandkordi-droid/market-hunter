@@ -2,7 +2,7 @@
   "version": "smc-wd4h-forward-alternatives-ledger-v2",
   "cohort": "metals-5",
   "mode": "stock",
-  "updatedAt": "2026-11-05T06:38:33.967Z",
+  "updatedAt": "2026-11-06T06:33:55.968Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "GLD",
@@ -966,6 +966,32 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 0
+    },
+    {
+      "runKey": "smc-forward-alternatives|metals-5|42175180047|1",
+      "observedAt": "2026-11-06T06:33:55.968Z",
+      "tracker": "smc-forward-alternatives",
+      "cohort": "metals-5",
+      "github": {
+        "runId": "42175180047",
+        "runAttempt": "1",
+        "sha": "13bb2ac181db731e3d54c34c3c5c4cfdbe8958fb",
+        "workflow": "SMC Crypto and Metals Forward",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 1,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 0,
+      "reconstructedCount": 3,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 0
     }
   ],
   "discrepancyLog": [],
@@ -1284,6 +1310,15 @@
       "totalUnrealizedPnl": 0,
       "missingSymbols": [],
       "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-alternatives|metals-5|42175180047|1",
+      "observedAt": "2026-11-06T06:33:55.968Z",
+      "quality": "fresh",
+      "markedEquity": 1023.6006795650333,
+      "totalUnrealizedPnl": 1.1584197414592732,
+      "missingSymbols": [],
+      "staleSymbols": []
     }
   ],
   "markedSeriesCoverageStartAt": "2026-10-04T14:55:48.473Z",
@@ -1497,6 +1532,98 @@
         "exitBarStartT": "2026-11-03T14:30:00.000Z",
         "exitBarEndT": "2026-11-03T18:30:00.000Z"
       }
+    },
+    {
+      "symbol": "CPER",
+      "signalT": "2026-11-05T14:30:00.000Z",
+      "entryT": "2026-11-05T18:30:00.000Z",
+      "dir": -1,
+      "entry": 37.66999816894531,
+      "stop": 40.406092807224816,
+      "target": 32.197808892386306,
+      "risk": 2.7360946382795035,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "mode": "stock",
+      "momentumShadow": {
+        "available": true,
+        "score": 60.8,
+        "bucket": "medium",
+        "asOfDate": "2026-11-04",
+        "direction": "short",
+        "ret20": -0.030645596046666723,
+        "ret60": -0.04052712627159738,
+        "rsi14": 42.95081290593705,
+        "ma20": 39.540500259399415,
+        "ma50": 39.726399993896486,
+        "ma20Slope5": -0.004456474964848245,
+        "volumeRatio20": 0.5029799841526854,
+        "benchmarkSymbol": "GLD",
+        "benchmarkRet20": -0.009018874652548803,
+        "benchmarkRet60": -0.07100459354407385,
+        "rs20": -0.02162672139411792,
+        "rs60": 0.030477467272476466,
+        "components": {
+          "return20": {
+            "score": 65.3,
+            "weight": 20
+          },
+          "return60": {
+            "score": 60.1,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 67.6,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 61.1,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 63.5,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 39.8,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 40.36000061035156,
+        "atr14": 0.46092196873256136,
+        "signalCompletedAt": "2026-11-05T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "CPER|2026-11-05T14:30:00.000Z|-1",
+      "firstObservedAt": "2026-11-06T06:33:55.968Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-alternatives",
+        "cohort": "metals-5",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "42175180047",
+          "runAttempt": "1",
+          "sha": "13bb2ac181db731e3d54c34c3c5c4cfdbe8958fb",
+          "workflow": "SMC Crypto and Metals Forward",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed"
     }
   ]
 }
