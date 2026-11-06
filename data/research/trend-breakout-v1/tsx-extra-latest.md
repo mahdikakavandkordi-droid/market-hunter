@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-extra
-Generated: 2026-11-06T18:15:45.003Z; mode: forward_shadow.
-Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 37.
-Open 12; pending 3; closed 34; lifecycle reviews 0.
-Realized equity $992.90; marked equity n/a; mark quality incomplete_missing_marks.
+Generated: 2026-11-06T23:24:37.828Z; mode: forward_shadow.
+Forward start: 2026-10-04T19:55:57.808303+00:00; universe 37; failed fetch/review symbols 0.
+Open 15; pending 1; closed 34; lifecycle reviews 0.
+Realized equity $992.90; marked equity $1050.97; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -21,15 +21,16 @@ Realized equity $992.90; marked equity n/a; mark quality incomplete_missing_mark
 - CCO.TO: Short open; entry 108; current stop 105.4307120186942; provenance prospective; gap none
 - FM.TO: Short open; entry 32.970001220703125; current stop 35.16393116542271; provenance prospective; gap none
 - BAM.TO: Long open; entry 71.55000305175781; current stop 71.0703593662807; provenance prospective; gap none
-- BIP-UN.TO: Long open; entry 53.189998626708984; current stop 51.55928475516183; provenance prospective; gap none
+- BIP-UN.TO: Long open; entry 53.189998626708984; current stop 52.32928575788225; provenance prospective; gap none
 - DOL.TO: Long open; entry 211.36000061035156; current stop 210.76749965122767; provenance prospective; gap none
-- GIB-A.TO: Long open; entry 114.62999725341797; current stop 111.33856746128627; provenance prospective; gap none
+- GIB-A.TO: Long open; entry 114.62999725341797; current stop 111.97428567068917; provenance prospective; gap none
 - CAE.TO: Long open; entry 37.91999816894531; current stop 36.59642791748047; provenance prospective; gap none
-- GIL.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- H.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- KEY.TO: Short open; entry 52.91999816894531; current stop 53.606432233537944; provenance prospective; gap none
+- KEY.TO: Short open; entry 52.91999816894531; current stop 53.17071369716099; provenance prospective; gap none
 - QSR.TO: Long open; entry 110; current stop 106.11500004359654; provenance prospective; gap none
-- TIH.TO: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- GIL.TO: Short open; entry 47.599998474121094; current stop 52.34214128766741; provenance prospective; gap none
+- H.TO: Long open; entry 57.20000076293945; current stop 55.92285755702427; provenance prospective; gap none
+- SAP.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- TIH.TO: Short open; entry 189.0399932861328; current stop 202.86856079101562; provenance prospective; gap none
 
 ## Common-window comparison
 

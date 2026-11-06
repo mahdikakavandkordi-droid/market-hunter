@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-06T18:15:45.003Z; mode: forward_shadow.
-Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 15.
-Open 5; pending 2; closed 55; lifecycle reviews 0.
-Realized equity $846.21; marked equity n/a; mark quality incomplete_missing_marks.
+Generated: 2026-11-06T23:24:37.828Z; mode: forward_shadow.
+Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
+Open 7; pending 0; closed 55; lifecycle reviews 0.
+Realized equity $846.21; marked equity $844.36; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -20,12 +20,12 @@ Realized equity $846.21; marked equity n/a; mark quality incomplete_missing_mark
 - DOGE-USD: Short open; entry 0.07109999656677246; current stop 0.07458285135882241; provenance prospective; gap none
 - SHIB-USD: Short open; entry 0.000004500000159168849; current stop 0.000004722857543778705; provenance prospective; gap none
 - XLM-USD: Short open; entry 0.15279600024223328; current stop 0.16179443044321878; provenance prospective; gap none
-- BCH-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- XRP-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- BCH-USD: Short open; entry 267.010009765625; current stop 284.93143572126115; provenance prospective; gap none
+- XRP-USD: Short open; entry 1.1963000297546387; current stop 1.259671381541661; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-06T06:33:51.070Z; stale false.
+SMC ledger as of 2026-11-06T06:33:51.070Z; stale true.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 14; challenger closed 55. No winner is claimed from a small sample.
 
