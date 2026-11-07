@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "tsx-extra",
-  "updatedAt": "2026-11-06T03:41:24.629Z",
+  "updatedAt": "2026-11-07T03:15:20.593Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "RCI-B.TO",
@@ -2212,6 +2212,93 @@
       "prospectiveCount": 2,
       "pendingCount": 0,
       "discrepancyCount": 4
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|42333101663|1",
+      "observedAt": "2026-11-07T03:15:20.593Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "tsx-extra",
+      "github": {
+        "runId": "42333101663",
+        "runAttempt": "1",
+        "sha": "b3feb694ae02c1573ff184ca804f731fa98070e5",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 0,
+          "expected": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "present": [
+            0
+          ]
+        },
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "GSY.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-10-26",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "WSP.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-22",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 1,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 11,
+      "prospectiveCount": 2,
+      "pendingCount": 0,
+      "discrepancyCount": 0
     }
   ],
   "discrepancyLog": [
@@ -2503,6 +2590,15 @@
       "quality": "fresh",
       "markedEquity": 1012.998291488567,
       "totalUnrealizedPnl": 10.62663552146177,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|42333101663|1",
+      "observedAt": "2026-11-07T03:15:20.593Z",
+      "quality": "fresh",
+      "markedEquity": 1000.9253716064013,
+      "totalUnrealizedPnl": 5.459545896755762,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -3612,9 +3708,9 @@
       "stop": 200.6988639831543,
       "target": 216.75228118896484,
       "risk": 5.351139068603516,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-11-06T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 68.4,
@@ -3693,7 +3789,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "stop",
+      "exitPriceAssumed": 200.6988639831543,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-11-06T14:30:00.000Z",
+        "exitBarEndT": "2026-11-06T18:30:00.000Z"
+      }
     },
     {
       "symbol": "DOL.TO",
@@ -3981,7 +4090,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }

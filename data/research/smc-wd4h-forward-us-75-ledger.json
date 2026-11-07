@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-11-06T03:41:34.924Z",
+  "updatedAt": "2026-11-07T03:15:30.404Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -1263,6 +1263,63 @@
       "prospectiveCount": 5,
       "pendingCount": 0,
       "discrepancyCount": 25
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|42333101663|1",
+      "observedAt": "2026-11-07T03:15:30.404Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "42333101663",
+        "runAttempt": "1",
+        "sha": "b3feb694ae02c1573ff184ca804f731fa98070e5",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "EOG",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-06",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        },
+        {
+          "symbol": "TMO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-06",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 1,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 30,
+      "prospectiveCount": 5,
+      "pendingCount": 0,
+      "discrepancyCount": 15
     }
   ],
   "discrepancyLog": [
@@ -1620,6 +1677,61 @@
       "recomputed": -0.4325765976968849,
       "firstDetectedAt": "2026-11-05T03:45:32.706Z",
       "runKey": "smc-forward-expanded|us-75|41963505328|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "PM|2026-10-26T13:30:00.000Z|1",
+      "field": "stop",
+      "recorded": 183.63926664079938,
+      "recomputed": 183.63919525146486,
+      "firstDetectedAt": "2026-11-07T03:15:30.404Z",
+      "runKey": "smc-forward-expanded|us-75|42333101663|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "PM|2026-10-26T13:30:00.000Z|1",
+      "field": "target",
+      "recorded": 240.29644840785437,
+      "recomputed": 240.29659118652341,
+      "firstDetectedAt": "2026-11-07T03:15:30.404Z",
+      "runKey": "smc-forward-expanded|us-75|42333101663|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "PM|2026-10-26T13:30:00.000Z|1",
+      "field": "risk",
+      "recorded": 18.885727255684998,
+      "recomputed": 18.88579864501952,
+      "firstDetectedAt": "2026-11-07T03:15:30.404Z",
+      "runKey": "smc-forward-expanded|us-75|42333101663|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "PM|2026-10-26T13:30:00.000Z|1",
+      "field": "signalSnapshot",
+      "recorded": {
+        "opposingSwing": 184,
+        "atr14": 3.6073335920061385,
+        "signalCompletedAt": "2026-10-26T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "recomputed": {
+        "opposingSwing": 184,
+        "atr14": 3.6080474853515625,
+        "signalCompletedAt": "2026-10-26T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "firstDetectedAt": "2026-11-07T03:15:30.404Z",
+      "runKey": "smc-forward-expanded|us-75|42333101663|1"
+    },
+    {
+      "type": "closed_outcome_revision",
+      "identity": "PM|2026-10-26T13:30:00.000Z|1",
+      "field": "R",
+      "recorded": 0.018532836929023522,
+      "recomputed": 0.01853276687390327,
+      "firstDetectedAt": "2026-11-07T03:15:30.404Z",
+      "runKey": "smc-forward-expanded|us-75|42333101663|1"
     }
   ],
   "markedEquitySeries": [
@@ -1863,6 +1975,15 @@
       "quality": "fresh",
       "markedEquity": 981.2275754249408,
       "totalUnrealizedPnl": 12.27344434813774,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|42333101663|1",
+      "observedAt": "2026-11-07T03:15:30.404Z",
+      "quality": "fresh",
+      "markedEquity": 978.8691029152712,
+      "totalUnrealizedPnl": 9.914971838467983,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -4366,9 +4487,9 @@
       "stop": 193.70587757655554,
       "target": 128.828250340053,
       "risk": 21.62587574550085,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -0.0439287157395154,
+      "exitT": "2026-11-06T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 63.2,
@@ -4447,7 +4568,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 173.02999877929688,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-11-06T14:30:00.000Z",
+        "exitBarEndT": "2026-11-06T18:30:00.000Z"
+      }
     },
     {
       "symbol": "BLK",
@@ -5274,7 +5407,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "BA",
@@ -5365,7 +5499,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "C",
@@ -5456,7 +5591,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
