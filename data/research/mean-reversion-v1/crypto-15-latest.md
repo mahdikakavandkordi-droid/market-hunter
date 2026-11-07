@@ -1,6 +1,6 @@
 # Mean Reversion V1 — crypto-15
-Generated: 2026-11-06T23:32:14.509Z; mode: forward_shadow.
-Forward start: 2026-10-04T20:24:23.948534+00:00; universe 15; failed fetch/review symbols 0.
+Generated: 2026-11-07T03:14:12.098Z; mode: forward_shadow.
+Forward start: 2026-10-04T20:24:23.948534+00:00; universe 15; failed fetch/review symbols 15.
 Open 0; pending 0; closed 15; lifecycle reviews 0.
 Realized equity $926.22; marked equity $926.22; mark quality fresh.
 ## Evidence provenance
@@ -18,7 +18,7 @@ Realized equity $926.22; marked equity $926.22; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-06T06:33:51.070Z; stale true. Trend ledger as of 2026-11-06T23:24:37.828Z; stale false.
+SMC ledger as of 2026-11-06T06:33:51.070Z; stale true. Trend ledger as of 2026-11-07T03:02:34.092Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
 SMC closed 14; Trend closed 55; challenger closed 15. No winner is claimed from a small sample.
 
