@@ -1,5 +1,5 @@
 # Mean Reversion V1 — metals-5
-Generated: 2026-11-07T10:42:33.954Z; mode: forward_shadow.
+Generated: 2026-11-07T16:39:21.141Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 5; failed fetch/review symbols 2.
 Open 0; pending 0; closed 0; lifecycle reviews 0.
 Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
