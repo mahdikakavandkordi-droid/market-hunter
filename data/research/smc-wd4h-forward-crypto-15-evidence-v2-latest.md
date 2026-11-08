@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — crypto-15 — Corrected Evidence v2
 
-Mode: crypto; generated 2026-11-07T05:52:47.697Z; start 2026-10-01; universe 15.
+Mode: crypto; generated 2026-11-08T05:55:18.501Z; start 2026-10-01; universe 15.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $945.34; return -5.5%; realized-event max DD -5.5%.
-Marked equity $943.10; return -5.7%; observed marked max DD -5.4%; quality fresh.
+Marked equity $945.52; return -5.4%; observed marked max DD -5.4%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:43.751Z; first complete marked-equity observation 2026-10-04T14:55:43.751Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,14 +23,14 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---|---|---:|
-| DOGE-USD | Short | 0.072 | 0.072 | 2026-11-07T04:00:00.000Z | fresh | $-0.26 |
-| DOT-USD | Short | 0.894 | 0.902 | 2026-11-07T04:00:00.000Z | fresh | $-0.76 |
-| SHIB-USD | Short | 0.000 | 0.000 | 2026-11-07T04:00:00.000Z | fresh | $-1.22 |
+| DOGE-USD | Short | 0.072 | 0.071 | 2026-11-08T04:00:00.000Z | fresh | $0.78 |
+| DOT-USD | Short | 0.894 | 0.892 | 2026-11-08T04:00:00.000Z | fresh | $0.13 |
+| SHIB-USD | Short | 0.000 | 0.000 | 2026-11-08T04:00:00.000Z | fresh | $-0.73 |
 
 ## Evidence integrity
 
 Legacy provenance unknown 5; prospective 0; reconstructed 23; pending 0.
-This run discrepancies 10; prior not re-observed 0; candle/data diagnostics 30.
+This run discrepancies 15; prior not re-observed 0; candle/data diagnostics 16.
 
 ### Performance by evidence provenance
 
@@ -52,33 +52,19 @@ This run discrepancies 10; prior not re-observed 0; candle/data diagnostics 30.
 ## Fetch/data gaps
 
 - No fetch failures this run.
-- Data diagnostic: {"symbol":"BTC-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030762000}
-- Data diagnostic: {"symbol":"BTC-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"ETH-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030760000}
-- Data diagnostic: {"symbol":"ETH-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"BNB-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030766000}
-- Data diagnostic: {"symbol":"BNB-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"XRP-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030763000}
-- Data diagnostic: {"symbol":"XRP-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"SOL-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030763000}
-- Data diagnostic: {"symbol":"SOL-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"TRX-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030663000}
-- Data diagnostic: {"symbol":"TRX-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"DOGE-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030755000}
-- Data diagnostic: {"symbol":"DOGE-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"LINK-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030742000}
-- Data diagnostic: {"symbol":"LINK-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"ADA-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030763000}
-- Data diagnostic: {"symbol":"ADA-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"XLM-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030758000}
-- Data diagnostic: {"symbol":"XLM-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"BCH-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030742000}
-- Data diagnostic: {"symbol":"BCH-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"LTC-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030768000}
-- Data diagnostic: {"symbol":"LTC-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"AVAX-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030763000}
-- Data diagnostic: {"symbol":"AVAX-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"DOT-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030746000}
-- Data diagnostic: {"symbol":"DOT-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
-- Data diagnostic: {"symbol":"SHIB-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794024000000,"t":1794030736000}
-- Data diagnostic: {"symbol":"SHIB-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794024000000,"expected":[0,1,2,3],"present":[0,1]}
+- Data diagnostic: {"symbol":"BTC-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"ETH-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"BNB-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"XRP-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"SOL-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"TRX-USD","mode":"crypto","type":"off_crypto_hour_grid","bucket":1794110400000,"t":1794117184000}
+- Data diagnostic: {"symbol":"TRX-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1]}
+- Data diagnostic: {"symbol":"DOGE-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"LINK-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"ADA-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"XLM-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"BCH-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"LTC-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"AVAX-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"DOT-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"SHIB-USD","mode":"crypto","type":"incomplete_or_missing_crypto_bar","bucket":1794110400000,"expected":[0,1,2,3],"present":[0,1,2]}
