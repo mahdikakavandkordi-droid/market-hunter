@@ -1,5 +1,5 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-11-09T07:00:46.694Z; mode: forward_shadow.
+Generated: 2026-11-09T17:44:32.340Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
 Open 22; pending 1; closed 77; lifecycle reviews 0.
 Realized equity $1012.02; marked equity $1057.36; mark quality fresh.
