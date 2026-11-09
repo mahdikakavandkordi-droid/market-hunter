@@ -1,5 +1,5 @@
 # Mean Reversion V1 — tsx-extra
-Generated: 2026-11-08T23:11:10.323Z; mode: forward_shadow.
+Generated: 2026-11-09T03:00:05.760Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 37; failed fetch/review symbols 4.
 Open 0; pending 0; closed 2; lifecycle reviews 0.
 Realized equity $1005.75; marked equity $1005.75; mark quality fresh.
@@ -18,7 +18,7 @@ Realized equity $1005.75; marked equity $1005.75; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-07T03:15:20.593Z; stale false. Trend ledger as of 2026-11-08T19:52:54.518Z; stale false.
+SMC ledger as of 2026-11-07T03:15:20.593Z; stale false. Trend ledger as of 2026-11-08T23:54:19.297Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
 SMC closed 10; Trend closed 34; challenger closed 2. No winner is claimed from a small sample.
 
