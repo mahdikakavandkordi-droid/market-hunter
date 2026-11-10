@@ -99,7 +99,7 @@ test('restores session, edits/removes portfolio, labels quote freshness, and ren
   await nasdaq100.locator('.market-context>summary').click();
   await expect(page.locator('.outlook-panel')).not.toHaveAttribute('open','');
   expect(await page.locator('#homeMarkets').evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
-  await expect(page.locator('#industryHome')).toContainText('3 qualifying stocks');
+  await expect(page.locator('#homeView [data-focused-review]')).toContainText('Priority charts');
   await expect(page.locator('[data-caution-filter]')).toHaveCount(0);
   await page.locator('.report-details>summary').click();
   await expect(page.locator('.report-title')).toHaveCount(0);

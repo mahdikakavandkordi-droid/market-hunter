@@ -8,6 +8,7 @@ test('home filters canonical picks, discloses omissions and preserves full revie
  await page.goto('/');await expect(page.locator('#refreshBtn')).toBeEnabled();
  await expect(page.locator('#homePicks .home-pick')).toHaveCount(2);
  await expect(page.locator('[data-caution-filter]')).toHaveAttribute('aria-pressed','false');
+ await page.getByText('Original research list',{exact:true}).click();
  await page.locator('[data-caution-filter]').click();
  await expect(page.locator('#homePicks .home-pick')).toHaveCount(1);
  await expect(page.locator('#homePicks')).toContainText('GOOD');
