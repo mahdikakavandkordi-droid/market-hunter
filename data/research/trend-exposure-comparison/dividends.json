@@ -1,0 +1,2640 @@
+{
+  "createdAt": "2026-11-10T21:01:38.134Z",
+  "sourceRun": 42898507377,
+  "assumptions": {
+    "capital": 10000,
+    "cashInterest": 0,
+    "referenceFees": 0,
+    "strategyDividends": "Cash dividends credited at ex-date for preceding-close holdings; taxes and payment delay excluded.",
+    "priceBasis": "Close is ETF price return; adjusted is ETF return including reinvested distributions. Select the basis consistent with the strategy dividend scenario.",
+    "fixedHalf": "50% ETF and 50% cash, rebalanced at every close. A fixed allocation chosen before examining results.",
+    "matchedAverage": "Constant ETF weight equal to strategy mean invested fraction over the matching return intervals. Retrospective exposure diagnostic.",
+    "laggedExposure": "ETF return during each close-to-close interval multiplied by strategy invested fraction at the preceding close. Retrospective strategy-dependent timing diagnostic.",
+    "referenceCosts": "ETF rebalancing costs excluded, making these optimistic reference returns. Strategy retains actual modeled fees and slippage.",
+    "limitations": [
+      "Surviving liquid-stock sample.",
+      "Dividend scenario credits stock distributions on ex-date rather than payment date.",
+      "2023 onward already inspected.",
+      "Mean exposure does not equal matched volatility or matched factor exposure.",
+      "Lagged exposure uses preceding-close holdings; portfolio may trade at next open."
+    ]
+  },
+  "results": [
+    {
+      "market": "CA",
+      "start": "2016-01-04",
+      "end": "2026-11-09",
+      "capital": 10000,
+      "commissionPerOrder": 1,
+      "slippagePerSide": 0.0005,
+      "averageExposurePct": 53.62532470445451,
+      "strategy": {
+        "endingEquity": 19873.24232818005,
+        "returnPct": 98.73242328180052,
+        "cagrPct": 6.536121894619096,
+        "maxDrawdownPct": -11.375265267095125,
+        "annualVolatilityPct": 8.11237728178551
+      },
+      "references": [
+        {
+          "type": "fixed_half",
+          "basis": "close",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 17456.08174159553,
+            "returnPct": 74.56081741595533,
+            "cagrPct": 5.27000859869966,
+            "maxDrawdownPct": -19.279990326072806,
+            "annualVolatilityPct": 7.505344483062716
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -1.1889220231184883,
+              "referenceReturnPct": 9.155981324334617,
+              "differencePp": -10.344903347453105
+            },
+            "2017": {
+              "strategyReturnPct": 3.6415151674204393,
+              "referenceReturnPct": 3.354099949985012,
+              "differencePp": 0.2874152174354272
+            },
+            "2018": {
+              "strategyReturnPct": 6.465966758672792,
+              "referenceReturnPct": -5.239262684378132,
+              "differencePp": 11.705229443050925
+            },
+            "2019": {
+              "strategyReturnPct": 7.82220176394457,
+              "referenceReturnPct": 8.816329143552505,
+              "differencePp": -0.9941273796079342
+            },
+            "2020": {
+              "strategyReturnPct": 14.682659597080194,
+              "referenceReturnPct": 2.4070458593560273,
+              "differencePp": 12.275613737724168
+            },
+            "2021": {
+              "strategyReturnPct": 9.663649885613989,
+              "referenceReturnPct": 11.842586525749542,
+              "differencePp": -2.1789366401355537
+            },
+            "2022": {
+              "strategyReturnPct": 4.070091907757423,
+              "referenceReturnPct": -4.3176129750438275,
+              "differencePp": 8.38770488280125
+            },
+            "2023": {
+              "strategyReturnPct": -0.5369413082523478,
+              "referenceReturnPct": 4.2051890560259375,
+              "differencePp": -4.742130364278285
+            },
+            "2024": {
+              "strategyReturnPct": 2.046146297044782,
+              "referenceReturnPct": 8.315180806246737,
+              "differencePp": -6.269034509201954
+            },
+            "2025": {
+              "strategyReturnPct": 4.581262600517055,
+              "referenceReturnPct": 12.259103079326273,
+              "differencePp": -7.677840478809217
+            },
+            "2026": {
+              "strategyReturnPct": 21.677884178136097,
+              "referenceReturnPct": 8.063674871524661,
+              "differencePp": 13.614209306611436
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "close",
+          "weight": 0.5362532470445451,
+          "metrics": {
+            "endingEquity": 18132.35295973864,
+            "returnPct": 81.3235295973864,
+            "cagrPct": 5.6395267905041235,
+            "maxDrawdownPct": -20.574632531096213,
+            "annualVolatilityPct": 8.049530698460499
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -1.1889220231184883,
+              "referenceReturnPct": 9.833880453370902,
+              "differencePp": -11.02280247648939
+            },
+            "2017": {
+              "strategyReturnPct": 3.6415151674204393,
+              "referenceReturnPct": 3.5959250164928624,
+              "differencePp": 0.0455901509275769
+            },
+            "2018": {
+              "strategyReturnPct": 6.465966758672792,
+              "referenceReturnPct": -5.619419958626882,
+              "differencePp": 12.085386717299674
+            },
+            "2019": {
+              "strategyReturnPct": 7.82220176394457,
+              "referenceReturnPct": 9.478306442889227,
+              "differencePp": -1.6561046789446587
+            },
+            "2020": {
+              "strategyReturnPct": 14.682659597080194,
+              "referenceReturnPct": 2.4737743709242865,
+              "differencePp": 12.208885226155907
+            },
+            "2021": {
+              "strategyReturnPct": 9.663649885613989,
+              "referenceReturnPct": 12.741728512558371,
+              "differencePp": -3.0780786269443805
+            },
+            "2022": {
+              "strategyReturnPct": 4.070091907757423,
+              "referenceReturnPct": -4.646103928224576,
+              "differencePp": 8.716195835981999
+            },
+            "2023": {
+              "strategyReturnPct": -0.5369413082523478,
+              "referenceReturnPct": 4.502822586676958,
+              "differencePp": -5.0397638949293055
+            },
+            "2024": {
+              "strategyReturnPct": 2.046146297044782,
+              "referenceReturnPct": 8.93342156514203,
+              "differencePp": -6.887275268097248
+            },
+            "2025": {
+              "strategyReturnPct": 4.581262600517055,
+              "referenceReturnPct": 13.182819850817085,
+              "differencePp": -8.60155725030003
+            },
+            "2026": {
+              "strategyReturnPct": 21.677884178136097,
+              "referenceReturnPct": 8.657300659629641,
+              "differencePp": 13.020583518506456
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "close",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 14671.120223769909,
+            "returnPct": 46.71120223769909,
+            "cagrPct": 3.5967102729905998,
+            "maxDrawdownPct": -11.345784720300822,
+            "annualVolatilityPct": 6.209290087241672
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -1.1889220231184883,
+              "referenceReturnPct": 7.4427135144556456,
+              "differencePp": -8.631635537574134
+            },
+            "2017": {
+              "strategyReturnPct": 3.6415151674204393,
+              "referenceReturnPct": 2.2807262641288073,
+              "differencePp": 1.360788903291632
+            },
+            "2018": {
+              "strategyReturnPct": 6.465966758672792,
+              "referenceReturnPct": -3.8649230663920564,
+              "differencePp": 10.330889825064848
+            },
+            "2019": {
+              "strategyReturnPct": 7.82220176394457,
+              "referenceReturnPct": 5.026917963362787,
+              "differencePp": 2.7952838005817826
+            },
+            "2020": {
+              "strategyReturnPct": 14.682659597080194,
+              "referenceReturnPct": 4.419211151315383,
+              "differencePp": 10.263448445764812
+            },
+            "2021": {
+              "strategyReturnPct": 9.663649885613989,
+              "referenceReturnPct": 12.107535454314977,
+              "differencePp": -2.4438855687009875
+            },
+            "2022": {
+              "strategyReturnPct": 4.070091907757423,
+              "referenceReturnPct": -6.928997024423012,
+              "differencePp": 10.999088932180435
+            },
+            "2023": {
+              "strategyReturnPct": -0.5369413082523478,
+              "referenceReturnPct": 0.15765379334555796,
+              "differencePp": -0.6945951015979057
+            },
+            "2024": {
+              "strategyReturnPct": 2.046146297044782,
+              "referenceReturnPct": 2.2746223184477943,
+              "differencePp": -0.22847602140301237
+            },
+            "2025": {
+              "strategyReturnPct": 4.581262600517055,
+              "referenceReturnPct": 11.31348338548821,
+              "differencePp": -6.732220784971155
+            },
+            "2026": {
+              "strategyReturnPct": 21.677884178136097,
+              "referenceReturnPct": 6.434052295725912,
+              "differencePp": 15.243831882410186
+            }
+          }
+        },
+        {
+          "type": "fixed_half",
+          "basis": "adjusted",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 20296.366676805665,
+            "returnPct": 102.96366676805664,
+            "cagrPct": 6.743236591967916,
+            "maxDrawdownPct": -18.989684228511607,
+            "annualVolatilityPct": 7.475927060563779
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -1.1889220231184883,
+              "referenceReturnPct": 10.315027514932318,
+              "differencePp": -11.503949538050806
+            },
+            "2017": {
+              "strategyReturnPct": 3.6415151674204393,
+              "referenceReturnPct": 4.75355593422353,
+              "differencePp": -1.1120407668030907
+            },
+            "2018": {
+              "strategyReturnPct": 6.465966758672792,
+              "referenceReturnPct": -3.846552943608361,
+              "differencePp": 10.312519702281154
+            },
+            "2019": {
+              "strategyReturnPct": 7.82220176394457,
+              "referenceReturnPct": 10.45189752091611,
+              "differencePp": -2.6296957569715396
+            },
+            "2020": {
+              "strategyReturnPct": 14.682659597080194,
+              "referenceReturnPct": 4.035070334821111,
+              "differencePp": 10.647589262259082
+            },
+            "2021": {
+              "strategyReturnPct": 9.663649885613989,
+              "referenceReturnPct": 13.31840092793708,
+              "differencePp": -3.65475104232309
+            },
+            "2022": {
+              "strategyReturnPct": 4.070091907757423,
+              "referenceReturnPct": -2.9288203718585315,
+              "differencePp": 6.998912279615954
+            },
+            "2023": {
+              "strategyReturnPct": -0.5369413082523478,
+              "referenceReturnPct": 5.936380382616702,
+              "differencePp": -6.473321690869049
+            },
+            "2024": {
+              "strategyReturnPct": 2.046146297044782,
+              "referenceReturnPct": 10.019861217573212,
+              "differencePp": -7.97371492052843
+            },
+            "2025": {
+              "strategyReturnPct": 4.581262600517055,
+              "referenceReturnPct": 13.809972348726873,
+              "differencePp": -9.228709748209818
+            },
+            "2026": {
+              "strategyReturnPct": 21.677884178136097,
+              "referenceReturnPct": 8.945615935483175,
+              "differencePp": 12.732268242652921
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "adjusted",
+          "weight": 0.5362532470445451,
+          "metrics": {
+            "endingEquity": 21314.72469542224,
+            "returnPct": 113.14724695422238,
+            "cagrPct": 7.226078125569058,
+            "maxDrawdownPct": -20.268011314473256,
+            "annualVolatilityPct": 8.017980321791018
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -1.1889220231184883,
+              "referenceReturnPct": 11.085408451107082,
+              "differencePp": -12.27433047422557
+            },
+            "2017": {
+              "strategyReturnPct": 3.6415151674204393,
+              "referenceReturnPct": 5.101296258967647,
+              "differencePp": -1.4597810915472076
+            },
+            "2018": {
+              "strategyReturnPct": 6.465966758672792,
+              "referenceReturnPct": -4.1307190070112405,
+              "differencePp": 10.596685765684033
+            },
+            "2019": {
+              "strategyReturnPct": 7.82220176394457,
+              "referenceReturnPct": 11.244164649482569,
+              "differencePp": -3.421962885537999
+            },
+            "2020": {
+              "strategyReturnPct": 14.682659597080194,
+              "referenceReturnPct": 4.222234414326054,
+              "differencePp": 10.46042518275414
+            },
+            "2021": {
+              "strategyReturnPct": 9.663649885613989,
+              "referenceReturnPct": 14.338137945773166,
+              "differencePp": -4.6744880601591765
+            },
+            "2022": {
+              "strategyReturnPct": 4.070091907757423,
+              "referenceReturnPct": -3.160903489738487,
+              "differencePp": 7.23099539749591
+            },
+            "2023": {
+              "strategyReturnPct": -0.5369413082523478,
+              "referenceReturnPct": 6.366531381588092,
+              "differencePp": -6.90347268984044
+            },
+            "2024": {
+              "strategyReturnPct": 2.046146297044782,
+              "referenceReturnPct": 10.773221645542264,
+              "differencePp": -8.727075348497483
+            },
+            "2025": {
+              "strategyReturnPct": 4.581262600517055,
+              "referenceReturnPct": 14.860592012086183,
+              "differencePp": -10.279329411569126
+            },
+            "2026": {
+              "strategyReturnPct": 21.677884178136097,
+              "referenceReturnPct": 9.608660806303003,
+              "differencePp": 12.069223371833093
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "adjusted",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 17490.418363363577,
+            "returnPct": 74.90418363363575,
+            "cagrPct": 5.289080929156431,
+            "maxDrawdownPct": -9.33986054424073,
+            "annualVolatilityPct": 6.168681417631147
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -1.1889220231184883,
+              "referenceReturnPct": 8.85274616542706,
+              "differencePp": -10.04166818854555
+            },
+            "2017": {
+              "strategyReturnPct": 3.6415151674204393,
+              "referenceReturnPct": 3.1998058653547545,
+              "differencePp": 0.4417093020656848
+            },
+            "2018": {
+              "strategyReturnPct": 6.465966758672792,
+              "referenceReturnPct": -2.111350873343043,
+              "differencePp": 8.577317632015834
+            },
+            "2019": {
+              "strategyReturnPct": 7.82220176394457,
+              "referenceReturnPct": 7.026681832607173,
+              "differencePp": 0.7955199313373962
+            },
+            "2020": {
+              "strategyReturnPct": 14.682659597080194,
+              "referenceReturnPct": 6.476043904711437,
+              "differencePp": 8.206615692368757
+            },
+            "2021": {
+              "strategyReturnPct": 9.663649885613989,
+              "referenceReturnPct": 14.273882444451026,
+              "differencePp": -4.610232558837035
+            },
+            "2022": {
+              "strategyReturnPct": 4.070091907757423,
+              "referenceReturnPct": -5.3501147459396154,
+              "differencePp": 9.420206653697038
+            },
+            "2023": {
+              "strategyReturnPct": -0.5369413082523478,
+              "referenceReturnPct": 0.970413307358986,
+              "differencePp": -1.5073546156113338
+            },
+            "2024": {
+              "strategyReturnPct": 2.046146297044782,
+              "referenceReturnPct": 4.428843515065783,
+              "differencePp": -2.3826972180210015
+            },
+            "2025": {
+              "strategyReturnPct": 4.581262600517055,
+              "referenceReturnPct": 13.469786375312465,
+              "differencePp": -8.88852377479541
+            },
+            "2026": {
+              "strategyReturnPct": 21.677884178136097,
+              "referenceReturnPct": 7.85585108098561,
+              "differencePp": 13.822033097150488
+            }
+          }
+        }
+      ]
+    },
+    {
+      "market": "CA",
+      "start": "2016-01-04",
+      "end": "2026-11-09",
+      "capital": 10000,
+      "commissionPerOrder": 0,
+      "slippagePerSide": 0.0005,
+      "averageExposurePct": 53.72506243300289,
+      "strategy": {
+        "endingEquity": 20989.64804137775,
+        "returnPct": 109.89648041377751,
+        "cagrPct": 7.074265595702922,
+        "maxDrawdownPct": -10.920474421769965,
+        "annualVolatilityPct": 8.109291103636682
+      },
+      "references": [
+        {
+          "type": "fixed_half",
+          "basis": "close",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 17456.08174159553,
+            "returnPct": 74.56081741595533,
+            "cagrPct": 5.27000859869966,
+            "maxDrawdownPct": -19.279990326072806,
+            "annualVolatilityPct": 7.505344483062716
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -0.5305631930333621,
+              "referenceReturnPct": 9.155981324334617,
+              "differencePp": -9.68654451736798
+            },
+            "2017": {
+              "strategyReturnPct": 4.258994916087389,
+              "referenceReturnPct": 3.354099949985012,
+              "differencePp": 0.9048949661023764
+            },
+            "2018": {
+              "strategyReturnPct": 6.939294810605889,
+              "referenceReturnPct": -5.239262684378132,
+              "differencePp": 12.178557494984021
+            },
+            "2019": {
+              "strategyReturnPct": 8.670194301719114,
+              "referenceReturnPct": 8.816329143552505,
+              "differencePp": -0.14613484183338965
+            },
+            "2020": {
+              "strategyReturnPct": 15.442854443534305,
+              "referenceReturnPct": 2.4070458593560273,
+              "differencePp": 13.035808584178277
+            },
+            "2021": {
+              "strategyReturnPct": 10.326324720832257,
+              "referenceReturnPct": 11.842586525749542,
+              "differencePp": -1.516261804917285
+            },
+            "2022": {
+              "strategyReturnPct": 4.472734011736912,
+              "referenceReturnPct": -4.3176129750438275,
+              "differencePp": 8.79034698678074
+            },
+            "2023": {
+              "strategyReturnPct": -0.007543097603557314,
+              "referenceReturnPct": 4.2051890560259375,
+              "differencePp": -4.212732153629495
+            },
+            "2024": {
+              "strategyReturnPct": 2.41481154165335,
+              "referenceReturnPct": 8.315180806246737,
+              "differencePp": -5.900369264593386
+            },
+            "2025": {
+              "strategyReturnPct": 4.740193670635584,
+              "referenceReturnPct": 12.259103079326273,
+              "differencePp": -7.518909408690688
+            },
+            "2026": {
+              "strategyReturnPct": 22.028607100209662,
+              "referenceReturnPct": 8.063674871524661,
+              "differencePp": 13.964932228685
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "close",
+          "weight": 0.5372506243300289,
+          "metrics": {
+            "endingEquity": 18151.240870110225,
+            "returnPct": 81.51240870110226,
+            "cagrPct": 5.649666527580566,
+            "maxDrawdownPct": -20.61005398095177,
+            "annualVolatilityPct": 8.06450201867477
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -0.5305631930333621,
+              "referenceReturnPct": 9.85255601519366,
+              "differencePp": -10.38311920822702
+            },
+            "2017": {
+              "strategyReturnPct": 4.258994916087389,
+              "referenceReturnPct": 3.6025750550072733,
+              "differencePp": 0.6564198610801153
+            },
+            "2018": {
+              "strategyReturnPct": 6.939294810605889,
+              "referenceReturnPct": -5.629878318985115,
+              "differencePp": 12.569173129591004
+            },
+            "2019": {
+              "strategyReturnPct": 8.670194301719114,
+              "referenceReturnPct": 9.496562371988482,
+              "differencePp": -0.8263680702693676
+            },
+            "2020": {
+              "strategyReturnPct": 15.442854443534305,
+              "referenceReturnPct": 2.4753989491387074,
+              "differencePp": 12.967455494395598
+            },
+            "2021": {
+              "strategyReturnPct": 10.326324720832257,
+              "referenceReturnPct": 12.766543817552133,
+              "differencePp": -2.4402190967198756
+            },
+            "2022": {
+              "strategyReturnPct": 4.472734011736912,
+              "referenceReturnPct": -4.6551687641303685,
+              "differencePp": 9.12790277586728
+            },
+            "2023": {
+              "strategyReturnPct": -0.007543097603557314,
+              "referenceReturnPct": 4.510996041316329,
+              "differencePp": -4.518539138919886
+            },
+            "2024": {
+              "strategyReturnPct": 2.41481154165335,
+              "referenceReturnPct": 8.950459203831862,
+              "differencePp": -6.535647662178512
+            },
+            "2025": {
+              "strategyReturnPct": 4.740193670635584,
+              "referenceReturnPct": 13.208298640774508,
+              "differencePp": -8.468104970138924
+            },
+            "2026": {
+              "strategyReturnPct": 22.028607100209662,
+              "referenceReturnPct": 8.673648095890506,
+              "differencePp": 13.354959004319156
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "close",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 14702.5893266489,
+            "returnPct": 47.02589326648901,
+            "cagrPct": 3.6171756777969577,
+            "maxDrawdownPct": -11.3157252161605,
+            "annualVolatilityPct": 6.2199617972607335
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -0.5305631930333621,
+              "referenceReturnPct": 7.435097357510156,
+              "differencePp": -7.965660550543518
+            },
+            "2017": {
+              "strategyReturnPct": 4.258994916087389,
+              "referenceReturnPct": 2.2824591152485585,
+              "differencePp": 1.97653580083883
+            },
+            "2018": {
+              "strategyReturnPct": 6.939294810605889,
+              "referenceReturnPct": -3.8326406193448626,
+              "differencePp": 10.771935429950751
+            },
+            "2019": {
+              "strategyReturnPct": 8.670194301719114,
+              "referenceReturnPct": 5.0847499985040345,
+              "differencePp": 3.5854443032150796
+            },
+            "2020": {
+              "strategyReturnPct": 15.442854443534305,
+              "referenceReturnPct": 4.463809067755697,
+              "differencePp": 10.979045375778608
+            },
+            "2021": {
+              "strategyReturnPct": 10.326324720832257,
+              "referenceReturnPct": 12.122643874107176,
+              "differencePp": -1.7963191532749168
+            },
+            "2022": {
+              "strategyReturnPct": 4.472734011736912,
+              "referenceReturnPct": -6.936836887084796,
+              "differencePp": 11.409570898821709
+            },
+            "2023": {
+              "strategyReturnPct": -0.007543097603557314,
+              "referenceReturnPct": 0.19779011615370656,
+              "differencePp": -0.20533321375726388
+            },
+            "2024": {
+              "strategyReturnPct": 2.41481154165335,
+              "referenceReturnPct": 2.32049627302926,
+              "differencePp": 0.09431526862409001
+            },
+            "2025": {
+              "strategyReturnPct": 4.740193670635584,
+              "referenceReturnPct": 11.317909853096154,
+              "differencePp": -6.577716182460569
+            },
+            "2026": {
+              "strategyReturnPct": 22.028607100209662,
+              "referenceReturnPct": 6.428091941637337,
+              "differencePp": 15.600515158572325
+            }
+          }
+        },
+        {
+          "type": "fixed_half",
+          "basis": "adjusted",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 20296.366676805665,
+            "returnPct": 102.96366676805664,
+            "cagrPct": 6.743236591967916,
+            "maxDrawdownPct": -18.989684228511607,
+            "annualVolatilityPct": 7.475927060563779
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -0.5305631930333621,
+              "referenceReturnPct": 10.315027514932318,
+              "differencePp": -10.84559070796568
+            },
+            "2017": {
+              "strategyReturnPct": 4.258994916087389,
+              "referenceReturnPct": 4.75355593422353,
+              "differencePp": -0.4945610181361415
+            },
+            "2018": {
+              "strategyReturnPct": 6.939294810605889,
+              "referenceReturnPct": -3.846552943608361,
+              "differencePp": 10.78584775421425
+            },
+            "2019": {
+              "strategyReturnPct": 8.670194301719114,
+              "referenceReturnPct": 10.45189752091611,
+              "differencePp": -1.781703219196995
+            },
+            "2020": {
+              "strategyReturnPct": 15.442854443534305,
+              "referenceReturnPct": 4.035070334821111,
+              "differencePp": 11.407784108713193
+            },
+            "2021": {
+              "strategyReturnPct": 10.326324720832257,
+              "referenceReturnPct": 13.31840092793708,
+              "differencePp": -2.9920762071048213
+            },
+            "2022": {
+              "strategyReturnPct": 4.472734011736912,
+              "referenceReturnPct": -2.9288203718585315,
+              "differencePp": 7.401554383595443
+            },
+            "2023": {
+              "strategyReturnPct": -0.007543097603557314,
+              "referenceReturnPct": 5.936380382616702,
+              "differencePp": -5.943923480220259
+            },
+            "2024": {
+              "strategyReturnPct": 2.41481154165335,
+              "referenceReturnPct": 10.019861217573212,
+              "differencePp": -7.605049675919862
+            },
+            "2025": {
+              "strategyReturnPct": 4.740193670635584,
+              "referenceReturnPct": 13.809972348726873,
+              "differencePp": -9.06977867809129
+            },
+            "2026": {
+              "strategyReturnPct": 22.028607100209662,
+              "referenceReturnPct": 8.945615935483175,
+              "differencePp": 13.082991164726486
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "adjusted",
+          "weight": 0.5372506243300289,
+          "metrics": {
+            "endingEquity": 21343.354930696005,
+            "returnPct": 113.43354930696003,
+            "cagrPct": 7.239347691711595,
+            "maxDrawdownPct": -20.30299231537196,
+            "annualVolatilityPct": 8.032892961467306
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -0.5305631930333621,
+              "referenceReturnPct": 11.1066448822166,
+              "differencePp": -11.63720807524996
+            },
+            "2017": {
+              "strategyReturnPct": 4.258994916087389,
+              "referenceReturnPct": 5.11086870268993,
+              "differencePp": -0.8518737866025416
+            },
+            "2018": {
+              "strategyReturnPct": 6.939294810605889,
+              "referenceReturnPct": -4.138546144119748,
+              "differencePp": 11.077840954725637
+            },
+            "2019": {
+              "strategyReturnPct": 8.670194301719114,
+              "referenceReturnPct": 11.266028294025766,
+              "differencePp": -2.595833992306651
+            },
+            "2020": {
+              "strategyReturnPct": 15.442854443534305,
+              "referenceReturnPct": 4.2271733549521295,
+              "differencePp": 11.215681088582174
+            },
+            "2021": {
+              "strategyReturnPct": 10.326324720832257,
+              "referenceReturnPct": 14.366298278445043,
+              "differencePp": -4.039973557612786
+            },
+            "2022": {
+              "strategyReturnPct": 4.472734011736912,
+              "referenceReturnPct": -3.1673247082175005,
+              "differencePp": 7.640058719954412
+            },
+            "2023": {
+              "strategyReturnPct": -0.007543097603557314,
+              "referenceReturnPct": 6.378363853900604,
+              "differencePp": -6.385906951504161
+            },
+            "2024": {
+              "strategyReturnPct": 2.41481154165335,
+              "referenceReturnPct": 10.793999309775693,
+              "differencePp": -8.379187768122343
+            },
+            "2025": {
+              "strategyReturnPct": 4.740193670635584,
+              "referenceReturnPct": 14.889590866549929,
+              "differencePp": -10.149397195914345
+            },
+            "2026": {
+              "strategyReturnPct": 22.028607100209662,
+              "referenceReturnPct": 9.626928701959159,
+              "differencePp": 12.401678398250503
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "adjusted",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 17532.699214261338,
+            "returnPct": 75.32699214261338,
+            "cagrPct": 5.3125192527556875,
+            "maxDrawdownPct": -9.30410777525461,
+            "annualVolatilityPct": 6.1792068967396725
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": -0.5305631930333621,
+              "referenceReturnPct": 8.844840397385623,
+              "differencePp": -9.375403590418985
+            },
+            "2017": {
+              "strategyReturnPct": 4.258994916087389,
+              "referenceReturnPct": 3.1969817047569515,
+              "differencePp": 1.062013211330437
+            },
+            "2018": {
+              "strategyReturnPct": 6.939294810605889,
+              "referenceReturnPct": -2.077441674720648,
+              "differencePp": 9.016736485326538
+            },
+            "2019": {
+              "strategyReturnPct": 8.670194301719114,
+              "referenceReturnPct": 7.094985319536828,
+              "differencePp": 1.5752089821822857
+            },
+            "2020": {
+              "strategyReturnPct": 15.442854443534305,
+              "referenceReturnPct": 6.525199800564674,
+              "differencePp": 8.91765464296963
+            },
+            "2021": {
+              "strategyReturnPct": 10.326324720832257,
+              "referenceReturnPct": 14.278939836750038,
+              "differencePp": -3.952615115917779
+            },
+            "2022": {
+              "strategyReturnPct": 4.472734011736912,
+              "referenceReturnPct": -5.349417048291761,
+              "differencePp": 9.822151060028672
+            },
+            "2023": {
+              "strategyReturnPct": -0.007543097603557314,
+              "referenceReturnPct": 1.0176388457298513,
+              "differencePp": -1.0251819433334086
+            },
+            "2024": {
+              "strategyReturnPct": 2.41481154165335,
+              "referenceReturnPct": 4.4858722736969,
+              "differencePp": -2.0710607320435503
+            },
+            "2025": {
+              "strategyReturnPct": 4.740193670635584,
+              "referenceReturnPct": 13.46481990869497,
+              "differencePp": -8.724626238059386
+            },
+            "2026": {
+              "strategyReturnPct": 22.028607100209662,
+              "referenceReturnPct": 7.860936249409112,
+              "differencePp": 14.167670850800551
+            }
+          }
+        }
+      ]
+    },
+    {
+      "market": "CA",
+      "start": "2023-01-03",
+      "end": "2026-11-09",
+      "capital": 10000,
+      "commissionPerOrder": 1,
+      "slippagePerSide": 0.0005,
+      "averageExposurePct": 50.67627704271531,
+      "strategy": {
+        "endingEquity": 12730.33193592715,
+        "returnPct": 27.303319359271505,
+        "cagrPct": 6.471951390228536,
+        "maxDrawdownPct": -10.672466101146249,
+        "annualVolatilityPct": 8.238041168942454
+      },
+      "references": [
+        {
+          "type": "fixed_half",
+          "basis": "close",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 13660.09746662318,
+            "returnPct": 36.6009746662318,
+            "cagrPct": 8.439653740315833,
+            "maxDrawdownPct": -6.628890279209443,
+            "annualVolatilityPct": 6.153968885188265
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -1.4267586430917079,
+              "referenceReturnPct": 3.9592574487922194,
+              "differencePp": -5.386016091883928
+            },
+            "2024": {
+              "strategyReturnPct": 1.6873513180792665,
+              "referenceReturnPct": 8.31518080624658,
+              "differencePp": -6.627829488167314
+            },
+            "2025": {
+              "strategyReturnPct": 4.464405448607867,
+              "referenceReturnPct": 12.259103079326316,
+              "differencePp": -7.79469763071845
+            },
+            "2026": {
+              "strategyReturnPct": 21.5753190799147,
+              "referenceReturnPct": 8.063674871524684,
+              "differencePp": 13.511644208390017
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "close",
+          "weight": 0.5067627704271531,
+          "metrics": {
+            "endingEquity": 13716.46962857189,
+            "returnPct": 37.164696285718904,
+            "cagrPct": 8.55572953689705,
+            "maxDrawdownPct": -6.716684592897604,
+            "annualVolatilityPct": 6.237204642761012
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -1.4267586430917079,
+              "referenceReturnPct": 4.011406815509555,
+              "differencePp": -5.438165458601263
+            },
+            "2024": {
+              "strategyReturnPct": 1.6873513180792665,
+              "referenceReturnPct": 8.43035331966111,
+              "differencePp": -6.743002001581844
+            },
+            "2025": {
+              "strategyReturnPct": 4.464405448607867,
+              "referenceReturnPct": 12.43106070230624,
+              "differencePp": -7.966655253698374
+            },
+            "2026": {
+              "strategyReturnPct": 21.5753190799147,
+              "referenceReturnPct": 8.17432523360151,
+              "differencePp": 13.400993846313192
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "close",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 12036.270268026286,
+            "returnPct": 20.362702680262856,
+            "cagrPct": 4.9325326015113635,
+            "maxDrawdownPct": -8.377236748800298,
+            "annualVolatilityPct": 6.5387604834115685
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -1.4267586430917079,
+              "referenceReturnPct": -0.6137958301472679,
+              "differencePp": -0.81296281294444
+            },
+            "2024": {
+              "strategyReturnPct": 1.6873513180792665,
+              "referenceReturnPct": 2.2390437980852385,
+              "differencePp": -0.5516924800059719
+            },
+            "2025": {
+              "strategyReturnPct": 4.464405448607867,
+              "referenceReturnPct": 11.313065834107473,
+              "differencePp": -6.848660385499605
+            },
+            "2026": {
+              "strategyReturnPct": 21.5753190799147,
+              "referenceReturnPct": 6.415013265071834,
+              "differencePp": 15.160305814842868
+            }
+          }
+        },
+        {
+          "type": "fixed_half",
+          "basis": "adjusted",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 14417.173828701518,
+            "returnPct": 44.171738287015174,
+            "cagrPct": 9.969893528957607,
+            "maxDrawdownPct": -6.292763886302389,
+            "annualVolatilityPct": 6.118298864879514
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -1.4267586430917079,
+              "referenceReturnPct": 5.686366144237942,
+              "differencePp": -7.1131247873296495
+            },
+            "2024": {
+              "strategyReturnPct": 1.6873513180792665,
+              "referenceReturnPct": 10.019861217573279,
+              "differencePp": -8.332509899494012
+            },
+            "2025": {
+              "strategyReturnPct": 4.464405448607867,
+              "referenceReturnPct": 13.809972348726562,
+              "differencePp": -9.345566900118696
+            },
+            "2026": {
+              "strategyReturnPct": 21.5753190799147,
+              "referenceReturnPct": 8.945615935483286,
+              "differencePp": 12.629703144431414
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "adjusted",
+          "weight": 0.5067627704271531,
+          "metrics": {
+            "endingEquity": 14487.249189184731,
+            "returnPct": 44.87249189184732,
+            "cagrPct": 10.108500202541904,
+            "maxDrawdownPct": -6.376322622195518,
+            "annualVolatilityPct": 6.201052166135302
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -1.4267586430917079,
+              "referenceReturnPct": 5.763050296646188,
+              "differencePp": -7.189808939737896
+            },
+            "2024": {
+              "strategyReturnPct": 1.6873513180792665,
+              "referenceReturnPct": 10.160117666857005,
+              "differencePp": -8.47276634877774
+            },
+            "2025": {
+              "strategyReturnPct": 4.464405448607867,
+              "referenceReturnPct": 14.005448564125711,
+              "differencePp": -9.541043115517844
+            },
+            "2026": {
+              "strategyReturnPct": 21.5753190799147,
+              "referenceReturnPct": 9.069158822628399,
+              "differencePp": 12.506160257286304
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "adjusted",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 12792.05997528014,
+            "returnPct": 27.92059975280141,
+            "cagrPct": 6.60582807999317,
+            "maxDrawdownPct": -8.045606615093082,
+            "annualVolatilityPct": 6.5106232249669205
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -1.4267586430917079,
+              "referenceReturnPct": 0.17827204343618952,
+              "differencePp": -1.6050306865278974
+            },
+            "2024": {
+              "strategyReturnPct": 1.6873513180792665,
+              "referenceReturnPct": 4.3698086241892975,
+              "differencePp": -2.682457306110031
+            },
+            "2025": {
+              "strategyReturnPct": 4.464405448607867,
+              "referenceReturnPct": 13.463183916098975,
+              "differencePp": -8.998778467491109
+            },
+            "2026": {
+              "strategyReturnPct": 21.5753190799147,
+              "referenceReturnPct": 7.8293772944733275,
+              "differencePp": 13.745941785441374
+            }
+          }
+        }
+      ]
+    },
+    {
+      "market": "CA",
+      "start": "2023-01-03",
+      "end": "2026-11-09",
+      "capital": 10000,
+      "commissionPerOrder": 0,
+      "slippagePerSide": 0.0005,
+      "averageExposurePct": 50.47837266294534,
+      "strategy": {
+        "endingEquity": 12941.202885126955,
+        "returnPct": 29.412028851269547,
+        "cagrPct": 6.927329219078704,
+        "maxDrawdownPct": -10.416175244291438,
+        "annualVolatilityPct": 8.164765880260424
+      },
+      "references": [
+        {
+          "type": "fixed_half",
+          "basis": "close",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 13660.09746662318,
+            "returnPct": 36.6009746662318,
+            "cagrPct": 8.439653740315833,
+            "maxDrawdownPct": -6.628890279209443,
+            "annualVolatilityPct": 6.153968885188265
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -0.9524935717187155,
+              "referenceReturnPct": 3.9592574487922194,
+              "differencePp": -4.911751020510935
+            },
+            "2024": {
+              "strategyReturnPct": 2.322517046177741,
+              "referenceReturnPct": 8.31518080624658,
+              "differencePp": -5.992663760068839
+            },
+            "2025": {
+              "strategyReturnPct": 4.988927822536682,
+              "referenceReturnPct": 12.259103079326316,
+              "differencePp": -7.270175256789635
+            },
+            "2026": {
+              "strategyReturnPct": 21.623188277361848,
+              "referenceReturnPct": 8.063674871524684,
+              "differencePp": 13.559513405837166
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "close",
+          "weight": 0.5047837266294534,
+          "metrics": {
+            "endingEquity": 13699.952749822065,
+            "returnPct": 36.999527498220644,
+            "cagrPct": 8.521756299464766,
+            "maxDrawdownPct": -6.69099780451603,
+            "annualVolatilityPct": 6.212846694854067
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -0.9524935717187155,
+              "referenceReturnPct": 3.9961500211543433,
+              "differencePp": -4.948643592873059
+            },
+            "2024": {
+              "strategyReturnPct": 2.322517046177741,
+              "referenceReturnPct": 8.396642068613968,
+              "differencePp": -6.0741250224362275
+            },
+            "2025": {
+              "strategyReturnPct": 4.988927822536682,
+              "referenceReturnPct": 12.380722511266207,
+              "differencePp": -7.391794688729525
+            },
+            "2026": {
+              "strategyReturnPct": 21.623188277361848,
+              "referenceReturnPct": 8.141940626829358,
+              "differencePp": 13.481247650532492
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "close",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 11994.355102700836,
+            "returnPct": 19.943551027008354,
+            "cagrPct": 4.837482007878546,
+            "maxDrawdownPct": -8.413829436216801,
+            "annualVolatilityPct": 6.5117997532287735
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -0.9524935717187155,
+              "referenceReturnPct": -0.6324264991721451,
+              "differencePp": -0.3200670725465704
+            },
+            "2024": {
+              "strategyReturnPct": 2.322517046177741,
+              "referenceReturnPct": 2.1507015250064265,
+              "differencePp": 0.1718155211713146
+            },
+            "2025": {
+              "strategyReturnPct": 4.988927822536682,
+              "referenceReturnPct": 11.142492211723587,
+              "differencePp": -6.153564389186905
+            },
+            "2026": {
+              "strategyReturnPct": 21.623188277361848,
+              "referenceReturnPct": 6.318963271216904,
+              "differencePp": 15.304225006144945
+            }
+          }
+        },
+        {
+          "type": "fixed_half",
+          "basis": "adjusted",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 14417.173828701518,
+            "returnPct": 44.171738287015174,
+            "cagrPct": 9.969893528957607,
+            "maxDrawdownPct": -6.292763886302389,
+            "annualVolatilityPct": 6.118298864879514
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -0.9524935717187155,
+              "referenceReturnPct": 5.686366144237942,
+              "differencePp": -6.638859715956658
+            },
+            "2024": {
+              "strategyReturnPct": 2.322517046177741,
+              "referenceReturnPct": 10.019861217573279,
+              "differencePp": -7.697344171395537
+            },
+            "2025": {
+              "strategyReturnPct": 4.988927822536682,
+              "referenceReturnPct": 13.809972348726562,
+              "differencePp": -8.82104452618988
+            },
+            "2026": {
+              "strategyReturnPct": 21.623188277361848,
+              "referenceReturnPct": 8.945615935483286,
+              "differencePp": 12.677572341878562
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "adjusted",
+          "weight": 0.5047837266294534,
+          "metrics": {
+            "endingEquity": 14466.711265235173,
+            "returnPct": 44.667112652351726,
+            "cagrPct": 10.067928394763094,
+            "maxDrawdownPct": -6.351874483586095,
+            "annualVolatilityPct": 6.176835403293276
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -0.9524935717187155,
+              "referenceReturnPct": 5.74061047465777,
+              "differencePp": -6.693104046376486
+            },
+            "2024": {
+              "strategyReturnPct": 2.322517046177741,
+              "referenceReturnPct": 10.119060139136348,
+              "differencePp": -7.796543092958608
+            },
+            "2025": {
+              "strategyReturnPct": 4.988927822536682,
+              "referenceReturnPct": 13.948220636759533,
+              "differencePp": -8.959292814222852
+            },
+            "2026": {
+              "strategyReturnPct": 21.623188277361848,
+              "referenceReturnPct": 9.032998665711279,
+              "differencePp": 12.59018961165057
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "adjusted",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 12745.022361905312,
+            "returnPct": 27.450223619053116,
+            "cagrPct": 6.503855701813865,
+            "maxDrawdownPct": -8.076567631899788,
+            "annualVolatilityPct": 6.483496187449644
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": -0.9524935717187155,
+              "referenceReturnPct": 0.1646086632948185,
+              "differencePp": -1.117102235013534
+            },
+            "2024": {
+              "strategyReturnPct": 2.322517046177741,
+              "referenceReturnPct": 4.272655509504841,
+              "differencePp": -1.9501384633271002
+            },
+            "2025": {
+              "strategyReturnPct": 4.988927822536682,
+              "referenceReturnPct": 13.282795545918734,
+              "differencePp": -8.293867723382053
+            },
+            "2026": {
+              "strategyReturnPct": 21.623188277361848,
+              "referenceReturnPct": 7.718900416949626,
+              "differencePp": 13.904287860412223
+            }
+          }
+        }
+      ]
+    },
+    {
+      "market": "US",
+      "start": "2016-01-04",
+      "end": "2026-11-09",
+      "capital": 10000,
+      "commissionPerOrder": 1,
+      "slippagePerSide": 0.0005,
+      "averageExposurePct": 56.939969733407835,
+      "strategy": {
+        "endingEquity": 28143.789102014838,
+        "returnPct": 181.4378910201484,
+        "cagrPct": 10.008896909384513,
+        "maxDrawdownPct": -14.91510044430726,
+        "annualVolatilityPct": 10.735482126754597
+      },
+      "references": [
+        {
+          "type": "fixed_half",
+          "basis": "close",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 20201.423330372992,
+            "returnPct": 102.01423330372994,
+            "cagrPct": 6.697106293644706,
+            "maxDrawdownPct": -18.206356730445684,
+            "annualVolatilityPct": 8.891101175352528
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 2.938488274175044,
+              "referenceReturnPct": 5.67554758465012,
+              "differencePp": -2.7370593104750762
+            },
+            "2017": {
+              "strategyReturnPct": 31.679851292840276,
+              "referenceReturnPct": 9.327045003944455,
+              "differencePp": 22.35280628889582
+            },
+            "2018": {
+              "strategyReturnPct": -3.953643257011741,
+              "referenceReturnPct": -2.870973281563116,
+              "differencePp": -1.0826699754486246
+            },
+            "2019": {
+              "strategyReturnPct": 9.122572124724137,
+              "referenceReturnPct": 13.710586615229259,
+              "differencePp": -4.588014490505121
+            },
+            "2020": {
+              "strategyReturnPct": 5.982094776187075,
+              "referenceReturnPct": 9.326661331359286,
+              "differencePp": -3.3445665551722126
+            },
+            "2021": {
+              "strategyReturnPct": 9.448861040317258,
+              "referenceReturnPct": 12.954726891631418,
+              "differencePp": -3.5058658513141605
+            },
+            "2022": {
+              "strategyReturnPct": -5.082738481475024,
+              "referenceReturnPct": -9.607216555894249,
+              "differencePp": 4.524478074419225
+            },
+            "2023": {
+              "strategyReturnPct": 18.822279429343315,
+              "referenceReturnPct": 11.726075756523379,
+              "differencePp": 7.096203672819934
+            },
+            "2024": {
+              "strategyReturnPct": 26.058617952477057,
+              "referenceReturnPct": 11.264909744009577,
+              "differencePp": 14.793708208467482
+            },
+            "2025": {
+              "strategyReturnPct": 16.61271389985084,
+              "referenceReturnPct": 8.366559797988572,
+              "differencePp": 8.246154101862269
+            },
+            "2026": {
+              "strategyReturnPct": 3.0112590263079886,
+              "referenceReturnPct": 5.282844340917725,
+              "differencePp": -2.2715853146097365
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "close",
+          "weight": 0.5693996973340784,
+          "metrics": {
+            "endingEquity": 22121.705526269623,
+            "returnPct": 121.21705526269623,
+            "cagrPct": 7.594045537046479,
+            "maxDrawdownPct": -20.550430627022187,
+            "annualVolatilityPct": 10.125180636424796
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 2.938488274175044,
+              "referenceReturnPct": 6.4524947123425935,
+              "differencePp": -3.5140064381675495
+            },
+            "2017": {
+              "strategyReturnPct": 31.679851292840276,
+              "referenceReturnPct": 10.678396951310031,
+              "differencePp": 21.001454341530245
+            },
+            "2018": {
+              "strategyReturnPct": -3.953643257011741,
+              "referenceReturnPct": -3.3187712876740494,
+              "differencePp": -0.6348719693376914
+            },
+            "2019": {
+              "strategyReturnPct": 9.122572124724137,
+              "referenceReturnPct": 15.720133158251294,
+              "differencePp": -6.597561033527155
+            },
+            "2020": {
+              "strategyReturnPct": 5.982094776187075,
+              "referenceReturnPct": 10.440180664106746,
+              "differencePp": -4.458085887919672
+            },
+            "2021": {
+              "strategyReturnPct": 9.448861040317258,
+              "referenceReturnPct": 14.841437549289438,
+              "differencePp": -5.39257650897218
+            },
+            "2022": {
+              "strategyReturnPct": -5.082738481475024,
+              "referenceReturnPct": -10.96886854478658,
+              "differencePp": 5.8861300633115565
+            },
+            "2023": {
+              "strategyReturnPct": 18.822279429343315,
+              "referenceReturnPct": 13.419929487942506,
+              "differencePp": 5.402349941400808
+            },
+            "2024": {
+              "strategyReturnPct": 26.058617952477057,
+              "referenceReturnPct": 12.890020133839952,
+              "differencePp": 13.168597818637107
+            },
+            "2025": {
+              "strategyReturnPct": 16.61271389985084,
+              "referenceReturnPct": 9.501512805599898,
+              "differencePp": 7.111201094250941
+            },
+            "2026": {
+              "strategyReturnPct": 3.0112590263079886,
+              "referenceReturnPct": 6.002511065115268,
+              "differencePp": -2.9912520388072794
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "close",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 20163.697053609645,
+            "returnPct": 101.63697053609644,
+            "cagrPct": 6.678721498622386,
+            "maxDrawdownPct": -14.392620550146374,
+            "annualVolatilityPct": 7.611552960863059
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 2.938488274175044,
+              "referenceReturnPct": 9.044318712294363,
+              "differencePp": -6.10583043811932
+            },
+            "2017": {
+              "strategyReturnPct": 31.679851292840276,
+              "referenceReturnPct": 10.978516207958489,
+              "differencePp": 20.70133508488179
+            },
+            "2018": {
+              "strategyReturnPct": -3.953643257011741,
+              "referenceReturnPct": -6.297237310999815,
+              "differencePp": 2.343594053988074
+            },
+            "2019": {
+              "strategyReturnPct": 9.122572124724137,
+              "referenceReturnPct": 13.628097955922547,
+              "differencePp": -4.505525831198409
+            },
+            "2020": {
+              "strategyReturnPct": 5.982094776187075,
+              "referenceReturnPct": 9.282800882349784,
+              "differencePp": -3.3007061061627097
+            },
+            "2021": {
+              "strategyReturnPct": 9.448861040317258,
+              "referenceReturnPct": 7.21291658264307,
+              "differencePp": 2.2359444576741883
+            },
+            "2022": {
+              "strategyReturnPct": -5.082738481475024,
+              "referenceReturnPct": -9.122505933976877,
+              "differencePp": 4.039767452501852
+            },
+            "2023": {
+              "strategyReturnPct": 18.822279429343315,
+              "referenceReturnPct": 10.5095100047353,
+              "differencePp": 8.312769424608014
+            },
+            "2024": {
+              "strategyReturnPct": 26.058617952477057,
+              "referenceReturnPct": 15.642220305358801,
+              "differencePp": 10.41639764711826
+            },
+            "2025": {
+              "strategyReturnPct": 16.61271389985084,
+              "referenceReturnPct": 6.118596979952695,
+              "differencePp": 10.494116919898143
+            },
+            "2026": {
+              "strategyReturnPct": 3.0112590263079886,
+              "referenceReturnPct": 8.374530457036444,
+              "differencePp": -5.363271430728456
+            }
+          }
+        },
+        {
+          "type": "fixed_half",
+          "basis": "adjusted",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 22023.07628720562,
+            "returnPct": 120.23076287205616,
+            "cagrPct": 7.549732494633843,
+            "maxDrawdownPct": -17.971869132371943,
+            "annualVolatilityPct": 8.862203999970317
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 2.938488274175044,
+              "referenceReturnPct": 6.801847627609869,
+              "differencePp": -3.8633593534348254
+            },
+            "2017": {
+              "strategyReturnPct": 31.679851292840276,
+              "referenceReturnPct": 10.384543905570354,
+              "differencePp": 21.295307387269922
+            },
+            "2018": {
+              "strategyReturnPct": -3.953643257011741,
+              "referenceReturnPct": -1.9570312115508637,
+              "differencePp": -1.9966120454608771
+            },
+            "2019": {
+              "strategyReturnPct": 9.122572124724137,
+              "referenceReturnPct": 14.78128026366392,
+              "differencePp": -5.658708138939783
+            },
+            "2020": {
+              "strategyReturnPct": 5.982094776187075,
+              "referenceReturnPct": 10.332006644671555,
+              "differencePp": -4.3499118684844795
+            },
+            "2021": {
+              "strategyReturnPct": 9.448861040317258,
+              "referenceReturnPct": 13.70104732848041,
+              "differencePp": -4.252186288163151
+            },
+            "2022": {
+              "strategyReturnPct": -5.082738481475024,
+              "referenceReturnPct": -8.878656414435582,
+              "differencePp": 3.7959179329605575
+            },
+            "2023": {
+              "strategyReturnPct": 18.822279429343315,
+              "referenceReturnPct": 12.568108544237578,
+              "differencePp": 6.2541708851057365
+            },
+            "2024": {
+              "strategyReturnPct": 26.058617952477057,
+              "referenceReturnPct": 11.975936590374282,
+              "differencePp": 14.082681362102779
+            },
+            "2025": {
+              "strategyReturnPct": 16.61271389985084,
+              "referenceReturnPct": 9.001459687404022,
+              "differencePp": 7.611254212446816
+            },
+            "2026": {
+              "strategyReturnPct": 3.0112590263079886,
+              "referenceReturnPct": 5.692689365658676,
+              "differencePp": -2.6814303393506878
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "adjusted",
+          "weight": 0.5693996973340784,
+          "metrics": {
+            "endingEquity": 24408.261237311133,
+            "returnPct": 144.08261237311132,
+            "cagrPct": 8.574130075359099,
+            "maxDrawdownPct": -20.290147947981264,
+            "annualVolatilityPct": 10.092272550591922
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 2.938488274175044,
+              "referenceReturnPct": 7.745876286588316,
+              "differencePp": -4.807388012413272
+            },
+            "2017": {
+              "strategyReturnPct": 31.679851292840276,
+              "referenceReturnPct": 11.898395591137723,
+              "differencePp": 19.781455701702555
+            },
+            "2018": {
+              "strategyReturnPct": -3.953643257011741,
+              "referenceReturnPct": -2.2814429717343043,
+              "differencePp": -1.6722002852774365
+            },
+            "2019": {
+              "strategyReturnPct": 9.122572124724137,
+              "referenceReturnPct": 16.961932191048312,
+              "differencePp": -7.839360066324175
+            },
+            "2020": {
+              "strategyReturnPct": 5.982094776187075,
+              "referenceReturnPct": 11.599158964711087,
+              "differencePp": -5.6170641885240125
+            },
+            "2021": {
+              "strategyReturnPct": 9.448861040317258,
+              "referenceReturnPct": 15.706580561072748,
+              "differencePp": -6.257719520755489
+            },
+            "2022": {
+              "strategyReturnPct": -5.082738481475024,
+              "referenceReturnPct": -10.150960499446748,
+              "differencePp": 5.068222017971724
+            },
+            "2023": {
+              "strategyReturnPct": 18.822279429343315,
+              "referenceReturnPct": 14.394490334016364,
+              "differencePp": 4.4277890953269505
+            },
+            "2024": {
+              "strategyReturnPct": 26.058617952477057,
+              "referenceReturnPct": 13.711976409672788,
+              "differencePp": 12.34664154280427
+            },
+            "2025": {
+              "strategyReturnPct": 16.61271389985084,
+              "referenceReturnPct": 10.232329526801198,
+              "differencePp": 6.380384373049641
+            },
+            "2026": {
+              "strategyReturnPct": 3.0112590263079886,
+              "referenceReturnPct": 6.472640690593701,
+              "differencePp": -3.461381664285712
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "adjusted",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 22318.16615193833,
+            "returnPct": 123.1816615193833,
+            "cagrPct": 7.681781278592692,
+            "maxDrawdownPct": -14.220625661333875,
+            "annualVolatilityPct": 7.582013125510345
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 2.938488274175044,
+              "referenceReturnPct": 10.48183349642111,
+              "differencePp": -7.543345222246067
+            },
+            "2017": {
+              "strategyReturnPct": 31.679851292840276,
+              "referenceReturnPct": 12.706265125842409,
+              "differencePp": 18.97358616699787
+            },
+            "2018": {
+              "strategyReturnPct": -3.953643257011741,
+              "referenceReturnPct": -5.2595809717209345,
+              "differencePp": 1.3059377147091933
+            },
+            "2019": {
+              "strategyReturnPct": 9.122572124724137,
+              "referenceReturnPct": 15.627770410891495,
+              "differencePp": -6.505198286167357
+            },
+            "2020": {
+              "strategyReturnPct": 5.982094776187075,
+              "referenceReturnPct": 9.785110443760892,
+              "differencePp": -3.803015667573817
+            },
+            "2021": {
+              "strategyReturnPct": 9.448861040317258,
+              "referenceReturnPct": 8.243390778775783,
+              "differencePp": 1.2054702615414747
+            },
+            "2022": {
+              "strategyReturnPct": -5.082738481475024,
+              "referenceReturnPct": -8.95227141355095,
+              "differencePp": 3.8695329320759253
+            },
+            "2023": {
+              "strategyReturnPct": 18.822279429343315,
+              "referenceReturnPct": 11.545395124632595,
+              "differencePp": 7.276884304710718
+            },
+            "2024": {
+              "strategyReturnPct": 26.058617952477057,
+              "referenceReturnPct": 16.67129036298074,
+              "differencePp": 9.38732758949632
+            },
+            "2025": {
+              "strategyReturnPct": 16.61271389985084,
+              "referenceReturnPct": 6.819450167527918,
+              "differencePp": 9.79326373232292
+            },
+            "2026": {
+              "strategyReturnPct": 3.0112590263079886,
+              "referenceReturnPct": 8.778280595968546,
+              "differencePp": -5.767021569660558
+            }
+          }
+        }
+      ]
+    },
+    {
+      "market": "US",
+      "start": "2016-01-04",
+      "end": "2026-11-09",
+      "capital": 10000,
+      "commissionPerOrder": 0,
+      "slippagePerSide": 0.0005,
+      "averageExposurePct": 56.811606372677325,
+      "strategy": {
+        "endingEquity": 29193.60909422639,
+        "returnPct": 191.93609094226392,
+        "cagrPct": 10.380939189633697,
+        "maxDrawdownPct": -14.689227582040875,
+        "annualVolatilityPct": 10.6947338591933
+      },
+      "references": [
+        {
+          "type": "fixed_half",
+          "basis": "close",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 20201.423330372992,
+            "returnPct": 102.01423330372994,
+            "cagrPct": 6.697106293644706,
+            "maxDrawdownPct": -18.206356730445684,
+            "annualVolatilityPct": 8.891101175352528
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 3.5569291653560597,
+              "referenceReturnPct": 5.67554758465012,
+              "differencePp": -2.1186184192940605
+            },
+            "2017": {
+              "strategyReturnPct": 32.34675427934468,
+              "referenceReturnPct": 9.327045003944455,
+              "differencePp": 23.019709275400224
+            },
+            "2018": {
+              "strategyReturnPct": -3.3837002171460573,
+              "referenceReturnPct": -2.870973281563116,
+              "differencePp": -0.5127269355829411
+            },
+            "2019": {
+              "strategyReturnPct": 9.582916790041839,
+              "referenceReturnPct": 13.710586615229259,
+              "differencePp": -4.127669825187419
+            },
+            "2020": {
+              "strategyReturnPct": 6.444584262507602,
+              "referenceReturnPct": 9.326661331359286,
+              "differencePp": -2.882077068851685
+            },
+            "2021": {
+              "strategyReturnPct": 9.888042245899008,
+              "referenceReturnPct": 12.954726891631418,
+              "differencePp": -3.0666846457324093
+            },
+            "2022": {
+              "strategyReturnPct": -4.983878470642733,
+              "referenceReturnPct": -9.607216555894249,
+              "differencePp": 4.6233380852515165
+            },
+            "2023": {
+              "strategyReturnPct": 18.94502603317365,
+              "referenceReturnPct": 11.726075756523379,
+              "differencePp": 7.218950276650271
+            },
+            "2024": {
+              "strategyReturnPct": 26.24303290055041,
+              "referenceReturnPct": 11.264909744009577,
+              "differencePp": 14.978123156540835
+            },
+            "2025": {
+              "strategyReturnPct": 16.411636761117542,
+              "referenceReturnPct": 8.366559797988572,
+              "differencePp": 8.045076963128972
+            },
+            "2026": {
+              "strategyReturnPct": 3.5572877013653637,
+              "referenceReturnPct": 5.282844340917725,
+              "differencePp": -1.7255566395523614
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "close",
+          "weight": 0.5681160637267733,
+          "metrics": {
+            "endingEquity": 22084.91421841853,
+            "returnPct": 120.8491421841853,
+            "cagrPct": 7.577536616229175,
+            "maxDrawdownPct": -20.50747837753386,
+            "annualVolatilityPct": 10.102354803875526
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 3.5569291653560597,
+              "referenceReturnPct": 6.438151795174485,
+              "differencePp": -2.881222629818425
+            },
+            "2017": {
+              "strategyReturnPct": 32.34675427934468,
+              "referenceReturnPct": 10.653273645833794,
+              "differencePp": 21.693480633510887
+            },
+            "2018": {
+              "strategyReturnPct": -3.3837002171460573,
+              "referenceReturnPct": -3.310383592194055,
+              "differencePp": -0.07331662495200231
+            },
+            "2019": {
+              "strategyReturnPct": 9.582916790041839,
+              "referenceReturnPct": 15.682724523060699,
+              "differencePp": -6.099807733018858
+            },
+            "2020": {
+              "strategyReturnPct": 6.444584262507602,
+              "referenceReturnPct": 10.42003343531559,
+              "differencePp": -3.9754491728079877
+            },
+            "2021": {
+              "strategyReturnPct": 9.888042245899008,
+              "referenceReturnPct": 14.806343137962386,
+              "differencePp": -4.918300892063376
+            },
+            "2022": {
+              "strategyReturnPct": -4.983878470642733,
+              "referenceReturnPct": -10.943641693830608,
+              "differencePp": 5.959763223187875
+            },
+            "2023": {
+              "strategyReturnPct": 18.94502603317365,
+              "referenceReturnPct": 13.388453652176246,
+              "differencePp": 5.556572380997404
+            },
+            "2024": {
+              "strategyReturnPct": 26.24303290055041,
+              "referenceReturnPct": 12.859826229134486,
+              "differencePp": 13.383206671415927
+            },
+            "2025": {
+              "strategyReturnPct": 16.411636761117542,
+              "referenceReturnPct": 9.480589559022889,
+              "differencePp": 6.931047202094653
+            },
+            "2026": {
+              "strategyReturnPct": 3.5572877013653637,
+              "referenceReturnPct": 5.98923361193604,
+              "differencePp": -2.4319459105706764
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "close",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 20116.201625950933,
+            "returnPct": 101.16201625950931,
+            "cagrPct": 6.655531539794812,
+            "maxDrawdownPct": -14.432868848204194,
+            "annualVolatilityPct": 7.6077430762261855
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 3.5569291653560597,
+              "referenceReturnPct": 9.020458013120214,
+              "differencePp": -5.463528847764154
+            },
+            "2017": {
+              "strategyReturnPct": 32.34675427934468,
+              "referenceReturnPct": 10.951349758503937,
+              "differencePp": 21.395404520840742
+            },
+            "2018": {
+              "strategyReturnPct": -3.3837002171460573,
+              "referenceReturnPct": -6.1901292024369114,
+              "differencePp": 2.806428985290854
+            },
+            "2019": {
+              "strategyReturnPct": 9.582916790041839,
+              "referenceReturnPct": 13.528076498277454,
+              "differencePp": -3.9451597082356127
+            },
+            "2020": {
+              "strategyReturnPct": 6.444584262507602,
+              "referenceReturnPct": 9.306076030340883,
+              "differencePp": -2.8614917678332796
+            },
+            "2021": {
+              "strategyReturnPct": 9.888042245899008,
+              "referenceReturnPct": 7.26233296827723,
+              "differencePp": 2.6257092776217794
+            },
+            "2022": {
+              "strategyReturnPct": -4.983878470642733,
+              "referenceReturnPct": -9.05132104117694,
+              "differencePp": 4.067442570534208
+            },
+            "2023": {
+              "strategyReturnPct": 18.94502603317365,
+              "referenceReturnPct": 10.348185099062345,
+              "differencePp": 8.596840934111306
+            },
+            "2024": {
+              "strategyReturnPct": 26.24303290055041,
+              "referenceReturnPct": 15.530770518448222,
+              "differencePp": 10.712262382102189
+            },
+            "2025": {
+              "strategyReturnPct": 16.411636761117542,
+              "referenceReturnPct": 6.074515641865763,
+              "differencePp": 10.33712111925178
+            },
+            "2026": {
+              "strategyReturnPct": 3.5572877013653637,
+              "referenceReturnPct": 8.290837018366748,
+              "differencePp": -4.733549317001384
+            }
+          }
+        },
+        {
+          "type": "fixed_half",
+          "basis": "adjusted",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 22023.07628720562,
+            "returnPct": 120.23076287205616,
+            "cagrPct": 7.549732494633843,
+            "maxDrawdownPct": -17.971869132371943,
+            "annualVolatilityPct": 8.862203999970317
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 3.5569291653560597,
+              "referenceReturnPct": 6.801847627609869,
+              "differencePp": -3.2449184622538096
+            },
+            "2017": {
+              "strategyReturnPct": 32.34675427934468,
+              "referenceReturnPct": 10.384543905570354,
+              "differencePp": 21.962210373774326
+            },
+            "2018": {
+              "strategyReturnPct": -3.3837002171460573,
+              "referenceReturnPct": -1.9570312115508637,
+              "differencePp": -1.4266690055951936
+            },
+            "2019": {
+              "strategyReturnPct": 9.582916790041839,
+              "referenceReturnPct": 14.78128026366392,
+              "differencePp": -5.198363473622081
+            },
+            "2020": {
+              "strategyReturnPct": 6.444584262507602,
+              "referenceReturnPct": 10.332006644671555,
+              "differencePp": -3.887422382163952
+            },
+            "2021": {
+              "strategyReturnPct": 9.888042245899008,
+              "referenceReturnPct": 13.70104732848041,
+              "differencePp": -3.8130050825814
+            },
+            "2022": {
+              "strategyReturnPct": -4.983878470642733,
+              "referenceReturnPct": -8.878656414435582,
+              "differencePp": 3.8947779437928487
+            },
+            "2023": {
+              "strategyReturnPct": 18.94502603317365,
+              "referenceReturnPct": 12.568108544237578,
+              "differencePp": 6.376917488936074
+            },
+            "2024": {
+              "strategyReturnPct": 26.24303290055041,
+              "referenceReturnPct": 11.975936590374282,
+              "differencePp": 14.26709631017613
+            },
+            "2025": {
+              "strategyReturnPct": 16.411636761117542,
+              "referenceReturnPct": 9.001459687404022,
+              "differencePp": 7.41017707371352
+            },
+            "2026": {
+              "strategyReturnPct": 3.5572877013653637,
+              "referenceReturnPct": 5.692689365658676,
+              "differencePp": -2.1354016642933127
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "adjusted",
+          "weight": 0.5681160637267733,
+          "metrics": {
+            "endingEquity": 24362.245833419754,
+            "returnPct": 143.62245833419755,
+            "cagrPct": 8.555244056065693,
+            "maxDrawdownPct": -20.247658768074082,
+            "annualVolatilityPct": 10.06952090481361
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 3.5569291653560597,
+              "referenceReturnPct": 7.72841933818329,
+              "differencePp": -4.17149017282723
+            },
+            "2017": {
+              "strategyReturnPct": 32.34675427934468,
+              "referenceReturnPct": 11.870230264134186,
+              "differencePp": 20.476524015210494
+            },
+            "2018": {
+              "strategyReturnPct": -3.3837002171460573,
+              "referenceReturnPct": -2.275328584065006,
+              "differencePp": -1.1083716330810511
+            },
+            "2019": {
+              "strategyReturnPct": 9.582916790041839,
+              "referenceReturnPct": 16.921306103743472,
+              "differencePp": -7.338389313701632
+            },
+            "2020": {
+              "strategyReturnPct": 6.444584262507602,
+              "referenceReturnPct": 11.576143054770792,
+              "differencePp": -5.131558792263191
+            },
+            "2021": {
+              "strategyReturnPct": 9.888042245899008,
+              "referenceReturnPct": 15.66925285638343,
+              "differencePp": -5.781210610484422
+            },
+            "2022": {
+              "strategyReturnPct": -4.983878470642733,
+              "referenceReturnPct": -10.127359628985955,
+              "differencePp": 5.143481158343222
+            },
+            "2023": {
+              "strategyReturnPct": 18.94502603317365,
+              "referenceReturnPct": 14.360527012714996,
+              "differencePp": 4.584499020458654
+            },
+            "2024": {
+              "strategyReturnPct": 26.24303290055041,
+              "referenceReturnPct": 13.679702547687288,
+              "differencePp": 12.563330352863122
+            },
+            "2025": {
+              "strategyReturnPct": 16.411636761117542,
+              "referenceReturnPct": 10.209615352796986,
+              "differencePp": 6.202021408320557
+            },
+            "2026": {
+              "strategyReturnPct": 3.5572877013653637,
+              "referenceReturnPct": 6.458240796921544,
+              "differencePp": -2.90095309555618
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "adjusted",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 22259.437195813618,
+            "returnPct": 122.59437195813616,
+            "cagrPct": 7.655627704217793,
+            "maxDrawdownPct": -14.253035240666822,
+            "annualVolatilityPct": 7.578230945843075
+          },
+          "years": {
+            "2016": {
+              "strategyReturnPct": 3.5569291653560597,
+              "referenceReturnPct": 10.45508952132186,
+              "differencePp": -6.898160355965799
+            },
+            "2017": {
+              "strategyReturnPct": 32.34675427934468,
+              "referenceReturnPct": 12.673126681499113,
+              "differencePp": 19.673627597845567
+            },
+            "2018": {
+              "strategyReturnPct": -3.3837002171460573,
+              "referenceReturnPct": -5.148887199811247,
+              "differencePp": 1.76518698266519
+            },
+            "2019": {
+              "strategyReturnPct": 9.582916790041839,
+              "referenceReturnPct": 15.51705657860667,
+              "differencePp": -5.9341397885648295
+            },
+            "2020": {
+              "strategyReturnPct": 6.444584262507602,
+              "referenceReturnPct": 9.809501401975208,
+              "differencePp": -3.3649171394676047
+            },
+            "2021": {
+              "strategyReturnPct": 9.888042245899008,
+              "referenceReturnPct": 8.302736149965773,
+              "differencePp": 1.5853060959332366
+            },
+            "2022": {
+              "strategyReturnPct": -4.983878470642733,
+              "referenceReturnPct": -8.878668194608618,
+              "differencePp": 3.8947897239658857
+            },
+            "2023": {
+              "strategyReturnPct": 18.94502603317365,
+              "referenceReturnPct": 11.374371880376554,
+              "differencePp": 7.570654152797096
+            },
+            "2024": {
+              "strategyReturnPct": 26.24303290055041,
+              "referenceReturnPct": 16.550840858430995,
+              "differencePp": 9.69219204211942
+            },
+            "2025": {
+              "strategyReturnPct": 16.411636761117542,
+              "referenceReturnPct": 6.766477911097524,
+              "differencePp": 9.64515885002002
+            },
+            "2026": {
+              "strategyReturnPct": 3.5572877013653637,
+              "referenceReturnPct": 8.688740114199224,
+              "differencePp": -5.131452412833859
+            }
+          }
+        }
+      ]
+    },
+    {
+      "market": "US",
+      "start": "2023-01-03",
+      "end": "2026-11-09",
+      "capital": 10000,
+      "commissionPerOrder": 1,
+      "slippagePerSide": 0.0005,
+      "averageExposurePct": 58.49796363163544,
+      "strategy": {
+        "endingEquity": 17352.289493181823,
+        "returnPct": 73.52289493181823,
+        "cagrPct": 15.393139596406002,
+        "maxDrawdownPct": -14.651648216696378,
+        "annualVolatilityPct": 12.507067783499478
+      },
+      "references": [
+        {
+          "type": "fixed_half",
+          "basis": "close",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 14212.83743653947,
+            "returnPct": 42.12837436539469,
+            "cagrPct": 9.562855208265496,
+            "maxDrawdownPct": -9.87625348147545,
+            "annualVolatilityPct": 7.546725782220862
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.15495833536158,
+              "referenceReturnPct": 11.961748662328308,
+              "differencePp": 4.193209673033271
+            },
+            "2024": {
+              "strategyReturnPct": 25.464841745359035,
+              "referenceReturnPct": 11.264909744009755,
+              "differencePp": 14.19993200134928
+            },
+            "2025": {
+              "strategyReturnPct": 15.371828417530686,
+              "referenceReturnPct": 8.366559797988526,
+              "differencePp": 7.00526861954216
+            },
+            "2026": {
+              "strategyReturnPct": 3.2041621925663177,
+              "referenceReturnPct": 5.282844340917703,
+              "differencePp": -2.078682148351385
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "close",
+          "weight": 0.5849796363163544,
+          "metrics": {
+            "endingEquity": 15055.242434238355,
+            "returnPct": 50.55242434238354,
+            "cagrPct": 11.21404544343747,
+            "maxDrawdownPct": -11.47889310121447,
+            "annualVolatilityPct": 8.829361806925634
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.15495833536158,
+              "referenceReturnPct": 14.083353982261194,
+              "differencePp": 2.071604353100387
+            },
+            "2024": {
+              "strategyReturnPct": 25.464841745359035,
+              "referenceReturnPct": 13.25690144630749,
+              "differencePp": 12.207940299051545
+            },
+            "2025": {
+              "strategyReturnPct": 15.371828417530686,
+              "referenceReturnPct": 9.755253417926468,
+              "differencePp": 5.616574999604218
+            },
+            "2026": {
+              "strategyReturnPct": 3.2041621925663177,
+              "referenceReturnPct": 6.163561632588355,
+              "differencePp": -2.959399440022037
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "close",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 14414.79006537293,
+            "returnPct": 44.14790065372931,
+            "cagrPct": 9.965169763932046,
+            "maxDrawdownPct": -7.382990163601022,
+            "annualVolatilityPct": 7.538054407967347
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.15495833536158,
+              "referenceReturnPct": 9.111180771057459,
+              "differencePp": 7.043777564304121
+            },
+            "2024": {
+              "strategyReturnPct": 25.464841745359035,
+              "referenceReturnPct": 15.33425026405839,
+              "differencePp": 10.130591481300645
+            },
+            "2025": {
+              "strategyReturnPct": 15.371828417530686,
+              "referenceReturnPct": 5.985888938179462,
+              "differencePp": 9.385939479351224
+            },
+            "2026": {
+              "strategyReturnPct": 3.2041621925663177,
+              "referenceReturnPct": 8.076861031473047,
+              "differencePp": -4.8726988389067305
+            }
+          }
+        },
+        {
+          "type": "fixed_half",
+          "basis": "adjusted",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 14552.327912073226,
+            "returnPct": 45.52327912073226,
+            "cagrPct": 10.236779941749985,
+            "maxDrawdownPct": -9.74087547948762,
+            "annualVolatilityPct": 7.53110352039926
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.15495833536158,
+              "referenceReturnPct": 12.805560057602072,
+              "differencePp": 3.3493982777595077
+            },
+            "2024": {
+              "strategyReturnPct": 25.464841745359035,
+              "referenceReturnPct": 11.975936590374348,
+              "differencePp": 13.488905154984687
+            },
+            "2025": {
+              "strategyReturnPct": 15.371828417530686,
+              "referenceReturnPct": 9.001459687403957,
+              "differencePp": 6.37036873012673
+            },
+            "2026": {
+              "strategyReturnPct": 3.2041621925663177,
+              "referenceReturnPct": 5.692689365658632,
+              "differencePp": -2.488527173092314
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "adjusted",
+          "weight": 0.5849796363163544,
+          "metrics": {
+            "endingEquity": 15476.936110997272,
+            "returnPct": 54.76936110997273,
+            "cagrPct": 12.015023652048873,
+            "maxDrawdownPct": -11.323287514786118,
+            "annualVolatilityPct": 8.811084396847946
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.15495833536158,
+              "referenceReturnPct": 15.090699588519229,
+              "differencePp": 1.0642587468423503
+            },
+            "2024": {
+              "strategyReturnPct": 25.464841745359035,
+              "referenceReturnPct": 14.10418810682681,
+              "differencePp": 11.360653638532225
+            },
+            "2025": {
+              "strategyReturnPct": 15.371828417530686,
+              "referenceReturnPct": 10.507857631627825,
+              "differencePp": 4.86397078590286
+            },
+            "2026": {
+              "strategyReturnPct": 3.2041621925663177,
+              "referenceReturnPct": 6.647336917641766,
+              "differencePp": -3.4431747250754485
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "adjusted",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 14822.364919527829,
+            "returnPct": 48.223649195278284,
+            "cagrPct": 10.764569983289917,
+            "maxDrawdownPct": -7.103102687262175,
+            "annualVolatilityPct": 7.5180924410365195
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.15495833536158,
+              "referenceReturnPct": 10.1067004528965,
+              "differencePp": 6.04825788246508
+            },
+            "2024": {
+              "strategyReturnPct": 25.464841745359035,
+              "referenceReturnPct": 16.339399594268244,
+              "differencePp": 9.125442151090791
+            },
+            "2025": {
+              "strategyReturnPct": 15.371828417530686,
+              "referenceReturnPct": 6.668804573870357,
+              "differencePp": 8.703023843660329
+            },
+            "2026": {
+              "strategyReturnPct": 3.2041621925663177,
+              "referenceReturnPct": 8.477459739581317,
+              "differencePp": -5.273297547014999
+            }
+          }
+        }
+      ]
+    },
+    {
+      "market": "US",
+      "start": "2023-01-03",
+      "end": "2026-11-09",
+      "capital": 10000,
+      "commissionPerOrder": 0,
+      "slippagePerSide": 0.0005,
+      "averageExposurePct": 58.546303812748015,
+      "strategy": {
+        "endingEquity": 17605.973447267846,
+        "returnPct": 76.05973447267846,
+        "cagrPct": 15.829037371656508,
+        "maxDrawdownPct": -14.365899787825388,
+        "annualVolatilityPct": 12.484571771738711
+      },
+      "references": [
+        {
+          "type": "fixed_half",
+          "basis": "close",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 14212.83743653947,
+            "returnPct": 42.12837436539469,
+            "cagrPct": 9.562855208265496,
+            "maxDrawdownPct": -9.87625348147545,
+            "annualVolatilityPct": 7.546725782220862
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.9863647525216,
+              "referenceReturnPct": 11.961748662328308,
+              "differencePp": 5.02461609019329
+            },
+            "2024": {
+              "strategyReturnPct": 25.840249199637412,
+              "referenceReturnPct": 11.264909744009755,
+              "differencePp": 14.575339455627656
+            },
+            "2025": {
+              "strategyReturnPct": 15.465984103244935,
+              "referenceReturnPct": 8.366559797988526,
+              "differencePp": 7.099424305256408
+            },
+            "2026": {
+              "strategyReturnPct": 3.574099392847341,
+              "referenceReturnPct": 5.282844340917703,
+              "differencePp": -1.708744948070362
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "close",
+          "weight": 0.5854630381274801,
+          "metrics": {
+            "endingEquity": 15060.147404150885,
+            "returnPct": 50.60147404150885,
+            "cagrPct": 11.223456985247848,
+            "maxDrawdownPct": -11.487947695879408,
+            "annualVolatilityPct": 8.836658008748017
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.9863647525216,
+              "referenceReturnPct": 14.095496049258994,
+              "differencePp": 2.8908687032626057
+            },
+            "2024": {
+              "strategyReturnPct": 25.840249199637412,
+              "referenceReturnPct": 13.268296760357368,
+              "differencePp": 12.571952439280043
+            },
+            "2025": {
+              "strategyReturnPct": 15.465984103244935,
+              "referenceReturnPct": 9.76311996375081,
+              "differencePp": 5.702864139494124
+            },
+            "2026": {
+              "strategyReturnPct": 3.574099392847341,
+              "referenceReturnPct": 6.1685555311962625,
+              "differencePp": -2.5944561383489217
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "close",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 14482.051637518534,
+            "returnPct": 44.820516375185335,
+            "cagrPct": 10.098236683056715,
+            "maxDrawdownPct": -7.352665220293608,
+            "annualVolatilityPct": 7.547056228559457
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.9863647525216,
+              "referenceReturnPct": 9.210326290625769,
+              "differencePp": 7.776038461895829
+            },
+            "2024": {
+              "strategyReturnPct": 25.840249199637412,
+              "referenceReturnPct": 15.28427323991397,
+              "differencePp": 10.55597595972344
+            },
+            "2025": {
+              "strategyReturnPct": 15.465984103244935,
+              "referenceReturnPct": 6.376421300926038,
+              "differencePp": 9.089562802318895
+            },
+            "2026": {
+              "strategyReturnPct": 3.574099392847341,
+              "referenceReturnPct": 8.131180706113405,
+              "differencePp": -4.557081313266065
+            }
+          }
+        },
+        {
+          "type": "fixed_half",
+          "basis": "adjusted",
+          "weight": 0.5,
+          "metrics": {
+            "endingEquity": 14552.327912073226,
+            "returnPct": 45.52327912073226,
+            "cagrPct": 10.236779941749985,
+            "maxDrawdownPct": -9.74087547948762,
+            "annualVolatilityPct": 7.53110352039926
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.9863647525216,
+              "referenceReturnPct": 12.805560057602072,
+              "differencePp": 4.1808046949195266
+            },
+            "2024": {
+              "strategyReturnPct": 25.840249199637412,
+              "referenceReturnPct": 11.975936590374348,
+              "differencePp": 13.864312609263063
+            },
+            "2025": {
+              "strategyReturnPct": 15.465984103244935,
+              "referenceReturnPct": 9.001459687403957,
+              "differencePp": 6.464524415840978
+            },
+            "2026": {
+              "strategyReturnPct": 3.574099392847341,
+              "referenceReturnPct": 5.692689365658632,
+              "differencePp": -2.118589972811291
+            }
+          }
+        },
+        {
+          "type": "matched_average",
+          "basis": "adjusted",
+          "weight": 0.5854630381274801,
+          "metrics": {
+            "endingEquity": 15482.332539291565,
+            "returnPct": 54.823325392915656,
+            "cagrPct": 12.02516852382962,
+            "maxDrawdownPct": -11.33222925196562,
+            "annualVolatilityPct": 8.818365495011014
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.9863647525216,
+              "referenceReturnPct": 15.103789442965398,
+              "differencePp": 1.8825753095562003
+            },
+            "2024": {
+              "strategyReturnPct": 25.840249199637412,
+              "referenceReturnPct": 14.11637187179493,
+              "differencePp": 11.72387732784248
+            },
+            "2025": {
+              "strategyReturnPct": 15.465984103244935,
+              "referenceReturnPct": 10.51640166864971,
+              "differencePp": 4.949582434595223
+            },
+            "2026": {
+              "strategyReturnPct": 3.574099392847341,
+              "referenceReturnPct": 6.652754857994014,
+              "differencePp": -3.0786554651466735
+            }
+          }
+        },
+        {
+          "type": "lagged_strategy_exposure",
+          "basis": "adjusted",
+          "weight": null,
+          "metrics": {
+            "endingEquity": 14889.843990828771,
+            "returnPct": 48.898439908287706,
+            "cagrPct": 10.895345643339649,
+            "maxDrawdownPct": -7.073895631541715,
+            "annualVolatilityPct": 7.527021596379728
+          },
+          "years": {
+            "2023": {
+              "strategyReturnPct": 16.9863647525216,
+              "referenceReturnPct": 10.208242947194623,
+              "differencePp": 6.778121805326975
+            },
+            "2024": {
+              "strategyReturnPct": 25.840249199637412,
+              "referenceReturnPct": 16.280924757734816,
+              "differencePp": 9.559324441902595
+            },
+            "2025": {
+              "strategyReturnPct": 15.465984103244935,
+              "referenceReturnPct": 7.058304448594099,
+              "differencePp": 8.407679654650835
+            },
+            "2026": {
+              "strategyReturnPct": 3.574099392847341,
+              "referenceReturnPct": 8.529357279910176,
+              "differencePp": -4.955257887062836
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
