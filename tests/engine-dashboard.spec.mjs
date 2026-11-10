@@ -14,7 +14,8 @@ function fixture(){
     if(e.id==='mean')d.comparison={commonStart:'2026-10-04T17:00:00Z',smcLedgerAsOf:now,trendLedgerAsOf:now,smc:{commonWindowPaperAccount:paperAccount()},trend:{commonWindowPaperAccount:paperAccount()}};
     reports.push({...normalizeEvidence(e,cohort,d),source:{url:'https://github.com/example/evidence'},comparison:e.id==='mean'?commonComparison(d):null});
   }
-  return {version:'engine-dashboard-v1',fetchedAt:now,reports};
+  const model={cash:10000,equity:10000,open:[],closed:[],pending:[{symbol:'AAPL',status:'pending_entry'}]};
+  return {version:'engine-dashboard-v1',fetchedAt:now,reports,dailyLong:{version:'trend-daily-long-v1',activatedAt:now,generatedAt:now,lastSession:null,sessions:0,models:{baseline:model,relative_strength:{...model,pending:[]}},failures:[]}};
 }
 for(const width of [390,1440])test(`paper engine navigation and evidence states at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:900});
@@ -33,6 +34,9 @@ for(const width of [390,1440])test(`paper engine navigation and evidence states 
   await page.goto('/');
   await page.locator('[data-view="engines"]:visible').click();
   const view=page.locator('#enginesView');
+  await expect(view.locator('[data-daily-long]')).toContainText('Waiting for the first completed session after launch.');
+  await view.locator('[data-daily-long] details').first().locator('summary').click();
+  await expect(view.locator('[data-daily-long]')).toContainText('Next eligible session open');
   await expect(view.getByText('Paper engines',{exact:true})).toBeVisible();
   await expect(view.locator('.engine-position').filter({hasText:'TEST.TO'})).toContainText('TEST.TO');
   await expect(view.locator('.engine-position').filter({hasText:'BTC-USD'})).toContainText('Short');
