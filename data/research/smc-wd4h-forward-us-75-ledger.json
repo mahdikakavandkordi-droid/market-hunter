@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-11-07T03:15:30.404Z",
+  "updatedAt": "2026-11-10T04:48:34.422Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -1320,6 +1320,63 @@
       "prospectiveCount": 5,
       "pendingCount": 0,
       "discrepancyCount": 15
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|42758115444|1",
+      "observedAt": "2026-11-10T04:48:34.422Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "42758115444",
+        "runAttempt": "1",
+        "sha": "1327703eb24a7e5717145a551409cd785ba0ec13",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "EOG",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-09",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        },
+        {
+          "symbol": "TMO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-09",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 30,
+      "prospectiveCount": 5,
+      "pendingCount": 0,
+      "discrepancyCount": 19
     }
   ],
   "discrepancyLog": [
@@ -1732,6 +1789,42 @@
       "recomputed": 0.01853276687390327,
       "firstDetectedAt": "2026-11-07T03:15:30.404Z",
       "runKey": "smc-forward-expanded|us-75|42333101663|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "BA|2026-10-27T13:30:00.000Z|-1",
+      "field": "entry",
+      "recorded": 172.0800018310547,
+      "recomputed": 172.10000610351562,
+      "firstDetectedAt": "2026-11-10T04:48:34.422Z",
+      "runKey": "smc-forward-expanded|us-75|42758115444|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "BA|2026-10-27T13:30:00.000Z|-1",
+      "field": "target",
+      "recorded": 128.828250340053,
+      "recomputed": 128.8882631574358,
+      "firstDetectedAt": "2026-11-10T04:48:34.422Z",
+      "runKey": "smc-forward-expanded|us-75|42758115444|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "BA|2026-10-27T13:30:00.000Z|-1",
+      "field": "risk",
+      "recorded": 21.62587574550085,
+      "recomputed": 21.60587147303991,
+      "firstDetectedAt": "2026-11-10T04:48:34.422Z",
+      "runKey": "smc-forward-expanded|us-75|42758115444|1"
+    },
+    {
+      "type": "closed_outcome_revision",
+      "identity": "BA|2026-10-27T13:30:00.000Z|-1",
+      "field": "R",
+      "recorded": -0.0439287157395154,
+      "recomputed": -0.04304351606190507,
+      "firstDetectedAt": "2026-11-10T04:48:34.422Z",
+      "runKey": "smc-forward-expanded|us-75|42758115444|1"
     }
   ],
   "markedEquitySeries": [
@@ -1984,6 +2077,15 @@
       "quality": "fresh",
       "markedEquity": 978.8691029152712,
       "totalUnrealizedPnl": 9.914971838467983,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|42758115444|1",
+      "observedAt": "2026-11-10T04:48:34.422Z",
+      "quality": "fresh",
+      "markedEquity": 980.8590589648331,
+      "totalUnrealizedPnl": 11.9049278880299,
       "missingSymbols": [],
       "staleSymbols": []
     }
