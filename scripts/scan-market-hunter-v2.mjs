@@ -206,13 +206,19 @@ report.discovery=globalThis.MarketHunterDiscovery.build(report);
 fs.mkdirSync('data',{recursive:true});
 console.log(JSON.stringify({market:market.market,marketAsOf,universeCount:symbols.length,sourceUsableCount,usableCount,excluded,sessionExclusions:sessionExclusions.slice(0,10),sourceDiagnostics:Object.fromEntries([...symbols.slice(0,3),market.referenceSymbol].map(s=>[s,data[s]?.sourceDiagnostic||null]))},null,2));
 if(market.market==='US'&&(usableCount===0||sourceUsableCount/symbols.length<0.9))throw new Error('us_scan_insufficient_source_coverage');
+const focus=globalThis.MarketHunterDiscovery.focusedReview(report);
 const historyDir='data/industry-history/'+market.market;
 fs.mkdirSync(historyDir,{recursive:true});
 const historyFile=historyDir+'/'+marketAsOf+'.json';
 // First successful observation is immutable, including same-session reruns.
-if(!fs.existsSync(historyFile))fs.writeFileSync(historyFile,JSON.stringify({version:report.discovery.version,generatedAt:report.generatedAt,engineCommit:report.engineCommit,market:report.market,currency:report.currency,asOf:marketAsOf,universeRows,industryContext:report.industryContext,selectedSymbols:report.discovery.selected.map(x=>x.symbol)},null,2),{flag:'wx'});
+if(!fs.existsSync(historyFile))fs.writeFileSync(historyFile,JSON.stringify({version:report.discovery.version,generatedAt:report.generatedAt,engineCommit:report.engineCommit,market:report.market,currency:report.currency,asOf:marketAsOf,focusedReview:focus.available?{version:focus.version,selected:focus.selected}:null,universeRows,industryContext:report.industryContext,selectedSymbols:report.discovery.selected.map(x=>x.symbol)},null,2),{flag:'wx'});
 const snapshots=fs.readdirSync(historyDir).filter(name=>/^\d{4}-\d{2}-\d{2}\.json$/.test(name)).map(name=>JSON.parse(fs.readFileSync(historyDir+'/'+name,'utf8')));
 report.discoveryEvidence=discoveryOutcomes(snapshots,data,marketAsOf,market.referenceSymbol);
+const focusSnapshots=snapshots.filter(s=>s.focusedReview?.version===focus.version).map(s=>({
+ asOf:s.asOf,version:focus.version,universeRows:s.focusedReview.selected,
+ selectedSymbols:s.focusedReview.selected.map(row=>row.symbol)
+}));
+report.focusEvidence=discoveryOutcomes(focusSnapshots,data,marketAsOf,market.referenceSymbol,focus.version);
 const output=market.file;
 fs.writeFileSync(output+'.tmp',JSON.stringify(report,null,2));
 fs.renameSync(output+'.tmp',output);

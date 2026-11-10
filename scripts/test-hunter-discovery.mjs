@@ -14,3 +14,15 @@ for(const patch of [{ret20:0},{dist50:0},{lowBroken:true},{lowBroken:null},{risk
 for(const rows of [[{...good,date:'2026-10-27'}],[good,good],[{...good,currency:'USD'}]])assert.equal(build({...r,universeRows:rows}).status,'unavailable');
 assert.equal(build({}).status,'unavailable');assert.equal(build(report([])).status,'no_usable_data');
 console.log('Discovery: uncapped, zero, missing metrics, identity, unmapped sectors and immutability passed');
+const recovery={...good,stage:'Recovery',swingTrend:'Structure improving',momentumShift:1};
+const watch={...recovery,symbol:'E',stage:'Early Watch',rs20:-3,maxRvol5:1.5};
+const focused=(recoveries,watches)=>globalThis.MarketHunterDiscovery.focusedReview({
+ ...report([]),surfacePicks:{Recovery:recoveries,'Early Watch':watches}
+});
+assert.deepEqual(focused([recovery,{...recovery,symbol:'B'}],[watch]).selected,[recovery,watch]);
+for(const patch of [{date:'old'},{market:'US'},{momentumShift:null},{rs20:0},{dist20:-0.19},{riskFlags:['Extended']},{lowBroken:true},{swingTrend:'Lower highs + lower lows'}]){
+ assert.deepEqual(focused([{...recovery,...patch}],[]).selected,[]);
+}
+assert.deepEqual(focused([], [{...watch,maxRvol5:1.49}]).selected,[]);
+assert.deepEqual(focused([recovery],[{...watch,symbol:recovery.symbol}]).selected,[recovery]);
+assert.equal(globalThis.MarketHunterDiscovery.focusedReview(report([])).available,false);

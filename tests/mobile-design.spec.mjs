@@ -33,6 +33,7 @@ for(const width of [320,390,768,1440]){
       expect(bottomNav.y).toBeGreaterThan(700);
      }
      if(view==='shortlist'){
+      await page.locator('[data-industry-browser]>summary').click();
       const card=page.locator('.discovery-card').first();
       await expect(card).toBeVisible();
       const link=card.locator('.symbol-link'),symbol=link.locator('bdi');
