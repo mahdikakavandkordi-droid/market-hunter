@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — metals-5 — Corrected Evidence v2
 
-Mode: stock; generated 2026-11-09T06:17:01.364Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-11-10T07:11:09.490Z; start 2026-10-01; universe 5.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1022.44; return 2.2%; realized-event max DD 0.0%.
-Marked equity $1022.44; return 2.2%; observed marked max DD -0.6%; quality fresh.
+Marked equity $1019.71; return 2.0%; observed marked max DD -0.6%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:48.473Z; first complete marked-equity observation 2026-10-04T14:55:48.473Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,7 +23,7 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---|---|---:|
-| CPER | Short | 37.670 | 37.670 | 2026-11-06T21:30:00.000Z | fresh | $0.00 |
+| CPER | Short | 37.670 | 38.400 | 2026-11-09T21:30:00.000Z | fresh | $-2.73 |
 
 ## Evidence integrity
 
