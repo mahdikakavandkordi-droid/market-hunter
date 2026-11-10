@@ -1,0 +1,88 @@
+{
+  "version": "trend-daily-long-v1",
+  "activatedAt": "2026-11-10T21:08:12.910Z",
+  "generatedAt": "2026-11-10T21:09:16.548Z",
+  "lastSession": null,
+  "config": {
+    "version": "trend-daily-long-v1",
+    "symbols": [
+      "AAPL",
+      "MSFT",
+      "AMZN",
+      "GOOGL",
+      "META",
+      "NVDA",
+      "JPM",
+      "XOM",
+      "JNJ",
+      "COST",
+      "CAT",
+      "NEE"
+    ],
+    "rules": {
+      "capital": 10000,
+      "riskPct": 0.01,
+      "maxAllocation": 0.25,
+      "maxRisk": 0.04,
+      "maxPositions": 4,
+      "slippage": 0.0005,
+      "commission": 0,
+      "sma": 200,
+      "breakout": 20,
+      "atr": 14,
+      "initialAtr": 2,
+      "trailAtr": 3,
+      "maxBars": 60
+    },
+    "models": [
+      "baseline",
+      "relative_strength"
+    ]
+  },
+  "configHash": "454aca05a8de4b5fbd7d9c49ec1fe8b3248374f0128fb282b5a93d9a82e42156",
+  "failures": [],
+  "inputs": {
+    "GOOGL": "4dba644a556ad6f3d654ae5fb826de1223548d7db198f05a43d6055edff17992",
+    "AAPL": "31b2e5d768b5ff655b7572fd592e0e87a167fe38bcae40105e9e6dfef176353f",
+    "AMZN": "f29ac5809175795a9153528b31122f085481cb0be9303ff75dbe0854a0c4c5d9",
+    "MSFT": "eac4d14510fd87317232680bbe9adabfeaea6b6977c4e65cfd534686a002cfef",
+    "META": "c7707840487f675ab2a12a9d0a80b5a642b72491b7ea80ab4ff3edc2844cbd7a",
+    "NVDA": "eea905128e32db3c5dddc1c9345d51d513aa9604637de8665047ffc6f890b3e7",
+    "JPM": "4a330afef63c3f33dfea05bd5b6a6820ba665c2c90cb5373cc2bdec7b480a837",
+    "XOM": "7ea4c2351c14ca2fa4db57fbbe5f02d3f948ba25cf0e6ec881754c3d901f634e",
+    "COST": "000573356005889bd806c4e207ff16ebc33655ce7d30a60513bb51706fc2f8dc",
+    "CAT": "5214f0013bdbad288991e90f7e623a857b79ef638055a1fcf06235efac860b85",
+    "JNJ": "354237959731b35f958908a55a9a0853c76a2a83ba1f29aa694aa3e1d7ab7b86",
+    "NEE": "95c0def38e66356aab61ed75bd400050f9d38771aea72d5c9a7d620a719193ee",
+    "SPY": "ea5b9410909c5d1188bcd6eb7155da7617d9ed4df5b8065fbed7215703eaddbb"
+  },
+  "assumptions": [
+    "Paper account, USD, fully funded long stock positions.",
+    "Whole shares, 5 bps slippage per side, zero broker commission.",
+    "Cash dividends credited on ex-date. Taxes and FX excluded.",
+    "SPY buy-hold and daily-rebalanced 50% SPY/cash include distributions; cash interest zero.",
+    "No signals from closes earlier than launch or missed collection sessions."
+  ],
+  "sessions": 0,
+  "benchmarks": null,
+  "models": {
+    "baseline": {
+      "cash": 10000,
+      "equity": 10000,
+      "pending": [],
+      "open": [],
+      "closed": [],
+      "skipped": 0,
+      "curve": []
+    },
+    "relative_strength": {
+      "cash": 10000,
+      "equity": 10000,
+      "pending": [],
+      "open": [],
+      "closed": [],
+      "skipped": 0,
+      "curve": []
+    }
+  }
+}
