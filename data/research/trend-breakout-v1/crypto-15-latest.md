@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-10T10:14:50.620Z; mode: forward_shadow.
+Generated: 2026-11-10T18:05:35.931Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 6; pending 0; closed 58; lifecycle reviews 0.
-Realized equity $844.12; marked equity $870.64; mark quality fresh.
+Open 6; pending 1; closed 58; lifecycle reviews 0.
+Realized equity $844.12; marked equity $889.30; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -18,9 +18,10 @@ Realized equity $844.12; marked equity $870.64; mark quality fresh.
 - DOT-USD: Short open; entry 0.9602000117301941; current stop 0.9016928630215781; provenance prospective; gap none
 - DOGE-USD: Short open; entry 0.07109999656677246; current stop 0.07103714027575084; provenance prospective; gap none
 - XLM-USD: Short open; entry 0.15279600024223328; current stop 0.15128457439797266; provenance prospective; gap none
-- BCH-USD: Short open; entry 267.010009765625; current stop 250.55285971505302; provenance prospective; gap none
-- XRP-USD: Short open; entry 1.1963000297546387; current stop 1.1356356143951416; provenance prospective; gap none
-- ETH-USD: Short open; entry 2111.8701171875; current stop 2164.9316755022323; provenance prospective; gap none
+- BCH-USD: Short open; entry 267.010009765625; current stop 244.5714372907366; provenance prospective; gap none
+- XRP-USD: Short open; entry 1.1963000297546387; current stop 1.1173499822616577; provenance prospective; gap none
+- ETH-USD: Short open; entry 2111.8701171875; current stop 2147.112278529576; provenance prospective; gap none
+- SOL-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
