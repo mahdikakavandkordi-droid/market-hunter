@@ -36,7 +36,7 @@ let state=prior;
 if(!failures.length){try{state=advanceDaily(prior,series,observedAt)}catch(e){failures.push(e.message)}}
 const report={version:VERSION,activatedAt:state.activatedAt,generatedAt:observedAt,lastSession:state.lastSession,config,configHash,failures,inputs,
  assumptions:['Paper account, USD, fully funded long stock positions.','Whole shares, 5 bps slippage per side, zero broker commission.','Cash dividends credited on ex-date. Taxes and FX excluded.','SPY buy-hold and daily-rebalanced 50% SPY/cash include distributions; cash interest zero.','No signals from closes earlier than launch or missed collection sessions.'],
- sessions:state.sessions.length,benchmarks:state.benchmarks,
+ sessions:state.sessions.length,reviewPlan:{firstReviewAfterSessions:60,minimumClosedTradesForComparison:30},benchmarks:state.benchmarks,
  models:Object.fromEntries(MODELS.map(id=>{const m=state.models[id],last=m.curve.at(-1);return [id,{cash:m.cash,equity:last?.equity??10000,pending:m.pending,open:m.trades.filter(t=>t.status==='open'),closed:m.trades.filter(t=>t.status==='closed'),skipped:m.skipped.length,curve:m.curve}]}))};
 function atomic(file,value){fs.writeFileSync(file+'.tmp',JSON.stringify(value,null,2));fs.renameSync(file+'.tmp',file)}
 if(!failures.length)atomic(path,state);
