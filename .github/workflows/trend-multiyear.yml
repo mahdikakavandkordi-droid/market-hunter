@@ -1,0 +1,32 @@
+name: Trend multiyear comparison
+on:
+  push:
+    branches: [research/trend-multiyear-run]
+    paths: [scripts/trend-multiyear.mjs, .github/workflows/trend-multiyear.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node --check scripts/trend-multiyear.mjs
+      - run: node scripts/test-trend-breakout.mjs
+      - run: node scripts/trend-multiyear.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trend-multiyear-inputs-and-results
+          path: data/research/trend-multiyear/
+      - name: Preserve comparison
+        run: |
+          git config user.name market-hunter-research
+          git config user.email actions@users.noreply.github.com
+          git add -f data/research/trend-multiyear/summary.json data/research/trend-multiyear/trades.json
+          git commit -m "research: record multiyear Trend Breakout comparison"
+          git push origin HEAD:research/trend-multiyear-run
