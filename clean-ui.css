@@ -1639,3 +1639,37 @@ html[data-language=fa] .home-overview .overview-headline{font-weight:600!importa
  #shortlistView .stage-summary{padding-top:12px!important}
  #shortlistView .cards{padding-top:12px!important}
 }
+
+/* Selected charts come before the market brief on the home screen. */
+.quality-panel {padding:clamp(15px,2vw,24px); min-width:0}
+.quality-panel>header,.quality-card-head,.quality-footer {display:flex;align-items:center;justify-content:space-between;gap:12px}
+.quality-panel>header {margin-bottom:14px}
+.quality-panel h2 {font-size:20px;margin:0 0 4px}
+.quality-panel small,.quality-setup,.quality-footer span,.quality-card dt {color:var(--muted);font-size:12px;line-height:1.65}
+.quality-count {white-space:nowrap;color:var(--text);font-size:12px}
+.quality-list {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:12px}
+.quality-card {min-width:0;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel2);padding:16px}
+.quality-card-head small {display:block}
+.quality-card-head .symbol-link {padding:0;min-height:36px;font-size:18px}
+.quality-price {text-align:end;font-weight:600;white-space:nowrap}
+.quality-setup {margin:10px 0}
+.quality-card dl {display:flex;gap:18px;border-block:1px solid var(--line-soft);padding:10px 0;margin:0}
+.quality-card dl>div {flex:1}
+.quality-card dd {margin:3px 0 0;font-size:15px;font-weight:600}
+.quality-footer {margin-top:8px}
+.quality-footer .btn {flex-shrink:0}
+.quality-panel details {margin-top:12px;font-size:12px}
+.home-lower.portfolio-only {grid-template-columns:minmax(0,1fr)!important}
+[data-industry-browser]>summary {padding:16px;cursor:pointer;font-weight:600}
+.quality-history summary {cursor:pointer;min-height:32px;color:var(--muted)}
+.quality-history p {line-height:1.75;color:var(--muted)}
+.quality-history table {width:100%;border-collapse:collapse;font-size:12px}
+.quality-history th,.quality-history td {text-align:start;padding:8px 4px;border-bottom:1px solid var(--line-soft)}
+html[data-language=fa] .quality-panel {direction:rtl;text-align:right}
+.quality-card-head .symbol-link,.quality-price bdi,.quality-panel dt+bdi {direction:ltr}
+@media(max-width:700px){
+ .quality-card {padding:12px}
+ .quality-list {gap:8px}
+ .quality-card dl {padding:7px 0}
+ .quality-footer {margin-top:4px}
+}
