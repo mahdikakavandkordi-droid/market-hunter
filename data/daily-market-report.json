@@ -1,17 +1,17 @@
 {
   "version": "daily-market-report-v0.2-2026-09-26",
-  "generatedAt": "2026-11-10T01:40:19.763Z",
+  "generatedAt": "2026-11-10T03:41:37.279Z",
   "status": "research",
   "asOf": {
-    "earliest": "2026-11-06",
+    "earliest": "2026-11-08",
     "latest": "2026-11-09",
     "mixedDates": true,
     "byMarket": {
       "TSX": "2026-11-09",
       "SP500": "2026-11-09",
       "NASDAQ100": "2026-11-09",
-      "GOLD": "2026-11-06",
-      "SILVER": "2026-11-06",
+      "GOLD": "2026-11-09",
+      "SILVER": "2026-11-09",
       "BTC": "2026-11-08",
       "ETH": "2026-11-08"
     }
@@ -23,55 +23,60 @@
         "latestCompletedSession": "2026-11-09",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": false,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "SP500": {
         "status": "fresh",
         "latestCompletedSession": "2026-11-09",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": false,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "NASDAQ100": {
         "status": "fresh",
         "latestCompletedSession": "2026-11-09",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": false,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "GOLD": {
         "status": "fresh",
-        "latestCompletedSession": "2026-11-06",
-        "expectedCompletedSession": "2026-11-06",
+        "latestCompletedSession": "2026-11-09",
+        "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "SILVER": {
         "status": "fresh",
-        "latestCompletedSession": "2026-11-06",
-        "expectedCompletedSession": "2026-11-06",
+        "latestCompletedSession": "2026-11-09",
+        "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "BTC": {
         "status": "stale",
         "latestCompletedSession": "2026-11-08",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-10T01:40:19.197Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "ETH": {
         "status": "stale",
         "latestCompletedSession": "2026-11-08",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-10T01:40:19.197Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       }
     },
     "source": {
-      "attemptedAt": "2026-11-10T01:40:19.197Z",
-      "mode": "targeted",
+      "attemptedAt": "2026-11-10T03:40:53.085Z",
+      "mode": "full",
       "targetKeys": [
+        "TSX",
+        "SP500",
+        "NASDAQ100",
+        "GOLD",
+        "SILVER",
         "BTC",
         "ETH"
       ],
@@ -81,7 +86,7 @@
   "headline": "Current cross-market assessment is incomplete; some inputs require an update.",
   "executiveSummary": [
     "Current cross-market assessment is incomplete; some inputs require an update.",
-    "Completed-session dates differ by instrument: TSX 2026-11-09 · SP500 2026-11-09 · NASDAQ100 2026-11-09 · GOLD 2026-11-06 · SILVER 2026-11-06 · BTC 2026-11-08 · ETH 2026-11-08.",
+    "Completed-session dates differ by instrument: TSX 2026-11-09 · SP500 2026-11-09 · NASDAQ100 2026-11-09 · GOLD 2026-11-09 · SILVER 2026-11-09 · BTC 2026-11-08 · ETH 2026-11-08.",
     "The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets."
   ],
   "groups": [
@@ -124,18 +129,18 @@
         {
           "key": "GOLD",
           "name": "Gold",
-          "regime": "Strong Bear",
-          "condition": "Recovery Attempt",
-          "d5": 4.51,
-          "d20": -3.35
+          "regime": "Bear",
+          "condition": "Breakout / Near High",
+          "d5": 3.65,
+          "d20": -1.82
         },
         {
           "key": "SILVER",
           "name": "Silver",
           "regime": "Strong Bear",
           "condition": "Recovery Attempt",
-          "d5": 5.51,
-          "d20": -14.62
+          "d5": 3.64,
+          "d20": -12.6
         }
       ]
     },
@@ -180,6 +185,11 @@
       "text": "Nasdaq-100: broader analog is usable, but the exact current setup has materially weaker recent follow-through."
     },
     {
+      "market": "GOLD",
+      "severity": "Context",
+      "text": "Gold: trend is strong near highs, but historical follow-through is not automatically stronger than baseline."
+    },
+    {
       "market": "TSX",
       "severity": "Context",
       "text": "TSX Composite: trend is strong near highs, but historical follow-through is not automatically stronger than baseline."
@@ -199,20 +209,6 @@
         "bullishTrigger": 79463.71,
         "warningLevel": 78966.93,
         "bearishTrigger": 63720.39
-      }
-    },
-    {
-      "market": "GOLD",
-      "name": "Gold",
-      "regime": "Strong Bear",
-      "condition": "Recovery Attempt",
-      "text": "Gold: bullish continuation above 4097.2 · trend warning near 4080.71 · structure risk below 4046.2.",
-      "levels": {
-        "support": 4046.2,
-        "resistance": 4097.2,
-        "bullishTrigger": 4097.2,
-        "warningLevel": 4080.71,
-        "bearishTrigger": 4046.2
       }
     },
     {
@@ -244,16 +240,30 @@
       }
     },
     {
+      "market": "GOLD",
+      "name": "Gold",
+      "regime": "Bear",
+      "condition": "Breakout / Near High",
+      "text": "Gold: bullish continuation above 4170.7 · trend warning near 4076.91 · structure risk below 4095.",
+      "levels": {
+        "support": 4095,
+        "resistance": 4170.7,
+        "bullishTrigger": 4170.7,
+        "warningLevel": 4076.91,
+        "bearishTrigger": 4095
+      }
+    },
+    {
       "market": "SILVER",
       "name": "Silver",
       "regime": "Strong Bear",
       "condition": "Recovery Attempt",
-      "text": "Silver: bullish continuation above 54.29 · trend warning near 54.44 · structure risk below 48.55.",
+      "text": "Silver: bullish continuation above 54.29 · trend warning near 54.06 · structure risk below 48.55.",
       "levels": {
         "support": 48.55,
         "resistance": 54.29,
         "bullishTrigger": 54.29,
-        "warningLevel": 54.44,
+        "warningLevel": 54.06,
         "bearishTrigger": 48.55
       }
     }
@@ -271,7 +281,7 @@
         "latestCompletedSession": "2026-11-09",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": false,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "returns": {
         "d1": 1.84,
@@ -352,7 +362,7 @@
         "latestCompletedSession": "2026-11-09",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": false,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "returns": {
         "d1": 2.35,
@@ -433,7 +443,7 @@
         "latestCompletedSession": "2026-11-09",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": false,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "returns": {
         "d1": 3.4,
@@ -514,23 +524,23 @@
     {
       "key": "GOLD",
       "name": "Gold",
-      "asOf": "2026-11-06",
-      "price": 4074.9,
-      "regime": "Strong Bear",
-      "condition": "Recovery Attempt",
+      "asOf": "2026-11-09",
+      "price": 4114.5,
+      "regime": "Bear",
+      "condition": "Breakout / Near High",
       "freshness": {
         "status": "fresh",
-        "latestCompletedSession": "2026-11-06",
-        "expectedCompletedSession": "2026-11-06",
+        "latestCompletedSession": "2026-11-09",
+        "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "returns": {
-        "d1": -0.94,
-        "d5": 4.51,
-        "d20": -3.35,
-        "d60": -7.82,
-        "d120": -10.6
+        "d1": 0.97,
+        "d5": 3.65,
+        "d20": -1.82,
+        "d60": -7.27,
+        "d120": -8.79
       },
       "framing": "Historical analogs cautious",
       "evidence": {
@@ -543,75 +553,75 @@
           "Moderate"
         ],
         "analogLevels": [
-          "State Family",
-          "State Family",
-          "State Family"
+          "Regime",
+          "Regime",
+          "Regime"
         ],
         "horizons": {
           "5": {
             "tone": "Cautious",
             "label": "Historically Weaker",
             "confidence": "Moderate",
-            "analogLevel": "State Family",
+            "analogLevel": "Regime",
             "sample": {
-              "overall": 122,
-              "recent": 37
+              "overall": 191,
+              "recent": 58
             }
           },
           "10": {
             "tone": "Cautious",
             "label": "Historically Weaker",
             "confidence": "Moderate",
-            "analogLevel": "State Family",
+            "analogLevel": "Regime",
             "sample": {
-              "overall": 122,
-              "recent": 37
+              "overall": 191,
+              "recent": 58
             }
           },
           "20": {
             "tone": "Cautious",
             "label": "Historically Weaker",
             "confidence": "Moderate",
-            "analogLevel": "State Family",
+            "analogLevel": "Regime",
             "sample": {
-              "overall": 122,
-              "recent": 37
+              "overall": 191,
+              "recent": 58
             }
           }
         }
       },
-      "outlook": "The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.",
-      "watchNext": "bullish continuation above 4097.2 · trend warning near 4080.71 · structure risk below 4046.2.",
+      "outlook": "Current analogs have historically underperformed this market's baseline across the tested horizons.",
+      "watchNext": "bullish continuation above 4170.7 · trend warning near 4076.91 · structure risk below 4095.",
       "levels": {
-        "support": 4046.2,
-        "resistance": 4097.2,
-        "bullishTrigger": 4097.2,
-        "warningLevel": 4080.71,
-        "bearishTrigger": 4046.2
+        "support": 4095,
+        "resistance": 4170.7,
+        "bullishTrigger": 4170.7,
+        "warningLevel": 4076.91,
+        "bearishTrigger": 4095
       },
       "specificSetupWarning": null,
-      "attentionScore": 7
+      "attentionScore": 4.5
     },
     {
       "key": "SILVER",
       "name": "Silver",
-      "asOf": "2026-11-06",
-      "price": 51.8,
+      "asOf": "2026-11-09",
+      "price": 52.56,
       "regime": "Strong Bear",
       "condition": "Recovery Attempt",
       "freshness": {
         "status": "fresh",
-        "latestCompletedSession": "2026-11-06",
-        "expectedCompletedSession": "2026-11-06",
+        "latestCompletedSession": "2026-11-09",
+        "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-10T00:52:37.552Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "returns": {
-        "d1": -0.82,
-        "d5": 5.51,
-        "d20": -14.62,
-        "d60": -20.15,
-        "d120": -32.79
+        "d1": 1.47,
+        "d5": 3.64,
+        "d20": -12.6,
+        "d60": -19.12,
+        "d120": -29.75
       },
       "framing": "Two-sided / evidence mixed",
       "evidence": {
@@ -662,16 +672,16 @@
         }
       },
       "outlook": "The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.",
-      "watchNext": "bullish continuation above 54.29 · trend warning near 54.44 · structure risk below 48.55.",
+      "watchNext": "bullish continuation above 54.29 · trend warning near 54.06 · structure risk below 48.55.",
       "levels": {
         "support": 48.55,
         "resistance": 54.29,
         "bullishTrigger": 54.29,
-        "warningLevel": 54.44,
+        "warningLevel": 54.06,
         "bearishTrigger": 48.55
       },
       "specificSetupWarning": null,
-      "attentionScore": 4.5
+      "attentionScore": 4
     },
     {
       "key": "BTC",
@@ -685,7 +695,7 @@
         "latestCompletedSession": "2026-11-08",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-10T01:40:19.197Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "returns": {
         "d1": -1.54,
@@ -766,7 +776,7 @@
         "latestCompletedSession": "2026-11-08",
         "expectedCompletedSession": "2026-11-09",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-10T01:40:19.197Z"
+        "assessedAt": "2026-11-10T03:40:53.085Z"
       },
       "returns": {
         "d1": -5.16,
@@ -838,12 +848,12 @@
   ],
   "highestAttention": [
     "BTC",
-    "GOLD",
     "ETH",
-    "NASDAQ100"
+    "NASDAQ100",
+    "GOLD"
   ],
   "hunterContext": {
-    "generatedAt": "2026-11-10T00:53:15.164Z",
+    "generatedAt": "2026-11-10T03:41:36.728Z",
     "visible": 6,
     "hiddenByIntegratedCap": 7,
     "picks": [
