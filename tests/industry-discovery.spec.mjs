@@ -9,6 +9,7 @@ for(const zero of [false,true])test(`industry discovery zero=${zero}`,async({pag
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.setViewportSize({width:390,height:844});
  await page.route('**/api/**',r=>{const k=new URL(r.request().url()).searchParams.get('kind');return r.fulfill({json:k==='v2'?scan('CA',zero):k==='v2-us'?scan('US',zero):{markets:[],reports:[],items:[],rows:[],quotes:{}}})});
  await page.goto('/');await expect(page.locator('#refreshBtn')).toBeEnabled();await expect(page.locator('#homeView [data-focused-review]')).toContainText(zero?'No qualifying setup':'T0.TO');
+ await expect(page.locator('#homeView .quality-card')).toHaveCount(zero?0:11);
  await page.locator('[data-view="shortlist"]:visible').click();await expect(page.locator('[data-stage-tab]')).toHaveCount(0);await expect(page.locator('.discovery-card')).toHaveCount(zero?0:11);
  await expect(page.locator('.industry-group').filter({hasText:'Energy'})).toContainText('No qualifying stocks');await expect(page.locator('.industry-group').filter({hasText:'Unmapped'})).toContainText('Sector comparison unavailable');
  await page.locator('[data-hunter-market="US"]').click();await expect(page.locator('.discovery-card')).toHaveCount(zero?0:11);

@@ -218,7 +218,13 @@ const focusSnapshots=snapshots.filter(s=>s.focusedReview?.version===focus.versio
  asOf:s.asOf,version:focus.version,universeRows:s.focusedReview.selected,
  selectedSymbols:s.focusedReview.selected.map(row=>row.symbol)
 }));
-report.focusEvidence=discoveryOutcomes(focusSnapshots,data,marketAsOf,market.referenceSymbol,focus.version);
+report.focusEvidence={version:focus.version,asOf:marketAsOf,capturedSessions:focusSnapshots.length,groups:{}};
+for(const [stage,horizon] of [['Recovery',5],['Early Watch',20]]){
+ const stageSnapshots=focusSnapshots.map(snapshot=>({...snapshot,
+  selectedSymbols:snapshot.universeRows.filter(row=>row.stage===stage).map(row=>row.symbol)
+ }));
+ report.focusEvidence.groups[stage]=discoveryOutcomes(stageSnapshots,data,marketAsOf,market.referenceSymbol,focus.version).horizons[horizon];
+}
 const output=market.file;
 fs.writeFileSync(output+'.tmp',JSON.stringify(report,null,2));
 fs.renameSync(output+'.tmp',output);

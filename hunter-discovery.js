@@ -27,30 +27,43 @@
   if(unmapped.length)industries.push({sector:'Unmapped',status:'unmapped',usableMembers:unmapped.length,universeMembers:null,selected:selected.filter(r=>!mapped.has(r.sector))});
   return {version,status:!rows.length?'no_usable_data':incompleteCount===rows.length?'incomplete':'available',incompleteCount,asOf:scan.marketAsOf,selected,excluded,industries};
  }
- const focusVersion='focused-review-v1';
+ const focusVersion='focused-review-v2';
+ const focusStages=['Recovery','Early Watch'];
+
+ function focusPool(scan,stage){
+  const rows=scan.byStage?.[stage],policy=scan.surfacePolicy?.[stage];
+  if(!Array.isArray(rows)||!policy)return scan.surfacePicks?.[stage];
+  // Use published admission criteria before the old display limit.
+  const score=row=>stage==='Recovery'?(row.surfaceScore??row.score):row.score;
+  return rows.filter(row=>row?.priorityBand===policy.requiredBand &&
+   (!Number.isFinite(policy.minScore)||row.score>=policy.minScore) &&
+   (!Number.isFinite(policy.maxStageAge)||(Number.isFinite(row.stageAge)&&row.stageAge<=policy.maxStageAge)))
+   .sort((a,b)=>score(b)-score(a)||a.symbol.localeCompare(b.symbol));
+ }
+ function passesFocusFactors(row){
+  if(row.lowBroken!==false || !Array.isArray(row.riskFlags) || row.riskFlags.length ||
+   row.reviewLane==='High Intensity' ||
+   !['Higher highs + higher lows','Structure improving'].includes(row.swingTrend))return false;
+  if(row.stage==='Recovery')return [row.rs20,row.dist20,row.momentumShift].every(x=>Number.isFinite(x)&&x>0);
+  return row.stage==='Early Watch' && Number.isFinite(row.maxRvol5) && row.maxRvol5>=1.5;
+ }
  function focusedReview(scan){
-  const stages=['Recovery','Early Watch'];
-  const available=Boolean(scan?.marketAsOf && scan.market && scan.currency &&
-   stages.every(stage=>Array.isArray(scan.surfacePicks?.[stage])));
-  const selected=[];
+  const selected=[],seen=new Set();
+  const valid=Boolean(scan?.marketAsOf && scan.market && scan.currency);
+  const pools=valid?focusStages.map(stage=>focusPool(scan,stage)):[];
+  const available=valid&&pools.every(Array.isArray);
   if(available){
-   for(const stage of stages){
-    // Preserve canonical within-stage rank. Each horizon has at most one slot.
-    const row=scan.surfacePicks[stage].find(row=>{
-     if(!row?.symbol || row.stage!==stage || row.date!==scan.marketAsOf ||
-      row.market!==scan.market || row.currency!==scan.currency ||
-      !Number.isFinite(row.price) || row.price<=0 || row.lowBroken!==false ||
-      !Array.isArray(row.riskFlags) || row.riskFlags.length || row.reviewLane==='High Intensity' ||
-      !['Higher highs + higher lows','Structure improving'].includes(row.swingTrend) ||
-      selected.some(prior=>prior.symbol===row.symbol))return false;
-     return stage==='Recovery'
-      ? [row.rs20,row.dist20,row.momentumShift].every(x=>Number.isFinite(x)&&x>0)
-      : Number.isFinite(row.maxRvol5)&&row.maxRvol5>=1.5;
-    });
-    if(row)selected.push(row);
-   }
+   pools.forEach((pool,index)=>{
+    for(const row of pool){
+     if(!row?.symbol || row.stage!==focusStages[index] || row.date!==scan.marketAsOf ||
+      row.market!==scan.market || row.currency!==scan.currency || !Number.isFinite(row.price) ||
+      row.price<=0 || seen.has(row.symbol) || !passesFocusFactors(row))continue;
+     seen.add(row.symbol);
+     selected.push(row);
+    }
+   });
   }
   return {version:focusVersion,available,selected};
  }
- root.MarketHunterDiscovery={version,build,focusVersion,focusedReview};
+ root.MarketHunterDiscovery={version,build,focusVersion,focusedReview,passesFocusFactors};
 })(globalThis);

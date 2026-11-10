@@ -1070,13 +1070,15 @@ async function load(){
   void loadFundamentals();
   const b=q('#refreshBtn');b.classList.add('busy');b.disabled=true;
   try{
-    const [daily,pulse,v2,intraday,monitor]=await Promise.allSettled([
+    const [daily,pulse,v2,intraday,monitor,factorReview]=await Promise.allSettled([
       getJsonFallback('/api/research-data?kind=daily','/data/daily-market-report.json'),
       getJsonFallback('/api/research-data?kind=pulse','/data/market-pulse-report.json'),
       getJsonFallback('/api/research-data?kind=v2','/data/v2-latest-scan.json'),
       getJson('/api/intraday'),
-      getJson('/api/hunter-monitor')
+      getJson('/api/hunter-monitor'),
+      getJson('/data/quality-factor-review.json')
     ]);
+    state.factorReview=factorReview.status==='fulfilled'?factorReview.value:null;
     state.hunterMonitor=monitor.status==='fulfilled'&&monitor.value?.version==='hunter-monitor-v1'?monitor.value:null;
     state.daily=daily.status==='fulfilled'?daily.value:null;
     state.pulse=pulse.status==='fulfilled'?pulse.value:null;
@@ -1182,6 +1184,7 @@ function homeHtml(){
   const pnl=s.currency?`${money(s.pnl,s.currency)} · ${pct(s.pnlPct)}`:'—';
 
   return `<div class="stack dashboard-layout">
+    ${Array.isArray(state.v2?.universeRows)?focusedReviewHtml(state.v2):""}
     <section class="panel report-panel home-overview ${overview.equityComparison.length?'has-comparison':''}" id="homeBrief"><div class="panel-inner report-shell">
       <div class="report-topline"><div class="eyebrow">${ui('THE BIG PICTURE','نمای کلی بازار')}</div><span class="overview-coverage">${ui('Current assessments','ارزیابی‌های به‌روز')} <bdi>${overview.current}/${overview.total}</bdi></span></div>
       <h2 class="overview-headline reading-copy">${!overview.current?ui('A current overview is unavailable; the recorded data is shown below.','نمای کلی فعلی در دسترس نیست؛ داده‌های ثبت‌شده در پایین نمایش داده می‌شوند.'):overview.weakening?ui(overview.weakening+' of '+overview.current+' current assessments show short-term weakness.',overview.weakening+' بازار از '+overview.current+' بازارِ به‌روز، ضعف کوتاه‌مدت دارند.'):ui('Short-term conditions vary across the current market assessments.','وضعیت کوتاه‌مدت بازارهای به‌روز یکسان نیست.')}</h2>
@@ -1198,8 +1201,8 @@ function homeHtml(){
 
     </div>
 
-    <div class="grid home-lower">
-      ${Array.isArray(state.v2?.universeRows)?focusedReviewHtml(state.v2):`${focusedReviewHtml(state.v2)}<details ${state.cautionFilter?"open":""}><summary>${ui("Original research list","فهرست اولیهٔ پژوهش")}</summary><section class="panel soft">
+    <div class="grid home-lower ${Array.isArray(state.v2?.universeRows)?"portfolio-only":""}">
+      ${Array.isArray(state.v2?.universeRows)?"":`${focusedReviewHtml(state.v2)}<details ${state.cautionFilter?"open":""}><summary>${ui("Original research list","فهرست اولیهٔ پژوهش")}</summary><section class="panel soft">
         <div class="panel-head"><div><h2>${ui("Research shortlist","فهرست بررسی سهم‌ها")}</h2><p>${ui("Canadian canonical shortlist · selection quality unproven","فهرست ثبت‌شدهٔ کانادا · کیفیت انتخاب اثبات نشده")}</p></div><button class="btn ghost" data-open="shortlist">${ui("View all ↗","مشاهدهٔ همه ↗")}</button></div>
         <p class="reading-copy">${ui("Assessment session","جلسهٔ ارزیابی")}: <bdi>${esc(state.v2?.marketAsOf||"—")}</bdi></p><button class="btn" data-caution-filter aria-pressed="${state.cautionFilter}">${ui("Experimental caution filter","فیلتر احتیاطی آزمایشی")}: ${state.cautionFilter?ui("On","روشن"):ui("Off","خاموش")}</button>${state.cautionFilter?reviewPolicyNoteHtml(review):""}${selectionEvidenceHtml()}
         ${swipeTools("homePicks",picks.length)}<div class="home-picks mobile-rail" id="homePicks" tabindex="0" aria-label="Selected stocks">${rows||'<div class="empty">'+ui('No candidate passes the caution checks. No replacement is forced.','هیچ سهمی از بررسی احتیاطی عبور نکرده؛ فهرست را اجباری پُر نمی‌کنیم.')+'</div>'}</div>
@@ -1834,17 +1837,26 @@ function focusedReviewHtml(scan){
  const focus=window.MarketHunterDiscovery.focusedReview(scan);
  const cards=focus.selected.map(row=>{
   const recovery=row.stage==='Recovery';
-  const reason=recovery
-   ? ui('20-session lead over benchmark','برتری ۲۰جلسه‌ای نسبت به شاخص')+' <bdi>'+fmt(row.rs20)+'</bdi> '+ui('pp','واحد درصد')+' · MA20 <bdi>'+pct(row.dist20)+'</bdi>'
-   : ui('Peak relative volume in the past 5 sessions','بیشترین حجم نسبی در ۵ جلسهٔ اخیر')+' <bdi>'+fmt(row.maxRvol5)+'×</bdi>';
-  return `<article class="card"><button class="symbol-link" data-chart="${esc(row.symbol)}"><bdi>${esc(row.symbol)}</bdi> ↗</button><small> ${esc(row.name||'')}</small><p>${esc(stageLabel(row.stage))} · ${esc(industryName(row.sector))} · ${recovery?ui('5-session review','پیگیری ۵جلسه‌ای'):ui('20-session watch','پیگیری ۲۰جلسه‌ای')}</p><p>${reason}</p><button class="btn" data-watch="${esc(row.symbol)}">${ui('Watch','دیده‌بان')}</button></article>`;
+  const metrics=recovery
+   ? [[ui('Lead over benchmark · 20 sessions','برتری نسبت به شاخص · ۲۰ جلسه'),fmt(row.rs20)+' '+ui('pp','واحد درصد')],[ui('Above MA20','بالاتر از میانگین ۲۰روزه'),pct(row.dist20)]]
+   : [[ui('Peak volume · 5 sessions','اوج حجم نسبی · ۵ جلسه'),fmt(row.maxRvol5)+'×'],[ui('Recent low','کف اخیر'),money(row.localLow,row.currency)]];
+  return `<article class="quality-card"><div class="quality-card-head"><div><button class="symbol-link" data-chart="${esc(row.symbol)}"><bdi>${esc(row.symbol)}</bdi> ↗︎</button><small>${esc(row.name||row.symbol)}</small></div><div class="quality-price"><bdi>${money(row.price,row.currency)}</bdi><small class="${cls(row.dayChangePct)}"><bdi>${pct(row.dayChangePct)}</bdi></small></div></div><p class="quality-setup">${esc(stageLabel(row.stage))} · ${recovery?ui('5 sessions','۵ جلسه'):ui('20 sessions','۲۰ جلسه')} · ${esc(industryName(row.sector))}</p><dl>${metrics.map(([label,value])=>`<div><dt>${label}</dt><dd><bdi>${esc(value)}</bdi></dd></div>`).join('')}</dl><div class="quality-footer"><span>${recovery?ui('Improving momentum · recent low intact','شتاب رو به بهبود · کف اخیر حفظ شده'):ui('Improving structure · recent low intact','بهبود ساختار · کف اخیر حفظ شده')}</span><button class="btn ghost" data-watch="${esc(row.symbol)}">${ui('Watch','دیده‌بان')}</button></div></article>`;
  }).join('');
- return `<section class="panel soft" data-focused-review><h2>${ui('Priority charts','اولویت بررسی نمودارها')}</h2><p class="reading-copy"><bdi>${esc(scan?.marketAsOf||'—')}</bdi> · ${ui('Up to one stock per setup','حداکثر یک سهم از هر الگو')} · ${scan?.market==='US'?ui('US extension under evaluation','تعمیم آزمایشی به بازار آمریکا'):ui('Experimental screen','غربال آزمایشی')}</p>${cards?`<div class="industry-cards">${cards}</div>`:`<p class="empty">${focus.available?ui('No qualifying setup this session.','در این جلسه هیچ الگویی واجد شرایط نبود.'):ui('Stage data unavailable for this session.','دادهٔ دسته‌ها برای این جلسه موجود نیست.')}</p>`}${focusedEvidenceHtml(scan,focus.version)}</section>`;
+ return `<section class="panel quality-panel" data-focused-review><header><div><h2>${ui('Priority charts','اولویت بررسی نمودارها')}</h2><small>${scan?.market==='US'?ui('US · experimental','آمریکا · آزمایشی'):ui('Canada · technical screen','کانادا · غربال تکنیکال')} · <bdi>${esc(scan?.marketAsOf||'—')}</bdi></small></div>${focus.available?`<span class="quality-count"><bdi>${focus.selected.length}</bdi> ${ui('qualifying','واجد شرایط')}</span>`:''}</header>${cards?`<div class="quality-list">${cards}</div>`:`<p class="empty">${focus.available?ui('No qualifying setup this session.','در این جلسه هیچ سهمی معیارها را نداشت.'):ui('Stage data unavailable for this session.','دادهٔ دسته‌ها برای این جلسه موجود نیست.')}</p>`} ${factorReviewHtml(scan,focus.version)}${focusedEvidenceHtml(scan,focus.version)}</section>`;
+}
+function factorReviewHtml(scan,version){
+ const audit=state.factorReview;
+ if(scan?.market!=='CA'||audit?.version!==version||audit.asOf>scan.marketAsOf||!audit.groups)return '';
+ const rows=Object.entries(audit.groups).map(([stage,group])=>{
+  const result=s=>`<span><bdi>${s.beat}/${s.observations}</bdi> · <bdi>${fmt(s.meanExcess)}</bdi> ${ui('pp','واحد درصد')}</span>`;
+  return `<tr><th>${esc(stageLabel(stage))} · ${group.horizon}</th><td>${result(group.matching)}</td><td>${result(group.others)}</td></tr>`;
+ }).join('');
+ return `<details class="quality-history"><summary>${ui('How these factors performed','عملکرد سهم‌هایی که این معیارها را داشتند')}</summary><p>${ui('Canadian first appearances through','اولین معرفی‌ها در کانادا تا')} <bdi>${esc(audit.asOf)}</bdi> · ${ui('Count ahead of benchmark / observations and average excess return. These cases informed the rules.','تعداد جلوتر از شاخص از کل معرفی‌ها و میانگین اختلاف بازده با شاخص. همین نمونه‌ها در انتخاب معیارها نقش داشتند.')}</p><table><thead><tr><th>${ui('Setup · sessions','الگو · جلسه')}</th><th>${ui('Passed','واجد معیار')}</th><th>${ui('Other cases','سایر موارد')}</th></tr></thead><tbody>${rows}</tbody></table></details>`;
 }
 function focusedEvidenceHtml(scan,version){
  const e=scan?.focusEvidence;
- if(e?.version!==version || e.asOf!==scan.marketAsOf)return '';
- return `<details class="reading-copy"><summary>${ui('Forward tracking','پیگیری پس از معرفی')} · ${e.capturedSessions} ${ui('sessions','جلسه')}</summary>${[5,20].map(h=>{const r=e.horizons[h];return `<p>${h} ${ui('sessions','جلسه')} · ${ui('Ahead of benchmark','جلوتر از شاخص')} <bdi>${r.beatingBenchmark}/${r.observations}</bdi> · ${ui('Pending','در انتظار')} ${r.pending} · ${ui('Missing','دادهٔ ناقص')} ${r.missing}</p>`}).join('')}</details>`;
+ if(e?.version!==version || e.asOf!==scan.marketAsOf || !e.groups)return '';
+ return `<details class="reading-copy"><summary>${ui('Forward tracking','پیگیری پس از معرفی')} · ${e.capturedSessions} ${ui('sessions','جلسه')}</summary>${[['Recovery',5],['Early Watch',20]].map(([stage,h])=>{const r=e.groups[stage];return `<p>${esc(stageLabel(stage))} · ${h} ${ui('sessions','جلسه')} · ${ui('Ahead of benchmark','جلوتر از شاخص')} <bdi>${r.beatingBenchmark}/${r.observations}</bdi> · ${ui('Pending','در انتظار')} ${r.pending} · ${ui('Missing','دادهٔ ناقص')} ${r.missing}</p>`}).join('')}</details>`;
 }
 function industryPageHtml(){
  const scan=reviewScan(),d=window.MarketHunterDiscovery.build(scan);

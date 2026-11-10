@@ -19,10 +19,17 @@ const watch={...recovery,symbol:'E',stage:'Early Watch',rs20:-3,maxRvol5:1.5};
 const focused=(recoveries,watches)=>globalThis.MarketHunterDiscovery.focusedReview({
  ...report([]),surfacePicks:{Recovery:recoveries,'Early Watch':watches}
 });
-assert.deepEqual(focused([recovery,{...recovery,symbol:'B'}],[watch]).selected,[recovery,watch]);
+assert.deepEqual(focused([recovery,{...recovery,symbol:'B'}],[watch]).selected,[recovery,{...recovery,symbol:'B'},watch]);
 for(const patch of [{date:'old'},{market:'US'},{momentumShift:null},{rs20:0},{dist20:-0.19},{riskFlags:['Extended']},{lowBroken:true},{swingTrend:'Lower highs + lower lows'}]){
  assert.deepEqual(focused([{...recovery,...patch}],[]).selected,[]);
 }
 assert.deepEqual(focused([], [{...watch,maxRvol5:1.49}]).selected,[]);
 assert.deepEqual(focused([recovery],[{...watch,symbol:recovery.symbol}]).selected,[recovery]);
 assert.equal(globalThis.MarketHunterDiscovery.focusedReview(report([])).available,false);
+
+const uncapped=Array.from({length:9},(_,i)=>({...recovery,symbol:'R'+i,score:60-i,stageAge:0,priorityBand:'Review First'}));
+const full={...report([]),surfacePicks:{Recovery:uncapped.slice(0,6),'Early Watch':[watch]},
+ byStage:{Recovery:[...uncapped,{...uncapped[0],symbol:'stale',stageAge:3}]},
+ surfacePolicy:{Recovery:{requiredBand:'Review First',maxStageAge:2}}};
+assert.equal(globalThis.MarketHunterDiscovery.focusedReview(full).selected.length,10);
+assert.deepEqual(full.byStage.Recovery.slice(0,9),uncapped);
