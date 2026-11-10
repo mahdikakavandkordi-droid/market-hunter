@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper — Corrected Evidence v2
 
-Generated: 2026-11-07T02:58:56.055Z
+Generated: 2026-11-10T04:42:53.449Z
 
 Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
 The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
@@ -9,17 +9,17 @@ The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5f
 
 | Metric | Raw | +0.03R cost | +0.05R cost |
 |---|---:|---:|---:|
-| Closed trades | 10 | 10 | 10 |
-| Win rate | 60.0% | 60.0% | 60.0% |
-| PF | 1.314 | 1.232 | 1.180 |
-| Avg R | 0.126 | 0.096 | 0.076 |
+| Closed trades | 11 | 11 | 11 |
+| Win rate | 54.5% | 54.5% | 54.5% |
+| PF | 1.051 | 0.986 | 0.944 |
+| Avg R | 0.023 | -0.007 | -0.027 |
 
 ## $1,000 paper account — realized vs marked
 
-Realized-only equity: $1003.16; realized return: 0.3%.
-Marked equity: $996.87; marked return: -0.3%; mark quality: fresh.
-Unrealized P/L: $-6.30.
-Realized-event max drawdown: -1.8%; observed marked max drawdown: -2.2%.
+Realized-only equity: $992.63; realized return: -0.7%.
+Marked equity: $991.12; marked return: -0.9%; mark quality: fresh.
+Unrealized P/L: $-1.51.
+Realized-event max drawdown: -2.1%; observed marked max drawdown: -2.7%.
 Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; first complete marked-equity observation: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -28,8 +28,7 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---|---:|
-| MRU.TO | Long | 99.030 | 98.610 | 2026-11-06T21:30:00.000Z | fresh | $-0.85 |
-| LUN.TO | Short | 28.200 | 29.590 | 2026-11-06T21:30:00.000Z | fresh | $-5.44 |
+| MRU.TO | Long | 99.030 | 98.285 | 2026-11-09T21:30:00.000Z | fresh | $-1.51 |
 
 ## Evidence integrity
 
@@ -42,14 +41,14 @@ This run discrepancies: 9; prior records not re-observed: 0; candle/data diagnos
 | Evidence class | Closed | Win rate | Avg R after 0.05R cost | PF after 0.05R cost |
 |---|---:|---:|---:|---:|
 | prospective | 0 | n/a | n/a | n/a |
-| reconstructed | 8 | 62.5% | -0.018 | 0.955 |
+| reconstructed | 9 | 55.6% | -0.133 | 0.716 |
 | legacy unprovenanced | 2 | 50.0% | 0.450 | 1.857 |
 
 ## Momentum shadow (observational only)
 
 | Bucket | Closed | Win rate | Avg R after cost | PF after cost |
 |---|---:|---:|---:|---:|
-| high | 1 | 100.0% | 1.950 | n/a |
+| high | 2 | 50.0% | 0.450 | 1.857 |
 | medium | 3 | 66.7% | 0.039 | 1.112 |
 | low | 6 | 50.0% | -0.219 | 0.584 |
 | unavailable | 0 | n/a | n/a | n/a |
