@@ -12,7 +12,7 @@ test('home filters canonical picks, discloses omissions and preserves full revie
  await page.locator('[data-caution-filter]').click();
  await expect(page.locator('#homePicks .home-pick')).toHaveCount(1);
  await expect(page.locator('#homePicks')).toContainText('GOOD');
- const omitted=page.locator('details').filter({has:page.locator('summary', {hasText:'Deferred for caution checks'})});
+ const omitted=page.locator('.dashboard-disclosure').filter({has:page.locator('summary', {hasText:'Deferred for caution checks'})});
  await omitted.locator('summary').click();await expect(omitted).toContainText('BAD.TO');await expect(omitted).toContainText('Recent low broken');
  await expect(page.locator('#homeView')).toContainText('no validated return history');
  await page.locator('[data-view="shortlist"]:visible').click();
