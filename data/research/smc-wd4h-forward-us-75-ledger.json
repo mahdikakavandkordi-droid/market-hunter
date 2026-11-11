@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-11-10T04:48:34.422Z",
+  "updatedAt": "2026-11-11T03:05:45.868Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -1377,6 +1377,63 @@
       "prospectiveCount": 5,
       "pendingCount": 0,
       "discrepancyCount": 19
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|42950350654|1",
+      "observedAt": "2026-11-11T03:05:45.868Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "42950350654",
+        "runAttempt": "1",
+        "sha": "b1ccbfe69b7b3f8331b52c8e3f9bbde69afb4ad6",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "EOG",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-10",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        },
+        {
+          "symbol": "TMO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-10",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 3,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 30,
+      "prospectiveCount": 5,
+      "pendingCount": 0,
+      "discrepancyCount": 19
     }
   ],
   "discrepancyLog": [
@@ -2086,6 +2143,15 @@
       "quality": "fresh",
       "markedEquity": 980.8590589648331,
       "totalUnrealizedPnl": 11.9049278880299,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|42950350654|1",
+      "observedAt": "2026-11-11T03:05:45.868Z",
+      "quality": "fresh",
+      "markedEquity": 978.8349154856467,
+      "totalUnrealizedPnl": -4.281296110636124,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -4693,9 +4759,9 @@
       "stop": 1103.81906476702,
       "target": 1301.4917532784598,
       "risk": 65.89089617047989,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 0.6929642307725036,
+      "exitT": "2026-11-10T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 71.6,
@@ -4774,7 +4840,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 1215.3699951171875,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-11-10T14:30:00.000Z",
+        "exitBarEndT": "2026-11-10T18:30:00.000Z"
+      }
     },
     {
       "symbol": "MA",
@@ -4785,9 +4863,9 @@
       "stop": 607.7654493059431,
       "target": 693.2191013881138,
       "risk": 28.484550694056907,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 0.881705683341358,
+      "exitT": "2026-11-10T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 84.8,
@@ -4866,7 +4944,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 661.364990234375,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-11-10T14:30:00.000Z",
+        "exitBarEndT": "2026-11-10T18:30:00.000Z"
+      }
     },
     {
       "symbol": "TMO",
@@ -4877,9 +4967,9 @@
       "stop": 661.0771754673549,
       "target": 798.9357369559152,
       "risk": 45.95285382952011,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 0.23698100783210868,
+      "exitT": "2026-11-10T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 79.4,
@@ -4958,7 +5048,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 717.9199829101562,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-11-10T14:30:00.000Z",
+        "exitBarEndT": "2026-11-10T18:30:00.000Z"
+      }
     },
     {
       "symbol": "COST",
