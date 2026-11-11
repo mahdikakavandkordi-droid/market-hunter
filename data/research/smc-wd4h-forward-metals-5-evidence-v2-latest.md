@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — metals-5 — Corrected Evidence v2
 
-Mode: stock; generated 2026-11-10T07:11:09.490Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-11-11T06:06:07.893Z; start 2026-10-01; universe 5.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -13,8 +13,8 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 
 ## Realized vs marked paper account
 
-Realized-only equity $1022.44; return 2.2%; realized-event max DD 0.0%.
-Marked equity $1019.71; return 2.0%; observed marked max DD -0.6%; quality fresh.
+Realized-only equity $1022.44; return 2.2%; realized-event max DD -0.0%.
+Marked equity $1020.46; return 2.0%; observed marked max DD -0.6%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:48.473Z; first complete marked-equity observation 2026-10-04T14:55:48.473Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,11 +23,13 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---|---|---:|
-| CPER | Short | 37.670 | 38.400 | 2026-11-09T21:30:00.000Z | fresh | $-2.73 |
+| CPER | Short | 37.670 | 37.745 | 2026-11-10T21:30:00.000Z | fresh | $-0.28 |
+| GLD | Short | 368.675 | 369.410 | 2026-11-10T21:30:00.000Z | fresh | $-0.51 |
+| SLV | Short | 46.265 | 46.480 | 2026-11-10T21:30:00.000Z | fresh | $-1.19 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 0; prospective 0; reconstructed 3; pending 0.
+Legacy provenance unknown 0; prospective 0; reconstructed 5; pending 0.
 This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 0.
 
 ### Performance by evidence provenance
