@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-11-09
+**As of:** 2026-11-09 to 2026-11-10 (TSX 2026-11-10 · SP500 2026-11-10 · NASDAQ100 2026-11-10 · GOLD 2026-11-09 · SILVER 2026-11-09 · BTC 2026-11-09 · ETH 2026-11-09)
 
 ## Executive read
 
-- Mixed cross-market environment.
-- All tracked markets are aligned to 2026-11-09.
+- Current cross-market assessment is incomplete; some inputs require an update.
+- Completed-session dates differ by instrument: TSX 2026-11-10 · SP500 2026-11-10 · NASDAQ100 2026-11-10 · GOLD 2026-11-09 · SILVER 2026-11-09 · BTC 2026-11-09 · ETH 2026-11-09.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -14,13 +14,13 @@
 - **Watch:** Ethereum: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Caution:** Nasdaq-100: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
 - **Context:** Gold: trend is strong near highs, but historical follow-through is not automatically stronger than baseline.
-- **Context:** TSX Composite: trend is strong near highs, but historical follow-through is not automatically stronger than baseline.
+- **Watch:** S&P 500: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 
 ## Group read
 
-- **Equities: Mixed** — Signals are mixed across the tracked markets.
+- **Equities: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Metals: Mixed** — Signals are mixed across the tracked markets.
-- **Crypto: Weakening** — Most tracked markets in this group show weakening short-term conditions.
+- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
 
 ## Key divergences
 
@@ -30,35 +30,35 @@
 
 - **Bitcoin:** bullish continuation above 79463.71 · trend warning near 78581.04 · structure risk below 74944.59.
 - **Ethereum:** bullish continuation above 2388.03 · trend warning near 2293.41 · structure risk below 1856.34.
-- **Nasdaq-100:** bullish continuation above 28829.66 · trend warning near 28953.09 · structure risk below 27176.03.
+- **Nasdaq-100:** bullish continuation above 28829.66 · trend warning near 28811.66 · structure risk below 27176.03.
 - **Gold:** bullish continuation above 4170.7 · trend warning near 4076.91 · structure risk below 4095.
 - **Silver:** bullish continuation above 54.29 · trend warning near 54.06 · structure risk below 48.55.
 
 ## Market detail
 
 ### TSX Composite
-- **State:** Mixed / Breakout / Near High
-- **Returns:** 1D +1.8% · 5D +1.8% · 20D +2.2% · 60D -0.8%
-- **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Supportive
-- **Framing:** Historical analogs supportive
-- **Outlook:** Current analogs have historically outperformed this market's baseline across the tested horizons.
-- **Watch next:** bullish continuation above 36669.1 · trend warning near 35988.54 · structure risk below 36222.3.
-
-### S&P 500
 - **State:** Mixed / Recovery Attempt
-- **Returns:** 1D +2.4% · 5D +0.1% · 20D -3.3% · 60D -3%
-- **Historical read:** 5 sessions: Improving, longer-term caution · 10: Improving, longer-term caution · 20: Cautious
+- **Returns:** 1D -0.8% · 5D +1.8% · 20D +0.5% · 60D -1.5%
+- **Historical read:** 5 sessions: Mixed · 10: Mixed · 20: Mixed
 - **Framing:** Two-sided / evidence mixed
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 7577.92 · trend warning near 7644.94 · structure risk below 7527.56.
+- **Watch next:** bullish continuation above 36343 · trend warning near 35997.86 · structure risk below 35805.
+
+### S&P 500
+- **State:** Mixed / Weakening
+- **Returns:** 1D -0.4% · 5D -0.6% · 20D -3.6% · 60D -2.9%
+- **Historical read:** 5 sessions: Supportive · 10: Mixed · 20: Mixed
+- **Framing:** Short-term damage, confirmation required
+- **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
+- **Watch next:** bullish continuation above 7551.31 · trend warning near 7630.71 · structure risk below 7507.77.
 
 ### Nasdaq-100
 - **State:** Bear / Weakening
-- **Returns:** 1D +3.4% · 5D -0.3% · 20D -9% · 60D -7.1%
+- **Returns:** 1D -0.6% · 5D -1.6% · 20D -9.3% · 60D -7.5%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Mixed
 - **Framing:** Broader setup constructive, exact setup caution
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 28829.66 · trend warning near 28953.09 · structure risk below 27176.03.
+- **Watch next:** bullish continuation above 28829.66 · trend warning near 28811.66 · structure risk below 27176.03.
 - **Specific setup caution:** Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through.
 
 ### Gold
@@ -96,14 +96,14 @@
 
 ## Hunter context
 
-Final shortlist: 6 charts. 7 additional validated stage picks remain in the backend.
+Final shortlist: 6 charts. 11 additional validated stage picks remain in the backend.
 
-1. TIH.TO — Early Watch
-2. EIF.TO — Recovery
+1. TRI.TO — Early Watch
+2. MDA.TO — Recovery
 3. LMN.V — Attractive Growth
 4. DSG.TO — Established Move
-5. WFG.TO — Recovery
-6. CSU.TO — Attractive Growth
+5. MG.TO — Early Watch
+6. WFG.TO — Recovery
 
 ---
 Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal.
