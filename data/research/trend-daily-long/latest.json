@@ -1,8 +1,8 @@
 {
   "version": "trend-daily-long-v1",
   "activatedAt": "2026-11-10T21:08:12.910Z",
-  "generatedAt": "2026-11-11T02:58:24.210Z",
-  "lastSession": null,
+  "generatedAt": "2026-11-12T03:12:48.340Z",
+  "lastSession": "2026-11-11",
   "config": {
     "version": "trend-daily-long-v1",
     "symbols": [
@@ -42,19 +42,19 @@
   "configHash": "454aca05a8de4b5fbd7d9c49ec1fe8b3248374f0128fb282b5a93d9a82e42156",
   "failures": [],
   "inputs": {
-    "AMZN": "4f7dcb8bbc90a2a1a399594fc11869645b2cac5ac8ddb5b26ea72b4af9d7639e",
-    "MSFT": "60f47b4f674d59f1c8a1f87942813077492c19d237dbed09ba62e8064c7cdf13",
-    "GOOGL": "507404c39abc408f8bc2a6f84b46e280a60dc2bd8b858bd7bb06186d485fddc0",
-    "AAPL": "1bff0385da1ffb8623f825eb7d5a060bc223c4d0e80964b1249e41caa7074ce5",
-    "META": "0b8bc09a82f23c205a7d988be1bf1fa921c5df8e6dc3487ff3ff231ecdf1d9d6",
-    "NVDA": "51f56f0385e700cddba428f17e3d7d11b72ef519eda1ba5be1de6ebf31aee8bd",
-    "XOM": "f0b7a71745142d78494b32929b39324f9160ed409b6e430fab2b29cae5b47aa8",
-    "JNJ": "657261656448cd4b099fba411c338e4492c0b165ce23a23f4e81ba329b7654fa",
-    "JPM": "b0f04eccf5b673fa299d6d2a2c091511debe70e12db36ff7c36ac991039a145f",
-    "COST": "a84980584ace07fdd5bce81226526e05304a08b0c760967b849e828f790a57ef",
-    "CAT": "b99ba632da98246cde8ff77f1fe5159f4c6d3bf8390ea943ee2ffd9ad5f773ac",
-    "NEE": "36a0d629a05733d9e3354230b4fcd7276ac5d31f0108af2744138a8f89671486",
-    "SPY": "e6e63fde90562270c061d6630f748404b1d1349a69f52f8d7430d3be66e7f0c6"
+    "AMZN": "5ff97f1451f5c91e853bc544f2d39c2dc2f4cdcf9e85d37711b58f78f3034527",
+    "MSFT": "2f00400f70796a3f4c32e00e612fd6086c2612020c211f5a64867b53b0833d86",
+    "GOOGL": "3abd8c2ad36e8c6f677c51e267371ed6c322e7513a9bc3a69fb57e1df78f98ef",
+    "AAPL": "488fdaa87452b1ed2bf541c0cf5fbd43a40c69880a550982d6cf067fbc0a2ff3",
+    "META": "a0ba7d2d667bf72178b92de440770ba98b58c9da4e027c0e5b7993e7bc852602",
+    "NVDA": "981606f4961d05f93644b418b58595de044025f32e80ac5dbbaabd46bc3c4522",
+    "JPM": "9f5e678bfbdb887a07556b15d31d836627d1675ec408660dc1f65832e2d9a62a",
+    "XOM": "1843ec1e7e57063cedcbd11dba4f2bed26ceffaae1db1c96475cad0f2cbe1b94",
+    "COST": "7d2d696a46b94a727143847fa844a923ed0f3ffec3d1bc93b41b88d07afbffe2",
+    "JNJ": "2d23226aae8f7c84f9aaaa2b2c85f695e735b7e71cb7e14a8753cb69ce64b77e",
+    "SPY": "807885a8eab2e9abdd91cff08df20017397c064adbfc93f6f5aede9dce9aeb44",
+    "NEE": "1fc7d5ca902e64d3db344f8d1fb15add97fcd4a741530b8964fcb785ea970cd6",
+    "CAT": "1b2a56da8bcb4f55f2c2ad138dbc73dced3a168a7666446f0594c671e6ecc048"
   },
   "assumptions": [
     "Paper account, USD, fully funded long stock positions.",
@@ -63,30 +63,107 @@
     "SPY buy-hold and daily-rebalanced 50% SPY/cash include distributions; cash interest zero.",
     "No signals from closes earlier than launch or missed collection sessions."
   ],
-  "sessions": 0,
+  "sessions": 1,
   "reviewPlan": {
     "firstReviewAfterSessions": 60,
     "minimumClosedTradesForComparison": 30
   },
-  "benchmarks": null,
+  "benchmarks": {
+    "date": "2026-11-11",
+    "lastClose": 759.8099975585938,
+    "buyHold": 10000,
+    "halfCash": 10000
+  },
   "models": {
     "baseline": {
       "cash": 10000,
       "equity": 10000,
-      "pending": [],
+      "pending": [
+        {
+          "id": "baseline|AAPL|2026-11-11",
+          "symbol": "AAPL",
+          "observedAt": "2026-11-12T03:12:48.340Z",
+          "snapshot": {
+            "date": "2026-11-11",
+            "close": 355.6300048828125,
+            "atr": 9.582146780831474,
+            "breakoutHigh": 355.3800048828125,
+            "dailySma": 299.7839501953125,
+            "relativeStrength": 0.05731990379336771
+          },
+          "status": "pending_entry"
+        },
+        {
+          "id": "baseline|COST|2026-11-11",
+          "symbol": "COST",
+          "observedAt": "2026-11-12T03:12:48.340Z",
+          "snapshot": {
+            "date": "2026-11-11",
+            "close": 1087.6099853515625,
+            "atr": 21.738577706473215,
+            "breakoutHigh": 1081.550048828125,
+            "dailySma": 973.6741485595703,
+            "relativeStrength": 0.152914632083195
+          },
+          "status": "pending_entry"
+        }
+      ],
       "open": [],
       "closed": [],
       "skipped": 0,
-      "curve": []
+      "curve": [
+        {
+          "date": "2026-11-11",
+          "equity": 10000,
+          "cash": 10000,
+          "observedAt": "2026-11-12T03:12:48.340Z"
+        }
+      ]
     },
     "relative_strength": {
       "cash": 10000,
       "equity": 10000,
-      "pending": [],
+      "pending": [
+        {
+          "id": "relative_strength|AAPL|2026-11-11",
+          "symbol": "AAPL",
+          "observedAt": "2026-11-12T03:12:48.340Z",
+          "snapshot": {
+            "date": "2026-11-11",
+            "close": 355.6300048828125,
+            "atr": 9.582146780831474,
+            "breakoutHigh": 355.3800048828125,
+            "dailySma": 299.7839501953125,
+            "relativeStrength": 0.05731990379336771
+          },
+          "status": "pending_entry"
+        },
+        {
+          "id": "relative_strength|COST|2026-11-11",
+          "symbol": "COST",
+          "observedAt": "2026-11-12T03:12:48.340Z",
+          "snapshot": {
+            "date": "2026-11-11",
+            "close": 1087.6099853515625,
+            "atr": 21.738577706473215,
+            "breakoutHigh": 1081.550048828125,
+            "dailySma": 973.6741485595703,
+            "relativeStrength": 0.152914632083195
+          },
+          "status": "pending_entry"
+        }
+      ],
       "open": [],
       "closed": [],
       "skipped": 0,
-      "curve": []
+      "curve": [
+        {
+          "date": "2026-11-11",
+          "equity": 10000,
+          "cash": 10000,
+          "observedAt": "2026-11-12T03:12:48.340Z"
+        }
+      ]
     }
   }
 }
