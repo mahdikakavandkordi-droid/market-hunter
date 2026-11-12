@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-ledger-v2",
-  "updatedAt": "2026-11-11T02:53:35.582Z",
+  "updatedAt": "2026-11-12T03:58:50.956Z",
   "forwardStart": "2026-10-01",
   "runLog": [
     {
@@ -1447,6 +1447,48 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 9
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|43151700345|1",
+      "observedAt": "2026-11-12T03:58:50.956Z",
+      "tracker": "smc-forward-paper",
+      "cohort": "tsx-core",
+      "github": {
+        "runId": "43151700345",
+        "runAttempt": "1",
+        "sha": "9c197c98d6441873cc0595e1ac43355bfc24710b",
+        "workflow": "SMC Forward Paper Track",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "CSU.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 10,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 13
     }
   ],
   "discrepancyLog": [
@@ -1707,6 +1749,52 @@
       "recomputed": 0.46942405007527804,
       "firstDetectedAt": "2026-10-29T01:53:46.188Z",
       "runKey": "smc-forward-paper|tsx-core|40803078324|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "LUN.TO|2026-11-05T14:30:00.000Z|-1",
+      "field": "stop",
+      "recorded": 30.76153530393328,
+      "recomputed": 30.76157101222447,
+      "firstDetectedAt": "2026-11-12T03:58:50.956Z",
+      "runKey": "smc-forward-paper|tsx-core|43151700345|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "LUN.TO|2026-11-05T14:30:00.000Z|-1",
+      "field": "target",
+      "recorded": 23.0769316809518,
+      "recomputed": 23.076860264369422,
+      "firstDetectedAt": "2026-11-12T03:58:50.956Z",
+      "runKey": "smc-forward-paper|tsx-core|43151700345|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "LUN.TO|2026-11-05T14:30:00.000Z|-1",
+      "field": "risk",
+      "recorded": 2.5615345409938257,
+      "recomputed": 2.5615702492850154,
+      "firstDetectedAt": "2026-11-12T03:58:50.956Z",
+      "runKey": "smc-forward-paper|tsx-core|43151700345|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "LUN.TO|2026-11-05T14:30:00.000Z|-1",
+      "field": "signalSnapshot",
+      "recorded": {
+        "opposingSwing": 30.649999618530273,
+        "atr14": 1.1153568540300642,
+        "signalCompletedAt": "2026-11-05T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "recomputed": {
+        "opposingSwing": 30.649999618530273,
+        "atr14": 1.1157139369419642,
+        "signalCompletedAt": "2026-11-05T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "firstDetectedAt": "2026-11-12T03:58:50.956Z",
+      "runKey": "smc-forward-paper|tsx-core|43151700345|1"
     }
   ],
   "markedEquitySeries": [
@@ -1980,6 +2068,15 @@
       "quality": "fresh",
       "markedEquity": 991.899922890593,
       "totalUnrealizedPnl": -0.7309364963566743,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|43151700345|1",
+      "observedAt": "2026-11-12T03:58:50.956Z",
+      "quality": "fresh",
+      "markedEquity": 991.5750708313997,
+      "totalUnrealizedPnl": -1.0557885555499904,
       "missingSymbols": [],
       "staleSymbols": []
     }
