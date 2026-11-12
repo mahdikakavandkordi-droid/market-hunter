@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-evidence-v2",
   "cohort": "us-75",
-  "generatedAt": "2026-11-11T03:05:45.868Z",
+  "generatedAt": "2026-11-12T04:20:51.802Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -31,7 +31,7 @@
     {
       "symbol": "EOG",
       "type": "incomplete_or_missing_exchange_bar",
-      "date": "2026-11-10",
+      "date": "2026-11-11",
       "segment": 1,
       "expected": [
         4,
@@ -46,7 +46,7 @@
     {
       "symbol": "TMO",
       "type": "incomplete_or_missing_exchange_bar",
-      "date": "2026-11-10",
+      "date": "2026-11-11",
       "segment": 1,
       "expected": [
         4,
@@ -63,20 +63,20 @@
     "run": {
       "tracker": "smc-forward-expanded",
       "cohort": "us-75",
-      "observedAt": "2026-11-11T03:05:45.868Z",
+      "observedAt": "2026-11-12T04:20:51.802Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "42950350654",
+        "runId": "43154128736",
         "runAttempt": "1",
-        "sha": "b1ccbfe69b7b3f8331b52c8e3f9bbde69afb4ad6",
+        "sha": "9c197c98d6441873cc0595e1ac43355bfc24710b",
         "workflow": "SMC Expanded Forward Cohorts",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-expanded|us-75|42950350654|1"
+      "runKey": "smc-forward-expanded|us-75|43154128736|1"
     },
     "reconciliation": {
       "newRecords": 0,
-      "lifecycleUpdates": 3,
+      "lifecycleUpdates": 2,
       "missingPreviouslyRecorded": 0,
       "legacyUnprovenancedCount": 1,
       "reconstructedCount": 30,
@@ -86,176 +86,273 @@
     "discrepancies": [
       {
         "type": "source_revision_conflict",
-        "identity": "CVX|2026-10-06T13:30:00.000Z|1",
-        "field": "entry",
-        "recorded": 208.5449981689453,
-        "recomputed": 208.49000549316406
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "CVX|2026-10-06T13:30:00.000Z|1",
+        "identity": "MS|2026-10-14T13:30:00.000Z|-1",
         "field": "stop",
-        "recorded": 202.44226749965122,
-        "recomputed": 202.44241038731167
+        "recorded": 190.16725649152482,
+        "recomputed": 190.1671851021903
       },
       {
         "type": "source_revision_conflict",
-        "identity": "CVX|2026-10-06T13:30:00.000Z|1",
+        "identity": "MS|2026-10-14T13:30:00.000Z|-1",
         "field": "target",
-        "recorded": 220.7504595075335,
-        "recomputed": 220.58519570486885
+        "recorded": 159.36546870640348,
+        "recomputed": 159.36561148507252
       },
       {
         "type": "source_revision_conflict",
-        "identity": "CVX|2026-10-06T13:30:00.000Z|1",
+        "identity": "MS|2026-10-14T13:30:00.000Z|-1",
         "field": "risk",
-        "recorded": 6.10273066929409,
-        "recomputed": 6.047595105852395
+        "recorded": 10.26726259504045,
+        "recomputed": 10.267191205705927
       },
       {
         "type": "source_revision_conflict",
-        "identity": "CVX|2026-10-06T13:30:00.000Z|1",
+        "identity": "MS|2026-10-14T13:30:00.000Z|-1",
         "field": "signalSnapshot",
         "recorded": {
-          "opposingSwing": 202.6999969482422,
-          "atr14": 2.577294485909598,
-          "signalCompletedAt": "2026-10-06T17:30:00.000Z",
+          "opposingSwing": 189.86000061035156,
+          "atr14": 3.072558811732701,
+          "signalCompletedAt": "2026-10-14T17:30:00.000Z",
           "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
         },
         "recomputed": {
-          "opposingSwing": 202.6999969482422,
-          "atr14": 2.5758656093052457,
-          "signalCompletedAt": "2026-10-06T17:30:00.000Z",
+          "opposingSwing": 189.86000061035156,
+          "atr14": 3.071844918387277,
+          "signalCompletedAt": "2026-10-14T17:30:00.000Z",
           "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
         }
       },
       {
         "type": "closed_outcome_revision",
-        "identity": "HON|2026-10-07T17:30:00.000Z|-1",
+        "identity": "MS|2026-10-14T13:30:00.000Z|-1",
         "field": "R",
-        "recorded": -0.35398171782062954,
-        "recomputed": -0.35093901033009367
+        "recorded": -0.5162041004306204,
+        "recomputed": -0.5162076896758647
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "ORCL|2026-10-14T13:30:00.000Z|-1",
+        "field": "entry",
+        "recorded": 131.7449951171875,
+        "recomputed": 131.77999877929688
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "ORCL|2026-10-14T13:30:00.000Z|-1",
+        "field": "target",
+        "recorded": 100.47217995779857,
+        "recomputed": 100.5771909441267
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "ORCL|2026-10-14T13:30:00.000Z|-1",
+        "field": "risk",
+        "recorded": 15.636407579694463,
+        "recomputed": 15.601403917585088
+      },
+      {
+        "type": "closed_outcome_revision",
+        "identity": "ORCL|2026-10-14T13:30:00.000Z|-1",
+        "field": "R",
+        "recorded": 0.35589983080502813,
+        "recomputed": 0.35894195828165615
       },
       {
         "type": "source_revision_conflict",
         "identity": "TMO|2026-10-15T17:30:00.000Z|1",
         "field": "entry",
         "recorded": 698,
-        "recomputed": 692.260009765625
+        "recomputed": 695.114990234375
       },
       {
         "type": "source_revision_conflict",
         "identity": "TMO|2026-10-15T17:30:00.000Z|1",
         "field": "target",
         "recorded": 825.9564060756138,
-        "recomputed": 808.7364353724888
+        "recomputed": 817.3013767787388
       },
       {
         "type": "source_revision_conflict",
         "identity": "TMO|2026-10-15T17:30:00.000Z|1",
         "field": "risk",
         "recorded": 63.97820303780691,
-        "recomputed": 58.23821280343191
+        "recomputed": 61.09319327218191
       },
       {
         "type": "closed_outcome_revision",
         "identity": "TMO|2026-10-15T17:30:00.000Z|1",
         "field": "R",
         "recorded": -0.07924585379840551,
-        "recomputed": 0.011504180466828624
+        "recomputed": -0.035764991835656165
       },
       {
         "type": "source_revision_conflict",
-        "identity": "PM|2026-10-26T13:30:00.000Z|1",
+        "identity": "NVDA|2026-10-21T13:30:00.000Z|1",
         "field": "stop",
-        "recorded": 183.63926664079938,
-        "recomputed": 183.63919525146486
+        "recorded": 212.4681040082659,
+        "recomputed": 212.46817539760045
       },
       {
         "type": "source_revision_conflict",
-        "identity": "PM|2026-10-26T13:30:00.000Z|1",
+        "identity": "NVDA|2026-10-21T13:30:00.000Z|1",
         "field": "target",
-        "recorded": 240.29644840785437,
-        "recomputed": 240.29659118652341
+        "recorded": 239.41529344831196,
+        "recomputed": 239.41515066964286
       },
       {
         "type": "source_revision_conflict",
-        "identity": "PM|2026-10-26T13:30:00.000Z|1",
+        "identity": "NVDA|2026-10-21T13:30:00.000Z|1",
         "field": "risk",
-        "recorded": 18.885727255684998,
-        "recomputed": 18.88579864501952
+        "recorded": 8.982396480015353,
+        "recomputed": 8.982325090680803
       },
       {
         "type": "source_revision_conflict",
-        "identity": "PM|2026-10-26T13:30:00.000Z|1",
+        "identity": "NVDA|2026-10-21T13:30:00.000Z|1",
         "field": "signalSnapshot",
         "recorded": {
-          "opposingSwing": 184,
-          "atr14": 3.6073335920061385,
-          "signalCompletedAt": "2026-10-26T17:30:00.000Z",
+          "opposingSwing": 212.85000610351562,
+          "atr14": 3.8190209524972096,
+          "signalCompletedAt": "2026-10-21T17:30:00.000Z",
           "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
         },
         "recomputed": {
-          "opposingSwing": 184,
-          "atr14": 3.6080474853515625,
-          "signalCompletedAt": "2026-10-26T17:30:00.000Z",
+          "opposingSwing": 212.85000610351562,
+          "atr14": 3.8183070591517856,
+          "signalCompletedAt": "2026-10-21T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        }
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "PG|2026-10-22T13:30:00.000Z|1",
+        "field": "entry",
+        "recorded": 166.00999450683594,
+        "recomputed": 166
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "PG|2026-10-22T13:30:00.000Z|1",
+        "field": "target",
+        "recorded": 184.47760881696428,
+        "recomputed": 184.44762529645647
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "PG|2026-10-22T13:30:00.000Z|1",
+        "field": "risk",
+        "recorded": 9.23380715506417,
+        "recomputed": 9.223812648228233
+      },
+      {
+        "type": "closed_outcome_revision",
+        "identity": "PG|2026-10-22T13:30:00.000Z|1",
+        "field": "R",
+        "recorded": -0.43319076658496686,
+        "recomputed": -0.4325765976968849
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "AAPL|2026-10-22T17:30:00.000Z|1",
+        "field": "stop",
+        "recorded": 338.28765563964845,
+        "recomputed": 338.2879414149693
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "AAPL|2026-10-22T17:30:00.000Z|1",
+        "field": "target",
+        "recorded": 370.7546447753906,
+        "recomputed": 370.75407322474894
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "AAPL|2026-10-22T17:30:00.000Z|1",
+        "field": "risk",
+        "recorded": 10.822329711914051,
+        "recomputed": 10.822043936593218
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "AAPL|2026-10-22T17:30:00.000Z|1",
+        "field": "signalSnapshot",
+        "recorded": {
+          "opposingSwing": 338.70001220703125,
+          "atr14": 4.123565673828125,
+          "signalCompletedAt": "2026-10-22T20:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "recomputed": {
+          "opposingSwing": 338.70001220703125,
+          "atr14": 4.120707920619419,
+          "signalCompletedAt": "2026-10-22T20:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        }
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+        "field": "stop",
+        "recorded": 1103.81906476702,
+        "recomputed": 1103.819100516183
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+        "field": "target",
+        "recorded": 1301.4917532784598,
+        "recomputed": 1301.491681780134
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+        "field": "risk",
+        "recorded": 65.89089617047989,
+        "recomputed": 65.89086042131703
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+        "field": "signalSnapshot",
+        "recorded": {
+          "opposingSwing": 1105.469970703125,
+          "atr14": 16.509059361049108,
+          "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "recomputed": {
+          "opposingSwing": 1105.469970703125,
+          "atr14": 16.508701869419642,
+          "signalCompletedAt": "2026-10-29T17:30:00.000Z",
           "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
         }
       },
       {
         "type": "closed_outcome_revision",
-        "identity": "PM|2026-10-26T13:30:00.000Z|1",
+        "identity": "BLK|2026-10-29T13:30:00.000Z|1",
         "field": "R",
-        "recorded": 0.018532836929023522,
-        "recomputed": 0.01853276687390327
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BA|2026-10-27T13:30:00.000Z|-1",
-        "field": "entry",
-        "recorded": 172.0800018310547,
-        "recomputed": 172.10000610351562
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BA|2026-10-27T13:30:00.000Z|-1",
-        "field": "target",
-        "recorded": 128.828250340053,
-        "recomputed": 128.8882631574358
-      },
-      {
-        "type": "source_revision_conflict",
-        "identity": "BA|2026-10-27T13:30:00.000Z|-1",
-        "field": "risk",
-        "recorded": 21.62587574550085,
-        "recomputed": 21.60587147303991
-      },
-      {
-        "type": "closed_outcome_revision",
-        "identity": "BA|2026-10-27T13:30:00.000Z|-1",
-        "field": "R",
-        "recorded": -0.0439287157395154,
-        "recomputed": -0.04304351606190507
+        "recorded": 0.6929642307725036,
+        "recomputed": 0.692964606741052
       }
     ],
     "legacyProvenanceUnknown": 1
   },
   "summary": {
     "closed": {
-      "n": 28,
-      "wr": 0.35714285714285715,
-      "pf": 0.7731487583400384,
-      "avgR": -0.10659931738528561,
-      "sumR": -2.984780886787997,
-      "maxDD": -5.614277508086692
+      "n": 30,
+      "wr": 0.3333333333333333,
+      "pf": 0.6711329932838354,
+      "avgR": -0.16615936289293323,
+      "sumR": -4.984780886787997,
+      "maxDD": -5.802626586140722
     },
     "cost05R": {
-      "n": 28,
-      "wr": 0.32142857142857145,
-      "pf": 0.6887777159739056,
-      "avgR": -0.1565993173852856,
-      "sumR": -4.384780886787997,
-      "maxDD": -6.514277508086693
+      "n": 30,
+      "wr": 0.3,
+      "pf": 0.5994305185195243,
+      "avgR": -0.21615936289293322,
+      "sumR": -6.484780886787997,
+      "maxDD": -6.952626586140722
     },
     "long": {
       "n": 19,
@@ -266,14 +363,14 @@
       "maxDD": -5.046159874480937
     },
     "short": {
-      "n": 9,
-      "wr": 0.2222222222222222,
-      "pf": 0.5303641552678761,
-      "avgR": -0.21356659460293181,
-      "sumR": -1.9220993514263864,
-      "maxDD": -3.87018581825125
+      "n": 11,
+      "wr": 0.18181818181818182,
+      "pf": 0.35626718251222816,
+      "avgR": -0.35655448649330784,
+      "sumR": -3.9220993514263864,
+      "maxDD": -3.9220993514263864
     },
-    "openCount": 8,
+    "openCount": 6,
     "pendingCount": 0,
     "performanceByProvenance": {
       "prospective": {
@@ -296,19 +393,19 @@
       },
       "reconstructed": {
         "raw": {
-          "n": 22,
-          "wr": 0.4090909090909091,
-          "pf": 0.9997421085836523,
-          "avgR": -0.00010844567381742605,
-          "sumR": -0.002385804823983373,
+          "n": 24,
+          "wr": 0.375,
+          "pf": 0.822029119095458,
+          "avgR": -0.08343274186766597,
+          "sumR": -2.0023858048239833,
           "maxDD": -4.51620410043062
         },
         "cost05R": {
-          "n": 22,
-          "wr": 0.36363636363636365,
-          "pf": 0.8890141094032754,
-          "avgR": -0.05010844567381743,
-          "sumR": -1.1023858048239834,
+          "n": 24,
+          "wr": 0.3333333333333333,
+          "pf": 0.733859000979813,
+          "avgR": -0.13343274186766596,
+          "sumR": -3.202385804823983,
           "maxDD": -4.818179729358784
         }
       },
@@ -334,38 +431,38 @@
     "momentumShadow": {
       "high": {
         "raw": {
-          "n": 9,
-          "wr": 0.4444444444444444,
-          "pf": 1.7268618509271494,
-          "avgR": 0.1782645105774657,
-          "sumR": 1.6043805951971912,
+          "n": 10,
+          "wr": 0.4,
+          "pf": 1.1884408028087405,
+          "avgR": 0.060438059519719124,
+          "sumR": 0.6043805951971912,
           "maxDD": -2.207270326748779
         },
         "afterCost": {
-          "n": 9,
-          "wr": 0.4444444444444444,
-          "pf": 1.4697816852428098,
-          "avgR": 0.12826451057746568,
-          "sumR": 1.1543805951971913,
+          "n": 10,
+          "wr": 0.4,
+          "pf": 1.0297612061440247,
+          "avgR": 0.010438059519719123,
+          "sumR": 0.10438059519719123,
           "maxDD": -2.457270326748779
         }
       },
       "medium": {
         "raw": {
-          "n": 11,
-          "wr": 0.36363636363636365,
-          "pf": 0.7156849443131537,
-          "avgR": -0.14464359954268977,
-          "sumR": -1.5910795949695875,
-          "maxDD": -2.552256091026588
+          "n": 12,
+          "wr": 0.3333333333333333,
+          "pf": 0.6071851121709383,
+          "avgR": -0.21592329958079895,
+          "sumR": -2.5910795949695875,
+          "maxDD": -2.762907012142943
         },
         "afterCost": {
-          "n": 11,
-          "wr": 0.2727272727272727,
-          "pf": 0.6418192953063571,
-          "avgR": -0.19464359954268975,
-          "sumR": -2.1410795949695873,
-          "maxDD": -2.7304286738532326
+          "n": 12,
+          "wr": 0.25,
+          "pf": 0.5459252096339133,
+          "avgR": -0.26592329958079897,
+          "sumR": -3.1910795949695876,
+          "maxDD": -3.1910795949695876
         }
       },
       "low": {
@@ -417,15 +514,15 @@
       "fractionalShares": true
     },
     "startingCapital": 1000,
-    "currentEquity": 983.1162115962828,
-    "realizedReturnPct": -0.01688378840371718,
-    "cash": 743.3174448435349,
-    "reservedNotional": 239.79876675274795,
-    "openRiskAmount": 19.382161969018483,
+    "currentEquity": 972.9421932199764,
+    "realizedReturnPct": -0.027057806780023563,
+    "cash": 806.6924383894604,
+    "reservedNotional": 166.2497548305159,
+    "openRiskAmount": 9.692620658250453,
     "maxDrawdownPct": -0.03104586892319683,
     "enteredCount": 15,
-    "closedCount": 13,
-    "openCount": 2,
+    "closedCount": 14,
+    "openCount": 1,
     "skippedCount": 21,
     "entered": [
       {
@@ -2004,9 +2101,9 @@
         "stop": 336.77266693115234,
         "target": 219.16468811035156,
         "risk": 39.202659606933594,
-        "status": "open",
-        "R": null,
-        "exitT": null,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-11-11T18:30:00.000Z",
         "momentumShadow": {
           "available": true,
           "score": 88.3,
@@ -2086,6 +2183,19 @@
         },
         "entryObservationClass": "reconstructed",
         "lifecycleRefreshSource": "recorded_immutable_fields",
+        "exitReason": "gap_stop",
+        "exitPriceAssumed": 336.77266693115234,
+        "exitTimeConvention": "bar_end",
+        "executionAudit": {
+          "stopTargetCollision": false,
+          "collisionPolicy": null,
+          "gapThroughStop": true,
+          "gapThroughTarget": false,
+          "gapFillAssumption": "strategy-level boundary price retained; true gap fill unknown",
+          "gapOpenPrecedence": true,
+          "exitBarStartT": "2026-11-11T14:30:00.000Z",
+          "exitBarEndT": "2026-11-11T18:30:00.000Z"
+        },
         "accountEquityBefore": 968.9541310768032,
         "notional": 73.54901192223204,
         "allocationPct": 0.0759055661804101,
@@ -2093,8 +2203,9 @@
         "stopPct": 0.13174264422496101,
         "riskAmount": 9.689541310768032,
         "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open"
+        "pnl": -10.174018376306433,
+        "portfolioStatus": "closed",
+        "accountEquityAfter": 972.9421932199764
       }
     ],
     "open": [
@@ -2195,107 +2306,6 @@
         "quantity": 0.15989627854477012,
         "stopPct": 0.058301563621141216,
         "riskAmount": 9.692620658250453,
-        "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open"
-      },
-      {
-        "symbol": "AVGO",
-        "signalT": "2026-11-05T14:30:00.000Z",
-        "entryT": "2026-11-05T18:30:00.000Z",
-        "dir": -1,
-        "entry": 297.57000732421875,
-        "stop": 336.77266693115234,
-        "target": 219.16468811035156,
-        "risk": 39.202659606933594,
-        "status": "open",
-        "R": null,
-        "exitT": null,
-        "momentumShadow": {
-          "available": true,
-          "score": 88.3,
-          "bucket": "high",
-          "asOfDate": "2026-11-04",
-          "direction": "short",
-          "ret20": -0.13553424200079756,
-          "ret60": -0.21774653554552048,
-          "rsi14": 41.9753156992153,
-          "ma20": 338.94799957275393,
-          "ma50": 350.72399963378905,
-          "ma20Slope5": -0.023436795630260354,
-          "volumeRatio20": 1.096541150941655,
-          "benchmarkSymbol": "^GSPC",
-          "benchmarkRet20": -0.014503106610485372,
-          "benchmarkRet60": -0.005121513046337345,
-          "rs20": -0.12103113539031218,
-          "rs60": -0.21262502249918314,
-          "components": {
-            "return20": {
-              "score": 100,
-              "weight": 20
-            },
-            "return60": {
-              "score": 100,
-              "weight": 20
-            },
-            "rsi14": {
-              "score": 70.1,
-              "weight": 15
-            },
-            "price_vs_ma20": {
-              "score": 100,
-              "weight": 7
-            },
-            "ma20_vs_ma50": {
-              "score": 100,
-              "weight": 7
-            },
-            "ma20_slope5": {
-              "score": 100,
-              "weight": 6
-            },
-            "volume_ratio20": {
-              "score": 27.7,
-              "weight": 10
-            },
-            "relative_strength20": {
-              "score": 100,
-              "weight": 8
-            },
-            "relative_strength60": {
-              "score": 100,
-              "weight": 7
-            }
-          }
-        },
-        "signalSnapshot": {
-          "opposingSwing": 335.739990234375,
-          "atr14": 10.326766967773438,
-          "signalCompletedAt": "2026-11-05T18:30:00.000Z",
-          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
-        },
-        "decisionId": "AVGO|2026-11-05T14:30:00.000Z|-1",
-        "firstObservedAt": "2026-11-06T03:41:34.924Z",
-        "firstObservedProvenance": {
-          "tracker": "smc-forward-expanded",
-          "cohort": "us-75",
-          "marketDataSource": "Yahoo Finance chart API",
-          "github": {
-            "runId": "42158014525",
-            "runAttempt": "1",
-            "sha": "13bb2ac181db731e3d54c34c3c5c4cfdbe8958fb",
-            "workflow": "SMC Expanded Forward Cohorts",
-            "ref": "refs/heads/main"
-          }
-        },
-        "entryObservationClass": "reconstructed",
-        "lifecycleRefreshSource": "recorded_immutable_fields",
-        "accountEquityBefore": 968.9541310768032,
-        "notional": 73.54901192223204,
-        "allocationPct": 0.0759055661804101,
-        "quantity": 0.24716540683515992,
-        "stopPct": 0.13174264422496101,
-        "riskAmount": 9.689541310768032,
         "riskPctEquity": 0.01,
         "pnl": null,
         "portfolioStatus": "open"
@@ -4359,9 +4369,9 @@
         "stop": 124.70220881870814,
         "target": 103.87558877127512,
         "risk": 6.942206682477675,
-        "status": "open",
-        "R": null,
-        "exitT": null,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-11-11T18:30:00.000Z",
         "momentumShadow": {
           "available": true,
           "score": 60.3,
@@ -4441,6 +4451,19 @@
         },
         "entryObservationClass": "reconstructed",
         "lifecycleRefreshSource": "recorded_immutable_fields",
+        "exitReason": "stop",
+        "exitPriceAssumed": 124.70220881870814,
+        "exitTimeConvention": "bar_end",
+        "executionAudit": {
+          "stopTargetCollision": false,
+          "collisionPolicy": null,
+          "gapThroughStop": false,
+          "gapThroughTarget": false,
+          "gapFillAssumption": null,
+          "gapOpenPrecedence": false,
+          "exitBarStartT": "2026-11-11T14:30:00.000Z",
+          "exitBarEndT": "2026-11-11T18:30:00.000Z"
+        },
         "reason": "max_positions"
       }
     ],
@@ -4560,6 +4583,10 @@
       {
         "t": "2026-11-10T18:30:00.000Z",
         "equity": 983.1162115962828
+      },
+      {
+        "t": "2026-11-11T18:30:00.000Z",
+        "equity": 972.9421932199764
       }
     ]
   },
@@ -4574,11 +4601,11 @@
       "fractionalShares": true
     },
     "startingCapital": 1000,
-    "cash": 743.3174448435349,
-    "reservedEntryNotional": 239.79876675274795,
-    "openRiskAmount": 19.382161969018483,
-    "realizedCurrentEquity": 983.1162115962828,
-    "realizedReturnPct": -0.01688378840371718,
+    "cash": 806.6924383894604,
+    "reservedEntryNotional": 166.2497548305159,
+    "openRiskAmount": 9.692620658250453,
+    "realizedCurrentEquity": 972.9421932199764,
+    "realizedReturnPct": -0.027057806780023563,
     "realizedMaxDrawdownPct": -0.03104586892319683,
     "realizedEquityCurve": [
       {
@@ -4696,16 +4723,20 @@
       {
         "t": "2026-11-10T18:30:00.000Z",
         "equity": 983.1162115962828
+      },
+      {
+        "t": "2026-11-11T18:30:00.000Z",
+        "equity": 972.9421932199764
       }
     ],
-    "markedCurrentEquity": 978.8349154856467,
-    "markedReturnPct": -0.021165084514353394,
+    "markedCurrentEquity": 980.5828423554431,
+    "markedReturnPct": -0.01941715764455698,
     "markedObservation": {
-      "runKey": "smc-forward-expanded|us-75|42950350654|1",
-      "observedAt": "2026-11-11T03:05:45.868Z",
+      "runKey": "smc-forward-expanded|us-75|43154128736|1",
+      "observedAt": "2026-11-12T04:20:51.802Z",
       "quality": "fresh",
-      "markedEquity": 978.8349154856467,
-      "totalUnrealizedPnl": -4.281296110636124,
+      "markedEquity": 980.5828423554431,
+      "totalUnrealizedPnl": 7.640649135466673,
       "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
@@ -4812,121 +4843,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 1066.1500244140625,
-          "markT": "2026-11-10T21:30:00.000Z",
+          "markPrice": 1087.52001953125,
+          "markT": "2026-11-11T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 4.223666443708483,
-          "markedPositionValue": 170.4734212742244
-        },
-        {
-          "symbol": "AVGO",
-          "signalT": "2026-11-05T14:30:00.000Z",
-          "entryT": "2026-11-05T18:30:00.000Z",
-          "dir": -1,
-          "entry": 297.57000732421875,
-          "stop": 336.77266693115234,
-          "target": 219.16468811035156,
-          "risk": 39.202659606933594,
-          "status": "open",
-          "R": null,
-          "exitT": null,
-          "momentumShadow": {
-            "available": true,
-            "score": 88.3,
-            "bucket": "high",
-            "asOfDate": "2026-11-04",
-            "direction": "short",
-            "ret20": -0.13553424200079756,
-            "ret60": -0.21774653554552048,
-            "rsi14": 41.9753156992153,
-            "ma20": 338.94799957275393,
-            "ma50": 350.72399963378905,
-            "ma20Slope5": -0.023436795630260354,
-            "volumeRatio20": 1.096541150941655,
-            "benchmarkSymbol": "^GSPC",
-            "benchmarkRet20": -0.014503106610485372,
-            "benchmarkRet60": -0.005121513046337345,
-            "rs20": -0.12103113539031218,
-            "rs60": -0.21262502249918314,
-            "components": {
-              "return20": {
-                "score": 100,
-                "weight": 20
-              },
-              "return60": {
-                "score": 100,
-                "weight": 20
-              },
-              "rsi14": {
-                "score": 70.1,
-                "weight": 15
-              },
-              "price_vs_ma20": {
-                "score": 100,
-                "weight": 7
-              },
-              "ma20_vs_ma50": {
-                "score": 100,
-                "weight": 7
-              },
-              "ma20_slope5": {
-                "score": 100,
-                "weight": 6
-              },
-              "volume_ratio20": {
-                "score": 27.7,
-                "weight": 10
-              },
-              "relative_strength20": {
-                "score": 100,
-                "weight": 8
-              },
-              "relative_strength60": {
-                "score": 100,
-                "weight": 7
-              }
-            }
-          },
-          "signalSnapshot": {
-            "opposingSwing": 335.739990234375,
-            "atr14": 10.326766967773438,
-            "signalCompletedAt": "2026-11-05T18:30:00.000Z",
-            "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
-          },
-          "decisionId": "AVGO|2026-11-05T14:30:00.000Z|-1",
-          "firstObservedAt": "2026-11-06T03:41:34.924Z",
-          "firstObservedProvenance": {
-            "tracker": "smc-forward-expanded",
-            "cohort": "us-75",
-            "marketDataSource": "Yahoo Finance chart API",
-            "github": {
-              "runId": "42158014525",
-              "runAttempt": "1",
-              "sha": "13bb2ac181db731e3d54c34c3c5c4cfdbe8958fb",
-              "workflow": "SMC Expanded Forward Cohorts",
-              "ref": "refs/heads/main"
-            }
-          },
-          "entryObservationClass": "reconstructed",
-          "lifecycleRefreshSource": "recorded_immutable_fields",
-          "accountEquityBefore": 968.9541310768032,
-          "notional": 73.54901192223204,
-          "allocationPct": 0.0759055661804101,
-          "quantity": 0.24716540683515992,
-          "stopPct": 0.13174264422496101,
-          "riskAmount": 9.689541310768032,
-          "riskPctEquity": 0.01,
-          "pnl": null,
-          "portfolioStatus": "open",
-          "effectiveExitMs": null,
-          "legacyExitTimingAdjusted": false,
-          "markPrice": 331.9800109863281,
-          "markT": "2026-11-10T21:30:00.000Z",
-          "markStatus": "fresh",
-          "markSource": "completed_4h_close",
-          "unrealizedPnl": -8.504962554344607,
-          "markedPositionValue": 65.04404936788744
+          "unrealizedPnl": 7.640649135466673,
+          "markedPositionValue": 173.89040396598259
         }
       ]
     },
@@ -5200,6 +5122,15 @@
         "totalUnrealizedPnl": -4.281296110636124,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-expanded|us-75|43154128736|1",
+        "observedAt": "2026-11-12T04:20:51.802Z",
+        "quality": "fresh",
+        "markedEquity": 980.5828423554431,
+        "totalUnrealizedPnl": 7.640649135466673,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T14:55:54.783Z",
@@ -5216,8 +5147,8 @@
       "missingOrInvalidMarkMakesTotalMarkedEquityNull": true
     },
     "enteredCount": 15,
-    "closedCount": 13,
-    "openCount": 2,
+    "closedCount": 14,
+    "openCount": 1,
     "skippedCount": 21,
     "entered": [
       {
@@ -6824,9 +6755,9 @@
         "stop": 336.77266693115234,
         "target": 219.16468811035156,
         "risk": 39.202659606933594,
-        "status": "open",
-        "R": null,
-        "exitT": null,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-11-11T18:30:00.000Z",
         "momentumShadow": {
           "available": true,
           "score": 88.3,
@@ -6906,6 +6837,19 @@
         },
         "entryObservationClass": "reconstructed",
         "lifecycleRefreshSource": "recorded_immutable_fields",
+        "exitReason": "gap_stop",
+        "exitPriceAssumed": 336.77266693115234,
+        "exitTimeConvention": "bar_end",
+        "executionAudit": {
+          "stopTargetCollision": false,
+          "collisionPolicy": null,
+          "gapThroughStop": true,
+          "gapThroughTarget": false,
+          "gapFillAssumption": "strategy-level boundary price retained; true gap fill unknown",
+          "gapOpenPrecedence": true,
+          "exitBarStartT": "2026-11-11T14:30:00.000Z",
+          "exitBarEndT": "2026-11-11T18:30:00.000Z"
+        },
         "accountEquityBefore": 968.9541310768032,
         "notional": 73.54901192223204,
         "allocationPct": 0.0759055661804101,
@@ -6913,10 +6857,11 @@
         "stopPct": 0.13174264422496101,
         "riskAmount": 9.689541310768032,
         "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open",
-        "effectiveExitMs": null,
-        "legacyExitTimingAdjusted": false
+        "pnl": -10.174018376306433,
+        "portfolioStatus": "closed",
+        "effectiveExitMs": 1794421800000,
+        "legacyExitTimingAdjusted": false,
+        "accountEquityAfter": 972.9421932199764
       }
     ],
     "open": [
@@ -7022,121 +6967,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 1066.1500244140625,
-        "markT": "2026-11-10T21:30:00.000Z",
+        "markPrice": 1087.52001953125,
+        "markT": "2026-11-11T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 4.223666443708483,
-        "markedPositionValue": 170.4734212742244
-      },
-      {
-        "symbol": "AVGO",
-        "signalT": "2026-11-05T14:30:00.000Z",
-        "entryT": "2026-11-05T18:30:00.000Z",
-        "dir": -1,
-        "entry": 297.57000732421875,
-        "stop": 336.77266693115234,
-        "target": 219.16468811035156,
-        "risk": 39.202659606933594,
-        "status": "open",
-        "R": null,
-        "exitT": null,
-        "momentumShadow": {
-          "available": true,
-          "score": 88.3,
-          "bucket": "high",
-          "asOfDate": "2026-11-04",
-          "direction": "short",
-          "ret20": -0.13553424200079756,
-          "ret60": -0.21774653554552048,
-          "rsi14": 41.9753156992153,
-          "ma20": 338.94799957275393,
-          "ma50": 350.72399963378905,
-          "ma20Slope5": -0.023436795630260354,
-          "volumeRatio20": 1.096541150941655,
-          "benchmarkSymbol": "^GSPC",
-          "benchmarkRet20": -0.014503106610485372,
-          "benchmarkRet60": -0.005121513046337345,
-          "rs20": -0.12103113539031218,
-          "rs60": -0.21262502249918314,
-          "components": {
-            "return20": {
-              "score": 100,
-              "weight": 20
-            },
-            "return60": {
-              "score": 100,
-              "weight": 20
-            },
-            "rsi14": {
-              "score": 70.1,
-              "weight": 15
-            },
-            "price_vs_ma20": {
-              "score": 100,
-              "weight": 7
-            },
-            "ma20_vs_ma50": {
-              "score": 100,
-              "weight": 7
-            },
-            "ma20_slope5": {
-              "score": 100,
-              "weight": 6
-            },
-            "volume_ratio20": {
-              "score": 27.7,
-              "weight": 10
-            },
-            "relative_strength20": {
-              "score": 100,
-              "weight": 8
-            },
-            "relative_strength60": {
-              "score": 100,
-              "weight": 7
-            }
-          }
-        },
-        "signalSnapshot": {
-          "opposingSwing": 335.739990234375,
-          "atr14": 10.326766967773438,
-          "signalCompletedAt": "2026-11-05T18:30:00.000Z",
-          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
-        },
-        "decisionId": "AVGO|2026-11-05T14:30:00.000Z|-1",
-        "firstObservedAt": "2026-11-06T03:41:34.924Z",
-        "firstObservedProvenance": {
-          "tracker": "smc-forward-expanded",
-          "cohort": "us-75",
-          "marketDataSource": "Yahoo Finance chart API",
-          "github": {
-            "runId": "42158014525",
-            "runAttempt": "1",
-            "sha": "13bb2ac181db731e3d54c34c3c5c4cfdbe8958fb",
-            "workflow": "SMC Expanded Forward Cohorts",
-            "ref": "refs/heads/main"
-          }
-        },
-        "entryObservationClass": "reconstructed",
-        "lifecycleRefreshSource": "recorded_immutable_fields",
-        "accountEquityBefore": 968.9541310768032,
-        "notional": 73.54901192223204,
-        "allocationPct": 0.0759055661804101,
-        "quantity": 0.24716540683515992,
-        "stopPct": 0.13174264422496101,
-        "riskAmount": 9.689541310768032,
-        "riskPctEquity": 0.01,
-        "pnl": null,
-        "portfolioStatus": "open",
-        "effectiveExitMs": null,
-        "legacyExitTimingAdjusted": false,
-        "markPrice": 331.9800109863281,
-        "markT": "2026-11-10T21:30:00.000Z",
-        "markStatus": "fresh",
-        "markSource": "completed_4h_close",
-        "unrealizedPnl": -8.504962554344607,
-        "markedPositionValue": 65.04404936788744
+        "unrealizedPnl": 7.640649135466673,
+        "markedPositionValue": 173.89040396598259
       }
     ],
     "skipped": [
@@ -9197,9 +9033,9 @@
         "stop": 124.70220881870814,
         "target": 103.87558877127512,
         "risk": 6.942206682477675,
-        "status": "open",
-        "R": null,
-        "exitT": null,
+        "status": "closed",
+        "R": -1,
+        "exitT": "2026-11-11T18:30:00.000Z",
         "momentumShadow": {
           "available": true,
           "score": 60.3,
@@ -9279,6 +9115,19 @@
         },
         "entryObservationClass": "reconstructed",
         "lifecycleRefreshSource": "recorded_immutable_fields",
+        "exitReason": "stop",
+        "exitPriceAssumed": 124.70220881870814,
+        "exitTimeConvention": "bar_end",
+        "executionAudit": {
+          "stopTargetCollision": false,
+          "collisionPolicy": null,
+          "gapThroughStop": false,
+          "gapThroughTarget": false,
+          "gapFillAssumption": null,
+          "gapOpenPrecedence": false,
+          "exitBarStartT": "2026-11-11T14:30:00.000Z",
+          "exitBarEndT": "2026-11-11T18:30:00.000Z"
+        },
         "reason": "max_positions"
       }
     ]
@@ -12657,9 +12506,9 @@
       "stop": 336.77266693115234,
       "target": 219.16468811035156,
       "risk": 39.202659606933594,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-11-11T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 88.3,
@@ -12738,7 +12587,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "gap_stop",
+      "exitPriceAssumed": 336.77266693115234,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": true,
+        "gapThroughTarget": false,
+        "gapFillAssumption": "strategy-level boundary price retained; true gap fill unknown",
+        "gapOpenPrecedence": true,
+        "exitBarStartT": "2026-11-11T14:30:00.000Z",
+        "exitBarEndT": "2026-11-11T18:30:00.000Z"
+      }
     },
     {
       "symbol": "BA",
@@ -12841,9 +12703,9 @@
       "stop": 124.70220881870814,
       "target": 103.87558877127512,
       "risk": 6.942206682477675,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-11-11T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 60.3,
@@ -12922,7 +12784,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "stop",
+      "exitPriceAssumed": 124.70220881870814,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-11-11T14:30:00.000Z",
+        "exitBarEndT": "2026-11-11T18:30:00.000Z"
+      }
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-11-11T03:05:45.868Z",
+  "updatedAt": "2026-11-12T04:20:51.802Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -1434,6 +1434,63 @@
       "prospectiveCount": 5,
       "pendingCount": 0,
       "discrepancyCount": 19
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|43154128736|1",
+      "observedAt": "2026-11-12T04:20:51.802Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "43154128736",
+        "runAttempt": "1",
+        "sha": "9c197c98d6441873cc0595e1ac43355bfc24710b",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "EOG",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-11",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        },
+        {
+          "symbol": "TMO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-11",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 2,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 30,
+      "prospectiveCount": 5,
+      "pendingCount": 0,
+      "discrepancyCount": 30
     }
   ],
   "discrepancyLog": [
@@ -1882,6 +1939,61 @@
       "recomputed": -0.04304351606190507,
       "firstDetectedAt": "2026-11-10T04:48:34.422Z",
       "runKey": "smc-forward-expanded|us-75|42758115444|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+      "field": "stop",
+      "recorded": 1103.81906476702,
+      "recomputed": 1103.819100516183,
+      "firstDetectedAt": "2026-11-12T04:20:51.802Z",
+      "runKey": "smc-forward-expanded|us-75|43154128736|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+      "field": "target",
+      "recorded": 1301.4917532784598,
+      "recomputed": 1301.491681780134,
+      "firstDetectedAt": "2026-11-12T04:20:51.802Z",
+      "runKey": "smc-forward-expanded|us-75|43154128736|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+      "field": "risk",
+      "recorded": 65.89089617047989,
+      "recomputed": 65.89086042131703,
+      "firstDetectedAt": "2026-11-12T04:20:51.802Z",
+      "runKey": "smc-forward-expanded|us-75|43154128736|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+      "field": "signalSnapshot",
+      "recorded": {
+        "opposingSwing": 1105.469970703125,
+        "atr14": 16.509059361049108,
+        "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "recomputed": {
+        "opposingSwing": 1105.469970703125,
+        "atr14": 16.508701869419642,
+        "signalCompletedAt": "2026-10-29T17:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "firstDetectedAt": "2026-11-12T04:20:51.802Z",
+      "runKey": "smc-forward-expanded|us-75|43154128736|1"
+    },
+    {
+      "type": "closed_outcome_revision",
+      "identity": "BLK|2026-10-29T13:30:00.000Z|1",
+      "field": "R",
+      "recorded": 0.6929642307725036,
+      "recomputed": 0.692964606741052,
+      "firstDetectedAt": "2026-11-12T04:20:51.802Z",
+      "runKey": "smc-forward-expanded|us-75|43154128736|1"
     }
   ],
   "markedEquitySeries": [
@@ -2152,6 +2264,15 @@
       "quality": "fresh",
       "markedEquity": 978.8349154856467,
       "totalUnrealizedPnl": -4.281296110636124,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|43154128736|1",
+      "observedAt": "2026-11-12T04:20:51.802Z",
+      "quality": "fresh",
+      "markedEquity": 980.5828423554431,
+      "totalUnrealizedPnl": 7.640649135466673,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -5531,9 +5652,9 @@
       "stop": 336.77266693115234,
       "target": 219.16468811035156,
       "risk": 39.202659606933594,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-11-11T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 88.3,
@@ -5612,7 +5733,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "gap_stop",
+      "exitPriceAssumed": 336.77266693115234,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": true,
+        "gapThroughTarget": false,
+        "gapFillAssumption": "strategy-level boundary price retained; true gap fill unknown",
+        "gapOpenPrecedence": true,
+        "exitBarStartT": "2026-11-11T14:30:00.000Z",
+        "exitBarEndT": "2026-11-11T18:30:00.000Z"
+      }
     },
     {
       "symbol": "BA",
@@ -5715,9 +5849,9 @@
       "stop": 124.70220881870814,
       "target": 103.87558877127512,
       "risk": 6.942206682477675,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -1,
+      "exitT": "2026-11-11T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 60.3,
@@ -5796,7 +5930,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "stop",
+      "exitPriceAssumed": 124.70220881870814,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "gapOpenPrecedence": false,
+        "exitBarStartT": "2026-11-11T14:30:00.000Z",
+        "exitBarEndT": "2026-11-11T18:30:00.000Z"
+      }
     }
   ]
 }
