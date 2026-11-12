@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-12T13:18:47.044Z",
+  "updatedAt": "2026-11-12T21:08:07.549Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -148,15 +148,15 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 36.753929138183594,
-      "holdingBars": 2,
-      "lastEvaluatedEndT": "2026-11-11T21:30:00.000Z",
+      "holdingBars": 3,
+      "lastEvaluatedEndT": "2026-11-12T18:30:00.000Z",
       "entryObservedAt": "2026-11-11T23:06:04.344Z"
     },
     {
       "symbol": "OTEX.TO",
       "signalT": "2026-11-11T14:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-11T22:00:00.000Z",
         "dailyAsOf": "2026-11-11",
@@ -171,11 +171,11 @@
         "signalClose": 35.61000061035156,
         "initialStop": 33.530358042035786
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-11-12T14:30:00.000Z",
+      "entry": 35.52000045776367,
+      "stop": 33.530358042035786,
+      "target": 36.98200016021728,
+      "risk": 1.9896424157278858,
       "R": null,
       "exitT": null,
       "decisionId": "OTEX.TO|2026-11-11T14:30:00.000Z|1",
@@ -188,13 +188,17 @@
         "runKey": "mean-reversion-v1|43117031565|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 33.530358042035786,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-11-12T18:30:00.000Z",
+      "entryObservedAt": "2026-11-12T21:08:07.549Z"
     },
     {
       "symbol": "WCP.TO",
       "signalT": "2026-11-11T14:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-11T22:00:00.000Z",
         "dailyAsOf": "2026-11-11",
@@ -209,11 +213,11 @@
         "signalClose": 17.049999237060547,
         "initialStop": 15.59035679272243
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-11-12T14:30:00.000Z",
+      "entry": 17.079999923706055,
+      "stop": 15.59035679272243,
+      "target": 19.08250026702881,
+      "risk": 1.4896431309836249,
       "R": null,
       "exitT": null,
       "decisionId": "WCP.TO|2026-11-11T14:30:00.000Z|1",
@@ -226,7 +230,11 @@
         "runKey": "mean-reversion-v1|43117031565|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 15.59035679272243,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-11-12T18:30:00.000Z",
+      "entryObservedAt": "2026-11-12T21:08:07.549Z"
     }
   ],
   "runLog": [
@@ -5326,6 +5334,29 @@
         }
       ],
       "diagnosticCount": 0
+    },
+    {
+      "runKey": "mean-reversion-v1|43307056021|1",
+      "observedAt": "2026-11-12T21:08:07.549Z",
+      "failures": [
+        {
+          "symbol": "ARX.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "FM.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "GSY.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "WSP.TO",
+          "error": "invalid_source_quotes_require_review"
+        }
+      ],
+      "diagnosticCount": 33
     }
   ],
   "markedEquitySeries": [
@@ -7445,6 +7476,15 @@
       "quality": "fresh",
       "markedEquity": 1007.4888549608579,
       "totalUnrealizedPnl": 1.7416492475574705,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|43307056021|1",
+      "observedAt": "2026-11-12T21:08:07.549Z",
+      "quality": "fresh",
+      "markedEquity": 1011.6455513033878,
+      "totalUnrealizedPnl": 5.89834559008735,
       "missingSymbols": [],
       "staleSymbols": []
     }
