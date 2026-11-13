@@ -1,8 +1,8 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-11-12T20:16:52.399Z; mode: forward_shadow.
+Generated: 2026-11-13T01:21:26.093Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
 Open 13; pending 1; closed 90; lifecycle reviews 0.
-Realized equity $1039.91; marked equity $1054.13; mark quality fresh.
+Realized equity $1039.91; marked equity $1051.35; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,16 +15,16 @@ Realized equity $1039.91; marked equity $1054.13; mark quality fresh.
 
 ## Positions
 
-- LIN: Long open; entry 492.739990234375; current stop 506.7239968436105; provenance prospective; gap none
-- LLY: Long open; entry 1256; current stop 1360.0629359654017; provenance prospective; gap none
-- JNJ: Long open; entry 265.82000732421875; current stop 270.9234531947545; provenance prospective; gap none
+- LIN: Long open; entry 492.739990234375; current stop 506.7502201625279; provenance prospective; gap none
+- LLY: Long open; entry 1256; current stop 1360.167933872768; provenance prospective; gap none
+- JNJ: Long open; entry 265.82000732421875; current stop 270.9684513636998; provenance prospective; gap none
 - DE: Long open; entry 669.3400268554688; current stop 656.26609148298; provenance prospective; gap none
 - DUK: Long open; entry 127.0199966430664; current stop 126.28508813040597; provenance prospective; gap none
-- COST: Long open; entry 1031.1839599609375; current stop 1047.6054164341517; provenance prospective; gap none
-- KO: Long open; entry 94.87999725341797; current stop 94.56097630092076; provenance prospective; gap none
+- COST: Long open; entry 1031.1839599609375; current stop 1048.4528154645648; provenance prospective; gap none
+- KO: Long open; entry 94.87999725341797; current stop 94.60168947492328; provenance prospective; gap none
 - NVDA: Short open; entry 191.13999938964844; current stop 189.90860530308316; provenance prospective; gap none
 - SO: Long open; entry 91.80999755859375; current stop 89.31214032854352; provenance prospective; gap none
-- ADBE: Short open; entry 237.39999389648438; current stop 248.22041756766183; provenance prospective; gap none
+- ADBE: Short open; entry 237.39999389648438; current stop 248.17109026227678; provenance prospective; gap none
 - GE: Long open; entry 335; current stop 319.3791939871652; provenance prospective; gap none
 - TMO: Long open; entry 721.469970703125; current stop 689.4671020507812; provenance prospective; gap none
 - AAPL: Long open; entry 357.7099914550781; current stop 343.032217843192; provenance prospective; gap none
