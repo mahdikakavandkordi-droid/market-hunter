@@ -1,8 +1,8 @@
 {
   "version": "trend-daily-long-v1",
   "activatedAt": "2026-11-10T21:08:12.910Z",
-  "generatedAt": "2026-11-12T04:08:20.781Z",
-  "lastSession": "2026-11-11",
+  "generatedAt": "2026-11-13T02:44:42.914Z",
+  "lastSession": "2026-11-12",
   "config": {
     "version": "trend-daily-long-v1",
     "symbols": [
@@ -42,19 +42,19 @@
   "configHash": "454aca05a8de4b5fbd7d9c49ec1fe8b3248374f0128fb282b5a93d9a82e42156",
   "failures": [],
   "inputs": {
-    "AMZN": "c839f8bae2bbb366f31d602b058f3f21b2e18ea39d47fb45543ddb6d70722076",
-    "MSFT": "be2b4f0ec01b8734609d35d706a57f31157a0ad73ae71fd648908755691b4854",
-    "GOOGL": "39af9efb97ab8a62e214d4c1e0902e7b309fc69683d5cd0552c64fb8160ca17b",
-    "AAPL": "9847d9ee2909a5b638f7f93271e11023b7d6b96aa32a060889ff409723a0380c",
-    "META": "039719d6c8ac0131fc3bb14de127113cf96dc3bc96cd813acdc698be58f31d6f",
-    "NVDA": "ac55d90c2dac85634632f5c4fe4f25f327ed9e2b419323a1bb5e002ab6af9a2f",
-    "JPM": "26543fd45a7b47a1960407e21cdd821a84132d71cbccd0fc6ad54aa872f7bdeb",
-    "XOM": "612eb801111ed00343f0003f55bb77f876e9f8035a4fc25075f45d903805fcd4",
-    "COST": "e9df41b582d975b7e19b0b4ee95d0c4dbbfb14be524bd4274e3edda1e1547b99",
-    "JNJ": "37093df94c77f9e4f45ce00d8bf2075bab4fb1131c1917b7870e3681824f77e8",
-    "CAT": "91128b598789d0e96f9690d6ee066c6a4e2ab4cb74fb98ef0842d4d805e1d077",
-    "SPY": "cf4413f33bfb0c0220f37f0709820f6de4ff792684354bfb979ba9c40e8be2e4",
-    "NEE": "e55be2be4257117a61c87c043f6a2c5b393c812d20b83cfea644e3daa9d84b34"
+    "AMZN": "c34e74d89e487efaf933d70e4df81f33ca34165f6310ebea90f1694a301a7b80",
+    "GOOGL": "3a0f8c2282dd572ed76aa271456d5441a6e0fc395b5b0cf409712406121116fb",
+    "MSFT": "153a51260bf3d07f052af2af9ab3c72efc885bc5966ade2222d107e7c281ca52",
+    "AAPL": "dc21b62c9544d8202510d7b809d12238a5dec55088df40f9a346f72005ee79ed",
+    "META": "81f94efb6b86643cc6aed12f162fdfe12cdf5aa17042b6950506e94a6db33ff3",
+    "NVDA": "562ec2758c3346d82014261c3bfe902cd20942c64845c112618fe65b90c8a611",
+    "JPM": "3cfc8e24d47d41f94d2820b9032499947f60a427e78d4f30308de2db7c9a0562",
+    "COST": "453e99a5001c7cff3c28a4f2fa43e947da471e6851dc062ac61c04f8f1e076cf",
+    "XOM": "2cc5032b47e9f34e74091c6f9505df1a8ced19e59799d5d4d21e0e9a63a768fa",
+    "JNJ": "25cf5af459e329c37be927f63704f6a5377bf19151cd0c386a92c257cfbe2a87",
+    "CAT": "c862f053cf6b6982ec6c2e619e36c9e7fe79637a8817cdb4c067ccc56cf8f64d",
+    "SPY": "2fb48a82e34cb7aa1a808c6370e0585efa4de8556a65ab16e32dbd074f684a9c",
+    "NEE": "dee6160b088a86cc3e27b1cb9f275fc7d5aaf59413cbafe39ce0ae150b1f4367"
   },
   "assumptions": [
     "Paper account, USD, fully funded long stock positions.",
@@ -63,22 +63,38 @@
     "SPY buy-hold and daily-rebalanced 50% SPY/cash include distributions; cash interest zero.",
     "No signals from closes earlier than launch or missed collection sessions."
   ],
-  "sessions": 1,
+  "sessions": 2,
   "reviewPlan": {
     "firstReviewAfterSessions": 60,
     "minimumClosedTradesForComparison": 30
   },
   "benchmarks": {
-    "date": "2026-11-11",
-    "lastClose": 759.8099975585938,
-    "buyHold": 10000,
-    "halfCash": 10000
+    "date": "2026-11-12",
+    "lastClose": 757.1199951171875,
+    "buyHold": 9964.596380015402,
+    "halfCash": 9982.298190007701
   },
   "models": {
     "baseline": {
-      "cash": 10000,
-      "equity": 10000,
+      "cash": 6016.419178131104,
+      "equity": 9975.239124420166,
       "pending": [
+        {
+          "id": "baseline|JNJ|2026-11-12",
+          "symbol": "JNJ",
+          "observedAt": "2026-11-13T02:44:42.914Z",
+          "snapshot": {
+            "date": "2026-11-12",
+            "close": 283.5199890136719,
+            "atr": 7.282854352678571,
+            "breakoutHigh": 283.25,
+            "dailySma": 249.2152001953125,
+            "relativeStrength": 0.1170885536571511
+          },
+          "status": "pending_entry"
+        }
+      ],
+      "open": [
         {
           "id": "baseline|AAPL|2026-11-11",
           "symbol": "AAPL",
@@ -91,7 +107,19 @@
             "dailySma": 299.7839501953125,
             "relativeStrength": 0.05731990379336771
           },
-          "status": "pending_entry"
+          "status": "open",
+          "dir": 1,
+          "entryT": "2026-11-12T14:30:00.000Z",
+          "entry": 357.988902557373,
+          "quantity": 5,
+          "notional": 1789.944512786865,
+          "risk": 19.164293561662948,
+          "stop": 338.8246089957101,
+          "currentStop": 338.8246089957101,
+          "bestClose": 357.988902557373,
+          "barsHeld": 1,
+          "mark": 354.8800048828125,
+          "markDate": "2026-11-12"
         },
         {
           "id": "baseline|COST|2026-11-11",
@@ -105,10 +133,21 @@
             "dailySma": 973.6741485595703,
             "relativeStrength": 0.152914632083195
           },
-          "status": "pending_entry"
+          "status": "open",
+          "dir": 1,
+          "entryT": "2026-11-12T14:30:00.000Z",
+          "entry": 1096.8181545410155,
+          "quantity": 2,
+          "notional": 2193.636309082031,
+          "risk": 43.47715541294643,
+          "stop": 1053.3409991280691,
+          "currentStop": 1053.3409991280691,
+          "bestClose": 1096.8181545410155,
+          "barsHeld": 1,
+          "mark": 1092.2099609375,
+          "markDate": "2026-11-12"
         }
       ],
-      "open": [],
       "closed": [],
       "skipped": 0,
       "curve": [
@@ -117,13 +156,35 @@
           "equity": 10000,
           "cash": 10000,
           "observedAt": "2026-11-12T03:12:48.340Z"
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 9975.239124420166,
+          "cash": 6016.419178131104,
+          "observedAt": "2026-11-13T02:44:42.914Z"
         }
       ]
     },
     "relative_strength": {
-      "cash": 10000,
-      "equity": 10000,
+      "cash": 6016.419178131104,
+      "equity": 9975.239124420166,
       "pending": [
+        {
+          "id": "relative_strength|JNJ|2026-11-12",
+          "symbol": "JNJ",
+          "observedAt": "2026-11-13T02:44:42.914Z",
+          "snapshot": {
+            "date": "2026-11-12",
+            "close": 283.5199890136719,
+            "atr": 7.282854352678571,
+            "breakoutHigh": 283.25,
+            "dailySma": 249.2152001953125,
+            "relativeStrength": 0.1170885536571511
+          },
+          "status": "pending_entry"
+        }
+      ],
+      "open": [
         {
           "id": "relative_strength|AAPL|2026-11-11",
           "symbol": "AAPL",
@@ -136,7 +197,19 @@
             "dailySma": 299.7839501953125,
             "relativeStrength": 0.05731990379336771
           },
-          "status": "pending_entry"
+          "status": "open",
+          "dir": 1,
+          "entryT": "2026-11-12T14:30:00.000Z",
+          "entry": 357.988902557373,
+          "quantity": 5,
+          "notional": 1789.944512786865,
+          "risk": 19.164293561662948,
+          "stop": 338.8246089957101,
+          "currentStop": 338.8246089957101,
+          "bestClose": 357.988902557373,
+          "barsHeld": 1,
+          "mark": 354.8800048828125,
+          "markDate": "2026-11-12"
         },
         {
           "id": "relative_strength|COST|2026-11-11",
@@ -150,10 +223,21 @@
             "dailySma": 973.6741485595703,
             "relativeStrength": 0.152914632083195
           },
-          "status": "pending_entry"
+          "status": "open",
+          "dir": 1,
+          "entryT": "2026-11-12T14:30:00.000Z",
+          "entry": 1096.8181545410155,
+          "quantity": 2,
+          "notional": 2193.636309082031,
+          "risk": 43.47715541294643,
+          "stop": 1053.3409991280691,
+          "currentStop": 1053.3409991280691,
+          "bestClose": 1096.8181545410155,
+          "barsHeld": 1,
+          "mark": 1092.2099609375,
+          "markDate": "2026-11-12"
         }
       ],
-      "open": [],
       "closed": [],
       "skipped": 0,
       "curve": [
@@ -162,6 +246,12 @@
           "equity": 10000,
           "cash": 10000,
           "observedAt": "2026-11-12T03:12:48.340Z"
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 9975.239124420166,
+          "cash": 6016.419178131104,
+          "observedAt": "2026-11-13T02:44:42.914Z"
         }
       ]
     }

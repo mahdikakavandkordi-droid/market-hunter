@@ -2,19 +2,23 @@
   "version": "trend-daily-long-v1",
   "activatedAt": "2026-11-10T21:08:12.910Z",
   "configHash": "454aca05a8de4b5fbd7d9c49ec1fe8b3248374f0128fb282b5a93d9a82e42156",
-  "lastSession": "2026-11-11",
+  "lastSession": "2026-11-12",
   "sessions": [
     {
       "date": "2026-11-11",
       "observedAt": "2026-11-12T03:12:48.340Z",
       "signalCapture": true
+    },
+    {
+      "date": "2026-11-12",
+      "observedAt": "2026-11-13T02:44:42.914Z",
+      "signalCapture": true
     }
   ],
   "models": {
     "baseline": {
-      "cash": 10000,
-      "trades": [],
-      "pending": [
+      "cash": 6016.419178131104,
+      "trades": [
         {
           "id": "baseline|AAPL|2026-11-11",
           "symbol": "AAPL",
@@ -27,7 +31,19 @@
             "dailySma": 299.7839501953125,
             "relativeStrength": 0.05731990379336771
           },
-          "status": "pending_entry"
+          "status": "open",
+          "dir": 1,
+          "entryT": "2026-11-12T14:30:00.000Z",
+          "entry": 357.988902557373,
+          "quantity": 5,
+          "notional": 1789.944512786865,
+          "risk": 19.164293561662948,
+          "stop": 338.8246089957101,
+          "currentStop": 338.8246089957101,
+          "bestClose": 357.988902557373,
+          "barsHeld": 1,
+          "mark": 354.8800048828125,
+          "markDate": "2026-11-12"
         },
         {
           "id": "baseline|COST|2026-11-11",
@@ -41,6 +57,34 @@
             "dailySma": 973.6741485595703,
             "relativeStrength": 0.152914632083195
           },
+          "status": "open",
+          "dir": 1,
+          "entryT": "2026-11-12T14:30:00.000Z",
+          "entry": 1096.8181545410155,
+          "quantity": 2,
+          "notional": 2193.636309082031,
+          "risk": 43.47715541294643,
+          "stop": 1053.3409991280691,
+          "currentStop": 1053.3409991280691,
+          "bestClose": 1096.8181545410155,
+          "barsHeld": 1,
+          "mark": 1092.2099609375,
+          "markDate": "2026-11-12"
+        }
+      ],
+      "pending": [
+        {
+          "id": "baseline|JNJ|2026-11-12",
+          "symbol": "JNJ",
+          "observedAt": "2026-11-13T02:44:42.914Z",
+          "snapshot": {
+            "date": "2026-11-12",
+            "close": 283.5199890136719,
+            "atr": 7.282854352678571,
+            "breakoutHigh": 283.25,
+            "dailySma": 249.2152001953125,
+            "relativeStrength": 0.1170885536571511
+          },
           "status": "pending_entry"
         }
       ],
@@ -51,13 +95,18 @@
           "equity": 10000,
           "cash": 10000,
           "observedAt": "2026-11-12T03:12:48.340Z"
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 9975.239124420166,
+          "cash": 6016.419178131104,
+          "observedAt": "2026-11-13T02:44:42.914Z"
         }
       ]
     },
     "relative_strength": {
-      "cash": 10000,
-      "trades": [],
-      "pending": [
+      "cash": 6016.419178131104,
+      "trades": [
         {
           "id": "relative_strength|AAPL|2026-11-11",
           "symbol": "AAPL",
@@ -70,7 +119,19 @@
             "dailySma": 299.7839501953125,
             "relativeStrength": 0.05731990379336771
           },
-          "status": "pending_entry"
+          "status": "open",
+          "dir": 1,
+          "entryT": "2026-11-12T14:30:00.000Z",
+          "entry": 357.988902557373,
+          "quantity": 5,
+          "notional": 1789.944512786865,
+          "risk": 19.164293561662948,
+          "stop": 338.8246089957101,
+          "currentStop": 338.8246089957101,
+          "bestClose": 357.988902557373,
+          "barsHeld": 1,
+          "mark": 354.8800048828125,
+          "markDate": "2026-11-12"
         },
         {
           "id": "relative_strength|COST|2026-11-11",
@@ -84,6 +145,34 @@
             "dailySma": 973.6741485595703,
             "relativeStrength": 0.152914632083195
           },
+          "status": "open",
+          "dir": 1,
+          "entryT": "2026-11-12T14:30:00.000Z",
+          "entry": 1096.8181545410155,
+          "quantity": 2,
+          "notional": 2193.636309082031,
+          "risk": 43.47715541294643,
+          "stop": 1053.3409991280691,
+          "currentStop": 1053.3409991280691,
+          "bestClose": 1096.8181545410155,
+          "barsHeld": 1,
+          "mark": 1092.2099609375,
+          "markDate": "2026-11-12"
+        }
+      ],
+      "pending": [
+        {
+          "id": "relative_strength|JNJ|2026-11-12",
+          "symbol": "JNJ",
+          "observedAt": "2026-11-13T02:44:42.914Z",
+          "snapshot": {
+            "date": "2026-11-12",
+            "close": 283.5199890136719,
+            "atr": 7.282854352678571,
+            "breakoutHigh": 283.25,
+            "dailySma": 249.2152001953125,
+            "relativeStrength": 0.1170885536571511
+          },
           "status": "pending_entry"
         }
       ],
@@ -94,15 +183,21 @@
           "equity": 10000,
           "cash": 10000,
           "observedAt": "2026-11-12T03:12:48.340Z"
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 9975.239124420166,
+          "cash": 6016.419178131104,
+          "observedAt": "2026-11-13T02:44:42.914Z"
         }
       ]
     }
   },
   "benchmarks": {
-    "date": "2026-11-11",
-    "lastClose": 759.8099975585938,
-    "buyHold": 10000,
-    "halfCash": 10000
+    "date": "2026-11-12",
+    "lastClose": 757.1199951171875,
+    "buyHold": 9964.596380015402,
+    "halfCash": 9982.298190007701
   },
-  "updatedAt": "2026-11-12T04:08:20.781Z"
+  "updatedAt": "2026-11-13T02:44:42.914Z"
 }
