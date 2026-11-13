@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-13T08:32:13.327Z; mode: forward_shadow.
+Generated: 2026-11-13T16:41:31.988Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 10; pending 2; closed 59; lifecycle reviews 0.
-Realized equity $844.12; marked equity $918.48; mark quality fresh.
+Open 12; pending 0; closed 59; lifecycle reviews 0.
+Realized equity $844.12; marked equity $914.01; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -22,11 +22,11 @@ Realized equity $844.12; marked equity $918.48; mark quality fresh.
 - ETH-USD: Short open; entry 2111.8701171875; current stop 2035.9264439174108; provenance prospective; gap none
 - SOL-USD: Short open; entry 82.8499984741211; current stop 82.99286106654576; provenance prospective; gap none
 - ADA-USD: Short open; entry 0.17416000366210938; current stop 0.1798892957823617; provenance prospective; gap none
-- BNB-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- BTC-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 - LTC-USD: Short open; entry 49.979000091552734; current stop 50.996499470302034; provenance prospective; gap none
 - SHIB-USD: Short open; entry 0.000004359999820735538; current stop 0.000004449999843408088; provenance prospective; gap none
 - TRX-USD: Short open; entry 0.3154197931289673; current stop 0.3138633391686848; provenance prospective; gap none
+- BNB-USD: Short open; entry 639.0499877929688; current stop 658.1871425083706; provenance prospective; gap none
+- BTC-USD: Short open; entry 69267.609375; current stop 71288.25334821429; provenance prospective; gap none
 
 ## Common-window comparison
 
