@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-11-11 to 2026-11-12 (TSX 2026-11-12 · SP500 2026-11-12 · NASDAQ100 2026-11-12 · GOLD 2026-11-11 · SILVER 2026-11-11 · BTC 2026-11-11 · ETH 2026-11-11)
+**As of:** 2026-11-11 to 2026-11-12 (TSX 2026-11-12 · SP500 2026-11-12 · NASDAQ100 2026-11-12 · GOLD 2026-11-11 · SILVER 2026-11-11 · BTC 2026-11-12 · ETH 2026-11-12)
 
 ## Executive read
 
-- Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
-- Completed-session dates differ by instrument: TSX 2026-11-12 · SP500 2026-11-12 · NASDAQ100 2026-11-12 · GOLD 2026-11-11 · SILVER 2026-11-11 · BTC 2026-11-11 · ETH 2026-11-11.
+- Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.
+- Completed-session dates differ by instrument: TSX 2026-11-12 · SP500 2026-11-12 · NASDAQ100 2026-11-12 · GOLD 2026-11-11 · SILVER 2026-11-11 · BTC 2026-11-12 · ETH 2026-11-12.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -19,7 +19,7 @@
 
 - **Equities: Mixed** — Signals are mixed across the tracked markets.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
+- **Crypto: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 
 ## Key divergences
 
@@ -27,8 +27,8 @@
 
 ## What to watch next
 
-- **Bitcoin:** bullish continuation above 79463.71 · trend warning near 77699.08 · structure risk below 63720.39.
-- **Ethereum:** bullish continuation above 2388.03 · trend warning near 2255.86 · structure risk below 1856.34.
+- **Bitcoin:** bullish continuation above 79463.71 · trend warning near 77212.52 · structure risk below 63720.39.
+- **Ethereum:** bullish continuation above 2388.03 · trend warning near 2237.5 · structure risk below 1856.34.
 - **S&P 500:** bullish continuation above 7620.9 · trend warning near 7618.15 · structure risk below 7580.06.
 - **Nasdaq-100:** bullish continuation above 28829.66 · trend warning near 28650.51 · structure risk below 28231.32.
 - **Gold:** bullish continuation above 4097.2 · trend warning near 4064.18 · structure risk below 3993.8.
@@ -76,20 +76,20 @@
 - **Watch next:** bullish continuation above 53.21 · trend warning near 53.48 · structure risk below 48.55.
 
 ### Bitcoin
-- **State:** Mixed / Weakening
-- **Returns:** 1D +0.3% · 5D -2.4% · 20D -9% · 60D -4.3%
-- **Historical read:** 5 sessions: Cautious · 10: Cautious · 20: Cautious
+- **State:** Bear / Weakening
+- **Returns:** 1D -3.5% · 5D -5.8% · 20D -12% · 60D -7.2%
+- **Historical read:** 5 sessions: Mixed · 10: Cautious · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
-- **Watch next:** bullish continuation above 79463.71 · trend warning near 77699.08 · structure risk below 63720.39.
+- **Watch next:** bullish continuation above 79463.71 · trend warning near 77212.52 · structure risk below 63720.39.
 
 ### Ethereum
 - **State:** Bear / Weakening
-- **Returns:** 1D +0.3% · 5D -8% · 20D -13.8% · 60D -18.6%
+- **Returns:** 1D -1.9% · 5D -9.8% · 20D -15.4% · 60D -18.6%
 - **Historical read:** 5 sessions: Cautious · 10: Cautious · 20: Mixed
 - **Framing:** Historical analogs cautious
 - **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
-- **Watch next:** bullish continuation above 2388.03 · trend warning near 2255.86 · structure risk below 1856.34.
+- **Watch next:** bullish continuation above 2388.03 · trend warning near 2237.5 · structure risk below 1856.34.
 
 
 ## Hunter context
