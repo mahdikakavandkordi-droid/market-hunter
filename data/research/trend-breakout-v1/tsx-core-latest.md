@@ -1,8 +1,8 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-11-13T16:41:31.988Z; mode: forward_shadow.
+Generated: 2026-11-13T22:46:20.919Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
 Open 9; pending 0; closed 42; lifecycle reviews 0.
-Realized equity $979.35; marked equity $990.25; mark quality fresh.
+Realized equity $979.35; marked equity $991.53; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,14 +15,14 @@ Realized equity $979.35; marked equity $990.25; mark quality fresh.
 
 ## Positions
 
-- FTS.TO: Long open; entry 77.51000213623047; current stop 82.90785598754883; provenance prospective; gap none
-- WCN.TO: Long open; entry 237.25999450683594; current stop 264.93428693498885; provenance prospective; gap none
-- NA.TO: Long open; entry 205.75999450683594; current stop 211.13714490618025; provenance prospective; gap none
-- CNR.TO: Long open; entry 174.07000732421875; current stop 175.27215249197823; provenance prospective; gap none
-- MRU.TO: Long open; entry 97.7699966430664; current stop 96.6096442086356; provenance prospective; gap none
-- CP.TO: Long open; entry 131.97000122070312; current stop 129.93857410975866; provenance prospective; gap none
+- FTS.TO: Long open; entry 77.51000213623047; current stop 83.06214032854352; provenance prospective; gap none
+- WCN.TO: Long open; entry 237.25999450683594; current stop 267.269289289202; provenance prospective; gap none
+- NA.TO: Long open; entry 205.75999450683594; current stop 211.2153538295201; provenance prospective; gap none
+- CNR.TO: Long open; entry 174.07000732421875; current stop 175.98358590262276; provenance prospective; gap none
+- MRU.TO: Long open; entry 97.7699966430664; current stop 96.8400023324149; provenance prospective; gap none
+- CP.TO: Long open; entry 131.97000122070312; current stop 130.509649004255; provenance prospective; gap none
 - NTR.TO: Long open; entry 100.23999786376953; current stop 96.81428636823381; provenance prospective; gap none
-- EMA.TO: Long open; entry 72.1500015258789; current stop 69.92000252859933; provenance prospective; gap none
+- EMA.TO: Long open; entry 72.1500015258789; current stop 70.03142493111747; provenance prospective; gap none
 - TRP.TO: Long open; entry 91.8499984741211; current stop 88.66285705566406; provenance prospective; gap none
 
 ## Common-window comparison
