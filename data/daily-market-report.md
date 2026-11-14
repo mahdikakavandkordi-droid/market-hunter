@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-11-12
+**As of:** 2026-11-12 to 2026-11-13 (TSX 2026-11-13 · SP500 2026-11-13 · NASDAQ100 2026-11-13 · GOLD 2026-11-12 · SILVER 2026-11-12 · BTC 2026-11-12 · ETH 2026-11-12)
 
 ## Executive read
 
-- Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.
-- All tracked markets are aligned to 2026-11-12.
+- Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
+- Completed-session dates differ by instrument: TSX 2026-11-13 · SP500 2026-11-13 · NASDAQ100 2026-11-13 · GOLD 2026-11-12 · SILVER 2026-11-12 · BTC 2026-11-12 · ETH 2026-11-12.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -19,7 +19,7 @@
 
 - **Equities: Mixed** — Signals are mixed across the tracked markets.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Weakening** — Most tracked markets in this group show weakening short-term conditions.
+- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
 
 ## Key divergences
 
@@ -29,35 +29,35 @@
 
 - **Bitcoin:** bullish continuation above 79463.71 · trend warning near 77212.52 · structure risk below 63720.39.
 - **Ethereum:** bullish continuation above 2388.03 · trend warning near 2237.5 · structure risk below 1856.34.
-- **S&P 500:** bullish continuation above 7620.9 · trend warning near 7618.15 · structure risk below 7580.06.
+- **Nasdaq-100:** bullish continuation above 28593.52 · trend warning near 28588.32 · structure risk below 27176.03.
+- **S&P 500:** bullish continuation above 7577.92 · trend warning near 7613.26 · structure risk below 7527.56.
 - **Silver:** bullish continuation above 53.21 · trend warning near 53.13 · structure risk below 48.55.
-- **Gold:** bullish continuation above 4097.2 · trend warning near 4049.94 · structure risk below 3879.3.
 
 ## Market detail
 
 ### TSX Composite
 - **State:** Mixed / Recovery Attempt
-- **Returns:** 1D -0.8% · 5D +1.5% · 20D +0% · 60D -0.6%
+- **Returns:** 1D -0.1% · 5D +0.9% · 20D -0.2% · 60D -0.8%
 - **Historical read:** 5 sessions: Mixed · 10: Mixed · 20: Mixed
 - **Framing:** Two-sided / evidence mixed
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 36343 · trend warning near 36039.23 · structure risk below 35805.
+- **Watch next:** bullish continuation above 36343 · trend warning near 36035.7 · structure risk below 35805.
 
 ### S&P 500
 - **State:** Mixed / Recovery Attempt
-- **Returns:** 1D -0.3% · 5D +3.3% · 20D -2% · 60D -1.5%
+- **Returns:** 1D -0.4% · 5D +2.5% · 20D -1.3% · 60D -1%
 - **Historical read:** 5 sessions: Improving, longer-term caution · 10: Improving, longer-term caution · 20: Cautious
 - **Framing:** Two-sided / evidence mixed
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 7620.9 · trend warning near 7618.15 · structure risk below 7580.06.
+- **Watch next:** bullish continuation above 7577.92 · trend warning near 7613.26 · structure risk below 7527.56.
 
 ### Nasdaq-100
-- **State:** Mixed / Recovery Attempt
-- **Returns:** 1D -0.3% · 5D +6.2% · 20D -5.5% · 60D -3.9%
-- **Historical read:** 5 sessions: Improving, longer-term caution · 10: Improving, longer-term caution · 20: Mixed
+- **State:** Bear / Recovery Attempt
+- **Returns:** 1D -1.2% · 5D +3.5% · 20D -4.3% · 60D -4.3%
+- **Historical read:** 5 sessions: Cautious · 10: Improving, longer-term caution · 20: Mixed
 - **Framing:** Two-sided / evidence mixed
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 28829.66 · trend warning near 28650.51 · structure risk below 28231.32.
+- **Watch next:** bullish continuation above 28593.52 · trend warning near 28588.32 · structure risk below 27176.03.
 
 ### Gold
 - **State:** Strong Bear / Weakening
@@ -96,11 +96,11 @@
 
 Final shortlist: 6 charts. 2 additional validated stage picks remain in the backend.
 
-1. BIR.TO — Recovery
+1. BBD-B.TO — Recovery
 2. FSV.TO — Attractive Growth
 3. DSG.TO — Established Move
-4. IFC.TO — Attractive Growth
-5. CAE.TO — Attractive Growth
+4. CAE.TO — Attractive Growth
+5. IFC.TO — Attractive Growth
 6. EMA.TO — Attractive Growth
 
 ---
