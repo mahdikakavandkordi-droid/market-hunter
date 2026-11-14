@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-11-13T03:38:04.653Z",
+  "updatedAt": "2026-11-14T03:37:36.217Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -1548,6 +1548,48 @@
       "prospectiveCount": 5,
       "pendingCount": 0,
       "discrepancyCount": 22
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|43552552592|1",
+      "observedAt": "2026-11-14T03:37:36.217Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "43552552592",
+        "runAttempt": "1",
+        "sha": "ff43c585a263a8c68ef0c7e53402a78adba5a56e",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "TMO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-13",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 1,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 32,
+      "prospectiveCount": 5,
+      "pendingCount": 0,
+      "discrepancyCount": 30
     }
   ],
   "discrepancyLog": [
@@ -2366,6 +2408,15 @@
       "quality": "fresh",
       "markedEquity": 981.8009651323089,
       "totalUnrealizedPnl": 0.7241893658279437,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|43552552592|1",
+      "observedAt": "2026-11-14T03:37:36.217Z",
+      "quality": "fresh",
+      "markedEquity": 981.9922974825181,
+      "totalUnrealizedPnl": 0.9155217160372506,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -6159,6 +6210,98 @@
           "runId": "43360204442",
           "runAttempt": "1",
           "sha": "243b53b36e3b921deaed4155db044d960ef68764",
+          "workflow": "SMC Expanded Forward Cohorts",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
+      "symbol": "NFLX",
+      "signalT": "2026-11-13T14:30:00.000Z",
+      "entryT": "2026-11-13T18:30:00.000Z",
+      "dir": -1,
+      "entry": 62.442501068115234,
+      "stop": 64.6855432510376,
+      "target": 57.9564167022705,
+      "risk": 2.243042182922366,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 86.3,
+        "bucket": "high",
+        "asOfDate": "2026-11-12",
+        "direction": "short",
+        "ret20": -0.1366203264048499,
+        "ret60": -0.2185240878489293,
+        "rsi14": 39.87179684685974,
+        "ma20": 64.75550003051758,
+        "ma50": 69.59500030517579,
+        "ma20Slope5": -0.02755648661195964,
+        "volumeRatio20": 0.6838656816472101,
+        "benchmarkSymbol": "^GSPC",
+        "benchmarkRet20": -0.019584062507586042,
+        "benchmarkRet60": -0.014994859667236904,
+        "rs20": -0.11703626389726385,
+        "rs60": -0.2035292281816924,
+        "components": {
+          "return20": {
+            "score": 100,
+            "weight": 20
+          },
+          "return60": {
+            "score": 100,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 75.3,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 100,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 100,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 100,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 64.55999755859375,
+        "atr14": 1.2554569244384766,
+        "signalCompletedAt": "2026-11-13T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "NFLX|2026-11-13T14:30:00.000Z|-1",
+      "firstObservedAt": "2026-11-14T03:37:36.217Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-expanded",
+        "cohort": "us-75",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "43552552592",
+          "runAttempt": "1",
+          "sha": "ff43c585a263a8c68ef0c7e53402a78adba5a56e",
           "workflow": "SMC Expanded Forward Cohorts",
           "ref": "refs/heads/main"
         }

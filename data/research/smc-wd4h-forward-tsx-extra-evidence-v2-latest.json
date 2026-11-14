@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-evidence-v2",
   "cohort": "tsx-extra",
-  "generatedAt": "2026-11-13T03:37:54.067Z",
+  "generatedAt": "2026-11-14T03:37:23.513Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -93,27 +93,66 @@
     "run": {
       "tracker": "smc-forward-expanded",
       "cohort": "tsx-extra",
-      "observedAt": "2026-11-13T03:37:54.067Z",
+      "observedAt": "2026-11-14T03:37:23.513Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "43360204442",
+        "runId": "43552552592",
         "runAttempt": "1",
-        "sha": "243b53b36e3b921deaed4155db044d960ef68764",
+        "sha": "ff43c585a263a8c68ef0c7e53402a78adba5a56e",
         "workflow": "SMC Expanded Forward Cohorts",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-expanded|tsx-extra|43360204442|1"
+      "runKey": "smc-forward-expanded|tsx-extra|43552552592|1"
     },
     "reconciliation": {
       "newRecords": 0,
-      "lifecycleUpdates": 1,
+      "lifecycleUpdates": 0,
       "missingPreviouslyRecorded": 0,
       "legacyUnprovenancedCount": 2,
       "reconstructedCount": 13,
       "prospectiveCount": 2,
       "pendingCount": 0
     },
-    "discrepancies": [],
+    "discrepancies": [
+      {
+        "type": "source_revision_conflict",
+        "identity": "RCI-B.TO|2026-10-28T13:30:00.000Z|-1",
+        "field": "stop",
+        "recorded": 46.65028708321707,
+        "recomputed": 46.650429943629675
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "RCI-B.TO|2026-10-28T13:30:00.000Z|-1",
+        "field": "target",
+        "recorded": 38.15942491803851,
+        "recomputed": 38.15913919721331
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "RCI-B.TO|2026-10-28T13:30:00.000Z|-1",
+        "field": "risk",
+        "recorded": 2.830287388392854,
+        "recomputed": 2.830430248805456
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "RCI-B.TO|2026-10-28T13:30:00.000Z|-1",
+        "field": "signalSnapshot",
+        "recorded": {
+          "opposingSwing": 46.560001373291016,
+          "atr14": 0.9028570992606026,
+          "signalCompletedAt": "2026-10-28T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "recomputed": {
+          "opposingSwing": 46.560001373291016,
+          "atr14": 0.9042857033865792,
+          "signalCompletedAt": "2026-10-28T17:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        }
+      }
+    ],
     "legacyProvenanceUnknown": 2
   },
   "summary": {
@@ -2728,14 +2767,14 @@
         "equity": 998.9893413652164
       }
     ],
-    "markedCurrentEquity": 999.0154650987397,
-    "markedReturnPct": -0.00098453490126027,
+    "markedCurrentEquity": 1000.1381153178638,
+    "markedReturnPct": 0.00013811531786389608,
     "markedObservation": {
-      "runKey": "smc-forward-expanded|tsx-extra|43360204442|1",
-      "observedAt": "2026-11-13T03:37:54.067Z",
+      "runKey": "smc-forward-expanded|tsx-extra|43552552592|1",
+      "observedAt": "2026-11-14T03:37:23.513Z",
       "quality": "fresh",
-      "markedEquity": 999.0154650987397,
-      "totalUnrealizedPnl": 0.026123733523196524,
+      "markedEquity": 1000.1381153178638,
+      "totalUnrealizedPnl": 1.1487739526472862,
       "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
@@ -2842,12 +2881,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 49.65999984741211,
-          "markT": "2026-11-12T21:30:00.000Z",
+          "markPrice": 49.41999816894531,
+          "markT": "2026-11-13T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -2.27832152578704,
-          "markedPositionValue": 45.28539386783839
+          "unrealizedPnl": -2.0374400808490893,
+          "markedPositionValue": 45.52627531277634
         },
         {
           "symbol": "PAAS.TO",
@@ -2951,12 +2990,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 53.81999969482422,
-          "markT": "2026-11-12T21:30:00.000Z",
+          "markPrice": 53.5099983215332,
+          "markT": "2026-11-13T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 5.054256389240184,
-          "markedPositionValue": 129.4156281140236
+          "unrealizedPnl": 5.741461328057097,
+          "markedPositionValue": 130.1028330528405
         },
         {
           "symbol": "GWO.TO",
@@ -3060,12 +3099,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 93.87999725341797,
-          "markT": "2026-11-12T21:30:00.000Z",
+          "markPrice": 94.02999877929688,
+          "markT": "2026-11-13T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -2.749811129929947,
-          "markedPositionValue": 121.7697768276229
+          "unrealizedPnl": -2.5552472945607216,
+          "markedPositionValue": 121.96434066299214
         }
       ]
     },
@@ -3355,6 +3394,15 @@
         "quality": "fresh",
         "markedEquity": 999.0154650987397,
         "totalUnrealizedPnl": 0.026123733523196524,
+        "missingSymbols": [],
+        "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-expanded|tsx-extra|43552552592|1",
+        "observedAt": "2026-11-14T03:37:23.513Z",
+        "quality": "fresh",
+        "markedEquity": 1000.1381153178638,
+        "totalUnrealizedPnl": 1.1487739526472862,
         "missingSymbols": [],
         "staleSymbols": []
       }
@@ -5262,12 +5310,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 49.65999984741211,
-        "markT": "2026-11-12T21:30:00.000Z",
+        "markPrice": 49.41999816894531,
+        "markT": "2026-11-13T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -2.27832152578704,
-        "markedPositionValue": 45.28539386783839
+        "unrealizedPnl": -2.0374400808490893,
+        "markedPositionValue": 45.52627531277634
       },
       {
         "symbol": "PAAS.TO",
@@ -5371,12 +5419,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 53.81999969482422,
-        "markT": "2026-11-12T21:30:00.000Z",
+        "markPrice": 53.5099983215332,
+        "markT": "2026-11-13T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 5.054256389240184,
-        "markedPositionValue": 129.4156281140236
+        "unrealizedPnl": 5.741461328057097,
+        "markedPositionValue": 130.1028330528405
       },
       {
         "symbol": "GWO.TO",
@@ -5480,12 +5528,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 93.87999725341797,
-        "markT": "2026-11-12T21:30:00.000Z",
+        "markPrice": 94.02999877929688,
+        "markT": "2026-11-13T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -2.749811129929947,
-        "markedPositionValue": 121.7697768276229
+        "unrealizedPnl": -2.5552472945607216,
+        "markedPositionValue": 121.96434066299214
       }
     ],
     "skipped": [
