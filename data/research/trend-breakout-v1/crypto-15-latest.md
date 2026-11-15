@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-15T17:21:02.540Z; mode: forward_shadow.
+Generated: 2026-11-15T21:59:23.432Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 14; pending 0; closed 60; lifecycle reviews 0.
-Realized equity $883.59; marked equity $980.58; mark quality fresh.
+Realized equity $883.59; marked equity $976.25; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -23,7 +23,7 @@ Realized equity $883.59; marked equity $980.58; mark quality fresh.
 - ADA-USD: Short open; entry 0.17416000366210938; current stop 0.1632271355816296; provenance prospective; gap none
 - LTC-USD: Short open; entry 49.979000091552734; current stop 48.532571520124165; provenance prospective; gap none
 - SHIB-USD: Short open; entry 0.000004359999820735538; current stop 0.000004162142918825598; provenance prospective; gap none
-- TRX-USD: Short open; entry 0.3154197931289673; current stop 0.3107144513300487; provenance prospective; gap none
+- TRX-USD: Short open; entry 0.3154197931289673; current stop 0.3106330335140228; provenance prospective; gap none
 - BNB-USD: Short open; entry 639.0499877929688; current stop 625.6185695103237; provenance prospective; gap none
 - BTC-USD: Short open; entry 69267.609375; current stop 68455.275390625; provenance prospective; gap none
 - LINK-USD: Short open; entry 9.604999542236328; current stop 9.782785483769008; provenance prospective; gap none
@@ -32,7 +32,7 @@ Realized equity $883.59; marked equity $980.58; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-15T06:20:24.442Z; stale false.
+SMC ledger as of 2026-11-15T06:20:24.442Z; stale true.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 23; challenger closed 60. No winner is claimed from a small sample.
 
