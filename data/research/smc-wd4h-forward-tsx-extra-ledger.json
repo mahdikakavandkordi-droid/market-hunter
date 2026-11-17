@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "tsx-extra",
-  "updatedAt": "2026-11-14T03:37:23.513Z",
+  "updatedAt": "2026-11-17T05:15:27.685Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "RCI-B.TO",
@@ -2734,6 +2734,93 @@
       "prospectiveCount": 2,
       "pendingCount": 0,
       "discrepancyCount": 4
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|44022758376|1",
+      "observedAt": "2026-11-17T05:15:27.685Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "tsx-extra",
+      "github": {
+        "runId": "44022758376",
+        "runAttempt": "1",
+        "sha": "b3a3ef58e9b31714afbe3c512ef271077416472e",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 0,
+          "expected": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "present": [
+            0
+          ]
+        },
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "GSY.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-10-26",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "WSP.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-22",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 2,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 15,
+      "prospectiveCount": 2,
+      "pendingCount": 0,
+      "discrepancyCount": 0
     }
   ],
   "discrepancyLog": [
@@ -3079,6 +3166,15 @@
       "quality": "fresh",
       "markedEquity": 1000.1381153178638,
       "totalUnrealizedPnl": 1.1487739526472862,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|44022758376|1",
+      "observedAt": "2026-11-17T05:15:27.685Z",
+      "quality": "fresh",
+      "markedEquity": 1006.495728629116,
+      "totalUnrealizedPnl": 7.506387263899445,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -4780,6 +4876,188 @@
       },
       "entryObservationClass": "reconstructed",
       "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
+      "symbol": "FM.TO",
+      "signalT": "2026-11-16T14:30:00.000Z",
+      "entryT": "2026-11-16T18:30:00.000Z",
+      "dir": -1,
+      "entry": 30.100000381469727,
+      "stop": 35.47828461783273,
+      "target": 19.343431908743725,
+      "risk": 5.378284236363001,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 86.8,
+        "bucket": "high",
+        "asOfDate": "2026-11-13",
+        "direction": "short",
+        "ret20": -0.12340312048242497,
+        "ret60": -0.2708568769212021,
+        "rsi14": 43.03535083969579,
+        "ma20": 34.05149974822998,
+        "ma50": 38.87519989013672,
+        "ma20Slope5": -0.02941553658517715,
+        "volumeRatio20": 0.9563503924368725,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": -0.001954388249483574,
+        "benchmarkRet60": -0.00812878312059806,
+        "rs20": -0.12144873223294139,
+        "rs60": -0.262728093800604,
+        "components": {
+          "return20": {
+            "score": 100,
+            "weight": 20
+          },
+          "return60": {
+            "score": 100,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 67.4,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 100,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 16.5,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 100,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 100,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 35.369998931884766,
+        "atr14": 1.0828568594796317,
+        "signalCompletedAt": "2026-11-16T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "FM.TO|2026-11-16T14:30:00.000Z|-1",
+      "firstObservedAt": "2026-11-17T05:15:27.685Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-expanded",
+        "cohort": "tsx-extra",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "44022758376",
+          "runAttempt": "1",
+          "sha": "b3a3ef58e9b31714afbe3c512ef271077416472e",
+          "workflow": "SMC Expanded Forward Cohorts",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed"
+    },
+    {
+      "symbol": "TECK-B.TO",
+      "signalT": "2026-11-16T14:30:00.000Z",
+      "entryT": "2026-11-16T18:30:00.000Z",
+      "dir": -1,
+      "entry": 81.58999633789062,
+      "stop": 91.7977875300816,
+      "target": 61.17441395350866,
+      "risk": 10.207791192190982,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 66.9,
+        "bucket": "medium",
+        "asOfDate": "2026-11-13",
+        "direction": "short",
+        "ret20": -0.060914255753584556,
+        "ret60": -0.05833972532507126,
+        "rsi14": 51.807542727418756,
+        "ma20": 87.24700012207032,
+        "ma50": 91.16379989624023,
+        "ma20Slope5": -0.0142584357858625,
+        "volumeRatio20": 0.7844521890279287,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": -0.001954388249483574,
+        "benchmarkRet60": -0.00812878312059806,
+        "rs20": -0.05895986750410098,
+        "rs60": -0.0502109422044732,
+        "components": {
+          "return20": {
+            "score": 80.5,
+            "weight": 20
+          },
+          "return60": {
+            "score": 64.6,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 45.5,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 85.6,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 2.8,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 86.8,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 66.7,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 91.58000183105469,
+        "atr14": 2.177856990269252,
+        "signalCompletedAt": "2026-11-16T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "TECK-B.TO|2026-11-16T14:30:00.000Z|-1",
+      "firstObservedAt": "2026-11-17T05:15:27.685Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-expanded",
+        "cohort": "tsx-extra",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "44022758376",
+          "runAttempt": "1",
+          "sha": "b3a3ef58e9b31714afbe3c512ef271077416472e",
+          "workflow": "SMC Expanded Forward Cohorts",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed"
     }
   ]
 }
