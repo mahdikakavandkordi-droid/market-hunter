@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-17T14:55:32.072Z",
+  "updatedAt": "2026-11-17T23:10:53.243Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -824,15 +824,15 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 128.77463858468192,
-      "holdingBars": 6,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
+      "holdingBars": 8,
+      "lastEvaluatedEndT": "2026-11-17T21:30:00.000Z",
       "entryObservedAt": "2026-11-12T21:08:07.549Z"
     },
     {
       "symbol": "CRM",
       "signalT": "2026-11-11T14:30:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-11T22:00:00.000Z",
         "dailyAsOf": "2026-11-11",
@@ -852,8 +852,8 @@
       "stop": 204.33250427246094,
       "target": 233.97799835205078,
       "risk": 14.61749267578125,
-      "R": null,
-      "exitT": null,
+      "R": -1,
+      "exitT": "2026-11-17T18:30:00.000Z",
       "decisionId": "CRM|2026-11-11T14:30:00.000Z|1",
       "entryWaitHours": 120,
       "historicalDiagnostic": false,
@@ -866,9 +866,20 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 204.33250427246094,
-      "holdingBars": 6,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
-      "entryObservedAt": "2026-11-12T21:08:07.549Z"
+      "holdingBars": 7,
+      "lastEvaluatedEndT": "2026-11-17T18:30:00.000Z",
+      "entryObservedAt": "2026-11-12T21:08:07.549Z",
+      "exitPriceAssumed": 204.33250427246094,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "initial_stop",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "stopTargetCollision": false,
+        "collisionPolicy": "stop_first",
+        "exitBarStartT": "2026-11-17T14:30:00.000Z",
+        "exitBarEndT": "2026-11-17T18:30:00.000Z"
+      }
     },
     {
       "symbol": "CVX",
@@ -908,8 +919,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 203.1503508431571,
-      "holdingBars": 6,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
+      "holdingBars": 8,
+      "lastEvaluatedEndT": "2026-11-17T21:30:00.000Z",
       "entryObservedAt": "2026-11-12T21:08:07.549Z"
     },
     {
@@ -950,8 +961,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 191.11749976021903,
-      "holdingBars": 6,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
+      "holdingBars": 8,
+      "lastEvaluatedEndT": "2026-11-17T21:30:00.000Z",
       "entryObservedAt": "2026-11-12T21:08:07.549Z"
     },
     {
@@ -992,8 +1003,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 157.53071485246932,
-      "holdingBars": 6,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
+      "holdingBars": 8,
+      "lastEvaluatedEndT": "2026-11-17T21:30:00.000Z",
       "entryObservedAt": "2026-11-12T21:08:07.549Z"
     },
     {
@@ -1034,8 +1045,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 55.70749814169748,
-      "holdingBars": 4,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
+      "holdingBars": 6,
+      "lastEvaluatedEndT": "2026-11-17T21:30:00.000Z",
       "entryObservedAt": "2026-11-13T23:54:53.714Z"
     }
   ],
@@ -6051,6 +6062,29 @@
         }
       ],
       "diagnosticCount": 150
+    },
+    {
+      "runKey": "mean-reversion-v1|44196927134|1",
+      "observedAt": "2026-11-17T23:10:53.243Z",
+      "failures": [
+        {
+          "symbol": "EOG",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "TMO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "HON",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "CMCSA",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -8319,6 +8353,15 @@
       "quality": "fresh",
       "markedEquity": 956.0124551994776,
       "totalUnrealizedPnl": -0.829009932039964,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|44196927134|1",
+      "observedAt": "2026-11-17T23:10:53.243Z",
+      "quality": "fresh",
+      "markedEquity": 944.9485745015598,
+      "totalUnrealizedPnl": -1.8460552460768818,
       "missingSymbols": [],
       "staleSymbols": []
     }

@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-17T14:55:32.072Z",
+  "updatedAt": "2026-11-17T23:10:53.243Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -114,7 +114,7 @@
       "symbol": "CVE.TO",
       "signalT": "2026-11-10T14:30:00.000Z",
       "dir": 1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-10T22:00:00.000Z",
         "dailyAsOf": "2026-11-10",
@@ -134,8 +134,8 @@
       "stop": 36.753929138183594,
       "target": 44.26700000762939,
       "risk": 3.1760711669921875,
-      "R": null,
-      "exitT": null,
+      "R": 0.13223827391218707,
+      "exitT": "2026-11-17T21:30:00.000Z",
       "decisionId": "CVE.TO|2026-11-10T14:30:00.000Z|1",
       "entryWaitHours": 120,
       "historicalDiagnostic": false,
@@ -148,9 +148,20 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 36.753929138183594,
-      "holdingBars": 8,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
-      "entryObservedAt": "2026-11-11T23:06:04.344Z"
+      "holdingBars": 10,
+      "lastEvaluatedEndT": "2026-11-17T21:30:00.000Z",
+      "entryObservedAt": "2026-11-11T23:06:04.344Z",
+      "exitPriceAssumed": 40.349998474121094,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "max_hold_close",
+      "executionAudit": {
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "stopTargetCollision": false,
+        "collisionPolicy": "stop_first",
+        "exitBarStartT": "2026-11-17T18:30:00.000Z",
+        "exitBarEndT": "2026-11-17T21:30:00.000Z"
+      }
     },
     {
       "symbol": "OTEX.TO",
@@ -190,8 +201,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 33.530358042035786,
-      "holdingBars": 6,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
+      "holdingBars": 8,
+      "lastEvaluatedEndT": "2026-11-17T21:30:00.000Z",
       "entryObservedAt": "2026-11-12T21:08:07.549Z"
     },
     {
@@ -232,8 +243,8 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 15.59035679272243,
-      "holdingBars": 6,
-      "lastEvaluatedEndT": "2026-11-16T21:30:00.000Z",
+      "holdingBars": 8,
+      "lastEvaluatedEndT": "2026-11-17T21:30:00.000Z",
       "entryObservedAt": "2026-11-12T21:08:07.549Z"
     }
   ],
@@ -5729,6 +5740,29 @@
         }
       ],
       "diagnosticCount": 66
+    },
+    {
+      "runKey": "mean-reversion-v1|44196927134|1",
+      "observedAt": "2026-11-17T23:10:53.243Z",
+      "failures": [
+        {
+          "symbol": "ARX.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "FM.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "GSY.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "WSP.TO",
+          "error": "invalid_source_quotes_require_review"
+        }
+      ],
+      "diagnosticCount": 0
     }
   ],
   "markedEquitySeries": [
@@ -8001,6 +8035,15 @@
       "quality": "fresh",
       "markedEquity": 1006.6606068437682,
       "totalUnrealizedPnl": 0.9134011304676145,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|44196927134|1",
+      "observedAt": "2026-11-17T23:10:53.243Z",
+      "quality": "fresh",
+      "markedEquity": 998.434149179434,
+      "totalUnrealizedPnl": -8.140165675765205,
       "missingSymbols": [],
       "staleSymbols": []
     }
