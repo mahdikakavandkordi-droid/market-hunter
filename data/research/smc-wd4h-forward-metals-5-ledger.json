@@ -2,7 +2,7 @@
   "version": "smc-wd4h-forward-alternatives-ledger-v2",
   "cohort": "metals-5",
   "mode": "stock",
-  "updatedAt": "2026-11-16T06:19:37.415Z",
+  "updatedAt": "2026-11-17T07:49:48.738Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "GLD",
@@ -1252,6 +1252,32 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 0
+    },
+    {
+      "runKey": "smc-forward-alternatives|metals-5|44041651667|1",
+      "observedAt": "2026-11-17T07:49:48.738Z",
+      "tracker": "smc-forward-alternatives",
+      "cohort": "metals-5",
+      "github": {
+        "runId": "44041651667",
+        "runAttempt": "1",
+        "sha": "b3a3ef58e9b31714afbe3c512ef271077416472e",
+        "workflow": "SMC Crypto and Metals Forward",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 1,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 0,
+      "reconstructedCount": 6,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 0
     }
   ],
   "discrepancyLog": [],
@@ -1669,6 +1695,15 @@
       "totalUnrealizedPnl": 29.966349897310153,
       "missingSymbols": [],
       "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-alternatives|metals-5|44041651667|1",
+      "observedAt": "2026-11-17T07:49:48.738Z",
+      "quality": "fresh",
+      "markedEquity": 1071.3068091028113,
+      "totalUnrealizedPnl": 29.630245716693967,
+      "missingSymbols": [],
+      "staleSymbols": []
     }
   ],
   "markedSeriesCoverageStartAt": "2026-10-04T14:55:48.473Z",
@@ -2078,9 +2113,9 @@
       "stop": 48.05031751905169,
       "target": 42.694363130841936,
       "risk": 1.785318129403251,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 2,
+      "exitT": "2026-11-16T18:30:00.000Z",
       "mode": "stock",
       "momentumShadow": {
         "available": true,
@@ -2160,7 +2195,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "gap_target",
+      "exitPriceAssumed": 42.694363130841936,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": true,
+        "gapFillAssumption": "strategy-level boundary price retained; true gap fill unknown",
+        "gapOpenPrecedence": true,
+        "exitBarStartT": "2026-11-16T14:30:00.000Z",
+        "exitBarEndT": "2026-11-16T18:30:00.000Z"
+      }
     },
     {
       "symbol": "PPLT",
