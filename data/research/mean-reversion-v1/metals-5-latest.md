@@ -1,5 +1,5 @@
 # Mean Reversion V1 — metals-5
-Generated: 2026-11-17T23:10:53.243Z; mode: forward_shadow.
+Generated: 2026-11-18T04:43:59.856Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 5; failed fetch/review symbols 2.
 Open 0; pending 0; closed 0; lifecycle reviews 0.
 Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
@@ -18,7 +18,7 @@ Realized equity $1000.00; marked equity $1000.00; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-17T07:49:48.738Z; stale false. Trend ledger as of 2026-11-17T22:33:39.608Z; stale false.
+SMC ledger as of 2026-11-17T07:49:48.738Z; stale false. Trend ledger as of 2026-11-18T03:49:29.429Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
 SMC closed 3; Trend closed 8; challenger closed 0. No winner is claimed from a small sample.
 
