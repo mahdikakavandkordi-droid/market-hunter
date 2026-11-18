@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "tsx-extra",
-  "updatedAt": "2026-11-17T05:15:27.685Z",
+  "updatedAt": "2026-11-18T04:44:29.825Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "RCI-B.TO",
@@ -2821,6 +2821,93 @@
       "prospectiveCount": 2,
       "pendingCount": 0,
       "discrepancyCount": 0
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|44239347266|1",
+      "observedAt": "2026-11-18T04:44:29.825Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "tsx-extra",
+      "github": {
+        "runId": "44239347266",
+        "runAttempt": "1",
+        "sha": "d8acb3a633d132584f370b01d64f64c57cbf5684",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 0,
+          "expected": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "present": [
+            0
+          ]
+        },
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "GSY.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-10-26",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "WSP.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-22",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 1,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 15,
+      "prospectiveCount": 2,
+      "pendingCount": 0,
+      "discrepancyCount": 4
     }
   ],
   "discrepancyLog": [
@@ -3175,6 +3262,15 @@
       "quality": "fresh",
       "markedEquity": 1006.495728629116,
       "totalUnrealizedPnl": 7.506387263899445,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|44239347266|1",
+      "observedAt": "2026-11-18T04:44:29.825Z",
+      "quality": "fresh",
+      "markedEquity": 1006.4422604277702,
+      "totalUnrealizedPnl": 7.974178663338698,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -4610,9 +4706,9 @@
       "stop": 57.377106530325754,
       "target": 27.415785108293804,
       "risk": 9.987107140677317,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": -0.0020026277361349567,
+      "exitT": "2026-11-17T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 59.9,
@@ -4691,7 +4787,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 47.40999984741211,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-11-17T14:30:00.000Z",
+        "exitBarEndT": "2026-11-17T18:30:00.000Z"
+      }
     },
     {
       "symbol": "PAAS.TO",
@@ -4966,7 +5074,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "TECK-B.TO",
@@ -5057,7 +5166,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }

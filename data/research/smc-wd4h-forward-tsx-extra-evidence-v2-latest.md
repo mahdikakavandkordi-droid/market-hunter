@@ -1,20 +1,20 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-11-17T05:15:27.685Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-11-18T04:44:29.825Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|
-| Closed trades | 14 | 14 |
-| Win rate | 50.0% | 50.0% |
-| PF | 1.302 | 1.141 |
-| Avg R | 0.100 | 0.050 |
+| Closed trades | 15 | 15 |
+| Win rate | 46.7% | 46.7% |
+| PF | 1.301 | 1.129 |
+| Avg R | 0.094 | 0.044 |
 
 ## Realized vs marked paper account
 
-Realized-only equity $998.99; return -0.1%; realized-event max DD -3.1%.
-Marked equity $1006.50; return 0.6%; observed marked max DD -3.2%; quality fresh.
+Realized-only equity $998.47; return -0.2%; realized-event max DD -3.1%.
+Marked equity $1006.44; return 0.6%; observed marked max DD -3.2%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,22 +23,21 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| GIL.TO | Short | 47.390 | 49.400 | fresh | $-2.02 |
-| PAAS.TO | Short | 56.100 | 50.930 | fresh | $11.46 |
-| GWO.TO | Long | 96.000 | 94.120 | fresh | $-2.44 |
-| FM.TO | Short | 30.100 | 29.830 | fresh | $0.50 |
+| PAAS.TO | Short | 56.100 | 51.010 | fresh | $11.28 |
+| GWO.TO | Long | 96.000 | 94.580 | fresh | $-1.84 |
+| FM.TO | Short | 30.100 | 30.890 | fresh | $-1.47 |
 
 ## Evidence integrity
 
 Legacy provenance unknown 2; prospective 2; reconstructed 15; pending 0.
-This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 4.
+This run discrepancies 4; prior not re-observed 0; candle/data diagnostics 4.
 
 ### Performance by evidence provenance
 
 | Evidence class | Closed | Win rate | Avg R after 0.05R cost | PF after 0.05R cost |
 |---|---:|---:|---:|---:|
 | prospective | 2 | 50.0% | 0.911 | 15.193 |
-| reconstructed | 10 | 50.0% | -0.261 | 0.409 |
+| reconstructed | 11 | 45.5% | -0.242 | 0.405 |
 | legacy unprovenanced | 2 | 50.0% | 0.748 | 4.290 |
 
 ## Momentum shadow (observational only)
@@ -46,7 +45,7 @@ This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 4.
 | Bucket | Closed | Win rate | Avg R after cost | PF after cost |
 |---|---:|---:|---:|---:|
 | high | 4 | 50.0% | 0.122 | 2.390 |
-| medium | 6 | 50.0% | 0.029 | 1.067 |
+| medium | 7 | 42.9% | 0.017 | 1.046 |
 | low | 4 | 50.0% | 0.011 | 1.021 |
 | unavailable | 0 | n/a | n/a | n/a |
 
