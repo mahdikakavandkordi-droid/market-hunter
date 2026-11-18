@@ -1,19 +1,19 @@
 {
   "version": "daily-market-report-v0.2-2026-09-26",
-  "generatedAt": "2026-11-18T02:59:59.213Z",
+  "generatedAt": "2026-11-18T07:27:41.257Z",
   "status": "research",
   "asOf": {
-    "earliest": "2026-11-16",
+    "earliest": "2026-11-17",
     "latest": "2026-11-17",
-    "mixedDates": true,
+    "mixedDates": false,
     "byMarket": {
       "TSX": "2026-11-17",
       "SP500": "2026-11-17",
       "NASDAQ100": "2026-11-17",
       "GOLD": "2026-11-17",
       "SILVER": "2026-11-17",
-      "BTC": "2026-11-16",
-      "ETH": "2026-11-16"
+      "BTC": "2026-11-17",
+      "ETH": "2026-11-17"
     }
   },
   "freshness": {
@@ -54,39 +54,34 @@
         "assessedAt": "2026-11-18T02:59:27.767Z"
       },
       "BTC": {
-        "status": "stale",
-        "latestCompletedSession": "2026-11-16",
+        "status": "fresh",
+        "latestCompletedSession": "2026-11-17",
         "expectedCompletedSession": "2026-11-17",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-18T02:59:27.767Z"
+        "assessedAt": "2026-11-18T07:27:40.814Z"
       },
       "ETH": {
-        "status": "stale",
-        "latestCompletedSession": "2026-11-16",
+        "status": "fresh",
+        "latestCompletedSession": "2026-11-17",
         "expectedCompletedSession": "2026-11-17",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-18T02:59:27.767Z"
+        "assessedAt": "2026-11-18T07:27:40.814Z"
       }
     },
     "source": {
-      "attemptedAt": "2026-11-18T02:59:27.767Z",
-      "mode": "full",
+      "attemptedAt": "2026-11-18T07:27:40.814Z",
+      "mode": "targeted",
       "targetKeys": [
-        "TSX",
-        "SP500",
-        "NASDAQ100",
-        "GOLD",
-        "SILVER",
         "BTC",
         "ETH"
       ],
       "failures": []
     }
   },
-  "headline": "Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.",
+  "headline": "Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.",
   "executiveSummary": [
-    "Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.",
-    "Completed-session dates differ by instrument: TSX 2026-11-17 · SP500 2026-11-17 · NASDAQ100 2026-11-17 · GOLD 2026-11-17 · SILVER 2026-11-17 · BTC 2026-11-16 · ETH 2026-11-16.",
+    "Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.",
+    "All tracked markets are aligned to 2026-11-17.",
     "The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets."
   ],
   "groups": [
@@ -146,24 +141,24 @@
     },
     {
       "label": "Crypto",
-      "state": "Update required",
-      "detail": "Current assessment unavailable; one or more completed-session inputs are not verified fresh.",
+      "state": "Weakening",
+      "detail": "Most tracked markets in this group show weakening short-term conditions.",
       "markets": [
         {
           "key": "BTC",
           "name": "Bitcoin",
           "regime": "Bear",
           "condition": "Weakening",
-          "d5": -12.31,
-          "d20": -19.74
+          "d5": -9.04,
+          "d20": -20.15
         },
         {
           "key": "ETH",
           "name": "Ethereum",
           "regime": "Bear",
-          "condition": "Weakening",
-          "d5": -11.51,
-          "d20": -22.51
+          "condition": "Recovery Attempt",
+          "d5": -9.61,
+          "d20": -22.68
         }
       ]
     }
@@ -173,11 +168,6 @@
       "market": "BTC",
       "severity": "Watch",
       "text": "Bitcoin: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now."
-    },
-    {
-      "market": "ETH",
-      "severity": "Watch",
-      "text": "Ethereum: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now."
     },
     {
       "market": "NASDAQ100",
@@ -193,6 +183,11 @@
       "market": "SILVER",
       "severity": "Watch",
       "text": "Silver: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now."
+    },
+    {
+      "market": "TSX",
+      "severity": "Watch",
+      "text": "TSX Composite: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now."
     }
   ],
   "keyDivergences": [],
@@ -202,27 +197,13 @@
       "name": "Bitcoin",
       "regime": "Bear",
       "condition": "Weakening",
-      "text": "Bitcoin: bullish continuation above 65328.18 · trend warning near 74258.1 · structure risk below 63720.39.",
+      "text": "Bitcoin: bullish continuation above 65328.18 · trend warning near 73439.42 · structure risk below 63686.04.",
       "levels": {
-        "support": 63720.39,
+        "support": 63686.04,
         "resistance": 65328.18,
         "bullishTrigger": 65328.18,
-        "warningLevel": 74258.1,
-        "bearishTrigger": 63720.39
-      }
-    },
-    {
-      "market": "ETH",
-      "name": "Ethereum",
-      "regime": "Bear",
-      "condition": "Weakening",
-      "text": "Ethereum: bullish continuation above 1934.58 · trend warning near 2137.53 · structure risk below 2203.81.",
-      "levels": {
-        "support": null,
-        "resistance": 1934.58,
-        "bullishTrigger": 1934.58,
-        "warningLevel": 2137.53,
-        "bearishTrigger": 2203.81
+        "warningLevel": 73439.42,
+        "bearishTrigger": 63686.04
       }
     },
     {
@@ -237,6 +218,20 @@
         "bullishTrigger": 28593.52,
         "warningLevel": 28347.28,
         "bearishTrigger": 26606.43
+      }
+    },
+    {
+      "market": "ETH",
+      "name": "Ethereum",
+      "regime": "Bear",
+      "condition": "Recovery Attempt",
+      "text": "Ethereum: bullish continuation above 1934.58 · trend warning near 2110.8 · structure risk below 1712.38.",
+      "levels": {
+        "support": 1712.38,
+        "resistance": 1934.58,
+        "bullishTrigger": 1934.58,
+        "warningLevel": 2110.8,
+        "bearishTrigger": 1712.38
       }
     },
     {
@@ -695,23 +690,23 @@
     {
       "key": "BTC",
       "name": "Bitcoin",
-      "asOf": "2026-11-16",
-      "price": 64855.84,
+      "asOf": "2026-11-17",
+      "price": 64893.95,
       "regime": "Bear",
       "condition": "Weakening",
       "freshness": {
-        "status": "stale",
-        "latestCompletedSession": "2026-11-16",
+        "status": "fresh",
+        "latestCompletedSession": "2026-11-17",
         "expectedCompletedSession": "2026-11-17",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-18T02:59:27.767Z"
+        "assessedAt": "2026-11-18T07:27:40.814Z"
       },
       "returns": {
-        "d1": -0.69,
-        "d5": -12.31,
-        "d20": -19.74,
-        "d60": -15.11,
-        "d120": 0.26
+        "d1": 0.06,
+        "d5": -9.04,
+        "d20": -20.15,
+        "d60": -19.79,
+        "d120": -0.52
       },
       "framing": "Historical analogs cautious",
       "evidence": {
@@ -762,13 +757,13 @@
         }
       },
       "outlook": "Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.",
-      "watchNext": "bullish continuation above 65328.18 · trend warning near 74258.1 · structure risk below 63720.39.",
+      "watchNext": "bullish continuation above 65328.18 · trend warning near 73439.42 · structure risk below 63686.04.",
       "levels": {
-        "support": 63720.39,
+        "support": 63686.04,
         "resistance": 65328.18,
         "bullishTrigger": 65328.18,
-        "warningLevel": 74258.1,
-        "bearishTrigger": 63720.39
+        "warningLevel": 73439.42,
+        "bearishTrigger": 63686.04
       },
       "specificSetupWarning": null,
       "attentionScore": 6.5
@@ -776,29 +771,29 @@
     {
       "key": "ETH",
       "name": "Ethereum",
-      "asOf": "2026-11-16",
-      "price": 1819.28,
+      "asOf": "2026-11-17",
+      "price": 1822.96,
       "regime": "Bear",
-      "condition": "Weakening",
+      "condition": "Recovery Attempt",
       "freshness": {
-        "status": "stale",
-        "latestCompletedSession": "2026-11-16",
+        "status": "fresh",
+        "latestCompletedSession": "2026-11-17",
         "expectedCompletedSession": "2026-11-17",
         "partialBarExcluded": true,
-        "assessedAt": "2026-11-18T02:59:27.767Z"
+        "assessedAt": "2026-11-18T07:27:40.814Z"
       },
       "returns": {
-        "d1": -0.88,
-        "d5": -11.51,
-        "d20": -22.51,
-        "d60": -25.66,
-        "d120": -2.79
+        "d1": 0.2,
+        "d5": -9.61,
+        "d20": -22.68,
+        "d60": -30.19,
+        "d120": -4.24
       },
-      "framing": "Historical analogs cautious",
+      "framing": "Two-sided / evidence mixed",
       "evidence": {
-        "sessions5": "Cautious",
-        "sessions10": "Cautious",
-        "sessions20": "Mixed",
+        "sessions5": "Mixed",
+        "sessions10": "Mixed",
+        "sessions20": "Cautious",
         "confidence": [
           "Moderate",
           "Moderate",
@@ -811,54 +806,54 @@
         ],
         "horizons": {
           "5": {
-            "tone": "Cautious",
-            "label": "Historically Weaker",
-            "confidence": "Moderate",
-            "analogLevel": "Exact State",
-            "sample": {
-              "overall": 196,
-              "recent": 59
-            }
-          },
-          "10": {
-            "tone": "Cautious",
-            "label": "Historically Weaker",
-            "confidence": "Moderate",
-            "analogLevel": "Exact State",
-            "sample": {
-              "overall": 196,
-              "recent": 59
-            }
-          },
-          "20": {
             "tone": "Mixed",
             "label": "Mixed / Near Baseline",
             "confidence": "Moderate",
             "analogLevel": "Exact State",
             "sample": {
-              "overall": 196,
-              "recent": 59
+              "overall": 119,
+              "recent": 36
+            }
+          },
+          "10": {
+            "tone": "Mixed",
+            "label": "Mixed / Near Baseline",
+            "confidence": "Moderate",
+            "analogLevel": "Exact State",
+            "sample": {
+              "overall": 119,
+              "recent": 36
+            }
+          },
+          "20": {
+            "tone": "Cautious",
+            "label": "Historically Weaker",
+            "confidence": "Moderate",
+            "analogLevel": "Exact State",
+            "sample": {
+              "overall": 119,
+              "recent": 36
             }
           }
         }
       },
-      "outlook": "Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.",
-      "watchNext": "bullish continuation above 1934.58 · trend warning near 2137.53 · structure risk below 2203.81.",
+      "outlook": "The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.",
+      "watchNext": "bullish continuation above 1934.58 · trend warning near 2110.8 · structure risk below 1712.38.",
       "levels": {
-        "support": null,
+        "support": 1712.38,
         "resistance": 1934.58,
         "bullishTrigger": 1934.58,
-        "warningLevel": 2137.53,
-        "bearishTrigger": 2203.81
+        "warningLevel": 2110.8,
+        "bearishTrigger": 1712.38
       },
       "specificSetupWarning": null,
-      "attentionScore": 6.5
+      "attentionScore": 5
     }
   ],
   "highestAttention": [
     "BTC",
-    "ETH",
     "NASDAQ100",
+    "ETH",
     "SP500"
   ],
   "hunterContext": {
