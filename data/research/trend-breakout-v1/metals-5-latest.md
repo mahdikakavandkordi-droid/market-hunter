@@ -1,8 +1,8 @@
 # Trend Breakout V1 — metals-5
-Generated: 2026-11-19T11:59:53.061Z; mode: forward_shadow.
+Generated: 2026-11-19T20:54:04.732Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 5; failed fetch/review symbols 0.
-Open 3; pending 2; closed 8; lifecycle reviews 0.
-Realized equity $1048.92; marked equity $1087.37; mark quality fresh.
+Open 5; pending 0; closed 8; lifecycle reviews 0.
+Realized equity $1048.92; marked equity $1097.45; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,11 +15,11 @@ Realized equity $1048.92; marked equity $1087.37; mark quality fresh.
 
 ## Positions
 
-- CPER: Short open; entry 36.400001525878906; current stop 35.56857000078474; provenance prospective; gap none
-- GLD: Short open; entry 353.8699951171875; current stop 354.16925266810824; provenance prospective; gap none
-- SLV: Short open; entry 42.88199996948242; current stop 43.62452915736607; provenance prospective; gap none
-- PALL: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
-- PPLT: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- CPER: Short open; entry 36.400001525878906; current stop 35.30428613935198; provenance prospective; gap none
+- GLD: Short open; entry 353.8699951171875; current stop 349.04210117885043; provenance prospective; gap none
+- SLV: Short open; entry 42.88199996948242; current stop 43.02488463265555; provenance prospective; gap none
+- PALL: Short open; entry 16.940000534057617; current stop 17.65500041416713; provenance prospective; gap none
+- PPLT: Short open; entry 12.399999618530273; current stop 12.823470796857562; provenance prospective; gap none
 
 ## Common-window comparison
 
