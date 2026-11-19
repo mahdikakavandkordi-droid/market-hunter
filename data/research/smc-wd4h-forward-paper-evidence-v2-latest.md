@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper — Corrected Evidence v2
 
-Generated: 2026-11-18T04:37:34.096Z
+Generated: 2026-11-19T04:20:13.541Z
 
 Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
 The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
@@ -17,8 +17,8 @@ The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5f
 ## $1,000 paper account — realized vs marked
 
 Realized-only equity: $990.11; realized return: -1.0%.
-Marked equity: $984.61; marked return: -1.5%; mark quality: fresh.
-Unrealized P/L: $-5.50.
+Marked equity: $986.89; marked return: -1.3%; mark quality: fresh.
+Unrealized P/L: $-3.22.
 Realized-event max drawdown: -2.3%; observed marked max drawdown: -3.4%.
 Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; first complete marked-equity observation: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
 Missing/invalid marks: none; stale marks: none.
@@ -28,14 +28,15 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---|---:|
-| CSU.TO | Long | 3487.000 | 3316.930 | 2026-11-17T21:30:00.000Z | fresh | $-7.28 |
-| L.TO | Long | 70.490 | 71.060 | 2026-11-17T21:30:00.000Z | fresh | $2.00 |
-| LUN.TO | Short | 27.240 | 27.350 | 2026-11-17T21:30:00.000Z | fresh | $-0.23 |
+| CSU.TO | Long | 3487.000 | 3322.490 | 2026-11-18T21:30:00.000Z | fresh | $-7.04 |
+| L.TO | Long | 70.490 | 70.570 | 2026-11-18T21:30:00.000Z | fresh | $0.28 |
+| LUN.TO | Short | 27.240 | 24.630 | 2026-11-18T21:30:00.000Z | fresh | $5.34 |
+| POW.TO | Long | 94.910 | 94.220 | 2026-11-18T21:30:00.000Z | fresh | $-1.80 |
 
 ## Evidence integrity
 
 Legacy trades without first-observation provenance: 2.
-Prospective entries: 1; reconstructed entries: 12; pending signals: 1.
+Prospective entries: 2; reconstructed entries: 13; pending signals: 0.
 This run discrepancies: 13; prior records not re-observed: 0; candle/data diagnostics: 1.
 
 ### Performance by evidence provenance
