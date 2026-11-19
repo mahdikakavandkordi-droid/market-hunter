@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-18T21:31:15.690Z; mode: forward_shadow.
+Generated: 2026-11-19T02:44:26.275Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 9; pending 0; closed 65; lifecycle reviews 0.
-Realized equity $929.58; marked equity $974.77; mark quality fresh.
+Realized equity $929.58; marked equity $971.95; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,12 +15,12 @@ Realized equity $929.58; marked equity $974.77; mark quality fresh.
 
 ## Positions
 
-- ETH-USD: Short open; entry 2111.8701171875; current stop 1875.1521257672991; provenance prospective; gap none
+- ETH-USD: Short open; entry 2111.8701171875; current stop 1865.8907034737722; provenance prospective; gap none
 - ADA-USD: Short open; entry 0.17416000366210938; current stop 0.15779928330864226; provenance prospective; gap none
-- LTC-USD: Short open; entry 49.979000091552734; current stop 46.422498975481304; provenance prospective; gap none
-- SHIB-USD: Short open; entry 0.000004359999820735538; current stop 0.000003979999795384563; provenance prospective; gap none
-- BNB-USD: Short open; entry 639.0499877929688; current stop 603.8706970214844; provenance prospective; gap none
-- BTC-USD: Short open; entry 69267.609375; current stop 66007.2265625; provenance prospective; gap none
+- LTC-USD: Short open; entry 49.979000091552734; current stop 46.35978616986956; provenance prospective; gap none
+- SHIB-USD: Short open; entry 0.000004359999820735538; current stop 0.000003969285525532282; provenance prospective; gap none
+- BNB-USD: Short open; entry 639.0499877929688; current stop 602.77783203125; provenance prospective; gap none
+- BTC-USD: Short open; entry 69267.609375; current stop 65884.80245535714; provenance prospective; gap none
 - LINK-USD: Short open; entry 9.604999542236328; current stop 9.445500714438301; provenance prospective; gap none
 - DOT-USD: Short open; entry 0.745199978351593; current stop 0.752521425485611; provenance prospective; gap none
 - XLM-USD: Short open; entry 0.13639500737190247; current stop 0.1444814375468663; provenance prospective; gap none
