@@ -1,11 +1,11 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-11-17
+**As of:** 2026-11-17 to 2026-11-18 (TSX 2026-11-17 · SP500 2026-11-17 · NASDAQ100 2026-11-17 · GOLD 2026-11-17 · SILVER 2026-11-17 · BTC 2026-11-18 · ETH 2026-11-18)
 
 ## Executive read
 
-- Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
-- All tracked markets are aligned to 2026-11-17.
+- Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.
+- Completed-session dates differ by instrument: TSX 2026-11-17 · SP500 2026-11-17 · NASDAQ100 2026-11-17 · GOLD 2026-11-17 · SILVER 2026-11-17 · BTC 2026-11-18 · ETH 2026-11-18.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
@@ -20,7 +20,7 @@
 
 - **Equities: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
+- **Crypto: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 
 ## Key divergences
 
@@ -28,9 +28,9 @@
 
 ## What to watch next
 
-- **Bitcoin:** bullish continuation above 65328.18 · trend warning near 73439.42 · structure risk below 63686.04.
+- **Bitcoin:** bullish continuation above 65328.18 · trend warning near 72700.02 · structure risk below 62714.8.
 - **Nasdaq-100:** bullish continuation above 28593.52 · trend warning near 28347.28 · structure risk below 26606.43.
-- **Ethereum:** bullish continuation above 1934.58 · trend warning near 2110.8 · structure risk below 1712.38.
+- **Ethereum:** bullish continuation above 1934.58 · trend warning near 2087.06 · structure risk below 1712.38.
 - **S&P 500:** bullish continuation above 7480.57 · trend warning near 7580.95 · structure risk below 7313.92.
 - **Silver:** bullish continuation above 53.21 · trend warning near 51.71 · structure risk below 48.55.
 
@@ -80,19 +80,19 @@
 
 ### Bitcoin
 - **State:** Bear / Weakening
-- **Returns:** 1D +0.1% · 5D -9% · 20D -20.1% · 60D -19.8%
+- **Returns:** 1D -2.9% · 5D -7.7% · 20D -19% · 60D -22.5%
 - **Historical read:** 5 sessions: Mixed · 10: Cautious · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
-- **Watch next:** bullish continuation above 65328.18 · trend warning near 73439.42 · structure risk below 63686.04.
+- **Watch next:** bullish continuation above 65328.18 · trend warning near 72700.02 · structure risk below 62714.8.
 
 ### Ethereum
 - **State:** Bear / Recovery Attempt
-- **Returns:** 1D +0.2% · 5D -9.6% · 20D -22.7% · 60D -30.2%
+- **Returns:** 1D -2.6% · 5D -7.9% · 20D -21.1% · 60D -32.6%
 - **Historical read:** 5 sessions: Mixed · 10: Mixed · 20: Cautious
 - **Framing:** Two-sided / evidence mixed
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 1934.58 · trend warning near 2110.8 · structure risk below 1712.38.
+- **Watch next:** bullish continuation above 1934.58 · trend warning near 2087.06 · structure risk below 1712.38.
 
 
 ## Hunter context
