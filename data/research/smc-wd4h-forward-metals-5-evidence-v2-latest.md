@@ -1,20 +1,20 @@
 # SMC W-D-4H Forward — metals-5 — Corrected Evidence v2
 
-Mode: stock; generated 2026-11-18T07:19:58.988Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-11-19T07:17:29.782Z; start 2026-10-01; universe 5.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|
-| Closed | 4 | 4 |
+| Closed | 6 | 6 |
 | Win rate | 100.0% | 100.0% |
 | PF | n/a | n/a |
-| Avg R | 1.232 | 1.182 |
+| Avg R | 1.488 | 1.438 |
 
 ## Realized vs marked paper account
 
-Realized-only equity $1047.09; return 4.7%; realized-event max DD -0.0%.
-Marked equity $1074.59; return 7.5%; observed marked max DD -0.6%; quality fresh.
+Realized-only equity $1081.61; return 8.2%; realized-event max DD -0.0%.
+Marked equity $1081.61; return 8.2%; observed marked max DD -0.6%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:48.473Z; first complete marked-equity observation 2026-10-04T14:55:48.473Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,8 +23,7 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---|---|---:|
-| GLD | Short | 368.675 | 352.460 | 2026-11-17T21:30:00.000Z | fresh | $11.24 |
-| PPLT | Short | 13.760 | 12.870 | 2026-11-17T21:30:00.000Z | fresh | $16.26 |
+| None | | | | | | |
 
 ## Evidence integrity
 
@@ -36,7 +35,7 @@ This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 0.
 | Evidence class | Closed | Win rate | Avg R after 0.05R cost | PF after 0.05R cost |
 |---|---:|---:|---:|---:|
 | prospective | 0 | n/a | n/a | n/a |
-| reconstructed | 4 | 100.0% | 1.182 | n/a |
+| reconstructed | 6 | 100.0% | 1.438 | n/a |
 | legacy unprovenanced | 0 | n/a | n/a | n/a |
 
 ## Momentum shadow (observational only)
@@ -44,8 +43,8 @@ This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 0.
 | Bucket | Closed | Win rate | Avg R after cost | PF after cost |
 |---|---:|---:|---:|---:|
 | high | 1 | 100.0% | 1.950 | n/a |
-| medium | 3 | 100.0% | 0.927 | n/a |
-| low | 0 | n/a | n/a | n/a |
+| medium | 4 | 100.0% | 1.182 | n/a |
+| low | 1 | 100.0% | 1.950 | n/a |
 | unavailable | 0 | n/a | n/a | n/a |
 
 ## Fetch/data gaps

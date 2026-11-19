@@ -2,7 +2,7 @@
   "version": "smc-wd4h-forward-alternatives-ledger-v2",
   "cohort": "metals-5",
   "mode": "stock",
-  "updatedAt": "2026-11-18T07:19:58.988Z",
+  "updatedAt": "2026-11-19T07:17:29.782Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "GLD",
@@ -1304,6 +1304,32 @@
       "prospectiveCount": 0,
       "pendingCount": 0,
       "discrepancyCount": 0
+    },
+    {
+      "runKey": "smc-forward-alternatives|metals-5|44478405195|1",
+      "observedAt": "2026-11-19T07:17:29.782Z",
+      "tracker": "smc-forward-alternatives",
+      "cohort": "metals-5",
+      "github": {
+        "runId": "44478405195",
+        "runAttempt": "1",
+        "sha": "7c34fa26c7ca9503d9c0da75463e1baa12551029",
+        "workflow": "SMC Crypto and Metals Forward",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 2,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 0,
+      "reconstructedCount": 6,
+      "prospectiveCount": 0,
+      "pendingCount": 0,
+      "discrepancyCount": 0
     }
   ],
   "discrepancyLog": [],
@@ -1739,6 +1765,15 @@
       "totalUnrealizedPnl": 27.50592705083237,
       "missingSymbols": [],
       "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-alternatives|metals-5|44478405195|1",
+      "observedAt": "2026-11-19T07:17:29.782Z",
+      "quality": "fresh",
+      "markedEquity": 1081.6120715682102,
+      "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
     }
   ],
   "markedSeriesCoverageStartAt": "2026-10-04T14:55:48.473Z",
@@ -2067,9 +2102,9 @@
       "stop": 379.4637507847377,
       "target": 347.0974618094308,
       "risk": 10.788762991768976,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 2,
+      "exitT": "2026-11-18T18:30:00.000Z",
       "mode": "stock",
       "momentumShadow": {
         "available": true,
@@ -2149,7 +2184,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "gap_target",
+      "exitPriceAssumed": 347.0974618094308,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": true,
+        "gapFillAssumption": "strategy-level boundary price retained; true gap fill unknown",
+        "gapOpenPrecedence": true,
+        "exitBarStartT": "2026-11-18T14:30:00.000Z",
+        "exitBarEndT": "2026-11-18T18:30:00.000Z"
+      }
     },
     {
       "symbol": "SLV",
@@ -2266,9 +2314,9 @@
       "stop": 14.319512162889753,
       "target": 12.640976360866002,
       "risk": 0.5595119340079169,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 2,
+      "exitT": "2026-11-18T18:30:00.000Z",
       "mode": "stock",
       "momentumShadow": {
         "available": true,
@@ -2348,7 +2396,20 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "gap_target",
+      "exitPriceAssumed": 12.640976360866002,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": true,
+        "gapFillAssumption": "strategy-level boundary price retained; true gap fill unknown",
+        "gapOpenPrecedence": true,
+        "exitBarStartT": "2026-11-18T14:30:00.000Z",
+        "exitBarEndT": "2026-11-18T18:30:00.000Z"
+      }
     }
   ]
 }
