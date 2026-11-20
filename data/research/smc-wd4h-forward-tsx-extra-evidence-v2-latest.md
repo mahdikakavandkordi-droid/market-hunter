@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-11-19T04:33:03.946Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-11-20T04:20:47.076Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1016.85; return 1.7%; realized-event max DD -3.1%.
-Marked equity $1016.88; return 1.7%; observed marked max DD -3.2%; quality fresh.
+Marked equity $1013.24; return 1.3%; observed marked max DD -3.2%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,14 +23,15 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| GWO.TO | Long | 96.000 | 94.370 | fresh | $-2.11 |
-| FM.TO | Short | 30.100 | 28.390 | fresh | $3.18 |
-| BEP-UN.TO | Long | 43.930 | 43.730 | fresh | $-1.03 |
+| GWO.TO | Long | 96.000 | 93.090 | fresh | $-3.77 |
+| FM.TO | Short | 30.100 | 27.860 | fresh | $4.16 |
+| BEP-UN.TO | Long | 43.930 | 43.070 | fresh | $-4.42 |
+| AGI.TO | Short | 37.670 | 37.270 | fresh | $0.43 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 2; prospective 2; reconstructed 16; pending 0.
-This run discrepancies 4; prior not re-observed 0; candle/data diagnostics 4.
+Legacy provenance unknown 2; prospective 2; reconstructed 17; pending 1.
+This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 4.
 
 ### Performance by evidence provenance
 
