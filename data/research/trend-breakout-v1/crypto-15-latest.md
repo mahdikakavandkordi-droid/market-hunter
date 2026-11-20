@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-20T10:19:16.628Z; mode: forward_shadow.
+Generated: 2026-11-20T18:43:49.869Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 8; pending 1; closed 66; lifecycle reviews 0.
-Realized equity $966.14; marked equity $977.95; mark quality fresh.
+Open 9; pending 6; closed 66; lifecycle reviews 0.
+Realized equity $966.14; marked equity $995.53; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,15 +15,21 @@ Realized equity $966.14; marked equity $977.95; mark quality fresh.
 
 ## Positions
 
-- ADA-USD: Short open; entry 0.17416000366210938; current stop 0.1570214331150055; provenance prospective; gap none
-- LTC-USD: Short open; entry 49.979000091552734; current stop 44.37842723301479; provenance prospective; gap none
-- SHIB-USD: Short open; entry 0.000004359999820735538; current stop 0.000003947857148237485; provenance prospective; gap none
-- BNB-USD: Short open; entry 639.0499877929688; current stop 595.2235717773438; provenance prospective; gap none
-- BTC-USD: Short open; entry 69267.609375; current stop 64746.47516741072; provenance prospective; gap none
-- LINK-USD: Short open; entry 9.604999542236328; current stop 9.44014276776995; provenance prospective; gap none
-- DOT-USD: Short open; entry 0.745199978351593; current stop 0.7428857045514243; provenance prospective; gap none
-- XLM-USD: Short open; entry 0.13639500737190247; current stop 0.14111557177134923; provenance prospective; gap none
-- BCH-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- ADA-USD: Short open; entry 0.17416000366210938; current stop 0.15076285600662231; provenance prospective; gap none
+- LTC-USD: Short open; entry 49.979000091552734; current stop 42.76349939618792; provenance prospective; gap none
+- SHIB-USD: Short open; entry 0.000004359999820735538; current stop 0.0000037778572894759625; provenance prospective; gap none
+- BNB-USD: Short open; entry 639.0499877929688; current stop 574.5950273786273; provenance prospective; gap none
+- BTC-USD: Short open; entry 69267.609375; current stop 62752.46958705357; provenance prospective; gap none
+- LINK-USD: Short open; entry 9.604999542236328; current stop 8.9754285131182; provenance prospective; gap none
+- DOT-USD: Short open; entry 0.745199978351593; current stop 0.7095285654067993; provenance prospective; gap none
+- XLM-USD: Short open; entry 0.13639500737190247; current stop 0.1362347166453089; provenance prospective; gap none
+- AVAX-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- BCH-USD: Short open; entry 199.02999877929688; current stop 205.97999245779855; provenance prospective; gap none
+- DOGE-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- ETH-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- SOL-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- TRX-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
+- XRP-USD: Short pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
