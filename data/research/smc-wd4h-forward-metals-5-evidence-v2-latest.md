@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — metals-5 — Corrected Evidence v2
 
-Mode: stock; generated 2026-11-20T07:06:33.805Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-11-21T06:59:16.421Z; start 2026-10-01; universe 5.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -28,7 +28,7 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 ## Evidence integrity
 
 Legacy provenance unknown 0; prospective 0; reconstructed 6; pending 0.
-This run discrepancies 0; prior not re-observed 0; candle/data diagnostics 0.
+This run discrepancies 5; prior not re-observed 0; candle/data diagnostics 0.
 
 ### Performance by evidence provenance
 
