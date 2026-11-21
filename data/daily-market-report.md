@@ -1,18 +1,18 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-11-19
+**As of:** 2026-11-19 to 2026-11-20 (TSX 2026-11-20 · SP500 2026-11-20 · NASDAQ100 2026-11-20 · GOLD 2026-11-19 · SILVER 2026-11-19 · BTC 2026-11-19 · ETH 2026-11-19)
 
 ## Executive read
 
 - Current cross-market assessment is incomplete; some inputs require an update.
-- All tracked markets are aligned to 2026-11-19.
+- Completed-session dates differ by instrument: TSX 2026-11-20 · SP500 2026-11-20 · NASDAQ100 2026-11-20 · GOLD 2026-11-19 · SILVER 2026-11-19 · BTC 2026-11-19 · ETH 2026-11-19.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
 
 - **Caution:** Nasdaq-100: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
-- **Watch:** Bitcoin: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Caution:** S&P 500: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
+- **Watch:** Bitcoin: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Caution:** TSX Composite: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
 - **Watch:** Silver: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 
@@ -29,38 +29,38 @@
 ## What to watch next
 
 - **Gold:** bullish continuation above 4097.2 · trend warning near 3966.78 · structure risk below 3879.3.
-- **Nasdaq-100:** bullish continuation above 28593.52 · trend warning near 28089.89 · structure risk below 26606.43.
+- **Nasdaq-100:** bullish continuation above 28593.52 · trend warning near 27893.46 · structure risk below 26606.43.
+- **S&P 500:** bullish continuation above 7480.57 · trend warning near 7499.23 · structure risk below 7350.35.
 - **Bitcoin:** bullish continuation above 65328.18 · trend warning near 71935.2 · structure risk below 62017.88.
-- **S&P 500:** bullish continuation above 7480.57 · trend warning near 7534.9 · structure risk below 7350.35.
-- **TSX Composite:** bullish continuation above 35123.6 · trend warning near 35801.15 · structure risk below 33990.5.
+- **TSX Composite:** bullish continuation above 35123.6 · trend warning near 35671.23 · structure risk below 35397.4.
 
 ## Market detail
 
 ### TSX Composite
 - **State:** Bear / Weakening
-- **Returns:** 1D -1.6% · 5D -5.8% · 20D -5.4% · 60D -7.9%
+- **Returns:** 1D -2.5% · 5D -8.1% · 20D -7.3% · 60D -9.8%
 - **Historical read:** 5 sessions: Mixed · 10: Supportive · 20: Supportive
 - **Framing:** Broader setup constructive, exact setup caution
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 35123.6 · trend warning near 35801.15 · structure risk below 33990.5.
+- **Watch next:** bullish continuation above 35123.6 · trend warning near 35671.23 · structure risk below 35397.4.
 - **Specific setup caution:** Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through.
 
 ### S&P 500
 - **State:** Bear / Weakening
-- **Returns:** 1D -2% · 5D -5.5% · 20D -6.4% · 60D -6.5%
+- **Returns:** 1D -3.7% · 5D -8.6% · 20D -9.4% · 60D -10.6%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Mixed
 - **Framing:** Broader setup constructive, exact setup caution
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 7480.57 · trend warning near 7534.9 · structure risk below 7350.35.
+- **Watch next:** bullish continuation above 7480.57 · trend warning near 7499.23 · structure risk below 7350.35.
 - **Specific setup caution:** Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through.
 
 ### Nasdaq-100
 - **State:** Bear / Weakening
-- **Returns:** 1D -2.2% · 5D -6.3% · 20D -8.4% · 60D -9.3%
+- **Returns:** 1D -5.6% · 5D -10.4% · 20D -13.6% · 60D -15.6%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Mixed
 - **Framing:** Broader setup constructive, exact setup caution
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 28593.52 · trend warning near 28089.89 · structure risk below 26606.43.
+- **Watch next:** bullish continuation above 28593.52 · trend warning near 27893.46 · structure risk below 26606.43.
 - **Specific setup caution:** Broader analog is more robust, but the exact current setup has shown materially weaker recent follow-through.
 
 ### Gold
@@ -98,14 +98,14 @@
 
 ## Hunter context
 
-Final shortlist: 6 charts. 8 additional validated stage picks remain in the backend.
+Final shortlist: 6 charts. 7 additional validated stage picks remain in the backend.
 
-1. AEM.TO — Early Watch
-2. CCA.TO — Recovery
-3. DOO.TO — Attractive Growth
-4. BHC.TO — Established Move
-5. TPZ.TO — Early Watch
-6. RBA.TO — Attractive Growth
+1. TPZ.TO — Early Watch
+2. CU.TO — Attractive Growth
+3. BHC.TO — Established Move
+4. AEM.TO — Early Watch
+5. EMA.TO — Attractive Growth
+6. KXS.TO — Established Move
 
 ---
 Scenario framing is empirical and descriptive. It is not a price target or buy/sell signal.
