@@ -1,13 +1,13 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-21T16:54:29.963Z; mode: forward_shadow.
+Generated: 2026-11-21T22:17:10.987Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 12; pending 0; closed 69; lifecycle reviews 0.
-Realized equity $966.14; marked equity $973.11; mark quality fresh.
+Open 11; pending 0; closed 70; lifecycle reviews 0.
+Realized equity $966.14; marked equity $970.59; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
 |---|---:|---:|---:|
-| prospective | 69 | -0.11138438966842039 | 0.8347778122037909 |
+| prospective | 70 | -0.12479318410172865 | 0.816350544953636 |
 | reconstructed | 0 | n/a | n/a |
 | historical_simulated | 0 | n/a | n/a |
 | pending | 0 | n/a | n/a |
@@ -26,12 +26,11 @@ Realized equity $966.14; marked equity $973.11; mark quality fresh.
 - AVAX-USD: Short open; entry 6.480000019073486; current stop 6.78057142666408; provenance prospective; gap none
 - DOGE-USD: Short open; entry 0.0530799999833107; current stop 0.05565142844404493; provenance prospective; gap none
 - SOL-USD: Short open; entry 68.08000183105469; current stop 71.41143362862724; provenance prospective; gap none
-- XRP-USD: Short open; entry 0.8928999900817871; current stop 0.9362285648073468; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-21T06:59:11.981Z; stale false.
+SMC ledger as of 2026-11-21T06:59:11.981Z; stale true.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 25; challenger closed 69. No winner is claimed from a small sample.
+SMC closed 25; challenger closed 70. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
