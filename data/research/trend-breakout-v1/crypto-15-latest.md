@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-22T17:58:52.651Z; mode: forward_shadow.
+Generated: 2026-11-22T23:44:08.963Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 9; pending 0; closed 72; lifecycle reviews 0.
-Realized equity $955.99; marked equity $965.32; mark quality fresh.
+Realized equity $955.99; marked equity $965.34; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -16,7 +16,7 @@ Realized equity $955.99; marked equity $965.32; mark quality fresh.
 ## Positions
 
 - ADA-USD: Short open; entry 0.17416000366210938; current stop 0.14881785959005356; provenance prospective; gap none
-- LTC-USD: Short open; entry 49.979000091552734; current stop 42.057355063302175; provenance prospective; gap none
+- LTC-USD: Short open; entry 49.979000091552734; current stop 42.05264091491699; provenance prospective; gap none
 - SHIB-USD: Short open; entry 0.000004359999820735538; current stop 0.0000037285713493214904; provenance prospective; gap none
 - LINK-USD: Short open; entry 9.604999542236328; current stop 8.911500522068568; provenance prospective; gap none
 - DOT-USD: Short open; entry 0.745199978351593; current stop 0.6945785624640328; provenance prospective; gap none
@@ -27,7 +27,7 @@ Realized equity $955.99; marked equity $965.32; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-22T06:39:37.350Z; stale false.
+SMC ledger as of 2026-11-22T06:39:37.350Z; stale true.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 25; challenger closed 72. No winner is claimed from a small sample.
 
