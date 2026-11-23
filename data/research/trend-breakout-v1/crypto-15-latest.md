@@ -1,13 +1,13 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-22T23:44:08.963Z; mode: forward_shadow.
+Generated: 2026-11-23T08:00:14.551Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
-Open 9; pending 0; closed 72; lifecycle reviews 0.
-Realized equity $955.99; marked equity $965.34; mark quality fresh.
+Open 3; pending 0; closed 78; lifecycle reviews 0.
+Realized equity $960.68; marked equity $960.01; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
 |---|---:|---:|---:|
-| prospective | 72 | -0.07430307876733654 | 0.8899582448405639 |
+| prospective | 78 | 0.10217568287480369 | 1.15811792880734 |
 | reconstructed | 0 | n/a | n/a |
 | historical_simulated | 0 | n/a | n/a |
 | pending | 0 | n/a | n/a |
@@ -15,20 +15,14 @@ Realized equity $955.99; marked equity $965.34; mark quality fresh.
 
 ## Positions
 
-- ADA-USD: Short open; entry 0.17416000366210938; current stop 0.14881785959005356; provenance prospective; gap none
-- LTC-USD: Short open; entry 49.979000091552734; current stop 42.05264091491699; provenance prospective; gap none
-- SHIB-USD: Short open; entry 0.000004359999820735538; current stop 0.0000037285713493214904; provenance prospective; gap none
-- LINK-USD: Short open; entry 9.604999542236328; current stop 8.911500522068568; provenance prospective; gap none
-- DOT-USD: Short open; entry 0.745199978351593; current stop 0.6945785624640328; provenance prospective; gap none
-- XLM-USD: Short open; entry 0.13639500737190247; current stop 0.1324255077966622; provenance prospective; gap none
-- BCH-USD: Short open; entry 199.02999877929688; current stop 203.15569959368025; provenance prospective; gap none
-- AVAX-USD: Short open; entry 6.480000019073486; current stop 6.78057142666408; provenance prospective; gap none
-- SOL-USD: Short open; entry 68.08000183105469; current stop 71.41143362862724; provenance prospective; gap none
+- DOT-USD: Short open; entry 0.745199978351593; current stop 0.6844642971243178; provenance prospective; gap none
+- XLM-USD: Short open; entry 0.13639500737190247; current stop 0.13060406276157924; provenance prospective; gap none
+- BCH-USD: Short open; entry 199.02999877929688; current stop 201.33642251150948; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-22T06:39:37.350Z; stale true.
+SMC ledger as of 2026-11-23T07:28:05.693Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 25; challenger closed 72. No winner is claimed from a small sample.
+SMC closed 27; challenger closed 78. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
