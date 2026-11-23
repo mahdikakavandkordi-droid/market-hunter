@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-23T08:17:12.045Z",
+  "updatedAt": "2026-11-23T20:36:03.083Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -1108,7 +1108,7 @@
       "symbol": "CVX",
       "signalT": "2026-11-20T14:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-20T22:00:00.000Z",
         "dailyAsOf": "2026-11-20",
@@ -1123,11 +1123,11 @@
         "signalClose": 208.3699951171875,
         "initialStop": 202.7853638785226
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-11-23T14:30:00.000Z",
+      "entry": 206,
+      "stop": 202.7853638785226,
+      "target": 220.11700134277345,
+      "risk": 3.2146361214774117,
       "R": null,
       "exitT": null,
       "decisionId": "CVX|2026-11-20T14:30:00.000Z|1",
@@ -1140,7 +1140,11 @@
         "runKey": "mean-reversion-v1|44847190365|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 202.7853638785226,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-11-23T18:30:00.000Z",
+      "entryObservedAt": "2026-11-23T20:36:03.083Z"
     }
   ],
   "runLog": [
@@ -6468,6 +6472,21 @@
         }
       ],
       "diagnosticCount": 0
+    },
+    {
+      "runKey": "mean-reversion-v1|45260910512|1",
+      "observedAt": "2026-11-23T20:36:03.083Z",
+      "failures": [
+        {
+          "symbol": "HON",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "CMCSA",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 150
     }
   ],
   "markedEquitySeries": [
@@ -8907,6 +8926,15 @@
       "quality": "fresh",
       "markedEquity": 926.2509720971602,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|45260910512|1",
+      "observedAt": "2026-11-23T20:36:03.083Z",
+      "quality": "fresh",
+      "markedEquity": 927.6448510940644,
+      "totalUnrealizedPnl": 1.3938789969041643,
       "missingSymbols": [],
       "staleSymbols": []
     }
