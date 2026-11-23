@@ -1,7 +1,7 @@
 {
   "version": "trend-breakout-v1",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "updatedAt": "2026-11-23T08:00:14.551Z",
+  "updatedAt": "2026-11-23T20:27:59.002Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "trades": [
     {
@@ -384,7 +384,7 @@
       "symbol": "CPER",
       "signalT": "2026-11-13T14:30:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-13T18:30:00.000Z",
         "dailyAsOf": "2026-11-12",
@@ -400,8 +400,8 @@
       "stop": 37.291843959263396,
       "target": null,
       "risk": 0.8918424333844867,
-      "R": null,
-      "exitT": null,
+      "R": 1.872530304826408,
+      "exitT": "2026-11-23T18:30:00.000Z",
       "decisionId": "CPER|2026-11-13T14:30:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-11-13T22:46:20.919Z",
@@ -414,15 +414,24 @@
       "entryObservationClass": "prospective",
       "currentStop": 34.486070360456196,
       "bestClose": 32.90999984741211,
-      "holdingBars": 10,
+      "holdingBars": 11,
       "entryObservedAt": "2026-11-16T20:38:23.556Z",
-      "lastEvaluatedEndT": "2026-11-20T21:30:00.000Z"
+      "lastEvaluatedEndT": "2026-11-23T18:30:00.000Z",
+      "exitPriceAssumed": 34.72999954223633,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "stop_gap_open",
+      "executionAudit": {
+        "gapThroughStop": true,
+        "gapFillAssumption": "adverse observed open",
+        "exitBarStartT": "2026-11-23T14:30:00.000Z",
+        "exitBarEndT": "2026-11-23T18:30:00.000Z"
+      }
     },
     {
       "symbol": "GLD",
       "signalT": "2026-11-16T14:30:00.000Z",
       "dir": -1,
-      "status": "open",
+      "status": "closed",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-16T18:30:00.000Z",
         "dailyAsOf": "2026-11-13",
@@ -438,8 +447,8 @@
       "stop": 362.52615792410717,
       "target": null,
       "risk": 8.656162806919642,
-      "R": null,
-      "exitT": null,
+      "R": 1.8356845273470475,
+      "exitT": "2026-11-23T18:30:00.000Z",
       "decisionId": "GLD|2026-11-16T14:30:00.000Z|-1",
       "historicalDiagnostic": false,
       "decisionAvailableAt": "2026-11-16T20:38:23.556Z",
@@ -452,9 +461,18 @@
       "entryObservationClass": "prospective",
       "currentStop": 335.8631853376116,
       "bestClose": 321.8900146484375,
-      "holdingBars": 8,
+      "holdingBars": 9,
       "entryObservedAt": "2026-11-17T22:33:39.608Z",
-      "lastEvaluatedEndT": "2026-11-20T21:30:00.000Z"
+      "lastEvaluatedEndT": "2026-11-23T18:30:00.000Z",
+      "exitPriceAssumed": 337.9800109863281,
+      "exitTimeConvention": "bar_end",
+      "exitReason": "stop_gap_open",
+      "executionAudit": {
+        "gapThroughStop": true,
+        "gapFillAssumption": "adverse observed open",
+        "exitBarStartT": "2026-11-23T14:30:00.000Z",
+        "exitBarEndT": "2026-11-23T18:30:00.000Z"
+      }
     },
     {
       "symbol": "SLV",
@@ -490,9 +508,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 40.26510429382324,
       "bestClose": 36.970001220703125,
-      "holdingBars": 8,
+      "holdingBars": 9,
       "entryObservedAt": "2026-11-17T22:33:39.608Z",
-      "lastEvaluatedEndT": "2026-11-20T21:30:00.000Z"
+      "lastEvaluatedEndT": "2026-11-23T18:30:00.000Z"
     },
     {
       "symbol": "PALL",
@@ -526,11 +544,11 @@
         "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be"
       },
       "entryObservationClass": "prospective",
-      "currentStop": 17.175621032714844,
+      "currentStop": 17.079192297799246,
       "bestClose": 16.139999389648438,
-      "holdingBars": 4,
+      "holdingBars": 5,
       "entryObservedAt": "2026-11-19T20:54:04.732Z",
-      "lastEvaluatedEndT": "2026-11-20T21:30:00.000Z"
+      "lastEvaluatedEndT": "2026-11-23T18:30:00.000Z"
     },
     {
       "symbol": "PPLT",
@@ -566,9 +584,9 @@
       "entryObservationClass": "prospective",
       "currentStop": 12.44670752116612,
       "bestClose": 11.75,
-      "holdingBars": 4,
+      "holdingBars": 5,
       "entryObservedAt": "2026-11-19T20:54:04.732Z",
-      "lastEvaluatedEndT": "2026-11-20T21:30:00.000Z"
+      "lastEvaluatedEndT": "2026-11-23T18:30:00.000Z"
     }
   ],
   "runLog": [
@@ -2311,6 +2329,12 @@
       "observedAt": "2026-11-23T08:00:14.551Z",
       "failures": [],
       "diagnosticCount": 0
+    },
+    {
+      "runKey": "trend-breakout-v1|45259536512|1",
+      "observedAt": "2026-11-23T20:27:59.002Z",
+      "failures": [],
+      "diagnosticCount": 5
     }
   ],
   "markedEquitySeries": [
@@ -4862,6 +4886,15 @@
       "quality": "fresh",
       "markedEquity": 1142.6189601011376,
       "totalUnrealizedPnl": 93.7009645614587,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "trend-breakout-v1|45259536512|1",
+      "observedAt": "2026-11-23T20:27:59.002Z",
+      "quality": "fresh",
+      "markedEquity": 1103.643155871786,
+      "totalUnrealizedPnl": 31.56124981884573,
       "missingSymbols": [],
       "staleSymbols": []
     }
