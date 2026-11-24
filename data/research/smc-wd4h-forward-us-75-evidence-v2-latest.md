@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75 — Corrected Evidence v2
 
-Generated: 2026-11-21T04:18:19.075Z; forward start: 2026-10-01; universe: 75.
+Generated: 2026-11-24T07:07:25.822Z; forward start: 2026-10-01; universe: 75.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $987.96; return -1.2%; realized-event max DD -3.1%.
-Marked equity $990.50; return -0.9%; observed marked max DD -3.0%; quality fresh.
+Marked equity $986.84; return -1.3%; observed marked max DD -3.0%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:54.783Z; first complete marked-equity observation 2026-10-04T14:55:54.783Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,10 +23,10 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| AXP | Short | 315.700 | 301.660 | fresh | $10.49 |
-| TGT | Long | 170.655 | 165.930 | fresh | $-3.50 |
-| T | Short | 21.890 | 22.330 | fresh | $-4.88 |
-| AVGO | Short | 306.990 | 304.170 | fresh | $0.43 |
+| AXP | Short | 315.700 | 307.030 | fresh | $6.48 |
+| TGT | Long | 170.655 | 168.200 | fresh | $-1.82 |
+| T | Short | 21.890 | 22.320 | fresh | $-4.77 |
+| AVGO | Short | 306.990 | 313.540 | fresh | $-1.01 |
 
 ## Evidence integrity
 
@@ -53,5 +53,5 @@ This run discrepancies 37; prior not re-observed 1; candle/data diagnostics 2.
 ## Fetch/data gaps
 
 - No fetch failures this run.
-- Data diagnostic: {"symbol":"EOG","type":"incomplete_or_missing_exchange_bar","date":"2026-11-20","segment":1,"expected":[4,5,6],"present":[4,5]}
-- Data diagnostic: {"symbol":"TMO","type":"incomplete_or_missing_exchange_bar","date":"2026-11-20","segment":1,"expected":[4,5,6],"present":[4,5]}
+- Data diagnostic: {"symbol":"EOG","type":"incomplete_or_missing_exchange_bar","date":"2026-11-23","segment":1,"expected":[4,5,6],"present":[4,5]}
+- Data diagnostic: {"symbol":"TMO","type":"incomplete_or_missing_exchange_bar","date":"2026-11-23","segment":1,"expected":[4,5,6],"present":[4,5]}

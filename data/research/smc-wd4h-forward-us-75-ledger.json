@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "us-75",
-  "updatedAt": "2026-11-21T04:18:19.075Z",
+  "updatedAt": "2026-11-24T07:07:25.822Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "AAPL",
@@ -1814,6 +1814,63 @@
       "prospectiveCount": 6,
       "pendingCount": 0,
       "discrepancyCount": 37
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|45345467152|1",
+      "observedAt": "2026-11-24T07:07:25.822Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "us-75",
+      "github": {
+        "runId": "45345467152",
+        "runAttempt": "1",
+        "sha": "fa81ed20488b07f42e6cb3a740a199d907fae826",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "EOG",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-23",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        },
+        {
+          "symbol": "TMO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-11-23",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            5
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
+      "missingPreviouslyRecorded": 1,
+      "legacyUnprovenancedCount": 1,
+      "reconstructedCount": 36,
+      "prospectiveCount": 6,
+      "pendingCount": 0,
+      "discrepancyCount": 37
     }
   ],
   "discrepancyLog": [
@@ -2851,6 +2908,15 @@
       "quality": "fresh",
       "markedEquity": 990.5009836022735,
       "totalUnrealizedPnl": 2.5450548292405197,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|us-75|45345467152|1",
+      "observedAt": "2026-11-24T07:07:25.822Z",
+      "quality": "fresh",
+      "markedEquity": 986.8409847477557,
+      "totalUnrealizedPnl": -1.1149440252772387,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -7170,7 +7236,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     },
     {
       "symbol": "ORCL",
@@ -7261,7 +7328,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
