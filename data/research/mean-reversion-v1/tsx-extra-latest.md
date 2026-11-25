@@ -1,8 +1,8 @@
 # Mean Reversion V1 — tsx-extra
-Generated: 2026-11-25T10:32:00.059Z; mode: forward_shadow.
-Forward start: 2026-10-04T20:24:23.948534+00:00; universe 37; failed fetch/review symbols 5.
-Open 0; pending 1; closed 5; lifecycle reviews 0.
-Realized equity $989.37; marked equity $989.37; mark quality fresh.
+Generated: 2026-11-25T20:13:31.805Z; mode: forward_shadow.
+Forward start: 2026-10-04T20:24:23.948534+00:00; universe 37; failed fetch/review symbols 4.
+Open 1; pending 0; closed 5; lifecycle reviews 0.
+Realized equity $989.37; marked equity $995.65; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -15,12 +15,12 @@ Realized equity $989.37; marked equity $989.37; mark quality fresh.
 
 ## Positions
 
-- OTEX.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- OTEX.TO: Long open; entry 33.09000015258789; current stop 32.33214446476528; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-25T05:42:03.042Z; stale false. Trend ledger as of 2026-11-25T10:12:38.634Z; stale false.
+SMC ledger as of 2026-11-25T05:42:03.042Z; stale false. Trend ledger as of 2026-11-25T20:03:31.385Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
-SMC closed 17; Trend closed 47; challenger closed 5. No winner is claimed from a small sample.
+SMC closed 17; Trend closed 49; challenger closed 5. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical fractional shares, fixed-R costs excluding FX/dividends and variable spreads, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.

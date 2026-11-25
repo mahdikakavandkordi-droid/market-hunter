@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-25T10:32:00.059Z",
+  "updatedAt": "2026-11-25T20:13:31.805Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -273,7 +273,7 @@
       "symbol": "OTEX.TO",
       "signalT": "2026-11-24T14:30:00.000Z",
       "dir": 1,
-      "status": "pending_entry",
+      "status": "open",
       "signalSnapshot": {
         "signalCompletedAt": "2026-11-24T22:00:00.000Z",
         "dailyAsOf": "2026-11-24",
@@ -288,11 +288,11 @@
         "signalClose": 33.4900016784668,
         "initialStop": 32.33214446476528
       },
-      "entryT": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "risk": null,
+      "entryT": "2026-11-25T14:30:00.000Z",
+      "entry": 33.09000015258789,
+      "stop": 32.33214446476528,
+      "target": 35.491500282287596,
+      "risk": 0.7578556878226124,
       "R": null,
       "exitT": null,
       "decisionId": "OTEX.TO|2026-11-24T14:30:00.000Z|1",
@@ -305,7 +305,11 @@
         "runKey": "mean-reversion-v1|45595739241|1",
         "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
       },
-      "entryObservationClass": "pending"
+      "entryObservationClass": "prospective",
+      "currentStop": 32.33214446476528,
+      "holdingBars": 1,
+      "lastEvaluatedEndT": "2026-11-25T18:30:00.000Z",
+      "entryObservedAt": "2026-11-25T20:13:31.805Z"
     }
   ],
   "runLog": [
@@ -6341,6 +6345,29 @@
         }
       ],
       "diagnosticCount": 0
+    },
+    {
+      "runKey": "mean-reversion-v1|45692727137|1",
+      "observedAt": "2026-11-25T20:13:31.805Z",
+      "failures": [
+        {
+          "symbol": "BIP-UN.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "FM.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "WSP.TO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "GSY.TO",
+          "error": "invalid_source_quotes_require_review"
+        }
+      ],
+      "diagnosticCount": 64
     }
   ],
   "markedEquitySeries": [
@@ -8820,6 +8847,15 @@
       "quality": "fresh",
       "markedEquity": 989.3671421534516,
       "totalUnrealizedPnl": 0,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|45692727137|1",
+      "observedAt": "2026-11-25T20:13:31.805Z",
+      "quality": "fresh",
+      "markedEquity": 995.6459918553406,
+      "totalUnrealizedPnl": 6.278849701889082,
       "missingSymbols": [],
       "staleSymbols": []
     }
