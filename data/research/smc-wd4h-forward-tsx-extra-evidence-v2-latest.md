@@ -1,20 +1,20 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-11-24T07:07:14.265Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-11-25T05:42:03.042Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
 | Metric | Raw | +0.05R cost |
 |---|---:|---:|
-| Closed trades | 18 | 18 |
-| Win rate | 44.4% | 44.4% |
-| PF | 1.365 | 1.196 |
-| Avg R | 0.120 | 0.070 |
+| Closed trades | 19 | 19 |
+| Win rate | 47.4% | 47.4% |
+| PF | 1.704 | 1.501 |
+| Avg R | 0.219 | 0.169 |
 
 ## Realized vs marked paper account
 
 Realized-only equity $1003.23; return 0.3%; realized-event max DD -3.1%.
-Marked equity $1008.66; return 0.9%; observed marked max DD -3.2%; quality fresh.
+Marked equity $1019.96; return 2.0%; observed marked max DD -3.2%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,20 +23,21 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| FM.TO | Short | 30.100 | 27.250 | fresh | $5.29 |
-| AGI.TO | Short | 37.670 | 37.760 | fresh | $-0.10 |
-| GIB-A.TO | Long | 116.290 | 116.400 | fresh | $0.24 |
+| FM.TO | Short | 30.100 | 24.405 | fresh | $10.58 |
+| AGI.TO | Short | 37.670 | 36.290 | fresh | $1.47 |
+| GIB-A.TO | Long | 116.290 | 117.580 | fresh | $2.78 |
+| DOL.TO | Long | 222.890 | 224.580 | fresh | $1.90 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 2; prospective 3; reconstructed 18; pending 1.
+Legacy provenance unknown 2; prospective 4; reconstructed 18; pending 0.
 This run discrepancies 4; prior not re-observed 0; candle/data diagnostics 4.
 
 ### Performance by evidence provenance
 
 | Evidence class | Closed | Win rate | Avg R after 0.05R cost | PF after 0.05R cost |
 |---|---:|---:|---:|---:|
-| prospective | 2 | 50.0% | 0.911 | 15.193 |
+| prospective | 3 | 66.7% | 1.257 | 30.386 |
 | reconstructed | 14 | 42.9% | -0.147 | 0.646 |
 | legacy unprovenanced | 2 | 50.0% | 0.748 | 4.290 |
 
@@ -44,7 +45,7 @@ This run discrepancies 4; prior not re-observed 0; candle/data diagnostics 4.
 
 | Bucket | Closed | Win rate | Avg R after cost | PF after cost |
 |---|---:|---:|---:|---:|
-| high | 7 | 42.9% | 0.156 | 1.643 |
+| high | 8 | 50.0% | 0.380 | 2.791 |
 | medium | 7 | 42.9% | 0.017 | 1.046 |
 | low | 4 | 50.0% | 0.011 | 1.021 |
 | unavailable | 0 | n/a | n/a | n/a |
