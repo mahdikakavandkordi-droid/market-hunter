@@ -1,26 +1,26 @@
 # Market Hunter — Daily Market Report
 
-**As of:** 2026-11-23 to 2026-11-24 (TSX 2026-11-24 · SP500 2026-11-24 · NASDAQ100 2026-11-24 · GOLD 2026-11-24 · SILVER 2026-11-24 · BTC 2026-11-23 · ETH 2026-11-23)
+**As of:** 2026-11-24
 
 ## Executive read
 
-- Current cross-market assessment is incomplete; some inputs require an update. Precious metals are currently in a weakening short-term phase.
-- Completed-session dates differ by instrument: TSX 2026-11-24 · SP500 2026-11-24 · NASDAQ100 2026-11-24 · GOLD 2026-11-24 · SILVER 2026-11-24 · BTC 2026-11-23 · ETH 2026-11-23.
+- Mixed cross-market environment. Precious metals are currently in a weakening short-term phase.
+- All tracked markets are aligned to 2026-11-24.
 - The report separates primary trend from short-term condition and uses historically validated analogs for 5, 10 and 20 market sessions. It does not produce price targets.
 
 ## Key developments
 
+- **Watch:** Ethereum: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Watch:** Bitcoin: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 - **Caution:** Nasdaq-100: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
 - **Caution:** S&P 500: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
 - **Caution:** TSX Composite: broader analog is usable, but the exact current setup has materially weaker recent follow-through.
-- **Watch:** Gold: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
 
 ## Group read
 
 - **Equities: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Metals: Weakening** — Most tracked markets in this group show weakening short-term conditions.
-- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
+- **Crypto: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 
 ## Key divergences
 
@@ -28,11 +28,11 @@
 
 ## What to watch next
 
-- **Bitcoin:** bullish continuation above 65328.18 · trend warning near 68513.23 · structure risk below 55149.57.
+- **Ethereum:** bullish continuation above 1934.58 · trend warning near 1909.74 · structure risk below 1538.6.
+- **Bitcoin:** bullish continuation above 65328.18 · trend warning near 67480.35 · structure risk below 55149.57.
 - **Nasdaq-100:** bullish continuation above 27749.35 · trend warning near 27595.23 · structure risk below 24910.48.
 - **S&P 500:** bullish continuation above 7415.64 · trend warning near 7451.18 · structure risk below 6882.66.
 - **TSX Composite:** bullish continuation above 35123.6 · trend warning near 35467.67 · structure risk below 33170.9.
-- **Ethereum:** bullish continuation above 1934.58 · trend warning near 1946.97 · structure risk below 1538.6.
 
 ## Market detail
 
@@ -81,19 +81,19 @@
 
 ### Bitcoin
 - **State:** Bear / Weakening
-- **Returns:** 1D +0.1% · 5D -2.8% · 20D -20.9% · 60D -27.5%
+- **Returns:** 1D -2.4% · 5D -3.5% · 20D -25.7% · 60D -28.9%
 - **Historical read:** 5 sessions: Mixed · 10: Cautious · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
-- **Watch next:** bullish continuation above 65328.18 · trend warning near 68513.23 · structure risk below 55149.57.
+- **Watch next:** bullish continuation above 65328.18 · trend warning near 67480.35 · structure risk below 55149.57.
 
 ### Ethereum
-- **State:** Bear / Recovery Attempt
-- **Returns:** 1D -0.7% · 5D -3.7% · 20D -24.8% · 60D -36.4%
-- **Historical read:** 5 sessions: Mixed · 10: Mixed · 20: Cautious
-- **Framing:** Two-sided / evidence mixed
-- **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 1934.58 · trend warning near 1946.97 · structure risk below 1538.6.
+- **State:** Bear / Weakening
+- **Returns:** 1D -1.8% · 5D -4.4% · 20D -30.7% · 60D -37.6%
+- **Historical read:** 5 sessions: Cautious · 10: Cautious · 20: Mixed
+- **Framing:** Historical analogs cautious
+- **Outlook:** Short-term structure is soft and recent analogs have underperformed baseline. Risk remains elevated until the market reclaims nearby trend levels.
+- **Watch next:** bullish continuation above 1934.58 · trend warning near 1909.74 · structure risk below 1538.6.
 
 
 ## Hunter context
