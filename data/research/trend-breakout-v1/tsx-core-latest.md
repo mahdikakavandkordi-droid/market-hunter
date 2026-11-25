@@ -1,13 +1,13 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-11-25T10:12:38.634Z; mode: forward_shadow.
+Generated: 2026-11-25T20:03:31.385Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
-Open 15; pending 1; closed 51; lifecycle reviews 0.
-Realized equity $973.05; marked equity $1005.92; mark quality fresh.
+Open 14; pending 0; closed 53; lifecycle reviews 0.
+Realized equity $973.05; marked equity $1001.40; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
 |---|---:|---:|---:|
-| prospective | 51 | -0.19316460532855095 | 0.6529039501422266 |
+| prospective | 53 | -0.2254980164482283 | 0.6079238497427873 |
 | reconstructed | 0 | n/a | n/a |
 | historical_simulated | 0 | n/a | n/a |
 | pending | 0 | n/a | n/a |
@@ -24,18 +24,16 @@ Realized equity $973.05; marked equity $1005.92; mark quality fresh.
 - NA.TO: Short open; entry 201.50999450683594; current stop 206.1046415056501; provenance prospective; gap none
 - CM.TO: Short open; entry 151.49000549316406; current stop 155.96715218680245; provenance prospective; gap none
 - CNQ.TO: Short open; entry 63.7400016784668; current stop 66.00071443830218; provenance prospective; gap none
-- ENB.TO: Short open; entry 65.5; current stop 66.78856985909599; provenance prospective; gap none
 - FNV.TO: Short open; entry 334.6300048828125; current stop 351.66214861188615; provenance prospective; gap none
 - L.TO: Long open; entry 70.30999755859375; current stop 69.99107251848493; provenance prospective; gap none
 - NTR.TO: Short open; entry 92.4800033569336; current stop 95.99357495989118; provenance prospective; gap none
 - SLF.TO: Short open; entry 101.31999969482422; current stop 103.53143092564174; provenance prospective; gap none
-- ATD.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
-- TOU.TO: Short open; entry 61.31999969482422; current stop 63.15499986921038; provenance prospective; gap none
+- ATD.TO: Long open; entry 86.08000183105469; current stop 83.02857426234654; provenance prospective; gap none
 
 ## Common-window comparison
 
 SMC ledger as of 2026-11-25T05:33:52.019Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 12; challenger closed 51. No winner is claimed from a small sample.
+SMC closed 12; challenger closed 53. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
