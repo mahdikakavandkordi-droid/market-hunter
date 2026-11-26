@@ -2,7 +2,7 @@
   "version": "smc-wd4h-forward-alternatives-evidence-v2",
   "cohort": "metals-5",
   "mode": "stock",
-  "generatedAt": "2026-11-25T08:23:13.318Z",
+  "generatedAt": "2026-11-26T08:08:38.492Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -34,16 +34,16 @@
     "run": {
       "tracker": "smc-forward-alternatives",
       "cohort": "metals-5",
-      "observedAt": "2026-11-25T08:23:13.318Z",
+      "observedAt": "2026-11-26T08:08:38.492Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "45575734925",
+        "runId": "45780604994",
         "runAttempt": "1",
-        "sha": "19c141eaf67994b27f50b6530315522c8dac9c17",
+        "sha": "f8ff24525ed483ef2863b54b77b54c7b378d4828",
         "workflow": "SMC Crypto and Metals Forward",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-alternatives|metals-5|45575734925|1"
+      "runKey": "smc-forward-alternatives|metals-5|45780604994|1"
     },
     "reconciliation": {
       "newRecords": 0,
@@ -54,7 +54,53 @@
       "prospectiveCount": 0,
       "pendingCount": 0
     },
-    "discrepancies": [],
+    "discrepancies": [
+      {
+        "type": "source_revision_conflict",
+        "identity": "CPER|2026-11-05T14:30:00.000Z|-1",
+        "field": "stop",
+        "recorded": 40.406092807224816,
+        "recomputed": 40.40587853022984
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "CPER|2026-11-05T14:30:00.000Z|-1",
+        "field": "target",
+        "recorded": 32.197808892386306,
+        "recomputed": 32.198237446376254
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "CPER|2026-11-05T14:30:00.000Z|-1",
+        "field": "risk",
+        "recorded": 2.7360946382795035,
+        "recomputed": 2.7358803612845293
+      },
+      {
+        "type": "source_revision_conflict",
+        "identity": "CPER|2026-11-05T14:30:00.000Z|-1",
+        "field": "signalSnapshot",
+        "recorded": {
+          "opposingSwing": 40.36000061035156,
+          "atr14": 0.46092196873256136,
+          "signalCompletedAt": "2026-11-05T18:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        },
+        "recomputed": {
+          "opposingSwing": 40.36000061035156,
+          "atr14": 0.4587791987827846,
+          "signalCompletedAt": "2026-11-05T18:30:00.000Z",
+          "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+        }
+      },
+      {
+        "type": "closed_outcome_revision",
+        "identity": "CPER|2026-11-05T14:30:00.000Z|-1",
+        "field": "R",
+        "recorded": 0.5792924931388072,
+        "recomputed": 0.5793378639292838
+      }
+    ],
     "legacyProvenanceUnknown": 0
   },
   "summary": {
@@ -1070,8 +1116,8 @@
     "markedCurrentEquity": 1081.6120715682102,
     "markedReturnPct": 0.08161207156821026,
     "markedObservation": {
-      "runKey": "smc-forward-alternatives|metals-5|45575734925|1",
-      "observedAt": "2026-11-25T08:23:13.318Z",
+      "runKey": "smc-forward-alternatives|metals-5|45780604994|1",
+      "observedAt": "2026-11-26T08:08:38.492Z",
       "quality": "fresh",
       "markedEquity": 1081.6120715682102,
       "totalUnrealizedPnl": 0,
@@ -1570,6 +1616,15 @@
       {
         "runKey": "smc-forward-alternatives|metals-5|45575734925|1",
         "observedAt": "2026-11-25T08:23:13.318Z",
+        "quality": "fresh",
+        "markedEquity": 1081.6120715682102,
+        "totalUnrealizedPnl": 0,
+        "missingSymbols": [],
+        "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-alternatives|metals-5|45780604994|1",
+        "observedAt": "2026-11-26T08:08:38.492Z",
         "quality": "fresh",
         "markedEquity": 1081.6120715682102,
         "totalUnrealizedPnl": 0,
