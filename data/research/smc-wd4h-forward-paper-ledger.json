@@ -1,6 +1,6 @@
 {
   "version": "smc-wd4h-forward-ledger-v2",
-  "updatedAt": "2026-11-25T05:33:52.019Z",
+  "updatedAt": "2026-11-26T05:15:45.711Z",
   "forwardStart": "2026-10-01",
   "runLog": [
     {
@@ -1867,6 +1867,48 @@
       "prospectiveCount": 2,
       "pendingCount": 0,
       "discrepancyCount": 13
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|45760358428|1",
+      "observedAt": "2026-11-26T05:15:45.711Z",
+      "tracker": "smc-forward-paper",
+      "cohort": "tsx-core",
+      "github": {
+        "runId": "45760358428",
+        "runAttempt": "1",
+        "sha": "f8ff24525ed483ef2863b54b77b54c7b378d4828",
+        "workflow": "SMC Forward Paper Track",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "CSU.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-21",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 1,
+      "lifecycleUpdates": 1,
+      "missingPreviouslyRecorded": 1,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 14,
+      "prospectiveCount": 2,
+      "pendingCount": 0,
+      "discrepancyCount": 15
     }
   ],
   "discrepancyLog": [
@@ -2228,6 +2270,52 @@
       "recomputed": -0.1982603439336022,
       "firstDetectedAt": "2026-11-17T05:09:46.338Z",
       "runKey": "smc-forward-paper|tsx-core|44022066680|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "POW.TO|2026-11-17T18:30:00.000Z|1",
+      "field": "stop",
+      "recorded": 91.90139579772949,
+      "recomputed": 91.90132435389927,
+      "firstDetectedAt": "2026-11-26T05:15:45.711Z",
+      "runKey": "smc-forward-paper|tsx-core|45760358428|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "POW.TO|2026-11-17T18:30:00.000Z|1",
+      "field": "target",
+      "recorded": 100.92721939086914,
+      "recomputed": 100.92736227852959,
+      "firstDetectedAt": "2026-11-26T05:15:45.711Z",
+      "runKey": "smc-forward-paper|tsx-core|45760358428|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "POW.TO|2026-11-17T18:30:00.000Z|1",
+      "field": "risk",
+      "recorded": 3.008607864379883,
+      "recomputed": 3.0086793082101053,
+      "firstDetectedAt": "2026-11-26T05:15:45.711Z",
+      "runKey": "smc-forward-paper|tsx-core|45760358428|1"
+    },
+    {
+      "type": "source_revision_conflict",
+      "identity": "POW.TO|2026-11-17T18:30:00.000Z|1",
+      "field": "signalSnapshot",
+      "recorded": {
+        "opposingSwing": 92.05000305175781,
+        "atr14": 1.4860725402832031,
+        "signalCompletedAt": "2026-11-17T21:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "recomputed": {
+        "opposingSwing": 92.05000305175781,
+        "atr14": 1.4867869785853796,
+        "signalCompletedAt": "2026-11-17T21:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "firstDetectedAt": "2026-11-26T05:15:45.711Z",
+      "runKey": "smc-forward-paper|tsx-core|45760358428|1"
     }
   ],
   "markedEquitySeries": [
@@ -2591,6 +2679,15 @@
       "quality": "fresh",
       "markedEquity": 987.7614348842541,
       "totalUnrealizedPnl": 16.282621167535904,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-paper|tsx-core|45760358428|1",
+      "observedAt": "2026-11-26T05:15:45.711Z",
+      "quality": "fresh",
+      "markedEquity": 983.8212743174805,
+      "totalUnrealizedPnl": 6.909427133463811,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -3918,9 +4015,9 @@
       "symbol": "L.TO",
       "signalT": "2026-11-13T18:30:00.000Z",
       "dir": 1,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 0.8409142047133764,
+      "exitT": "2026-11-25T21:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 67.4,
@@ -4004,7 +4101,19 @@
       "stop": 68.53378846304757,
       "target": 74.40241666521345,
       "risk": 1.95620940072196,
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 72.13500213623047,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-11-25T18:30:00.000Z",
+        "exitBarEndT": "2026-11-25T21:30:00.000Z"
+      }
     },
     {
       "symbol": "LUN.TO",
@@ -4294,6 +4403,97 @@
       },
       "entryObservationClass": "reconstructed",
       "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
+      "symbol": "WCN.TO",
+      "signalT": "2026-11-25T14:30:00.000Z",
+      "entryT": "2026-11-25T18:30:00.000Z",
+      "dir": 1,
+      "entry": 266.6099853515625,
+      "stop": 253.29196788242885,
+      "target": 293.2460202898298,
+      "risk": 13.31801746913365,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 60.5,
+        "bucket": "medium",
+        "asOfDate": "2026-11-24",
+        "direction": "long",
+        "ret20": 0.02520705630128095,
+        "ret60": 0.13616868320727593,
+        "rsi14": 44.509831976547204,
+        "ma20": 264.8729988098145,
+        "ma50": 242.47999969482422,
+        "ma20Slope5": 0.005143865219839006,
+        "volumeRatio20": 0.6489964187557258,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": -0.06107568717775047,
+        "benchmarkRet60": -0.07089798262368985,
+        "rs20": 0.08628274347903142,
+        "rs60": 0.20706666583096578,
+        "components": {
+          "return20": {
+            "score": 62.6,
+            "weight": 20
+          },
+          "return60": {
+            "score": 84,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 36.3,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 0,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 62.9,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 100,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 100,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 253.8000030517578,
+        "atr14": 5.080351693289621,
+        "signalCompletedAt": "2026-11-25T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "WCN.TO|2026-11-25T14:30:00.000Z|1",
+      "firstObservedAt": "2026-11-26T05:15:45.711Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-paper",
+        "cohort": "tsx-core",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "45760358428",
+          "runAttempt": "1",
+          "sha": "f8ff24525ed483ef2863b54b77b54c7b378d4828",
+          "workflow": "SMC Forward Paper Track",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed"
     }
   ]
 }
