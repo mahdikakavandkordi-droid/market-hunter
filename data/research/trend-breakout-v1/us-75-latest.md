@@ -1,5 +1,5 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-11-26T02:59:21.928Z; mode: forward_shadow.
+Generated: 2026-11-26T13:00:15.709Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
 Open 25; pending 8; closed 110; lifecycle reviews 0.
 Realized equity $1032.98; marked equity $1033.92; mark quality fresh.
@@ -51,7 +51,7 @@ Realized equity $1032.98; marked equity $1033.92; mark quality fresh.
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-25T05:42:14.747Z; stale false.
+SMC ledger as of 2026-11-26T05:29:33.782Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 38; challenger closed 110. No winner is claimed from a small sample.
 
