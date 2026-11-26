@@ -1,7 +1,7 @@
 # Mean Reversion V1 — tsx-core
-Generated: 2026-11-26T13:12:50.364Z; mode: forward_shadow.
+Generated: 2026-11-26T22:37:31.895Z; mode: forward_shadow.
 Forward start: 2026-10-04T20:24:23.948534+00:00; universe 33; failed fetch/review symbols 1.
-Open 0; pending 0; closed 10; lifecycle reviews 0.
+Open 0; pending 3; closed 10; lifecycle reviews 0.
 Realized equity $978.99; marked equity $978.99; mark quality fresh.
 ## Evidence provenance
 
@@ -15,11 +15,14 @@ Realized equity $978.99; marked equity $978.99; mark quality fresh.
 
 ## Positions
 
+- BNS.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- SU.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
+- TD.TO: Long pending_entry; entry pending; current stop pending; provenance pending; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-26T05:15:45.711Z; stale false. Trend ledger as of 2026-11-26T13:00:15.709Z; stale false.
+SMC ledger as of 2026-11-26T05:15:45.711Z; stale false. Trend ledger as of 2026-11-26T22:30:18.053Z; stale false.
 New entries in the common forward window only; existing SMC and Trend positions before launch are excluded. Baseline source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules and holding horizons. Comparisons include newly entered positions only, even if the baseline signal predates launch; they are parallel observational evidence, not matched-price replay.
-SMC closed 13; Trend closed 54; challenger closed 10. No winner is claimed from a small sample.
+SMC closed 13; Trend closed 58; challenger closed 10. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical fractional shares, fixed-R costs excluding FX/dividends and variable spreads, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
