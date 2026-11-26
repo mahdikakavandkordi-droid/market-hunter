@@ -26,11 +26,11 @@
 
 ## What to watch next
 
-- **Gold:** bullish continuation above 4097.2 · trend warning near 3849.65 · structure risk below 3502.9.
+- **Gold:** bullish continuation above 4097.2 · trend warning near 3850.04 · structure risk below 3502.9.
 - **Nasdaq-100:** bullish continuation above 27749.35 · trend warning near 27406.92 · structure risk below 24910.48.
 - **Ethereum:** bullish continuation above 1842.19 · trend warning near 1882.56 · structure risk below 1538.6.
 - **S&P 500:** bullish continuation above 7415.64 · trend warning near 7423.12 · structure risk below 6882.66.
-- **Silver:** bullish continuation above 53.21 · trend warning near 47.51 · structure risk below 48.55.
+- **Silver:** bullish continuation above 53.21 · trend warning near 47.52 · structure risk below 48.55.
 
 ## Market detail
 
@@ -62,19 +62,19 @@
 
 ### Gold
 - **State:** Strong Bear / Recovery Attempt
-- **Returns:** 1D +1.7% · 5D -2.4% · 20D -10.8% · 60D -18.5%
+- **Returns:** 1D +1.9% · 5D -2.2% · 20D -10.6% · 60D -18.4%
 - **Historical read:** 5 sessions: Cautious · 10: Cautious · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 4097.2 · trend warning near 3849.65 · structure risk below 3502.9.
+- **Watch next:** bullish continuation above 4097.2 · trend warning near 3850.04 · structure risk below 3502.9.
 
 ### Silver
 - **State:** Strong Bear / Weakening
-- **Returns:** 1D +4.1% · 5D -5.9% · 20D -20.1% · 60D -35.6%
+- **Returns:** 1D +4.7% · 5D -5.4% · 20D -19.7% · 60D -35.2%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Supportive
 - **Framing:** Historical analogs supportive
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 53.21 · trend warning near 47.51 · structure risk below 48.55.
+- **Watch next:** bullish continuation above 53.21 · trend warning near 47.52 · structure risk below 48.55.
 
 ### Bitcoin
 - **State:** Bear / Recovery Attempt
