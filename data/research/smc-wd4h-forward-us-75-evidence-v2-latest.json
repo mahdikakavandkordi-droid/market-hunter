@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-evidence-v2",
   "cohort": "us-75",
-  "generatedAt": "2026-11-25T05:42:14.747Z",
+  "generatedAt": "2026-11-26T05:29:33.782Z",
   "forwardStart": "2026-10-01",
   "evidenceVersionNote": "Corrected evidence v2. Pre-audit v1 snapshot is preserved in git history at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.",
   "frozenRules": {
@@ -29,9 +29,24 @@
   "failures": [],
   "dataQuality": [
     {
+      "symbol": "EOG",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-11-25",
+      "segment": 1,
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "present": [
+        4,
+        5
+      ]
+    },
+    {
       "symbol": "TMO",
       "type": "incomplete_or_missing_exchange_bar",
-      "date": "2026-11-24",
+      "date": "2026-11-25",
       "segment": 1,
       "expected": [
         4,
@@ -48,20 +63,20 @@
     "run": {
       "tracker": "smc-forward-expanded",
       "cohort": "us-75",
-      "observedAt": "2026-11-25T05:42:14.747Z",
+      "observedAt": "2026-11-26T05:29:33.782Z",
       "marketDataSource": "Yahoo Finance chart API",
       "github": {
-        "runId": "45555328478",
+        "runId": "45761876110",
         "runAttempt": "1",
-        "sha": "19c141eaf67994b27f50b6530315522c8dac9c17",
+        "sha": "f8ff24525ed483ef2863b54b77b54c7b378d4828",
         "workflow": "SMC Expanded Forward Cohorts",
         "ref": "refs/heads/main"
       },
-      "runKey": "smc-forward-expanded|us-75|45555328478|1"
+      "runKey": "smc-forward-expanded|us-75|45761876110|1"
     },
     "reconciliation": {
-      "newRecords": 1,
-      "lifecycleUpdates": 1,
+      "newRecords": 0,
+      "lifecycleUpdates": 0,
       "missingPreviouslyRecorded": 1,
       "legacyUnprovenancedCount": 1,
       "reconstructedCount": 37,
@@ -3002,6 +3017,7 @@
           }
         },
         "entryObservationClass": "reconstructed",
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 978.2990222778919,
         "notional": 108.44033908885216,
         "allocationPct": 0.11084580135463838,
@@ -3407,6 +3423,7 @@
           }
         },
         "entryObservationClass": "reconstructed",
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 978.2990222778919,
         "notional": 108.44033908885216,
         "allocationPct": 0.11084580135463838,
@@ -6077,14 +6094,14 @@
         "equity": 978.2990222778919
       }
     ],
-    "markedCurrentEquity": 988.1698767446414,
-    "markedReturnPct": -0.011830123255358593,
+    "markedCurrentEquity": 984.7490975206663,
+    "markedReturnPct": -0.015250902479333694,
     "markedObservation": {
-      "runKey": "smc-forward-expanded|us-75|45555328478|1",
-      "observedAt": "2026-11-25T05:42:14.747Z",
+      "runKey": "smc-forward-expanded|us-75|45761876110|1",
+      "observedAt": "2026-11-26T05:29:33.782Z",
       "quality": "fresh",
-      "markedEquity": 988.1698767446414,
-      "totalUnrealizedPnl": 9.870854466749533,
+      "markedEquity": 984.7490975206663,
+      "totalUnrealizedPnl": 6.450075242774464,
       "missingSymbols": [],
       "staleSymbols": [],
       "invalidMarkSymbols": [],
@@ -6191,12 +6208,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 308.739990234375,
-          "markT": "2026-11-24T21:30:00.000Z",
+          "markPrice": 312.55999755859375,
+          "markT": "2026-11-25T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 5.201227514968273,
-          "markedPositionValue": 241.1239870145853
+          "unrealizedPnl": 2.346534342997709,
+          "markedPositionValue": 238.26929384261473
         },
         {
           "symbol": "TGT",
@@ -6300,12 +6317,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 176.00999450683594,
-          "markT": "2026-11-24T21:30:00.000Z",
+          "markPrice": 172.16000366210938,
+          "markT": "2026-11-25T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 3.969255690408363,
-          "markedPositionValue": 130.46297472697788
+          "unrealizedPnl": 1.1155469582309412,
+          "markedPositionValue": 127.60926599480045
         },
         {
           "symbol": "AVGO",
@@ -6409,12 +6426,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 301.2300109863281,
-          "markT": "2026-11-24T21:30:00.000Z",
+          "markPrice": 300.55499267578125,
+          "markT": "2026-11-25T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": 0.8854850125616359,
-          "markedPositionValue": 48.079237568381586
+          "unrealizedPnl": 0.9892559762151268,
+          "markedPositionValue": 48.183008532035075
         },
         {
           "symbol": "LOW",
@@ -6506,6 +6523,7 @@
             }
           },
           "entryObservationClass": "reconstructed",
+          "lifecycleRefreshSource": "recorded_immutable_fields",
           "accountEquityBefore": 978.2990222778919,
           "notional": 108.44033908885216,
           "allocationPct": 0.11084580135463838,
@@ -6517,12 +6535,12 @@
           "portfolioStatus": "open",
           "effectiveExitMs": null,
           "legacyExitTimingAdjusted": false,
-          "markPrice": 231,
-          "markT": "2026-11-24T21:30:00.000Z",
+          "markPrice": 235.66000366210938,
+          "markT": "2026-11-25T21:30:00.000Z",
           "markStatus": "fresh",
           "markSource": "completed_4h_close",
-          "unrealizedPnl": -0.18511375118873846,
-          "markedPositionValue": 108.25522533766342
+          "unrealizedPnl": 1.9987379653306863,
+          "markedPositionValue": 110.43907705418285
         }
       ]
     },
@@ -6884,6 +6902,15 @@
         "quality": "fresh",
         "markedEquity": 988.1698767446414,
         "totalUnrealizedPnl": 9.870854466749533,
+        "missingSymbols": [],
+        "staleSymbols": []
+      },
+      {
+        "runKey": "smc-forward-expanded|us-75|45761876110|1",
+        "observedAt": "2026-11-26T05:29:33.782Z",
+        "quality": "fresh",
+        "markedEquity": 984.7490975206663,
+        "totalUnrealizedPnl": 6.450075242774464,
         "missingSymbols": [],
         "staleSymbols": []
       }
@@ -9381,6 +9408,7 @@
           }
         },
         "entryObservationClass": "reconstructed",
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 978.2990222778919,
         "notional": 108.44033908885216,
         "allocationPct": 0.11084580135463838,
@@ -9497,12 +9525,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 308.739990234375,
-        "markT": "2026-11-24T21:30:00.000Z",
+        "markPrice": 312.55999755859375,
+        "markT": "2026-11-25T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 5.201227514968273,
-        "markedPositionValue": 241.1239870145853
+        "unrealizedPnl": 2.346534342997709,
+        "markedPositionValue": 238.26929384261473
       },
       {
         "symbol": "TGT",
@@ -9606,12 +9634,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 176.00999450683594,
-        "markT": "2026-11-24T21:30:00.000Z",
+        "markPrice": 172.16000366210938,
+        "markT": "2026-11-25T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 3.969255690408363,
-        "markedPositionValue": 130.46297472697788
+        "unrealizedPnl": 1.1155469582309412,
+        "markedPositionValue": 127.60926599480045
       },
       {
         "symbol": "AVGO",
@@ -9715,12 +9743,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 301.2300109863281,
-        "markT": "2026-11-24T21:30:00.000Z",
+        "markPrice": 300.55499267578125,
+        "markT": "2026-11-25T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": 0.8854850125616359,
-        "markedPositionValue": 48.079237568381586
+        "unrealizedPnl": 0.9892559762151268,
+        "markedPositionValue": 48.183008532035075
       },
       {
         "symbol": "LOW",
@@ -9812,6 +9840,7 @@
           }
         },
         "entryObservationClass": "reconstructed",
+        "lifecycleRefreshSource": "recorded_immutable_fields",
         "accountEquityBefore": 978.2990222778919,
         "notional": 108.44033908885216,
         "allocationPct": 0.11084580135463838,
@@ -9823,12 +9852,12 @@
         "portfolioStatus": "open",
         "effectiveExitMs": null,
         "legacyExitTimingAdjusted": false,
-        "markPrice": 231,
-        "markT": "2026-11-24T21:30:00.000Z",
+        "markPrice": 235.66000366210938,
+        "markT": "2026-11-25T21:30:00.000Z",
         "markStatus": "fresh",
         "markSource": "completed_4h_close",
-        "unrealizedPnl": -0.18511375118873846,
-        "markedPositionValue": 108.25522533766342
+        "unrealizedPnl": 1.9987379653306863,
+        "markedPositionValue": 110.43907705418285
       }
     ],
     "skipped": [
@@ -16652,7 +16681,8 @@
           "ref": "refs/heads/main"
         }
       },
-      "entryObservationClass": "reconstructed"
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
     }
   ]
 }
