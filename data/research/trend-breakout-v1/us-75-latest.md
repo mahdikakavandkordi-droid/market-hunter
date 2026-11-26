@@ -1,8 +1,8 @@
 # Trend Breakout V1 — us-75
-Generated: 2026-11-25T20:03:31.385Z; mode: forward_shadow.
+Generated: 2026-11-26T02:59:21.928Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 75; failed fetch/review symbols 0.
 Open 25; pending 8; closed 110; lifecycle reviews 0.
-Realized equity $1032.98; marked equity $1033.19; mark quality fresh.
+Realized equity $1032.98; marked equity $1033.92; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -16,7 +16,7 @@ Realized equity $1032.98; marked equity $1033.19; mark quality fresh.
 ## Positions
 
 - DUK: Long open; entry 127.0199966430664; current stop 127.85214178902763; provenance prospective; gap none
-- SO: Long open; entry 91.80999755859375; current stop 92.07582419259208; provenance prospective; gap none
+- SO: Long open; entry 91.80999755859375; current stop 92.11439568655831; provenance prospective; gap none
 - NFLX: Short open; entry 60.560001373291016; current stop 60.450444085257395; provenance prospective; gap none
 - AXP: Short open; entry 315.5; current stop 315.0183890206473; provenance prospective; gap none
 - BAC: Short open; entry 49.310001373291016; current stop 49.22991343906948; provenance prospective; gap none
@@ -35,7 +35,7 @@ Realized equity $1032.98; marked equity $1033.19; mark quality fresh.
 - HON: Short open; entry 220.27999877929688; current stop 228.54181562151228; provenance prospective; gap none
 - INTC: Short open; entry 59.06999969482422; current stop 62.67409678867885; provenance prospective; gap none
 - MU: Short open; entry 690.719970703125; current stop 728.6386936732702; provenance prospective; gap none
-- ORCL: Short open; entry 116.44400024414062; current stop 120.60387911115373; provenance prospective; gap none
+- ORCL: Short open; entry 116.44400024414062; current stop 120.37065233503068; provenance prospective; gap none
 - QCOM: Short open; entry 164.10000610351562; current stop 175.91051592145647; provenance prospective; gap none
 - SLB: Short open; entry 47.560001373291016; current stop 49.37470081874302; provenance prospective; gap none
 - TSLA: Short open; entry 374.8399963378906; current stop 396.79036603655135; provenance prospective; gap none

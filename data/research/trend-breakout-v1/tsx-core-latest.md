@@ -1,13 +1,13 @@
 # Trend Breakout V1 — tsx-core
-Generated: 2026-11-25T20:03:31.385Z; mode: forward_shadow.
+Generated: 2026-11-26T02:59:21.928Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 33; failed fetch/review symbols 0.
-Open 14; pending 0; closed 53; lifecycle reviews 0.
-Realized equity $973.05; marked equity $1001.40; mark quality fresh.
+Open 13; pending 0; closed 54; lifecycle reviews 0.
+Realized equity $973.05; marked equity $993.48; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
 |---|---:|---:|---:|
-| prospective | 53 | -0.2254980164482283 | 0.6079238497427873 |
+| prospective | 54 | -0.21773409228025145 | 0.6142801185769807 |
 | reconstructed | 0 | n/a | n/a |
 | historical_simulated | 0 | n/a | n/a |
 | pending | 0 | n/a | n/a |
@@ -15,7 +15,6 @@ Realized equity $973.05; marked equity $1001.40; mark quality fresh.
 
 ## Positions
 
-- EMA.TO: Long open; entry 72.1500015258789; current stop 72.69357245309013; provenance prospective; gap none
 - LUN.TO: Short open; entry 27.18000030517578; current stop 25.770000185285294; provenance prospective; gap none
 - ABX.TO: Short open; entry 49.31999969482422; current stop 49.320002692086355; provenance prospective; gap none
 - AEM.TO: Short open; entry 231.05999755859375; current stop 236.57001059395927; provenance prospective; gap none
@@ -34,6 +33,6 @@ Realized equity $973.05; marked equity $1001.40; mark quality fresh.
 
 SMC ledger as of 2026-11-25T05:33:52.019Z; stale false.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
-SMC closed 12; challenger closed 53. No winner is claimed from a small sample.
+SMC closed 12; challenger closed 54. No winner is claimed from a small sample.
 
 Limitations: current-universe selection, short intraday history, hypothetical shorts/fractional shares, fixed-R costs excluding borrow/funding/FX/dividends, completed-bar marks and approximate exchange closes. Archived raw snapshots accompany workflow artifacts.
