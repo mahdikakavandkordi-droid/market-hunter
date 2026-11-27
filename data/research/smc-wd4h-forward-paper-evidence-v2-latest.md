@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward Paper — Corrected Evidence v2
 
-Generated: 2026-11-26T05:15:45.711Z
+Generated: 2026-11-27T05:13:38.762Z
 
 Frozen strategy rules are unchanged. This v2 changes evidence integrity, candle completion/timing, and account valuation only.
 The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
@@ -9,16 +9,16 @@ The pre-audit v1 snapshot remains preserved at research commit 1523e4adde5f3be5f
 
 | Metric | Raw | +0.03R cost | +0.05R cost |
 |---|---:|---:|---:|
-| Closed trades | 15 | 15 | 15 |
-| Win rate | 46.7% | 46.7% | 46.7% |
-| PF | 0.847 | 0.792 | 0.756 |
-| Avg R | -0.073 | -0.103 | -0.123 |
+| Closed trades | 16 | 16 | 16 |
+| Win rate | 50.0% | 50.0% | 50.0% |
+| PF | 0.950 | 0.887 | 0.847 |
+| Avg R | -0.023 | -0.053 | -0.073 |
 
 ## $1,000 paper account — realized vs marked
 
-Realized-only equity: $976.91; realized return: -2.3%.
-Marked equity: $983.82; marked return: -1.6%; mark quality: fresh.
-Unrealized P/L: $6.91.
+Realized-only equity: $983.74; realized return: -1.6%.
+Marked equity: $983.06; marked return: -1.7%; mark quality: fresh.
+Unrealized P/L: $-0.68.
 Realized-event max drawdown: -4.2%; observed marked max drawdown: -3.5%.
 Marked-equity observation coverage starts: 2026-10-04T14:55:43.524Z; first complete marked-equity observation: 2026-10-04T14:55:43.524Z; this is not historical intraday drawdown coverage.
 Missing/invalid marks: none; stale marks: none.
@@ -28,8 +28,7 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark time | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---|---:|
-| LUN.TO | Short | 27.240 | 23.720 | 2026-11-25T21:30:00.000Z | fresh | $7.20 |
-| WCN.TO | Long | 266.610 | 266.210 | 2026-11-25T21:30:00.000Z | fresh | $-0.29 |
+| WCN.TO | Long | 266.610 | 265.680 | 2026-11-26T21:30:00.000Z | fresh | $-0.68 |
 
 ## Evidence integrity
 
@@ -42,14 +41,14 @@ This run discrepancies: 15; prior records not re-observed: 1; candle/data diagno
 | Evidence class | Closed | Win rate | Avg R after 0.05R cost | PF after 0.05R cost |
 |---|---:|---:|---:|---:|
 | prospective | 2 | 50.0% | -0.130 | 0.753 |
-| reconstructed | 11 | 45.5% | -0.226 | 0.547 |
+| reconstructed | 12 | 50.0% | -0.150 | 0.672 |
 | legacy unprovenanced | 2 | 50.0% | 0.450 | 1.857 |
 
 ## Momentum shadow (observational only)
 
 | Bucket | Closed | Win rate | Avg R after cost | PF after cost |
 |---|---:|---:|---:|---:|
-| high | 4 | 25.0% | -0.100 | 0.830 |
+| high | 5 | 40.0% | 0.058 | 1.124 |
 | medium | 5 | 60.0% | -0.028 | 0.933 |
 | low | 6 | 50.0% | -0.219 | 0.584 |
 | unavailable | 0 | n/a | n/a | n/a |
