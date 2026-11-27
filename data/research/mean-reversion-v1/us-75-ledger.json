@@ -1,7 +1,7 @@
 {
   "version": "mean-reversion-v1",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "updatedAt": "2026-11-27T14:24:35.026Z",
+  "updatedAt": "2026-11-27T22:59:17.457Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "trades": [
     {
@@ -1142,9 +1142,85 @@
       },
       "entryObservationClass": "prospective",
       "currentStop": 202.7853638785226,
-      "holdingBars": 6,
-      "lastEvaluatedEndT": "2026-11-25T21:30:00.000Z",
+      "holdingBars": 7,
+      "lastEvaluatedEndT": "2026-11-27T18:30:00.000Z",
       "entryObservedAt": "2026-11-23T20:36:03.083Z"
+    },
+    {
+      "symbol": "PM",
+      "signalT": "2026-11-27T14:30:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-11-27T22:00:00.000Z",
+        "dailyAsOf": "2026-11-27",
+        "dipDate": "2026-11-25",
+        "dipClose": 184.32000732421875,
+        "dipHigh": 185.83999633789062,
+        "dipLow": 183,
+        "dailySma": 183.52384994506835,
+        "meanTarget": 196.40249938964843,
+        "atr14": 4.968571254185268,
+        "averageDollarVolume": 1140137513.8280487,
+        "signalClose": 187.8000030517578,
+        "initialStop": 180.51571437290735
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "PM|2026-11-27T14:30:00.000Z|1",
+      "entryWaitHours": 120,
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-11-27T22:59:17.457Z",
+      "firstObservedAt": "2026-11-27T22:59:17.457Z",
+      "firstObservedProvenance": {
+        "tracker": "mean-reversion-v1",
+        "runKey": "mean-reversion-v1|46079792367|1",
+        "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
+      },
+      "entryObservationClass": "pending"
+    },
+    {
+      "symbol": "XOM",
+      "signalT": "2026-11-27T14:30:00.000Z",
+      "dir": 1,
+      "status": "pending_entry",
+      "signalSnapshot": {
+        "signalCompletedAt": "2026-11-27T22:00:00.000Z",
+        "dailyAsOf": "2026-11-27",
+        "dipDate": "2026-11-25",
+        "dipClose": 158.0800018310547,
+        "dipHigh": 159.6999969482422,
+        "dipLow": 156.8300018310547,
+        "dailySma": 156.94964988708497,
+        "meanTarget": 167.55899963378906,
+        "atr14": 3.515000479561942,
+        "averageDollarVolume": 2598824050.197296,
+        "signalClose": 160.17999267578125,
+        "initialStop": 155.07250159127372
+      },
+      "entryT": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "risk": null,
+      "R": null,
+      "exitT": null,
+      "decisionId": "XOM|2026-11-27T14:30:00.000Z|1",
+      "entryWaitHours": 120,
+      "historicalDiagnostic": false,
+      "decisionAvailableAt": "2026-11-27T22:59:17.457Z",
+      "firstObservedAt": "2026-11-27T22:59:17.457Z",
+      "firstObservedProvenance": {
+        "tracker": "mean-reversion-v1",
+        "runKey": "mean-reversion-v1|46079792367|1",
+        "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf"
+      },
+      "entryObservationClass": "pending"
     }
   ],
   "runLog": [
@@ -6638,6 +6714,29 @@
         }
       ],
       "diagnosticCount": 0
+    },
+    {
+      "runKey": "mean-reversion-v1|46079792367|1",
+      "observedAt": "2026-11-27T22:59:17.457Z",
+      "failures": [
+        {
+          "symbol": "EOG",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "TMO",
+          "error": "invalid_source_quotes_require_review"
+        },
+        {
+          "symbol": "HON",
+          "error": "split_event_requires_review"
+        },
+        {
+          "symbol": "CMCSA",
+          "error": "split_event_requires_review"
+        }
+      ],
+      "diagnosticCount": 73
     }
   ],
   "markedEquitySeries": [
@@ -9167,6 +9266,15 @@
       "quality": "fresh",
       "markedEquity": 931.8770529685876,
       "totalUnrealizedPnl": 5.62608087142732,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "mean-reversion-v1|46079792367|1",
+      "observedAt": "2026-11-27T22:59:17.457Z",
+      "quality": "fresh",
+      "markedEquity": 934.2432596905455,
+      "totalUnrealizedPnl": 7.9922875933853605,
       "missingSymbols": [],
       "staleSymbols": []
     }
