@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75 — Corrected Evidence v2
 
-Generated: 2026-11-26T05:29:33.782Z; forward start: 2026-10-01; universe: 75.
+Generated: 2026-11-27T05:24:26.396Z; forward start: 2026-10-01; universe: 75.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -31,7 +31,7 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 ## Evidence integrity
 
 Legacy provenance unknown 1; prospective 6; reconstructed 37; pending 0.
-This run discrepancies 37; prior not re-observed 1; candle/data diagnostics 2.
+This run discrepancies 37; prior not re-observed 1; candle/data diagnostics 0.
 
 ### Performance by evidence provenance
 
@@ -53,5 +53,4 @@ This run discrepancies 37; prior not re-observed 1; candle/data diagnostics 2.
 ## Fetch/data gaps
 
 - No fetch failures this run.
-- Data diagnostic: {"symbol":"EOG","type":"incomplete_or_missing_exchange_bar","date":"2026-11-25","segment":1,"expected":[4,5,6],"present":[4,5]}
-- Data diagnostic: {"symbol":"TMO","type":"incomplete_or_missing_exchange_bar","date":"2026-11-25","segment":1,"expected":[4,5,6],"present":[4,5]}
+- No candle/data diagnostics this run.

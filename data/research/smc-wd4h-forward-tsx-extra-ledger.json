@@ -1,7 +1,7 @@
 {
   "version": "smc-wd4h-forward-expanded-ledger-v2",
   "cohort": "tsx-extra",
-  "updatedAt": "2026-11-26T05:29:24.540Z",
+  "updatedAt": "2026-11-27T05:24:16.210Z",
   "forwardStart": "2026-10-01",
   "symbols": [
     "RCI-B.TO",
@@ -3430,6 +3430,93 @@
       "prospectiveCount": 4,
       "pendingCount": 0,
       "discrepancyCount": 4
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|45945550516|1",
+      "observedAt": "2026-11-27T05:24:16.210Z",
+      "tracker": "smc-forward-expanded",
+      "cohort": "tsx-extra",
+      "github": {
+        "runId": "45945550516",
+        "runAttempt": "1",
+        "sha": "bbe24557eb265709fe8b3328faf968c4382cb76b",
+        "workflow": "SMC Expanded Forward Cohorts",
+        "ref": "refs/heads/main"
+      },
+      "fetchFailures": [],
+      "dataQuality": [
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 0,
+          "expected": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "present": [
+            0
+          ]
+        },
+        {
+          "symbol": "FM.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-30",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "GSY.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-10-26",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            5,
+            6
+          ]
+        },
+        {
+          "symbol": "WSP.TO",
+          "type": "incomplete_or_missing_exchange_bar",
+          "date": "2026-09-22",
+          "segment": 1,
+          "expected": [
+            4,
+            5,
+            6
+          ],
+          "present": [
+            4,
+            6
+          ]
+        }
+      ],
+      "markQuality": "fresh",
+      "missingMarkSymbols": [],
+      "staleMarkSymbols": [],
+      "newRecords": 1,
+      "lifecycleUpdates": 2,
+      "missingPreviouslyRecorded": 0,
+      "legacyUnprovenancedCount": 2,
+      "reconstructedCount": 20,
+      "prospectiveCount": 4,
+      "pendingCount": 0,
+      "discrepancyCount": 4
     }
   ],
   "discrepancyLog": [
@@ -3893,6 +3980,15 @@
       "quality": "fresh",
       "markedEquity": 1018.3906695177591,
       "totalUnrealizedPnl": 15.164444456359583,
+      "missingSymbols": [],
+      "staleSymbols": []
+    },
+    {
+      "runKey": "smc-forward-expanded|tsx-extra|45945550516|1",
+      "observedAt": "2026-11-27T05:24:16.210Z",
+      "quality": "fresh",
+      "markedEquity": 1016.8570728492907,
+      "totalUnrealizedPnl": 6.329051542161523,
       "missingSymbols": [],
       "staleSymbols": []
     }
@@ -5641,9 +5737,9 @@
       "stop": 35.47828461783273,
       "target": 19.343431908743725,
       "risk": 5.378284236363001,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 0.7809183334980548,
+      "exitT": "2026-11-26T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 86.8,
@@ -5722,7 +5818,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 25.899999618530273,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-11-26T14:30:00.000Z",
+        "exitBarEndT": "2026-11-26T18:30:00.000Z"
+      }
     },
     {
       "symbol": "TECK-B.TO",
@@ -5733,9 +5841,9 @@
       "stop": 91.7977875300816,
       "target": 61.17441395350866,
       "risk": 10.207791192190982,
-      "status": "open",
-      "R": null,
-      "exitT": null,
+      "status": "closed",
+      "R": 0.7748979072736162,
+      "exitT": "2026-11-26T18:30:00.000Z",
       "momentumShadow": {
         "available": true,
         "score": 66.9,
@@ -5814,7 +5922,19 @@
         }
       },
       "entryObservationClass": "reconstructed",
-      "lifecycleRefreshSource": "recorded_immutable_fields"
+      "lifecycleRefreshSource": "recorded_immutable_fields",
+      "exitReason": "max_hold_close",
+      "exitPriceAssumed": 73.68000030517578,
+      "exitTimeConvention": "bar_end",
+      "executionAudit": {
+        "stopTargetCollision": false,
+        "collisionPolicy": null,
+        "gapThroughStop": false,
+        "gapThroughTarget": false,
+        "gapFillAssumption": null,
+        "exitBarStartT": "2026-11-26T14:30:00.000Z",
+        "exitBarEndT": "2026-11-26T18:30:00.000Z"
+      }
     },
     {
       "symbol": "BEP-UN.TO",
@@ -6387,6 +6507,98 @@
           "runId": "45761876110",
           "runAttempt": "1",
           "sha": "f8ff24525ed483ef2863b54b77b54c7b378d4828",
+          "workflow": "SMC Expanded Forward Cohorts",
+          "ref": "refs/heads/main"
+        }
+      },
+      "entryObservationClass": "reconstructed",
+      "lifecycleRefreshSource": "recorded_immutable_fields"
+    },
+    {
+      "symbol": "BEP-UN.TO",
+      "signalT": "2026-11-26T14:30:00.000Z",
+      "entryT": "2026-11-26T18:30:00.000Z",
+      "dir": 1,
+      "entry": 43.79999923706055,
+      "stop": 41.60974862234933,
+      "target": 48.18050046648298,
+      "risk": 2.1902506147112177,
+      "status": "open",
+      "R": null,
+      "exitT": null,
+      "momentumShadow": {
+        "available": true,
+        "score": 65.4,
+        "bucket": "medium",
+        "asOfDate": "2026-11-25",
+        "direction": "long",
+        "ret20": 0.06691355764130025,
+        "ret60": -0.015941716360099445,
+        "rsi14": 51.20612727967069,
+        "ma20": 42.65399932861328,
+        "ma50": 41.460599670410154,
+        "ma20Slope5": 0.014074457319357636,
+        "volumeRatio20": 0.5322651859788844,
+        "benchmarkSymbol": "^GSPTSE",
+        "benchmarkRet20": -0.0574960905295272,
+        "benchmarkRet60": -0.05763637115562237,
+        "rs20": 0.12440964817082745,
+        "rs60": 0.04169465479552292,
+        "components": {
+          "return20": {
+            "score": 83.5,
+            "weight": 20
+          },
+          "return60": {
+            "score": 46,
+            "weight": 20
+          },
+          "rsi14": {
+            "score": 53,
+            "weight": 15
+          },
+          "price_vs_ma20": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_vs_ma50": {
+            "score": 100,
+            "weight": 7
+          },
+          "ma20_slope5": {
+            "score": 85.2,
+            "weight": 6
+          },
+          "volume_ratio20": {
+            "score": 0,
+            "weight": 10
+          },
+          "relative_strength20": {
+            "score": 100,
+            "weight": 8
+          },
+          "relative_strength60": {
+            "score": 63.9,
+            "weight": 7
+          }
+        }
+      },
+      "signalSnapshot": {
+        "opposingSwing": 41.689998626708984,
+        "atr14": 0.8025000435965401,
+        "signalCompletedAt": "2026-11-26T18:30:00.000Z",
+        "candleConvention": "last hourly source start + 1h (conservative for final/shortened session bars)"
+      },
+      "decisionId": "BEP-UN.TO|2026-11-26T14:30:00.000Z|1",
+      "firstObservedAt": "2026-11-27T05:24:16.210Z",
+      "firstObservedProvenance": {
+        "tracker": "smc-forward-expanded",
+        "cohort": "tsx-extra",
+        "marketDataSource": "Yahoo Finance chart API",
+        "github": {
+          "runId": "45945550516",
+          "runAttempt": "1",
+          "sha": "bbe24557eb265709fe8b3328faf968c4382cb76b",
           "workflow": "SMC Expanded Forward Cohorts",
           "ref": "refs/heads/main"
         }
