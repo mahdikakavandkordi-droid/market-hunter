@@ -1,8 +1,8 @@
 # Trend Breakout V1 — crypto-15
-Generated: 2026-11-27T14:10:12.333Z; mode: forward_shadow.
+Generated: 2026-11-27T22:51:47.885Z; mode: forward_shadow.
 Forward start: 2026-10-04T19:55:57.808303+00:00; universe 15; failed fetch/review symbols 0.
 Open 7; pending 0; closed 85; lifecycle reviews 0.
-Realized equity $928.64; marked equity $919.69; mark quality fresh.
+Realized equity $928.64; marked equity $926.77; mark quality fresh.
 ## Evidence provenance
 
 | Group | Closed | Avg R after cost | PF after cost |
@@ -21,11 +21,11 @@ Realized equity $928.64; marked equity $919.69; mark quality fresh.
 - SHIB-USD: Short open; entry 0.0000035900000057154102; current stop 0.000003758571503047798; provenance prospective; gap none
 - XLM-USD: Short open; entry 0.12780700623989105; current stop 0.13414335091199195; provenance prospective; gap none
 - XRP-USD: Short open; entry 0.9362999796867371; current stop 0.9859285269464765; provenance prospective; gap none
-- TRX-USD: Short open; entry 0.3036399781703949; current stop 0.30697534339768545; provenance prospective; gap none
+- TRX-USD: Short open; entry 0.3036399781703949; current stop 0.3063290757792337; provenance prospective; gap none
 
 ## Common-window comparison
 
-SMC ledger as of 2026-11-27T08:18:40.984Z; stale false.
+SMC ledger as of 2026-11-27T08:18:40.984Z; stale true.
 New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.
 SMC closed 32; challenger closed 85. No winner is claimed from a small sample.
 
