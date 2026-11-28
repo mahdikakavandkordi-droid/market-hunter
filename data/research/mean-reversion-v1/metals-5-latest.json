@@ -2,74 +2,34 @@
   "version": "mean-reversion-v1",
   "mode": "forward_shadow",
   "configHash": "68c9442d7e2bc0577138504134f80566091370ae137932f2d39f58edae0503cf",
-  "generatedAt": "2026-11-27T22:59:17.457Z",
+  "generatedAt": "2026-11-28T04:59:26.924Z",
   "forwardStart": "2026-10-04T20:24:23.948534+00:00",
   "cohort": "metals-5",
   "universe": 5,
   "failures": [
     {
-      "symbol": "PPLT",
-      "error": "split_event_requires_review"
-    },
-    {
-      "symbol": "PALL",
-      "error": "split_event_requires_review"
-    }
-  ],
-  "diagnostics": [
-    {
-      "symbol": "SLV",
-      "type": "off_session_grid",
-      "date": "2026-11-27",
-      "t": 1795802400000
-    },
-    {
       "symbol": "GLD",
-      "type": "off_session_grid",
-      "date": "2026-11-27",
-      "t": 1795802400000
+      "error": "invalid_source_quotes_require_review"
     },
     {
       "symbol": "CPER",
-      "type": "off_session_grid",
-      "date": "2026-11-27",
-      "t": 1795802400000
+      "error": "invalid_source_quotes_require_review"
     },
-    {
-      "symbol": "PPLT",
-      "type": "off_session_grid",
-      "date": "2026-11-27",
-      "t": 1795802400000
-    },
-    {
-      "symbol": "PALL",
-      "type": "off_session_grid",
-      "date": "2026-11-27",
-      "t": 1795802400000
-    }
-  ],
-  "inputs": [
     {
       "symbol": "SLV",
-      "sha256": "4a9db256a1cba3f91731c099c35f12929a54e179747ccdafb369d58323212b21"
-    },
-    {
-      "symbol": "GLD",
-      "sha256": "8bee0b31d3dd35d289461601bdbca00b7f16f7a0676afbeaa7550756647b8048"
-    },
-    {
-      "symbol": "CPER",
-      "sha256": "04837dc588de65fb8fa0cce5ce44efdf7da7d1c4ed0d04a5ae87e06bb9eafa81"
+      "error": "invalid_source_quotes_require_review"
     },
     {
       "symbol": "PPLT",
-      "sha256": "56111789c74585f93526a0f2623e7b36fcc27479b4315abb95db3639ddd32eb2"
+      "error": "invalid_source_quotes_require_review"
     },
     {
       "symbol": "PALL",
-      "sha256": "f69a0717a7592dd9da807871b32f4c3c9ee83ad7de1de8260ee2f8d902b71394"
+      "error": "invalid_source_quotes_require_review"
     }
   ],
+  "diagnostics": [],
+  "inputs": [],
   "trades": [
     {
       "symbol": "CPER",
@@ -257,8 +217,8 @@
     "markedCurrentEquity": 1000,
     "markedReturnPct": 0,
     "markedObservation": {
-      "runKey": "mean-reversion-v1|46079792367|1",
-      "observedAt": "2026-11-27T22:59:17.457Z",
+      "runKey": "mean-reversion-v1|46109967518|1",
+      "observedAt": "2026-11-28T04:59:26.924Z",
       "quality": "fresh",
       "markedEquity": 1000,
       "totalUnrealizedPnl": 0,
@@ -2805,6 +2765,15 @@
         "totalUnrealizedPnl": 0,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "mean-reversion-v1|46109967518|1",
+        "observedAt": "2026-11-28T04:59:26.924Z",
+        "quality": "fresh",
+        "markedEquity": 1000,
+        "totalUnrealizedPnl": 0,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T20:32:03.844Z",
@@ -2829,7 +2798,7 @@
     "skipped": []
   },
   "comparison": {
-    "trendLedgerAsOf": "2026-11-27T22:51:47.885Z",
+    "trendLedgerAsOf": "2026-11-28T04:52:56.939Z",
     "trendStale": false,
     "trend": {
       "raw": {
@@ -3056,15 +3025,18 @@
             "equity": 1060.4522830418805
           }
         ],
-        "markedCurrentEquity": 1095.2155747134584,
-        "markedReturnPct": 0.09521557471345843,
+        "markedCurrentEquity": null,
+        "markedReturnPct": null,
         "markedObservation": {
-          "runKey": "mean-reversion-v1|46079792367|1",
-          "observedAt": "2026-11-27T22:59:17.457Z",
-          "quality": "fresh",
-          "markedEquity": 1095.2155747134584,
-          "totalUnrealizedPnl": 34.76329167157808,
-          "missingSymbols": [],
+          "runKey": "mean-reversion-v1|46109967518|1",
+          "observedAt": "2026-11-28T04:59:26.924Z",
+          "quality": "incomplete_missing_marks",
+          "markedEquity": null,
+          "totalUnrealizedPnl": null,
+          "missingSymbols": [
+            "SLV",
+            "PALL"
+          ],
           "staleSymbols": [],
           "invalidMarkSymbols": [],
           "positions": [
@@ -3105,6 +3077,9 @@
               "holdingBars": 15,
               "entryObservedAt": "2026-11-17T22:33:39.608Z",
               "lastEvaluatedEndT": "2026-11-27T18:30:00.000Z",
+              "lifecycleDataGap": {
+                "type": "last_observed_bar_unavailable"
+              },
               "accountEquityBefore": 1048.917995539679,
               "notional": 246.22887997113628,
               "allocationPct": 0.23474559595523864,
@@ -3116,12 +3091,11 @@
               "portfolioStatus": "open",
               "effectiveExitMs": null,
               "legacyExitTimingAdjusted": false,
-              "markPrice": 39.025001525878906,
-              "markT": "2026-11-27T18:30:00.000Z",
-              "markStatus": "fresh",
-              "markSource": "completed_4h_close",
-              "unrealizedPnl": 22.146924292122105,
-              "markedPositionValue": 268.3758042632584
+              "markPrice": null,
+              "markT": null,
+              "markStatus": "missing",
+              "unrealizedPnl": null,
+              "markedPositionValue": null
             },
             {
               "symbol": "PALL",
@@ -3160,6 +3134,9 @@
               "holdingBars": 11,
               "entryObservedAt": "2026-11-19T20:54:04.732Z",
               "lastEvaluatedEndT": "2026-11-27T18:30:00.000Z",
+              "lifecycleDataGap": {
+                "type": "last_observed_bar_unavailable"
+              },
               "accountEquityBefore": 1048.917995539679,
               "notional": 248.5129284483688,
               "allocationPct": 0.23692312411944688,
@@ -3171,29 +3148,31 @@
               "portfolioStatus": "open",
               "effectiveExitMs": null,
               "legacyExitTimingAdjusted": false,
-              "markPrice": 16.079999923706055,
-              "markT": "2026-11-27T18:30:00.000Z",
-              "markStatus": "fresh",
-              "markSource": "completed_4h_close",
-              "unrealizedPnl": 12.616367379455978,
-              "markedPositionValue": 261.12929582782476
+              "markPrice": null,
+              "markT": null,
+              "markStatus": "missing",
+              "unrealizedPnl": null,
+              "markedPositionValue": null
             }
           ]
         },
         "markedEquitySeries": [
           {
-            "runKey": "mean-reversion-v1|46079792367|1",
-            "observedAt": "2026-11-27T22:59:17.457Z",
-            "quality": "fresh",
-            "markedEquity": 1095.2155747134584,
-            "totalUnrealizedPnl": 34.76329167157808,
-            "missingSymbols": [],
+            "runKey": "mean-reversion-v1|46109967518|1",
+            "observedAt": "2026-11-28T04:59:26.924Z",
+            "quality": "incomplete_missing_marks",
+            "markedEquity": null,
+            "totalUnrealizedPnl": null,
+            "missingSymbols": [
+              "SLV",
+              "PALL"
+            ],
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-11-27T22:59:17.457Z",
-        "firstCompleteMarkedEquityAt": "2026-11-27T22:59:17.457Z",
-        "markedObservedMaxDrawdownPct": 0,
+        "markedSeriesCoverageStartAt": "2026-11-28T04:59:26.924Z",
+        "firstCompleteMarkedEquityAt": null,
+        "markedObservedMaxDrawdownPct": null,
         "costAccounting": {
           "closedTradeCostR": 0.05,
           "chargedOnceOnSettlement": true,
@@ -3777,6 +3756,9 @@
             "holdingBars": 15,
             "entryObservedAt": "2026-11-17T22:33:39.608Z",
             "lastEvaluatedEndT": "2026-11-27T18:30:00.000Z",
+            "lifecycleDataGap": {
+              "type": "last_observed_bar_unavailable"
+            },
             "accountEquityBefore": 1048.917995539679,
             "notional": 246.22887997113628,
             "allocationPct": 0.23474559595523864,
@@ -3826,6 +3808,9 @@
             "holdingBars": 11,
             "entryObservedAt": "2026-11-19T20:54:04.732Z",
             "lastEvaluatedEndT": "2026-11-27T18:30:00.000Z",
+            "lifecycleDataGap": {
+              "type": "last_observed_bar_unavailable"
+            },
             "accountEquityBefore": 1048.917995539679,
             "notional": 248.5129284483688,
             "allocationPct": 0.23692312411944688,
@@ -3936,6 +3921,9 @@
             "holdingBars": 15,
             "entryObservedAt": "2026-11-17T22:33:39.608Z",
             "lastEvaluatedEndT": "2026-11-27T18:30:00.000Z",
+            "lifecycleDataGap": {
+              "type": "last_observed_bar_unavailable"
+            },
             "accountEquityBefore": 1048.917995539679,
             "notional": 246.22887997113628,
             "allocationPct": 0.23474559595523864,
@@ -3947,12 +3935,11 @@
             "portfolioStatus": "open",
             "effectiveExitMs": null,
             "legacyExitTimingAdjusted": false,
-            "markPrice": 39.025001525878906,
-            "markT": "2026-11-27T18:30:00.000Z",
-            "markStatus": "fresh",
-            "markSource": "completed_4h_close",
-            "unrealizedPnl": 22.146924292122105,
-            "markedPositionValue": 268.3758042632584
+            "markPrice": null,
+            "markT": null,
+            "markStatus": "missing",
+            "unrealizedPnl": null,
+            "markedPositionValue": null
           },
           {
             "symbol": "PALL",
@@ -3991,6 +3978,9 @@
             "holdingBars": 11,
             "entryObservedAt": "2026-11-19T20:54:04.732Z",
             "lastEvaluatedEndT": "2026-11-27T18:30:00.000Z",
+            "lifecycleDataGap": {
+              "type": "last_observed_bar_unavailable"
+            },
             "accountEquityBefore": 1048.917995539679,
             "notional": 248.5129284483688,
             "allocationPct": 0.23692312411944688,
@@ -4002,12 +3992,11 @@
             "portfolioStatus": "open",
             "effectiveExitMs": null,
             "legacyExitTimingAdjusted": false,
-            "markPrice": 16.079999923706055,
-            "markT": "2026-11-27T18:30:00.000Z",
-            "markStatus": "fresh",
-            "markSource": "completed_4h_close",
-            "unrealizedPnl": 12.616367379455978,
-            "markedPositionValue": 261.12929582782476
+            "markPrice": null,
+            "markT": null,
+            "markStatus": "missing",
+            "unrealizedPnl": null,
+            "markedPositionValue": null
           }
         ],
         "skipped": [
@@ -4096,6 +4085,9 @@
             "holdingBars": 11,
             "entryObservedAt": "2026-11-19T20:54:04.732Z",
             "lastEvaluatedEndT": "2026-11-27T18:30:00.000Z",
+            "lifecycleDataGap": {
+              "type": "last_observed_bar_unavailable"
+            },
             "reason": "max_positions"
           }
         ]
@@ -4293,8 +4285,8 @@
         "markedCurrentEquity": 1081.6120715682102,
         "markedReturnPct": 0.08161207156821026,
         "markedObservation": {
-          "runKey": "mean-reversion-v1|46079792367|1",
-          "observedAt": "2026-11-27T22:59:17.457Z",
+          "runKey": "mean-reversion-v1|46109967518|1",
+          "observedAt": "2026-11-28T04:59:26.924Z",
           "quality": "fresh",
           "markedEquity": 1081.6120715682102,
           "totalUnrealizedPnl": 0,
@@ -4305,8 +4297,8 @@
         },
         "markedEquitySeries": [
           {
-            "runKey": "mean-reversion-v1|46079792367|1",
-            "observedAt": "2026-11-27T22:59:17.457Z",
+            "runKey": "mean-reversion-v1|46109967518|1",
+            "observedAt": "2026-11-28T04:59:26.924Z",
             "quality": "fresh",
             "markedEquity": 1081.6120715682102,
             "totalUnrealizedPnl": 0,
@@ -4314,8 +4306,8 @@
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-11-27T22:59:17.457Z",
-        "firstCompleteMarkedEquityAt": "2026-11-27T22:59:17.457Z",
+        "markedSeriesCoverageStartAt": "2026-11-28T04:59:26.924Z",
+        "firstCompleteMarkedEquityAt": "2026-11-28T04:59:26.924Z",
         "markedObservedMaxDrawdownPct": 0,
         "costAccounting": {
           "closedTradeCostR": 0.05,
