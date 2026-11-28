@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — us-75 — Corrected Evidence v2
 
-Generated: 2026-11-27T05:24:26.396Z; forward start: 2026-10-01; universe: 75.
+Generated: 2026-11-28T04:59:30.278Z; forward start: 2026-10-01; universe: 75.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $978.30; return -2.2%; realized-event max DD -3.1%.
-Marked equity $984.75; return -1.5%; observed marked max DD -3.0%; quality fresh.
+Marked equity $984.76; return -1.5%; observed marked max DD -3.0%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:54.783Z; first complete marked-equity observation 2026-10-04T14:55:54.783Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -25,13 +25,13 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 |---|---:|---:|---:|---|---:|
 | AXP | Short | 315.700 | 312.560 | fresh | $2.35 |
 | TGT | Long | 170.655 | 172.160 | fresh | $1.12 |
-| AVGO | Short | 306.990 | 300.555 | fresh | $0.99 |
+| AVGO | Short | 306.990 | 300.490 | fresh | $1.00 |
 | LOW | Long | 231.395 | 235.660 | fresh | $2.00 |
 
 ## Evidence integrity
 
 Legacy provenance unknown 1; prospective 6; reconstructed 37; pending 0.
-This run discrepancies 37; prior not re-observed 1; candle/data diagnostics 0.
+This run discrepancies 30; prior not re-observed 1; candle/data diagnostics 150.
 
 ### Performance by evidence provenance
 
@@ -53,4 +53,53 @@ This run discrepancies 37; prior not re-observed 1; candle/data diagnostics 0.
 ## Fetch/data gaps
 
 - No fetch failures this run.
-- No candle/data diagnostics this run.
+- Data diagnostic: {"symbol":"AAPL","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"AAPL","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"MSFT","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"MSFT","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"NVDA","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"NVDA","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"AMZN","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"AMZN","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"GOOGL","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"GOOGL","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"META","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"META","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"AVGO","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"AVGO","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"TSLA","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"TSLA","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"JPM","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"JPM","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"BAC","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"BAC","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"WFC","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"WFC","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"GS","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"GS","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"MS","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"MS","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"V","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"V","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"MA","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"MA","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"AXP","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"AXP","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"C","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"C","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"SCHW","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"SCHW","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"BLK","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"BLK","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"XOM","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"XOM","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"CVX","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"CVX","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"COP","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"COP","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"SLB","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"SLB","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"EOG","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"EOG","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"OXY","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"OXY","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}

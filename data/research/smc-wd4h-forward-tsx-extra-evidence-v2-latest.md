@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — tsx-extra — Corrected Evidence v2
 
-Generated: 2026-11-27T05:24:16.210Z; forward start: 2026-10-01; universe: 37.
+Generated: 2026-11-28T04:59:17.534Z; forward start: 2026-10-01; universe: 37.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -14,7 +14,7 @@ Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commi
 ## Realized vs marked paper account
 
 Realized-only equity $1010.53; return 1.1%; realized-event max DD -3.1%.
-Marked equity $1016.86; return 1.7%; observed marked max DD -3.2%; quality fresh.
+Marked equity $1018.03; return 1.8%; observed marked max DD -3.2%; quality fresh.
 Marked-series coverage begins 2026-10-04T14:55:45.085Z; first complete marked-equity observation 2026-10-04T14:55:45.085Z; no historical intraday marked DD is implied.
 Missing/invalid marks: none; stale marks: none.
 Cost accounting: 0.05R is charged once when a trade settles; open marked equity does not assume or double-charge a future exit cost.
@@ -23,15 +23,15 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 
 | Symbol | Dir | Entry | Mark | Mark status | Unrealized P/L |
 |---|---:|---:|---:|---|---:|
-| AGI.TO | Short | 37.670 | 38.060 | fresh | $-0.42 |
-| GIB-A.TO | Long | 116.290 | 118.490 | fresh | $4.74 |
-| DOL.TO | Long | 222.890 | 224.750 | fresh | $2.09 |
-| BEP-UN.TO | Long | 43.800 | 43.780 | fresh | $-0.09 |
+| AGI.TO | Short | 37.670 | 39.770 | fresh | $-2.24 |
+| GIB-A.TO | Long | 116.290 | 119.180 | fresh | $6.23 |
+| DOL.TO | Long | 222.890 | 223.140 | fresh | $0.28 |
+| BEP-UN.TO | Long | 43.800 | 44.500 | fresh | $3.23 |
 
 ## Evidence integrity
 
-Legacy provenance unknown 2; prospective 4; reconstructed 20; pending 0.
-This run discrepancies 4; prior not re-observed 0; candle/data diagnostics 4.
+Legacy provenance unknown 2; prospective 4; reconstructed 22; pending 0.
+This run discrepancies 9; prior not re-observed 0; candle/data diagnostics 4.
 
 ### Performance by evidence provenance
 
