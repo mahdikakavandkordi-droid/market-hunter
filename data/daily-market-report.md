@@ -18,7 +18,7 @@
 
 - **Equities: Weakening** — Most tracked markets in this group show weakening short-term conditions.
 - **Metals: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
-- **Crypto: Mixed** — Signals are mixed across the tracked markets.
+- **Crypto: Update required** — Current assessment unavailable; one or more completed-session inputs are not verified fresh.
 
 ## Key divergences
 
