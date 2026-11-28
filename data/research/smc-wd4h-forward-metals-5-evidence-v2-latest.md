@@ -1,6 +1,6 @@
 # SMC W-D-4H Forward — metals-5 — Corrected Evidence v2
 
-Mode: stock; generated 2026-11-27T08:18:45.126Z; start 2026-10-01; universe 5.
+Mode: stock; generated 2026-11-28T07:39:51.342Z; start 2026-10-01; universe 5.
 
 Frozen strategy rules are unchanged. Pre-audit v1 is preserved at research commit 1523e4adde5f3be5ff3d08a36fa79f1ba06d5c28.
 
@@ -28,7 +28,7 @@ Cost accounting: 0.05R is charged once when a trade settles; open marked equity 
 ## Evidence integrity
 
 Legacy provenance unknown 0; prospective 0; reconstructed 6; pending 0.
-This run discrepancies 5; prior not re-observed 0; candle/data diagnostics 0.
+This run discrepancies 5; prior not re-observed 0; candle/data diagnostics 10.
 
 ### Performance by evidence provenance
 
@@ -50,4 +50,13 @@ This run discrepancies 5; prior not re-observed 0; candle/data diagnostics 0.
 ## Fetch/data gaps
 
 - No fetch failures this run.
-- No candle/data diagnostics this run.
+- Data diagnostic: {"symbol":"GLD","mode":"stock","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"GLD","mode":"stock","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"SLV","mode":"stock","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"SLV","mode":"stock","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"CPER","mode":"stock","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"CPER","mode":"stock","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"PPLT","mode":"stock","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"PPLT","mode":"stock","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
+- Data diagnostic: {"symbol":"PALL","mode":"stock","type":"off_session_grid","date":"2026-11-27","t":1795802400000}
+- Data diagnostic: {"symbol":"PALL","mode":"stock","type":"incomplete_or_missing_exchange_bar","date":"2026-11-27","segment":0,"expected":[0,1,2,3],"present":[0,1,2]}
