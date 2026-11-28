@@ -2,43 +2,20 @@
   "version": "trend-breakout-v1",
   "mode": "forward_shadow",
   "configHash": "cef405ea31bbe69307c9765b8aad34a1471e79abb4e17afe407cf63a791ab6be",
-  "generatedAt": "2026-11-28T04:52:56.939Z",
+  "generatedAt": "2026-11-28T14:26:57.842Z",
   "forwardStart": "2026-10-04T19:55:57.808303+00:00",
   "cohort": "metals-5",
   "universe": 5,
   "failures": [],
   "diagnostics": [
     {
-      "symbol": "PPLT",
+      "symbol": "CPER",
       "type": "off_session_grid",
       "date": "2026-11-27",
       "t": 1795802400000
     },
     {
-      "symbol": "PPLT",
-      "type": "incomplete_or_missing_exchange_bar",
-      "date": "2026-11-27",
-      "segment": 0,
-      "expected": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "present": [
-        0,
-        1,
-        2
-      ]
-    },
-    {
-      "symbol": "SLV",
-      "type": "off_session_grid",
-      "date": "2026-11-27",
-      "t": 1795802400000
-    },
-    {
-      "symbol": "SLV",
+      "symbol": "CPER",
       "type": "incomplete_or_missing_exchange_bar",
       "date": "2026-11-27",
       "segment": 0,
@@ -78,13 +55,36 @@
       ]
     },
     {
-      "symbol": "CPER",
+      "symbol": "PPLT",
       "type": "off_session_grid",
       "date": "2026-11-27",
       "t": 1795802400000
     },
     {
-      "symbol": "CPER",
+      "symbol": "PPLT",
+      "type": "incomplete_or_missing_exchange_bar",
+      "date": "2026-11-27",
+      "segment": 0,
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "present": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "symbol": "SLV",
+      "type": "off_session_grid",
+      "date": "2026-11-27",
+      "t": 1795802400000
+    },
+    {
+      "symbol": "SLV",
       "type": "incomplete_or_missing_exchange_bar",
       "date": "2026-11-27",
       "segment": 0,
@@ -126,24 +126,24 @@
   ],
   "inputs": [
     {
-      "symbol": "PPLT",
-      "sha256": "028c859ed40df3a93ea7dab4629209954211c094e52c34b074fab9a530ec2d1e"
-    },
-    {
-      "symbol": "SLV",
-      "sha256": "4dca35a9f6a5d4cc723461494c19fc8e7519cbb3e059256c6410269f83b52be2"
+      "symbol": "CPER",
+      "sha256": "f29395c645f686ec8aa3d8664dc4b0802a59eba0d3f26dbbce0c70aa82ef2f8a"
     },
     {
       "symbol": "GLD",
-      "sha256": "8d08d2b01a19f4d3febad8d1ced4de689d4d4e8979837e2b92c58624be671d3a"
+      "sha256": "75e123356b1e169a0902b1bfb395695fd51a59ff475a01e2d89d812e7c21578d"
     },
     {
-      "symbol": "CPER",
-      "sha256": "cc6db25b925576bdeb084b1c62a5cc87b6c36020c0795edcb8f16d8e93a85076"
+      "symbol": "PPLT",
+      "sha256": "da9321ea24dcd3b438b048aea9ac584ca20b9f9cda19fdac85ccc98ee6c03e67"
+    },
+    {
+      "symbol": "SLV",
+      "sha256": "3d2b999b21c2cf972ad62c2817279d2b120ff6316f14443d05c455f17a7a9a81"
     },
     {
       "symbol": "PALL",
-      "sha256": "e97ce37879a01e09be9372d3bbd7d506f47c3914fed549b48d911ca6bd3980ef"
+      "sha256": "85e9262f1bc3961f01f977e5f1cf3f24682cfa9001d35b7a4d0241038dc2b3f1"
     }
   ],
   "trades": [
@@ -1020,8 +1020,8 @@
     "markedCurrentEquity": 1111.7702808964486,
     "markedReturnPct": 0.11177028089644869,
     "markedObservation": {
-      "runKey": "trend-breakout-v1|46109523247|1",
-      "observedAt": "2026-11-28T04:52:56.939Z",
+      "runKey": "trend-breakout-v1|46154655543|1",
+      "observedAt": "2026-11-28T14:26:57.842Z",
       "quality": "fresh",
       "markedEquity": 1111.7702808964486,
       "totalUnrealizedPnl": 51.31799785456836,
@@ -3815,6 +3815,15 @@
         "totalUnrealizedPnl": 51.31799785456836,
         "missingSymbols": [],
         "staleSymbols": []
+      },
+      {
+        "runKey": "trend-breakout-v1|46154655543|1",
+        "observedAt": "2026-11-28T14:26:57.842Z",
+        "quality": "fresh",
+        "markedEquity": 1111.7702808964486,
+        "totalUnrealizedPnl": 51.31799785456836,
+        "missingSymbols": [],
+        "staleSymbols": []
       }
     ],
     "markedSeriesCoverageStartAt": "2026-10-04T19:58:21.240Z",
@@ -4743,7 +4752,7 @@
   },
   "comparison": {
     "commonStart": "2026-10-04T19:55:57.808303+00:00",
-    "smcLedgerAsOf": "2026-11-27T08:18:45.126Z",
+    "smcLedgerAsOf": "2026-11-28T07:39:51.342Z",
     "smcStale": false,
     "description": "New entries in the common forward window only; existing SMC positions before launch are excluded. SMC source prices are independently observed, not a shared historical price replay. Costs: same 0.05R assumption, different disclosed gap-fill rules.",
     "smc": {
@@ -4934,8 +4943,8 @@
         "markedCurrentEquity": 1081.6120715682102,
         "markedReturnPct": 0.08161207156821026,
         "markedObservation": {
-          "runKey": "trend-breakout-v1|46109523247|1",
-          "observedAt": "2026-11-28T04:52:56.939Z",
+          "runKey": "trend-breakout-v1|46154655543|1",
+          "observedAt": "2026-11-28T14:26:57.842Z",
           "quality": "fresh",
           "markedEquity": 1081.6120715682102,
           "totalUnrealizedPnl": 0,
@@ -4946,8 +4955,8 @@
         },
         "markedEquitySeries": [
           {
-            "runKey": "trend-breakout-v1|46109523247|1",
-            "observedAt": "2026-11-28T04:52:56.939Z",
+            "runKey": "trend-breakout-v1|46154655543|1",
+            "observedAt": "2026-11-28T14:26:57.842Z",
             "quality": "fresh",
             "markedEquity": 1081.6120715682102,
             "totalUnrealizedPnl": 0,
@@ -4955,8 +4964,8 @@
             "staleSymbols": []
           }
         ],
-        "markedSeriesCoverageStartAt": "2026-11-28T04:52:56.939Z",
-        "firstCompleteMarkedEquityAt": "2026-11-28T04:52:56.939Z",
+        "markedSeriesCoverageStartAt": "2026-11-28T14:26:57.842Z",
+        "firstCompleteMarkedEquityAt": "2026-11-28T14:26:57.842Z",
         "markedObservedMaxDrawdownPct": 0,
         "costAccounting": {
           "closedTradeCostR": 0.05,
