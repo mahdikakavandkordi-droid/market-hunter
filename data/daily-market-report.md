@@ -11,7 +11,7 @@
 ## Key developments
 
 - **Watch:** Silver: short-term structure is weakening; reclaim/hold levels matter more than the long-term label right now.
-- **Move:** Gold: 1D +3.8%, 5D -0.5%, 20D -9% — Strong Bear / Recovery Attempt
+- **Move:** Gold: 1D +2.9%, 5D -1.3%, 20D -9.7% — Strong Bear / Recovery Attempt
 - **Move:** Nasdaq-100: 1D +2.6%, 5D +0.8%, 20D -9.1% — Bear / Recovery Attempt
 
 ## Group read
@@ -26,11 +26,11 @@
 
 ## What to watch next
 
-- **Gold:** bullish continuation above 4097.2 · trend warning near 3853.23 · structure risk below 3502.9.
+- **Gold:** bullish continuation above 4097.2 · trend warning near 3851.79 · structure risk below 3502.9.
 - **Ethereum:** bullish continuation above 1842.19 · trend warning near 1826.43 · structure risk below 1607.6.
 - **Nasdaq-100:** bullish continuation above 27749.35 · trend warning near 27273.11 · structure risk below 26606.43.
 - **Bitcoin:** bullish continuation above 64478.36 · trend warning near 65145.48 · structure risk below 57241.84.
-- **Silver:** bullish continuation above 53.21 · trend warning near 47.61 · structure risk below 48.55.
+- **Silver:** bullish continuation above 53.21 · trend warning near 47.58 · structure risk below 48.55.
 
 ## Market detail
 
@@ -60,19 +60,19 @@
 
 ### Gold
 - **State:** Strong Bear / Recovery Attempt
-- **Returns:** 1D +3.8% · 5D -0.5% · 20D -9% · 60D -16.9%
+- **Returns:** 1D +2.9% · 5D -1.3% · 20D -9.7% · 60D -17.6%
 - **Historical read:** 5 sessions: Cautious · 10: Cautious · 20: Cautious
 - **Framing:** Historical analogs cautious
 - **Outlook:** The market is attempting to recover from a weaker regime. Historical follow-through should be treated as conditional on reclaiming resistance and improving structure.
-- **Watch next:** bullish continuation above 4097.2 · trend warning near 3853.23 · structure risk below 3502.9.
+- **Watch next:** bullish continuation above 4097.2 · trend warning near 3851.79 · structure risk below 3502.9.
 
 ### Silver
 - **State:** Strong Bear / Weakening
-- **Returns:** 1D +9.1% · 5D -1.4% · 20D -16.3% · 60D -32.5%
+- **Returns:** 1D +7.8% · 5D -2.6% · 20D -17.3% · 60D -33.3%
 - **Historical read:** 5 sessions: Supportive · 10: Supportive · 20: Supportive
 - **Framing:** Historical analogs supportive
 - **Outlook:** Short-term structure is soft, but similar recent analogs have still produced positive forward returns. This is better framed as a damaged or uncertain setup than a clean bearish call.
-- **Watch next:** bullish continuation above 53.21 · trend warning near 47.61 · structure risk below 48.55.
+- **Watch next:** bullish continuation above 53.21 · trend warning near 47.58 · structure risk below 48.55.
 
 ### Bitcoin
 - **State:** Bear / Recovery Attempt
